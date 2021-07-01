@@ -1,0 +1,7 @@
+## nix aliases ##
+# helpers
+#setup flake -> https://nixos.wiki/wiki/Flakes
+#installing things: nix-env
+#flake.nix: nix develop
+
+

@@ -1,0 +1,117 @@
+## Git aliases
+# gitlab checkout MR: git mr branch number
+# github checkout PR: TODO
+
+#restore specific file
+#git restore --source=COMMITHASH filename
+#git restore -s=COMMITHASH filename
+#root directory of current git repo
+#git rev-parse --show-toplevel
+
+alias grst='git restore'
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+
+alias gb='git branch'
+alias gba='git branch -avv'
+alias gbd='git branch -d'
+alias gbD='git branch -D'
+alias gbr='git branch --remote'
+
+alias gfap='git fetch --all --prune'
+# git push REMOTENAME --delete deletedBranch
+alias gpod='git push downstream --delete'
+alias grpo='git remote prune downstream'
+alias grv='git remote -v'
+
+alias gbs='git bisect'
+alias gbsb='git bisect bad'
+alias gbsg='git bisect good'
+alias gbsr='git bisect reset'
+alias gbss='git bisect start'
+
+alias gcch='git config --global credential.helper "cache --timeout=3600"'
+alias gcom='git commit -v'
+alias gcmsg='git commit -m'
+alias gd='git diff'
+alias gds='git diff --shortstat'
+alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
+
+alias gf='git fetch'
+alias gfo='git fetch downstream'
+alias gfu='git fetch upstream'
+alias gfrg='git ls-files | rg'
+
+alias grau='git remote add upstream'
+alias grad='git remote add downstream'
+alias good='git remote rename origin downstream'
+alias grsu='git remote set-url'
+
+alias gbsum='git branch --set-upstream-to=upstream/master upstream'
+alias gpsu='git push --set-upstream downstream $(git branch --show-current)'
+alias ghh='git help'
+alias grph='git rev-parse HEAD'
+alias gbm='git branch --move'
+
+alias gbsudDownMaster='git branch --set-upstream-to=downstream/master downstream'
+alias gbsudDownMain='git branch --set-upstream-to=downstream/main downstream'
+alias gbsudUpMaster='git branch --set-upstream-to=upstream/master upstream'
+alias gbsudUpMain='git branch --set-upstream-to=upstream/main upstream'
+alias gscbDown='git branch --set-upstream-to=downstream/$(git branch --show-current)'
+alias gscbUp='git branch --set-upstream-to=upstream/$(git branch --show-current)'
+
+alias gsh='git show'
+alias gshps='git show --pretty=short --show-signature'
+alias gsb='git status -sb'
+alias gss='git status -s'
+alias gst='git status'
+alias gsp='git status --porcelain'
+alias gcl='git clone'
+
+alias grbi='git rebase -i'
+alias gsw='git switch'
+alias gs='test -n "$(git status --porcelain)" || echo safe'
+alias grbium='git rebase --interactive upstream/master'
+alias grbiuM='git rebase --interactive upstream/main'
+alias grmdel='git rm $(git ls-files --deleted)'
+
+alias gignore='git update-index --assume-unchanged'
+alias gignored='git ls-files -v | grep "^[[:lower:]]"'
+
+alias gk='gitk --all --branches'
+alias gke='gitk --all $(git log -g --pretty=%h)'
+
+alias glr='git pull --rebase'
+alias gp='git pull --no-rebase'
+alias glg='git log --stat'
+alias glgp='git log --stat -p'
+alias glgg='git log --graph'
+alias glgga='git log --graph --decorate --all'
+alias glgm='git log --graph --max-count=10'
+alias glo='git log --oneline --decorate'
+alias gloga='git log --oneline --decorate --graph --all'
+alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias glp='_git_log_prettily'
+
+alias gm='git merge'
+alias gmom='git merge downstream/master'
+alias gmt='git mergetool --no-prompt'
+alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
+alias gmum='git merge upstream/master'
+alias gma='git merge --abort'
+
+alias gpush='git push'
+alias gpushd='git push --dry-run'
+
+alias gstapush='git stash push'
+alias gstaa='git stash apply'
+alias gstac='git stash clear'
+alias gstad='git stash drop'
+alias gstal='git stash list'
+alias gstapop='git stash pop'
+alias gstas='git stash show --text'
+alias gstaall='git stash --all'
+
+alias gsi='git submodule init'
+alias gsu='git submodule update'

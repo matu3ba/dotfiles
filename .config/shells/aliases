@@ -1,0 +1,76 @@
+## shell-independent aliases ##
+# helpers
+alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
+alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
+alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
+#alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
+## TODO remove non-unix and non-portable symbols in filenames and folder names
+alias helpuser='echo "appimage_update gitreb gitrm replunderscore"'
+alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxla tbirdla"'
+alias readcommentsectionELF='readelf -p .comment'
+#TIMENOW_SEC=$(date +"%Y%m%d_%H%M%S")
+#FILENAME=somefile.tar.gz
+#echo "filename and remove 2 dots from end + append filetype pdf: ${FILENAME%%.*}.pdf"
+#echo "filename and remove 1 dot  from end + append filetype    : ${FILENAME%.*}"
+#echo "filename unchanged: ${FILENAME}"
+
+#VBoxManage modifyvm "VMname" --natpf1 "guestssh,tcp,,3022,,22" OR graphically on port forwarding without any IP
+alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
+alias syncmyl2p='QT_QPA_PLATFORM="xcb" "$HOME/.local/appimages/syncmyl2p.AppImage";'
+alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-VPN (Split Tunnel)" vpn.rwth-aachen.de'
+
+# appimages
+alias       viapp='${HOME}/.local/appimages/nvim.appimage'
+alias        fjvi='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/nvim/bin/nvim'
+# firejail makes neovim plugins leak memory, TODO fix
+alias          vi='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/nvim/bin/nvim'
+alias        nvim='${HOME}/.local/nvim_noubsan/bin/nvim'
+alias         cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
+alias      histup='${HOME}/.local/nvim/bin/nvim "/var/log/pacman.log"'
+alias     aliases='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
+alias      bashrc='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.bashrc"'
+alias      initrc='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/ion/initrc"'
+alias aliases_git='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_git"'
+
+# build + languages
+alias mkcd='mkdir build && cd build'
+alias ccompilejson='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
+alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
+alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/local" -GNinja && ninja'
+alias zb2='./build/zig build --prefix $(pwd)/build/stage2 -Denable-llvm' #-Dskip-non-native
+alias rmzigcache='rm -fr zig-cache/ zig-out/ "${HOME}/.cache/zig/'
+alias bpde='make -j8 && ./runTests && ./pde'
+
+# sandboxing with firejail
+alias   nojail='firejail --noprofile'
+alias  njfoxPM='firejail --noprofile firefox --ProfileManager'
+alias   falkla='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --x11=xpra --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
+alias  sfalkla='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=wlan0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
+alias ssfalkla='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=wlan0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
+#alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} --whitelist=$HOME/.mozilla/firefox/profiles.ini --whitelist=$HOME/.mozilla/firefox/default firefox -P default && rm -fr "${TMP4}"'
+#alias   sfoxla='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} --whitelist=$HOME/.mozilla/firefox/profiles.ini --whitelist=$HOME/.mozilla/firefox/allAllowed firefox -P allAllowed && rm -fr "${TMP5}"'
+alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias   sfoxla='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
+alias  tbirdla='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
+
+# rsync
+alias rsync_copy='rsync -avz --progress -h'
+alias rsync_move='rsync -avz --progress -h --remove-source-files'
+alias rsync_update='rsync -avzu --progress -h'
+alias rsync_synchronize='rsync -avzu --delete --progress -h'
+alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
+
+# program aliases
+alias l='exa'
+alias du='dust'
+
+# POSIX misses current shell recognition and shell conformity
+# most sane solution and reliable way is to use shell-specifc VERSION:
+# ie FISH_VERSION, BASH_VERSION, ZSH_VERSION, etc
+# does not work for dash and ion
+alias sudo='sudo '
+# cd !$ => insert last argument of previous command
+#shopt -s cdspell
+#complete -d cd
