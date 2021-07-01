@@ -1,12 +1,11 @@
 -- init.lua --
 require('_packer')
-require('_lsp')
 require('_opts')
+require('_lsp')
 require('_telesc')
 require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
 require('_compe')
 require('_keymaps')
-
 require'colorizer'.setup()
 
 clangfmt = function()

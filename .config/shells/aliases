@@ -21,10 +21,8 @@ alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-
 
 # appimages
 alias       viapp='${HOME}/.local/appimages/nvim.appimage'
-alias        fjvi='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/nvim/bin/nvim'
-# firejail makes neovim plugins leak memory, TODO fix
-alias          vi='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/nvim/bin/nvim'
-alias        nvim='${HOME}/.local/nvim_noubsan/bin/nvim'
+alias          vi='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
+alias        nvim='${HOME}/.local/nvim/bin/nvim'
 alias         cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
 alias      histup='${HOME}/.local/nvim/bin/nvim "/var/log/pacman.log"'
 alias     aliases='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
