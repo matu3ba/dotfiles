@@ -62,23 +62,45 @@ vim.api.nvim_set_keymap('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attac
 
 -- color switching --
 vim.api.nvim_set_keymap('n', '<leader>m', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts)
--- lspsaga --
---  switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+-- lspsaga -- (leaks memory https://github.com/glepnir/lspsaga.nvim/issues/220)
+--vim.api.nvim_set_keymap('n', 'gd',    [[<cmd>lua require'lspsaga.provider'.preview_definition()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', 'gs',    [[<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', 'gh',    [[<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>]], opts) --i,o,s,
+--vim.api.nvim_set_keymap('n', 'gr',    [[<cmd>lua require('lspsaga.rename').rename()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', 'K',     [[<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', '<C-f>', [[<cmd>lua require('lspsaga.hover').smart_scroll_hover(1)<CR>]], opts)
+--vim.api.nvim_set_keymap('n', '<C-b>', [[<cmd>lua require('lspsaga.hover').smart_scroll_hover(-1)<CR>]], opts)
+--vim.api.nvim_set_keymap('n', '<leader>ca', [[<cmd>lua require('lspsaga.codeaction').code_action()<CR>]], opts)
+--vim.api.nvim_set_keymap('v', '<leader>ca', [[<cmd>'<,'>lua require('lspsaga.codeaction').range_code_action()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', '<leader>cd', [[<cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', '[e',    [[<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', ']e',    [[<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>]], opts)
+--vim.api.nvim_set_keymap('n', '<A-t>', [[<cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>]], opts)
+--vim.api.nvim_set_keymap('t', '<A-t>', [[<C-\><C-n><cmd>lua require('lspsaga.floaterm').close_float_terminal()<CR>]], opts)
+-- lspconfig --
 vim.api.nvim_set_keymap('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts)
-vim.api.nvim_set_keymap('n', 'gd',    [[<cmd>lua require'lspsaga.provider'.preview_definition()<CR>]], opts)
-vim.api.nvim_set_keymap('n', 'gs',    [[<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>]], opts)
-vim.api.nvim_set_keymap('n', 'gh',    [[<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>]], opts) --i,o,s,
-vim.api.nvim_set_keymap('n', 'gr',    [[<cmd>lua require('lspsaga.rename').rename()<CR>]], opts)
-vim.api.nvim_set_keymap('n', 'K',     [[<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>]], opts)
-vim.api.nvim_set_keymap('n', '<C-f>', [[<cmd>lua require('lspsaga.hover').smart_scroll_hover(1)<CR>]], opts)
-vim.api.nvim_set_keymap('n', '<C-b>', [[<cmd>lua require('lspsaga.hover').smart_scroll_hover(-1)<CR>]], opts)
-vim.api.nvim_set_keymap('n', '<leader>ca', [[<cmd>lua require('lspsaga.codeaction').code_action()<CR>]], opts)
-vim.api.nvim_set_keymap('v', '<leader>ca', [[<cmd>'<,'>lua require('lspsaga.codeaction').range_code_action()<CR>]], opts)
-vim.api.nvim_set_keymap('n', '<leader>cd', [[<cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>]], opts)
-vim.api.nvim_set_keymap('n', '[e',    [[<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>]], opts)
-vim.api.nvim_set_keymap('n', ']e',    [[<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>]], opts)
-vim.api.nvim_set_keymap('n', '<A-t>', [[<cmd>lua require('lspsaga.floaterm').open_float_terminal()<CR>]], opts)
-vim.api.nvim_set_keymap('t', '<A-t>', [[<C-\><C-n><cmd>lua require('lspsaga.floaterm').close_float_terminal()<CR>]], opts)
+--  switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+vim.api.nvim_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+vim.api.nvim_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+vim.api.nvim_set_keymap('n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+vim.api.nvim_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+vim.api.nvim_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+-- no equivalent of lsp_finder
+vim.api.nvim_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+vim.api.nvim_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+-- smart_scroll_hover => need to implement!
+vim.api.nvim_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+vim.api.nvim_set_keymap('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+vim.api.nvim_set_keymap('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+vim.api.nvim_set_keymap('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+vim.api.nvim_set_keymap('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+-- impl
+--vim.api.nvim_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+--vim.api.nvim_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+--vim.api.nvim_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+--vim.api.nvim_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+--vim.api.nvim_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
 -- compe --
 vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], { noremap = true, silent = true, expr = true })
 vim.api.nvim_set_keymap('i', '<CR>', [[compe#confirm('<CR>')]], { noremap = true, silent = true, expr = true })

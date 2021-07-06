@@ -13,6 +13,7 @@ alias readcommentsectionELF='readelf -p .comment'
 #echo "filename and remove 2 dots from end + append filetype pdf: ${FILENAME%%.*}.pdf"
 #echo "filename and remove 1 dot  from end + append filetype    : ${FILENAME%.*}"
 #echo "filename unchanged: ${FILENAME}"
+#get internet adapters: nmcli
 
 #VBoxManage modifyvm "VMname" --natpf1 "guestssh,tcp,,3022,,22" OR graphically on port forwarding without any IP
 alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
@@ -21,8 +22,8 @@ alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-
 
 # appimages
 alias       viapp='${HOME}/.local/appimages/nvim.appimage'
-alias          vi='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
-alias        nvim='${HOME}/.local/nvim/bin/nvim'
+alias      viasan='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
+alias          vi='${HOME}/.local/nvim/bin/nvim'
 alias         cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
 alias      histup='${HOME}/.local/nvim/bin/nvim "/var/log/pacman.log"'
 alias     aliases='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
@@ -36,11 +37,12 @@ alias ccompilejson='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/local" -GNinja && ninja'
-alias zb2='./build/zig build --prefix $(pwd)/build/stage2 -Denable-llvm' #-Dskip-non-native
-alias rmzigcache='rm -fr zig-cache/ zig-out/ "${HOME}/.cache/zig/'
+alias zb2='./build/zig build -Denable-llvm' #-Dskip-non-native
+alias rmzigcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
 alias bpde='make -j8 && ./runTests && ./pde'
 
-# sandboxing with firejail
+# sandboxing with firejail (enp4s0|wlan0)
+# firefox requires profile lookup, even though they provide an option to set the direct path for the profile
 alias   nojail='firejail --noprofile'
 alias  njfoxPM='firejail --noprofile firefox --ProfileManager'
 alias   falkla='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --x11=xpra --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
@@ -48,9 +50,12 @@ alias  sfalkla='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2}
 alias ssfalkla='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=wlan0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
 #alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} --whitelist=$HOME/.mozilla/firefox/profiles.ini --whitelist=$HOME/.mozilla/firefox/default firefox -P default && rm -fr "${TMP4}"'
 #alias   sfoxla='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} --whitelist=$HOME/.mozilla/firefox/profiles.ini --whitelist=$HOME/.mozilla/firefox/allAllowed firefox -P allAllowed && rm -fr "${TMP5}"'
-alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
-alias   sfoxla='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
-alias  tbirdla='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias    foxlaeth='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=enp4s0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias    foxlawlan='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias   sfoxlaeth='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=enp4s0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
+alias   sfoxlawlan='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
+alias  tbirdlaeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=enp4s0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias  tbirdlawlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
 alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
 
 # rsync

@@ -74,6 +74,9 @@ if expand('%:e') == 'rs'
 endif
 ]], false)
 
+-- TODO: https://www.reddit.com/r/neovim/comments/jxub94/reload_lua_config/
+-- plenary.nvim => reload.lua
+
 --this is BROKEN somehow
 --vim.g['nnn#action'] = {
 --'<c-t> : tab split',
