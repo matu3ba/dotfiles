@@ -42,6 +42,8 @@ command! CTree :tabnew ~/.config/nvim/lua/_treesitter.lua
 command! Bda :bufdo :bdelete -- deleting all buffers except current one
 ]], false)
 
+-- :source $MYVIMRC
+-- TODO add telescope-project integration
 -- setup REPLs for latex, clippy and cpp with linker mold
 vim.api.nvim_exec([[
 function! Latexmklualatex()
@@ -57,13 +59,14 @@ function! Cargocheck()
   let l:cmd = "terminal watchexec -e rs 'cargo +nightly test --lib && bash tests/run_examples.sh && cargo check --all-targets --all-features'" | tabnew | execute cmd
 endfunction
 function! Buildpde()
-  let l:cmd = "terminal cd Debug; watchexec -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd
+  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd
 endfunction
 command! Buildpde :call Buildpde()
 if expand('%:e') == 'tex'
-  "command! Buildauto :call Latexmklualatex()
-  command! Buildauto :call Latexmkpdflatex()
-  command! Pdf :call jobstart(["okular", "build/" . expand("%:t:r") . ".pdf"])
+  "command! Buildlatex :call Latexmklualatex()
+  command! Buildlatex :call Latexmkpdflatex()
+  "command! Pdf :call jobstart(["okular", "build/" . expand("%:t:r") . ".pdf"])
+  command! Pdf :call jobstart(["okular", "build/main.pdf"])
 endif
 if expand('%:e') == 'rs'
   command! Cargoclippy :call Cargoclippy()
@@ -75,8 +78,16 @@ endif
 ]], false)
 
 -- TODO: https://www.reddit.com/r/neovim/comments/jxub94/reload_lua_config/
+-- TODO: keep track of setup scripts to install stuff (nix is long-term goal)
+-- unfortunately does nix have bad error messages how to fix stuff (requires alot domain knowledge)
 -- plenary.nvim => reload.lua
 
+vim.api.nvim_exec([[
+let g:nnn#action = {
+      \ '<c-t>': 'tab split',
+      \ '<c-x>': 'split',
+      \ '<c-v>': 'vsplit' }
+]])
 --this is BROKEN somehow
 --vim.g['nnn#action'] = {
 --'<c-t> : tab split',
@@ -84,12 +95,6 @@ endif
 --'<c-v> :    vsplit'
 --}
 --vim.api.nvim_set_var('nnn#action', [[{'<C-t>':'tab split','<C-x':'split','<C-v>':'vsplit'}]])
---vim.api.nvim_exec([[
---let g:nnn#action = {
---      \ '<c-t>': 'tab split',
---      \ '<c-x>': 'split',
---      \ '<c-v>': 'vsplit' }
---      ]])
 
 -- Snippets
 -- std::cout << "type: " << typeid(eout).name() << "\n";

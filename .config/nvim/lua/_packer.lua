@@ -11,7 +11,7 @@ function()
   --use { 'glepnir/lspsaga.nvim', branch = 'main', requires = { 'neovim/nvim-lspconfig' } } --gh: o,s,i,q,'<C-f>','<C-b>'
   use { 'neovim/nvim-lspconfig' } --:sh, gD,gd,gT,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   use { 'hrsh7th/nvim-compe' }
-  use { 'marko-cerovac/material.nvim', config = function() require('material').set() end } --<l>m
+  use { 'marko-cerovac/material.nvim', config = function() require('material').set() end } --<l>m, alternative: projekt0n/github-nvim-theme (includes alacritty+kitty config)
   use { 'norcalli/nvim-colorizer.lua' } --beware to use after all color config setup
   use { 'ggandor/lightspeed.nvim' } --{s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' }, config = function() require('gitsigns').setup() end } --<l>hs/hu,hr,hp,hb
@@ -36,18 +36,16 @@ function()
   -- https://github.com/NTBBloodbath/cheovim --missing benchmarks on loading overhead
   -- use { 'nvim-telescope/telescope-z.nvim' } --tez,<leader>z
   -- use { 'mfussenegger/nvim-lint' } --TODO c++
-  -- use { 'nvim-treesitter/nvim-treesitter-refactor' } --needed?
+  -- use { 'nvim-treesitter/nvim-treesitter-refactor' } -- block-wise movement and file-local replacements
   -- use { 'nvim-treesitter/playground' } --inspecting treesitter data: :TSPlaygroundToggle
   -- use { 'LnL7/vim-nix' } -- flakes highlighting
   -- use { 'https://gitlab.redox-os.org/redox-os/ion-vim' }
   -- use { 'JuliaEditorSupport/julia-vim' } --cool stuff: latex-to-unicode substitutions, block-wise movements and block text-objects
-  -- use { 'nvim-telescope/telescope-snippets.nvim', requires = { 'norcalli/snippets.nvim' } } --how useful it is in reality => could just copy the code
-  -- use { 'Iron-E/nvim-libmodal' } -- very complex for mode-specific settings (modal)
-  -- use { 'brooth/far.vim' } --help var.vim: :Farf :Farr in visual and normal mode, TODO setting undo?
-  -- use { 'https://gitlab.com/dbeniamine/cheat.sh-vim/' } --TODO MAPPINGS!!!
+  -- use { 'nvim-telescope/telescope-snippets.nvim', requires = { 'norcalli/snippets.nvim' } } -- useful for loop stuff
+  -- use { 'https://gitlab.com/dbeniamine/cheat.sh-vim/' }
   -- use { 'mhinz/vim-rfc' }--:RFC 1000, :RFC! regex
-  -- use { 'bfredl/nvim-luadev' } --lua REPL, TODO: setup
+  -- use { 'bfredl/nvim-luadev' } --lua REPL
+  -- use { 'tjdevries/nlua.nvim' } --lua development helpers
   -- use { 'bohlender/vim-smt2' }
   -- use { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
-  -- use { 'tjdevries/nlua.nvim' } --lua development helpers
 end)

@@ -10,7 +10,7 @@ local function load_options()
     mapleader = " ";
     material_style = "lighter"; -- default, darker, lighter, oceanic, deep ocean, palenight
     material_lighter_contrast = false;
-    --doge_mapping = "<leader>d";
+    --doge_mapping = "<leader>d"; --TODO get doge to work
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v);

@@ -7,11 +7,11 @@ vim.api.nvim_set_keymap('', '<down>',  '<nop>', opts)
 vim.api.nvim_set_keymap('', '<up>',    '<nop>', opts)
 vim.api.nvim_set_keymap('', '<right>', '<nop>', opts)
 -- tab navigation --
-vim.api.nvim_set_keymap('n', '<leader>j', '<cmd>tabprevious<CR>', opts)
-vim.api.nvim_set_keymap('n', '<leader>k', '<cmd>tabnext<CR>', opts)
-vim.api.nvim_set_keymap('n', '<C-w>t',    '<cmd>tabnew<CR>', opts)
+vim.api.nvim_set_keymap('n', '<C-w>t',    '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 vim.api.nvim_set_keymap('n', '<C-w><C-q>','<cmd>tabclose<CR>', opts)
--- fast window navigation: combination <C-w> is too common to delete, ie <C-w>s for split and <C-w>r for swap
+-- session navigation <A-1> etc for switch session
+-- how can I list sessions?
+-- window navigation: combination <C-w> is too common to delete, ie <C-w>s for split and <C-w>r for swap
 vim.api.nvim_set_keymap('n', '<A-h>',  '<C-w>h', opts)
 vim.api.nvim_set_keymap('n', '<A-j>',  '<C-w>j', opts)
 vim.api.nvim_set_keymap('n', '<A-k>',  '<C-w>k', opts)
@@ -82,7 +82,7 @@ vim.api.nvim_set_keymap('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts
 --  switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 vim.api.nvim_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
 vim.api.nvim_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-vim.api.nvim_set_keymap('n', 'gT', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+vim.api.nvim_set_keymap('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts) -- gt, gT used for tabnext
 vim.api.nvim_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
 vim.api.nvim_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 -- no equivalent of lsp_finder
@@ -142,5 +142,5 @@ vim.api.nvim_set_keymap('n', '<leader>z',   [[<cmd>lua require'telescope'.extens
 --nnoremap <leader>mrl :lua require("harpoon.mark").rm_file(3)<CR>
 --nnoremap <leader>mr; :lua require("harpoon.mark").rm_file(4)<CR>
 -- nnn --
---TODO lua setup for split creation looks broken
+--TODO convert setup to lua
 
