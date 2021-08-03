@@ -5,11 +5,12 @@ require('_lsp')
 require('_telesc')
 require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
 require('_compe')
+require('_dap')
 require('_keymaps')
 require'colorizer'.setup()
 
 clangfmt = function()
--- looking upwards paths for a .clang-format, ideal solution would use root git folder
+-- looking upwards paths for a .clang-format, ideal solution would try to use root git folder
 vim.api.nvim_command([[
 if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
   let cursor_pos = getpos('.')
@@ -33,6 +34,7 @@ augroup END
 
 -- Load configuration files and delete all but current buffer
 vim.api.nvim_exec([[
+command! CDap :tabnew ~/.config/nvim/lua/_dap.lua
 command! CInit :tabnew ~/.config/nvim/init.lua
 command! CKeymaps :tabnew ~/.config/nvim/lua/_keymaps.lua
 command! CLsp :tabnew ~/.config/nvim/lua/_lsp.lua
@@ -42,9 +44,12 @@ command! CTree :tabnew ~/.config/nvim/lua/_treesitter.lua
 command! Bda :bufdo :bdelete -- deleting all buffers except current one
 ]], false)
 
--- :source $MYVIMRC
+-- :so $MYVIMRC for the lazy
+-- :so stdpath('config')/lua/_packer.lua
+-- type() and inspect()
 -- TODO add telescope-project integration
--- setup REPLs for latex, clippy and cpp with linker mold
+
+-- REPLs for latex, clippy and cpp with linker mold
 vim.api.nvim_exec([[
 function! Latexmklualatex()
   let l:cmd = "terminal watchexec -e tex 'latexmk -pdflatex=lualatex -pdf -outdir=build main.tex'" | tabnew | execute cmd
@@ -58,8 +63,12 @@ endfunction
 function! Cargocheck()
   let l:cmd = "terminal watchexec -e rs 'cargo +nightly test --lib && bash tests/run_examples.sh && cargo check --all-targets --all-features'" | tabnew | execute cmd
 endfunction
-function! Buildpde()
+function! Replpde()
   let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd
+endfunction
+command! Replpde :call Replpde()
+function! Buildpde()
+  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8'" | tabnew | execute cmd
 endfunction
 command! Buildpde :call Buildpde()
 if expand('%:e') == 'tex'
@@ -81,20 +90,11 @@ endif
 -- TODO: keep track of setup scripts to install stuff (nix is long-term goal)
 -- unfortunately does nix have bad error messages how to fix stuff (requires alot domain knowledge)
 -- plenary.nvim => reload.lua
-
-vim.api.nvim_exec([[
-let g:nnn#action = {
-      \ '<c-t>': 'tab split',
-      \ '<c-x>': 'split',
-      \ '<c-v>': 'vsplit' }
-]])
---this is BROKEN somehow
---vim.g['nnn#action'] = {
---'<c-t> : tab split',
---'<c-x> :     split',
---'<c-v> :    vsplit'
---}
---vim.api.nvim_set_var('nnn#action', [[{'<C-t>':'tab split','<C-x':'split','<C-v>':'vsplit'}]])
+vim.g["nnn#action"] = {
+  ["<C-t>"] = "tab split"; -- can be commas aswell but
+  ["<C-x>"] = "split";     -- prefer semicolons for dictionaries
+  ["<C-v>"] = "vsplit";
+}
 
 -- Snippets
 -- std::cout << "type: " << typeid(eout).name() << "\n";

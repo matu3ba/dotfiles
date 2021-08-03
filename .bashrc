@@ -81,7 +81,7 @@ PATH=$PATH:"${HOME}/.cargo/bin"
 PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-PATH=$PATH:"${HOME}/dev/git/zi/zig/build" # TODO rsync copy things (annoying to build stage2)
+PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
 
 #testing www.ziglang.org
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin

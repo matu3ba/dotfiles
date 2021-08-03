@@ -7,3 +7,5 @@ fileRestore.sh
 ignorefiles
 symlinkInstall.sh
 symlinkUninstall.sh
+
+.git

@@ -25,6 +25,7 @@ local function load_options()
   vim.o.hlsearch          = true; --false
   vim.o.incsearch         = true; --highlight as searching
   vim.o.isfname           = vim.o.isfname .. ',@-@';
+  vim.o.lazyredraw        = true;
   vim.o.mouse             = "nv";
   vim.o.number            = true;
   vim.o.relativenumber    = true;
