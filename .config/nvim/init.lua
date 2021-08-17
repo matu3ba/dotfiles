@@ -1,10 +1,10 @@
 -- init.lua --
+-- TODO: make a table from files for later reloading the options and bindings on demand with plenary
 require('_packer')
 require('_opts')
 require('_lsp')
 require('_telesc')
 require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
-require('_compe')
 require('_dap')
 require('_keymaps')
 require'colorizer'.setup()
@@ -40,6 +40,7 @@ command! CKeymaps :tabnew ~/.config/nvim/lua/_keymaps.lua
 command! CLsp :tabnew ~/.config/nvim/lua/_lsp.lua
 command! COpts :tabnew ~/.config/nvim/lua/_opts.lua
 command! CPlugins :tabnew ~/.config/nvim/lua/_packer.lua
+command! CTele :tabnew ~/.config/nvim/lua/_telesc.lua
 command! CTree :tabnew ~/.config/nvim/lua/_treesitter.lua
 command! Bda :bufdo :bdelete -- deleting all buffers except current one
 ]], false)
@@ -60,8 +61,11 @@ endfunction
 function! Cargoclippy()
   let l:cmd = "terminal watchexec -e rs 'cargo +nightly test --lib && bash tests/run_examples.sh && cargo +1.53.0 clippy --all-targets --all-features -- -D warnings &> clippy.log'" | tabnew | execute cmd
 endfunction
-function! Cargocheck()
+function! CargocheckAll()
   let l:cmd = "terminal watchexec -e rs 'cargo +nightly test --lib && bash tests/run_examples.sh && cargo check --all-targets --all-features'" | tabnew | execute cmd
+endfunction
+function! Cargocheck()
+  let l:cmd = "terminal watchexec -e rs 'cargo +nightly check'" | tabnew | execute cmd
 endfunction
 function! Replpde()
   let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd

@@ -2,7 +2,7 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
     enable = true,
-    disable = { "rust", "zig", "latex" },
+    disable = { "rust", "latex" },
     --custom_captures = {
     --  -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
     --  ["foo.bar"] = "Identifier",

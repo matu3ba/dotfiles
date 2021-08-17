@@ -4,6 +4,7 @@ alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias ccd_build='mkdir -p build; cd build;'
+alias cdnvimplugs='cd ${HOME}/.local/share/nvim/site/pack/packer/start'
 alias mold_make='${HOME}/dev/git/cpp/mold/mold -run make -j8'
 #alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
 ## TODO remove non-unix and non-portable symbols in filenames and folder names
@@ -17,6 +18,7 @@ alias readcommentsectionELF='readelf -p .comment'
 #echo "filename unchanged: ${FILENAME}"
 #get internet adapters: nmcli
 #get local network address: ifconfig, nmap -sL loclanetworkprefix.*
+#cupsenable, cupsdisable, lpstat, lprm, lpstat -u
 
 #VBoxManage modifyvm "VMname" --natpf1 "guestssh,tcp,,3022,,22" OR graphically on port forwarding without any IP
 alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
@@ -25,6 +27,7 @@ alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-
 # appimages
 alias       viapp='${HOME}/.local/appimages/nvim.appimage'
 alias   syncmyl2p='QT_QPA_PLATFORM="xcb" "$HOME/.local/appimages/syncmyl2p.AppImage";'
+alias     freecad='QT_QPA_PLATFORM="xcb" "$HOME/.local/appimages/FreeCAD.AppImage";'
 
 alias      viasan='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
 alias          vi='${HOME}/.local/nvim/bin/nvim'
@@ -42,8 +45,12 @@ alias cdebugsymbols='cmake -DCMAKE_BUILD_TYPE="Debug"'
 alias ccompilejsondebugsymbols='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE="Debug"'
 alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
+
+alias zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline/bin/zig cc'
+alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline/bin/zig c++'
 alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/local" -GNinja && ninja'
 alias zb2='./build/zig build -Denable-llvm' #-Dskip-non-native
+#alias zbstatic='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline/bin/zig build -Dstage1 -Drelease --zig-lib-dir lib --search-prefix $HOME/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline'
 alias rmzigcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
 alias bpde='make -j8 && ./runTests && ./pde'
 
@@ -51,10 +58,11 @@ alias bpde='make -j8 && ./runTests && ./pde'
 # firefox requires profile lookup, even though they provide an option to set the direct path for the profile
 alias   nojail='firejail --noprofile'
 alias  njfoxPM='firejail --noprofile firefox --ProfileManager'
-alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --x11=xpra --allow=${TMP1}  falkon  && echo   "${TMP1}"'
+#alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --x11=xpra --allow=${TMP1}  falkon  && echo   "${TMP1}"'
+alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --allow=${TMP1}  falkon  && echo   "${TMP1}"'
 alias  sfalketh='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=enp4s0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
 alias ssfalketh='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=enp4s0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
-alias   falkwlan='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --x11=xpra --allow=${TMP1}  falkon  && echo   "${TMP1}"'
+alias   falkwlan='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --allow=${TMP1}  falkon  && echo   "${TMP1}"'
 alias  sfalkwlan='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=wlan0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
 alias ssfalkwlan='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=wlan0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
 #alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --allow=${TMP4} --allow=$HOME/.mozilla/firefox/profiles.ini --allow=$HOME/.mozilla/firefox/default firefox -P default && rm -fr "${TMP4}"'
