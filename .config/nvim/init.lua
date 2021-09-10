@@ -4,9 +4,10 @@ require('_packer')
 require('_opts')
 require('_lsp')
 require('_telesc')
-require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+--require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
 require('_dap')
 require('_keymaps')
+vim.cmd[[colorscheme material]]
 require'colorizer'.setup()
 
 clangfmt = function()

@@ -18,7 +18,9 @@ alias readcommentsectionELF='readelf -p .comment'
 #echo "filename unchanged: ${FILENAME}"
 #get internet adapters: nmcli
 #get local network address: ifconfig, nmap -sL loclanetworkprefix.*
-#cupsenable, cupsdisable, lpstat, lprm, lpstat -u
+#printer: cupsenable, cupsdisable, lpstat, lprm, lpstat -u
+#usb-stick: ls /dev/disk/, fdisk /dev/sdX, p,d,n,t=>b,a(activate), mkfs -t vfat /dev/sdX1
+#hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)
 
 #VBoxManage modifyvm "VMname" --natpf1 "guestssh,tcp,,3022,,22" OR graphically on port forwarding without any IP
 alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
@@ -37,6 +39,8 @@ alias     aliases='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/a
 alias      bashrc='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.bashrc"'
 alias      initrc='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/ion/initrc"'
 alias aliases_git='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_git"'
+alias          nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias      nbasan='make distclean;make clean; CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 
 # build + languages
 alias mkcd='mkdir build && cd build'
@@ -46,10 +50,14 @@ alias ccompilejsondebugsymbols='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_
 alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 
-alias zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline/bin/zig cc'
-alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline/bin/zig c++'
-alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/local" -GNinja && ninja'
+alias arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
+alias zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-native/bin/zig cc'
+alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-native/bin/zig c++'
+alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/local" -GNinja && ${HOME}/dev/git/cpp/mold/mold -run ninja'
+alias zb1nomold='cmake .. -DCMAKE_PREFIX_PATH="$HOME/local" -GNinja && ${HOME}/dev/git/cpp/mold/mold -run ninja'
 alias zb2='./build/zig build -Denable-llvm' #-Dskip-non-native
+alias zb2nomold='./build/zig build -Denable-llvm' #-Dskip-non-native
+alias zdev='${HOME}/dev/git/zig/zig/dev/zig'
 #alias zbstatic='${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline/bin/zig build -Dstage1 -Drelease --zig-lib-dir lib --search-prefix $HOME/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-baseline'
 alias rmzigcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
 alias bpde='make -j8 && ./runTests && ./pde'
@@ -85,6 +93,7 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # program aliases
 alias l='exa'
 alias du='dust'
+#rg -g !pattern to ignore patterns
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

@@ -2,7 +2,8 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
     enable = true,
-    disable = { "rust", "latex" },
+    disable = { "latex", "zig" },
+--"rust", "zig"
     --custom_captures = {
     --  -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
     --  ["foo.bar"] = "Identifier",
@@ -59,3 +60,4 @@ require'nvim-treesitter.configs'.setup {
   --  lint_events = {"BufWrite", "CursorHold"},
   --},
 }
+require('iswap').setup{}
