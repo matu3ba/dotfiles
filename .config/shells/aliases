@@ -32,7 +32,7 @@ alias   syncmyl2p='QT_QPA_PLATFORM="xcb" "$HOME/.local/appimages/syncmyl2p.AppIm
 alias     freecad='QT_QPA_PLATFORM="xcb" "$HOME/.local/appimages/FreeCAD.AppImage";'
 
 alias      viasan='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
-alias          vi='${HOME}/.local/nvim/bin/nvim'
+alias          vi='${HOME}/.local/nvim/bin/nvim' # for shorter typing
 alias         cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
 alias      histup='${HOME}/.local/nvim/bin/nvim "/var/log/pacman.log"'
 alias     aliases='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
@@ -41,6 +41,7 @@ alias      initrc='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/ion/init
 alias aliases_git='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_git"'
 alias          nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
 alias      nbasan='make distclean;make clean; CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
+alias     luamake='${HOME}/.local/lua-language-server/3rd/luamake/luamake'
 
 # build + languages
 alias mkcd='mkdir build && cd build'

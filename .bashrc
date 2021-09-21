@@ -82,6 +82,8 @@ PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
 PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
+PATH=$PATH:"${HOME}/.luarocks/bin"
+PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 
 #testing www.ziglang.org
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
