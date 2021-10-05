@@ -5,12 +5,12 @@ require('_opts')
 require('_lsp')
 require('_telesc')
 --require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
-require('_dap')
+--require('_dap')
 require('_keymaps')
 vim.cmd[[colorscheme material]]
-require'colorizer'.setup()
+--require'colorizer'.setup()
 
-clangfmt = function()
+Clangfmt = function()
 -- looking upwards paths for a .clang-format, ideal solution would try to use root git folder
 vim.api.nvim_command([[
 if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
@@ -21,7 +21,19 @@ end
 ]])
 end
 
--- extend highlighting time, remove trailing spaces except in markdown files, call clangfmt
+--Styluafmt = function()
+---- hardcoding formatting option for not needing a config file
+---- single quote and emptyspace are consisently readable independ of editor
+--vim.api.nvim_command([[
+--if &modified
+--  let cursor_pos = getpos('.')
+--  :!stylua --indent-type Spaces --quote-style AutoPreferSingle %
+--  call setpos('.', cursor_pos)
+--end
+--]])
+--end
+
+-- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
 vim.api.nvim_exec([[
 augroup TESTME
 autocmd!
@@ -29,7 +41,8 @@ autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 100
 if &filetype != "markdown"
   autocmd BufWritePre * :%s/\s\+$//e
 endif
-autocmd BufWritePre *.h,*.hpp,*.c,*.cpp :lua clangfmt()
+autocmd BufWritePre *.h,*.hpp,*.c,*.cpp :lua Clangfmt()
+"autocmd BufWritePre *.lua :lua Styluafmt()
 augroup END
 ]], false)
 
@@ -68,13 +81,25 @@ endfunction
 function! Cargocheck()
   let l:cmd = "terminal watchexec -e rs 'cargo +nightly check'" | tabnew | execute cmd
 endfunction
-function! Replpde()
-  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd
+function! Test123()
+  let l:cmd = "terminal echo ${HOME}" | tabnew | execute cmd
 endfunction
-command! Replpde :call Replpde()
+function! ReplpdeAll()
+  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd
+endfunction
+function! ReplpdeTest()
+  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'" | tabnew | execute cmd
+endfunction
+function! ReplpdeTestgdb()
+  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst 'make -j8 && gdb -ex run ./runTests'" | tabnew | execute cmd
+endfunction
+command! ReplpdeAll :call Replpde()
+command! ReplpdeTest :call ReplpdeTest()
+command! ReplpdeTestgdb :call ReplpdeTest()
 function! Buildpde()
-  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '${HOME}/dev/git/cpp/mold/mold -run make -j8'" | tabnew | execute cmd
+  let l:cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8'" | tabnew | execute cmd
 endfunction
+command! Test123 :call Test123()
 command! Buildpde :call Buildpde()
 if expand('%:e') == 'tex'
   "command! Buildlatex :call Latexmklualatex()
@@ -101,5 +126,26 @@ vim.g["nnn#action"] = {
   ["<C-v>"] = "vsplit";
 }
 
+-- Search for visually selected text (no multiline)
+--vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
 -- Snippets
 -- std::cout << "type: " << typeid(eout).name() << "\n";
+
+-- local fp = assert(io.open("/tmp/tmpfile", "w"))
+-- for index,tables in pairs(repo_paths) do
+--   fp:write(index)
+--   fp:write(", ")
+--   fp:write(tables)
+--   fp:write("\n")
+-- end
+-- fp.close()
+
+-- local fp = assert(io.open("/tmp/tmpfile", "w"))
+-- for index,tables in ipairs(repo_paths) do
+--   fp:write(index)
+--   fp:write(", ")
+--   fp:write(tostring(tables))
+--   fp:write("\n")
+-- end
+-- fp.close()

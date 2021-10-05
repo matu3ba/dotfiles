@@ -1,5 +1,14 @@
 local opts = { noremap=true, silent=true }
 local map = vim.api.nvim_set_keymap
+-- TODO:
+--    , (poor taste without special keyboard) prefix for all window operation mappings (e.g. splits, tabs, switching, file drawer etc)
+--    <Space> prefix for fuzzy finding mappings (e.g. files, buffers, helptags etc)
+--    s prefix for plugin operation mappings (e.g. running tests, easy motions etc)
+--     \ prefix for my find and replace helpers, \ is unmapped!
+--    ' is inefficient to use
+--    steal+adapt telescope keymappings:
+--    https://github.com/ThePrimeagen/.dotfiles/blob/master/nvim/.config/nvim/plugin/lsp.vim
+
 --map('n', ' ', '', opts)
 --map('x', ' ', '', opts)
 -- remove antipatterns --
@@ -57,23 +66,23 @@ map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], o
 --nnoremap <leader>dq :lua require("dapui").toggle()<CR>
 
 -- color switching --
-map('n', '<leader>m', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts)
+map('n', '<leader>m', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
 -- lspconfig --
-map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts)
+map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts)           -- switch header_source
 --  switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
-map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
---map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts) -- gt, gT used for tabnext
+map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)           -- **g**oto definition
+--map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
 map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)       -- **g**oto signature
 -- no equivalent of lsp_finder
-map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-map('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)               -- **g**oto rename
+map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)                 -- Kimme_info
+map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)  -- code action
+map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts) -- line diagnostics
+map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts)   -- references
+map('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)     -- next error
+map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)     -- previous error
 -- impl
 --map('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
 --map('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
@@ -81,23 +90,26 @@ map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
 --map('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 --map('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
--- trouble  --
-map("n", "<leader>xx", "<cmd>LspTroubleToggle<cr>", opts)
-map("n", "<leader>xw", "<cmd>LspTroubleToggle lsp_workspace_diagnostics<cr>", opts)
-map("n", "<leader>xd", "<cmd>LspTroubleToggle lsp_document_diagnostics<cr>", opts)
-map("n", "<leader>xl", "<cmd>LspTroubleToggle loclist<cr>", opts)
-map("n", "<leader>xq", "<cmd>LspTroubleToggle quickfix<cr>", opts)
-map("n", "<leader>xr", "<cmd>LspTrouble lsp_references<cr>", opts)
--- telescope --
-map('n', '<leader>tb',   [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts)
-map('n', '<leader>ff',  [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts)
-map('n', '<leader>gf',  [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts)
-map('n', '<leader>rg',  [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) --.grep_string({ search = vim.fn.input("Grep For > ")})
-map('n', '<leader>th',   [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts)
-map('n', '<leader>pr',   [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- d, r, c, s(in your project), w(change dir without open), f
-map('n', '<leader>z',   [[<cmd>lua require'telescope'.extensions.z.list{ cmd = { vim.o.shell, '-c', 'zoxide query -sl' } }<CR>]], opts)
+-- trouble  -- redundant to telescope
+--map("n", "<leader>xx", "<cmd>LspTroubleToggle<cr>", opts)
+--map("n", "<leader>xw", "<cmd>LspTroubleToggle lsp_workspace_diagnostics<cr>", opts)
+--map("n", "<leader>xd", "<cmd>LspTroubleToggle lsp_document_diagnostics<cr>", opts)
+--map("n", "<leader>xl", "<cmd>LspTroubleToggle loclist<cr>", opts)
+--map("n", "<leader>xq", "<cmd>LspTroubleToggle quickfix<cr>", opts)
+--map("n", "<leader>xr", "<cmd>LspTrouble lsp_references<cr>", opts)
+-- telescope -- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match
+map('n', '<leader>tb',   [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts)              -- buffers
+map('n', '<leader>ts',   [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- document symbols
+map('n', '<leader>tS',   [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
+map('n', '<leader>ff',  [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts)            -- find files
+map('n', '<leader>gf',  [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts)             -- git files
+--.grep_string({ search = vim.fn.input("Grep For > ")})
+map('n', '<leader>rg',  [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) -- ripgrep string
+map('n', '<leader>th',   [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts)                                      -- helptags
+map('n', '<leader>pr',   [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
+map('n', '<leader>z',   [[<cmd>lua require'telescope'.extensions.z.list{ cmd = { vim.o.shell, '-c', 'zoxide query -sl' } }<CR>]], opts) -- zoxide
 
-map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)
+map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
 --map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)
 
 -- buffer navigation

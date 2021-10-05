@@ -1,12 +1,15 @@
 ## Git aliases
 # gitlab checkout MR: git mr branch number
-# github checkout PR: TODO
+# github checkout PR: git fetch remote_name pull/ID/head:BRANCHNAME
 
 #restore specific file
 #git restore --source=COMMITHASH filename
 #git restore -s=COMMITHASH filename
 #root directory of current git repo
 #git rev-parse --show-toplevel
+
+#show specific file on revision/commit
+#git show REVISION:path/to/file
 
 alias grst='git restore'
 alias g='git'

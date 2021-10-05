@@ -81,16 +81,14 @@ PATH=$PATH:"${HOME}/.cargo/bin"
 PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
+PATH=$PATH:"${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-native/bin" # zig build + crosscompile
 PATH=$PATH:"${HOME}/.luarocks/bin"
 PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 
+#PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
 #testing www.ziglang.org
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
 #PATH=$PATH:"${HOME}"/src/hugo
-
-# tab multiplexer configuration: https://github.com/austinjones/tab-rs/
-# source /home/misterspoon/.tab/completion/tab.bash
 
 # there is no very reliable and simple other way to have ssh agent running
 eval "$(ssh-agent -s)"

@@ -10,7 +10,12 @@ local function load_options()
     mapleader = " ";
     material_style = "lighter"; -- default, darker, lighter, oceanic, deep ocean, palenight
     material_lighter_contrast = false;
+    coq_settings = { auto_start = true; };
     --doge_mapping = "<leader>d"; --TODO get doge to work
+    --netrw_browse_split = 0
+    --netrw_banner = 0
+    --netrw_winsize = 25
+    --netrw_localrmdir = 'rm -r'
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v);
@@ -40,6 +45,8 @@ local function load_options()
   vim.o.undodir           = os.getenv("HOME") .. '/.config/nvim/undodir'; --undotree
   vim.o.undofile          = true;
   vim.o.updatetime        = 50;
+  vim.o.wildmode          = 'longest,list,full'; -- proper shell behavior
+  --vim.o.wildmode          = 'longest:full';      -- bash behavior
 
   vim.wo.colorcolumn       = '80';
   vim.wo.list              = true;
@@ -56,6 +63,7 @@ local function load_options()
   vim.bo.expandtab        = true; --use space character on pressing Tab key
   vim.bo.shiftwidth       = 2; --visual mode >,<-key: number of spaces for indendation
   vim.bo.tabstop          = 2; --Tab key: number of spaces for indendation
+  -- tabstop/expandtab breaks inconsistently for c++ and lua
 end
 
 load_options()
