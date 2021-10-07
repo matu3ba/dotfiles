@@ -5,11 +5,15 @@ require('_opts')
 require('_lsp')
 require('_telesc')
 --require('_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
---require('_dap')
+--require('_dap') -- TODO setup one small step for vimkind
 require('_keymaps')
 vim.cmd[[colorscheme material]]
 --require'colorizer'.setup()
 
+-- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
+--vim.fn.getpos
+-- vim.fn.expand('%:p:h')
+-- vim.fn.expand('%:p:~:.:h') vim.fn.fnamemodify
 Clangfmt = function()
 -- looking upwards paths for a .clang-format, ideal solution would try to use root git folder
 vim.api.nvim_command([[
@@ -120,11 +124,6 @@ endif
 -- TODO: keep track of setup scripts to install stuff (nix is long-term goal)
 -- unfortunately does nix have bad error messages how to fix stuff (requires alot domain knowledge)
 -- plenary.nvim => reload.lua
-vim.g["nnn#action"] = {
-  ["<C-t>"] = "tab split"; -- can be commas aswell but
-  ["<C-x>"] = "split";     -- prefer semicolons for dictionaries
-  ["<C-v>"] = "vsplit";
-}
 
 -- Search for visually selected text (no multiline)
 --vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>

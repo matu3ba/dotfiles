@@ -16,22 +16,24 @@ map('', '<left>',  '<nop>', opts)
 map('', '<down>',  '<nop>', opts)
 map('', '<up>',    '<nop>', opts)
 map('', '<right>', '<nop>', opts)
+-- glorious copypasta --
+map('v', '<leader>p', '"_dP', opts) -- keep pasting over the same thing
+map('n', '<leader>y', '"+y', opts)
+map('v', '<leader>y', '"+y', opts)
+map('n', '<leader>Y', 'gg"+yG', opts)
+-- color switching --
+map('n', '<leader>m', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
+-- spell --
+map('n', '<leader>sp', [[<cmd>lua if vim.wo.spell == false then vim.wo.spell = true; else vim.wo.spell = false; end<CR>]], opts)
 -- tab navigation --
 map('n', '<C-w>t',    '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 map('n', '<C-w><C-q>','<cmd>tabclose<CR>', opts)
 -- session navigation <A-1> etc for switch session
 -- how can I list sessions?
 -- window navigation: combination <C-w> is too common to delete, ie <C-w>s/v for split and <C-w>r for swap
--- spell --
-map('n', '<leader>sp', [[<cmd>lua if vim.wo.spell == false then vim.wo.spell = true; else vim.wo.spell = false; end<CR>]], opts)
--- copypasta --
-map('v', '<leader>p', '"_dP', opts) -- keep pasting over the same thing
-map('n', '<leader>y', '"+y', opts)
-map('v', '<leader>y', '"+y', opts)
-map('n', '<leader>Y', 'gg"+yG', opts)
 --map('n', '<leader>c', ':nohl<CR>', opts) -- clear search highlighting --conflicts with which-key
 
--- dap debugger --
+---- dap debugger ----
 map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
 map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
 map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
@@ -51,25 +53,13 @@ map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], o
 -- visual dap --
 --map('n', <leader>di, [[<cmd>lua require'dap.ui.widgets'.hover()<CR>]], opts)
 --map('n', <leader>d?, [[<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>]], opts)
---Plug 'nvim-telescope/telescope-dap.nvim'
---lua << EOF
---require('telescope').setup()
---require('telescope').load_extension('dap')
---EOF
 --nnoremap <leader>df :Telescope dap frames<CR>
 --nnoremap <leader>dc :Telescope dap commands<CR>
 --nnoremap <leader>db :Telescope dap list_breakpoints<CR>
---theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
---let g:dap_virtual_text = v:true
---Plug 'rcarriga/nvim-dap-ui'
---lua require("dapui").setup()
---nnoremap <leader>dq :lua require("dapui").toggle()<CR>
 
--- color switching --
-map('n', '<leader>m', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
--- lspconfig --
+---- lspconfig ----
 map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts)           -- switch header_source
---  switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+-- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
 map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)           -- **g**oto definition
 --map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
@@ -83,21 +73,13 @@ map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>'
 map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts)   -- references
 map('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)     -- next error
 map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)     -- previous error
--- impl
 --map('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
 --map('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
 --map('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 --map('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 --map('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
--- trouble  -- redundant to telescope
---map("n", "<leader>xx", "<cmd>LspTroubleToggle<cr>", opts)
---map("n", "<leader>xw", "<cmd>LspTroubleToggle lsp_workspace_diagnostics<cr>", opts)
---map("n", "<leader>xd", "<cmd>LspTroubleToggle lsp_document_diagnostics<cr>", opts)
---map("n", "<leader>xl", "<cmd>LspTroubleToggle loclist<cr>", opts)
---map("n", "<leader>xq", "<cmd>LspTroubleToggle quickfix<cr>", opts)
---map("n", "<leader>xr", "<cmd>LspTrouble lsp_references<cr>", opts)
--- telescope -- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match
+---- telescope ---- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match
 map('n', '<leader>tb',   [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts)              -- buffers
 map('n', '<leader>ts',   [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- document symbols
 map('n', '<leader>tS',   [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
@@ -108,12 +90,15 @@ map('n', '<leader>rg',  [[<cmd>lua require('telescope.builtin').grep_string { se
 map('n', '<leader>th',   [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts)                                      -- helptags
 map('n', '<leader>pr',   [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
 map('n', '<leader>z',   [[<cmd>lua require'telescope'.extensions.z.list{ cmd = { vim.o.shell, '-c', 'zoxide query -sl' } }<CR>]], opts) -- zoxide
+--lsp_workspace_diagnostics
+--lsp_document_diagnostics
+--loclist
+--quickfix
+--lsp_references
+--map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
+--map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)   -- run_script
 
-map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
---map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)
-
--- buffer navigation
--- harpoon
+---- harpoon ---- buffer navigation
 --nnoremap <leader>j :lua require("harpoon.ui").nav_file(1)<CR>
 --nnoremap <leader>k :lua require("harpoon.ui").nav_file(2)<CR>
 --nnoremap <leader>l :lua require("harpoon.ui").nav_file(3)<CR>
@@ -129,6 +114,9 @@ map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.
 --nnoremap <leader>mrk :lua require("harpoon.mark").rm_file(2)<CR>
 --nnoremap <leader>mrl :lua require("harpoon.mark").rm_file(3)<CR>
 --nnoremap <leader>mr; :lua require("harpoon.mark").rm_file(4)<CR>
--- nnn --
---TODO convert setup to lua
 
+---- nnn ----
+--tnoremap <leader>n <cmd>NnnExplorer<CR>
+--nnoremap <leader>n <cmd>NnnExplorer<CR>
+--tnoremap <leader>p <cmd>NnnPicker<CR>
+--nnoremap <leader>p <cmd>NnnPicker<CR>

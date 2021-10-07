@@ -48,9 +48,9 @@ local function load_options()
   vim.o.wildmode          = 'longest,list,full'; -- proper shell behavior
   --vim.o.wildmode          = 'longest:full';      -- bash behavior
 
-  vim.wo.colorcolumn       = '80';
-  vim.wo.list              = true;
-  vim.wo.listchars         = 'trail:‗,tab:⇥_,nbsp:␣'; --eol:↵,
+  vim.wo.colorcolumn      = '80';
+  vim.wo.list             = true;
+  vim.wo.listchars        = 'tab:⇨|,nbsp:␣,trail:‗,extends:>,precedes:<'; --eol:↵, tab:|⇆⇥_, tab:‗‗,
   vim.wo.number           = true;
   vim.wo.relativenumber   = true;
   vim.wo.signcolumn       = 'yes';
@@ -60,7 +60,8 @@ local function load_options()
   vim.bo.spelllang        = 'en,de'
   vim.bo.swapfile         = false;
 
-  vim.bo.expandtab        = true; --use space character on pressing Tab key
+  vim.bo.expandtab        = false; --use space character on pressing Tab key
+  -- vim.bo.expandtab        = true; --use space character on pressing Tab key
   vim.bo.shiftwidth       = 2; --visual mode >,<-key: number of spaces for indendation
   vim.bo.tabstop          = 2; --Tab key: number of spaces for indendation
   -- tabstop/expandtab breaks inconsistently for c++ and lua
