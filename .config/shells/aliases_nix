@@ -4,4 +4,13 @@
 #installing things: nix-env
 #flake.nix: nix develop
 
+#nix-env -iA nixpkgs.program
+#nix-channel --update; nix-env -iA nixpkgs.nix nixpkgs.cacert nixpkgs.
+#nix-env -iA nixUnstable
+#nix doctor #any problems with configuration
+#nix-channel --list | --update
+#nixpkgs.nixUnstable
 
+
+#reinstall nix!
+#and then?

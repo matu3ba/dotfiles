@@ -88,6 +88,7 @@ alias gke='gitk --all $(git log -g --pretty=%h)'
 alias glr='git pull --rebase'
 alias gp='git pull --no-rebase'
 alias glgs='git log -S' # git log search 'regex' -- file
+# --invert-grep
 
 alias glg='git log --stat'
 alias glgp='git log --stat -p'

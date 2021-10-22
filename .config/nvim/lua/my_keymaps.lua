@@ -1,4 +1,4 @@
-local opts = { noremap=true, silent=true }
+local opts = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
 -- TODO:
 --    , (poor taste without special keyboard) prefix for all window operation mappings (e.g. splits, tabs, switching, file drawer etc)
@@ -8,29 +8,56 @@ local map = vim.api.nvim_set_keymap
 --    ' is inefficient to use
 --    steal+adapt telescope keymappings:
 --    https://github.com/ThePrimeagen/.dotfiles/blob/master/nvim/.config/nvim/plugin/lsp.vim
+-- TODO try C-p for fuzzy finding files
 
 --map('n', ' ', '', opts)
 --map('x', ' ', '', opts)
 -- remove antipatterns --
-map('', '<left>',  '<nop>', opts)
-map('', '<down>',  '<nop>', opts)
-map('', '<up>',    '<nop>', opts)
+map('', '<left>', '<nop>', opts)
+map('', '<down>', '<nop>', opts)
+map('', '<up>', '<nop>', opts)
 map('', '<right>', '<nop>', opts)
 -- glorious copypasta --
-map('v', '<leader>p', '"_dP', opts) -- keep pasting over the same thing
+map('n', '<leader>P', [["_diwP]], opts) -- keep pasting over the same thing
+-- TODO come up with something to copy whole word under cursor
 map('n', '<leader>y', '"+y', opts)
 map('v', '<leader>y', '"+y', opts)
-map('n', '<leader>Y', 'gg"+yG', opts)
+map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
 -- color switching --
 map('n', '<leader>m', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
--- spell --
-map('n', '<leader>sp', [[<cmd>lua if vim.wo.spell == false then vim.wo.spell = true; else vim.wo.spell = false; end<CR>]], opts)
+-- spell -- [s]s,z=,zg add to wortbook, zw remove from wordbook
+map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
 -- tab navigation --
-map('n', '<C-w>t',    '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
-map('n', '<C-w><C-q>','<cmd>tabclose<CR>', opts)
+map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
+map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
+
+-- venn.nvim: enable or disable keymappings
+_G.Toggle_venn = function()
+  local venn_enabled = vim.inspect(vim.b.venn_enabled)
+  if venn_enabled == 'nil' then
+    vim.b.venn_enabled = true
+    vim.cmd [[setlocal ve=all]]
+    -- draw a line on HJKL keystokes
+    vim.api.nvim_buf_set_keymap(0, 'n', 'J', '<C-v>j:VBox<CR>', opts)
+    vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<C-v>k:VBox<CR>', opts)
+    vim.api.nvim_buf_set_keymap(0, 'n', 'L', '<C-v>l:VBox<CR>', opts)
+    vim.api.nvim_buf_set_keymap(0, 'n', 'H', '<C-v>h:VBox<CR>', opts)
+    -- draw a box by pressing "f" with visual selection
+    vim.api.nvim_buf_set_keymap(0, 'v', 'f', ':VBox<CR>', opts)
+  else
+    vim.cmd [[setlocal ve=]]
+    vim.cmd [[mapclear <buffer>]]
+    vim.b.venn_enabled = nil
+  end
+end
+vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
+
 -- session navigation <A-1> etc for switch session
 -- how can I list sessions?
--- window navigation: combination <C-w> is too common to delete, ie <C-w>s/v for split and <C-w>r for swap
+-- window navigation: <C-w>[+|-|<|>|_|"|"|=|s|v|r| height,width,height,width,equalise,split,swap
+-- view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
+-- vim-surround: TODO
+-- vim-easy-align :TODO
 --map('n', '<leader>c', ':nohl<CR>', opts) -- clear search highlighting --conflicts with which-key
 
 ---- dap debugger ----
@@ -58,38 +85,45 @@ map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], o
 --nnoremap <leader>db :Telescope dap list_breakpoints<CR>
 
 ---- lspconfig ----
-map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts)           -- switch header_source
+map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
 -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
-map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)           -- **g**oto definition
+map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts) -- **g**oto definition
 --map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
 map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)       -- **g**oto signature
+map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts) -- **g**oto signature
 -- no equivalent of lsp_finder
-map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)               -- **g**oto rename
-map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)                 -- Kimme_info
-map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)  -- code action
+map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts) -- **g**oto rename
+map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts) -- Kimme_info
+map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- code action
 map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts) -- line diagnostics
-map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts)   -- references
-map('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)     -- next error
-map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)     -- previous error
+map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts) -- references
+map('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts) -- next error
+map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts) -- previous error
 --map('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
 --map('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
 --map('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 --map('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 --map('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
+-- exploring code base with mouse TODO mouse mapping 1. to close and 2. to navigate
+--map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
+--map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
 ---- telescope ---- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match
-map('n', '<leader>tb',   [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts)              -- buffers
-map('n', '<leader>ts',   [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- document symbols
-map('n', '<leader>tS',   [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
-map('n', '<leader>ff',  [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts)            -- find files
-map('n', '<leader>gf',  [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts)             -- git files
+map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
+map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- document symbols
+map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
+map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
+map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
 --.grep_string({ search = vim.fn.input("Grep For > ")})
-map('n', '<leader>rg',  [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) -- ripgrep string
-map('n', '<leader>th',   [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts)                                      -- helptags
-map('n', '<leader>pr',   [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
-map('n', '<leader>z',   [[<cmd>lua require'telescope'.extensions.z.list{ cmd = { vim.o.shell, '-c', 'zoxide query -sl' } }<CR>]], opts) -- zoxide
+map(
+  'n',
+  '<leader>rg',
+  [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]],
+  opts
+) -- ripgrep string
+map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
+map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
+--map('n', '<leader>z', [[<cmd>lua require'telescope'.extensions.z.list{ cmd = { vim.o.shell, '-c', 'zoxide query -sl' } }<CR>]], opts) -- zoxide
 --lsp_workspace_diagnostics
 --lsp_document_diagnostics
 --loclist
@@ -116,7 +150,7 @@ map('n', '<leader>z',   [[<cmd>lua require'telescope'.extensions.z.list{ cmd = {
 --nnoremap <leader>mr; :lua require("harpoon.mark").rm_file(4)<CR>
 
 ---- nnn ----
---tnoremap <leader>n <cmd>NnnExplorer<CR>
---nnoremap <leader>n <cmd>NnnExplorer<CR>
---tnoremap <leader>p <cmd>NnnPicker<CR>
---nnoremap <leader>p <cmd>NnnPicker<CR>
+map('n', '<leader>n', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
+--map('t', '<leader>n',   [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
+map('n', '<leader>pi', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
+--map('t', '<leader>pi',   [[<cmd> NnnPicker<CR>]], opts) -- file exlorer

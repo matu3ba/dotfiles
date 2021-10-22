@@ -81,7 +81,7 @@ PATH=$PATH:"${HOME}/.cargo/bin"
 PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-PATH=$PATH:"${HOME}/dev/git/zig/zig-bootstrap/out/zig-x86_64-linux-gnu-native/bin" # zig build + crosscompile
+PATH=$PATH:"${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin" # zig crosscompile
 PATH=$PATH:"${HOME}/.luarocks/bin"
 PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 

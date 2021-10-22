@@ -1,0 +1,17 @@
+-- old Rust stuff
+--function! Cargoclippy()
+--  let l:cmd = "terminal watchexec -e rs 'cargo +nightly test --lib && bash tests/run_examples.sh && cargo +1.53.0 clippy --all-targets --all-features -- -D warnings &> clippy.log'" | tabnew | execute cmd
+--endfunction
+--function! CargocheckAll()
+--  let l:cmd = "terminal watchexec -e rs 'cargo +nightly test --lib && bash tests/run_examples.sh && cargo check --all-targets --all-features'" | tabnew | execute cmd
+--endfunction
+--function! Cargocheck()
+--  let l:cmd = "terminal watchexec -e rs 'cargo +nightly check'" | tabnew | execute cmd
+--endfunction
+--if expand('%:e') == 'rs'
+--  command! Cargoclippy :call Cargoclippy()
+--  command! Cargocheck :call Cargocheck()
+--  "export RUSTFLAGS="-Z macro-backtrace"
+--  "command! Cargofmt :tabnew \| !cargo +nightly fmt
+--  "command! Cargotest :tabnew \| !cargo +nightly test --lib && bash tests/run_examples.sh
+--endif
