@@ -8,8 +8,17 @@
 #root directory of current git repo
 #git rev-parse --show-toplevel
 
+#patch based work
+#git format-patch --stdout first_commit^..last_commit > changes.patch
+#git am -3 < changes.patch
+
 #show specific file on revision/commit
 #git show REVISION:path/to/file
+# TODO figure out how to make the following scriptable to find successor of 894e8b4e93d8f3
+#git log --reverse --ancestry-path 894e8b4e93d8f3^..master | tail -1
+#git rev-list --ancestry-path commit1..commit2 | tail -1
+
+# github referencing: y for current commit URL
 
 alias grst='git restore'
 alias g='git'
@@ -37,12 +46,14 @@ alias gbss='git bisect start'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gcom='git commit -v'
 alias gcmsg='git commit -m'
+# git diff > diff.patch, git apply diff.patch to apply it on a codebase
 alias gd='git diff'
 alias gds='git diff --shortstat'
 alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
+alias gcomf='git commit -v --fixup'
 
 alias gf='git fetch'
-alias gfo='git fetch downstream'
+alias gfd='git fetch downstream'
 alias gfu='git fetch upstream'
 alias gfrg='git ls-files | rg'
 
@@ -73,6 +84,7 @@ alias gsp='git status --porcelain'
 alias gcl='git clone'
 
 alias grbi='git rebase -i'
+alias grbisq='git rebase -i --autosquash'
 alias gsw='git switch'
 alias gs='test -n "$(git status --porcelain)" || echo safe'
 alias grbium='git rebase --interactive upstream/master'
@@ -88,7 +100,7 @@ alias gke='gitk --all $(git log -g --pretty=%h)'
 alias glr='git pull --rebase'
 alias gp='git pull --no-rebase'
 alias glgs='git log -S' # git log search 'regex' -- file
-# --invert-grep
+#git log --grep|--invert-grep
 
 alias glg='git log --stat'
 alias glgp='git log --stat -p'

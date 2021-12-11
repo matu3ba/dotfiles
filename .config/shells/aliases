@@ -22,7 +22,24 @@ alias readcommentsectionELF='readelf -p .comment'
 #usb-stick: ls /dev/disk/, fdisk /dev/sdX, p,d,n,t=>b,a(activate), mkfs -t vfat /dev/sdX1
 #hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)
 #uncompress/untar/unzip: gzip -dk file.gz, tar -xf archive.tar.xz, unzip archive.zip
+#compress/tar/zip: gzip -k files, tar -f? folder, zip folder
 #tmpfs: df -h /tmp
+#suspend in 5min: systemd-run --on-active="5m" suspend,  systemctl suspend
+#valgrind leakcheck:
+#gdb --tui, --ex run, set tui enable
+#gdb --args ./runTests --gtest_filter=Br* --gtest_break_on_failure
+#gdb: i b list breakpoints, l list LOC around, p print val
+#gdb: r (re)run, b [file]:LOC|function|*addr|+-offset,
+#gdb: d del breakpoint(s), dis disable breakpoint(s)
+#gdb: c continue, s single-step into, n single-step over,
+#gdb: q quit,
+#gdb: checkpoint (save snapshot), info checkpoints, restart checkid
+#gdb: delete checkpoint checkid,
+#
+#zellij TODO use space-w as prefix for actions
+
+# help
+# tldr, man -f page ie man 2 select,
 
 #VBoxManage modifyvm "VMname" --natpf1 "guestssh,tcp,,3022,,22" OR graphically on port forwarding without any IP
 alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
@@ -43,6 +60,7 @@ alias     aliases='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.confi
 alias      bashrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
 alias aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
 alias aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
+alias  aliases_oh='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_oh"'
 #alias      initrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/ion/initrc"'
 
 alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
@@ -54,6 +72,8 @@ alias      stylua='stylua --indent-type Spaces --quote-style AutoPreferSingle'
 #alias     luamake='${HOME}/.local/lua-language-server/3rd/luamake/luamake'
 alias      hbuild='git submodule update --init --recursive --depth 1 && git merge --ff-only origin/master && ${HOME}/dev/git/cpp/mold/mold -run cargo install --path helix-term'
 
+# Rust stuff
+# cargo metadata --format-version=1 | jq -r ".packages|map(.name)|.[]" | wc -l
 
 # build + languages
 alias mkcd='mkdir build && cd build'
@@ -66,14 +86,17 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 alias  arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
 alias  zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig cc'
 alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig c++'
+# GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig
+# curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
 # the following zb1 aliases dont work
 #alias    zb1='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/zig/zig-bootstrap/out/build-llvm-native-native && cmake .. -GNinja && ninja'
 #alias    zb2='./zig-out/bin/zig build --zig-lib-dir lib -Denable-llvm' # untested due to zb1 not working
-alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && ${HOME}/dev/git/cpp/mold/mold -run ninja'
-alias zb2='./build/zig build -Denable-llvm' #-Dskip-non-native
-#alias zb2new='zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm'
+#alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && time ${HOME}/dev/git/cpp/mold/mold -run ninja'
+#alias zb2='time ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm' #-Dskip-non-native
+alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
+alias zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
+alias zt2='./stage2/bin/zig build test'
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
-#alias zt2='./zig-out/bin/zig build test' # TODO test
 
 #alias    zb2='.build/zig build -Denable-llvm' #-Denable-llvm -Dskip-non-native
 #alias   zdev='${HOME}/dev/git/zig/zig/dev/zig'
@@ -111,7 +134,9 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # program aliases
 alias l='exa'
 alias du='dust'
-#rg -g !pattern to ignore patterns
+#rg -g !pattern to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
+#rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
+#rg --vimgrep lines+columns -u[u[u]] unrestricted
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

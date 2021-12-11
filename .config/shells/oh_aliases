@@ -1,0 +1,32 @@
+# aliases and usage notes
+
+
+# <    input-from
+# >    output-to
+# >&   output-errors-to
+# >&|  output-errors-clobbers
+# >>   append-output-to
+# >>&  append-output-errors-to
+# >|   output-clobbers
+# |    pipe-output-to
+# |&   pipe-output-errors-to
+# |<   named-pipe-input-from (unless in process substitution)
+# |>   named-pipe-output-to (unless in process substitution)
+
+# command substituation:  `(command`
+
+# here_docs
+# here "
+# blabla1
+# blabla2
+# blabla3
+# " | do stuff
+
+# define x 3
+# export GOROOT /usr/local/go
+# set x 4
+# '!', '%', '*', '+', '-', '?', '[', ']',  and '^'
+# ',', '.', '/', ':', '=', '@', and '~' result in a symbol of one characters
+# implicit concatenation => enclose variable names in braces
+
+

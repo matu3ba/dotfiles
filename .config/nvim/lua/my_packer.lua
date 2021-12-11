@@ -15,13 +15,16 @@ return require('packer').startup(function()
   use { 'ggandor/lightspeed.nvim' } --{s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
   use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<leader>n and :Np
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
+  use { 'ThePrimeagen/harpoon' } -- TODO insert instructions here
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
+  use { 'nvim-telescope/telescope-hop.nvim' } -- TODO list keybindings
   use { '~/dev/git/lua/telescope-project.nvim' } -- TODO finish workspaces
-  --use { 'nvim-telescope/telescope-github.nvim' } -- TODO setup for issues + cli commenting + cli pr review
+  use { 'nvim-telescope/telescope-github.nvim' } -- TODO list keybindings only for looking at issues + cli commenting + cli pr review
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
   --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- pretty printing requires codelldb (no luajit pretty printing)
+  --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
 
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <leader>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
@@ -33,24 +36,25 @@ return require('packer').startup(function()
 
   ---- languages ----
   -- Lua
-  use { 'bfredl/nvim-luadev' } --lua repl, TODO setup mappings for execution
-  use { 'jbyuki/one-small-step-for-vimkind', requires = { 'mfussenegger/nvim-dap' } } -- lua debugging runtime, TODO setup
+  --use { 'bfredl/nvim-luadev' } --lua repl, TODO setup mappings for execution
+  --use { 'jbyuki/one-small-step-for-vimkind', requires = { 'mfussenegger/nvim-dap' } } -- lua debugging runtime, TODO setup
   --<Plug>(Luadev-RunLine)  Execute the current line
   --<Plug>(Luadev-Run)      Operator to execute lua code over a movement or text object.
   --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
   --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
   -- Zig
-  use { 'ziglang/zig.vim' }
   --use { 'rust-tools.nvim' }
   -- Organization stuff
   use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
   --use { 'vim-table' }
 
   ---- VIM ----
-  --use { 'mbbill/undotree' } -- <leader>u, rarely used
-  --use { 'vim-surround' } -- TODO
+  use { 'mbbill/undotree' } -- :UndotreeToggle <leader>u, rarely used
+  use { 'tpope/vim-surround' } -- ds|cs|ys, selection?
+  use { 'tpope/vim-repeat' } -- repeating with .
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings
   --use { 'junegunn/gv.vim' } -- alternative?
+  use { 'ziglang/zig.vim' }
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
 
   --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
