@@ -50,11 +50,13 @@ return require('packer').startup(function()
 
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <leader>u, rarely used
-  use { 'tpope/vim-surround' } -- ds|cs|ys, selection?
+  --use { 'tpope/vim-surround' } -- ds|cs|ys,yS etc is conflicting
   use { 'tpope/vim-repeat' } -- repeating with .
+  use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings
   --use { 'junegunn/gv.vim' } -- alternative?
   use { 'ziglang/zig.vim' }
+  use { 'bohlender/vim-smt2' }
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
 
   --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead

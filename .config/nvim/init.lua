@@ -141,8 +141,9 @@ _G.ReplpdeAll = function()
   vim.cmd(cmd)
 end
 _G.ReplpdeTest = function()
+  -- "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests'"
   local cmd =
-    "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests'"
+    "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./test_pde'"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
 end
@@ -198,9 +199,6 @@ vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 -- plenary.nvim => reload.lua
 -- require('init.lua') for recursively loading all files
 
--- Search for visually selected text (no multiline)
---vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
-
 -- Snippets
 -- std::cout << "type: " << typeid(eout).name() << "\n";
 --
@@ -222,3 +220,11 @@ vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp.close()                                      --DEBUG
+
+
+-- std::cout << "dbg1\n"; // DEBUG
+-- search with /.*DEBUG$
+-- delete with :g/.*DEBUG$/del
+
+-- ./runTests --gtest_filter='minimalz3.*'
+-- gdb --ex run --args ./test_pde --gtest_filter='Nestout.*' --gtest_break_on_failure

@@ -83,9 +83,10 @@ alias ccompilejsondebugsymbols='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_
 alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 
-alias  arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
-alias  zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig cc'
-alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig c++'
+alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
+alias      zc='${HOME}/.local/zig/zig'
+#alias  zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig cc'
+#alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig c++'
 # GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig
 # curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
 # the following zb1 aliases dont work
@@ -93,9 +94,10 @@ alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig c+
 #alias    zb2='./zig-out/bin/zig build --zig-lib-dir lib -Denable-llvm' # untested due to zb1 not working
 #alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && time ${HOME}/dev/git/cpp/mold/mold -run ninja'
 #alias zb2='time ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm' #-Dskip-non-native
-alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
-alias zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
-alias zt2='./stage2/bin/zig build test'
+alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
+alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
+alias  zt2='./stage2/bin/zig build test'
+alias zig2='$HOME/dev/git/zig/zig/stage2/bin/zig'
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
 
 #alias    zb2='.build/zig build -Denable-llvm' #-Denable-llvm -Dskip-non-native

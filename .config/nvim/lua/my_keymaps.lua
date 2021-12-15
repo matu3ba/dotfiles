@@ -1,5 +1,8 @@
 local opts = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
+-- tabs to space :%s/^\t\+/ /g
+-- space to tabs :%s/^\s\+/\t/g
+-- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
 -- TODO:
 --        , prefix for all window operation mappings (e.g. splits, tabs, switching, file drawer etc)
 --        <Space> prefix for fuzzy finding mappings (e.g. files, buffers, helptags etc)
@@ -9,7 +12,12 @@ local map = vim.api.nvim_set_keymap
 --   Ctrl-s shell stuff
 --    steal+adapt telescope keymappings:
 --    https://github.com/ThePrimeagen/.dotfiles/blob/master/nvim/.config/nvim/plugin/lsp.vim
--- TODO try C-p for fuzzy finding files
+-- TODO use C-k for killing search?
+-- TODO use C-p for selecting project, ie via zoxide history
+-- C-, C-. => weird keybindings. Maybe use for replace repeat, forward search?
+-- C-n: [count] lines downward |linewise|.
+-- C-m: [count] lines downward, on the first non-blank character |linewise|
+--
 -- TODO :helpgrep|Telescope help_tags and map quickfixlist cnext and cprev + getting through search history
 -- C-n, C-p next,previous line, C-m newline beginning
 -- C-i, C-o next previous cursor position list
@@ -24,14 +32,15 @@ map('', '<down>', '<nop>', opts)
 map('', '<up>', '<nop>', opts)
 map('', '<right>', '<nop>', opts)
 -- glorious copypasta --
--- TODO search without jumping and copy word under cursor to default register
+-- TODO search without jumping and copy connected word under cursor
+-- (a.b.c and a-b-c without brackets and emptyspace) to default register
 -- for pre+postfixing
 --map <A-v> viw"+gPb
 --map <A-c> viw"+y
 --map <A-x> viw"+x
 -- leader + 1 letter: common text operation
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
--- TODO come up with something to copy whole word under cursor
+-- TODO come up with something to copy whole word under cursor, ie this.is.a.word(thisnot)
 map('n', 'K', 'i<CR><ESC>', opts)
 map('n', '<leader>y', '"+y', opts)
 map('v', '<leader>y', '"+y', opts)
@@ -99,6 +108,15 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 -- :g for actions on regex match
 -- K for move text to next line
 
+-- insertion mode
+-- C-r insert from register, TODO stuff to run commands in between
+-- navigation from within insertion mode
+
+-- cmdline
+-- C-z trigger wildmode, C-] abbreviations
+-- C-d|n|p|a|l manual completions TODO explain
+-- :his, C-g|C-t search
+
 ---- dap debugger ----
 map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
 map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
@@ -130,11 +148,13 @@ map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts) -- **g**oto defini
 map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
 map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts) -- **g**oto signature
 map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts) -- **g**oto rename
-map('n', '[e', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts) -- next error
-map('n', ']e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts) -- previous error
+map('n', '[e', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts) -- next error
+map('n', ']e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts) -- previous error
 map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- code action
 map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts) -- line diagnostics
 map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts) -- references
+map('n', '<leader>ql', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts) -- references
+map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- references
 --map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts) -- Kimme_info
 --map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
 --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
@@ -147,6 +167,7 @@ map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts) -- referen
 --map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
 ---- telescope ---- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
+-- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
 map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
@@ -172,55 +193,37 @@ map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{
 --map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)   -- run_script
 
 ---- harpoon ---- buffer navigation
---nnoremap    <leader>m   <cmd>lua require("harpoon.mark").add_file()<cr>
---nnoremap    <leader>'   <cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>
---nnoremap    'a          <cmd>lua require("harpoon.ui").nav_file(1)<cr>
---nnoremap    's          <cmd>lua require("harpoon.ui").nav_file(2)<cr>
---nnoremap    'd          <cmd>lua require("harpoon.ui").nav_file(3)<cr>
---nnoremap    'f          <cmd>lua require("harpoon.ui").nav_file(4)<cr>
---nnoremap <silent> t1 :lua require("harpoon.term").gotoTerminal(1)<CR>
---
---" Harpoon mappings
---nnoremap <silent> <C-h> :lua require("harpoon.mark").add_file()<CR>
---nnoremap <silent> <leader>1 :lua require("harpoon.ui").nav_file(1)<CR>
---nnoremap <silent> <leader>2 :lua require("harpoon.ui").nav_file(2)<CR>
---nnoremap <silent> <leader>3 :lua require("harpoon.ui").nav_file(3)<CR>
---nnoremap <silent> <leader>4 :lua require("harpoon.ui").nav_file(4)<CR>
---nnoremap <silent> <leader>, :lua require("harpoon.ui").toggle_quick_menu()<CR>
---nnoremap <silent> t1 :lua require("harpoon.term").gotoTerminal(1)<CR>
---nnoremap <silent> t2 :lua require("harpoon.term").gotoTerminal(2)<CR>
---nnoremap <silent> t3 :lua require("harpoon.term").gotoTerminal(3)<CR>
---nnoremap <silent> t4 :lua require("harpoon.term").gotoTerminal(4)<CR>
----- Harpoon
---map('n', '<leader>a',  '<cmd> lua require("harpoon.mark").add_file()<CR>', opts)
---map('n', '<leader>q',  '<cmd> lua require("harpoon.ui").toggle_quick_menu()<CR>', opts)
---map('n', '<leader>t1', '<cmd> equire("harpoon.term").gotoTerminal(1)<CR>', opts)
---map('n', '<leader>t2', '<cmd> equire("harpoon.term").gotoTerminal(2)<CR>', opts)
---map('n', '<leader>t3', '<cmd> equire("harpoon.term").gotoTerminal(3)<CR>', opts)
---map('n', '<leader>t4', '<cmd> require("harpoon.term").gotoTerminal(4)<CR>', opts)
---map('n', '<leader>f1', '<cmd> lua require("harpoon.ui").nav_file(1)<CR>', {noremap = true, silent = true})
---map('n', '<leader>f2', '<cmd> lua require("harpoon.ui").nav_file(2)<CR>', {noremap = true, silent = true})
---map('n', '<leader>f3', '<cmd> lua require("harpoon.ui").nav_file(3)<CR>', {noremap = true, silent = true})
---map('n', '<leader>f4', '<cmd> lua require("harpoon.ui").nav_file(4)<CR>', {noremap = true, silent = true})
-
-map('n', '<leader>j',   [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts)
+-- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140
+map('n', '<leader>j',   [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- bare means fast navigate
 map('n', '<leader>k',   [[<cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
 map('n', '<leader>l',   [[<cmd>lua require("harpoon.ui").nav_file(3)<CR>]], opts)
-map('n', '<leader>mm',  [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts)
-map('n', '<leader>mc',  [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts)
-map('n', '<leader>mj',  [[<cmd>lua require("harpoon.mark").set_current_at(1)<CR>]], opts)
+map('n', '<leader>u',   [[<cmd>lua require("harpoon.ui").nav_file(4)<CR>]], opts)
+map('n', '<leader>i',   [[<cmd>lua require("harpoon.ui").nav_file(5)<CR>]], opts)
+map('n', '<leader>o',   [[<cmd>lua require("harpoon.ui").nav_file(6)<CR>]], opts)
+map('n', '<leader>mj',  [[<cmd>lua require("harpoon.mark").set_current_at(1)<CR>]], opts) --m means make to 1
 map('n', '<leader>mk',  [[<cmd>lua require("harpoon.mark").set_current_at(2)<CR>]], opts)
 map('n', '<leader>ml',  [[<cmd>lua require("harpoon.mark").set_current_at(3)<CR>]], opts)
-map('n', '<leader>mv',  [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts)
-map('n', '<leader>mrj', [[<cmd>lua require("harpoon.mark").rm_file(1)<CR>]], opts)
+map('n', '<leader>mu',  [[<cmd>lua require("harpoon.mark").set_current_at(4)<CR>]], opts)
+map('n', '<leader>mi',  [[<cmd>lua require("harpoon.mark").set_current_at(5)<CR>]], opts)
+map('n', '<leader>mo',  [[<cmd>lua require("harpoon.mark").set_current_at(6)<CR>]], opts)
+map('n', '<leader>mrj', [[<cmd>lua require("harpoon.mark").rm_file(1)<CR>]], opts) -- mrj for removing first file
 map('n', '<leader>mrk', [[<cmd>lua require("harpoon.mark").rm_file(2)<CR>]], opts)
 map('n', '<leader>mrl', [[<cmd>lua require("harpoon.mark").rm_file(3)<CR>]], opts)
-map('n', '<leader>cj',  [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts)
+map('n', '<leader>cj',  [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means terminal
 map('n', '<leader>ck',  [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
 map('n', '<leader>cl',  [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
+map('n', '<leader>mv',  [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
+map('n', '<leader>mm',  [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
+map('n', '<leader>mc',  [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
 
 ---- nnn ----
 map('n', '<leader>n', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
 --map('t', '<leader>n',   [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
 map('n', '<leader>pi', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
 --map('t', '<leader>pi',   [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
+
+---- gtest ----
+map('n', ']t', [[<cmd>GTestNext<CR>]], opts)
+map('n', '[t', [[<cmd>GTestPrev<CR>]], opts)
+--map('t', '<leader>tu', [[<cmd>GTestRunUnderCursor<CR>]], opts) -- lightspeed breaks this binding
+--map('n', '<leader>tt', [[<cmd>GTestRun<CR>]], opts) -- lightspeed breaks this binding
