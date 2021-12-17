@@ -98,7 +98,10 @@ alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/ho
 alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
 alias  zt2='./stage2/bin/zig build test'
 alias zig2='$HOME/dev/git/zig/zig/stage2/bin/zig'
+#./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
+#/zig-out/bin/zig test ../test/behavior.zig -I ../test -fLLVM
+#/zig-out/bin/zig test ../test/behavior.zig -I ../test -ofmt=c
 
 #alias    zb2='.build/zig build -Denable-llvm' #-Denable-llvm -Dskip-non-native
 #alias   zdev='${HOME}/dev/git/zig/zig/dev/zig'

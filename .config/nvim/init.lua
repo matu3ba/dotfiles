@@ -1,5 +1,7 @@
 -- init.lua --
 -- TODO: make a table from files for later reloading the options and bindings on demand with plenary
+--loading_table = ";../?.lua"
+--require(loading_table)
 require 'my_globals'
 require 'my_packer'
 require 'my_opts'
@@ -85,20 +87,20 @@ command! Bda :bufdo :bdelete
 --  do i need to start the timer?
 --end
 --  only 1 instance is annoying --unique
-_G.Pid_okular = nil;
+_G.Pid_okular = nil
 _G.Pdfmainstart = function()
-  local this_tex_file = vim.fn.expand('%:p')
-  local line_number = vim.fn.line('.')
-  local okularcmd = 'okular --noraise "' .. "build/main.pdf" .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
+  local this_tex_file = vim.fn.expand '%:p'
+  local line_number = vim.fn.line '.'
+  local okularcmd = 'okular --noraise "' .. 'build/main.pdf' .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
   _G.Pid_okular = vim.fn.jobstart(okularcmd)
   if _G.Pid_okular <= 0 then
-  print("_G.Pid_okular: could not launch okular");
+    print '_G.Pid_okular: could not launch okular'
   end
 end
 _G.Pdfmainstop = function()
   if _G.Pid_okular ~= nil and _G.Pid_okular > 0 then
-    _ = vim.fn.jobstop(_G.Pid_okular);
-    _G.Pid_okular = nil;
+    _ = vim.fn.jobstop(_G.Pid_okular)
+    _G.Pid_okular = nil
   end
 end
 _G.Pdffigure = function()
@@ -220,7 +222,6 @@ vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp.close()                                      --DEBUG
-
 
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$

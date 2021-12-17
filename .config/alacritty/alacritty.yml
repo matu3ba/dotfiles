@@ -96,3 +96,11 @@ selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
   # When set to `true`, selected text will be copied to the primary clipboard.
   save_to_clipboard: true
+    #key_bindings:
+    #  - { key: N, mods: Control|Shift, action: CreateNewWindow }
+    #live_config_reload: true
+    #mouse:
+    #  hide_when_typing: true
+    #key_bindings:
+    #  - { key: N, mods: Control|Shift, action: CreateNewWindow }
+    #  - { key: Return, mods: Super, action: ToggleFullScreen }

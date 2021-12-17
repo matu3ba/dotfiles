@@ -1,4 +1,5 @@
 LICENSE
+Filenamesunsafe
 POSIXunsafe
 README.md
 checkHealth.sh
@@ -10,3 +11,4 @@ symlinkInstall.sh
 symlinkUninstall.sh
 
 .git
+templates

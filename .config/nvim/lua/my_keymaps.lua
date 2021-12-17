@@ -55,8 +55,6 @@ map('n', '<leader>P', [["_diwP]], opts) -- keep pasting over the same thing
 --vim.api.nvim_set_keymap('n', "<leader>'", "vi'pgvy", { noremap = true })
 --vim.api.nvim_set_keymap('n', "<leader>)", "vi)pgvy", { noremap = true })
 
-
-
 -- color switching --
 map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
 -- spell -- [s]s,z=,zg add to wortbook, zw remove from wordbook
@@ -194,27 +192,27 @@ map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{
 
 ---- harpoon ---- buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140
-map('n', '<leader>j',   [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- bare means fast navigate
-map('n', '<leader>k',   [[<cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
-map('n', '<leader>l',   [[<cmd>lua require("harpoon.ui").nav_file(3)<CR>]], opts)
-map('n', '<leader>u',   [[<cmd>lua require("harpoon.ui").nav_file(4)<CR>]], opts)
-map('n', '<leader>i',   [[<cmd>lua require("harpoon.ui").nav_file(5)<CR>]], opts)
-map('n', '<leader>o',   [[<cmd>lua require("harpoon.ui").nav_file(6)<CR>]], opts)
-map('n', '<leader>mj',  [[<cmd>lua require("harpoon.mark").set_current_at(1)<CR>]], opts) --m means make to 1
-map('n', '<leader>mk',  [[<cmd>lua require("harpoon.mark").set_current_at(2)<CR>]], opts)
-map('n', '<leader>ml',  [[<cmd>lua require("harpoon.mark").set_current_at(3)<CR>]], opts)
-map('n', '<leader>mu',  [[<cmd>lua require("harpoon.mark").set_current_at(4)<CR>]], opts)
-map('n', '<leader>mi',  [[<cmd>lua require("harpoon.mark").set_current_at(5)<CR>]], opts)
-map('n', '<leader>mo',  [[<cmd>lua require("harpoon.mark").set_current_at(6)<CR>]], opts)
+map('n', '<leader>j', [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- bare means fast navigate
+map('n', '<leader>k', [[<cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
+map('n', '<leader>l', [[<cmd>lua require("harpoon.ui").nav_file(3)<CR>]], opts)
+map('n', '<leader>u', [[<cmd>lua require("harpoon.ui").nav_file(4)<CR>]], opts)
+map('n', '<leader>i', [[<cmd>lua require("harpoon.ui").nav_file(5)<CR>]], opts)
+map('n', '<leader>o', [[<cmd>lua require("harpoon.ui").nav_file(6)<CR>]], opts)
+map('n', '<leader>mj', [[<cmd>lua require("harpoon.mark").set_current_at(1)<CR>]], opts) --m means make to 1
+map('n', '<leader>mk', [[<cmd>lua require("harpoon.mark").set_current_at(2)<CR>]], opts)
+map('n', '<leader>ml', [[<cmd>lua require("harpoon.mark").set_current_at(3)<CR>]], opts)
+map('n', '<leader>mu', [[<cmd>lua require("harpoon.mark").set_current_at(4)<CR>]], opts)
+map('n', '<leader>mi', [[<cmd>lua require("harpoon.mark").set_current_at(5)<CR>]], opts)
+map('n', '<leader>mo', [[<cmd>lua require("harpoon.mark").set_current_at(6)<CR>]], opts)
 map('n', '<leader>mrj', [[<cmd>lua require("harpoon.mark").rm_file(1)<CR>]], opts) -- mrj for removing first file
 map('n', '<leader>mrk', [[<cmd>lua require("harpoon.mark").rm_file(2)<CR>]], opts)
 map('n', '<leader>mrl', [[<cmd>lua require("harpoon.mark").rm_file(3)<CR>]], opts)
-map('n', '<leader>cj',  [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means terminal
-map('n', '<leader>ck',  [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
-map('n', '<leader>cl',  [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
-map('n', '<leader>mv',  [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
-map('n', '<leader>mm',  [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
-map('n', '<leader>mc',  [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
+map('n', '<leader>cj', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means terminal
+map('n', '<leader>ck', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
+map('n', '<leader>cl', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
+map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
+map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
+map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
 
 ---- nnn ----
 map('n', '<leader>n', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer

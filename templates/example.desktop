@@ -1,0 +1,23 @@
+Place the following into
+/usr/share/applications/ for global user access
+${HOME}/.local/share/applications/ for local user access
+
+# manually created
+[Desktop Entry]
+Name=yEd Graph Editor
+Comment=yEd Graph Editor
+Exec=/opt/yed-3.18.2/yedcutor.sh
+Icon=/opt/yed-3.18.2/icons/yicon16.png
+Terminal=false
+Type=Application
+
+Further notes:
+# converted by firecfg
+[Desktop Entry]: Identifier
+Type may be Application, Link or Directory
+GenericName may be present, ie "Web Browser".
+Comment may be present.
+Terminal(required): Program runs in a terminal window?
+Exec defines Program to execute (with arguments)
+TryExec defines where program may be. Entry may be ignored on absence of file.
+
