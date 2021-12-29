@@ -12,7 +12,6 @@ local map = vim.api.nvim_set_keymap
 --   Ctrl-s shell stuff
 --    steal+adapt telescope keymappings:
 --    https://github.com/ThePrimeagen/.dotfiles/blob/master/nvim/.config/nvim/plugin/lsp.vim
--- TODO use C-k for killing search?
 -- TODO use C-p for selecting project, ie via zoxide history
 -- C-, C-. => weird keybindings. Maybe use for replace repeat, forward search?
 -- C-n: [count] lines downward |linewise|.
@@ -32,16 +31,22 @@ map('', '<down>', '<nop>', opts)
 map('', '<up>', '<nop>', opts)
 map('', '<right>', '<nop>', opts)
 -- glorious copypasta --
+-- make it yourself in lua
 -- TODO search without jumping and copy connected word under cursor
--- (a.b.c and a-b-c without brackets and emptyspace) to default register
--- for pre+postfixing
+-- (a.b.c and a-b-c without brackets and emptyspace) to default register for pre+postfixing
+-- TODO come up with something to copy whole word under cursor, ie this.is.a.word(thisnot)
+-- TODO copy paste until closing " or " or bracket with 1 keypress (1 binding forward, 1 backwards)
+-- make vimscript or lua function to match corresponding characters.
+-- TODO |copy_history:| marked, keypress to search for exact occurence \<copy_history:\>
+-- TODO list used function scopes of variable under cursor
 --map <A-v> viw"+gPb
 --map <A-c> viw"+y
 --map <A-x> viw"+x
 -- leader + 1 letter: common text operation
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
--- TODO come up with something to copy whole word under cursor, ie this.is.a.word(thisnot)
-map('n', 'K', 'i<CR><ESC>', opts)
+map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
+map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
+map('n', 'K', 'i<CR><ESC>', opts) -- move text after cursor to next line (opposite of J join)
 map('n', '<leader>y', '"+y', opts)
 map('v', '<leader>y', '"+y', opts)
 map('v', '<leader>dd', '"_dd', opts)
@@ -93,8 +98,10 @@ _G.Toggle_venn = function()
 end
 vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 
--- session navigation <A-1> etc for switch session
--- how can I list sessions?
+-- visual mode hidden
+-- continue (aborted) search: A-n
+
+-- visual mode regular
 -- window navigation: <C-w>[+|-|<|>|_|"|"|=|s|v|r| height,width,height,width,equalise,split,swap
 -- view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
 -- vim-surround: TODO
@@ -104,34 +111,41 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 -- :set lazyredraw => skip until commands are finished
 -- g; and g, for cursor editing position history, ''|`` for cursor position history
 -- :g for actions on regex match
+-- regex matches: \r for newline and \n for null character, except in search lol
 -- K for move text to next line
 
 -- insertion mode
--- C-r insert from register, TODO stuff to run commands in between
--- navigation from within insertion mode
+-- C-w delete last word, C-u delete until start of line
+-- C-o execute 1 command and continue in sertion mode
+-- C-h switch back to normal mode(side effect from coq_nvim, C-r insert from register,
+-- TODO stuff to run commands in between writing
+-- TODO navigation from within insertion mode
 
 -- cmdline
 -- C-z trigger wildmode, C-] abbreviations
 -- C-d|n|p|a|l manual completions TODO explain
 -- :his, C-g|C-t search
 
+-- selection mode
+-- word selected + K => search manual entry
+
 ---- dap debugger ----
-map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
-map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
-map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
-map('n', '<A-j>', [[<cmd>lua require'dap'.step_over()<CR>]], opts)
-map('n', '<leader>ds', [[<cmd>lua require'dap'.stop()<CR>]], opts)
-map('n', '<leader>dc', [[<cmd>lua require'dap'.continue()<CR>]], opts)
-map('n', '<leader>dk', [[<cmd>lua require'dap'.up()<CR>]], opts)
-map('n', '<leader>dj', [[<cmd>lua require'dap'.down()<CR>]], opts)
-map('n', '<leader>d_', [[<cmd>lua require'dap'.run_last()<CR>]], opts)
-map('n', '<leader>dr', [[<cmd>lua require'dap'.repl.open({}, 'vsplit')<CR><C-w>l]], opts)
-map('n', '<leader>di', [[<cmd>lua require'dap.ui.variables'.hover()<CR>]], opts)
-map('n', '<leader>dvi', [[<cmd>lua require'dap.ui.variables'.visual_hover()<CR>]], opts)
-map('n', '<leader>d?', [[<cmd>lua require'dap.ui.variables'.scopes()<CR>]], opts)
-map('n', '<leader>de', [[<cmd>lua require'dap'.set_exception_breakpoints({"all"})<CR>]], opts)
-map('n', '<leader>da', [[<cmd>lua require'debugHelper'.attach()<CR>]], opts)
-map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], opts)
+--map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
+--map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
+--map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
+--map('n', '<A-j>', [[<cmd>lua require'dap'.step_over()<CR>]], opts)
+--map('n', '<leader>ds', [[<cmd>lua require'dap'.stop()<CR>]], opts)
+--map('n', '<leader>dc', [[<cmd>lua require'dap'.continue()<CR>]], opts)
+--map('n', '<leader>dk', [[<cmd>lua require'dap'.up()<CR>]], opts)
+--map('n', '<leader>dj', [[<cmd>lua require'dap'.down()<CR>]], opts)
+--map('n', '<leader>d_', [[<cmd>lua require'dap'.run_last()<CR>]], opts)
+--map('n', '<leader>dr', [[<cmd>lua require'dap'.repl.open({}, 'vsplit')<CR><C-w>l]], opts)
+--map('n', '<leader>di', [[<cmd>lua require'dap.ui.variables'.hover()<CR>]], opts)
+--map('n', '<leader>dvi', [[<cmd>lua require'dap.ui.variables'.visual_hover()<CR>]], opts)
+--map('n', '<leader>d?', [[<cmd>lua require'dap.ui.variables'.scopes()<CR>]], opts)
+--map('n', '<leader>de', [[<cmd>lua require'dap'.set_exception_breakpoints({"all"})<CR>]], opts)
+--map('n', '<leader>da', [[<cmd>lua require'debugHelper'.attach()<CR>]], opts)
+--map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], opts)
 -- visual dap --
 --map('n', <leader>di, [[<cmd>lua require'dap.ui.widgets'.hover()<CR>]], opts)
 --map('n', <leader>d?, [[<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>]], opts)
@@ -151,8 +165,21 @@ map('n', ']e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts) -- previous erro
 map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- code action
 map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts) -- line diagnostics
 map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts) -- references
-map('n', '<leader>ql', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts) -- references
+map('n', '<leader>ql', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts) -- buffer diagnostics to location list
+map('n', '<leader>qf', '<cmd>lua vim.diagnostic.setqflist()<CR>', opts) -- all diagnostics to quickfix list
 map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- references
+
+---- coq autocompleter ----
+-- default bindings. C-h next snippet, C-w|u deletion of word, C-k preview
+--let g:coq_settings = {
+--      \ 'auto_start': v:true,
+--      \ 'display.icons.mode': 'none',
+--      \ 'keymap.recommended': v:false,
+--      \ 'keymap.manual_complete': '<C-Space>',
+--      \ 'keymap.jump_to_mark': '<C-j>',
+--      \ 'keymap.bigger_preview': '<C-k>',
+--      \ }
+
 --map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts) -- Kimme_info
 --map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
 --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
@@ -164,10 +191,13 @@ map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- referen
 -- exploring code base with mouse TODO mouse mapping 1. to close and 2. to navigate
 --map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
+
 ---- telescope ---- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
 -- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
 map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
+map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], opts) -- keybindings
+-- builtin.commands, nmap, vmap, imap
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
 map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
 map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files

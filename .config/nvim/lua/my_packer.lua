@@ -22,6 +22,8 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope-hop.nvim' } -- TODO list keybindings
   use { '~/dev/git/lua/telescope-project.nvim' } -- TODO finish workspaces
   use { 'nvim-telescope/telescope-github.nvim' } -- TODO list keybindings only for looking at issues + cli commenting + cli pr review
+
+  --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
   --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- pretty printing requires codelldb (no luajit pretty printing)
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
@@ -43,7 +45,8 @@ return require('packer').startup(function()
   --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
   --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
   -- Zig
-  --use { 'rust-tools.nvim' }
+  --use { 'blubb/rust-tools.nvim' } -- not sure, if still useful
+  --use { 'neomake/neomake' } -- get useful comments for code semantics
   -- Organization stuff
   use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
   --use { 'vim-table' }
@@ -56,7 +59,7 @@ return require('packer').startup(function()
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings
   --use { 'junegunn/gv.vim' } -- alternative?
   use { 'ziglang/zig.vim' }
-  use { 'bohlender/vim-smt2' }
+  use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
 
   --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead

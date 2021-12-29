@@ -19,9 +19,8 @@
 # locked    | Locked
 
 keybinds:
-  # TODO unmap
-    unbind: true
     normal:
+        - unbind: true
         - action: [Quit,]
           key: [ Alt: 'q',]
         - action: [Detach,]
@@ -48,15 +47,12 @@ keybinds:
           key: [ Alt: 'j',]
         - action: [MoveFocus: Up,]
           key: [ Alt: 'k',]
-        - action: [FocusPreviousPane,]
-          key: [ Alt: '[',]
-        - action: [FocusNextPane,]
-          key: [ Alt: ']',]
         - action: [Resize: Increase,]
           key: [ Alt: '+']
         - action: [Resize: Decrease,]
           key: [ Alt: '-']
     resize:
+        - unbind: true
         - action: [SwitchToMode: Normal,]
           key: [ Char: "\n", Esc]
         - action: [Resize: Left,]
@@ -83,11 +79,8 @@ keybinds:
           key: [ Alt: 'j',]
         - action: [MoveFocus: Up,]
           key: [ Alt: 'k',]
-        - action: [FocusPreviousPane,]
-          key: [ Alt: '[',]
-        - action: [FocusNextPane,]
-          key: [ Alt: ']',]
     pane:
+        - unbind: true
         - action: [SwitchToMode: Normal,]
           key: [Char: "\n", Esc]
         - action: [MoveFocus: Left,]
@@ -112,11 +105,8 @@ keybinds:
           key: [Char: 'f',]
         - action: [TogglePaneFrames,]
           key: [Char: 'z',]
-        - action: [FocusPreviousPane,]
-          key: [ Alt: '[',]
-        - action: [FocusNextPane,]
-          key: [ Alt: ']',]
     move:
+        - unbind: true
         - action: [SwitchToMode: Normal,]
           key: [Char: "\n", Esc]
         - action: [MovePane: Left,]
@@ -138,12 +128,9 @@ keybinds:
         - action: [MoveFocus: Up,]
           key: [ Alt: 'k',]
     tab:
+        - unbind: true
         - action: [SwitchToMode: Normal,]
           key: [Char: "\n", Esc]
-        - action: [FocusPreviousPane,]
-          key: [ Alt: '[',]
-        - action: [FocusNextPane,]
-          key: [ Alt: ']',]
         - action: [GoToPreviousTab,]
           key: [ Char: 'h', Left, ]
         - action: [GoToNextTab,]
@@ -183,6 +170,7 @@ keybinds:
         - action: [ToggleTab]
           key: [ Char: "\t" ]
     scroll:
+        - unbind: true
         - action: [SwitchToMode: Normal,]
           key: [Char: "\n", Esc]
         - action: [ScrollDown,]
@@ -205,10 +193,6 @@ keybinds:
           key: [ Alt: 'j',]
         - action: [MoveFocus: Up,]
           key: [ Alt: 'k',]
-        - action: [FocusPreviousPane,]
-          key: [ Alt: '[',]
-        - action: [FocusNextPane,]
-          key: [ Alt: ']',]
     renametab:
         - unbind: true
     renamepane:
@@ -217,13 +201,13 @@ keybinds:
         - unbind: true
     locked:
         - unbind: true
-plugins:
-    - path: tab-bar
-      tag: tab-bar
-    - path: status-bar
-      tag: status-bar
-    - path: strider
-      tag: strider
+#plugins:
+#    - path: tab-bar
+#      tag: tab-bar
+#        #- path: status-bar
+#        #  tag: status-bar
+#        #- path: strider
+#        #  tag: strider
 
 # Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 # eg. when terminal window with an active zellij session is closed

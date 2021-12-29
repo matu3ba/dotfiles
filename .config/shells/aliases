@@ -23,6 +23,8 @@ alias readcommentsectionELF='readelf -p .comment'
 #hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)
 #uncompress/untar/unzip: gzip -dk file.gz, tar -xf archive.tar.xz, unzip archive.zip
 #compress/tar/zip: gzip -k files, tar -f? folder, zip folder
+#run commands at specific time: at (programs needs daemon config after installation)
+#or in 1h `sleep 3600 ; ./run.sh`
 #tmpfs: df -h /tmp
 #suspend in 5min: systemd-run --on-active="5m" suspend,  systemctl suspend
 #valgrind leakcheck:
@@ -94,10 +96,19 @@ alias      zc='${HOME}/.local/zig/zig'
 #alias    zb2='./zig-out/bin/zig build --zig-lib-dir lib -Denable-llvm' # untested due to zb1 not working
 #alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && time ${HOME}/dev/git/cpp/mold/mold -run ninja'
 #alias zb2='time ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm' #-Dskip-non-native
-alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
-alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
-alias  zt2='./stage2/bin/zig build test'
+#-Dstatic-llvm=false does not work with bootstrap
+## glibc compilation:
+#alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
+#alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
+#alias  zt2='./stage2/bin/zig build test'
+## musl compilation(works):
+alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
+# builds, but cannot compile stuff
+# solution: use stupid rsync approach and things after host/ is generateed.
+#alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
+# running musl version:
 alias zig2='$HOME/dev/git/zig/zig/stage2/bin/zig'
+#alias zig2='$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/zig-x86_64-linux-musl-native/bin/zig'
 #./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -fLLVM
@@ -113,20 +124,20 @@ alias bpde='make -j8 && ./runTests && ./pde'
 alias   nojail='firejail --noprofile'
 alias  njfoxPM='firejail --noprofile firefox --ProfileManager'
 #alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --x11=xpra --allow=${TMP1}  falkon  && echo   "${TMP1}"'
-alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --allow=${TMP1}  falkon  && echo   "${TMP1}"'
+alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
 alias  sfalketh='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=enp4s0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
 alias ssfalketh='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=enp4s0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
-alias   falkwlan='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --allow=${TMP1}  falkon  && echo   "${TMP1}"'
+alias   falkwlan='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
 alias  sfalkwlan='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=wlan0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
 alias ssfalkwlan='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=wlan0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
-#alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --allow=${TMP4} --allow=$HOME/.mozilla/firefox/profiles.ini --allow=$HOME/.mozilla/firefox/default firefox -P default && rm -fr "${TMP4}"'
+#alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} --allow=$HOME/.mozilla/firefox/profiles.ini --allow=$HOME/.mozilla/firefox/default firefox -P default && rm -fr "${TMP4}"'
 #alias   sfoxla='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} --allow=$HOME/.mozilla/firefox/profiles.ini --allow=$HOME/.mozilla/firefox/allAllowed firefox -P allAllowed && rm -fr "${TMP5}"'
-alias    foxeth='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=enp4s0 --allow=${TMP4} firefox -P default && rm -fr "${TMP4}"'
-alias    foxwlan='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --allow=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias    foxeth='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=enp4s0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias    foxwlan='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
 alias   sfoxeth='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=enp4s0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
 alias   sfoxwlan='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
-alias  tbirdeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=enp4s0 --allow=${TMP6}         thunderbird && rm -fr "${TMP6}"'
-alias  tbirdwlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --allow=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias  tbirdeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=enp4s0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias  tbirdwlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
 alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
 
 # rsync
@@ -139,7 +150,8 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # program aliases
 alias l='exa'
 alias du='dust'
-#rg -g !pattern to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
+alias rgc='rg --vimgrep'
+#rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
 #rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
 #rg --vimgrep lines+columns -u[u[u]] unrestricted
 

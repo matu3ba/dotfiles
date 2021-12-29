@@ -21,3 +21,11 @@ Terminal(required): Program runs in a terminal window?
 Exec defines Program to execute (with arguments)
 TryExec defines where program may be. Entry may be ignored on absence of file.
 
+Debugging
+1. Adding this entries to see what is being executed
+Terminal=true
+TerminalOptions=\s--noclose
+2. Use tool `desktop-file-validate` inside `desktop-files-utils` package
+(does not show errors on invalid entry in Exec)
+3. Try https://github.com/jceb/dex
+4. Check syslogs

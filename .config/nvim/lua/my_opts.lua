@@ -20,7 +20,7 @@ local function load_options()
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v)
   end
-  vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
+  --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
   vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
   vim.o.cmdheight = 2
@@ -60,8 +60,8 @@ local function load_options()
   vim.bo.spelllang = 'en,de'
   vim.bo.swapfile = false
 
-  vim.bo.expandtab = false --use Tab character on pressing Tab key
-  -- vim.bo.expandtab        = true; --expand tabs to spaces: use fuzzy impl
+  --vim.bo.expandtab = false --use Tab character on pressing Tab key
+  vim.bo.expandtab = true; --expand tabs to spaces: use fuzzy impl
   vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
   vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
   -- tabstop/expandtab breaks inconsistently for c++ and lua
