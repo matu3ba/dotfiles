@@ -1,14 +1,59 @@
 local add_cmd = vim.api.nvim_add_user_command
-local cmd_tn = 'tabnew ' .. os.getenv 'HOME' .. '/.config/nvim/'
-add_cmd('CCmd',  cmd_tn .. 'lua/my_cmds.lua',  {})
-add_cmd('CDap',  cmd_tn .. 'lua/my_dap.lua',  {})
+local cmd_tn = 'vsplit ' .. os.getenv 'HOME' .. '/.config/nvim/'
+add_cmd('CCmd', cmd_tn .. 'lua/my_cmds.lua', {})
+add_cmd('CDap', cmd_tn .. 'lua/my_dap.lua', {})
+add_cmd('CGs', cmd_tn .. 'lua/my_gitsign.lua', {})
 add_cmd('CInit', cmd_tn .. 'init.lua', {})
-add_cmd('CKey',  cmd_tn .. 'lua/my_keymaps.lua', {})
-add_cmd('CLsp',  cmd_tn .. 'lua/my_lsp.lua',  {})
+add_cmd('CKey', cmd_tn .. 'lua/my_keymaps.lua', {})
+add_cmd('CLsp', cmd_tn .. 'lua/my_lsp.lua', {})
 add_cmd('COpts', cmd_tn .. 'lua/my_opts.lua', {})
-add_cmd('CPl',   cmd_tn .. 'lua/my_packer.lua', {})
-add_cmd('CTel',  cmd_tn .. 'lua/my_telesc.lua', {})
-add_cmd('CTre',  cmd_tn .. 'lua/my_treesitter.lua', {})
+add_cmd('CPl', cmd_tn .. 'lua/my_packer.lua', {})
+add_cmd('CTel', cmd_tn .. 'lua/my_telesc.lua', {})
+add_cmd('CTre', cmd_tn .. 'lua/my_treesitter.lua', {})
+
+add_cmd('Replpdflatex', function()
+  --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
+  local filename = vim.fn.expand '%'
+  local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build " .. filename
+  vim.cmd 'tabnew'
+  vim.cmd(cmd)
+end, {})
+
+add_cmd('Repltikzall', function()
+  local cmd = "terminal cd figures; watchexec -e tikz './build_tikz.sh'"
+  print(cmd)
+  vim.cmd 'tabnew'
+  vim.cmd(cmd)
+end, {})
+
+--map('v', '<leader>b', '"+y', opts)
+---- TODO call a lua function to call correct builder
+--buf_cwd = getcwd(0)
+--=> zig build, if build.zig exists in current folder
+--=> better use proper harpoon functions
+
+-- TODO show cwd for scripting permanently
+--add_cmd(
+--    'Build',
+--    function()
+--buf_cwd = getcwd(0)
+--        local foldername = vim.fn.expand('%') -- root folder, where (neo)vim was opened
+--        local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build " .. filename
+--        vim.cmd 'tabnew'
+--        vim.cmd(cmd)
+--    end,
+--    {}
+--)
+-- TODO command to invoke chepa
+--add_cmd(
+--    'Chepa',
+--    function()
+--        --run command and thats it buf_cwd = vim.fn.getcwd(0)
+--    end,
+--    {}
+--)
+
+-- :enew | .!ls (only useful, if cleaning up buffers is faste)
 --add_cmd('Bda', [[:bufdo :bdelete]], {}) -- deleting all buffers except current one
 
 -- REPLs for latex, clippy and cpp with linker mold
@@ -31,7 +76,7 @@ add_cmd('CTre',  cmd_tn .. 'lua/my_treesitter.lua', {})
 --end
 --  only 1 instance is annoying --unique
 _G.Pid_okular = nil
-_G.Pdfmainstart = function()
+add_cmd('Pmsta', function()
   local this_tex_file = vim.fn.expand '%:p'
   local line_number = vim.fn.line '.'
   local okularcmd = 'okular --noraise "' .. 'build/main.pdf' .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
@@ -39,18 +84,18 @@ _G.Pdfmainstart = function()
   if _G.Pid_okular <= 0 then
     print '_G.Pid_okular: could not launch okular'
   end
-end
-_G.Pdfmainstop = function()
+end, {})
+add_cmd('Pmsto', function()
   if _G.Pid_okular ~= nil and _G.Pid_okular > 0 then
     _ = vim.fn.jobstop(_G.Pid_okular)
     _G.Pid_okular = nil
   end
-end
-_G.Pdffigure = function()
+end, {})
+add_cmd('Pdffigure', function()
   vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf')
-end
+end, {})
 
-_G.Repltikzthis = function()
+add_cmd('Repltikzthis', function()
   local bashcmd = [[cd figures; watchexec -w ]]
     .. vim.fn.expand '%:t'
     .. [[ "lualatex --shell-escape '\def\zzz{']]
@@ -60,71 +105,60 @@ _G.Repltikzthis = function()
   local cmd = 'terminal ' .. bashcmd
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
-_G.Repltikzall = function()
-  local cmd = "terminal cd figures; watchexec -e tikz './build_tikz.sh'"
-  print(cmd)
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end
-_G.Repllualatex = function()
+end, {})
+add_cmd('Repllualatex', function()
   local cmd = "terminal latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build main.tex"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
-_G.Replpdflatex = function()
-  --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
-  local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build main.tex"
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end
-
-_G.ReplpdeAll = function()
+end, {})
+add_cmd('ReplpdeAll', function()
   local cmd =
     "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
-_G.ReplpdeTest = function()
+end, {})
+add_cmd('ReplpdeTest', function()
   -- "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests'"
   local cmd =
     "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./test_pde'"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
-_G.ReplpdeTestgdb = function()
+end, {})
+add_cmd('ReplpdeTestgdb', function()
   local cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst 'make -j8 && gdb -ex run ./runTests'"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
-_G.Buildpde = function()
+end, {})
+add_cmd('Buildpde', function()
   local cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8'"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
-_G.Test123 = function()
+end, {})
+add_cmd('Test123', function()
   local cmd = 'terminal echo ${HOME}'
   vim.cmd 'tabnew'
   vim.cmd(cmd)
-end
+end, {})
 
--- command! Pdfmain :lua Pdfmain()
-vim.api.nvim_exec(
-  [[
-if expand('%:e') == 'tex'
-  command! Pmsta :lua Pdfmainstart()
-  command! Pmsto :lua Pdfmainstop()
-  command! Pdffigure :lua Pdffigure()
-  command! Repllualatex :lua Repllualatex()
-  command! Replpdflatex :lua Replpdflatex()
-  command! Repltikzall :lua Repltikzall()
-  command! Repltikzthis :lua Repltikzthis()
-endif
-command! ReplpdeAll :lua Replpde()
-command! ReplpdeTest :lua ReplpdeTest()
-command! ReplpdeTestgdb :lua ReplpdeTest()
-command! Buildpde :lua Buildpde()
-command! Test123 :lua Test123()
-]],
-  false
-)
+-- ideas to configure buffer stuff, ie with toggleterm used here:
+--local files = {
+--  python = "python3 -i " .. exp("%:t"),
+--  lua = "lua " .. exp("%:t"),
+--  c = "gcc -o temp " .. exp("%:t") .. " && ./temp && rm ./temp",
+--  cpp = "clang++ -o temp " .. exp("%:t") .. " && ./temp && rm ./temp",
+--  java = "javac "
+--    .. exp("%:t")
+--    .. " && java "
+--    .. exp("%:t:r")
+--    .. " && rm *.class",
+--  rust = "cargo run",
+--  javascript = "node " .. exp("%:t"),
+--  typescript = "tsc " .. exp("%:t") .. " && node " .. exp("%:t:r") .. ".js",
+--}
+--function Run_file()
+--  local command = files[vim.bo.filetype]
+--  if command ~= nil then
+--    Open_term:new({ cmd = command, close_on_exit = false }):toggle()
+--    print("Running: " .. command)
+--  end
+--end

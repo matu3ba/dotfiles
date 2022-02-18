@@ -1,0 +1,14 @@
+Tab:
+New tab: ctrl + shift + t
+Close tab: ctrl + shift + q
+Next tab: ctrl + shift + right
+Previous tab: ctrl + shift + left
+Window:
+New window: ctrl + shift + enter
+Close window: ctrl + shift + w
+Next window: ctrl + shift + ]
+Previous window: ctrl + shift + [
+
+ctrl + shift + l       switch view mode
+ctrl + shift + 1,2,3,4 select pane
+shift+ctrl+click       open output in pager

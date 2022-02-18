@@ -11,24 +11,28 @@ return require('packer').startup(function()
   use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
   use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets
   ---- shiny stuff ----
-  use { 'lewis6991/gitsigns.nvim', branch = 'main', requires = { 'nvim-lua/plenary.nvim' }, config = function() require('gitsigns').setup() end, } --]c, [c, <l>hs/hu,hr,hp,hb :Gitsigns toggle_
+  --gitsigns: ]c, [c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
+  use { 'lewis6991/gitsigns.nvim', branch = 'main', requires = { 'nvim-lua/plenary.nvim' }, config = function() require('gitsigns').setup() end, }
   use { 'ggandor/lightspeed.nvim' } --{s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
-  use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<leader>n and :Np
+  use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
-  use { 'ThePrimeagen/harpoon' } -- TODO insert instructions here
+  use { 'ThePrimeagen/harpoon' } -- <l> [m|c]key]mv|mc|mm
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
-  use { 'nvim-telescope/telescope-hop.nvim' } -- TODO list keybindings
-  use { '~/dev/git/lua/telescope-project.nvim' } -- TODO finish workspaces
-  use { 'nvim-telescope/telescope-github.nvim' } -- TODO list keybindings only for looking at issues + cli commenting + cli pr review
+  use { 'nvim-telescope/telescope-hop.nvim' }
+  --use { '~/dev/git/lua/telescope-project.nvim' }
+  --use { 'nvim-telescope/telescope-github.nvim' } -- TODO list keybindings only for looking at issues + cli commenting + cli pr review
+
+  -- TODO script to create csv for project data
+  -- TODO lua lib to do stuff with project data
 
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
   --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- pretty printing requires codelldb (no luajit pretty printing)
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
 
-  --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <leader>pr => workspaces, then bare reposwor, then bare repos
+  --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
   -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
   ---- treesitter ---- performance problems and crashes on macro-heavy code ----
@@ -38,8 +42,8 @@ return require('packer').startup(function()
 
   ---- languages ----
   -- Lua
-  --use { 'bfredl/nvim-luadev' } --lua repl, TODO setup mappings for execution
-  --use { 'jbyuki/one-small-step-for-vimkind', requires = { 'mfussenegger/nvim-dap' } } -- lua debugging runtime, TODO setup
+  --use { 'bfredl/nvim-luadev' } --lua repl, setup mappings for execution
+  --use { 'jbyuki/one-small-step-for-vimkind', requires = { 'mfussenegger/nvim-dap' } } -- lua debugging runtime, setup
   --<Plug>(Luadev-RunLine)  Execute the current line
   --<Plug>(Luadev-Run)      Operator to execute lua code over a movement or text object.
   --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
@@ -49,11 +53,12 @@ return require('packer').startup(function()
   --use { 'neomake/neomake' } -- get useful comments for code semantics
   -- Organization stuff
   use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
+  -- booperlv/nvim-gomove
   --use { 'vim-table' }
 
   ---- VIM ----
-  use { 'mbbill/undotree' } -- :UndotreeToggle <leader>u, rarely used
-  --use { 'tpope/vim-surround' } -- ds|cs|ys,yS etc is conflicting
+  use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
+  use { 'tpope/vim-surround' } -- ds|cs|ys,yS etc is conflicting
   use { 'tpope/vim-repeat' } -- repeating with .
   use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings
@@ -62,6 +67,7 @@ return require('packer').startup(function()
   use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
 
+  --use { 't-troebst/perfanno.nvim' } -- perf bottleneck visualizations
   --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
   --use { 'Vhyrro/neorg' } -- no use cases yet
   --use { 'mfussenegger/nvim-lint' }
@@ -69,7 +75,7 @@ return require('packer').startup(function()
   --use { 'theprimeagen/vim-be-good' } --for beginners VimBeGood,1.delete DELETE ME,2.replace contents inside first { or [ with bar, 3.navigate to caret under char ASAP+flip it
   --use { 'wilder.nvim'} -- auto completion for :e and alike
   --use { 'junegunn/fzf.vim', requires = { 'junegunn/fzf', run = ':call fzf#install()' } } -- telescope has same algorithm + better performance
-  --use { 'nvim-telescope/telescope-z.nvim' } --tez,<leader>z -- would be clutch to have telescope project support
+  --use { 'nvim-telescope/telescope-z.nvim' } --tez,<l>z -- would be clutch to have telescope project support
   --use { 'nvim-treesitter/nvim-treesitter-refactor' } -- block-wise movement and file-local replacements
   --use { 'nvim-treesitter/playground' } --inspecting treesitter data: :TSPlaygroundToggle
   --use { 'LnL7/vim-nix' } -- flakes highlighting

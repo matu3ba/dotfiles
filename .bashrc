@@ -83,10 +83,12 @@ PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
 #PATH=$PATH:"${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin" # zig crosscompile
-PATH=$PATH:"${HOME}/dev/git/zig/zig/build" # zig crosscompile
+PATH=$PATH:"${HOME}/dev/git/zig/zig/master/build" # zig crosscompile
 PATH=$PATH:"${HOME}/.luarocks/bin"
+PATH=$PATH:"${HOME}/.local/lua-language-server/bin"
 PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell testing
+PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
 
 #PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
 #testing www.ziglang.org
@@ -99,3 +101,10 @@ eval "$(ssh-agent -s)"
 trap "ssh-agent -k" exit
 
 eval "$(zoxide init bash)" # quickjumper
+
+
+# BEGIN_KITTY_SHELL_INTEGRATION
+if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
+# END_KITTY_SHELL_INTEGRATION
+
+alias luamake=/home/misterspoon/.local/lua-language-server/3rd/luamake/luamake

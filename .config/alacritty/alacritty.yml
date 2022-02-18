@@ -90,7 +90,8 @@ solarized-light: &light
     cyan:    '#93a1a1' # base1
     white:   '#fdf6e3' # base3
 colors: *dark
-background_opacity: 1.0
+#window:
+  #opacity
 selection:
   # This string contains all characters that are used as separators for "semantic words" in Alacritty.
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"

@@ -1,0 +1,15 @@
+cd project
+mkdir worktreesfolder
+cd worktreesfolder
+# worktree_example is folder containing all worktrees
+git clone --bare gitrepo .bare
+
+# make sure git knows where the gitdir is
+echo "gitdir: ./.bare" > .git
+
+git worktree add master
+git worktree add test
+cd test
+git commit
+#git remote rename orgin downstream/upstream
+git push --set-upstream origin test

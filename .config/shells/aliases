@@ -3,7 +3,8 @@
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
-alias ccd_build='mkdir -p build; cd build;'
+alias ccbuild='mkdir -p build; cd build;' # change create build
+alias ccdebug='mkdir -p debug; cd debug;' # change create debug
 alias cdnvimplugs='cd ${HOME}/.local/share/nvim/site/pack/packer/start'
 alias mold_make='${HOME}/dev/git/cpp/mold/mold -run make -j8'
 #alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
@@ -67,31 +68,32 @@ alias  aliases_oh='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.confi
 
 alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         fbi='./configure && make && sudo make install-strip && sudo firecfg && sudo -K'
-alias         nbm='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-alias          nb='make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias         nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias       nbnm='make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+# unfortunately mold can still not link clang address sanitizer libraries as they patch libc symbols in a nontrivial way
+#alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 alias      stylua='stylua --indent-type Spaces --quote-style AutoPreferSingle'
 #alias     luamake='${HOME}/.local/lua-language-server/3rd/luamake/luamake'
 alias      hbuild='git submodule update --init --recursive --depth 1 && git merge --ff-only origin/master && ${HOME}/dev/git/cpp/mold/mold -run cargo install --path helix-term'
 
-# Rust stuff
+# Rust
 # cargo metadata --format-version=1 | jq -r ".packages|map(.name)|.[]" | wc -l
 
 # build + languages
-alias mkcd='mkdir build && cd build'
 alias ccompilejson='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias cdebugsymbols='cmake -DCMAKE_BUILD_TYPE="Debug"'
 alias ccompilejsondebugsymbols='cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE="Debug"'
 alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 
+# Zig
 alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
-alias      zc='${HOME}/.local/zig/zig'
 #alias  zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig cc'
 #alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig c++'
 # GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig
 # curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
-# the following zb1 aliases dont work
+# the following zb1 aliases dont work for stage2
 #alias    zb1='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/zig/zig-bootstrap/out/build-llvm-native-native && cmake .. -GNinja && ninja'
 #alias    zb2='./zig-out/bin/zig build --zig-lib-dir lib -Denable-llvm' # untested due to zb1 not working
 #alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && time ${HOME}/dev/git/cpp/mold/mold -run ninja'
@@ -101,23 +103,34 @@ alias      zc='${HOME}/.local/zig/zig'
 #alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
 #alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
 #alias  zt2='./stage2/bin/zig build test'
-## musl compilation(works):
-alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
+## compilation only works for stage1, ie for musl:
+#./build -j2 x86_64-linux-musl native
+## only compile baseline to figure out if it is an abi/feature detection problem
+#cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja
+#cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${HOME}/local/llvm13-debug" -GNinja && /usr/bin/time -v ninja
+alias  zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias zbdeb='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+#alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias zigdeb='${HOME}/dev/git/zig/zig/master/debug/zig'
+alias zboot='${HOME}/.local/zig/zig'
+#alias zb2
+#alias zt2
+#also breaks on stage2 (no difference)
+#alias zb1fancy='${HOME}/dev/git/buildzig/zig-bootstrap.git/tmp/out/zig-x86_64-linux-musl-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/buildzig/zig-bootstrap.git/musl/out/host'
+#cmake ..
+#make install
 # builds, but cannot compile stuff
 # solution: use stupid rsync approach and things after host/ is generateed.
 #alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
-# running musl version:
-alias zig2='$HOME/dev/git/zig/zig/stage2/bin/zig'
 #alias zig2='$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/zig-x86_64-linux-musl-native/bin/zig'
 #./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -fLLVM
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -ofmt=c
-
 #alias    zb2='.build/zig build -Denable-llvm' #-Denable-llvm -Dskip-non-native
 #alias   zdev='${HOME}/dev/git/zig/zig/dev/zig'
-alias rmzigcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
-alias bpde='make -j8 && ./runTests && ./pde'
+alias rmzigallcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
+alias rmzigcache='rm -fr zig-cache/ zig-out/'
 
 # sandboxing with firejail (enp4s0|wlan0)
 # firefox requires profile lookup, even though they provide an option to set the direct path for the profile
@@ -140,6 +153,13 @@ alias  tbirdeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6
 alias  tbirdwlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
 alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
 
+# sandboxing chromium (enp4s0|wlan0)
+alias schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
+alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'
+# persistent profiles: replace google-chrome with chromium
+#cat ${HOME}/.config/google-chrome/Default/Preferences | jq '.default_search_provider_data.template_url_data={ "keyword": "duckduckgo.com", "short_name": "DuckDuckGo", "suggestions_url": "https://duckduckgo.com/ac/?q={searchTerms}&type=list", "url": "https://duckduckgo.com/?q={searchTerms}&t=canonical" }' >adapted-preferences.json
+#mv adapted-preferences.json ~/.config/google-chrome/Default/Preferences
+#
 # rsync
 alias rsync_copy='rsync -avz --progress -h'
 alias rsync_move='rsync -avz --progress -h --remove-source-files'
@@ -150,10 +170,12 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # program aliases
 alias l='exa'
 alias du='dust'
-alias rgc='rg --vimgrep'
+alias rgv='rg --vimgrep'
 #rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
 #rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
 #rg --vimgrep lines+columns -u[u[u]] unrestricted
+#PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
+#{n}(exactly),{n,m}(at least n, no more than m),
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

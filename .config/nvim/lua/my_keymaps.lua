@@ -3,7 +3,7 @@ local map = vim.api.nvim_set_keymap
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
--- TODO:
+-- idea:
 --        , prefix for all window operation mappings (e.g. splits, tabs, switching, file drawer etc)
 --        <Space> prefix for fuzzy finding mappings (e.g. files, buffers, helptags etc)
 --        ; prefix for plugin operation mappings (e.g. running tests, easy motions etc)
@@ -12,12 +12,12 @@ local map = vim.api.nvim_set_keymap
 --   Ctrl-s shell stuff
 --    steal+adapt telescope keymappings:
 --    https://github.com/ThePrimeagen/.dotfiles/blob/master/nvim/.config/nvim/plugin/lsp.vim
--- TODO use C-p for selecting project, ie via zoxide history
+-- idea use C-pr for selecting project, ie via zoxide history
 -- C-, C-. => weird keybindings. Maybe use for replace repeat, forward search?
 -- C-n: [count] lines downward |linewise|.
 -- C-m: [count] lines downward, on the first non-blank character |linewise|
 --
--- TODO :helpgrep|Telescope help_tags and map quickfixlist cnext and cprev + getting through search history
+-- :helpgrep|Telescope help_tags and map quickfixlist cnext and cprev + getting through search history
 -- C-n, C-p next,previous line, C-m newline beginning
 -- C-i, C-o next previous cursor position list
 -- C-d|u|y|e down|up|small up|small down|
@@ -31,28 +31,63 @@ map('', '<down>', '<nop>', opts)
 map('', '<up>', '<nop>', opts)
 map('', '<right>', '<nop>', opts)
 -- glorious copypasta --
--- make it yourself in lua
--- TODO search without jumping and copy connected word under cursor
 -- (a.b.c and a-b-c without brackets and emptyspace) to default register for pre+postfixing
--- TODO come up with something to copy whole word under cursor, ie this.is.a.word(thisnot)
--- TODO copy paste until closing " or " or bracket with 1 keypress (1 binding forward, 1 backwards)
--- make vimscript or lua function to match corresponding characters.
--- TODO |copy_history:| marked, keypress to search for exact occurence \<copy_history:\>
--- TODO list used function scopes of variable under cursor
+-- idea list used function scopes of variable under cursor, needs clarification
 --map <A-v> viw"+gPb
 --map <A-c> viw"+y
 --map <A-x> viw"+x
 -- leader + 1 letter: common text operation
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
-map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
+map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
+map('n', '*', [[:setl hls | let @/ = expand('<cword>')<CR>]], opts)
+map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts)
+map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
+-- idea |copy_history:| keypress to extract search properly from history without \V
 map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
 map('n', 'K', 'i<CR><ESC>', opts) -- move text after cursor to next line (opposite of J join)
+-- idea come up with something to select whole word under cursor, ie this.is.a.word(thisnot)
+
+--- Copy content to matching char into register
+-- without match, a message is printed
+-- @param backwards boolean if search is forwards or backwards
+-- @param register register where content is copied to
+local cpy_to_matching_char = function(backwards, register)
+  -- TODO type check of backwards and register
+  local crow, ccol = vim.api.nvim_win_get_cursor(0)
+  local cchar = vim.api.nvim_get_current_line():sub(ccol, ccol)
+  local srow, scol
+  if backwards == false then
+    srow, scol = vim.fn.searchpos(cchar, 'nz', crow)
+  else
+    srow, scol = vim.fn.searchpos(cchar, 'bnz', crow)
+  end
+  if srow == 0 and scol == 0 then
+    print 'no matching forward character'
+    return
+  end
+  local copytext
+  if backwards == false then
+    copytext = vim.api.nvim_get_current_line():sub(ccol, scol)
+  else
+    copytext = vim.api.nvim_get_current_line():sub(scol, ccol)
+  end
+  vim.fn.setreg(register, copytext)
+end
+
+--TODO clarify if there is a cursor move api for lua ie for selecting
+---- copy forward/backwards until first occurence of same symbol
+map('n', '-', ':lua cpy_to_matching_char(false, [[""]])', opts)
+map('n', '_', ':lua cpy_to_matching_char(true, [[""]])', opts)
+
+map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
+map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
+map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>y', '"+y', opts)
 map('v', '<leader>y', '"+y', opts)
 map('v', '<leader>dd', '"_dd', opts)
 --map('v', '<leader>dd', '"_d', opts)
 map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
-map('n', '<leader>P', [["_diwP]], opts) -- keep pasting over the same thing
+--map('n', '<leader>,', [[:match StatusLineTerm /\<<C-R><C-W>\>/<CR>]], opts)
 
 -- replace current word/"/'/) with what is in default register
 --vim.api.nvim_set_keymap('n', '<leader>w', 'viwpgvy', { noremap = true })
@@ -73,9 +108,9 @@ map('n', '[b', '<cmd>bp<CR>', opts)
 -- error navigation
 map('n', ']q', '<cmd>qn<CR>', opts)
 map('n', '[q', '<cmd>qp<CR>', opts)
--- TODO use ]-m jump to next method for C-languages
+-- use ]-m jump to next method for C-languages
 -- ]-c used in gitsigns
--- TODO swap left alt to ctrl and c-n and c-p down and up the options
+-- swap left alt to ctrl and c-n and c-p down and up the options
 
 -- venn.nvim: enable or disable keymappings
 _G.Toggle_venn = function()
@@ -104,7 +139,7 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 -- visual mode regular
 -- window navigation: <C-w>[+|-|<|>|_|"|"|=|s|v|r| height,width,height,width,equalise,split,swap
 -- view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
--- vim-surround: TODO
+-- vim-surround: ds|cs|ys,yS etc is conflicting
 -- vim-easy-align TODO
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
 -- :set nowrapscan => error out on end of file
@@ -113,13 +148,12 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 -- :g for actions on regex match
 -- regex matches: \r for newline and \n for null character, except in search lol
 -- K for move text to next line
+-- C-r C-w insert word under cursor
 
 -- insertion mode
 -- C-w delete last word, C-u delete until start of line
 -- C-o execute 1 command and continue in sertion mode
 -- C-h switch back to normal mode(side effect from coq_nvim, C-r insert from register,
--- TODO stuff to run commands in between writing
--- TODO navigation from within insertion mode
 
 -- cmdline
 -- C-z trigger wildmode, C-] abbreviations
@@ -188,7 +222,7 @@ map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- referen
 --map('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 --map('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 --map('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
--- exploring code base with mouse TODO mouse mapping 1. to close and 2. to navigate
+-- exploring code base with mouse mapping 1. to close and 2. to navigate
 --map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
 
@@ -210,7 +244,7 @@ map(
 ) -- ripgrep string
 map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
 -- <C-p> for projects ?
-map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
+--map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
 --map('n', '<leader>z', [[<cmd>lua require'telescope'.extensions.z.list{ cmd = { vim.o.shell, '-c', 'zoxide query -sl' } }<CR>]], opts) -- zoxide
 --lsp_workspace_diagnostics
 --lsp_document_diagnostics
@@ -245,10 +279,10 @@ map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts
 map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
 
 ---- nnn ----
-map('n', '<leader>n', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
---map('t', '<leader>n',   [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
-map('n', '<leader>pi', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
---map('t', '<leader>pi',   [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
+map('n', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
+map('n', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
+map('t', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
+map('t', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
 
 ---- gtest ----
 map('n', ']t', [[<cmd>GTestNext<CR>]], opts)

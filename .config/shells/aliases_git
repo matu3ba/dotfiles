@@ -24,10 +24,14 @@
 
 # github referencing: y for current commit URL
 
+#rmgitfilesrecursive
+#find . -type d -name ".git" && find . -name ".gitignore" && find . -name ".gitmodules"'
+
 alias grst='git restore'
 alias g='git'
+#ga -A all files, ga . new+modified files, ga -u deleted+modified files
 alias ga='git add'
-alias gaa='git add --all'
+alias gaa='git add -A'
 
 alias gb='git branch'
 alias gba='git branch -avv'
@@ -47,6 +51,7 @@ alias gbsg='git bisect good'
 alias gbsr='git bisect reset'
 alias gbss='git bisect start'
 
+alias gc='git checkout'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gcom='git commit -v'
 alias gcmsg='git commit -m'
@@ -65,6 +70,7 @@ alias grau='git remote add upstream'
 alias grad='git remote add downstream'
 alias good='git remote rename origin downstream'
 alias grsu='git remote set-url'
+#git branch -u upstream/master master
 
 alias gbsum='git branch --set-upstream-to=upstream/master upstream'
 alias gpsu='git push --set-upstream downstream $(git branch --show-current)'
