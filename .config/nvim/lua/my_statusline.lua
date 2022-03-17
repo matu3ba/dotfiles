@@ -32,13 +32,15 @@ local function get_lsp_status()
   return diagnostics
 end
 
---local function get_git_branch()
---  local git_branch = vim.fn["fugitive#head"]()
---
---  if not git_branch or git_branch == '' then return '' end
---
---  return '%#WildMenu# Óú• ' .. git_branch .. '%*'
---end
+local function get_git_branch()
+  local git_branch = vim.fn['fugitive#head']()
+
+  if not git_branch or git_branch == '' then
+    return ''
+  end
+
+  return '%#WildMenu# Óú• ' .. git_branch .. '%*'
+end
 
 local harpoon_mark = require 'harpoon.mark'
 
@@ -64,21 +66,21 @@ local separator = '  '
 local section_spacer = '%='
 
 function StatusLine()
-  if is_terminal_window() then
-    statusline = '  Terminal  ' .. get_harpoon_status()
-  else
-    statusline = separator
-      .. get_file_status_section()
-      .. separator
-      .. get_git_branch()
-      .. separator
-      .. get_harpoon_status()
-      .. section_spacer
-      .. get_lsp_status()
-      .. section_spacer
-      .. get_lines()
-      .. separator
-  end
+  --if is_terminal_window() then
+  --  statusline = '  Terminal  ' .. get_harpoon_status()
+  --else
+  statusline = separator
+    .. get_file_status_section()
+    .. separator
+    --.. get_git_branch()
+    --.. separator
+    --.. get_harpoon_status()
+    --.. section_spacer
+    .. get_lsp_status()
+    .. section_spacer
+  --.. get_lines()
+  --.. separator
+  --end
 
   return statusline
 end

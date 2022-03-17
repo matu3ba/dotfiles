@@ -1,7 +1,4 @@
 -- init.lua --
--- TODO: make a table from files for later reloading the options and bindings on demand with plenary
---loading_table = ";../?.lua"
---require(loading_table)
 require 'my_globals'
 require 'my_packer'
 require 'my_opts'
@@ -12,14 +9,15 @@ require 'my_telesc'
 require 'my_keymaps'
 require 'my_cmds'
 vim.cmd [[colorscheme material]]
---require'colorizer'.setup()
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
 -- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
 _G.Clangfmt = function()
+  -- bufmodified include only modified buffers.
   -- looking upwards paths for a .clang-format, ideal solution would try to use root git folder
-  -- TODO change once vim.fn.modified or a simple wrapper for vim.api.nvim_buf_get_changedtick(bufnr) in plenary exists
-  -- => use  getbufinfo([{buf}]), bufname()
+  -- => use  getbufinfo([{buf}]), bufname() ?
+  -- if dict.name == vim.fn.bufname(%:blubb) then
+  -- cna formatters provide us with more information for smarter cursor positioning???
   vim.api.nvim_command [[
 if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
   let cursor_pos = getpos('.')
@@ -29,40 +27,20 @@ end
 ]]
 end
 
+-- stylua: ignore start
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
-vim.api.nvim_exec(
-  [[
-augroup TESTME
-autocmd!
-autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 100})
-if &filetype != "markdown"
-  autocmd BufWritePre * :%s/\s\+$//e
-endif
-autocmd BufWritePre *.h,*.hpp,*.c,*.cpp :lua Clangfmt()
-augroup END
-]],
-  false
-)
+vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})
+vim.api.nvim_create_autocmd('TextYankPost', {group = 'MYAUCMDS', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
+vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:%s/\s\+$//e]]}) -- remove trailing spaces
+vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, command = [[:lua Clangfmt()]]})
+-- stylua: ignore end
 
--- TODO uselua lsp formatting
--- !stylua file|folder  # looks for config in current folder
--- TODO something along require('plenary.reload').reload_module('my*', true)
--- autocmd -> file ending of unknown files: BufNewFile? BufEnter? BufAdd? BufNew?
-
--- :so $MYVIMRC for the lazy
--- :so stdpath('config')/lua/_packer.lua
 -- type() and inspect()
 -- idea Repltikzbuild: compare mtimes
 -- check hash implementations in lua5.1 for incremental builds
 -- xxhash has luajit implementation -> not needed, only mtime comparison
 
 --makeglossaries main.
-
--- TODO: https://www.reddit.com/r/neovim/comments/jxub94/reload_lua_config/
--- idea: keep track of setup scripts to install stuff (nix is long-term goal)
--- unfortunately does nix have bad error messages how to fix stuff (requires alot domain knowledge)
--- plenary.nvim => reload.lua
--- require('init.lua') for recursively loading all files
 
 -- Snippets
 -- c++

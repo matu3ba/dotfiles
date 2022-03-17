@@ -2,9 +2,12 @@
 return require('packer').startup(function()
   ---- general ----
   --use { 'nanotee/nvim-lua-guide' }
+  --use { 'lewis6991/impatient.nvim' }
+  use { 'nvim-lua/lsp-status.nvim' } -- necessary for statusline
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>m
-  --use { 'ThePrimeagen/git-worktree.nvim' } -- TODO git worktree setup
+  use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end, } --:GuessIndent
+  --use { 'ThePrimeagen/git-worktree.nvim' } -- idea git worktree setup
   --use { 'shadmansaleh/lualine.nvim',  requires = {'kyazdani42/nvim-web-devicons' } }
   ---- lsp+competion ----
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
@@ -22,7 +25,8 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
   use { 'nvim-telescope/telescope-hop.nvim' }
   --use { '~/dev/git/lua/telescope-project.nvim' }
-  --use { 'nvim-telescope/telescope-github.nvim' } -- TODO list keybindings only for looking at issues + cli commenting + cli pr review
+  use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
+  -- Telescope gh issues author=windwp label=bug search=miscompilation
 
   -- TODO script to create csv for project data
   -- TODO lua lib to do stuff with project data
@@ -32,6 +36,7 @@ return require('packer').startup(function()
   --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- pretty printing requires codelldb (no luajit pretty printing)
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
 
+  --use { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
   -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
@@ -87,6 +92,6 @@ return require('packer').startup(function()
   --use { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
   --use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim', config = function() require('neogit').setup() -- --:Neogit -- very complex
   --use { 'folke/lsp-trouble.nvim', requires = 'kyazdani42/nvim-web-devicons', config = function() require("trouble").setup() end } --:Trouble,<l>xx/xw/xd/xl/xq/xr
-  --use { 'folke/todo-comments.nvim', config = function() require('todo-comments').setup() end } --:Todo(QuickFix|Trouble|Telescope), HACK, TODO, FIXME highlighted and searchable
+  --use { 'folke/todo-comments.nvim', config = function() require('todo-comments').setup() end } --:Todo(QuickFix|Trouble|Telescope) for hack,todo,fixme
 end)
 -- stylua: ignore end

@@ -1,15 +1,26 @@
 local add_cmd = vim.api.nvim_add_user_command
-local cmd_tn = 'vsplit ' .. os.getenv 'HOME' .. '/.config/nvim/'
+local cmd_tn = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
 add_cmd('CCmd', cmd_tn .. 'lua/my_cmds.lua', {})
 add_cmd('CDap', cmd_tn .. 'lua/my_dap.lua', {})
+add_cmd('CGl', cmd_tn .. 'lua/my_globals.lua', {})
 add_cmd('CGs', cmd_tn .. 'lua/my_gitsign.lua', {})
 add_cmd('CInit', cmd_tn .. 'init.lua', {})
 add_cmd('CKey', cmd_tn .. 'lua/my_keymaps.lua', {})
 add_cmd('CLsp', cmd_tn .. 'lua/my_lsp.lua', {})
 add_cmd('COpts', cmd_tn .. 'lua/my_opts.lua', {})
 add_cmd('CPl', cmd_tn .. 'lua/my_packer.lua', {})
+add_cmd('CSt', cmd_tn .. 'lua/my_statusline.lua', {})
 add_cmd('CTel', cmd_tn .. 'lua/my_telesc.lua', {})
 add_cmd('CTre', cmd_tn .. 'lua/my_treesitter.lua', {})
+add_cmd('CRel', function()
+  local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
+  for _, dir in ipairs(lua_dirs) do
+    dir = string.gsub(dir, './lua/', '')
+    require('plenary.reload').reload_module(dir)
+  end
+  -- TODO keybindings and plugin cache are not reloaded
+end, {})
+-- TODO command that executes last command by sending content to open shell
 
 add_cmd('Replpdflatex', function()
   --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
@@ -32,7 +43,6 @@ end, {})
 --=> zig build, if build.zig exists in current folder
 --=> better use proper harpoon functions
 
--- TODO show cwd for scripting permanently
 --add_cmd(
 --    'Build',
 --    function()

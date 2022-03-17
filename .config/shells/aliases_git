@@ -27,6 +27,7 @@
 #rmgitfilesrecursive
 #find . -type d -name ".git" && find . -name ".gitignore" && find . -name ".gitmodules"'
 
+alias gwt='git worktree'
 alias grst='git restore'
 alias g='git'
 #ga -A all files, ga . new+modified files, ga -u deleted+modified files
@@ -51,9 +52,9 @@ alias gbsg='git bisect good'
 alias gbsr='git bisect reset'
 alias gbss='git bisect start'
 
-alias gc='git checkout'
+alias gco='git checkout'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
-alias gcom='git commit -v'
+alias gc='git commit -v'
 alias gcmsg='git commit -m'
 # git diff > diff.patch, git apply diff.patch to apply it on a codebase
 alias gd='git diff'
@@ -89,14 +90,14 @@ alias gsh='git show'
 alias gshps='git show --pretty=short --show-signature'
 alias gsb='git status -sb'
 alias gss='git status -s'
-alias gst='git status'
+alias gs='git status'
 alias gsp='git status --porcelain'
 alias gcl='git clone'
 
 alias grbi='git rebase -i'
 alias grbisq='git rebase -i --autosquash'
 alias gsw='git switch'
-alias gs='test -n "$(git status --porcelain)" || echo safe'
+alias gsafe='test -n "$(git status --porcelain)" || echo safe'
 alias grbium='git rebase --interactive upstream/master'
 alias grbiuM='git rebase --interactive upstream/main'
 alias grmdel='git rm $(git ls-files --deleted)'
@@ -107,10 +108,11 @@ alias gignored='git ls-files -v | grep "^[[:lower:]]"'
 alias gk='gitk --all --branches'
 alias gke='gitk --all $(git log -g --pretty=%h)'
 
-alias glr='git pull --rebase'
-alias gp='git pull --no-rebase'
+alias gur='git pull --rebase'
+alias gu='git pull --no-rebase'
 alias glgs='git log -S' # git log search 'regex' -- file
 #git log --grep|--invert-grep
+#git grep 'regexp' $(git rev-list --all)
 
 alias glg='git log --stat'
 alias glgp='git log --stat -p'

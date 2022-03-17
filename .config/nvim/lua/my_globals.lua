@@ -17,7 +17,7 @@
 -- remove trailing carriage returns (^M)
 --:e ++ff=dos
 --:set ff=unix
---
+
 -- TODO printing option
 _G.ToggleOption = function(option)
   if option == false then

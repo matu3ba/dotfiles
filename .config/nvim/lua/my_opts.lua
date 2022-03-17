@@ -31,7 +31,7 @@ local function load_options()
   vim.o.hlsearch = true --false
   vim.o.incsearch = true --highlight as searching
   vim.o.isfname = vim.o.isfname .. ',@-@'
-  vim.o.lazyredraw = true
+  vim.o.lazyredraw = true -- do not redraw screen in mid of macro
   vim.o.mouse = 'nv'
   vim.o.number = true
   vim.o.relativenumber = true
@@ -40,6 +40,7 @@ local function load_options()
   vim.o.showmode = false
   vim.o.signcolumn = 'yes'
   vim.o.smartcase = true --automatic lower except when upper chars
+  vim.o.ignorecase = true --lower case chars also search for upper ones
   vim.o.smartindent = true
   vim.o.swapfile = false
   vim.o.termguicolors = true
@@ -66,13 +67,14 @@ local function load_options()
   vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
   -- tabstop/expandtab breaks inconsistently for c++ and lua
 
-  -- TODO without folowing or similar setting :extab is broken, investigate
+  -- TODO without following or similar setting :extab is broken, investigate
   --set smartindent
   --set expandtab
   --set shiftwidth=4
   --set tabstop=4
   --set softtabstop=4
   --
+  --testArgument
   --
   --
 end

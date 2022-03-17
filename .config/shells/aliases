@@ -1,5 +1,8 @@
 ## shell-independent aliases ##
 # helpers
+alias ls='ls --color=auto --hyperlink=auto --group-directories-first -h'
+alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
+alias l='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
@@ -17,6 +20,8 @@ alias readcommentsectionELF='readelf -p .comment'
 #echo "filename and remove 2 dots from end + append filetype pdf: ${FILENAME%%.*}.pdf"
 #echo "filename and remove 1 dot  from end + append filetype    : ${FILENAME%.*}"
 #echo "filename unchanged: ${FILENAME}"
+#my_nev_var=${my_var/foo/bar}
+#pdftk in.pdf cat 3 output out.pdf
 #get internet adapters: nmcli
 #get local network address: ifconfig, nmap -sL loclanetworkprefix.*
 #printer: cupsenable, cupsdisable, lpstat, lprm, lpstat -u
@@ -31,7 +36,7 @@ alias readcommentsectionELF='readelf -p .comment'
 #valgrind leakcheck:
 #gdb --tui, --ex run, set tui enable
 #gdb --args ./runTests --gtest_filter=Br* --gtest_break_on_failure
-#gdb: i b list breakpoints, l list LOC around, p print val
+#gdb: 'i b' list breakpoints, l list LOC around, p print val
 #gdb: r (re)run, b [file]:LOC|function|*addr|+-offset,
 #gdb: d del breakpoint(s), dis disable breakpoint(s)
 #gdb: c continue, s single-step into, n single-step over,
@@ -47,6 +52,10 @@ alias readcommentsectionELF='readelf -p .comment'
 #VBoxManage modifyvm "VMname" --natpf1 "guestssh,tcp,,3022,,22" OR graphically on port forwarding without any IP
 alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
 alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-VPN (Split Tunnel)" vpn.rwth-aachen.de'
+#KVM
+#alias kvm_virsh='sudo virsh net-start default'
+# error: network default coult not be created
+# error: can not create virbr0: missing package
 
 # appimages
 alias       viapp='${HOME}/.local/appimages/nvim.appimage'
@@ -108,11 +117,14 @@ alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
 ## only compile baseline to figure out if it is an abi/feature detection problem
 #cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja
 #cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${HOME}/local/llvm13-debug" -GNinja && /usr/bin/time -v ninja
-alias  zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias   zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias zb1nb='cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
 alias zbdeb='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 #alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-alias zigdeb='${HOME}/dev/git/zig/zig/master/debug/zig'
 alias zboot='${HOME}/.local/zig/zig'
+alias zbi='${HOME}/dev/git/zig/zig/bisect/build/zig'
+alias zigstd='cd ${HOME}/dev/git/zig/zig/master/lib/std'
+alias zdev='${HOME}/dev/git/zig/zig/dev/build/zig'
 #alias zb2
 #alias zt2
 #also breaks on stage2 (no difference)
@@ -174,6 +186,7 @@ alias rgv='rg --vimgrep'
 #rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
 #rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
 #rg --vimgrep lines+columns -u[u[u]] unrestricted
+#rg -F 'fixed_string'
 #PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 #{n}(exactly),{n,m}(at least n, no more than m),
 

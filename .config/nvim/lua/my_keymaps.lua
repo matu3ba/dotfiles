@@ -21,6 +21,7 @@ local map = vim.api.nvim_set_keymap
 -- C-n, C-p next,previous line, C-m newline beginning
 -- C-i, C-o next previous cursor position list
 -- C-d|u|y|e down|up|small up|small down|
+--https://www.hillelwayne.com/post/intermediate-vim/
 
 -- enable the following once which-key fixes
 --map('n', ' ', '', opts)
@@ -39,45 +40,77 @@ map('', '<right>', '<nop>', opts)
 -- leader + 1 letter: common text operation
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
 map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
-map('n', '*', [[:setl hls | let @/ = expand('<cword>')<CR>]], opts)
-map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts)
+--map('n', '*', [[:keepjumps normal! mi*`i<CR>]], opts) -- no autojump
+--map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- idea |copy_history:| keypress to extract search properly from history without \V
 map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
 map('n', 'K', 'i<CR><ESC>', opts) -- move text after cursor to next line (opposite of J join)
+--TODO
+--nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+--nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+--nnoremap <leader>e :exe getline(line('.'))<cr> -- Run the current line as if it were a command
 -- idea come up with something to select whole word under cursor, ie this.is.a.word(thisnot)
 
 --- Copy content to matching char into register
 -- without match, a message is printed
 -- @param backwards boolean if search is forwards or backwards
 -- @param register register where content is copied to
-local cpy_to_matching_char = function(backwards, register)
-  -- TODO type check of backwards and register
-  local crow, ccol = vim.api.nvim_win_get_cursor(0)
-  local cchar = vim.api.nvim_get_current_line():sub(ccol, ccol)
-  local srow, scol
+_G.CopyMatchingChar = function(backwards, register)
+  local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
+  local crow = tup_rowcol[1]
+  local ccol = tup_rowcol[2] -- 0 indexed => use +1
+  local cchar = vim.api.nvim_get_current_line():sub(ccol+1, ccol+1)
+  local matchchar = {
+    ['('] = ')',
+    [')'] = '(',
+    ['{'] = '}',
+    ['}'] = '{',
+    ['['] = ']',
+    [']'] = '[',
+    ["<"] = ">",
+    [">"] = "<",
+    ['"'] = '"',
+    ["'"] = "'",
+    ["|"] = "|",
+    ['`'] = '`',
+    ['/'] = '/',
+    ['\\'] = '\\',
+  }
+  -- TODO searchpos: stopline only works forwards
+  -- => flag 'b' is not using starting line
+  local tup_search
   if backwards == false then
-    srow, scol = vim.fn.searchpos(cchar, 'nz', crow)
+    tup_search = vim.fn.searchpos(matchchar[cchar], 'nz', crow+1) -- +1 to search until next line?
   else
-    srow, scol = vim.fn.searchpos(cchar, 'bnz', crow)
+    tup_search = vim.fn.searchpos(matchchar[cchar], 'bnz') -- +1 to search until next line?
   end
-  if srow == 0 and scol == 0 then
+  local srow = tup_search[1]
+  local scol = tup_search[2]
+  if srow == 0 and scol == 0 and backwards == false then
     print 'no matching forward character'
+    return
+  end
+  if (srow == 0 and scol == 0 and backwards == true) or srow ~= crow
+    or (backwards == true and ccol < scol) then
+    print 'no matching backwards character'
     return
   end
   local copytext
   if backwards == false then
-    copytext = vim.api.nvim_get_current_line():sub(ccol, scol)
+    copytext = vim.api.nvim_get_current_line():sub(ccol+1, scol)
+    print(string.format([[%s %s:%s]], [[write -> into]], register, copytext))
   else
-    copytext = vim.api.nvim_get_current_line():sub(scol, ccol)
+    copytext = vim.api.nvim_get_current_line():sub(scol, ccol+1)
+    print(string.format([[%s %s:%s]], [[write <- into]], register, copytext))
   end
   vim.fn.setreg(register, copytext)
 end
 
 --TODO clarify if there is a cursor move api for lua ie for selecting
 ---- copy forward/backwards until first occurence of same symbol
-map('n', '-', ':lua cpy_to_matching_char(false, [[""]])', opts)
-map('n', '_', ':lua cpy_to_matching_char(true, [[""]])', opts)
+map('n', '-', ':lua CopyMatchingChar(false, [[""]])<CR>', opts)
+map('n', '_', ':lua CopyMatchingChar(true, [[""]])<CR>', opts)
 
 map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
@@ -87,8 +120,10 @@ map('v', '<leader>y', '"+y', opts)
 map('v', '<leader>dd', '"_dd', opts)
 --map('v', '<leader>dd', '"_d', opts)
 map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
---map('n', '<leader>,', [[:match StatusLineTerm /\<<C-R><C-W>\>/<CR>]], opts)
+map('t', '<C-q>', [[<C-\><C-n>]], opts) --exit terminal
 
+-- write path into variable user_cwd
+-- keybinding to cd terminal to user_cwd
 -- replace current word/"/'/) with what is in default register
 --vim.api.nvim_set_keymap('n', '<leader>w', 'viwpgvy', { noremap = true })
 --vim.api.nvim_set_keymap('n', '<leader>"', 'vi"pgvy', { noremap = true })
@@ -143,12 +178,13 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 -- vim-easy-align TODO
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
 -- :set nowrapscan => error out on end of file
--- :set lazyredraw => skip until commands are finished
 -- g; and g, for cursor editing position history, ''|`` for cursor position history
 -- :g for actions on regex match
+-- /regex/n nth line below/above match, d/regex//0 to delete to first line matching regex incl line
 -- regex matches: \r for newline and \n for null character, except in search lol
 -- K for move text to next line
 -- C-r C-w insert word under cursor
+-- ":, @: reruns last command :"p would print it to the buffer, :! for output
 
 -- insertion mode
 -- C-w delete last word, C-u delete until start of line
@@ -227,7 +263,9 @@ map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- referen
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
 
 ---- telescope ---- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
+-- vimgrep AA also sends into a quickfix
 -- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
+-- :norm {Vim} run command on every line
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
 map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
 map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], opts) -- keybindings

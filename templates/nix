@@ -1,0 +1,7 @@
+non-nix system:
+something broke
+nix-env -f '<nixpkgs>' -iA nixUnstable
+nix-channel --udpate
+
+todo:
+how to initialize a flake.nix
