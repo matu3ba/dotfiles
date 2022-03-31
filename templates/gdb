@@ -1,0 +1,8 @@
+breakpoints:
+break Sema.zirStoreNode if inst == 999
+
+pretty printing:
+echo 'source ${HOME}/dev/git/zig/zig/master/tools/zig_gdb_pretty_printers.py' >> ${HOME}/.gdbinit
+source ${HOME}/dev/git/zig/zig/master/tools/stage1_gdb_pretty_printers.py
+source ${HOME}/dev/git/zig/zig/master/tools/stage2_gdb_pretty_printers.py
+p variable

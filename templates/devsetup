@@ -1,0 +1,24 @@
+Any language docs
+https://devdocs.io
+github.com/freeCodeCamp/devdocs
+
+c/c++
+github.com/friendlyanon/cmake-init:
+- vscode integration
+- clion integration
+- clang-tidy
+- cppcheck
+- doxygen
+- lcov
+- clang-format 11
+- codespell
+- conan or vcpkg
+
+github.com/jasmcaus/tau
+- micro unit testing framework
+TODO (upstream): abi tests
+TODO (upstream): instructions for safety tests
+TODO (upstream): goals and non-goals
+
+TODOs: build framework setup (meson+ninja)
+TODOs: best sanitizer?

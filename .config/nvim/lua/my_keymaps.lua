@@ -107,7 +107,11 @@ _G.CopyMatchingChar = function(backwards, register)
   vim.fn.setreg(register, copytext)
 end
 
+--SAME LINE SELECTION AND COPY MOVEMENTS--
 --TODO clarify if there is a cursor move api for lua ie for selecting
+--TODO select forward + backwards
+--TODO copy forward + backwards, if only 1 possible match on same line
+--for "",'',``,(),{},[]
 ---- copy forward/backwards until first occurence of same symbol
 map('n', '-', ':lua CopyMatchingChar(false, [[""]])<CR>', opts)
 map('n', '_', ':lua CopyMatchingChar(true, [[""]])<CR>', opts)
@@ -144,7 +148,6 @@ map('n', '[b', '<cmd>bp<CR>', opts)
 map('n', ']q', '<cmd>qn<CR>', opts)
 map('n', '[q', '<cmd>qp<CR>', opts)
 -- use ]-m jump to next method for C-languages
--- ]-c used in gitsigns
 -- swap left alt to ctrl and c-n and c-p down and up the options
 
 -- venn.nvim: enable or disable keymappings
@@ -228,7 +231,7 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
 map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts) -- **g**oto definition
 map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts) -- **g**oto signature
+--map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts) -- **g**oto signature TODO fix
 map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts) -- **g**oto rename
 map('n', '[e', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts) -- next error
 map('n', ']e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts) -- previous error
@@ -292,6 +295,25 @@ map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]]
 --map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
 --map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)   -- run_script
 
+
+---- gitsigns ---- in file git operations (:Gitsigns debug_messages)
+-- mappings are workaround of https://github.com/lewis6991/gitsigns.nvim/issues/498
+--map('n', ']c', '<cmd>Gitsigns next_hunk<CR>', opts)
+--map('n', '[c', '<cmd>Gitsigns prev_hunk<CR>', opts)
+--map('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', opts)
+--map('v', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>', opts)
+--map('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', opts)
+--map('v', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>', opts)
+--map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', opts)
+--map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', opts)
+--map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', opts)
+--map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', opts)
+--map('n', '<leader>hb', '<cmd>Gitsigns blame_line<CR>', opts)
+--map('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>', opts)
+--map('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>', opts)
+--map('n', '<leader>hD', '<cmd>Gitsigns diffthis "~"<CR>', opts)
+--map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>', opts)
+
 ---- harpoon ---- buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140
 map('n', '<leader>j', [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- bare means fast navigate
@@ -312,6 +334,11 @@ map('n', '<leader>mrl', [[<cmd>lua require("harpoon.mark").rm_file(3)<CR>]], opt
 map('n', '<leader>cj', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means terminal
 map('n', '<leader>ck', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
 map('n', '<leader>cl', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
+-- send strings from register as command + execute it
+map('n', '<leader>sj', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts)
+map('n', '<leader>sk', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('k') .. "\n")<CR>]], opts)
+map('n', '<leader>sl', [[<cmd>lua require("harpoon.term").sendCommand(3, vim.fn.getreg('l') .. "\n")<CR>]], opts)
+
 map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
 map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
 map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files

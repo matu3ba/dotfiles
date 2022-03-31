@@ -27,3 +27,8 @@ test "printErrorSet" {
     printErrorSet(testme);
 }
 //switch(err) {....} inside catch |err| {....} the compiler will yell at you for all unhandled errors
+
+fn range(len: usize) []void {
+  return @as([*]void, undefined)[0..len];
+}
+for (range(10)) |_, i| { ... }

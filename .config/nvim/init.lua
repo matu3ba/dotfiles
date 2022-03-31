@@ -8,6 +8,7 @@ require 'my_telesc'
 --require('my_dap') -- idea setup one small step for vimkind
 require 'my_keymaps'
 require 'my_cmds'
+require 'my_gitsign'
 vim.cmd [[colorscheme material]]
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
@@ -69,6 +70,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp.close()                                      --DEBUG
+--
+-- convert windows line ending to linux:
+-- :%s/^M$//
 
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$

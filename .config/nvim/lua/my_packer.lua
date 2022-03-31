@@ -6,20 +6,32 @@ return require('packer').startup(function()
   use { 'nvim-lua/lsp-status.nvim' } -- necessary for statusline
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>m
-  use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end, } --:GuessIndent
-  --use { 'ThePrimeagen/git-worktree.nvim' } -- idea git worktree setup
-  --use { 'shadmansaleh/lualine.nvim',  requires = {'kyazdani42/nvim-web-devicons' } }
+  use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
+  --use { 'ThePrimeagen/git-worktree.nvim' } -- TODO project setup
+  --use { 'shadmansaleh/lualine.nvim',  requires = {'kyazdani42/nvim-web-devicons' } } -- TODO fix yourself
   ---- lsp+competion ----
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
   use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets
   ---- shiny stuff ----
-  --gitsigns: ]c, [c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
-  use { 'lewis6991/gitsigns.nvim', branch = 'main', requires = { 'nvim-lua/plenary.nvim' }, config = function() require('gitsigns').setup() end, }
-  use { 'ggandor/lightspeed.nvim' } --{s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
+  --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
+  --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
+  use { 'lewis6991/gitsigns.nvim', branch = 'main' }
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+  -- TODO use { 'axieax/urlview.nvim' } -- :Telescope urlview
+  --use { 'ggandor/lightspeed.nvim' } --{s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
+  --requires = { 'tpope/vim-repeat' }
+  -- leap: can also target character at end of line
+  -- leap: s|S char1 char2 (<space>|<tab>)* label?
+  -- leap: z|Z means /|?
+  -- leap: x|X means extend|exclude
+  -- leap: gs in all other windows on the tab page
+  -- leap: enter repeates, tab reverses the motion
+  -- {s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
+  use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- TODO get used to enter for repeat
   use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
-  use { 'ThePrimeagen/harpoon' } -- <l> [m|c]key]mv|mc|mm
+  use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
@@ -72,6 +84,7 @@ return require('packer').startup(function()
   use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
 
+  --use { 'karb94/neoscroll.nvim', config = function() require('neoscroll').setup() end, }
   --use { 't-troebst/perfanno.nvim' } -- perf bottleneck visualizations
   --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
   --use { 'Vhyrro/neorg' } -- no use cases yet

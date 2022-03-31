@@ -29,18 +29,18 @@ local function load_options()
   vim.o.errorbells = false
   vim.o.hidden = true
   vim.o.hlsearch = true --false
+  vim.o.ignorecase = true --lower case chars also search for upper ones
   vim.o.incsearch = true --highlight as searching
   vim.o.isfname = vim.o.isfname .. ',@-@'
+  vim.o.laststatus = 3 --one global statusline instead of per window
   vim.o.lazyredraw = true -- do not redraw screen in mid of macro
   vim.o.mouse = 'nv'
   vim.o.number = true
   vim.o.relativenumber = true
-  --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
   vim.o.shortmess = vim.o.shortmess .. 'c'
   vim.o.showmode = false
   vim.o.signcolumn = 'yes'
   vim.o.smartcase = true --automatic lower except when upper chars
-  vim.o.ignorecase = true --lower case chars also search for upper ones
   vim.o.smartindent = true
   vim.o.swapfile = false
   vim.o.termguicolors = true
@@ -48,6 +48,7 @@ local function load_options()
   vim.o.undofile = true
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
+  --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
 
   vim.wo.colorcolumn = '80'
   vim.wo.list = true

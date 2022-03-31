@@ -28,7 +28,7 @@ alias readcommentsectionELF='readelf -p .comment'
 #usb-stick: ls /dev/disk/, fdisk /dev/sdX, p,d,n,t=>b,a(activate), mkfs -t vfat /dev/sdX1
 #hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)
 #uncompress/untar/unzip: gzip -dk file.gz, tar -xf archive.tar.xz, unzip archive.zip
-#compress/tar/zip: gzip -k files, tar -f? folder, zip folder
+#compress/tar/zip: gzip -k files, tar -f? folder, zip -r folder.zip folder
 #run commands at specific time: at (programs needs daemon config after installation)
 #or in 1h `sleep 3600 ; ./run.sh`
 #tmpfs: df -h /tmp
@@ -74,6 +74,7 @@ alias aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.confi
 alias aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
 alias  aliases_oh='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_oh"'
 #alias      initrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/ion/initrc"'
+# factory defaults: neovim --clean, neovim -u init.lua, neovim --clean -u init.lua file.zig (debugging plugins)
 
 alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         fbi='./configure && make && sudo make install-strip && sudo firecfg && sudo -K'
