@@ -6,7 +6,7 @@ return require('packer').startup(function()
   use { 'nvim-lua/lsp-status.nvim' } -- necessary for statusline
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>m
-  use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
+  --use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
   --use { 'ThePrimeagen/git-worktree.nvim' } -- TODO project setup
   --use { 'shadmansaleh/lualine.nvim',  requires = {'kyazdani42/nvim-web-devicons' } } -- TODO fix yourself
   ---- lsp+competion ----

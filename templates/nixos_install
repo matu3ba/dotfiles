@@ -1,0 +1,115 @@
+based on "NixOS Installation Guide" by Wil T
+iso installation on system
+
+sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fdatasync
+
+sudo fdisk /dev/sdX
+p print
+n new
+w write
+
+dos:
+o (dos disk label)
+n new
+p primary (4 primary in total)
+1 (partition number [1/4])
+2048 first sector
++500M last sector
+rm signature (Y), if ex. => warning of overwriting existing system, could use wipefs
+n
+p
+2
+default (fill up partition)
+default (fill up partition)
+w (write)
+
+gpt/uefi:
+g (gpt disk label)
+n
+1 (partition number [1/128])
+2048 (first sector)
++500M (last sector)
+t
+1 (EFI System)
+n
+2
+default (fill up partition)
+default (fill up partition)
+w (write)
+
+
+lsblk
+sudo mkfs.fat -F 32 /dev/sdX1
+sudo fatlabel /dev/sdX1 NIXBOOT
+sudo mkfs.ext4 /dev/sdX2 -L NIXROOT
+sudo mount /dev/disk/by-label/NIXROOT /mnt
+sudo mkdir -p /mnt/boot
+sudo mount /dev/disk/by-label/NIXBOOT /mnt/boot
+
+swap file (only simple on uefi4)
+sudo dd if=/dev/zero of=/mnt/.swapfile bs=1024 count=2097152 (2GB size)
+sudo chmod 600 /mnt/.swapfile
+sudo mkswap /mnt/.swapfile
+sudo swapon /mnt/.swapfile
+
+nixos config
+sudo nixos-generate-config --root /mnt
+cd /mnt/etc/nixos/
+
+sudo vim configuration.nix
+1. keyboard
+services.xserver.layout = "de";
+2. user account
+users.users.jan = {
+  isNormalUser = true;
+  initialPassword = "p@ssw0rd123";
+  extraGroups = [ "wheel" ]; # consider "networkmanager"
+};
+
+useful:
+networking.hostName = "testNix";
+
+environment.systemPackages = with pkgs; [
+    vim
+    wget
+    firefox
+];
+
+
+after finishing configuration:
+cd /mnt
+sudo nixos-install
+if necessary, add:
+boot.loader.grub.device = "/dev/sda"; #or "nodev" for efi only
+
+after startup:
+passwd
+
+internet:
+use
+network.wifi.enabled = true;
+xor
+network.networkmanager.enabled = true;
+(they are mutually exclusive).
+
+on breakage:
+boot with your startup medium and mount your partition
+sudo mount /dev/disk/by-label/NIXROOT /mnt
+cd /mnt/etc/nixos
+sudo vim configuration.nix
+#fix your config (outside of of the installer menu)
+sudo nixos-install
+# should print in the first line that it used the config from
+# /mnt/etc/nixos/configuration.nix
+nixos-rebuild switch -I nixos-config=pathto/configuration.nix.
+
+after installation (without boot medium) use
+nixos-rebuild switch
+for offline installation without new packages use
+nixos-rebuild switch --option substitute false
+
+TODO rollback links
+
+home_manager:
+TODO figure out,
+if using flakes or profiles instead would be better

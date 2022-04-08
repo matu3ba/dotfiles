@@ -1,3 +1,7 @@
+#include <stdint.h> // uint32_t, uint8_t
+#include <stdlib.h> // exit
+#include <stdio.h>  // fprintf
+
 // Might get superfluous with new C standard (C2x).
 #ifndef GENERATE_ENUM_STRINGS
     #define DECL_ENUM_ELEMENT( element ) element
@@ -52,5 +56,70 @@ int32_t Int_CeilDiv(int32_t x, int32_t y)
     return (x + y - 1) / y;
 }
 
-// write assert implementation macros with 0BSD clause and less boilerplate
-// idea: https://github.com/STMicroelectronics/STM32CubeF7
+// assume: little endian
+void printBits(int32_t const size, void * const ptr)
+{
+    int status = 0;
+    unsigned char *b = (unsigned char*) ptr; // generic pointer (void)
+    unsigned char byte;
+    for (int32_t i = size-1; i >= 0; i-=1)
+    {
+        for (int32_t j = 7; j >= 0; j-=1)
+        {
+            unsigned char byte = (b[i] >> j) & 1; // shift ->, rightmost bit
+            status = printf("%u", byte);
+            if (status < 0) abort(); // stdlib.h
+        }
+        status = printf("%x", b[i]);
+        if (status < 0) abort();
+    }
+    //printf(" ");
+    status = puts(""); // write empty string followed by newline
+    if (status < 0) abort();
+}
+
+
+#ifndef __cplusplus // disable clang complains
+#ifdef TRUE
+#error "TRUE already defined"
+#else
+#define TRUE (1==1)
+#endif
+
+#ifdef FALSE
+#error "False already defined"
+#else
+#define FALSE (!TRUE)
+#endif
+
+// existence of typedefs can not be checked within macros
+//#define _TYPEDEF_
+typedef enum { false = FALSE, true } bool;
+//#endif
+
+// potential necessity: custom printf and exit for the platform
+// unfortunately we dont have __COLUMN__ as macro
+#define assert(a) if( !( a ) )                            \
+{                                                         \
+    fprintf( stderr, "%s:%d assertion failure of (%s)\n", \
+                             __FILE__, __LINE__, #a );    \
+    exit( 1 );                                            \
+}
+
+#ifdef static_assert
+#error "static_assert already defined"
+#else
+#define static_assert _Static_assert // since C11
+#endif
+
+#ifdef IS_SIGNED
+#error "IS_SIGNED already defined"
+#else
+#define IS_SIGNED(Type) (((Type)-1) < 0)
+#endif
+
+//static_assert(IS_SIGNED(char) == false, "char is signed");
+static_assert(IS_SIGNED(char), "char is unsigned");
+#endif // __cplusplus
+
+// TODO ifdef error else define macro to make macros shorter

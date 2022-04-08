@@ -1,7 +1,15 @@
 non-nix system:
 something broke
+DONT USE THIS AS THIS PINS YOUR DEPENDENCIES ON SPECIFIC VERSION
 nix-env -f '<nixpkgs>' -iA nixUnstable
 nix-channel --udpate
 
-todo:
-how to initialize a flake.nix
+__ home-manager __
+manages ${HOME}
+should be used as standalone to work everywhere, where nix works
+
+__ flakes __
+project-specific setups, overlays etc
+
+__ profiles __
+not platform-independent and do not work anywhere you have nix

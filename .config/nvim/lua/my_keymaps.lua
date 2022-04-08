@@ -45,7 +45,7 @@ map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- idea |copy_history:| keypress to extract search properly from history without \V
 map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
-map('n', 'K', 'i<CR><ESC>', opts) -- move text after cursor to next line (opposite of J join)
+map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor to next line
 --TODO
 --nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 --nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
@@ -233,6 +233,7 @@ map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts) -- **g**oto defini
 map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
 --map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts) -- **g**oto signature TODO fix
 map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts) -- **g**oto rename
+map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts) -- Kuckstu definition
 map('n', '[e', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts) -- next error
 map('n', ']e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts) -- previous error
 map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- code action
@@ -253,7 +254,6 @@ map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- referen
 --      \ 'keymap.bigger_preview': '<C-k>',
 --      \ }
 
---map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts) -- Kimme_info
 --map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
 --map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
 --map('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)

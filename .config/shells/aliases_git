@@ -1,6 +1,6 @@
 ## Git aliases
 # gitlab checkout MR: git mr branch number
-# github checkout PR: git fetch remote_name pull/ID/head:BRANCHNAME
+# github checkout PR: git fetch upstream pull/ID/head:BRANCHNAME
 
 # git bare: git clone --bare url reponame
 # git switch master
@@ -26,6 +26,10 @@
 
 #rmgitfilesrecursive
 #find . -type d -name ".git" && find . -name ".gitignore" && find . -name ".gitmodules"'
+
+#switch to other branch in bare repo
+#git branch -c new
+#no within worktree folder/branch folder: fetch + merge
 
 alias gwt='git worktree'
 alias grst='git restore'

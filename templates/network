@@ -1,0 +1,8 @@
+https://discourse.nixos.org/t/set-up-wifi-minimal-system/8554
+wpa_supplicant
+wcli
+
+networkmanager
+networkctl list
+nmcli
+nmtui

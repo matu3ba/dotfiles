@@ -10,13 +10,14 @@
 -Wuseless-cast -Walloca \
 // safety
 -Wstack-usage=8388608 \
--Warray-bounds -Wcast-align -Wpacked \
+-Warray-bounds -Wpacked \
 -Wpointer-arith \
 -Wnormalized -Wlogical-op
 -Wnon-virtual-dtor
 -Wsuggest-final-methods -Wsuggest-final-types
 -Wsuggest-override \
 -ftrapv \
+-Wcast-align \ // *char -> *u32 can be fine=>annoying
 // optimizations
 -Wunsafe-loop-optimizations \
 -Wvector-operation-performance
@@ -28,7 +29,7 @@
 -std=c17
 // ptr cast
 -Wcast-qual
--Weverything
+-Weverything: // -Wcast-align *char -> *u32 can be fine=>annoying
 -Wsuggest-attribute={pure,const,noreturn,format,cold,malloc}
 
 // redundant: -Wstrict-aliasing=1

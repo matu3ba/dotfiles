@@ -3,18 +3,18 @@
 alias ls='ls --color=auto --hyperlink=auto --group-directories-first -h'
 alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
 alias l='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
-alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
-alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias ccbuild='mkdir -p build; cd build;' # change create build
 alias ccdebug='mkdir -p debug; cd debug;' # change create debug
 alias cdnvimplugs='cd ${HOME}/.local/share/nvim/site/pack/packer/start'
 alias mold_make='${HOME}/dev/git/cpp/mold/mold -run make -j8'
+alias readcommentsectionELF='readelf -p .comment'
+alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
+alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 #alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
 ## TODO remove non-unix and non-portable symbols in filenames and folder names
 alias helpuser='echo "appimage_update gitreb gitrm replunderscore"'
 alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxla tbirdla"'
-alias readcommentsectionELF='readelf -p .comment'
 #TIMENOW_SEC=$(date +"%Y%m%d_%H%M%S")
 #FILENAME=somefile.tar.gz
 #echo "filename and remove 2 dots from end + append filetype pdf: ${FILENAME%%.*}.pdf"
@@ -28,6 +28,8 @@ alias readcommentsectionELF='readelf -p .comment'
 #usb-stick: ls /dev/disk/, fdisk /dev/sdX, p,d,n,t=>b,a(activate), mkfs -t vfat /dev/sdX1
 #hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)
 #uncompress/untar/unzip: gzip -dk file.gz, tar -xf archive.tar.xz, unzip archive.zip
+#tar x extract, z through gzip, f file as input, O extract to stdout
+#write usb stick: dd if=file.iso of=/dev/disk2 bs=4M status=progress conv=fdatasync
 #compress/tar/zip: gzip -k files, tar -f? folder, zip -r folder.zip folder
 #run commands at specific time: at (programs needs daemon config after installation)
 #or in 1h `sleep 3600 ; ./run.sh`
@@ -72,7 +74,10 @@ alias     aliases='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.confi
 alias      bashrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
 alias aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
 alias aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
-alias  aliases_oh='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_oh"'
+#oh shell can not fix the underlying misconceptions of shell:
+#https://arcan-fe.com/2022/04/02/the-day-of-a-new-command-line-interface-shell/
+#alias  aliases_oh='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_oh"'
+alias  templates='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 #alias      initrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/ion/initrc"'
 # factory defaults: neovim --clean, neovim -u init.lua, neovim --clean -u init.lua file.zig (debugging plugins)
 
@@ -104,44 +109,23 @@ alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
 # GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig
 # curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
 # the following zb1 aliases dont work for stage2
-#alias    zb1='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/zig/zig-bootstrap/out/build-llvm-native-native && cmake .. -GNinja && ninja'
-#alias    zb2='./zig-out/bin/zig build --zig-lib-dir lib -Denable-llvm' # untested due to zb1 not working
-#alias zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && time ${HOME}/dev/git/cpp/mold/mold -run ninja'
-#alias zb2='time ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm' #-Dskip-non-native
-#-Dstatic-llvm=false does not work with bootstrap
-## glibc compilation:
-#alias  zb1='cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/zig/zig-bootstrap/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
-#alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
-#alias  zt2='./stage2/bin/zig build test'
-## compilation only works for stage1, ie for musl:
-#./build -j2 x86_64-linux-musl native
-## only compile baseline to figure out if it is an abi/feature detection problem
-#cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja
-#cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${HOME}/local/llvm13-debug" -GNinja && /usr/bin/time -v ninja
-alias   zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-alias zb1nb='cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
-alias zbdeb='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+#./build/zig test lib/std/fmt.zig --zig-lib-dir lib --main-pkg-path lib/std
+#alias zb1fancy='${HOME}/dev/git/buildzig/zig-bootstrap.git/tmp/out/zig-x86_64-linux-musl-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/buildzig/zig-bootstrap.git/musl/out/host'
+alias   zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias zb1nb='cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
+alias zbdeb='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 #alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 alias zboot='${HOME}/.local/zig/zig'
 alias zbi='${HOME}/dev/git/zig/zig/bisect/build/zig'
-alias zigstd='cd ${HOME}/dev/git/zig/zig/master/lib/std'
+alias zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zig/zig/master/lib/std'
 alias zdev='${HOME}/dev/git/zig/zig/dev/build/zig'
 #alias zb2
 #alias zt2
 #also breaks on stage2 (no difference)
-#alias zb1fancy='${HOME}/dev/git/buildzig/zig-bootstrap.git/tmp/out/zig-x86_64-linux-musl-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/buildzig/zig-bootstrap.git/musl/out/host'
-#cmake ..
-#make install
-# builds, but cannot compile stuff
-# solution: use stupid rsync approach and things after host/ is generateed.
-#alias  zb2='/usr/bin/time -v ./build/zig build --zig-lib-dir lib --prefix $(pwd)/stage2 -Denable-llvm -Dconfig_h=build/config.h' #-Dskip-non-native
-#alias zig2='$HOME/dev/git/buildzig/zig-bootstrap.git/musl/out/zig-x86_64-linux-musl-native/bin/zig'
 #./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -fLLVM
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -ofmt=c
-#alias    zb2='.build/zig build -Denable-llvm' #-Denable-llvm -Dskip-non-native
-#alias   zdev='${HOME}/dev/git/zig/zig/dev/zig'
 alias rmzigallcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
 alias rmzigcache='rm -fr zig-cache/ zig-out/'
 
@@ -185,9 +169,11 @@ alias l='exa'
 alias du='dust'
 alias rgv='rg --vimgrep'
 #rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
+#rg -g '*.rs' to ignore file ending
 #rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
 #rg --vimgrep lines+columns -u[u[u]] unrestricted
 #rg -F 'fixed_string'
+#rg '\bword\b' word boundaries
 #PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 #{n}(exactly),{n,m}(at least n, no more than m),
 
