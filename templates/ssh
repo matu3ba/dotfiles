@@ -1,0 +1,11 @@
+
+checking, if ssh agent is listening on port 22
+netstat -atpn | grep 22
+
+checklist ssh correctly running
+1. enable logs: TODO
+2. network works?
+3. ip table correct?
+4. ssh listening?
+5. firewall or netfilter, firejail etc blocking things?
+6. where to look for more help

@@ -33,3 +33,27 @@ fn CreateStructType(comptime T: type) type {
     }
 }
 
+pub fn main() !void {
+    var path_buffer: [1000]u8 = undefined;
+    var n_pbuf: u64 = 0; // next free position
+    var arena_instance = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena_instance.deinit();
+    const arena = arena_instance.allocator();
+    const args: [][:0]u8 = try std.process.argsAlloc(arena);
+    defer std.process.argsFree(arena, args);
+    for (args) |arg| {
+        std.debug.print("{s}\n", .{arg});
+    }
+    std.mem.copy(u8, path_buffer[n_pbuf..], args[1]);
+    n_pbuf += args[1].len;
+
+    // alternative:
+    var it = try std.process.argsWithAllocator(arena);
+    defer it.deinit(); // no-op unless WASI or Windows
+    _ = it.next(); // ignore binary name
+    const str_ip = it.next().?;
+    const str_port = it.next().?;
+    try std.testing.expect(!it.skip());
+    _ = str_ip;
+    _ = str_port;
+}

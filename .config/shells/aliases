@@ -11,6 +11,7 @@ alias mold_make='${HOME}/dev/git/cpp/mold/mold -run make -j8'
 alias readcommentsectionELF='readelf -p .comment'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
+#pidof name, pgrep name, pgrep -P pid, pidstat -p 51648, ls /proc/pid
 #alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
 ## TODO remove non-unix and non-portable symbols in filenames and folder names
 alias helpuser='echo "appimage_update gitreb gitrm replunderscore"'
@@ -45,8 +46,6 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 #gdb: q quit,
 #gdb: checkpoint (save snapshot), info checkpoints, restart checkid
 #gdb: delete checkpoint checkid,
-#
-#zellij TODO use space-w as prefix for actions
 
 # help
 # tldr, man -f page ie man 2 select,
@@ -55,9 +54,10 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 alias shared_folder_mnt='sshfs -p 3022 user@localhost:/home/user /home/misterspoon/VirtualBox\ VMs/shared_folder'
 alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-VPN (Split Tunnel)" vpn.rwth-aachen.de'
 #KVM
-#alias kvm_virsh='sudo virsh net-start default'
+##alias kvm_virsh='sudo virsh net-start default'
 # error: network default coult not be created
 # error: can not create virbr0: missing package
+#better use bare qemu commands for performance
 
 # appimages
 alias       viapp='${HOME}/.local/appimages/nvim.appimage'
@@ -113,7 +113,7 @@ alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
 #alias zb1fancy='${HOME}/dev/git/buildzig/zig-bootstrap.git/tmp/out/zig-x86_64-linux-musl-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/buildzig/zig-bootstrap.git/musl/out/host'
 alias   zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 alias zb1nb='cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja'
-alias zbdeb='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias zbdeb1='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 #alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 alias zboot='${HOME}/.local/zig/zig'
 alias zbi='${HOME}/dev/git/zig/zig/bisect/build/zig'

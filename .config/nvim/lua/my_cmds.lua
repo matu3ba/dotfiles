@@ -1,4 +1,4 @@
-local add_cmd = vim.api.nvim_add_user_command
+local add_cmd = vim.api.nvim_create_user_command
 local cmd_tn = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
 add_cmd('CCmd', cmd_tn .. 'lua/my_cmds.lua', {})
 add_cmd('CDap', cmd_tn .. 'lua/my_dap.lua', {})
@@ -12,6 +12,7 @@ add_cmd('CPl', cmd_tn .. 'lua/my_packer.lua', {})
 add_cmd('CSt', cmd_tn .. 'lua/my_statusline.lua', {})
 add_cmd('CTel', cmd_tn .. 'lua/my_telesc.lua', {})
 add_cmd('CTre', cmd_tn .. 'lua/my_treesitter.lua', {})
+add_cmd('CUtil', cmd_tn .. 'lua/my_utils.lua', {})
 add_cmd('CRel', function()
   local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
   for _, dir in ipairs(lua_dirs) do
@@ -22,20 +23,6 @@ add_cmd('CRel', function()
 end, {})
 -- TODO command that executes last command by sending content to open shell
 
-add_cmd('Replpdflatex', function()
-  --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
-  local filename = vim.fn.expand '%'
-  local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build " .. filename
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-
-add_cmd('Repltikzall', function()
-  local cmd = "terminal cd figures; watchexec -e tikz './build_tikz.sh'"
-  print(cmd)
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
 
 --map('v', '<leader>b', '"+y', opts)
 ---- TODO call a lua function to call correct builder
@@ -105,6 +92,24 @@ add_cmd('Pdffigure', function()
   vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf')
 end, {})
 
+add_cmd('Replpdflatex', function()
+  --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
+  local filename = vim.fn.expand '%'
+  local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build " .. filename
+  vim.cmd 'tabnew'
+  vim.cmd(cmd)
+end, {})
+add_cmd('Repllualatex', function()
+  local cmd = "terminal latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build main.tex"
+  vim.cmd 'tabnew'
+  vim.cmd(cmd)
+end, {})
+add_cmd('Repltikzall', function()
+  local cmd = "terminal cd figures; watchexec -e tikz './build_tikz.sh'"
+  print(cmd)
+  vim.cmd 'tabnew'
+  vim.cmd(cmd)
+end, {})
 add_cmd('Repltikzthis', function()
   local bashcmd = [[cd figures; watchexec -w ]]
     .. vim.fn.expand '%:t'
@@ -113,11 +118,6 @@ add_cmd('Repltikzthis', function()
     .. [['} \input myscript.tex'"]]
   --print(bashcmd)
   local cmd = 'terminal ' .. bashcmd
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('Repllualatex', function()
-  local cmd = "terminal latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build main.tex"
   vim.cmd 'tabnew'
   vim.cmd(cmd)
 end, {})

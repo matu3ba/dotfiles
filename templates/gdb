@@ -6,3 +6,8 @@ echo 'source ${HOME}/dev/git/zig/zig/master/tools/zig_gdb_pretty_printers.py' >>
 source ${HOME}/dev/git/zig/zig/master/tools/stage1_gdb_pretty_printers.py
 source ${HOME}/dev/git/zig/zig/master/tools/stage2_gdb_pretty_printers.py
 p variable
+
+ps -p pid (posix)
+pgrep pname
+pidof pname
+gdb> set follow-fork-mode child

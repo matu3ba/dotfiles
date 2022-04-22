@@ -91,10 +91,15 @@ PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
 #PATH=$PATH:"${HOME}"/src/hugo
 
+#TODO testing, if ssh agent is started correctly by gpg
 # there is no very reliable and simple other way to have ssh agent running
-eval "$(ssh-agent -s)"
+#eval "$(ssh-agent -s)"
 #trap "kill $SSH_AGENT_PID" exit
-trap "ssh-agent -k" exit
+#trap "ssh-agent -k" exit
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch 'gpg-agent'
+trap 'gpgconf --kill gpg-agent' exit
 
 eval "$(zoxide init bash)" # quickjumper
 

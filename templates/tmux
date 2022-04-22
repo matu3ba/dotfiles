@@ -1,0 +1,26 @@
+defaults:
+C-b
+panes:
+split %,"
+panes o,q x(kill)
+windows:
+c create, w list
+n next, p preview
+f find, , name & kill
+arrow keys movements (aweful!)
+help: bind-key ?
+
+* Enter ‘copy mode’ by pressing CTRL+b, [.
+* Use the arrow keys to go to the position from where you want to start copying.
+  Press CTRL+SPACE to start copying.
+* Use arrow keys to go to the end of text you want to copy.
+  Press ALT+w or CTRL+w to copy into Tmux buffer.
+* Press CTRL+b, ] to paste in a possibly different Tmux pane/window.
+
+copy mode in tmux is restricted to like 200 characters or so /.\
+https://superuser.com/a/956451
+
+bind-key [ copy
+bind-key ] paste
+
+better:

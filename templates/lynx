@@ -1,0 +1,10 @@
+arrow keys and 1-9 numpad for navigation
+p to print text
+
+lynx -dump input.html > output.txt
+
+shift+g show address of current document
+shift+e show address of selected link
+a to save address of document or link to book mark file
+Ctrl+s saves url of current page or link
+s or / to search in Lynx

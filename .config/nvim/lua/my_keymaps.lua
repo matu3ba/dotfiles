@@ -119,12 +119,16 @@ map('n', '_', ':lua CopyMatchingChar(true, [[""]])<CR>', opts)
 map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
-map('n', '<leader>y', '"+y', opts)
-map('v', '<leader>y', '"+y', opts)
+--map('n', '<leader>y', '"+y', opts) -- used default
+--map('v', '<leader>y', '"+y', opts) -- used default
+map('v', '<leader>D', '"_D', opts) -- stuff
+map('v', '<leader>d', '"_d', opts) -- stuff
 map('v', '<leader>dd', '"_dd', opts)
---map('v', '<leader>dd', '"_d', opts)
+-- note: vimscript can not handle marks in between commands
+map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
 map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
 map('t', '<C-q>', [[<C-\><C-n>]], opts) --exit terminal
+-- pasting without moving cursor: p`[       <<<--- without ]
 
 -- write path into variable user_cwd
 -- keybinding to cd terminal to user_cwd

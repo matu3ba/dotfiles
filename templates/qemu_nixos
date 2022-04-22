@@ -1,0 +1,64 @@
+excellent series
+https://dzone.com/articles/nixos-native-flake-deployment-with-luks-and-lvm
+
+#qemu-img create -f qcow2 NOME.img XG
+qemu-img create -f qcow2 nixos-test.img 20G
+#qemu-system-x86_64 -boot d -cdrom image.iso -m 512 -hda mydisk.img
+qemu-system-x86_64 \
+-enable-kvm -boot d \
+-cdrom nixos-minimal-21.11-x86_64-linux.iso \
+-serial mon:stdio \
+-m 2G -cpu host -smp 2 -hda nixos-test.img
+
+select console=ttyS0 to have it working in terminal
+
+#for some reason the following option does not work on the default minimal installer
+#-net user,hostfwd=tcp::10022-:22 \
+#-net nic
+passwd to change password of user nixos
+
+#-nographic
+# -append 'console=ttyS0' \
+#with ssh key added to the boot image or password set
+#-net user,hostfwd=tcp::10022-:22 \
+#on failure: check, if sshd is running: ps aux | grep sshd
+#ssh into machine with https://unix.stackexchange.com/a/124777
+#network interface for user and map localhost host port 10022 to VM port 22
+#-net user,hostfwd=tcp::10022-:22
+#ie usable with `ssh nixos@localhost -p10022` and `sshfd`:
+#`sudo sshfs nixos@localhost /mnt/droplet
+
+#virtio/libvirt necessary for grub selection without default + waiting
+#https://web.archive.org/web/20180104171638/http://nairobi-embedded.org/qemu_monitor_console.html
+#for IO to host terminal:
+#-serial stdio \ (only works on setting ttyS0 option in grub menu)
+#-nographic \ (broken)
+#serial console should be started automatically, but somehow is not
+#https://gist.github.com/lukasnellen/fe9b61cb9add581ef0215bd40c09c7c2#linux-console
+#to force ttyS0, one needs to adjust grub or "do your own grub with Kernel"
+#https://fadeevab.com/how-to-setup-qemu-output-to-console-and-automate-using-shell-script/
+#custom kernel: -kernel vmlinuz
+#-append "root=/dev/sda console=ttyS0" \
+#if successful, one can use pipes for communication, ie
+#`-serial pipe:/tmp/guest`, `mkfifo /tmp/guest.in /tmp/guest.out`
+#and `cat /tmp/guest.out` `printf "root\n" > /tmp/guest.in`
+
+#usage after installation
+#qemu-system-x86_64 -enable-kvm -boot d \
+#-m 2G -cpu host -smp 2 -hda nixos-test.img
+
+qemu-system-x86_64 -enable-kvm -boot d \
+-serial mon:stdio \
+-net user \
+-net nic \
+-m 2G -cpu host -smp 2 -hda nixos-test.img
+#-net user,hostfwd=tcp::10022-:22 \
+#-net nic \
+#-vga virtio #fixed on master?
+#-vga qxl
+#-vga std
+#-display sdl,gl=on
+#-display gtk,gl=on,show-cursor=on
+
+/Ctrl-alt-g/ -> free the mouse from inside the image.
+/Ctrl-alt-f/ -> toggle switch fullscreen.

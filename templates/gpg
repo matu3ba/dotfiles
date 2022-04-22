@@ -1,0 +1,85 @@
+-- gpg and ssh setup (+ remote hoster)--
+
+//new to crypto, use
+gpg --full-gen-key --expert
+
+// based on https://musigma.blog/2021/05/09/gpg-ssh-ed25519.html
+gpg --quick-generate-key \
+    'Your_Name <your.email@example.com> (optional_comment)' \
+    ed25519 cert YYYY-MM-DD
+// save keyfingerprint to env var
+export KEYFP=keyfingerprint
+// subkeys for sign, encrypt, authenticate
+gpg --quick-add-key $KEYFP ed25519 sign 1y
+gpg --quick-add-key $KEYFP cv25519 encr 1y
+gpg --quick-add-key $KEYFP ed25519 auth 1y
+// verify that it works
+gpg -K
+// use authentication subkey for authentication in SSH
+// here using GnuPG as an SSH agent
+
+// add to .bashrc (and adjust other gpg-agent entries)
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
+
+// list currently known ssh keys in gpg
+ssh-add -L
+// ssh allowed public keys on remote ssh machine
+~/.ssh/authorized_keys
+// alternatively, export gpg key into ssh format (for ssh-agent to use)
+gpg --export-ssh-key 0x1234ABCD1234ABCD
+
+gpg is correctly running?
+server running? pid?
+pid shell?
+strace connection request to gpg server
+
+-- git and remote hoster key signing --
+
+gpg --list-secret-keys --keyid-format LONG
+entry ssb   cv25519/GPG_KEY_ID
+gpg --armor --export GPG_KEY_ID
+git config --global user.signingkey GPG_KEY_ID
+
+// errors like secret key not available: git config --global gpg.program gpg2
+
+git commit -S -m "commit_message"
+git config --global commit.gpgsign true
+
+-- More commands --
+based on https://danielpecos.com/2019/03/30/how-to-rotate-your-openpgp-gnupg-keys/
+
+// old key signs the new one (local user -u)
+gpg --local-user F6D13162F2BEF65838F6C8E6BF3B5AFCD4480E60 --sign-key 31EFB482E969EB74399DBBC5E881015C8A55678B
+//and vice versa
+// Revoke old key pair
+gpg -a --gen-revoke KEYID > KEYID.rev
+// make key unusable
+gpg --import KEYID.rev
+// send keys
+gpg --keyserver hkp://pgp.mit.edu --send-keys KEYID KEYID2
+gpg --keyserver hkp://pgp.surfnet.nl --send-keys KEYID KEYID2
+// backup keypair
+// pub key
+gpg --export --armor KEYID > shortKEYID.pub
+// encrypt secret key
+gpg --export-secret-keys --armor KEYID | gpg --symmetric --armor > shortKEYID.sec
+// encrypt revocation certificate created during key creation
+cat ~/.gnupg/openpgp-revocs.d/KEYID.rev |  gpg --symmetric --armor > shortKEYID.rev
+
+// same thing for subkeys
+gpg --export-secret-subkeys --armor shortKEYID | gpg --symmetric --armor > shortKEYID-subkeys.sec
+// delete master key from keyring
+gpg --delete-secret-key shortKEYID
+// import just the subkeys
+cat shortKEYID-subkeys.sec | gpg --decrypt | gpg --import
+// import public key
+cat shortKEYID.pub| gpg --import
+// set trust to ultimate
+gpg --edit-key KEYID
+trust
+// confirm the trust
+gpg --edit-key KEYID
+// following will not work, because we dont have secret master key
+addkey
