@@ -28,7 +28,14 @@ test "printErrorSet" {
 }
 //switch(err) {....} inside catch |err| {....} the compiler will yell at you for all unhandled errors
 
-fn range(len: usize) []void {
+fn range(len: usize) []const void {
   return @as([*]void, undefined)[0..len];
 }
-for (range(10)) |_, i| { ... }
+// usage (i will increment from 0->9):
+//for (range(10)) |_, i| { ... }
+
+// switch on union field
+fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {
+    if (self != field) return null;
+    return @field(self, @tagName(field));
+}

@@ -18,9 +18,14 @@
 
 #show specific file on revision/commit
 #git show REVISION:path/to/file
+#$get combined diff
+#git show -m
 # TODO figure out how to make the following scriptable to find successor of 894e8b4e93d8f3
 #git log --reverse --ancestry-path 894e8b4e93d8f3^..master | tail -1
 #git rev-list --ancestry-path commit1..commit2 | tail -1
+#history to specific function of file
+#git log -L :function:path/to/file
+#git log --name-status --follow -M50% -- pathtofile
 
 # github referencing: y for current commit URL
 
@@ -37,6 +42,7 @@ alias g='git'
 #ga -A all files, ga . new+modified files, ga -u deleted+modified files
 alias ga='git add'
 alias gaa='git add -A'
+alias gap='git apply'
 
 alias gb='git branch'
 alias gba='git branch -avv'
@@ -138,6 +144,7 @@ alias gma='git merge --abort'
 alias gpush='git push'
 alias gpushd='git push --dry-run'
 
+alias gsta='git stash'
 alias gstapush='git stash push'
 alias gstaa='git stash apply'
 alias gstac='git stash clear'

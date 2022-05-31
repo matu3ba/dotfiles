@@ -1,3 +1,9 @@
+https://interrupt.memfault.com/blog/arm-cortexm-with-llvm-clang
+clang usage:
+$make clean && CLI_CFLAG_OVERRIDES="-Weverything -Wno-error" \
+  COMPILER=clang make &> compilation_results.txt
+$grep -o "\[\-W.*\].*" compilation_results.txt | sort -u
+
 -g -Wall -Wextra -Werror \
 -Wpedantic -pedantic-errors \
 -Wconversion -Wconversion-extra -Wdouble-promotion \

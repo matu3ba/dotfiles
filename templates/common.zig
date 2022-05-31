@@ -57,3 +57,29 @@ pub fn main() !void {
     _ = str_ip;
     _ = str_port;
 }
+
+
+
+fn maxAsciiDigits(comptime UT: type) u64 {
+    return std.fmt.count("{d}", .{std.math.maxInt(UT)});
+}
+// ie for struct CtrlMsg with field testnr we can get the type with:
+//const maxsize_testnr: u64 = maxAsciiDigits(std.meta.fieldInfo(CtrlMsg, .testnr).field_type);
+
+fn masking() !void {
+    var sigabrtmask = std.bit_set.ArrayBitSet(u32, @typeInfo(sigset_t).Array.len);
+    comptime sigabrtmask.initEmpty();
+    comptime sigabrtmask.set(SIG.ABRT);
+    sigprocmask(SIG.UNBLOCK, &sigabrtmask, null);
+}
+
+//const unidirect = std.meta.activeTag(extra.parent) != std.meta.activeTag(extra.child);
+
+fn arraybitset() void {
+    comptime var sigabrtmask_bitset = std.bit_set.ArrayBitSet(u32, @typeInfo(sigset_t).Array.len).initEmpty();
+    var sigabrtmask: system.sigset_t = undefined;
+    comptime sigabrtmask_bitset.set(SIG.ABRT);
+    inline for (sigabrtmask_bitset.masks) |mask, i|
+        sigabrtmask[i] = mask;
+    sigprocmask(SIG.UNBLOCK, &sigabrtmask, null);
+}

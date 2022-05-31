@@ -3,13 +3,15 @@ local map = vim.api.nvim_set_keymap
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
--- idea:
---        , prefix for all window operation mappings (e.g. splits, tabs, switching, file drawer etc)
---        <Space> prefix for fuzzy finding mappings (e.g. files, buffers, helptags etc)
---        ; prefix for plugin operation mappings (e.g. running tests, easy motions etc)
---        \ prefix for my find and replace helpers, \ is unmapped!
---        ' works good with left+right hand
---   Ctrl-s shell stuff
+-- Principle:
+--  look for better prefix than , for window navigation, tab nvagiation mappings (splits, tabs, switching, file drawer etc)
+--  TODO  <Space> prefix for fuzzy finding mappings (e.g. files, buffers, helptags etc)
+--  TODO  ; prefix for plugin operation mappings (e.g. running tests, easy motions etc)
+--  TODO  \ prefix for my find and replace helpers, \ is unmapped!
+--  TODO  _- mappings?
+--  TODO conflicting keybinding: YSurround yS, ys
+--  TODO conflicting keybinding: comment_toggle_blocks/linewise gb,gc
+--  <C-s> shell stuff
 --    steal+adapt telescope keymappings:
 --    https://github.com/ThePrimeagen/.dotfiles/blob/master/nvim/.config/nvim/plugin/lsp.vim
 -- idea use C-pr for selecting project, ie via zoxide history
@@ -39,12 +41,16 @@ map('', '<right>', '<nop>', opts)
 --map <A-x> viw"+x
 -- leader + 1 letter: common text operation
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
-map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
---map('n', '*', [[:keepjumps normal! mi*`i<CR>]], opts) -- no autojump
+-- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
+-- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
+-- TODO evaluate, if current mapping is good or "_diwP needed
+--map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
+map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
+map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- idea |copy_history:| keypress to extract search properly from history without \V
-map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
+--map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
 map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor to next line
 --TODO
 --nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
@@ -122,7 +128,7 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>D', '"_D', opts) -- stuff
-map('v', '<leader>d', '"_d', opts) -- stuff
+--map('v', '<leader>d', '"_d', opts) -- stuff, TODO conflicting keybinding
 map('v', '<leader>dd', '"_dd', opts)
 -- note: vimscript can not handle marks in between commands
 map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
@@ -140,15 +146,38 @@ map('t', '<C-q>', [[<C-\><C-n>]], opts) --exit terminal
 
 -- color switching --
 map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
--- spell -- [s]s,z=,zg add to wortbook, zw remove from wordbook
+---- spell ---- [s]s,z=,zg add to wortbook, zw remove from wordbook
 map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
--- tab navigation --
+---- tab navigation ----
 map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
--- buffer navigation --
-map('n', ']b', '<cmd>bn<CR>', opts)
-map('n', '[b', '<cmd>bp<CR>', opts)
--- error navigation
+-- next,previous,specific number gt,gT,num gt
+-- TODO prefix for left hand to keep hjl for navigation
+--map('n', ',t', '<cmd>tabnew<CR>', opts) -- Newtab (like in browser)
+--map('n', ',w', '<cmd>tabclose<CR>', opts) -- Closetab (like in browser)
+---- window navigation ----
+--map('n', ',q', ':q<CR>', opts) -- quit
+--map('n', ',c', ':close<CR>', opts) -- close window unless its the last one
+--map('n', ',o', ':only<CR>', opts) -- close all windows but this one
+--map('n', ',h', '<C-w>h', opts) -- left
+--map('n', ',j', '<C-w>j', opts) -- down
+--map('n', ',k', '<C-w>k', opts) -- up
+--map('n', ',l', '<C-w>l', opts) -- right
+--map('n', ',s', '<C-w>s', opts) -- split, TODO fixup plugin
+--map('n', ',v', '<C-w>v', opts) -- vsplit
+--map('n', ',S', '<cmd>Sexplore<CR>', opts) -- Sexplore
+--map('n', ',V', '<cmd>Vexplore<CR>', opts) -- Vexplore
+--map('n', ',E', '<cmd>Explore<CR>', opts) -- Explore
+---- buffer navigation ----
+--map('n', ']b', '<cmd>bn<CR>', opts)
+--map('n', '[b', '<cmd>bp<CR>', opts)
+map('n', ',e', '<cmd>bn<CR>', opts) -- previous buffer
+map('n', ',y', '<cmd>bp<CR>', opts) -- next buffer
+map('n', ',b', '<cmd>ls<CR>', opts) -- list buffers
+--nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
+--TODO think how to pick buffer quick
+--TODO think how to delete buffers quick
+---- error navigation ----
 map('n', ']q', '<cmd>qn<CR>', opts)
 map('n', '[q', '<cmd>qp<CR>', opts)
 -- use ]-m jump to next method for C-languages
@@ -179,8 +208,10 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 -- continue (aborted) search: A-n
 
 -- visual mode regular
--- window navigation: <C-w>[+|-|<|>|_|"|"|=|s|v|r| height,width,height,width,equalise,split,swap
--- view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
+-- window navigation: <C-w>[+|-|<|>|"|=|s|v|r| and _| height,width,height,width,equalise,split,swap max size horizontal/vertical
+-- view movements up+down: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
+-- more aracane: z+,z-,z. like zt,zb,zz
+-- view movements left+righ: z+es(full page), hl(1char), HL(halfpage)
 -- vim-surround: ds|cs|ys,yS etc is conflicting
 -- vim-easy-align TODO
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
@@ -195,8 +226,11 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 
 -- insertion mode
 -- C-w delete last word, C-u delete until start of line
--- C-o execute 1 command and continue in sertion mode
+-- C-o execute 1 command and continue in insertion mode (go to normal mode for 1 key action)
 -- C-h switch back to normal mode(side effect from coq_nvim, C-r insert from register,
+-- quick setttings
+-- :set rnu!   to toggle relative numbers
+-- :set spell!   to toggle spelling
 
 -- cmdline
 -- C-z trigger wildmode, C-] abbreviations
@@ -246,6 +280,7 @@ map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts) -- referen
 map('n', '<leader>ql', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts) -- buffer diagnostics to location list
 map('n', '<leader>qf', '<cmd>lua vim.diagnostic.setqflist()<CR>', opts) -- all diagnostics to quickfix list
 map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- references
+map('n', '<leader>re', '<cmd>LspRestart<CR>', opts) -- restart lsp
 
 ---- coq autocompleter ----
 -- default bindings. C-h next snippet, C-w|u deletion of word, C-k preview
@@ -287,6 +322,12 @@ map(
   [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]],
   opts
 ) -- ripgrep string
+map(
+  'n',
+  '<leader>ss',
+  [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.input("grep:")}<CR>]],
+  opts
+) -- search string
 map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
 -- <C-p> for projects ?
 --map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
@@ -339,9 +380,12 @@ map('n', '<leader>cj', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]],
 map('n', '<leader>ck', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
 map('n', '<leader>cl', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
 -- send strings from register as command + execute it
-map('n', '<leader>sj', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts)
-map('n', '<leader>sk', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('k') .. "\n")<CR>]], opts)
-map('n', '<leader>sl', [[<cmd>lua require("harpoon.term").sendCommand(3, vim.fn.getreg('l') .. "\n")<CR>]], opts)
+map('n', '<C-s>j', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts)
+map('n', '<C-s>k', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('k') .. "\n")<CR>]], opts)
+map('n', '<C-s>l', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('l') .. "\n")<CR>]], opts)
+map('n', '<C-s>u', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('u') .. "\n")<CR>]], opts)
+map('n', '<C-s>i', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('i') .. "\n")<CR>]], opts)
+map('n', '<C-s>o', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('o') .. "\n")<CR>]], opts)
 
 map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
 map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly

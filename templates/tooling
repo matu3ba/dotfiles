@@ -1,0 +1,9 @@
+- valgrind
+
+C/C++
+-- clang --
+scan-build
+clang-fmt
+clang-tidy
+flags compile-time: -Wthread-safety
+

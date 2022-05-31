@@ -1,0 +1,9 @@
+{
+    "workbench.colorTheme": "Default Dark+",
+    "files.eol": "\n",
+    "[zig]": {
+        "editor.defaultFormatter": "tiehuis.zig",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+      },
+}

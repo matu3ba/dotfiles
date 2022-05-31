@@ -71,6 +71,10 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 -- end                                             --DEBUG
 -- fp.close()                                      --DEBUG
 --
+-- Debugging Zig types
+-- @compileLog(@TypeOf(input));
+--
+--
 -- convert windows line ending to linux:
 -- :%s/^M$//
 
@@ -81,3 +85,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 -- ./runTests --gtest_filter='minimalz3.*'
 -- gdb --ex run --args ./test_pde --gtest_filter='Nestout.*' --gtest_break_on_failure
 -- set follow-fork-mode mode
+
+-- Fast init
+-- pub fn main() !void {}
+-- var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
+-- defer std.debug.assert(!general_purpose_allocator.deinit());
+-- const gpa = general_purpose_allocator.allocator();

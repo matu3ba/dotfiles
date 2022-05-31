@@ -19,17 +19,20 @@ return require('packer').startup(function()
   use { 'lewis6991/gitsigns.nvim', branch = 'main' }
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
   -- TODO use { 'axieax/urlview.nvim' } -- :Telescope urlview
-  --use { 'ggandor/lightspeed.nvim' } --{s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
   --requires = { 'tpope/vim-repeat' }
-  -- leap: can also target character at end of line
   -- leap: s|S char1 char2 (<space>|<tab>)* label?
-  -- leap: z|Z means /|?
-  -- leap: x|X means extend|exclude
   -- leap: gs in all other windows on the tab page
   -- leap: enter repeates, tab reverses the motion
-  -- {s,S}<c-x>?{char1}{char2}?{<tab>,<s-tab>}*{label}? {->,<-}<direction, cursor is at end of match>?char1char2?cycle*labeled jump? => f for forwards stepping
+  -- s|S char1 char2 <space>? (<space>|<tab>)* label?
   use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- TODO get used to enter for repeat
   use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
+
+  -- TODO visual mode gc,gb clash
+  -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
+  use { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end }
+  -- :Neogen [function/class/type]
+  use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
+  --
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
   ---- telescope ----
@@ -40,8 +43,7 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   -- Telescope gh issues author=windwp label=bug search=miscompilation
 
-  -- TODO script to create csv for project data
-  -- TODO lua lib to do stuff with project data
+  -- TODO rename folder as you type
 
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
@@ -52,10 +54,10 @@ return require('packer').startup(function()
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
   -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
-  ---- treesitter ---- performance problems and crashes on macro-heavy code ----
-  --use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  ---- treesitter ---- crashes on macro-heavy code ----
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   --use { 'mizlan/iswap.nvim' } --:Iswap
-  --use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end } --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
+  use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end } --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
 
   ---- languages ----
   -- Lua
@@ -75,7 +77,7 @@ return require('packer').startup(function()
 
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
-  use { 'tpope/vim-surround' } -- ds|cs|ys,yS etc is conflicting
+  --use { 'tpope/vim-surround' } -- ds|cs| TODO ys,yS etc is conflicting
   use { 'tpope/vim-repeat' } -- repeating with .
   use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings

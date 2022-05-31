@@ -1,0 +1,63 @@
+> 100% reliable argument passing
+Wrapping a variable in double-quotes:
+    var="1 2 3 4"
+    for x in "$var"; do echo $x; done
+For double-parsing (ie SSH commands) wrap entire expression in single-quotes to maintain original string until the second shell:
+    ssh user@host 'var="1 2 3 4"; for x in "$var"; do echo $x; done'
+
+> 100% reliable file iteration
+    find ./directory/ -type f -exec SOME_COMMAND {} \;
+
+> I don't want to run into the problem that the command line is too long.
+Do not evaluate arguments directly in shell, use xargs to feed the arguments as standard input. E.g.:
+    #find ./directory/ -type f | xargs SOME_COMMAND (problems with characters like spaces),
+    => either use the -print0 construct or just stick with find, ie
+    find ./directory/ -type f -exec SOME_COMMAND {} +
+    (The + means "stack up as many results as you can, up to the length limit".)
+
+> Excellent path parsing. Such as filename, basename, canonicalization, finding the file extension and "find the relative path between A and B".
+    dirname /foo/bar
+    basename /foo/bar
+    realpath ./symlink/to/foo/bar
+    basename /foo/bar | sed 's/.*\.//'
+    realpath --relative-to ./dirA/fileA ./dirB/fileB
+
+> Good error handling and reporting
+tough. Extremely hard and requires discipline
+1. To exit immediately as soon as a command exits with non-zero exitcode:
+    set -e
+2. does not play nice with temporary resources. hand-written error checks:
+    SOME_COMMAND || { echo "Some Command has failed" && exit 1; }
+3. Error reporting depends, typical pattern
+    if [ "$var" != "expected" ]
+      then echo "Error: var different from expected" && exit 1
+    fi
+And it works fine most of the time.
+
+> Easy capture of stdout and stderr, at the same time. Either together or individually, as needed.
+To capture both
+    SOME_COMMAND |& SOME_FILTER
+doing both in different streams is tough. The easiest way I can think of is to use a pipe and job control mechanisms:
+    mkfifo pipe
+    SOME_COMMAND 2>pipe | FILTER_1 &
+    < pipe FILTER_2 &
+    wait
+    rm pipe
+
+* Excellent process management. example take these 50000 files, and feed them all through imagemagick,
+using every core available, while being able to report progress, record each failure, and abort the entire thing if needed.
+- GNU Parallel is pretty satisfying for most concurrent shell-scripting:
+    cat FILE.txt | parallel --timeout=30 SOME_COMMAND {} \|\| echo "Some Command failed with argument: {}"
+- For POSIX purity, xargs also can be used with "-L 1" argument that parses a single line per command iteration. For parallelism, there is also a "--max-procs" argument.
+
+* Excellent error reporting. I don't want things failing with "Command failed, aborted". I want things to fail with "Command 'git checkout https://....' exited with return code 3,
+and here's for good measure the stdout and stderr even if I redirected them somewhere".
+
+"set -x" for debugging (no error tracking)
+
+* Give me helpers for common situations.
+Eg, "Recurse through this directory, while ignoring .git and vim backup files".
+Read this file into an array, splitting by newline, in a single line of code. It's tiresome to implement that kind of thing in every script I write. At the very least it should be simple and comfortable.
+
+There are helpers out there for most common situations
+- unfeasible due to big scope

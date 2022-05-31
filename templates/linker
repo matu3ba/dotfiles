@@ -1,0 +1,8 @@
+or fix the problem with the build system (include guards/linker scripts etc)
+
+undefined symbols
+nm -gD yourLib.so
+C++ demangling
+nm -gDC yourLib.so
+
+idea: instructions on how to debug lld etc

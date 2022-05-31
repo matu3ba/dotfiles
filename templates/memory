@@ -1,0 +1,25 @@
+memory models
+1. synchronisation of memory from parallel execution works via fences https://stackoverflow.com/a/61711095
+// Software Memory Models in C++
+// memory_order | fences
+// relaxed      | None
+// consume      | LoadLoad, LoadStore (fences only for vars that are data-dependent on that atomic)
+// acquire      | LoadLoad, LoadStore
+// release      | LoadStore, StoreStore
+// acq_rel      | LoadLoad, LoadStore, StoreStore
+// seq_cst      | All (default order)
+available via atomic_var.store(true, std::memory_order_release)
+=> architecture-dependent and messy (stuff like spurious wakeups exist and costs can vary significantly)
+
+2. pointer semantics: 3 cases to handle provenance
+1. known and reused (no ambiguity on usage)
+2. can be derived ie from pointer casts (pick one and check, if it works)
+3. unknown (external code and no encoding of IR etc)
+potentially ambiguous cases
+1. ptr->int->ptr cast + usage
+2. int->ptr->int cast + usage
+3. ptr->int union cast usage
+4. int->ptr union cast usage
+see https://github.com/ziglang/zig/issues/6396#issuecomment-1097287569
+
+3. simpler things?

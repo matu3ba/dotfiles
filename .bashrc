@@ -85,13 +85,13 @@ PATH=$PATH:"${HOME}/.local/lua-language-server/bin"
 PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell testing
 PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
+PATH=$PATH:"${HOME}/.local/zig/stage3/bin" # zig stage3
 
 #PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
 #testing www.ziglang.org
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
 #PATH=$PATH:"${HOME}"/src/hugo
 
-#TODO testing, if ssh agent is started correctly by gpg
 # there is no very reliable and simple other way to have ssh agent running
 #eval "$(ssh-agent -s)"
 #trap "kill $SSH_AGENT_PID" exit

@@ -1,0 +1,8 @@
+There is a complete wiki dedicated to the weird quirks of bash:
+https://wiki.bash-hackers.org/syntax/expansion/brace
+
+more shennanigans
+- 1. brace expansion does only work on standalone variables:
+  * "{1..3}" does not work, but {1..3} works
+  * workaround for using in variables: `eval {$a..$b}`
+  * workaround in for loops `for i in $(eval echo {$a..$b})`

@@ -11,3 +11,6 @@ ps -p pid (posix)
 pgrep pname
 pidof pname
 gdb> set follow-fork-mode child
+
+Debugging on Windows:
+https://remedybg.itch.io/remedybg

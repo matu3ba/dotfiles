@@ -2,7 +2,12 @@ require('nvim-treesitter.configs').setup {
   ensure_installed = 'maintained',
   highlight = {
     enable = true,
-    disable = { 'latex', 'zig' },
+    disable = function(lang, bufnr)
+        local too_many_lines = vim.api.nvim_buf_line_count(bufnr) > 50000
+        local slow_lang = (lang == 'cpp' or lang == 'c' or lang == 'rust'
+            or lang == 'zig')
+        return lang == 'latex' or (slow_lang and too_many_lines)
+    end,
     --"rust", "zig"
     --custom_captures = {
     --  -- Highlight the @foo.bar capture group with the "Identifier" highlight group.

@@ -1,0 +1,3 @@
+// fetching single files from github
+curl https://raw.githubusercontent.com/orlp/pdqsort/master/pdqsort.h > pdqsort.h
+// TODO explain commonly used -JLO
