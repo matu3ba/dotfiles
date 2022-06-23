@@ -1,0 +1,6 @@
+https://reproducible-builds.org/tools/
+diffoscope - https://diffoscope.org/
+rebuilderd - https://github.com/kpcyrd/rebuilderd
+rr -
+ripgrep from BurntSushi (https://github.com/BurntSushi/ripgrep).
+fd-find from sharkdp (https://github.com/sharkdp/fd)

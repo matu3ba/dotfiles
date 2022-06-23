@@ -7,8 +7,8 @@ return require('packer').startup(function()
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>m
   --use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
-  --use { 'ThePrimeagen/git-worktree.nvim' } -- TODO project setup
-  --use { 'shadmansaleh/lualine.nvim',  requires = {'kyazdani42/nvim-web-devicons' } } -- TODO fix yourself
+  --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
+  --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } }
   ---- lsp+competion ----
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
@@ -17,14 +17,15 @@ return require('packer').startup(function()
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
   use { 'lewis6991/gitsigns.nvim', branch = 'main' }
+  --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
-  -- TODO use { 'axieax/urlview.nvim' } -- :Telescope urlview
+  -- idea use { 'axieax/urlview.nvim' } -- :Telescope urlview
   --requires = { 'tpope/vim-repeat' }
   -- leap: s|S char1 char2 (<space>|<tab>)* label?
   -- leap: gs in all other windows on the tab page
   -- leap: enter repeates, tab reverses the motion
   -- s|S char1 char2 <space>? (<space>|<tab>)* label?
-  use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- TODO get used to enter for repeat
+  use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- get used to enter for repeat
   use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
 
   -- TODO visual mode gc,gb clash
@@ -33,6 +34,8 @@ return require('packer').startup(function()
   -- :Neogen [function/class/type]
   use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
   --
+  -- use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
+  --use { 'numToStr/Surround.nvim' }
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
   ---- telescope ----
@@ -50,14 +53,14 @@ return require('packer').startup(function()
   --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- pretty printing requires codelldb (no luajit pretty printing)
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
 
-  --use { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
   -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
   ---- treesitter ---- crashes on macro-heavy code ----
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  --use { 'mizlan/iswap.nvim' } --:Iswap
-  use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end } --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
+  use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
+  --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
+  use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end }
 
   ---- languages ----
   -- Lua
@@ -68,12 +71,13 @@ return require('packer').startup(function()
   --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
   --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
   -- Zig
-  --use { 'blubb/rust-tools.nvim' } -- not sure, if still useful
   --use { 'neomake/neomake' } -- get useful comments for code semantics
-  -- Organization stuff
-  use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
+  use { 'LnL7/vim-nix' } -- flakes highlighting
   -- booperlv/nvim-gomove
-  --use { 'vim-table' }
+  use { 'ziglang/zig.vim' }
+
+  ---- Organization stuff
+  use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
 
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
@@ -82,10 +86,12 @@ return require('packer').startup(function()
   use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings
   --use { 'junegunn/gv.vim' } -- alternative?
-  use { 'ziglang/zig.vim' }
-  use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
+  --use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
+  -- look into https://github.com/jonatan-branting/nvim-better-n
 
+  --use { 'vim-table' }
+  --use { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds, I want to keep annotations dense+minimal
   --use { 'karb94/neoscroll.nvim', config = function() require('neoscroll').setup() end, }
   --use { 't-troebst/perfanno.nvim' } -- perf bottleneck visualizations
   --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
@@ -98,7 +104,6 @@ return require('packer').startup(function()
   --use { 'nvim-telescope/telescope-z.nvim' } --tez,<l>z -- would be clutch to have telescope project support
   --use { 'nvim-treesitter/nvim-treesitter-refactor' } -- block-wise movement and file-local replacements
   --use { 'nvim-treesitter/playground' } --inspecting treesitter data: :TSPlaygroundToggle
-  --use { 'LnL7/vim-nix' } -- flakes highlighting
   --use { 'JuliaEditorSupport/julia-vim' } --cool stuff: latex-to-unicode substitutions, block-wise movements and block text-objects
   --use { 'nvim-telescope/telescope-snippets.nvim', requires = { 'norcalli/snippets.nvim' } } -- useful for loop stuff
   --use { 'https://gitlab.com/dbeniamine/cheat.sh-vim/' }

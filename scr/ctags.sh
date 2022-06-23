@@ -1,0 +1,41 @@
+#!/bin/sh
+set -e
+PATH="/usr/local/bin:$PATH"
+PID=$$
+if [ -z ${var+x} ]; then echo "'$1' is unset"; exit; fi
+
+trap 'rm -f "${PID}tags"' EXIT
+ctags --recurse=yes --kinds-c++=+p -f "${PID}tags" --extra=+fq --sort=foldcase \
+  --c++-kinds=+p --fields=+iaS --extra=+q $1
+mv "${PID}tags" "tags"
+# Generate ctags with various options
+# It may be required to define an ignorelist
+# https://stackoverflow.com/questions/5626188/ctags-ignore-lists-for-libc6-libstdc-and-boost
+# It may be interesting to automatically regenerate tags with git hooks, which
+# one could setup via script or .git_templates
+# https://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
+
+# Most interesting options
+# ctags --list-fields=c++
+# ctags --list-extras=c++
+# ctags --list-kinds=c++
+
+#ctags files can be used to find a file very quickly.
+#Just add the "--extra=+f" option in the ctags line.
+#You may then open new files manually with autocompletion, with
+#:tag myfile.cpp
+
+# c++ flags
+#--recurse=yes .
+#-f tagfile
+#--extra=+fq
+#--sort=foldcase
+#--c++-kinds=+p
+#--fields=+iaS
+#--extra=+q
+#-L -/file (- for standard in) to specify where to read from (can also use last positions instead)
+# --tag-relative (needed, if you want to move directories)
+# --languages=-javascript,sql (disable languages)
+
+# Note that there may be also other program that can generate ctags compatible information.
+# For example, https://git.sr.ht/~gpanders/ztags or https://github.com/jstemmer/gotags

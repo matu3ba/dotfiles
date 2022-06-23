@@ -13,3 +13,39 @@ project-specific setups, overlays etc
 
 __ profiles __
 not platform-independent and do not work anywhere you have nix
+
+nix shell 'github:nixos/nixpkgs/nixpkgs-unstable#hello'
+nix build 'nixpkgs#hello'
+nix develop 'nixpkgs#hello'
+
+nix profile install 'nixpkgs#hello'
+nix profile list
+nix profile update hello
+nix profile remove hello
+
+nix flake show
+nix flake clone
+nix flake lock
+nix flake lock –override-input input_name
+nix flake lock –update-input input_name
+
+# Flakes allow you to specify your code’s dependencies
+# (e.g. remote Git repositories) in a declarative way,
+# simply by listing them inside a flake.nix file
+nix flake lock --update-input home-manager
+
+For installation andd the basic introduction, read "practical nix flakes".
+https://ghedam.at/a-tour-of-nix-flakes is the best flakes introduction so far, which
+also does not use "legacyPackages".
+As of 20220620,
+nix has no good solution to define relative flakes for not cluttering the git history:
+https://discourse.nixos.org/t/locally-excluding-nix-flakes-when-using-nix-independenly-of-upstream/16480/19
+The current options are `git add -N` (adding to git commit) and `path:$(pwd)` (copies over whole path)
+or `path:.`.
+
+It is very unfortunate that this was introduced without a fallback until there are good tutorials.
+```txt
+$ nix develop
+warning: Git tree '/home/user/dev/git/zig/zig/master' is dirty
+error: getting status of '/nix/store/17iqqnm1l9admxzbpc9rgdz7fq7pkr2y-source/flake.nix': No such file or directory
+```

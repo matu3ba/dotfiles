@@ -32,7 +32,7 @@ end
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
 vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})
 vim.api.nvim_create_autocmd('TextYankPost', {group = 'MYAUCMDS', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
-vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:%s/\s\+$//e]]}) -- remove trailing spaces
+vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:keepjumps keeppatterns %s/\s\+$//e]]}) -- remove trailing spaces
 vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, command = [[:lua Clangfmt()]]})
 -- stylua: ignore end
 
@@ -91,3 +91,6 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 -- var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 -- defer std.debug.assert(!general_purpose_allocator.deinit());
 -- const gpa = general_purpose_allocator.allocator();
+
+-- cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && ./stage2/bin/zig build-lib test.zig -ofmt=c
+-- cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && ./stage2/bin/zig build-lib err.zig -ofmt=c

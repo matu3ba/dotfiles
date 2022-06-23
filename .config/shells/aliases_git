@@ -36,6 +36,9 @@
 #git branch -c new
 #no within worktree folder/branch folder: fetch + merge
 
+#get untracked files as list for scripting
+#git ls-files --others --exclude-standard
+
 alias gwt='git worktree'
 alias grst='git restore'
 alias g='git'

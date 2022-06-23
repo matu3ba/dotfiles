@@ -1,0 +1,15 @@
+Most essential commands for cmus (https://github.com/cmus/cmus)
+
+c play/stop
+bz next/back song
+
+views: 1 artist, 2 library, 3 playlist, 4 play queue, 5 file browser
+hl, ,. seek forward backward
+s shuffle, r repeat, ^R repeat current
+F filter, L live filter
+
+a copy tracks to library, y to marked playlist, e append tracks to play queue,
+E prepend tracks to play queue
+
+D to delete tracks (from library)
+' ' to mark the track

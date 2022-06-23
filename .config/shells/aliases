@@ -124,7 +124,9 @@ alias zbrel3='/usr/bin/time -v ./stage2/bin/zig build install -Drelease -Denable
 alias zbdeb1='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 #alias  zball='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h'
 alias  zball='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
-alias zbinst='rsync -av --delete stage3/ "${HOME}/.local/zig/stage3/" && mv "${HOME}/.local/zig/stage3/bin/zig" "${HOME}/.local/zig/stage3/bin/zig3"'
+alias  zb12='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
+alias zbinst='rsync -av --delete stage2/ "${HOME}/.local/zig/stage2/" && mv "${HOME}/.local/zig/stage2/bin/zig" "${HOME}/.local/zig/stage2/bin/zig2"'
+#alias zbinst='rsync -av --delete stage3/ "${HOME}/.local/zig/stage3/" && mv "${HOME}/.local/zig/stage3/bin/zig" "${HOME}/.local/zig/stage3/bin/zig3"'
 #alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 alias zboot='${HOME}/.local/zig/zig'
 alias zbi='${HOME}/dev/git/zig/zig/bisect/build/zig'
@@ -196,3 +198,4 @@ alias sudo='sudo '
 # cd !$ => insert last argument of previous command
 #shopt -s cdspell
 #complete -d cd
+#music player: cmus
