@@ -3,10 +3,9 @@ require('nvim-treesitter.configs').setup {
   highlight = {
     enable = true,
     disable = function(lang, bufnr)
-        local too_many_lines = vim.api.nvim_buf_line_count(bufnr) > 50000
-        local slow_lang = (lang == 'cpp' or lang == 'c' or lang == 'rust'
-            or lang == 'zig')
-        return lang == 'latex' or (slow_lang and too_many_lines)
+      local too_many_lines = vim.api.nvim_buf_line_count(bufnr) > 50000
+      local slow_lang = (lang == 'cpp' or lang == 'c' or lang == 'rust' or lang == 'zig')
+      return lang == 'latex' or (slow_lang and too_many_lines)
     end,
     --"rust", "zig"
     --custom_captures = {

@@ -85,7 +85,8 @@ alias  templates='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templat
 alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         fbi='./configure && make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-alias       nbnm='make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias   nbnojail='firejail --noprofile ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias       nbnm='firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
 # unfortunately mold can still not link clang address sanitizer libraries as they patch libc symbols in a nontrivial way
 #alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'

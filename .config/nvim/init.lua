@@ -28,6 +28,21 @@ end
 ]]
 end
 
+-- working with macros
+-- https://stackoverflow.com/questions/2024443/saving-vim-macros
+-- macros are stored in the regular registers and can be pasted or executed
+-- explicit writing of macro content: let @a='0fa'
+-- NOTE: use C-r C-r to insert contents of the a register to prevent execution on pasting!
+-- Appending macros of register a with qA..q
+
+-- working with regex
+-- :help non-greedy
+-- Instead of .* use .\{-}, for example %s/style=".\{-}"//g to remove occurences of style="..."
+-- https://stackoverflow.com/questions/1305853/how-can-i-make-my-match-non-greedy-in-vim
+-- another option for multiple matches is :%s/\v(style|class)\=".{-}"//g
+-- To match escaped string symbols of JSON use /\\".\{-}\\"
+-- and not /\\".*\\"
+
 -- stylua: ignore start
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
 vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})
@@ -48,6 +63,8 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 --std::cout << "type: " << typeid(eout).name() << "\n";
 -- lua
 --print (filename)
+-- vimscript
+--:echo '123'
 
 -- :h builtin-function-list
 
@@ -74,6 +91,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 -- Debugging Zig types
 -- @compileLog(@TypeOf(input));
 --
+-- Debugging C++ values
+-- std::cout << ": " <<  << "\n";    // DEBUG
+-- std::cout << ": " <<  << "\n";    // DEBUG
 --
 -- convert windows line ending to linux:
 -- :%s/^M$//
@@ -92,5 +112,11 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 -- defer std.debug.assert(!general_purpose_allocator.deinit());
 -- const gpa = general_purpose_allocator.allocator();
 
--- cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && ./stage2/bin/zig build-lib test.zig -ofmt=c
--- cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && ./stage2/bin/zig build-lib err.zig -ofmt=c
+-- Assume
+--PWD=$(git rev-parse --show-toplevel) == pwd.
+-- Create Makefiles
+--
+-- Run Makefile for unit test
+--
+-- Run unit test
+--

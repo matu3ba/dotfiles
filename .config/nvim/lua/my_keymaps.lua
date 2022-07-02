@@ -28,10 +28,10 @@ local map = vim.api.nvim_set_keymap
 --map('n', ' ', '', opts)
 --map('x', ' ', '', opts)
 -- remove antipatterns on qwerty keyboard layout --
-map('', '<left>', '<nop>', opts)
-map('', '<down>', '<nop>', opts)
-map('', '<up>', '<nop>', opts)
-map('', '<right>', '<nop>', opts)
+--map('', '<left>', '<nop>', opts)
+--map('', '<down>', '<nop>', opts)
+--map('', '<up>', '<nop>', opts)
+--map('', '<right>', '<nop>', opts)
 -- glorious copypasta --
 -- (a.b.c and a-b-c without brackets and emptyspace) to default register for pre+postfixing
 -- idea list used function scopes of variable under cursor, needs clarification
@@ -42,8 +42,7 @@ map('', '<right>', '<nop>', opts)
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
--- "_diwP does not preserve markers for keep pasting over the same thing
--- keepjumps should also preserve it
+map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
@@ -66,7 +65,7 @@ _G.CopyMatchingChar = function(backwards, register)
   local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
   local crow = tup_rowcol[1]
   local ccol = tup_rowcol[2] -- 0 indexed => use +1
-  local cchar = vim.api.nvim_get_current_line():sub(ccol+1, ccol+1)
+  local cchar = vim.api.nvim_get_current_line():sub(ccol + 1, ccol + 1)
   local matchchar = {
     ['('] = ')',
     [')'] = '(',
@@ -74,11 +73,11 @@ _G.CopyMatchingChar = function(backwards, register)
     ['}'] = '{',
     ['['] = ']',
     [']'] = '[',
-    ["<"] = ">",
-    [">"] = "<",
+    ['<'] = '>',
+    ['>'] = '<',
     ['"'] = '"',
     ["'"] = "'",
-    ["|"] = "|",
+    ['|'] = '|',
     ['`'] = '`',
     ['/'] = '/',
     ['\\'] = '\\',
@@ -87,7 +86,7 @@ _G.CopyMatchingChar = function(backwards, register)
   -- => flag 'b' is not using starting line
   local tup_search
   if backwards == false then
-    tup_search = vim.fn.searchpos(matchchar[cchar], 'nz', crow+1) -- +1 to search until next line?
+    tup_search = vim.fn.searchpos(matchchar[cchar], 'nz', crow + 1) -- +1 to search until next line?
   else
     tup_search = vim.fn.searchpos(matchchar[cchar], 'bnz') -- +1 to search until next line?
   end
@@ -97,17 +96,16 @@ _G.CopyMatchingChar = function(backwards, register)
     print 'no matching forward character'
     return
   end
-  if (srow == 0 and scol == 0 and backwards == true) or srow ~= crow
-    or (backwards == true and ccol < scol) then
+  if (srow == 0 and scol == 0 and backwards == true) or srow ~= crow or (backwards == true and ccol < scol) then
     print 'no matching backwards character'
     return
   end
   local copytext
   if backwards == false then
-    copytext = vim.api.nvim_get_current_line():sub(ccol+1, scol)
+    copytext = vim.api.nvim_get_current_line():sub(ccol + 1, scol)
     print(string.format([[%s %s:%s]], [[write -> into]], register, copytext))
   else
-    copytext = vim.api.nvim_get_current_line():sub(scol, ccol+1)
+    copytext = vim.api.nvim_get_current_line():sub(scol, ccol + 1)
     print(string.format([[%s %s:%s]], [[write <- into]], register, copytext))
   end
   vim.fn.setreg(register, copytext)
@@ -147,7 +145,7 @@ map('t', '<C-q>', [[<C-\><C-n>]], opts) --exit terminal
 -- color switching --
 map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
 ---- spell ---- [s]s,z=,zg add to wortbook, zw remove from wordbook
-map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
+--map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
 ---- tab navigation ----
 map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
@@ -177,9 +175,16 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 --map('n', ';b', '<cmd>ls<CR>', opts) -- list buffers
 --nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
 --:bdel for buffer deletion
+--TODO think how to pick buffer quick: ideally fuzzy search matches in telescope to add them
+--Then assign quickjump mappings in the picker.
+--Store everything in a session file.
+--TODO think how to delete buffers quick
 ---- error navigation ----
 map('n', ']q', '<cmd>qn<CR>', opts)
 map('n', '[q', '<cmd>qp<CR>', opts)
+---- shell navigation ----
+map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- search terminal (for command prompt)
+map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in terminal output
 -- use ]-m jump to next method for C-languages
 -- swap left alt to ctrl and c-n and c-p down and up the options
 
@@ -284,8 +289,52 @@ map('n', '<leader>re', '<cmd>LspRestart<CR>', opts) -- restart lsp
 
 ---- ctags ----
 -- switch between source and header with `:e %<.c` with %< representing the current file without the ending
--- :tags file.c to open file (or selection on multiple matches)
+-- :tag file.c, :tags for overview (or selection on multiple matches)
 -- C-] to go to tag definition, C-t to jump back
+-- :ts/:tselect definitions for last tag
+--- Switch between header and source file.
+-- Header is identified with .h, source file with precedense .cpp, .cc.
+-- TODO: figure out how to call vimscript commands without global variables
+--_G.SwitchHeaderSourceTags = function()
+--  filename = vim.fn.expand '%'
+--  vim.api.nvim_exec(
+--  [[
+--  let l:origfname = expand('%')
+--  "let l:filenamenoext = expand('%:t:r')
+--  "let l:fname = ''
+--  "if expand('%:e') ==# 'h' then
+--  "  let l:fname = l:filenamenoext . '.cpp'
+--  "  exec 'tag ' . l:fname
+--  "  if l:origfname !=# expand('%') then
+--  "    return
+--  "  else
+--  "    let l:fname = l:filenamenoext . '.cc'
+--  "    exec 'tag ' . l:fname
+--  "  endif
+--  "else
+--  "  let l:fname = l:filenamenoext . '.h'
+--  "  exec 'tag ' . l:fname
+--  "endif
+--  ]],
+--  false)
+--  --local filename_noext = vim.fn.expand '%:t:r'
+--  --if (vim.fn.expand '%:e' == 'h') then
+--  --  local cppname = filename_noext .. ".cpp"
+--  --  -- fallback: exe 'tag '.tag_name
+--  --  -- TODO: solve this with git ls-files and regex match
+--  --  vim.fn.tag(cppname)
+--  --  if (filename ~= vim.fn.expand('%')) then
+--  --    return
+--  --  else
+--  --    local ccname = filename_noext .. ".cpp"
+--  --    vim.fn.tag(cppname)
+--  --  end
+--  --else
+--  --  local hname = filename_noext .. ".h"
+--  --  vim.fn.tag(cppname)
+--  --end
+--end
+--map('n', '<leader>st', ':lua SwitchHeaderSourceTags()<CR>', opts)
 
 ---- coq autocompleter ----
 -- default bindings. C-h next snippet, C-w|u deletion of word, C-k preview
@@ -320,6 +369,8 @@ map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], 
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
 map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
 map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
+map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
+
 --.grep_string({ search = vim.fn.input("Grep For > ")})
 map(
   'n',
@@ -344,7 +395,6 @@ map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]]
 --lsp_references
 --map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
 --map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)   -- run_script
-
 
 ---- gitsigns ---- in file git operations (:Gitsigns debug_messages)
 -- mappings are workaround of https://github.com/lewis6991/gitsigns.nvim/issues/498
@@ -403,7 +453,7 @@ map('t', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
 map('t', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
 
 ---- gtest ----
-map('n', ']t', [[<cmd>GTestNext<CR>]], opts)
-map('n', '[t', [[<cmd>GTestPrev<CR>]], opts)
+--map('n', ']t', [[<cmd>GTestNext<CR>]], opts)
+--map('n', '[t', [[<cmd>GTestPrev<CR>]], opts)
 --map('t', '<leader>tu', [[<cmd>GTestRunUnderCursor<CR>]], opts) -- lightspeed breaks this binding
 --map('n', '<leader>tt', [[<cmd>GTestRun<CR>]], opts) -- lightspeed breaks this binding

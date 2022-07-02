@@ -66,6 +66,7 @@ local function load_options()
   vim.bo.expandtab = true --expand tabs to spaces: use fuzzy impl
   vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
   vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
+  vim.bo.scrollback = 100000 -- terminal scrollback
   -- tabstop/expandtab breaks inconsistently for c++ and lua
 
   -- TODO without following or similar setting :extab is broken, investigate

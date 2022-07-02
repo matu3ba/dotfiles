@@ -4,11 +4,13 @@ return require('packer').startup(function()
   --use { 'nanotee/nvim-lua-guide' }
   --use { 'lewis6991/impatient.nvim' }
   use { 'nvim-lua/lsp-status.nvim' } -- necessary for statusline
+  -- mkdir -p ~/.local/share/nvim/site/pack/packer/start/
+  -- git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>m
   --use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
   --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
-  --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true } }
+  --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
   ---- lsp+competion ----
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
@@ -35,14 +37,14 @@ return require('packer').startup(function()
   use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
   --
   -- use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
-  --use { 'numToStr/Surround.nvim' }
+  --use { 'numToStr/Surround.nvim' } -- still unstable like numToStr/Surround.nvim
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
   use { 'nvim-telescope/telescope-hop.nvim' }
-  --use { '~/dev/git/lua/telescope-project.nvim' }
+  use { '~/dev/git/lua/telescope-project.nvim' } --TODO fixit
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   -- Telescope gh issues author=windwp label=bug search=miscompilation
 
@@ -83,7 +85,7 @@ return require('packer').startup(function()
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
   --use { 'tpope/vim-surround' } -- ds|cs| TODO ys,yS etc is conflicting
   use { 'tpope/vim-repeat' } -- repeating with .
-  use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
+  --use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/vim-easy-align' } -- TODO keybindings
   --use { 'junegunn/gv.vim' } -- alternative?
   --use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting

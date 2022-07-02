@@ -1,3 +1,4 @@
+---- Configuration files editing ----
 local add_cmd = vim.api.nvim_create_user_command
 local cmd_tn = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
 add_cmd('CCmd', cmd_tn .. 'lua/my_cmds.lua', {})
@@ -13,16 +14,15 @@ add_cmd('CSt', cmd_tn .. 'lua/my_statusline.lua', {})
 add_cmd('CTel', cmd_tn .. 'lua/my_telesc.lua', {})
 add_cmd('CTre', cmd_tn .. 'lua/my_treesitter.lua', {})
 add_cmd('CUtil', cmd_tn .. 'lua/my_utils.lua', {})
-add_cmd('CRel', function()
-  local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
-  for _, dir in ipairs(lua_dirs) do
-    dir = string.gsub(dir, './lua/', '')
-    require('plenary.reload').reload_module(dir)
-  end
-  -- TODO keybindings and plugin cache are not reloaded
-end, {})
--- TODO command that executes last command by sending content to open shell
-
+-- why are keybindings and plugin cache not reloaded?
+--add_cmd('CRel', function()
+--  local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
+--  for _, dir in ipairs(lua_dirs) do
+--    dir = string.gsub(dir, './lua/', '')
+--    require('plenary.reload').reload_module(dir)
+--  end
+--end, {})
+add_cmd('CUtil', [[lua require('my_utils').reload()]], {})
 
 --map('v', '<leader>b', '"+y', opts)
 ---- TODO call a lua function to call correct builder
@@ -165,7 +165,11 @@ add_cmd('Spacelen8', function()
   vim.bo.shiftwidth = 8 --visual mode >,<-key: number of spaces for indendation
   vim.bo.tabstop = 8 --Tab key: number of spaces for indendation
 end, {})
-
+add_cmd('Tablen2', function()
+  vim.bo.expandtab = false --expand tabs to spaces
+  vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
+  vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
+end, {})
 add_cmd('Tablen4', function()
   vim.bo.expandtab = false --expand tabs to spaces
   vim.bo.shiftwidth = 4 --visual mode >,<-key: number of spaces for indendation
@@ -177,7 +181,39 @@ add_cmd('Tablen8', function()
   vim.bo.tabstop = 8 --Tab key: number of spaces for indendation
 end, {})
 
--- ideas to configure buffer stuff, ie with toggleterm used here:
+---- Macros ----
+-- move "string" left of text in (text == "string")
+-- use case: :ISwap is broken
+--f=hveldvf"dbPa == ^jj
+-- convert
+--   QFETCH(std::string>("received_message");
+-- to
+--   QFETCH(std::string, received_message);
+--f>ikDkDkD, f"x^j
+
+---- Regex ----
+-- non-greedy search of \"..\" fields
+add_cmd('SelLazyEscStr', [[/\\".\{-}\\"]], {}) -- non-greedy search of \"..\" fields
+
+---- Debug ----
+add_cmd('CoutDebug', [[execute 'normal! i' . 'std::cout << DEBUG << "\n";    // DEBUG' . '<Esc>']], {})
+add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of \"..\" fields
+
+---- Quickfixlist ----
+--<C-q>f to telescope results to quickfixlist
+-- there is no quickfixlists overview (how many quickfixlists exist)
+-- See :h :cdo for more help
+-- :cfdo :badd %
+-- add to harpoon
+
+---- Scripting ----
+-- copy path under cursor: yiW
+-- pull current filename into where you are: Ctrl+R %
+add_cmd('Frel', [[:let @+ = expand("%")]], {}) -- copy relative path
+add_cmd('Fabs', [[:let @+ = expand("%:p")]], {}) -- copy absolute path
+add_cmd('Fonly', [[:let @+ = expand("%:t")]], {}) -- copy only filename
+
+---- Ideas to configure buffer stuff, ie with toggleterm used here: ----
 --local files = {
 --  python = "python3 -i " .. exp("%:t"),
 --  lua = "lua " .. exp("%:t"),
