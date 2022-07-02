@@ -69,6 +69,7 @@ alias gco='git checkout'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gc='git commit -v'
 alias gcmsg='git commit -m'
+alias gca='git commit --amend'
 # git diff > diff.patch, git apply diff.patch to apply it on a codebase
 alias gd='git diff'
 alias gds='git diff --shortstat'
