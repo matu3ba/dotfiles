@@ -362,6 +362,7 @@ map('n', '<leader>re', '<cmd>LspRestart<CR>', opts) -- restart lsp
 -- vimgrep AA also sends into a quickfix
 -- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
 -- :norm {Vim} run command on every line
+-- shift|shift+tab selects items
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
 map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
 map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], opts) -- keybindings

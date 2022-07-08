@@ -5,12 +5,12 @@ local function load_options()
     python3_host_prog = '/usr/bin/python3',
     rg_derive_root = true,
     rustfmt_autosave = true,
-    vim_apm_log = true,
-    vim_be_good_log_file = true,
+    vim_apm_log = true, -- ???
+    --vim_be_good_log_file = true,
     mapleader = ' ',
     material_style = 'lighter', -- default, darker, lighter, oceanic, deep ocean, palenight
     material_lighter_contrast = false,
-    coq_settings = { auto_start = true },
+    --coq_settings = { auto_start = true },
     --doge_mapping = "<leader>d"; --TODO get doge to work
     --netrw_browse_split = 0
     --netrw_banner = 0
@@ -24,7 +24,8 @@ local function load_options()
   vim.o.backup = false
   vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
   vim.o.cmdheight = 2
-  vim.o.completeopt = 'menuone,noselect'
+  vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim
+  --vim.o.completeopt = 'menu,menuone,noselect' --nvim-cmp
   vim.o.cursorline = true
   vim.o.errorbells = false
   vim.o.hidden = true

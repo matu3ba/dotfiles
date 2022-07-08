@@ -7,7 +7,8 @@ add_cmd('CGl', cmd_tn .. 'lua/my_globals.lua', {})
 add_cmd('CGs', cmd_tn .. 'lua/my_gitsign.lua', {})
 add_cmd('CInit', cmd_tn .. 'init.lua', {})
 add_cmd('CKey', cmd_tn .. 'lua/my_keymaps.lua', {})
-add_cmd('CLsp', cmd_tn .. 'lua/my_lsp.lua', {})
+add_cmd('CNvimcmp', cmd_tn .. 'lua/my_nvimcmp.lua', {})
+--add_cmd('CLsp', cmd_tn .. 'lua/my_lsp.lua', {})
 add_cmd('COpts', cmd_tn .. 'lua/my_opts.lua', {})
 add_cmd('CPl', cmd_tn .. 'lua/my_packer.lua', {})
 add_cmd('CSt', cmd_tn .. 'lua/my_statusline.lua', {})
@@ -182,6 +183,7 @@ add_cmd('Tablen8', function()
 end, {})
 
 ---- Macros ----
+-- stylua: ignore start
 -- move "string" left of text in (text == "string")
 -- use case: :ISwap is broken
 --f=hveldvf"dbPa == ^jj
@@ -189,7 +191,8 @@ end, {})
 --   QFETCH(std::string>("received_message");
 -- to
 --   QFETCH(std::string, received_message);
---f>ikDkDkD, f"x^j
+--f(f(xxhr,a üC$hhx^j
+-- stylua: ignore end
 
 ---- Regex ----
 -- non-greedy search of \"..\" fields

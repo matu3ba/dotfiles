@@ -2,8 +2,9 @@
 require 'my_globals'
 require 'my_packer'
 require 'my_opts'
-require 'my_lsp'
+-- require 'my_lsp' -- setup in my_nvimcmp.lua
 require 'my_telesc'
+require 'my_nvimcmp'
 --require('my_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
 --require('my_dap') -- idea setup one small step for vimkind
 require 'my_keymaps'

@@ -23,29 +23,29 @@ require('lspconfig').zls.setup {} --capabilities = capabilities
 --USER = vim.fn.expand '$USER'
 --Sumneko_root_path = '/home/' .. USER .. '/.local/lua-language-server'
 --Sumneko_binary = Sumneko_root_path .. '/bin/Linux/lua-language-server'
-local runtime_path = vim.split(package.path, ';')
-table.insert(runtime_path, 'lua/?.lua')
-table.insert(runtime_path, 'lua/?/init.lua')
-require('lspconfig').sumneko_lua.setup {
-  --cmd = { Sumneko_binary, '-E', Sumneko_root_path .. '/main.lua' },
-  settings = {
-    Lua = {
-      runtime = {
-        version = 'LuaJIT', -- LuaJIT lua version
-        path = runtime_path, --lua path
-      },
-      diagnostics = {
-        globals = { 'vim' }, --recognize vim global
-      },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file('', true), -- runtime files
-      },
-      telemetry = {
-        enable = false,
-      },
-    },
-  },
-}
+--local runtime_path = vim.split(package.path, ';')
+--table.insert(runtime_path, 'lua/?.lua')
+--table.insert(runtime_path, 'lua/?/init.lua')
+--require('lspconfig').sumneko_lua.setup {
+--  --cmd = { Sumneko_binary, '-E', Sumneko_root_path .. '/main.lua' },
+--  settings = {
+--    Lua = {
+--      runtime = {
+--        version = 'LuaJIT', -- LuaJIT lua version
+--        path = runtime_path, --lua path
+--      },
+--      diagnostics = {
+--        globals = { 'vim' }, --recognize vim global
+--      },
+--      workspace = {
+--        library = vim.api.nvim_get_runtime_file('', true), -- runtime files
+--      },
+--      telemetry = {
+--        enable = false,
+--      },
+--    },
+--  },
+--}
 -- Jump directly to the first available definition every time.
 --vim.lsp.handlers["textDocument/definition"] = function(_, result)
 --  if not result or vim.tbl_isempty(result) then
