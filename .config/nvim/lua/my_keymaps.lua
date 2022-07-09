@@ -239,7 +239,47 @@ vim.api.nvim_set_keymap('n', '<leader>v', ':lua Toggle_venn()<CR>', opts)
 
 -- cmdline
 -- C-z trigger wildmode, C-] abbreviations
+
+---- insert completion ----
+-- :h i_CTRL-X_CTRL-D
+-- C-n|p complete what is in all buffers
+-- <C-x><C-n|p> complete from current buffer
+-- <C-x><C-d> .. <C-n|p> complete macros
+-- <C-x><C-f> .. <C-n|p> complete file paths
+-- <C-x><C-i> .. <C-n|p> complete include paths
+-- <C-x><C-k> .. <C-n|p> complete keyword in dictionary
+-- <C-x><C-l> .. <C-n|p> complete entire lines
+-- <C-x><C-o> .. <C-n|p> complete user defined function given as omnifunc
+-- <C-x><C-s> .. <C-n|p> complete spelling suggestions
+-- <C-x><C-t> .. <C-n|p> complete thesaurus
+-- <C-x><C-u> .. <C-n|p> complete user defined function given as completefunc
+-- <C-x><C-v> .. <C-n|p> complete vim commands
+-- <C-x><C-z> stop completion
+-- <C-x><C-]> .. <C-n|p> complete words starting at tag
+
+-- <C-@> insert previously inserted text and stop insert
+-- <C-a> insert previously inserted text
+-- <C-h> delete character before cursor                => faster than backspace
+-- <del> delete character under cursor              => no different, but slower
+-- <C-w> delete word before cursor
+-- <C-u> delete all entered character before cursor from current line
+-- <C-j> begin new line = <NL>
+-- <C-m> begin new line = <CR>
+-- <C-o> stop insertion for 1 action
+-- <C-r> insert content from register as if it would be typed by user
+-- <C-r><C-r> liteel insertion of content from register
+-- <C-r><C-r> same as <C-r><C-r>, but without autoindent
+-- ..
+-- <C-x> ctrl-x mode
+-- insert char below and above cursor with <C-e> and <C-y>
+-- <C-]> trigger abbreviations without inserting character
+
+-- :his, C-g|C-t search
+-- last inserted text is in . register to be used with ".p
+-- It should be possible from insertion mode to paste with C-a
 -- C-d|n|p|a|l manual completions TODO explain
+-- C-n,C-p to complete from all buffers
+-- C-x C-n to complete from current buffer
 -- :his, C-g|C-t search
 
 -- selection mode

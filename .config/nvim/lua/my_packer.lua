@@ -53,7 +53,7 @@ return require('packer').startup(function()
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
   use { 'nvim-telescope/telescope-hop.nvim' }
-  use { '~/dev/git/lua/telescope-project.nvim' } --TODO fixit
+  --use { '~/dev/git/lua/telescope-project.nvim' } --TODO fixit
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   -- Telescope gh issues author=windwp label=bug search=miscompilation
   use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- TODO use this
