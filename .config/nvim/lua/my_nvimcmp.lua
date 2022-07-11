@@ -6,11 +6,25 @@ cmp.setup {
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    -- No selection annoyance (= 1 less keypress)
+    --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
+    --Set `select` to `false` to only confirm explicitly selected items.
   },
   sources = cmp.config.sources({
-    { name = 'buffer' },
-    { name = 'ctags' },
+    --{ name = 'buffer' },
+    --{
+    --  name = 'buffer',
+    --  options = {
+    --    get_bufnrs = function()
+    --      local bufs = {}
+    --      for _, win in ipairs(vim.api.nvim_list_wins()) do
+    --        bufs[vim.api.nvim_win_get_buf(win)] = true
+    --      end
+    --      return vim.tbl_keys(bufs)
+    --    end
+    --  },
+    --},
+    { name = 'cmp_ctags' },
     { name = 'nvim_lsp' },
     -- { name = 'vsnip' }, -- For vsnip users.
     -- { name = 'luasnip' }, -- For luasnip users.

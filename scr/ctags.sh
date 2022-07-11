@@ -2,11 +2,16 @@
 set -e
 PATH="/usr/local/bin:$PATH"
 PID=$$
-if [ -z ${var+x} ]; then echo "'$1' is unset"; exit; fi
+#if [ -z ${var+x} ]; then echo "'$1' is unset, need paths to create ctags for"; exit; fi
+
+if test "$#" -lt 1; then
+  echo "Usage: $0 FILE1 [.. FILEN], need paths to create ctags for" >&2
+  exit 1
+fi
 
 trap 'rm -f "${PID}tags"' EXIT
-ctags --recurse=yes --kinds-c++=+p -f "${PID}tags" --extra=+fq --sort=foldcase \
-  --c++-kinds=+p --fields=+iaS --extra=+q $1
+ctags --recurse=yes --kinds-c++=+p -f "${PID}tags" --extras=+fq --sort=foldcase \
+  --c++-kinds=+p --fields=+iaS --extras=+q "$@"
 mv "${PID}tags" "tags"
 # Generate ctags with various options
 # It may be required to define an ignorelist
@@ -21,18 +26,18 @@ mv "${PID}tags" "tags"
 # ctags --list-kinds=c++
 
 #ctags files can be used to find a file very quickly.
-#Just add the "--extra=+f" option in the ctags line.
+#Just add the "--extras=+f" option in the ctags line.
 #You may then open new files manually with autocompletion, with
 #:tag myfile.cpp
 
 # c++ flags
 #--recurse=yes .
 #-f tagfile
-#--extra=+fq
+#--extras=+fq
 #--sort=foldcase
 #--c++-kinds=+p
 #--fields=+iaS
-#--extra=+q
+#--extras=+q
 #-L -/file (- for standard in) to specify where to read from (can also use last positions instead)
 # --tag-relative (needed, if you want to move directories)
 # --languages=-javascript,sql (disable languages)

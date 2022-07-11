@@ -37,7 +37,7 @@ telescope.load_extension 'hop'
 telescope.load_extension 'gh'
 --telescope.load_extension 'urlview'
 
-telescope.load_extension 'project'
+--telescope.load_extension 'project'
 --telescope.load_extension 'command_palette'
 --telescope.load_extension 'project_scripts'
 --telescope.load_extension 'dap'

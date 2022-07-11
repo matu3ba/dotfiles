@@ -34,6 +34,7 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 #write usb stick: dd if=file.iso of=/dev/disk2 bs=4M status=progress conv=fdatasync
 #compress/tar/zip: gzip -k files, tar -f? folder, zip -r folder.zip folder
 #7z a testfiles.7z file1, 7z x testfiles.7z
+# NEVER use 7z e unless wanting to have cluttered files around
 #run commands at specific time: at (programs needs daemon config after installation)
 #or in 1h `sleep 3600 ; ./run.sh`
 #tmpfs: df -h /tmp
