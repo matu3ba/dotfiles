@@ -30,24 +30,28 @@ return require('packer').startup(function()
   use { 'tpope/vim-fugitive' } -- TODO setup
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+  use { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
   -- idea use { 'axieax/urlview.nvim' } -- :Telescope urlview
   --requires = { 'tpope/vim-repeat' }
   -- leap: s|S char1 char2 (<space>|<tab>)* label?
   -- leap: gs in all other windows on the tab page
   -- leap: enter repeates, tab reverses the motion
   -- s|S char1 char2 <space>? (<space>|<tab>)* label?
-  use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- get used to enter for repeat
+  --use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- get used to enter for repeat
   use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
   --use { 'anuvyklack/hydra.nvim' } -- TODO finish this
 
   -- TODO visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
-  use { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end }
+  use { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end, }
   -- :Neogen [function/class/type]
   use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
   --
   -- use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
-  --use { 'numToStr/Surround.nvim' } -- still unstable like numToStr/Surround.nvim
+  -- selection S' to put ' around selected text
+  -- ysiw' for inner word with '
+  -- ? support for ysiwf ?
+  use { 'kylechui/nvim-surround', config = function() require("nvim-surround").setup() end, } -- stylish
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
 
@@ -72,7 +76,7 @@ return require('packer').startup(function()
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
   --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
-  use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end }
+  use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end, }
 
   ---- languages ----
   -- Lua
@@ -93,7 +97,6 @@ return require('packer').startup(function()
 
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
-  --use { 'tpope/vim-surround' } -- ds|cs| TODO ys,yS etc is conflicting
   use { 'tpope/vim-repeat' } -- repeating with . TODO replacement
   --use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/vim-easy-align' } -- TODO replacement
