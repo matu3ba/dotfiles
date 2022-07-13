@@ -1,0 +1,9 @@
+# method 1
+gnome-shell --replace
+# method 2
+sudo systemctl restart systemd-logind
+
+# method 3
+sudo systemctl restart gdm
+# or if lightdm is used
+sudo systemctl restart lightdm

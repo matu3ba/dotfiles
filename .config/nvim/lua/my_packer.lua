@@ -20,7 +20,9 @@ return require('packer').startup(function()
   use { 'hrsh7th/cmp-nvim-lsp' }
   use { 'hrsh7th/cmp-path' }
   use { 'hrsh7th/nvim-cmp' }
-  use { 'delphinus/cmp-ctags' } --FIXME broken
+  --use { 'delphinus/cmp-ctags' } -- does not search multiple files and spawns 1 process for each file
+  use { 'quangnguyen30192/cmp-nvim-tags' } -- simple approach to search through tags file for completions
+
   ---- shiny stuff ----
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
