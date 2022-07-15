@@ -154,6 +154,8 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 --map('n', ',t', '<cmd>tabnew<CR>', opts) -- Newtab (like in browser)
 --map('n', ',w', '<cmd>tabclose<CR>', opts) -- Closetab (like in browser)
 ---- window navigation ----
+--map('n', '<C-A>hjkl', ':q<CR>', opts) -- TODO: nvagiation
+--map('n', ';q', ':q<CR>', opts) -- quit
 --map('n', ';q', ':q<CR>', opts) -- quit
 --map('n', ';c', ':close<CR>', opts) -- close window unless its the last one
 --map('n', ';o', ':only<CR>', opts) -- close all windows but this one
@@ -436,6 +438,11 @@ map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]]
 --lsp_references
 --map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
 --map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)   -- run_script
+
+---- leap ----
+map('n', '-', '<Plug>(leap-forward)', {}) -- -> forward
+map('n', '_', '<Plug>(leap-backward)', {}) -- _> inverse forward
+map('n', 'gs', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
 
 ---- gitsigns ---- in file git operations (:Gitsigns debug_messages)
 -- mappings are workaround of https://github.com/lewis6991/gitsigns.nvim/issues/498

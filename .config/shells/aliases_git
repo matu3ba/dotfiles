@@ -12,6 +12,10 @@
 #root directory of current git repo
 #git rev-parse --show-toplevel
 
+#overwrite current branch with other branch without losing content
+#git tag old-email-branch
+#git reset --hard staging
+
 #patch based work
 #git format-patch --stdout first_commit^..last_commit > changes.patch
 #git am -3 < changes.patch

@@ -202,6 +202,10 @@ add_cmd('SelLazyEscStr', [[/\\".\{-}\\"]], {}) -- non-greedy search of \"..\" fi
 add_cmd('CoutDebug', [[execute 'normal! i' . 'std::cout << DEBUG << "\n";    // DEBUG' . '<Esc>']], {})
 add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of \"..\" fields
 
+---- Harpoon ----
+-- send all quickfixlist files to harpoon
+add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
+
 ---- Quickfixlist ----
 --<C-q>f to telescope results to quickfixlist
 -- there is no quickfixlists overview (how many quickfixlists exist)

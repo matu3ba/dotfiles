@@ -31,7 +31,9 @@ cmp.setup {
     --  },
     --},
     { name = 'nvim_lsp' },
-    { name = 'tags' },
+    -- TODO setup inbuild completions to work properly by adjusting C-n,Cp
+    -- or setup vim-gutentags
+    --{ name = 'tags' },
     --{ name = 'cmp_ctags' },
     -- { name = 'vsnip' }, -- For vsnip users.
     -- { name = 'luasnip' }, -- For luasnip users.

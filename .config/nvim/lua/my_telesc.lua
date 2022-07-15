@@ -12,6 +12,12 @@ telescope.setup {
       '--column',
       '--smart-case',
     },
+    -- upstream issue: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
+    -- mappings = {
+    --   i = {
+    --     ["<C-h>"] = telescope.extensions.send_to_harpoon.actions.send_selected_to_harpoon
+    --   },
+    -- },
   },
   --extensions = {
   --  hop = {
@@ -35,6 +41,7 @@ telescope.setup {
 telescope.load_extension 'fzf'
 telescope.load_extension 'hop'
 telescope.load_extension 'gh'
+--telescope.load_extension 'send_to_harpoon'
 --telescope.load_extension 'urlview'
 
 --telescope.load_extension 'project'

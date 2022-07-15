@@ -12,6 +12,7 @@ return require('packer').startup(function()
   --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
   ---- lsp+competion ----
+  use { 'williamboman/nvim-lsp-installer' }
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   --use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
   --use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets. BUT: own way of updating may fail => annoying
@@ -27,19 +28,19 @@ return require('packer').startup(function()
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
   use { 'lewis6991/gitsigns.nvim', branch = 'main' }
-  use { 'tpope/vim-fugitive' } -- TODO setup
+  use { 'tpope/vim-fugitive' } -- idea setup
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
-  use { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
   -- idea use { 'axieax/urlview.nvim' } -- :Telescope urlview
   --requires = { 'tpope/vim-repeat' }
   -- leap: s|S char1 char2 (<space>|<tab>)* label?
   -- leap: gs in all other windows on the tab page
   -- leap: enter repeates, tab reverses the motion
   -- s|S char1 char2 <space>? (<space>|<tab>)* label?
-  --use { 'ggandor/leap.nvim', branch = 'main', config = function() require('leap').set_default_keymaps() end, } -- get used to enter for repeat
+  -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
+  use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
   use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
-  --use { 'anuvyklack/hydra.nvim' } -- TODO finish this
+  --use { 'anuvyklack/hydra.nvim' } -- idea finish this
 
   -- TODO visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
@@ -51,6 +52,8 @@ return require('packer').startup(function()
   -- selection S' to put ' around selected text
   -- ysiw' for inner word with '
   -- ? support for ysiwf ?
+  -- word -> ysiw' -> 'word'
+  -- (da da) ->(  ysa") -> ("da da")
   use { 'kylechui/nvim-surround', config = function() require("nvim-surround").setup() end, } -- stylish
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
@@ -62,7 +65,9 @@ return require('packer').startup(function()
   --use { '~/dev/git/lua/telescope-project.nvim' } --TODO fixit
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   -- Telescope gh issues author=windwp label=bug search=miscompilation
-  use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- TODO use this
+  --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
+  --workaround: command
+  --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
   -- TODO rename folder as you type
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
@@ -105,6 +110,7 @@ return require('packer').startup(function()
   -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
   -- look into https://github.com/jonatan-branting/nvim-better-n
 
+  --use { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
   --use { 'vim-table' }
   --use { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds, I want to keep annotations dense+minimal
   --use { 'karb94/neoscroll.nvim', config = function() require('neoscroll').setup() end, }

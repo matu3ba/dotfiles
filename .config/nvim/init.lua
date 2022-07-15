@@ -95,6 +95,22 @@ vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h
 -- Debugging C++ values
 -- std::cout << ": " <<  << "\n";    // DEBUG
 -- std::cout << ": " <<  << "\n";    // DEBUG
+-- touch /tmp/debug.log
+-- std::ofstream ofstr("/tmp/debug.log", std::ios_base::app); // assume the file already exists
+-- ofstr << "msCompositeSchedule._sChargingRateUnit_tempString: " << msCompositeSchedule._sChargingRateUnit_tempString << "\n";
+-- ofstr.close();
+--#include <iostream>
+--#include <fstream>
+--#include <string>
+--// Usage example: filePutContents("./yourfile.txt", "content", true);
+--void filePutContents(const std::string& name, const std::string& content, bool append = false) {
+--    std::ofstream outfile;
+--    if (append)
+--        outfile.open(name, std::ios_base::app);
+--    else
+--        outfile.open(name);
+--    outfile << content;
+--}
 --
 -- convert windows line ending to linux:
 -- :%s/^M$//

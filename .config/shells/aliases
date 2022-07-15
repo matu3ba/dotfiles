@@ -42,10 +42,11 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 #valgrind leakcheck:
 #gdb --tui, --ex run, set tui enable
 #gdb --args ./runTests --gtest_filter=Br* --gtest_break_on_failure
-#gdb: 'i b' list breakpoints, l list LOC around, p print val
+#gdb: 'i b' list/print breakpoints, l list LOC around, p print val
 #gdb: r (re)run, b [file]:LOC|function|*addr|+-offset,
 #gdb: d del breakpoint(s), dis disable breakpoint(s)
-#gdb: c continue, s single-step into, n single-step over,
+#gdb: c continue, s single-step into, n single-step over, fin(ish) current scope,
+#gdb: up oen context level on stack (to caller), do(wn)
 #gdb: q quit,
 #gdb: checkpoint (save snapshot), info checkpoints, restart checkid
 #gdb: delete checkpoint checkid,
