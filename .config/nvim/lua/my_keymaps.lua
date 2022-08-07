@@ -42,6 +42,9 @@ local map = vim.api.nvim_set_keymap
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
+map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
+map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
+map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
 map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump

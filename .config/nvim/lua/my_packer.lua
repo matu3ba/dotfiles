@@ -12,7 +12,7 @@ return require('packer').startup(function()
   --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
   ---- lsp+competion ----
-  use { 'williamboman/nvim-lsp-installer' }
+  use { 'williamboman/nvim-lsp-installer' } -- TODO change to williamboman/mason.nvim
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   --use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
   --use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets. BUT: own way of updating may fail => annoying
@@ -47,8 +47,7 @@ return require('packer').startup(function()
   use { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end, }
   -- :Neogen [function/class/type]
   use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
-  --
-  -- use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
+
   -- selection S' to put ' around selected text
   -- ysiw' for inner word with '
   -- ? support for ysiwf ?
@@ -68,10 +67,11 @@ return require('packer').startup(function()
   --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
   --workaround: command
   --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
-  -- TODO rename folder as you type
+  -- idea rename dirs as you type
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
-  --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- pretty printing requires codelldb (no luajit pretty printing)
+  -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- TODO setup
+  -- use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- TODO setup
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
@@ -91,15 +91,17 @@ return require('packer').startup(function()
   --<Plug>(Luadev-Run)      Operator to execute lua code over a movement or text object.
   --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
   --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
+  --TODO masterplan: Vim macro to lua function translation
+  --  1. read current keybinding including inbuilds => refactor core keyevent handling in neoim (https://github.com/linty-org/key-menu.nvim/issues/10)
+  --  2. track the mode, last action and read keys to lookup next action => or capture this in neovim without executing it
+  -- related: use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
   -- Zig
   --use { 'neomake/neomake' } -- get useful comments for code semantics
-  use { 'LnL7/vim-nix' } -- flakes highlighting
+  use { 'LnL7/vim-nix' } -- flakes highlighting: wait until nix converts their stuff to flakes
   -- booperlv/nvim-gomove
   use { 'ziglang/zig.vim' } -- idea replacement
-
   ---- Organization stuff
   use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
-
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
   use { 'tpope/vim-repeat' } -- repeating with . TODO replacement

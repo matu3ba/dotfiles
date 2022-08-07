@@ -1,0 +1,18 @@
+@topolarity
+QEMU plugin can get the PC out and you can feed that to addr2line to get an
+detailed execution trace.
+see qemu repository
+./contrib/plugins/execlog.c
+
+Compilation:
+make -c contrib/plugins
+or
+clang -pthread -I/pathglib-2.0 -I/pathglib-2.0/include -fPIC -Wall -I/pathqemu/include/qemu -c -o execlog.o execlog.c
+clang -shared -Wl,-soname,libexeclog.so -o libexeclog.so execlog.o
+-Dcpu=baseline might be needed.
+
+Usage:
+qemu-x86_64 -plugin libexeclog.so -d plugin ./stage3/bin/zig test test/behavior.zig -I test -I. 2>&1
+| awk -F'[, ]' '$1 == "0" {print $3}'
+| llvm-addr2line -e ./stage3/bin/zig -f -p -C
+| grep Sema | uniq | tee trace.log

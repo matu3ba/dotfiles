@@ -1,6 +1,30 @@
+~/.ssh/config for configs:
+AddKeysToAgent yes
+# NAME account
+Host github.com
+  HostName github.com
+  User git
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/PRIVATEKEYNAME
+  IdentitiesOnly yes
+
+Generating private key with 200 instead of 16 default rounds.
+ssh-keygen -a 200 -t ed25519 -C "COMMENT" -N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
+COMMENT can be "$(date +'%Y%m%d')${USER}@${HOSTNAME}":
+ssh-keygen -a 200 -t ed25519 -C "$(date +'%Y%m%d')${USER}@${HOSTNAME}" \
+-N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
+Note: ssh keys have no concept like expiry date, so the server needs to
+accept or reject the key.
+
+General format:
+ssh user@domain@ip
+Copy credentials into user keyring to prevent request for authentication:
+ssh-copy-id user@domain@ip
 
 checking, if ssh agent is listening on port 22
 netstat -atpn | grep 22
+checking, if ssh deamon (for server) installed:
+sshd --version
 
 checklist ssh correctly running
 1. enable logs: TODO

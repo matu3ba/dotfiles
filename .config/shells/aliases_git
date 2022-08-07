@@ -16,9 +16,15 @@
 #git tag old-email-branch
 #git reset --hard staging
 
+#remove last commit (--soft vs --hard)
+#git reset HEAD~1
+
 #patch based work
 #git format-patch --stdout first_commit^..last_commit > changes.patch
 #git am -3 < changes.patch
+
+# git diff --patch > diff.patch,
+# git apply [-R] diff.patch to [reverse] apply it on a codebase
 
 #show specific file on revision/commit
 #git show REVISION:path/to/file
@@ -42,6 +48,10 @@
 
 #get untracked files as list for scripting
 #git ls-files --others --exclude-standard
+
+#delete untracked files (dry run and real one)
+#git clean -d -n
+#git clean -d -f
 
 alias gwt='git worktree'
 alias grst='git restore'
@@ -74,7 +84,6 @@ alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gc='git commit -v'
 alias gcmsg='git commit -m'
 alias gca='git commit --amend'
-# git diff > diff.patch, git apply diff.patch to apply it on a codebase
 alias gd='git diff'
 alias gds='git diff --shortstat'
 alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'

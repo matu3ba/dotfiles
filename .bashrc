@@ -86,7 +86,7 @@ PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell testing
 PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
 PATH=$PATH:"${HOME}/.local/zig/stage2/bin" # zig stage2
-#PATH=$PATH:"${HOME}/.local/zig/stage3/bin" # zig stage3
+PATH=$PATH:"${HOME}/.local/zig/stage3/bin" # zig stage3
 
 #PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
 #testing www.ziglang.org

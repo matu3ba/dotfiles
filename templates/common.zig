@@ -3,6 +3,7 @@ const std = @import("std");
 // typesafe version of (u16*)codepoint with codepoint type u8*
 // codepoint created from Utf8View which is [_]u8
 const char = std.mem.bytesAsValue(u16, codepoint[0..2]); // U+0080...U+07FF
+const char2 = @bitCast(u16, arr[idx..][0..2].*);
 
 const factorial_lookup_table = createFactorialLookupTable(u128, 25);
 pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: comptime_int) [num_terms]Int {

@@ -4,6 +4,8 @@ https://nixos.wiki/wiki/Flakes
 mkdir -p ~/.config/nix
 echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 
+nix-collect-garbage
+
 # no systemctl service running for the nix daemon
 #sudo systemctl stop nix-daemon.socket
 #sudo systemctl stop nix-daemon.service
@@ -21,6 +23,14 @@ nix shell 'nixpkgs#hello' # nixpkgs is specified in the default registry to be g
 # to just build
 nix build 'nixpkgs#hello'
 ./result/bin/hello
+# build default.nix
+nix build git --file default.nix
+nix build -f default.nix
+# build default derivation
+nix build .
+nix build .#<name>
+# run apps
+nix run .#<name>
 
 # to develop
 nix develop 'nixpkgs#hello'
@@ -35,7 +45,11 @@ nix profile remove hello # does not match any packages
 # To manipulate flakes themself, use nix flake
 nix flake show
 nix flake clone
-nix flake lock
+nix flake lock --update-all
+nix flake prefetch
+nix flake update
+nix flake check
+nix flake init -t <flake>
 
 # example for nix flake lock
 ## flake.nix
@@ -45,3 +59,6 @@ nix flake lock
   };
 }
 nix flake lock --update-input home-manager
+
+# update channel
+nix-channel --update
