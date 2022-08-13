@@ -12,3 +12,4 @@ symlinkUninstall.sh
 
 .git
 templates
+patches

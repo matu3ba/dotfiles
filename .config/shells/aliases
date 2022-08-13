@@ -8,7 +8,7 @@ alias ccbuild='mkdir -p build/; cd build;' # change create build
 alias ccdebug='mkdir -p debug/; cd debug;' # change create debug
 alias rmmkdbuild='rm -fr build/; mkdir build'
 alias cdnvimplugs='cd ${HOME}/.local/share/nvim/site/pack/packer/start'
-alias mold_make='${HOME}/dev/git/cpp/mold/mold -run make -j8'
+alias mma='${HOME}/dev/git/cpp/mold/mold -run make -j$(nproc)'
 alias readcommentsectionELF='readelf -p .comment'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
@@ -69,30 +69,41 @@ alias rwthvpn='sudo openconnect -u jh027527 --passwd-on-stdin --authgroup "RWTH-
 # appimages are intended as "always working default", even though
 # they dont work within WSL1 or anything non-unix.
 alias     freecad='QT_QPA_PLATFORM="xcb" "$HOME/.local/appimages/FreeCAD.AppImage";'
+alias        viasan='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
 
-alias      viasan='UBSAN_OPTIONS=print_stacktrace=1 ASAN_OPTIONS=log_path=/tmp/nvim_asan ${HOME}/.local/asan_nvim/bin/nvim'
-alias          vi='${HOME}/.local/nvim/bin/nvim'
-alias         via='${HOME}/.local/appimages/nvim.appimage'
-alias         jvi='firejail ${HOME}/.local/nvim/bin/nvim'
-alias         cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
-alias         dvi='${HOME}/.local/nvim/bin/nvim -u DEFAULT'
-alias      histup='${HOME}/.local/nvim/bin/nvim "/var/log/pacman.log"'
-alias     aliases='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
-alias      bashrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
-alias aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
-alias aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
+alias           via='${HOME}/.local/appimages/nvim.appimage'
+alias          jvia='firejail ${HOME}/.local/appimages/nvim.appimage'
+alias          cvia='${HOME}/.local/appimages/nvim.appimage -u NONE'
+alias          dvia='${HOME}/.local/appimages/nvim.appimage -u DEFAULT'
+alias        histup='${HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
+alias       aliases='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
+alias        bashrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
+alias   aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
+alias   aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
+alias     templates='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
+
+alias            vi='${HOME}/.local/nvim/bin/nvim'
+alias           jvi='firejail ${HOME}/.local/nvim/bin/nvim'
+alias           cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
+alias           dvi='${HOME}/.local/nvim/bin/nvim -u DEFAULT'
+alias      histupvi='${HOME}/.local/nvim/bin/nvim "/var/log/"' # pacman.log or apt/
+alias     aliasesvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
+alias      bashrcvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.bashrc"'
+alias aliases_gitvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_git"'
+alias aliases_nixvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
+alias   templatesvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/templates"'
 #oh shell can not fix the underlying misconceptions of shell:
 #https://arcan-fe.com/2022/04/02/the-day-of-a-new-command-line-interface-shell/
 #alias  aliases_oh='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_oh"'
-alias  templates='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 #alias      initrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/ion/initrc"'
 # factory defaults: neovim --clean, neovim -u init.lua, neovim --clean -u init.lua file.zig (debugging plugins)
 
 alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         fbi='./configure && make && sudo make install-strip && sudo firecfg && sudo -K'
-alias         nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-alias   nbnojail='firejail --noprofile ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-alias       nbnm='firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias          nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias        nbnj='firejail --noprofile ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias      nbnjnm='firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias        nbnm='make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
 # unfortunately mold can still not link clang address sanitizer libraries as they patch libc symbols in a nontrivial way
 #alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
@@ -127,17 +138,17 @@ alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
 alias     zb1='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 alias     zb2='/usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
 alias     zb3='/usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
-alias zbrel3='/usr/bin/time -v ./stage2/bin/zig build install -Drelease -Denable-llvm -Dconfig_h=build/config.h'
-alias zbdeb1='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
+alias  zbrel3='/usr/bin/time -v ./stage2/bin/zig build install -Drelease -Denable-llvm -Dconfig_h=build/config.h'
+alias  zbdeb1='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
 #alias  zball='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h'
-alias  zball='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
-alias  zb12='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
+ alias  zball='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
+alias    zb12='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
 alias zbinst2='rsync -av --delete stage2/ "${HOME}/.local/zig/stage2/" && mv "${HOME}/.local/zig/stage2/bin/zig" "${HOME}/.local/zig/stage2/bin/zig2"'
 alias zbinst3='rsync -av --delete stage3/ "${HOME}/.local/zig/stage3/" && mv "${HOME}/.local/zig/stage3/bin/zig" "${HOME}/.local/zig/stage3/bin/zig3"'
 #alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-alias zboot='${HOME}/.local/zig/zig'
-alias zbi='${HOME}/dev/git/zig/zig/bisect/build/zig'
-alias zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zig/zig/master/lib/std'
+alias   zboot='${HOME}/.local/zig/zig'
+alias    zbis='${HOME}/dev/git/zig/zig/bisect/build/zig'
+alias  zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zig/zig/master/lib/std'
 #zigtest is pending support for pipes other than the standard ones to be robust
 #--test-dir
 #alias zigtest='zig test --zig-lib-dir ${HOME}/dev/git/zig/zig/master/lib -lc folder'
@@ -147,31 +158,31 @@ alias zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zig/zig/mas
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -fLLVM
 #/zig-out/bin/zig test ../test/behavior.zig -I ../test -ofmt=c
 alias rmzigallcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
-alias rmzigcache='rm -fr zig-cache/ zig-out/'
+alias    rmzigcache='rm -fr zig-cache/ zig-out/'
 
 # sandboxing with firejail (enp4s0|wlan0)
 # firefox requires profile lookup, even though they provide an option to set the direct path for the profile
 alias   nojail='firejail --noprofile'
 alias  njfoxPM='firejail --noprofile firefox --ProfileManager'
 #alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --x11=xpra --allow=${TMP1}  falkon  && echo   "${TMP1}"'
-alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
-alias  sfalketh='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=enp4s0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
-alias ssfalketh='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=enp4s0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
+alias    falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
+alias   sfalketh='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=enp4s0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
+alias  ssfalketh='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=enp4s0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
 alias   falkwlan='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=wlan0 --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
 alias  sfalkwlan='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=wlan0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
 alias ssfalkwlan='TMP3="${HOME}/tmpf/ssfalk" && test -d "${TMP3}" || mkdir ${TMP3} && firejail --net=wlan0 --x11=xpra --private=${TMP3}    falkon  && echo   "${TMP3}"'
 #alias    foxla='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} --allow=$HOME/.mozilla/firefox/profiles.ini --allow=$HOME/.mozilla/firefox/default firefox -P default && rm -fr "${TMP4}"'
 #alias   sfoxla='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} --allow=$HOME/.mozilla/firefox/profiles.ini --allow=$HOME/.mozilla/firefox/allAllowed firefox -P allAllowed && rm -fr "${TMP5}"'
-alias    foxeth='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=enp4s0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
-alias    foxwlan='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
-alias   sfoxeth='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=enp4s0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
-alias   sfoxwlan='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
-alias  tbirdeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=enp4s0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
-alias  tbirdwlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias        foxeth='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=enp4s0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias       foxwlan='TMP4="${HOME}/tmpf/fox"    && test -d "${TMP4}" || mkdir ${TMP4} && firejail --net=wlan0 --whitelist=${TMP4} firefox -P default && rm -fr "${TMP4}"'
+alias       sfoxeth='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=enp4s0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
+alias      sfoxwlan='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
+alias      tbirdeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=enp4s0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
+alias     tbirdwlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
 alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
 
 # sandboxing chromium (enp4s0|wlan0)
-alias schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
+alias  schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
 alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'
 # persistent profiles: replace google-chrome with chromium
 #cat ${HOME}/.config/google-chrome/Default/Preferences | jq '.default_search_provider_data.template_url_data={ "keyword": "duckduckgo.com", "short_name": "DuckDuckGo", "suggestions_url": "https://duckduckgo.com/ac/?q={searchTerms}&type=list", "url": "https://duckduckgo.com/?q={searchTerms}&t=canonical" }' >adapted-preferences.json
@@ -183,6 +194,7 @@ alias rsync_move='rsync -avz --progress -h --remove-source-files'
 alias rsync_update='rsync -avzu --progress -h'
 alias rsync_synchronize='rsync -avzu --delete --progress -h'
 alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
+# TODO rsync without permissions
 
 # program aliases
 alias l='exa'

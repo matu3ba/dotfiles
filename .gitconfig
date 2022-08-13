@@ -19,5 +19,3 @@
   autocrlf = false
 #[commit]
 #	gpgsign = true
-[commit]
-	gpgsign = true

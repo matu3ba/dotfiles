@@ -49,6 +49,10 @@
 #get untracked files as list for scripting
 #git ls-files --others --exclude-standard
 
+#get diffed file names by operation(adding,moving etc), lowerspace also works
+#git diff COMMIT1 COMMIT2 --name-only --diff-filter=A
+#Added, Copied, Deleted, Modified, Renamed + type (T changed9, Unmerged, (X unknown), Broken
+
 #delete untracked files (dry run and real one)
 #git clean -d -n
 #git clean -d -f
@@ -86,6 +90,7 @@ alias gcmsg='git commit -m'
 alias gca='git commit --amend'
 alias gd='git diff'
 alias gds='git diff --shortstat'
+alias gdfa='git diff --name-only --diff-filter=A'
 alias gwch='git whatchanged -p --abbrev-commit --pretty=medium'
 alias gcomf='git commit -v --fixup'
 

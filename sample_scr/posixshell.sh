@@ -44,4 +44,8 @@ contains() {
     fi
 }
 
+var="abcdef"
+removed_prefix="${var#a}"
+removed_suffix="${var%e}"
+
 # parameter expansion https://stackoverflow.com/a/16753536
