@@ -10,6 +10,7 @@ require 'my_nvimcmp'
 require 'my_keymaps'
 require 'my_cmds'
 require 'my_gitsign'
+require 'my_hydra'
 vim.cmd [[colorscheme material]]
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/

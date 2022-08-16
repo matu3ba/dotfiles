@@ -7,12 +7,13 @@ return require('packer').startup(function()
   -- mkdir -p ~/.local/share/nvim/site/pack/packer/start/
   -- git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
-  use { 'marko-cerovac/material.nvim' } --<l>m
+  use { 'marko-cerovac/material.nvim' } --<l>ma
   --use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
+  -- idea: publish the git worktree helper scripts
   --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
   ---- lsp+competion ----
-  use { 'williamboman/nvim-lsp-installer' } -- TODO change to williamboman/mason.nvim
+  use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   --use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
   --use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets. BUT: own way of updating may fail => annoying
@@ -39,8 +40,11 @@ return require('packer').startup(function()
   -- s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
-  use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
-  --use { 'anuvyklack/hydra.nvim' } -- idea finish this
+  --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
+
+  -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite]
+  use { 'elihunter173/dirbuf.nvim', config = function() require("dirbuf").setup { write_cmd = "DirbufSync -confirm" } end, }
+  use { 'anuvyklack/hydra.nvim' } -- my_hydra.lua
 
   -- TODO visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
@@ -48,12 +52,22 @@ return require('packer').startup(function()
   -- :Neogen [function/class/type]
   use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
 
+  -- use { 'nicwest/vim-camelsnek' } -- TODO setup
   -- selection S' to put ' around selected text
   -- ysiw' for inner word with '
   -- ? support for ysiwf ?
   -- word -> ysiw' -> 'word'
   -- (da da) ->(  ysa") -> ("da da")
   use { 'kylechui/nvim-surround', config = function() require("nvim-surround").setup() end, } -- stylish
+  -- gm, M to mark word/region, M delete word
+  -- g!M matches only full word
+  -- do stuff, r, e etc
+  -- press M or C-b to finish editing record and go forward/backward
+  -- keep pressing M or C-b to reapply changes in selection
+  -- press <CR> to mark match at cursor ignored
+  -- navigate without changing with C-j, C-k
+  -- ga: change all occurences
+  use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
 
@@ -67,11 +81,10 @@ return require('packer').startup(function()
   --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
   --workaround: command
   --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
-  -- idea rename dirs as you type
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
-  -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- TODO setup
-  -- use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- TODO setup
+  --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- TODO setup
+  --use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- TODO setup
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
@@ -101,7 +114,7 @@ return require('packer').startup(function()
   -- booperlv/nvim-gomove
   use { 'ziglang/zig.vim' } -- idea replacement
   ---- Organization stuff
-  use { 'jbyuki/venn.nvim' } --<l>v,set ve=all,:VBox or press f,HJKL,set ve=
+  use { 'jbyuki/venn.nvim' } --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
   use { 'tpope/vim-repeat' } -- repeating with . TODO replacement

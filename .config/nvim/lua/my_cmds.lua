@@ -15,6 +15,7 @@ add_cmd('CSt', cmd_tn .. 'lua/my_statusline.lua', {})
 add_cmd('CTel', cmd_tn .. 'lua/my_telesc.lua', {})
 add_cmd('CTre', cmd_tn .. 'lua/my_treesitter.lua', {})
 add_cmd('CUtil', cmd_tn .. 'lua/my_utils.lua', {})
+add_cmd('CHydra', cmd_tn .. 'lua/my_hydra.lua', {})
 -- why are keybindings and plugin cache not reloaded?
 --add_cmd('CRel', function()
 --  local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
