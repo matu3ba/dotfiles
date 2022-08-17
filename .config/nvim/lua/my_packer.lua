@@ -52,7 +52,7 @@ return require('packer').startup(function()
   -- :Neogen [function/class/type]
   use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
 
-  -- use { 'nicwest/vim-camelsnek' } -- TODO setup
+  -- use { 'nicwest/vim-camelsnek' } -- idea setup
   -- selection S' to put ' around selected text
   -- ysiw' for inner word with '
   -- ? support for ysiwf ?
@@ -83,8 +83,8 @@ return require('packer').startup(function()
   --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
-  --use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- TODO setup
-  --use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- TODO setup
+  use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- TODO setup
+  use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- TODO setup
   --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
   --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
@@ -117,14 +117,14 @@ return require('packer').startup(function()
   use { 'jbyuki/venn.nvim' } --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
-  use { 'tpope/vim-repeat' } -- repeating with . TODO replacement
-  --use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
+
   --use { 'junegunn/vim-easy-align' } -- TODO replacement
+  --use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/gv.vim' } -- alternative?
   --use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
-  -- replacement of , vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
+  -- replacement of vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
   -- look into https://github.com/jonatan-branting/nvim-better-n
-
+  --use { 'tpope/vim-repeat' } -- repeating with ., superseded with https://this-week-in-neovim.org/2022/Aug/15#article-dot-repeat
   --use { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
   --use { 'vim-table' }
   --use { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds, I want to keep annotations dense+minimal
