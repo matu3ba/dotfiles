@@ -157,17 +157,7 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 --map('n', ',t', '<cmd>tabnew<CR>', opts) -- Newtab (like in browser)
 --map('n', ',w', '<cmd>tabclose<CR>', opts) -- Closetab (like in browser)
 ---- window navigation ----
---map('n', '<C-A>hjkl', ':q<CR>', opts) -- TODO: nvagiation
---map('n', ';q', ':q<CR>', opts) -- quit
---map('n', ';q', ':q<CR>', opts) -- quit
---map('n', ';c', ':close<CR>', opts) -- close window unless its the last one
---map('n', ';o', ':only<CR>', opts) -- close all windows but this one
---map('n', ';h', '<C-w>h', opts) -- left
---map('n', ';j', '<C-w>j', opts) -- down
---map('n', ';k', '<C-w>k', opts) -- up
---map('n', ';l', '<C-w>l', opts) -- right
---map('n', ';s', '<C-w>s', opts) -- split
---map('n', ';v', '<C-w>v', opts) -- vsplit
+-- see my_hydra.lua
 --map('n', ';S', '<cmd>Sexplore<CR>', opts) -- Sexplore
 --map('n', ';V', '<cmd>Vexplore<CR>', opts) -- Vexplore
 --map('n', ';E', '<cmd>Explore<CR>', opts) -- Explore
