@@ -48,14 +48,32 @@
 
 #get untracked files as list for scripting
 #git ls-files --others --exclude-standard
+#git ls-files --others --exclude-standard || rsync -av --files-from=- /pathfrom /pathto
 
 #get diffed file names by operation(adding,moving etc), lowerspace also works
 #git diff COMMIT1 COMMIT2 --name-only --diff-filter=A
 #Added, Copied, Deleted, Modified, Renamed + type (T changed9, Unmerged, (X unknown), Broken
 
+#get diffed file to unindexed file
+#https://stackoverflow.com/questions/855767/can-i-use-git-diff-on-untracked-files
+#git diff --no-index indexed unindexed
+#TODO get diff between worktrees
+#1. git ls-files --others --exclude-standard
+#2. loop through list:
+#2.1. check if path prefix/unindexed exists
+#2.2. if yes, add to list. otherwise add /dev/null
+#3. for each listentry:
+#3.1. git diff --no-index indexed unindexed
+#3.2. add to result string variable
+#3.3 print string variable to stdout
+
 #delete untracked files (dry run and real one)
 #git clean -d -n
 #git clean -d -f
+
+#get the raw files of current commit as tar archive
+#git archive -o archive.tar
+#tar -xf archive.tar
 
 alias gwt='git worktree'
 alias grst='git restore'
@@ -65,6 +83,7 @@ alias ga='git add'
 alias gaa='git add -A'
 alias gap='git apply'
 
+# TODO: provide a hydra on worktree scripts or git commands in general
 alias gb='git branch'
 alias gba='git branch -avv'
 alias gbd='git branch -d'
@@ -77,11 +96,12 @@ alias gpod='git push downstream --delete'
 alias grpo='git remote prune downstream'
 alias grv='git remote -v'
 
-alias gbs='git bisect'
-alias gbsb='git bisect bad'
-alias gbsg='git bisect good'
-alias gbsr='git bisect reset'
-alias gbss='git bisect start'
+# See instructions for bisecting via script in scr/bisect.sh
+#alias gbs='git bisect'
+#alias gbsb='git bisect bad'
+#alias gbsg='git bisect good'
+#alias gbsr='git bisect reset'
+#alias gbss='git bisect start'
 
 alias gco='git checkout'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
@@ -166,15 +186,17 @@ alias gma='git merge --abort'
 alias gpush='git push'
 alias gpushd='git push --dry-run'
 
-alias gsta='git stash'
-alias gstapush='git stash push'
-alias gstaa='git stash apply'
-alias gstac='git stash clear'
-alias gstad='git stash drop'
-alias gstal='git stash list'
-alias gstapop='git stash pop'
-alias gstas='git stash show --text'
-alias gstaall='git stash --all'
+# To show the content of a stash run
+# git stash show -p STASH/STASHNUMBER
+#alias gsta='git stash'
+#alias gstapush='git stash push'
+#alias gstaa='git stash apply'
+#alias gstac='git stash clear'
+#alias gstad='git stash drop'
+#alias gstal='git stash list'
+#alias gstapop='git stash pop'
+#alias gstas='git stash show --text'
+#alias gstaall='git stash --all'
 
 alias gsi='git submodule init'
 alias gsu='git submodule update'

@@ -23,4 +23,32 @@ https://superuser.com/a/956451
 bind-key [ copy
 bind-key ] paste
 
-better:
+##### Tmux scripting. 6 pane layout. #####
+Make sure to be aware of potentially necessary timeouts (~50ms works always fine).
+## Prepare layout
+# pkill -f tmux (if needed, kill all tmux session)
+tmux new -d -s session_tmux
+tmux send-keys -t session_tmux.0 'tmux split-window -p 50 -c "$PWD"' ENTER
+tmux send-keys -t session_tmux.0 'tmux split-window -p 50 -c "$PWD"' ENTER
+#0
+#1<-
+tmux send-keys -t session_tmux 'tmux select-pane -t 0' ENTER
+tmux send-keys -t session_tmux.0 'tmux split-window -h -p 66 -c "$PWD"' ENTER
+# 0 |  1<-|
+#    2
+tmux send-keys -t session_tmux.1 'tmux split-window -h -p 50 -c "$PWD"' ENTER
+tmux send-keys -t session_tmux 'tmux select-pane -t 3' ENTER
+# 0 | 1 | 2
+#     3<-
+tmux send-keys -t session_tmux.3 'tmux split-window -h -p 66 -c "$PWD"' ENTER
+tmux send-keys -t testautomation_tmux.4 'tmux split-window -h -p 50 -c "$PWD"' ENTER
+# 0 | 1 | 2
+# 3 | 4 | 5<-
+tmux send-keys -t session_tmux 'tmux set-option mouse on' ENTER
+## Visualize output
+tmux send-keys -t session_tmux.0 'command1 arg1' ENTER
+tmux send-keys -t session_tmux.1 'command2 arg2' ENTER
+tmux send-keys -t session_tmux.2 'command3 arg3' ENTER
+tmux send-keys -t session_tmux.3 'command4 arg4' ENTER
+tmux send-keys -t session_tmux.4 'command5 arg5' ENTER
+tmux attach-session -tsession_tmux

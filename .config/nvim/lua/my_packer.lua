@@ -92,7 +92,7 @@ return require('packer').startup(function()
   --use { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
   ---- treesitter ---- crashes on macro-heavy code ----
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
+  --use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
   --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
   use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end, }
 

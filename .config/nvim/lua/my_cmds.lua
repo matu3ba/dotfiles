@@ -1,21 +1,25 @@
 ---- Configuration files editing ----
 local add_cmd = vim.api.nvim_create_user_command
-local cmd_tn = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
-add_cmd('CCmd', cmd_tn .. 'lua/my_cmds.lua', {})
-add_cmd('CDap', cmd_tn .. 'lua/my_dap.lua', {})
-add_cmd('CGl', cmd_tn .. 'lua/my_globals.lua', {})
-add_cmd('CGs', cmd_tn .. 'lua/my_gitsign.lua', {})
-add_cmd('CInit', cmd_tn .. 'init.lua', {})
-add_cmd('CKey', cmd_tn .. 'lua/my_keymaps.lua', {})
-add_cmd('CNvimcmp', cmd_tn .. 'lua/my_nvimcmp.lua', {})
---add_cmd('CLsp', cmd_tn .. 'lua/my_lsp.lua', {})
-add_cmd('COpts', cmd_tn .. 'lua/my_opts.lua', {})
-add_cmd('CPl', cmd_tn .. 'lua/my_packer.lua', {})
-add_cmd('CSt', cmd_tn .. 'lua/my_statusline.lua', {})
-add_cmd('CTel', cmd_tn .. 'lua/my_telesc.lua', {})
-add_cmd('CTre', cmd_tn .. 'lua/my_treesitter.lua', {})
-add_cmd('CUtil', cmd_tn .. 'lua/my_utils.lua', {})
-add_cmd('CHydra', cmd_tn .. 'lua/my_hydra.lua', {})
+local nvim_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
+add_cmd('CCmd', nvim_edit .. 'lua/my_cmds.lua', {})
+add_cmd('CDap', nvim_edit .. 'lua/my_dap.lua', {})
+add_cmd('CGl', nvim_edit .. 'lua/my_globals.lua', {})
+add_cmd('CGs', nvim_edit .. 'lua/my_gitsign.lua', {})
+add_cmd('CInit', nvim_edit .. 'init.lua', {})
+add_cmd('CKey', nvim_edit .. 'lua/my_keymaps.lua', {})
+add_cmd('CNvimcmp', nvim_edit .. 'lua/my_nvimcmp.lua', {})
+--add_cmd('CLsp', nvim_edit .. 'lua/my_lsp.lua', {})
+add_cmd('COpts', nvim_edit .. 'lua/my_opts.lua', {})
+add_cmd('CPl', nvim_edit .. 'lua/my_packer.lua', {})
+add_cmd('CSt', nvim_edit .. 'lua/my_statusline.lua', {})
+add_cmd('CTel', nvim_edit .. 'lua/my_telesc.lua', {})
+add_cmd('CTre', nvim_edit .. 'lua/my_treesitter.lua', {})
+add_cmd('CUtil', nvim_edit .. 'lua/my_utils.lua', {})
+add_cmd('CHydra', nvim_edit .. 'lua/my_hydra.lua', {})
+
+local df_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/'
+add_cmd('Dotfiles', df_edit, {})
+
 -- why are keybindings and plugin cache not reloaded?
 --add_cmd('CRel', function()
 --  local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
@@ -94,63 +98,63 @@ add_cmd('Pdffigure', function()
   vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf')
 end, {})
 
-add_cmd('Replpdflatex', function()
-  --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
-  local filename = vim.fn.expand '%'
-  local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build " .. filename
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('Repllualatex', function()
-  local cmd = "terminal latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build main.tex"
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('Repltikzall', function()
-  local cmd = "terminal cd figures; watchexec -e tikz './build_tikz.sh'"
-  print(cmd)
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('Repltikzthis', function()
-  local bashcmd = [[cd figures; watchexec -w ]]
-    .. vim.fn.expand '%:t'
-    .. [[ "lualatex --shell-escape '\def\zzz{']]
-    .. vim.fn.expand '%:t'
-    .. [['} \input myscript.tex'"]]
-  --print(bashcmd)
-  local cmd = 'terminal ' .. bashcmd
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('ReplpdeAll', function()
-  local cmd =
-    "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'"
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('ReplpdeTest', function()
-  -- "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests'"
-  local cmd =
-    "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./test_pde'"
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('ReplpdeTestgdb', function()
-  local cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst 'make -j8 && gdb -ex run ./runTests'"
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('Buildpde', function()
-  local cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8'"
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
-add_cmd('Test123', function()
-  local cmd = 'terminal echo ${HOME}'
-  vim.cmd 'tabnew'
-  vim.cmd(cmd)
-end, {})
+-- add_cmd('Replpdflatex', function()
+--   --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
+--   local filename = vim.fn.expand '%'
+--   local cmd = "terminal latexmk -pdflatex='pdflatex -file-line-error -synctex=1' -pvc -pdf -outdir=build " .. filename
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('Repllualatex', function()
+--   local cmd = "terminal latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build main.tex"
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('Repltikzall', function()
+--   local cmd = "terminal cd figures; watchexec -e tikz './build_tikz.sh'"
+--   print(cmd)
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('Repltikzthis', function()
+--   local bashcmd = [[cd figures; watchexec -w ]]
+--     .. vim.fn.expand '%:t'
+--     .. [[ "lualatex --shell-escape '\def\zzz{']]
+--     .. vim.fn.expand '%:t'
+--     .. [['} \input myscript.tex'"]]
+--   --print(bashcmd)
+--   local cmd = 'terminal ' .. bashcmd
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('ReplpdeAll', function()
+--   local cmd =
+--     "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests && ./pde'"
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('ReplpdeTest', function()
+--   -- "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./runTests'"
+--   local cmd =
+--     "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8 && ./test_pde'"
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('ReplpdeTestgdb', function()
+--   local cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst 'make -j8 && gdb -ex run ./runTests'"
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('Buildpde', function()
+--   local cmd = "terminal cd build; watchexec -w ../in -w ../src -w ../tst '$HOME/dev/git/cpp/mold/mold -run make -j8'"
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
+-- add_cmd('Test123', function()
+--   local cmd = 'terminal echo ${HOME}'
+--   vim.cmd 'tabnew'
+--   vim.cmd(cmd)
+-- end, {})
 
 add_cmd('Spacelen2', function()
   vim.bo.expandtab = true --expand tabs to spaces

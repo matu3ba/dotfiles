@@ -225,6 +225,7 @@ map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in termin
 -- vim-surround: ds|cs|ys,yS etc is conflicting
 -- vim-easy-align TODO
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
+-- C-t jumps back to the beginning of file entering from goto definition
 -- :set nowrapscan => error out on end of file
 -- g; and g, for cursor editing position history, ''|`` for cursor position history
 -- :g for actions on regex match

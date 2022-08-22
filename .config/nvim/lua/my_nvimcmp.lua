@@ -76,6 +76,7 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 local lspconfig = require 'lspconfig'
 lspconfig['clangd'].setup { capabilities = capabilities }
 lspconfig['julials'].setup { capabilities = capabilities }
+lspconfig['jedi_language_server'].setup{ capabilities = capabilities }
 lspconfig['rust_analyzer'].setup { capabilities = capabilities }
 lspconfig['texlab'].setup {
   settings = {

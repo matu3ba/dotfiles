@@ -13,6 +13,8 @@ alias readcommentsectionELF='readelf -p .comment'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 #pidof name, pgrep name, pgrep -P pid, pidstat -p 51648, ls /proc/pid
+#To query ip+port of active processes install net-tools and use
+#netstat -plnt
 #alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
 ## TODO remove non-unix and non-portable symbols in filenames and folder names
 alias helpuser='echo "appimage_update gitreb gitrm replunderscore"'
@@ -143,6 +145,7 @@ alias  zbdeb1='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=
 #alias  zball='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h'
  alias  zball='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
 alias    zb12='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
+alias    zb23='/usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
 alias zbinst2='rsync -av --delete stage2/ "${HOME}/.local/zig/stage2/" && mv "${HOME}/.local/zig/stage2/bin/zig" "${HOME}/.local/zig/stage2/bin/zig2"'
 alias zbinst3='rsync -av --delete stage3/ "${HOME}/.local/zig/stage3/" && mv "${HOME}/.local/zig/stage3/bin/zig" "${HOME}/.local/zig/stage3/bin/zig3"'
 #alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
