@@ -78,17 +78,13 @@ PATH=$PATH:"${HOME}/.cargo/bin"
 PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-#PATH=$PATH:"${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin" # zig crosscompile
-PATH=$PATH:"${HOME}/dev/git/zig/zig/master/build" # zig crosscompile
+PATH=$PATH:"${HOME}/dev/git/zig/zig/master/build" # zig stages 0,1,2,3
 PATH=$PATH:"${HOME}/.luarocks/bin"
 PATH=$PATH:"${HOME}/.local/lua-language-server/bin"
 PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
-PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell testing
+#PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell: nice introspection, but too slow
 PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
-PATH=$PATH:"${HOME}/.local/zig/stage2/bin" # zig stage2
-PATH=$PATH:"${HOME}/.local/zig/stage3/bin" # zig stage3
 
-#PATH=$PATH:"${HOME}/dev/git/zig/zig/build"
 #testing www.ziglang.org
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
 #PATH=$PATH:"${HOME}"/src/hugo

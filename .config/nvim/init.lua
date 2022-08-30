@@ -49,8 +49,19 @@ end
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
 vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})
 vim.api.nvim_create_autocmd('TextYankPost', {group = 'MYAUCMDS', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
-vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:keepjumps keeppatterns %s/\s\+$//e]]}) -- remove trailing spaces
+--vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:keepjumps keeppatterns %s/\s\+$//e]]}) -- remove trailing spaces
 vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, command = [[:lua Clangfmt()]]})
+vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*',
+callback = function()
+    if vim.bo.filetype == "markdown" then
+      return
+    end
+    local view = vim.fn.winsaveview()
+    vim.cmd([[%s/\v\s+$//e]]) -- remove trailing spaces
+    vim.fn.winrestview(view)
+    --vim.api.nvim_command [[:keepjumps keeppatterns %s/\s\+$//e]] -- remove trailing spaces
+  end,
+})
 -- stylua: ignore end
 
 -- type() and inspect()
