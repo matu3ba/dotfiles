@@ -30,6 +30,21 @@ end
 ]]
 end
 
+-- TODO: investigate use cases of ropes and implement one for Zig
+-- * goal: rope as text structure to fix https://github.com/neovim/neovim/issues/2514
+--   + same problem of ambiguity applies for different layouting/parsing
+-- * goal: understand what is needed for zig reduce as internal datastructure
+--   * play around with Zig AST creation for edge cases `zig fmt: off`
+--   and ambiguity of representation
+--     + make things unambiguous, but reversable with lookup table
+--   * play around with kakoune layouting
+--   * play around with helix layouting?
+-- + main problem for "rope only editor":
+--   users want custom layouting to visualize data more intuitively for understanding
+--     + tables as most often used format
+--     + each visualization requires custom compression for optimality or end up with
+--       already known/common/suboptimal solutions
+
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros
 -- macros are stored in the regular registers and can be pasted or executed

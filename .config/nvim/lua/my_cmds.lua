@@ -19,6 +19,13 @@ add_cmd('CHydra', nvim_edit .. 'lua/my_hydra.lua', {})
 
 local df_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/'
 add_cmd('Dotfiles', df_edit, {})
+local aliases_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases'
+add_cmd('Aliases', aliases_edit, {})
+local aliases_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases_git'
+add_cmd('AliasesGit', aliases_git_edit, {})
+-- we cant or dont want to unify all bashrcs
+local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.bashrc'
+add_cmd('Bashrc', bashrc_edit, {})
 
 -- why are keybindings and plugin cache not reloaded?
 --add_cmd('CRel', function()
@@ -247,3 +254,5 @@ add_cmd('Fonly', [[:let @+ = expand("%:t")]], {}) -- copy only filename
 --    print("Running: " .. command)
 --  end
 --end
+-- :Man for man page.
+-- local mappings: K or C-], C-t, gO for outline

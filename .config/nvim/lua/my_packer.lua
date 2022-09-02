@@ -24,6 +24,8 @@ return require('packer').startup(function()
   use { 'hrsh7th/nvim-cmp' }
   --use { 'delphinus/cmp-ctags' } -- does not search multiple files and spawns 1 process for each file
   use { 'quangnguyen30192/cmp-nvim-tags' } -- simple approach to search through tags file for completions
+  -- TODO port brettanomyces/nvim-editcommand to lua
+  -- TODO add repl builder?
 
   ---- shiny stuff ----
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
@@ -42,7 +44,7 @@ return require('packer').startup(function()
   use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
   --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
 
-  -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite]
+  -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite], C-m on path to open dir in dirbuf
   use { 'elihunter173/dirbuf.nvim', config = function() require("dirbuf").setup { write_cmd = "DirbufSync -confirm" } end, }
   use { 'anuvyklack/hydra.nvim' } -- my_hydra.lua
 

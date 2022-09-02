@@ -476,6 +476,9 @@ map('n', '<leader>mrl', [[<cmd>lua require("harpoon.mark").rm_file(3)<CR>]], opt
 map('n', '<leader>cj', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means terminal
 map('n', '<leader>ck', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
 map('n', '<leader>cl', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
+map('n', '<leader>cu', [[<cmd>lua require("harpoon.term").gotoTerminal(4)<CR>]], opts)
+map('n', '<leader>ci', [[<cmd>lua require("harpoon.term").gotoTerminal(5)<CR>]], opts)
+map('n', '<leader>co', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
 -- send strings from register as command + execute it
 map('n', '<C-s>j', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts)
 map('n', '<C-s>k', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('k') .. "\n")<CR>]], opts)

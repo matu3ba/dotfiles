@@ -15,3 +15,6 @@ gdb> set follow-fork-mode child
 
 Debugging on Windows:
 https://remedybg.itch.io/remedybg
+save breakpoints COMMAND_FILE
+source COMMAND_FILE
+gdb -x COMMAND_FILE

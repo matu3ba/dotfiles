@@ -44,7 +44,9 @@ M.window_hdyra = Hydra({
       { '+', '<C-w>+' },
       { '-', '<C-w>-' },
       -- neovim is slower on moving lines (<- and -> movements of window)
-      { '>', '<C-w>>' },
+      -- neovim too slow slower on moving lines(<- and -> movements): This leads
+      -- on too high keypress rate to indentation and leaving hydra head. -_-
+      { '>', '<C-w>>' }, -- idea: use arrow keys
       { '<', '<C-w><' },
       { '=', '<C-w>=' },
       { 'q', '<cmd>close<CR>' },
