@@ -205,7 +205,7 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # TODO rsync without permissions
 
 # program aliases
-alias l='exa'
+#alias l='exa'
 alias du='dust'
 alias rgv='rg --vimgrep --always'
 #alias rgv='rg --vimgrep'
