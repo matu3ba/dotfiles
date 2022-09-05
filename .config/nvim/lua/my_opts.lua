@@ -63,6 +63,7 @@ local function load_options()
   vim.bo.spelllang = 'en,de'
   vim.bo.swapfile = false
 
+  -- TODO: https://stackoverflow.com/a/159065
   --vim.bo.expandtab = false --use Tab character on pressing Tab key
   vim.bo.expandtab = false --expand tabs to spaces: use fuzzy impl
   vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
