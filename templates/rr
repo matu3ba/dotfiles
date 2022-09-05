@@ -1,0 +1,25 @@
+# installing rr from source
+git clone https://github.com/rr-debugger/rr.git
+mkdir obj && cd obj
+cmake -DCMAKE_BUILD_TYPE=Release ../rr
+sudo cmake --build . --target install
+
+# and modify PATH with
+PATH=$PATH:"/usr/local/bin" # rr
+
+## using rr
+
+sudo sysctl kernel.perf_event_paranoid=1
+# if available for your system
+sudo cpupower frequency-set -g performance
+
+start tui with C-x, C-a
+
+s step,     rs reverse step
+n next,     rn reverse next
+c continue, rc reverse continue
+f finish,   reverse-finish reverse-finish
+
+i lo   (to show local vars)
+l      (to list contents of current file)
+watch (to watch access)

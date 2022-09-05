@@ -1,0 +1,2 @@
+set history filename /tmp/gdbhist
+set history size 1000000
