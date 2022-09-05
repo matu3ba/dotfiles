@@ -1,3 +1,5 @@
+Excellent introduction: https://interrupt.memfault.com/blog/advanced-gdb
+
 breakpoints:
 break Sema.zirStoreNode if inst == 999
 
@@ -5,6 +7,18 @@ pretty printing:
 echo 'source ${HOME}/dev/git/zig/zig/master/tools/zig_gdb_pretty_printers.py' >> ${HOME}/.gdbinit
 source ${HOME}/dev/git/zig/zig/master/tools/stage1_gdb_pretty_printers.py
 source ${HOME}/dev/git/zig/zig/master/tools/stage2_gdb_pretty_printers.py
+
+alternative use:
+~/.gdbinit:
+python
+import sys
+# set this to the path of the pretty printer
+sys.path.insert(0, '/path/to/src/rust/src/etc/')
+import gdb_rust_pretty_printing
+gdb_rust_pretty_printing.register_printers(gdb)
+end
+
+using the printing:
 p variable
 
 ps -p pid (posix)
@@ -15,6 +29,86 @@ gdb> set follow-fork-mode child
 
 Debugging on Windows:
 https://remedybg.itch.io/remedybg
+
+# breakpoints and commands
 save breakpoints COMMAND_FILE
 source COMMAND_FILE
 gdb -x COMMAND_FILE
+
+# get pid
+info inferior
+print getpid()
+
+gdb PROGRAM [core dump]
+gdb --args PROGRAM ARGS
+gdb --pid PID
+set args ARGS
+run/r
+kill/k?
+
+break/b WHERE
+delete/d BREAKP ..
+clear
+enable BREAKP
+disable BREAKP
+
+watch WHERE
+samecommands_as_BREAKP WATCHP
+del/enable/disable WATCHP
+
+WHERE: fn_name, line_number, file:line_number
+break/watch WHERE if CONDITION
+(CONDITION = C expression evaluating to true or false)
+condition BREAK .. CONDITION
+
+backtrace
+where (to show stack)
+backtrace full
+where full (to show call stack and print local vars in each frame)
+frame FRAME .. (select stack frame to operate on)
+
+step/s
+next/n
+finish/f
+continue/c
+
+print/formwat WHAT
+display/format WHAT
+undisplay DISPLAY ..
+enable display DISPLAY
+disable display DISPLAY
+x/nfu ADDRESS (n how many units,
+               f format char (acdfostux) see `help x`
+               u unit (b,h,w,g))
+WHAT: C expression, filename::varname, fn::varname, {type}address, $register
+
+thread THREAD ..
+
+set var VARNAME=VAL
+return EXPRESSION
+
+directory DIR
+list
+list filename:fn
+list filename:line_number
+list first:last
+set listsize COUNT
+handle SIGNAL OPTIONS ((no)print, (no)stop, (no)pass)
+disassmeble
+disassmeble WHERE
+info args
+info breakpoints
+info display
+info locals
+info sharedlibrary
+info signals
+info threads
+show directories
+show listsize
+whatis varname
+
+See
+`help show history`
+`show history`
+`show commands`
+`set history`

@@ -19,6 +19,8 @@ add_cmd('CHydra', nvim_edit .. 'lua/my_hydra.lua', {})
 
 local df_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/'
 add_cmd('Dotfiles', df_edit, {})
+local df_configs_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config'
+add_cmd('Config', df_configs_edit, {})
 local aliases_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases'
 add_cmd('Aliases', aliases_edit, {})
 local aliases_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases_git'
@@ -231,6 +233,9 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 add_cmd('Frel', [[:let @+ = expand("%")]], {}) -- copy relative path
 add_cmd('Fabs', [[:let @+ = expand("%:p")]], {}) -- copy absolute path
 add_cmd('Fonly', [[:let @+ = expand("%:t")]], {}) -- copy only filename
+-- TODO optional argument in which register to copy the file path
+--
+--:%!jq
 
 ---- Ideas to configure buffer stuff, ie with toggleterm used here: ----
 --local files = {
@@ -254,5 +259,6 @@ add_cmd('Fonly', [[:let @+ = expand("%:t")]], {}) -- copy only filename
 --    print("Running: " .. command)
 --  end
 --end
+
 -- :Man for man page.
 -- local mappings: K or C-], C-t, gO for outline
