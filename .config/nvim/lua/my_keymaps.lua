@@ -134,7 +134,14 @@ map('v', '<leader>dd', '"_dd', opts) -- TODO dont walk 1 line down from eol
 -- note: vimscript can not handle marks in between commands
 map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
 map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
-map('t', '<C-q>', [[<C-\><C-n>]], opts) --exit terminal
+-- C-w delete word, C-y paste word, C-p,C-n,C-i complete path
+-- C-h delete last character,
+-- A-o and A-h are used to switch to visual mode, where ^ and $ work to jump etc
+-- visualmode: f is file lookup, v opens command for copying (also executes!)
+-- C-a,C-f,C-g,C-k,C-l,C-v,C-b free in emacs mode
+map('t', '<C-q>', [[<C-\><C-n>]], opts) -- quit terminal editing
+map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quitAnd.. (enter windowing in hydra)
+
 -- pasting without moving cursor: p`[       <<<--- without ]
 
 -- write path into variable user_cwd
@@ -470,31 +477,65 @@ map('n', '<leader>ml', [[<cmd>lua require("harpoon.mark").set_current_at(3)<CR>]
 map('n', '<leader>mu', [[<cmd>lua require("harpoon.mark").set_current_at(4)<CR>]], opts)
 map('n', '<leader>mi', [[<cmd>lua require("harpoon.mark").set_current_at(5)<CR>]], opts)
 map('n', '<leader>mo', [[<cmd>lua require("harpoon.mark").set_current_at(6)<CR>]], opts)
-map('n', '<leader>mrj', [[<cmd>lua require("harpoon.mark").rm_file(1)<CR>]], opts) -- mrj for removing first file
-map('n', '<leader>mrk', [[<cmd>lua require("harpoon.mark").rm_file(2)<CR>]], opts)
-map('n', '<leader>mrl', [[<cmd>lua require("harpoon.mark").rm_file(3)<CR>]], opts)
-map('n', '<leader>cj', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means terminal
+map('n', '<leader>cj', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- c means goto control terminal
 map('n', '<leader>ck', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
 map('n', '<leader>cl', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
 map('n', '<leader>cu', [[<cmd>lua require("harpoon.term").gotoTerminal(4)<CR>]], opts)
 map('n', '<leader>ci', [[<cmd>lua require("harpoon.term").gotoTerminal(5)<CR>]], opts)
 map('n', '<leader>co', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
 -- ; as prefix for runners
+
 -- TODO: show number of terminal
-map('n', ';ej', [[<cmd>lua require("harpoon.term").sendCommand(1, "\n")<CR>]], opts)
+
+-- lua has \ddd as decimal string escapes
+-- send enter to each terminal
+map('n', ';ej', [[<cmd>lua require("harpoon.term").sendCommand(1, "\n")<CR>]], opts) -- e means send enter
 map('n', ';ek', [[<cmd>lua require("harpoon.term").sendCommand(2, "\n")<CR>]], opts)
 map('n', ';el', [[<cmd>lua require("harpoon.term").sendCommand(3, "\n")<CR>]], opts)
 map('n', ';eu', [[<cmd>lua require("harpoon.term").sendCommand(4, "\n")<CR>]], opts)
 map('n', ';ei', [[<cmd>lua require("harpoon.term").sendCommand(5, "\n")<CR>]], opts)
 map('n', ';eo', [[<cmd>lua require("harpoon.term").sendCommand(6, "\n")<CR>]], opts)
+
+-- repeat last command
+map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
+map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "!!\n")<CR>]], opts)
+map('n', ';rl', [[<cmd>lua require("harpoon.term").sendCommand(3, "!!\n")<CR>]], opts)
+map('n', ';ru', [[<cmd>lua require("harpoon.term").sendCommand(4, "!!\n")<CR>]], opts)
+map('n', ';ri', [[<cmd>lua require("harpoon.term").sendCommand(5, "!!\n")<CR>]], opts)
+map('n', ';ro', [[<cmd>lua require("harpoon.term").sendCommand(6, "!!\n")<CR>]], opts)
+
 -- send strings from register as command + execute it
-map('n', '<C-s>j', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts)
+map('n', '<C-s>j', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts) -- C-s for control send to
 map('n', '<C-s>k', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('k') .. "\n")<CR>]], opts)
 map('n', '<C-s>l', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('l') .. "\n")<CR>]], opts)
 map('n', '<C-s>u', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('u') .. "\n")<CR>]], opts)
 map('n', '<C-s>i', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('i') .. "\n")<CR>]], opts)
 map('n', '<C-s>o', [[<cmd>lua require("harpoon.term").sendCommand(2, vim.fn.getreg('o') .. "\n")<CR>]], opts)
 
+-- navigation from terminal (insertion mode) t and "normal terminal" nt
+map('t', '<C-f>j', [[<C-\><C-n><cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- file harpoon
+map('t', '<C-f>k', [[<C-\><C-n><cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
+map('t', '<C-f>l', [[<C-\><C-n><cmd>lua require("harpoon.ui").nav_file(3)<CR>]], opts)
+map('t', '<C-f>u', [[<C-\><C-n><cmd>lua require("harpoon.ui").nav_file(4)<CR>]], opts)
+map('t', '<C-f>i', [[<C-\><C-n><cmd>lua require("harpoon.ui").nav_file(5)<CR>]], opts)
+map('t', '<C-f>o', [[<C-\><C-n><cmd>lua require("harpoon.ui").nav_file(6)<CR>]], opts)
+map('t', '<C-x>j', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- x terminal harpoon
+map('t', '<C-x>k', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
+map('t', '<C-x>l', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
+map('t', '<C-x>u', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(4)<CR>]], opts)
+map('t', '<C-x>i', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(5)<CR>]], opts)
+map('t', '<C-x>o', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
+
+-- TODO we additionally match against the minor mode here
+-- map('nt', '<C-x>j', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- x terminal harpoon
+-- map('nt', '<C-x>k', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
+-- map('nt', '<C-x>l', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
+-- map('nt', '<C-x>u', [[<cmd>lua require("harpoon.term").gotoTerminal(4)<CR>]], opts)
+-- map('nt', '<C-x>i', [[<cmd>lua require("harpoon.term").gotoTerminal(5)<CR>]], opts)
+-- map('nt', '<C-x>o', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
+-- map('nt', '<C-x>j', [[<cmd> lua print("not broken!")<CR>]], opts)
+
+-- removing via quick menu is simpler
 map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
 map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
 map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files

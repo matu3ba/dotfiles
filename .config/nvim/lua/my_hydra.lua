@@ -31,14 +31,15 @@ M.sidescroll_hdyra = Hydra({
    },
 })
 
--- keep windowing simple and fast
+-- keep window resizing simple and fast
+-- leaving hydra mode takes mostly more time, so navigation is not worth it
 M.window_hdyra = Hydra({
    body = '<C-w>',
    heads = {
-      { 'h', '<C-w>h' },
-      { 'j', '<C-w>j' },
-      { 'k', '<C-w>k' },
-      { 'l', '<C-w>l' },
+      -- { 'h', '<C-w>h' },
+      -- { 'j', '<C-w>j' },
+      -- { 'k', '<C-w>k' },
+      -- { 'l', '<C-w>l' },
       { 's', '<C-w>s' },
       { 'v', '<C-w>v' },
       { '+', '<C-w>+' },

@@ -107,6 +107,9 @@ add_cmd('Pdffigure', function()
   vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf')
 end, {})
 
+-- prints either nt or n
+-- add_cmd('Printmode', function() print(vim.api.nvim_get_mode().mode) end, {})
+
 -- add_cmd('Replpdflatex', function()
 --   --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
 --   local filename = vim.fn.expand '%'
