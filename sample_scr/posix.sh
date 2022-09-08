@@ -49,3 +49,8 @@ removed_prefix="${var#a}"
 removed_suffix="${var%e}"
 
 # parameter expansion https://stackoverflow.com/a/16753536
+
+# check posix conform, if executable exists
+if command -v 'fd' &> /dev/null; then
+  fd
+fi
