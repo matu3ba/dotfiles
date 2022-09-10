@@ -33,3 +33,13 @@ checklist ssh correctly running
 4. ssh listening?
 5. firewall or netfilter, firejail etc blocking things?
 6. where to look for more help
+
+github ssh config might need
+
+Host github.com
+  HostName ssh.github.com
+  Port 443
+  User git
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/github_ed25519
+  IdentitiesOnly yes

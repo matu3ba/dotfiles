@@ -1,4 +1,7 @@
 -- gpg and ssh setup (+ remote hoster)--
+requires
+* gpg
+* pinentry-tty
 
 //new to crypto, use
 gpg --full-gen-key --expert

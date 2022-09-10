@@ -40,16 +40,18 @@ M.window_hdyra = Hydra({
       -- { 'j', '<C-w>j' },
       -- { 'k', '<C-w>k' },
       -- { 'l', '<C-w>l' },
+      -- C-d,C-u,C-e,C-y
+      -- TODO think of use case to copy paste + insert stuff
       { 's', '<C-w>s' },
       { 'v', '<C-w>v' },
       { '+', '<C-w>+' },
       { '-', '<C-w>-' },
-      { '>', '<C-w>>' }, -- idea: use arrow keys
+      { '>', '<C-w>>' }, -- idea: use arrow keys to prevent indendation
       { '<', '<C-w><' },
       { '=', '<C-w>=' },
       { 'q', '<cmd>close<CR>' },
       { 'o', '<cmd>only<CR>' },
-      --{ '<S>', '<C-w><S>' }, -- TODO figure out how to remap this
+      --{ '<S>', '<C-w><S>' },
       --{ '_', '<C-w>_' },
       --{ '|', '<C-w>|' }, -- requires prefixed numbers => other hydra heaad
       { '<Esc>', nil,  { exit = true, desc = false } },
