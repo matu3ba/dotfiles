@@ -4,19 +4,22 @@
 # `zellij setup --check`
 # It should show current config locations and features that are enabled.
 #
-# Mode      | Switch
-# normal    | Normal
-# resize    | Resize
-# pane      | Pane
-# move      | Move
-# tab       | Tab
-# scroll    | Scroll
+# Mode        | Switch
+# normal      | Normal
+# resize      | Resize
+# pane        | Pane
+# move        | Move
+# tab         | Tab
+# scroll      | Scroll
+# entersearch | Entersearch
+# search      | Search
 
 # Unused modes with Switch:
+# locked    | Locked
 # renamepane| RenamePane
 # renametab | RenameTab
 # session   | Session
-# locked    | Locked
+# tmux      | Tmux
 
 keybinds:
     normal:
@@ -33,8 +36,6 @@ keybinds:
           key: [ Alt: 't',]
         - action: [SwitchToMode: Scroll,]
           key: [ Alt: 's',]
-        - action: [SwitchToMode: Session,]
-          key: [ Alt: 'e',]
         - action: [SwitchToMode: Move,]
           key: [ Alt: 'm',]
         - action: [NewPane: ]
@@ -170,9 +171,14 @@ keybinds:
         - action: [ToggleTab]
           key: [ Char: "\t" ]
     scroll:
+        # TODO: setting $EDITOR and $VISUAL does not work
         - unbind: true
+        - action: [EditScrollback, SwitchToMode: Normal]
+          key: [Char: 'e']
         - action: [SwitchToMode: Normal,]
           key: [Char: "\n", Esc]
+        - action: [ScrollToBottom, SwitchToMode: Normal,]
+          key: [Alt: 'c',]
         - action: [ScrollDown,]
           key: [Char: 'j', Down,]
         - action: [ScrollUp,]
@@ -193,6 +199,44 @@ keybinds:
           key: [ Alt: 'j',]
         - action: [MoveFocus: Up,]
           key: [ Alt: 'k',]
+        - action: [SwitchToMode: EnterSearch, SearchInput: [0],]
+          key: [Char: 's']
+    entersearch:
+        - action: [SwitchToMode: Search,]
+          key: [Char: "\n"]
+        - action: [SearchInput: [27], SwitchToMode: Scroll,]
+          key: [ Alt: 'c', Esc]
+        - action: [MoveFocusOrTab: Left,]
+          key: [ Alt: 'h', Alt: Left]
+        - action: [MoveFocusOrTab: Right,]
+          key: [ Alt: 'l', Alt: Right]
+        - action: [MoveFocus: Down,]
+          key: [ Alt: 'j', Alt: Down]
+        - action: [MoveFocus: Up,]
+          key: [ Alt: 'k', Alt: Up]
+    search:
+        - action: [SwitchToMode: Normal,]
+          key: [ Alt: 's', Char: ' ', Char: "\n", Esc]
+        - action: [SwitchToMode: EnterSearch, SearchInput: [0],]
+          key: [Char: 's']
+        - action: [Search: Down]
+          key: [Char: 'n']
+        - action: [Search: Up]
+          key: [Char: 'p']
+        - action: [SearchToggleOption: CaseSensitivity]
+          key: [Char: 'c']
+        - action: [SearchToggleOption: Wrap]
+          key: [Char: 'w']
+        - action: [SearchToggleOption: WholeWord]
+          key: [Char: 'o']
+        - action: [MoveFocusOrTab: Left,]
+          key: [ Alt: 'h', Alt: Left]
+        - action: [MoveFocusOrTab: Right,]
+          key: [ Alt: 'l', Alt: Right]
+        - action: [MoveFocus: Down,]
+          key: [ Alt: 'j', Alt: Down]
+        - action: [MoveFocus: Up,]
+          key: [ Alt: 'k', Alt: Up]
     renametab:
         - unbind: true
     renamepane:

@@ -86,3 +86,5 @@ trust
 gpg --edit-key KEYID
 // following will not work, because we dont have secret master key
 addkey
+
+https://unix.stackexchange.com/questions/372879/import-my-ssh-key-as-gpg-sub-key-to-use-for-ssh-authentication

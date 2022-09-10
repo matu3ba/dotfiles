@@ -94,6 +94,8 @@ PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
 #eval "$(ssh-agent -s)"
 #trap "kill $SSH_AGENT_PID" exit
 #trap "ssh-agent -k" exit
+#export VISUAL="nvim"
+export EDITOR="nvim"
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch 'gpg-agent'
