@@ -233,9 +233,29 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 ---- Scripting ----
 -- copy path under cursor: yiW
 -- pull current filename into where you are: Ctrl+R %
-add_cmd('Frel', [[:let @+ = expand("%")]], {}) -- copy relative path
-add_cmd('Fabs', [[:let @+ = expand("%:p")]], {}) -- copy absolute path
-add_cmd('Fonly', [[:let @+ = expand("%:t")]], {}) -- copy only filename
+-- :let @+ = expand("%:p")
+-- With plenary:
+-- local Path = require "plenary.path"
+-- local path = Path.path
+-- local fileAbs = vim.api.nvim_buf_get_name(0)
+-- local p = Path:new fileAbs
+-- local fname = p.filename
+add_cmd('Frel', function() vim.fn.setreg('+', vim.fn.expand('%')) end, {}) -- copy relative path
+add_cmd('Fabs', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end, {}) -- copy absolute path
+add_cmd('Fonly', function() vim.fn.setreg('+', vim.fn.expand('%:t')) end, {}) -- copy only filename
+add_cmd('Fline', function()
+  local fname = vim.fn.expand('%:t')
+  local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+  local fnamecol = fname .. ':' .. tostring(lineNum)
+  vim.fn.setreg('+', fnamecol)
+end, {}) -- copy filename:line
+add_cmd('Fcolumn', function()
+  local fname = vim.fn.expand('%:t')
+  local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
+  local fnamecol = fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2])
+  vim.fn.setreg('+', fnamecol)
+end, {}) -- copy filename:line:column
+
 -- TODO optional argument in which register to copy the file path
 --
 --:%!jq

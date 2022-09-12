@@ -7,6 +7,9 @@ end
 --local cmd = require('hydra.keymap-util').cmd
 --local pcmd = require('hydra.keymap-util').pcmd
 
+-- TODO hydra keybinding to attach + send cmds to debug session
+-- should this session be in harpoon? in hydra?
+
 local M = {}
 
 -- local ok_dap, dap = pcall(require, "hydra")

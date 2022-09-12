@@ -171,7 +171,6 @@ keybinds:
         - action: [ToggleTab]
           key: [ Char: "\t" ]
     scroll:
-        # TODO: setting $EDITOR and $VISUAL does not work
         - unbind: true
         - action: [EditScrollback, SwitchToMode: Normal]
           key: [Char: 'e']
@@ -202,6 +201,7 @@ keybinds:
         - action: [SwitchToMode: EnterSearch, SearchInput: [0],]
           key: [Char: 's']
     entersearch:
+        - unbind: true
         - action: [SwitchToMode: Search,]
           key: [Char: "\n"]
         - action: [SearchInput: [27], SwitchToMode: Scroll,]
@@ -215,6 +215,7 @@ keybinds:
         - action: [MoveFocus: Up,]
           key: [ Alt: 'k', Alt: Up]
     search:
+        - unbind: true
         - action: [SwitchToMode: Normal,]
           key: [ Alt: 's', Char: ' ', Char: "\n", Esc]
         - action: [SwitchToMode: EnterSearch, SearchInput: [0],]
