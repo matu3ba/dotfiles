@@ -127,7 +127,7 @@ alias good='git remote rename origin downstream'
 alias grsu='git remote set-url'
 #git branch -u upstream/master master
 
-alias gbsum='git branch --set-upstream-to=upstream/master upstream'
+#alias gbsum='git branch --set-upstream-to=upstream/master upstream'
 alias gpsu='git push --set-upstream downstream $(git branch --show-current)'
 alias ghh='git help'
 alias grph='git rev-parse HEAD'

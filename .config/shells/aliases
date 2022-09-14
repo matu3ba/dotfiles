@@ -128,45 +128,22 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 
 # Zig
 alias  zbuild='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-alias   arocc='${HOME}/dev/git/zig/arocc/zig-out/bin/arocc'
-#alias  zigcc='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig cc'
-#alias zigcpp='${HOME}/dev/git/zig/zig-bootstrap/out/zig-native-native/bin/zig c++'
+alias  zblocrel='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias  zblocdeb='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+#alias  zbuildglibc='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias   arocc='${HOME}/dev/git/zi/arocc/zig-out/bin/arocc'
 # GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig
 # curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
-# the following zb1 aliases dont work for stage2
-#./build/zig test lib/std/fmt.zig --zig-lib-dir lib --main-pkg-path lib/std
-#alias zb1fancy='${HOME}/dev/git/buildzig/zig-bootstrap.git/tmp/out/zig-x86_64-linux-musl-native/bin/zig build -Dstage1 --zig-lib-dir lib --search-prefix ${HOME}/dev/git/buildzig/zig-bootstrap.git/musl/out/host'
-#alias    zb1='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-#alias    zb1='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-#alias    zb2='/usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm'
-#alias    zb3='/usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h'
-#alias     zb1='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-# alias     zb1='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-# alias     zb2='/usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
-# alias     zb3='/usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
-# alias  zbrel3='/usr/bin/time -v ./stage2/bin/zig build install -Drelease -Denable-llvm -Dconfig_h=build/config.h'
-# alias  zbdeb1='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-#alias  zball='cd build/ && cmake .. -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h'
-# alias  zball='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && sed -i "s/-Werror //" build.ninja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
-# alias    zb12='cd build/ && cmake .. -DZIG_PREFER_CLANG_CPP_DYLIB=true -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd .. && /usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false'
-# alias    zb23='/usr/bin/time -v ./build/zig build -p stage2 -Denable-llvm -Dstatic-llvm=false && /usr/bin/time -v ./stage2/bin/zig build -p stage3 -Denable-llvm -Dconfig_h=build/config.h -Dstatic-llvm=false'
-# alias zbinst2='rsync -av --delete stage2/ "${HOME}/.local/zig/stage2/" && mv "${HOME}/.local/zig/stage2/bin/zig" "${HOME}/.local/zig/stage2/bin/zig2"'
-# alias zbinst3='rsync -av --delete stage3/ "${HOME}/.local/zig/stage3/" && mv "${HOME}/.local/zig/stage3/bin/zig" "${HOME}/.local/zig/stage3/bin/zig3"'
-#alias zbdebllvm='cd debug/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DZIG_STATIC_LLVM=on -DCMAKE_PREFIX_PATH="$HOME/dev/git/buildzig/zig-bootstrap.git/musl-debug/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja && cd ..'
-alias   zboot='${HOME}/.local/zig/zig'
-alias    zbis='${HOME}/dev/git/zig/zig/bisect/build/zig'
-alias  zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zig/zig/master/lib/std'
-
-#zigtest is pending support for pipes other than the standard ones to be robust
-#--test-dir
-#alias zigtest='zig test --zig-lib-dir ${HOME}/dev/git/zig/zig/master/lib -lc folder'
-#also breaks on stage2 (no difference)
+alias  zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zi/zig/master/lib/std'
+# -lc to link libc, --lib-dir to use non-standard lib directory (defined in global env)
+# TODO document qemu runners
 #./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
+#zigtest is pending support for pipes other than the standard ones to be robust
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
-#/zig-out/bin/zig test ../test/behavior.zig -I ../test -fLLVM
-#/zig-out/bin/zig test ../test/behavior.zig -I ../test -ofmt=c
 alias rmzigallcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
-alias    rmzigcache='rm -fr zig-cache/ zig-out/'
+alias rmzigcacherec='fd -t d -u "zig-out|zig-cache" -x rm -fr {};'
+#rm -fr zig-cache/ zig-out/'
+#find -type d "zig-out|zig-cache" -exec rm -fr {} \;
 
 # sandboxing with firejail (enp4s0|wlan0)
 # firefox requires profile lookup, even though they provide an option to set the direct path for the profile

@@ -25,7 +25,9 @@ ps -p pid (posix)
 pgrep pname
 pidof pname
 ps aux | grep -i process
-gdb> set follow-fork-mode child
+on fork/posix_spawn:
+default: set follow-fork-mode parent
+other:  set follow-fork-mode child
 
 Debugging on Windows:
 https://remedybg.itch.io/remedybg
@@ -112,3 +114,13 @@ See
 `show history`
 `show commands`
 `set history`
+
+environment variables
+1. via cli
+env -i MyVar=$(python -c 'print("xyz")') gdb
+(gdb) show environment
+2. within gdb
+(gdb) unset environment
+(gdb) python gdb.execute("set environment Myvar=\xff")
+(gdb) show environment
+3. shell wrapper, TODO

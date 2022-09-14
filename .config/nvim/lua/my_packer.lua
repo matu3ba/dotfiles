@@ -59,6 +59,7 @@ return require('packer').startup(function()
   -- ysiw' for inner word with '
   -- ? support for ysiwf ?
   -- word -> ysiw' -> 'word'
+  -- *word_another bla -> ysit<space>" -> "word_another"* bla
   -- (da da) ->(  ysa") -> ("da da")
   use { 'kylechui/nvim-surround', config = function() require("nvim-surround").setup() end, } -- stylish
   -- gm, M to mark word/region, M delete word
