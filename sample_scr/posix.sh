@@ -1,8 +1,35 @@
 #!/bin/sh
+# unless commands return non-zero status, use
+set -e
+# temporary set
+set +e
+# and reset
+set -e
+# string/* is used verbatim without match, except we set nullglob
+shopt -s nullglob
+# disable it with `shopt -u nullglob`
+
+# See also utilities:
+# https://pubs.opengroup.org/onlinepubs/9699919799/utilities/
+# filter: grep, sed, cat, printf, tr, xargs
+# action: test, cd, ls, mkdir, rm, vi, diff
+# system: jobs, kill, fg, chmod
+# well: alias, unalias, awk, echo, cut, sort, head, tail, more, pwd, df, du,
+#       find, cp, mv, rmdir, dirname, basename
+# few: tee, uniq, bc, c99, cksum, expr, read, sh, sleep, time, true, aflse, wc
+#      csplit, dd, patch, expand, file, iconv, ln, mkfifo, nl, od, pax, touch
+#      compress, uncompress,  zcat, at, date, bg, fuser, chgrp, chown, id, ps,
+#      uname, type, nohup, wait, who
+#
 # Example snippets to use for hacking
 i=1; while [ ${i} -le 3 ]; do
   echo ${i}
   i=$(( i + 1 ))
+done
+
+# simpler alternative for smol loops
+for i in $(seq 10); do
+  echo "number $i"
 done
 
 # https://stackoverflow.com/a/53747300
@@ -51,6 +78,19 @@ removed_suffix="${var%e}"
 # parameter expansion https://stackoverflow.com/a/16753536
 
 # check posix conform, if executable exists
-if command -v 'fd' &> /dev/null; then
-  fd
+command -v 'tmux' 1> /dev/null
+if test $? -ne 0; then
+   echo "Please create dir dev/"
+   exit 1
+fi
+
+# negation in posix
+if ! test $? -eq 0; then
+   echo "Please create dir dev/"
+   exit 1
+fi
+# or (careful with spacing!)
+if ! [ $? -eq 0 ]; then
+   echo "Please create dir dev/"
+   exit 1
 fi

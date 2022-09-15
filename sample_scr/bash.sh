@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
-
-# unless commands return non-zero status, use
-set -e
-# temporary set
-set +e
-# and reset
-set -e
+# for general posix things, see ./posix.sh
 
 # no cd around after failure
 CWD=$(pwd)

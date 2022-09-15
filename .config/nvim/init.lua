@@ -141,6 +141,8 @@ callback = function()
 --
 -- convert windows line ending to linux:
 -- :%s/^M$//
+-- convert tabs to spaces:
+-- :retab
 
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$

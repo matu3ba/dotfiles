@@ -78,6 +78,10 @@ lspconfig['clangd'].setup { capabilities = capabilities }
 lspconfig['julials'].setup { capabilities = capabilities }
 lspconfig['jedi_language_server'].setup{ capabilities = capabilities }
 lspconfig['rust_analyzer'].setup { capabilities = capabilities }
+-- npm i -g @angular/language-service
+-- npm i -g typescript
+-- lspconfig['angularls'].setup { capabilities = capabilities }
+lspconfig['angularls'].setup {}
 lspconfig['texlab'].setup {
   settings = {
     texlab = {

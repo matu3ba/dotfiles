@@ -9,17 +9,37 @@ Host github.com
   IdentitiesOnly yes
 
 Generating private key with 200 instead of 16 default rounds.
-ssh-keygen -a 200 -t ed25519 -C "COMMENT" -N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
-COMMENT can be "$(date +'%Y%m%d')${USER}@${HOSTNAME}":
-ssh-keygen -a 200 -t ed25519 -C "$(date +'%Y%m%d')${USER}@${HOSTNAME}" \
--N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
+With
+COMMENT="$(date +'%Y%m%d')${USER}@${HOSTNAME}"
+ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
+and with passphrase dialog
+ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -f ~/.ssh/PRIVATEKEYNAME
 Note: ssh keys have no concept like expiry date, so the server needs to
 accept or reject the key.
 
 General format:
 ssh user@domain@ip
-Copy credentials into user keyring to prevent request for authentication:
+First, add credentials to your ssh client.
+ssh-add
+Then, copy credentials into user keyring to prevent request for authentication:
 ssh-copy-id user@domain@ip
+Now you can use `ssh user@domain@ip` without authentication prompt.
+You see inside ~/.ssh/authorized_keys on the target, which keys were authorized.
+Note, that if you add /root/.ssh/authorized_keys to get root access on the
+target, it is identical to ~/.ssh/authorized_keys, if you are root.
+
+ssh may complain with `WARNING: UNPROTECTED PRIVATE KEY FILE!`
+Fix it on the machine with:
+sudo chmod 600 *
+sudo chmod 644 ~/.ssh/known_hosts
+sudo chmod 755 ~/.ssh
+
+ssh may complain with invalid format:
+Most likely a configuration problem, because ssh does not check your config for
+validity.
+Check your key validity with `ssh-keygen -l -f .ssh/KEYNAME.pub`.
+
+There was a filesystem or bug. Try to spot the bug or regenerate the keys.
 
 checking, if ssh agent is listening on port 22
 netstat -atpn | grep 22

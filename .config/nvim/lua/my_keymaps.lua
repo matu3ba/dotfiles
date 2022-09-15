@@ -527,6 +527,7 @@ map('t', '<C-x>i', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(5)<
 map('t', '<C-x>o', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
 
 -- TODO we additionally match against the minor mode here
+-- vim.api.nvim_get_mode().mode: first char is major mode, second (if existing) minor mode
 -- map('nt', '<C-x>j', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- x terminal harpoon
 -- map('nt', '<C-x>k', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)
 -- map('nt', '<C-x>l', [[<cmd>lua require("harpoon.term").gotoTerminal(3)<CR>]], opts)
