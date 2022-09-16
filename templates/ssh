@@ -34,12 +34,10 @@ sudo chmod 600 *
 sudo chmod 644 ~/.ssh/known_hosts
 sudo chmod 755 ~/.ssh
 
-ssh may complain with invalid format:
+ssh may complain with file has invalid format:
 Most likely a configuration problem, because ssh does not check your config for
 validity.
 Check your key validity with `ssh-keygen -l -f .ssh/KEYNAME.pub`.
-
-There was a filesystem or bug. Try to spot the bug or regenerate the keys.
 
 checking, if ssh agent is listening on port 22
 netstat -atpn | grep 22
