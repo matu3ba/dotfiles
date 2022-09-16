@@ -143,6 +143,10 @@ callback = function()
 -- :%s/^M$//
 -- convert tabs to spaces:
 -- :retab
+-- convert command with space to newline with \
+-- / / \\\r/g
+-- convert back cmd separated by \ to space separated commands
+-- /\\\n/ /
 
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$

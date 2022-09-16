@@ -1,0 +1,8 @@
+--verbose-cimport
+--verbose-air
+--verbose-llvm-ir
+--verbose-link
+--verbose-cc
+--verbose-llvm-cpu-features
+
+and the clang flags, if needed.

@@ -82,3 +82,15 @@ add_executable(test1 "tst/test_comp1.cpp")
 add_dependencies(test1 project_addon yourcoollib)
 target_link_libraries(test1 gtest_main yourcoollib project_addon ${PROJECT_LIBRARIES})
 add_test(NAME test1 COMMAND test1)
+
+
+# Debugging
+# --trace,  --trace-expand, --debug-output
+# run cmake with -LH to get all variables printed after configuration.
+
+# function(PRINT_VAR VARNAME)
+#   message(STATUS "${VARNAME}: ${${VARNAME}}")
+# endfunction()
+# PRINT_VAR("CMAKE_CXX_COMPILER")
+
+# cmake -P to run a single script

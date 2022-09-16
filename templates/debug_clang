@@ -1,0 +1,33 @@
+Dumping preprocessor state
+-d
+-d<arg>
+-dA
+-dD
+Print macro definitions in -E mode in addition to normal output
+-dI
+Print include directives in -E mode in addition to normal output
+-dM
+Print macro definitions in -E mode instead of normal output
+
+The action to perform on the input.
+-E, --preprocess
+Only run the preprocessor
+-S, --assemble
+Only run preprocess and compilation steps
+-c, --compile
+Only run preprocess, compile, and assemble steps (no linking)
+-emit-llvm
+Use the LLVM representation for assembler and object files
+-fsyntax-only
+-module-file-info
+Provide information about a particular module file
+
+-v, --verbose
+Show commands to run and use verbose outputverbose
+
+Preprocessor flags
+-C, --comments
+Include comments in preprocessed output
+-CC, --comments-in-macros
+Include comments from within macros in preprocessed output
+
