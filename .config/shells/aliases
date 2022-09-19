@@ -129,8 +129,8 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 # Zig
 alias  zbuildglibc='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
 alias  zbuild='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-alias  zblocrel='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-alias  zblocdeb='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias  zblocrel='cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias  zblocdeb='cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
 alias      zig3='./build/stage3/bin/zig'
 alias   arocc='${HOME}/dev/git/zi/arocc/zig-out/bin/arocc'
 # GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig

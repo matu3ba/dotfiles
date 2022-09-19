@@ -6,6 +6,12 @@ set +e
 # and reset
 set -e
 
+# see https://unix.stackexchange.com/questions/520035/exit-trap-with-posix
+# Using signal numbers as complete solution is not portable and listing all signal
+# names is ugly/unreadable
+CWD=$(pwd)
+trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM
+
 # string/* is used verbatim without match and we dont have nullglob against that
 # workaround with (extra case for symlinks)
 # [ -e "$file" ] || [ -L "$file" ] || continue
