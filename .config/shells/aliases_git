@@ -109,6 +109,7 @@ alias gc='git commit -v'
 alias gcmsg='git commit -m'
 alias gca='git commit --amend'
 alias gd='git diff'
+alias gdc='git diff --cached'
 alias gds='git diff --shortstat'
 #git diff untracked: git diff untracked file to create/append to a patch
 alias gdu='git ls-files --others --exclude-standard -z | xargs -0 -n 1 git --no-pager diff /dev/null'

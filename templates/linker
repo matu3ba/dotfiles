@@ -4,5 +4,16 @@ undefined symbols
 nm -gD yourLib.so
 C++ demangling
 nm -gDC yourLib.so
+nm yourlib | c++filt
+
+linking
+-Iincludepath
+-llibrary
+
+However, the library may be already in your system paths.
+
+When a library is scanned by the linker, only functions for which there
+are already undefined references are linked. So you need to put the "consuming"
+objects at the start of the link line, and the "supplying" objects at the end.
 
 idea: instructions on how to debug lld etc

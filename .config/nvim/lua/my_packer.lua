@@ -1,37 +1,28 @@
 -- stylua: ignore start
 return require('packer').startup(function()
+  -- use { 'lewis6991/impatient.nvim' }
   ---- general ----
   --use { 'nanotee/nvim-lua-guide' }
-  --use { 'lewis6991/impatient.nvim' }
-  --use { 'nvim-lua/lsp-status.nvim' } -- necessary for statusline
   -- mkdir -p ~/.local/share/nvim/site/pack/packer/start/
   -- git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>ma
-  --use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
-  -- idea: publish the git worktree helper scripts
+  -- TODO: publish the git worktree helper scripts
   --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
-  --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
   ---- lsp+competion ----
   use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
-  --use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
-  --use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets. BUT: own way of updating may fail => annoying
-  use { 'hrsh7th/cmp-buffer' } --FIXME broken
-  use { 'hrsh7th/cmp-cmdline' }
+  --use { 'hrsh7th/cmp-buffer' } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
+  use { 'hrsh7th/cmp-cmdline' } -- TODO: deactivate completions for :e (broken for that use case)
   use { 'hrsh7th/cmp-nvim-lsp' }
   use { 'hrsh7th/cmp-path' }
   use { 'hrsh7th/nvim-cmp' }
-  --use { 'delphinus/cmp-ctags' } -- does not search multiple files and spawns 1 process for each file
-  use { 'quangnguyen30192/cmp-nvim-tags' } -- simple approach to search through tags file for completions
-  -- TODO port brettanomyces/nvim-editcommand to lua
-  -- TODO add repl builder?
 
   ---- shiny stuff ----
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
   use { 'lewis6991/gitsigns.nvim', branch = 'main' }
-  use { 'tpope/vim-fugitive' } -- idea setup
+  --use { 'tpope/vim-fugitive' } -- idea try without, find plugin for in buffer interative rebasing
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
   -- idea use { 'axieax/urlview.nvim' } -- :Telescope urlview
@@ -72,32 +63,18 @@ return require('packer').startup(function()
   -- ga: change all occurences
   use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
-  use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm
+  use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
 
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
-  use { 'nvim-telescope/telescope-hop.nvim' }
-  --use { '~/dev/git/lua/telescope-project.nvim' } --TODO fixit
-  use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
+  --use { 'nvim-telescope/telescope-hop.nvim' } -- TODO fix setup: no numbers are showing up
   -- Telescope gh issues author=windwp label=bug search=miscompilation
-  --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
-  --workaround: command
-  --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
-  --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
-  --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
-  use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- TODO setup
-  use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- TODO setup
-  --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
-  --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
-  --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
-  -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
-  --use { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
+  use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   ---- treesitter ---- crashes on macro-heavy code ----
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  --use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
+  use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
   --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
-  use { 'lewis6991/spellsitter.nvim', config = function() require('spellsitter').setup() end, }
 
   ---- languages ----
   -- Lua
@@ -107,6 +84,7 @@ return require('packer').startup(function()
   --<Plug>(Luadev-Run)      Operator to execute lua code over a movement or text object.
   --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
   --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
+  --TODO: find something like scrollbackedit from zellij for neovim terminal
   --TODO masterplan: Vim macro to lua function translation
   --  1. read current keybinding including inbuilds => refactor core keyevent handling in neoim (https://github.com/linty-org/key-menu.nvim/issues/10)
   --  2. track the mode, last action and read keys to lookup next action => or capture this in neovim without executing it
@@ -121,7 +99,29 @@ return require('packer').startup(function()
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
 
-  --use { 'junegunn/vim-easy-align' } -- TODO replacement
+  -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
+  -- use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- idea setup + comapre with harpoon approach
+
+  --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
+  --workaround: command
+  --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
+  --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
+  --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
+  --use { '~/dev/git/lua/telescope-project.nvim' } -- idea fixit
+  --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
+  --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
+  -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
+  --use { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
+
+  --use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
+  --use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets. BUT: own way of updating may fail => annoying
+  --use { 'delphinus/cmp-ctags' } -- does not search multiple files and spawns 1 process for each file
+  --use { 'quangnguyen30192/cmp-nvim-tags' } -- simple approach to search through tags file for completions
+  --use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons' } }
+  --use { 'nvim-lua/lsp-status.nvim' } -- nice to have for statusline
+  --use { 'NMAC427/guess-indent.nvim', config = function() require('guess-indent').setup {} end } --:GuessIndent
+  --use { 'p00f/godbolt.nvim' } -:selection?Godbolt, :selection?GodboltCompiler <compiler> <options> ie g112 -Wall\ -O2
+  --use { 'junegunn/vim-easy-align' } -- idea replacement
   --use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
   --use { 'junegunn/gv.vim' } -- alternative?
   --use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
@@ -151,6 +151,5 @@ return require('packer').startup(function()
   --use { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
   --use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim', config = function() require('neogit').setup() -- --:Neogit -- very complex
   --use { 'folke/lsp-trouble.nvim', requires = 'kyazdani42/nvim-web-devicons', config = function() require("trouble").setup() end } --:Trouble,<l>xx/xw/xd/xl/xq/xr
-  --use { 'folke/todo-comments.nvim', config = function() require('todo-comments').setup() end } --:Todo(QuickFix|Trouble|Telescope) for hack,todo,fixme
 end)
 -- stylua: ignore end

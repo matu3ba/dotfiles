@@ -5,9 +5,10 @@ set -e
 set +e
 # and reset
 set -e
-# string/* is used verbatim without match, except we set nullglob
-shopt -s nullglob
-# disable it with `shopt -u nullglob`
+
+# string/* is used verbatim without match and we dont have nullglob against that
+# workaround with (extra case for symlinks)
+# [ -e "$file" ] || [ -L "$file" ] || continue
 
 # See also utilities:
 # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/

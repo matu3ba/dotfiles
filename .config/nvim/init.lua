@@ -79,6 +79,8 @@ callback = function()
 })
 -- stylua: ignore end
 
+-- keywords (capitalized): hack,todo,fixme
+
 -- type() and inspect()
 -- idea Repltikzbuild: compare mtimes
 -- check hash implementations in lua5.1 for incremental builds
