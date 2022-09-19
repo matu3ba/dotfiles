@@ -31,3 +31,15 @@ Include comments in preprocessed output
 -CC, --comments-in-macros
 Include comments from within macros in preprocessed output
 
+1. group -I searches together, in order as first seen on command-line
+2. groups -isystem searches together as first seen on command line and in the end
+3. absolute search list first searches all -I dirs, then it searches all -isystem dirs
+
+MAJOR FOOTGUN
+When clang gets a `-isystem` dir that interferes with `-I` it silently removes
+the dir from `-I` and adds it to `-isystem`, in effect demoting the search
+precedence of the dir.
+"If a standard system include directory, or a directory specified with -isystem,
+is also specified with -I, the -I option is ignored. The directory is still
+searched but as a system directory at its normal position in the system include
+chain."

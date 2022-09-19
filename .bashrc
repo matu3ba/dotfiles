@@ -78,13 +78,13 @@ PATH=$PATH:"${HOME}/.cargo/bin"
 PATH=$PATH:"${HOME}/.local/bin"
 PATH=$PATH:"${HOME}/.local/appimages"
 PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-PATH=$PATH:"${HOME}/dev/git/zig/zig/master/build" # zig stages 0,1,2
-PATH=$PATH:"${HOME}/dev/git/zig/zig/master/build/stage3/bin" # zig stages 3
+PATH=$PATH:"${HOME}/dev/git/zi/zig/master/build" # zig stages 0,1,2
+PATH=$PATH:"${HOME}/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
 PATH=$PATH:"${HOME}/.luarocks/bin"
 PATH=$PATH:"${HOME}/.local/lua-language-server/bin"
 PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
 #PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell: nice introspection, but too slow
-PATH=$PATH:"${HOME}/dev/git/zig/zigmod/zig-out/bin" # zigmod binary
+PATH=$PATH:"${HOME}/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
 
 #testing www.ziglang.org
 #PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
