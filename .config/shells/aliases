@@ -127,11 +127,19 @@ alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 
 # Zig
-alias  zbuildglibc='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-alias  zbuild='cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-alias  zblocrel='cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-alias  zblocdeb='cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias  zbuildglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+# & && echo "$!" && wait "$!"
+alias  zbuild='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install  && cd ..'
+alias  zbrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+#alias  zbRel='mkdir -p buildRel/ && cd buildRel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+# NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
+#mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..
+#mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..
+# alias  zblocrel='mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+# alias  zblocdeb='mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
 alias      zig3='./build/stage3/bin/zig'
+alias   zig3rel='./buildrel/stage3/bin/zig'
+alias zig3glibc='./build/stage3/bin/zig'
 alias   arocc='${HOME}/dev/git/zi/arocc/zig-out/bin/arocc'
 # GLOB_CACHE=$(zig env | jq '.global_cache_dir') # ${HOME}/.cache/zig
 # curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
@@ -185,18 +193,21 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # program aliases
 #alias l='exa'
 alias du='dust'
-alias rgv='rg --vimgrep --always'
+alias rgv='rg --vimgrep'
 #alias rgv='rg --vimgrep'
 # replace occurences with word
 #find ./ -type f -exec sed -i -e 's/apple/orange/g' {} \;
-# find files with exec bit
-#find ./ -type f -perm /1 -exec rm {}
+# find files with exec bit and delete
+#find ./ -type f -perm /1 -exec rm {} \;
 # find files with exec bit and delete unless the script
-# fd -E clean.sh -t x -x rm {}
-# find files based on extension
-# fd -I -e o -t f -x rm {}
-# find files based on regex
-# fd -I -t d zig-cache -x rm -fr {}
+#fd -E clean.sh -t x -x rm {} \;
+# fd: find files based on extension and delete ({} is implicit if not given)
+#fd -I -e o -t f -x rm {}
+# fd: find files based on regex and delete (implicit {})
+#fd -I -t d zig-cache -x rm -fr
+# fd: find all files (with extension) in dir
+#fd regex /some/path
+#fd '' -e zig lib/std
 #List executables by change date, TODO
 #find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
 #fd --type f -x sed -i -e 's/apple/orange/g'

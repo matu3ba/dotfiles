@@ -16,10 +16,12 @@ set -e
 
 WORKTREE_ROOT=$(git rev-parse --show-toplevel)
 CWD=$(pwd)
-if test "${WORKTREE_ROOT}" -ne "${CWD}"; then
+if test "${WORKTREE_ROOT}" != "${CWD}"; then
   echo 'CWD != WORKTREE_ROOT'
   exit
 fi
+# more dense:
+# if test "$(git rev-parse --show-toplevel)" != "$(pwd)"; then echo 'CWD != WORKTREE_ROOT'; exit 1; fi
 GITDIR=$(git rev-parse --git-dir)
 BASEDIR_GITDIR=$(dirname "$GITDIR")
 BASEDIR_WT_ROOT=$(dirname "$WORKTREE_ROOT")

@@ -1,5 +1,6 @@
 local opts = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
+-- fast save,quit: ZZ, ZQ
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces

@@ -30,20 +30,13 @@ end
 ]]
 end
 
--- TODO: investigate use cases of ropes and implement one for Zig
--- * goal: rope as text structure to fix https://github.com/neovim/neovim/issues/2514
---   + same problem of ambiguity applies for different layouting/parsing
--- * goal: understand what is needed for zig reduce as internal datastructure
---   * play around with Zig AST creation for edge cases `zig fmt: off`
---   and ambiguity of representation
---     + make things unambiguous, but reversable with lookup table
---   * play around with kakoune layouting
---   * play around with helix layouting?
--- + main problem for "rope only editor":
---   users want custom layouting to visualize data more intuitively for understanding
---     + tables as most often used format
---     + each visualization requires custom compression for optimality or end up with
---       already known/common/suboptimal solutions
+-- TODO: simple task runner
+-- TODO: simple diff that respects gitignore
+-- TODO: build + test + spawn suite for debugging
+-- idea: investigate use cases of ropes and implement one for Zig <-- defered
+-- until stage2 allows users to get Sema info
+-- TODO: idea for analysis IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
+-- TODO: complete deltadebug/zig-reduce to get complete AST<->source locations
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros
@@ -163,6 +156,26 @@ callback = function()
 -- var general_purpose_allocator = std.heap.GeneralPurposeAllocator(.{}){};
 -- defer std.debug.assert(!general_purpose_allocator.deinit());
 -- const gpa = general_purpose_allocator.allocator();
+
+-- var arena_instance = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+-- defer arena_instance.deinit();
+-- const arena = arena_instance.allocator();
+
+-- var cwd_buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
+-- std.mem.copy(u8, filepathbuf[0..], pathprefix[0..]);
+-- const pathprefnr = try std.fmt.bufPrint(filepathbuf[pathprefix.len..], "{d}", .{i});
+
+-- Fast printErrorSet
+--fn printErrorSet(comptime fun: anytype) void {
+--    const info = @typeInfo(@TypeOf(fun));
+--    const ret_type = info.Fn.return_type.?;
+--    inline for (@typeInfo(@typeInfo(ret_type).ErrorUnion.error_set).ErrorSet.?) |reterror| {
+--        std.debug.print("{s}\n", .{reterror.name});
+--    }
+--}
+--test "printErrorSet" {
+--    printErrorSet(resolvePosix);
+--}
 
 -- Assume
 --PWD=$(git rev-parse --show-toplevel) == pwd.
