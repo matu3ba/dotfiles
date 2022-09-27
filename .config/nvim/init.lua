@@ -142,6 +142,7 @@ callback = function()
 -- / / \\\r/g
 -- convert back cmd separated by \ to space separated commands
 -- /\\\n/ /
+-- convert symbols into hex: !%xxd
 
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$

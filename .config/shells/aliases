@@ -197,8 +197,10 @@ alias rgv='rg --vimgrep'
 #alias rgv='rg --vimgrep'
 # replace occurences with word
 #find ./ -type f -exec sed -i -e 's/apple/orange/g' {} \;
-# find files with exec bit and delete
+# find files with exec bit
 #find ./ -type f -perm /1 -exec rm {} \;
+# find files with regex on busybox:
+#find ./ -regex '.*lighttpd.*'
 # find files with exec bit and delete unless the script
 #fd -E clean.sh -t x -x rm {} \;
 # fd: find files based on extension and delete ({} is implicit if not given)
@@ -211,6 +213,10 @@ alias rgv='rg --vimgrep'
 #List executables by change date, TODO
 #find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
 #fd --type f -x sed -i -e 's/apple/orange/g'
+
+# busybox grep (very slow)
+#grep -r regex .
+# ripgrep
 #rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
 #rg -g '*.rs' to ignore file ending
 #rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
