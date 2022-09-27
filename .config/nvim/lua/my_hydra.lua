@@ -34,29 +34,26 @@ M.sidescroll_hdyra = Hydra({
    },
 })
 
--- keep window resizing simple and fast
--- leaving hydra mode takes mostly more time, so navigation is not worth it
 M.window_hdyra = Hydra({
    body = '<C-w>',
    heads = {
+      -- The following depend highly on your workflow
       -- { 'h', '<C-w>h' },
       -- { 'j', '<C-w>j' },
       -- { 'k', '<C-w>k' },
       -- { 'l', '<C-w>l' },
-      -- C-d,C-u,C-e,C-y
-      -- TODO think of use case to copy paste + insert stuff
+      -- other use cases: scrolling (C-d,C-u,C-e,C-y), copy+paste
       { 's', '<C-w>s' },
       { 'v', '<C-w>v' },
       { '+', '<C-w>+' },
       { '-', '<C-w>-' },
-      { '>', '<C-w>>' }, -- idea: use arrow keys to prevent indendation
+      { '>', '<C-w>>' },
       { '<', '<C-w><' },
       { '=', '<C-w>=' },
       { 'q', '<cmd>close<CR>' },
       { 'o', '<cmd>only<CR>' },
-      --{ '<S>', '<C-w><S>' },
-      --{ '_', '<C-w>_' },
-      --{ '|', '<C-w>|' }, -- requires prefixed numbers => other hydra heaad
+      { '_', '<C-w>_' },
+      { '|', '<C-w>|' },
       { '<Esc>', nil,  { exit = true, desc = false } },
    },
 })
@@ -66,7 +63,7 @@ M.window_hdyra = Hydra({
    body = '<leader>b',
    heads = {
       -- TODO https://github.com/anuvyklack/hydra.nvim/issues/39
-      --{ 's', '<cmd>ls<CR>' }, -- show buffers
+      { 's', '<cmd>ls<CR>' }, -- show buffers
       { 'l', '<cmd>bn<CR>' }, -- next buffer
       { 'h', '<cmd>bp<CR>' }, -- previous buffer
       { 'a', '<cmd>ba<CR>' }, -- add current buffer

@@ -9,7 +9,7 @@ alias ccbuild='mkdir -p build/; cd build;' # change create build
 alias ccdebug='mkdir -p debug/; cd debug;' # change create debug
 alias rmmkdbuild='rm -fr build/; mkdir build'
 alias cdnvimplugs='cd ${HOME}/.local/share/nvim/site/pack/packer/start'
-alias mma='${HOME}/dev/git/cpp/mold/mold -run make -j$(nproc)'
+alias mma='${HOME}/dev/git/cpp/mold/build/mold -run make -j$(nproc)'
 alias readcommentsectionELF='readelf -p .comment'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
@@ -103,18 +103,18 @@ alias   templatesvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/templates"'
 #alias      initrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/ion/initrc"'
 # factory defaults: neovim --clean, neovim -u init.lua, neovim --clean -u init.lua file.zig (debugging plugins)
 
-alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
+alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/build/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         fbi='./configure && make && sudo make install-strip && sudo firecfg && sudo -K'
-alias          nb='${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-alias        nbnj='firejail --noprofile ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias          nb='${HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+alias        nbnj='firejail --noprofile ${HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
 alias      nbnjnm='firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
 alias        nbnm='make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
 # unfortunately mold can still not link clang address sanitizer libraries as they patch libc symbols in a nontrivial way
-#alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" ${HOME}/dev/git/cpp/mold/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
+#alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" ${HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 alias      nbasan='CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 alias      stylua='stylua --indent-type Spaces --quote-style AutoPreferSingle'
 #alias     luamake='${HOME}/.local/lua-language-server/3rd/luamake/luamake'
-alias      hbuild='git submodule update --init --recursive --depth 1 && git merge --ff-only origin/master && ${HOME}/dev/git/cpp/mold/mold -run cargo install --path helix-term'
+alias      hbuild='git submodule update --init --recursive --depth 1 && git merge --ff-only origin/master && ${HOME}/dev/git/cpp/mold/build/mold -run cargo install --path helix-term'
 
 # Rust
 # cargo metadata --format-version=1 | jq -r ".packages|map(.name)|.[]" | wc -l
@@ -127,16 +127,16 @@ alias jumakie='julia -J "$HOME/.local/so/sys_makie.so"'
 alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 
 # Zig
-alias  zbuildglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias  zbuildglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 # & && echo "$!" && wait "$!"
-alias  zbuild='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install  && cd ..'
-alias  zbrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-#alias  zbRel='mkdir -p buildRel/ && cd buildRel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+alias  zbuild='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install  && cd ..'
+alias  zbrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+#alias  zbRel='mkdir -p buildRel/ && cd buildRel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 # NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
-#mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..
-#mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..
-# alias  zblocrel='mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
-# alias  zblocdeb='mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/mold -run ninja install && cd ..'
+#mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
+#mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
+# alias  zblocrel='mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+# alias  zblocdeb='mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 alias      zig3='./build/stage3/bin/zig'
 alias   zig3rel='./buildrel/stage3/bin/zig'
 alias zig3glibc='./build/stage3/bin/zig'
