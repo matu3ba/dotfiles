@@ -101,3 +101,31 @@ if ! [ $? -eq 0 ]; then
    echo "Please create dir dev/"
    exit 1
 fi
+
+# based on https://github.com/dylanaraps/pure-sh-bible
+TEST1=""
+if test -n "${TEST1}"; then echo "length of string non-zero" fi
+if test -z "${TEST1}"; then echo "length of string zero" fi
+
+if test "${TEST1}" = "${TEST1}"; then echo "equal" fi
+if test "${TEST1}" != "${TEST1}"; then echo "non-equal" fi
+# numeric: - with eq,ne,gt,ge,lt,le
+# file: - with e,f,d,h/L(symbolic link),w,x,s(non-empty)
+# file: - with b(lock),c(haracter),g(set-group-id),p(ipe),t(terminal),u(set-user-id),S(socket)
+# arithmetic: +,-,*,/,**(exponent),%(modulo),+=,-=,*=,/=,%=
+# ${VAR//PATTERN/REPLACE} substitute with replacement
+# ${VAR#PATTERN}   remove shortest match based on pattern from start
+# ${VAR##PATTERN}  remove longest match based on pattern from start
+# ${VAR%PATTERN}   remove shortest match based on pattern from end
+# ${VAR%%PATTERN}  remove longest match based on pattern from end
+# ${#VAR}          lenght of var in characters (utf8 ?)
+# ${VAR:-STRING} If VAR is empty or unset, use STRING as its value.
+# ${VAR-STRING}  If VAR is unset, use STRING as its value.
+# ${VAR:=STRING} If VAR is empty or unset, set the value of VAR to STRING.
+# ${VAR=STRING}  If VAR is unset, set the value of VAR to STRING.
+# ${VAR:+STRING} If VAR is not empty, use STRING as its value.
+# ${VAR+STRING}  If VAR is set, use STRING as its value.
+# ${VAR:?STRING} Display an error if empty or unset.
+# ${VAR?STRING}  Display an error if unset.
+# $- Shell options
+# $$ 	Current shell PID

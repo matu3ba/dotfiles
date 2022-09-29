@@ -28,6 +28,14 @@ You see inside ~/.ssh/authorized_keys on the target, which keys were authorized.
 Note, that if you add /root/.ssh/authorized_keys to get root access on the
 target, it is identical to ~/.ssh/authorized_keys, if you are root.
 
+If there are problems:
+1. restart ssh daemon (dropbear, ssh etc)
+2. add configuration
+3. add ~/.ssh/authorized_keys by other means on the target
+3. ssh-add pathtokey
+4. ssh-copy-id user@ip
+like in ./scr/gen_ssh.sh
+
 ssh may complain with `WARNING: UNPROTECTED PRIVATE KEY FILE!`
 Fix it on the machine with:
 sudo chmod 600 *

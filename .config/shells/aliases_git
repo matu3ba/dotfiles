@@ -143,6 +143,7 @@ alias gscbUp='git branch --set-upstream-to=upstream/$(git branch --show-current)
 
 alias gsh='git show'
 alias gshps='git show --pretty=short --show-signature'
+alias gshm='git show -m'
 alias gsb='git status -sb'
 alias gss='git status -s'
 alias gs='git status'
@@ -200,6 +201,8 @@ alias gpushd='git push --dry-run'
 #alias gstapop='git stash pop'
 #alias gstas='git stash show --text'
 #alias gstaall='git stash --all'
+alias gssa='git stash show --all'
+alias gsap0='git stash apply stash@{0}'
 
 alias gsi='git submodule init'
 alias gsu='git submodule update'

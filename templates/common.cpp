@@ -54,3 +54,27 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
                 return "[Unknown " BOOST_PP_STRINGIZE(name) "]";                                                  \
         }                                                                                                         \
     }
+
+// defer-like behavior in C++
+#include <openssl/err.h>
+#include <openssl/evp.h>
+#include <memory>
+using EVP_CIPHER_CTX_free_ptr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&::EVP_CIPHER_CTX_free)>;
+
+unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned char key[16], unsigned char iv[16]) {
+    // equivalent of c++
+    // EVP_CIPHER_CTX *ctx = try { EVP_CIPHER_CTX_new(); }
+    // with equivalent of Zig
+    // defer EVP_CIPHER_CTX_free(ctx);
+    EVP_CIPHER_CTX_free_ptr ctx(EVP_CIPHER_CTX_new(), ::EVP_CIPHER_CTX_free);
+
+    std::unique_ptr<int[]> p(new int[10]);
+    std::unique_ptr<unsigned char[]> p2(new unsigned char[plaintext_len]);
+
+    // main problem: throw not forced to be handled locally and hidden control
+    // other problem: we cant only defer on error to provide ctx to another function
+    return NULL;
+}
+
+
+
