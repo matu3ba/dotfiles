@@ -1,0 +1,25 @@
+https://nullprogram.com/blog/2015/05/15/ how clone() works
+
+get Kernel config
+cat /proc/config.gz | gunzip > running.config
+
+Watching based on notify events:
+inotifywait -e modify,create,delete -m -r /path/to/your/dir
+
+Trace systemcalls:
+strace ./binary
+
+Get list of open files from process
+lsof
+
+Monitor changes based on inode level (application must change directory
+inode on file insertion, so one might miss events):
+auditctl -w <path> -p <permissions> -k <key>
+ausearch -f <path>
+ausearch -k <key>
+auditctl -l
+auditctl -W <path>
+
+TODO:
+- bpftrace with monitoring
+- if absolutely necessary bcc (painful to install)

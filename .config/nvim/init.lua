@@ -1,6 +1,11 @@
 -- init.lua --
 require 'my_globals'
-require 'my_packer'
+local has_packer, _ = pcall(require, 'packer')
+if has_packer then
+  require 'my_packer'
+else
+  error 'Please install packer, instructions in my_packer.lua'
+end
 require 'my_opts'
 -- require 'my_lsp' -- setup in my_nvimcmp.lua
 require 'my_telesc'
@@ -91,7 +96,8 @@ callback = function()
 
 -- :h builtin-function-list
 
--- Debugging
+-- Debugging Lua types and values
+-- print(type(fd_exec[1]))
 -- :g/.*DEBUG$/del
 -- local fp = assert(io.open("/tmp/tmpfile", "w")) --DEBUG
 -- for index,tables in pairs(repo_paths) do        --DEBUG
@@ -100,7 +106,7 @@ callback = function()
 --   fp:write(tables)                              --DEBUG
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
--- fp.close()                                      --DEBUG
+-- fp:close()                                      --DEBUG
 
 -- local fp = assert(io.open("/tmp/tmpfile", "w")) --DEBUG
 -- for index,tables in ipairs(repo_paths) do       --DEBUG
@@ -109,7 +115,7 @@ callback = function()
 --   fp:write(tostring(tables))                    --DEBUG
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
--- fp.close()                                      --DEBUG
+-- fp:close()                                      --DEBUG
 --
 -- Debugging Zig types
 -- @compileLog(@TypeOf(input));

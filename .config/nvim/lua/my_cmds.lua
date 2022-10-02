@@ -1,3 +1,9 @@
+---- Dependencies ----
+local has_plenary, plenary = pcall(require, 'plenary')
+if not has_plenary then
+  error('Please install plenary for all features.')
+end
+
 ---- Configuration files editing ----
 local add_cmd = vim.api.nvim_create_user_command
 local nvim_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
@@ -28,6 +34,9 @@ add_cmd('AliasesGit', aliases_git_edit, {})
 -- we cant or dont want to unify all bashrcs
 local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.bashrc'
 add_cmd('Bashrc', bashrc_edit, {})
+
+-- Visit mappings, commands and autocommands:
+-- :map, :command. :autocmd
 
 -- why are keybindings and plugin cache not reloaded?
 --add_cmd('CRel', function()
@@ -255,6 +264,40 @@ add_cmd('Fcolumn', function()
   local fnamecol = fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2])
   vim.fn.setreg('+', fnamecol)
 end, {}) -- copy filename:line:column
+
+
+-- Retag only local files with https://github.com/gpanders/ztags
+-- Use zls for the rest. To index everything, ramfs (/tmp) would
+-- be probably best with
+-- ```
+--   PWD=$(pwd)
+--   TMPPWD="/tmp/${PWD}"
+--   mkdir -p "${TMPPWD}"
+--   SRCPATH="${TMPPWD}/srcfiles"
+--   ZIGPATH="${HOME}/dev/git/zi/zig/master/"
+--   cd "${ZIGPATH}"
+--   fd '${ZIGPATH}/.*.zig' src > "${SRCPATH}"
+--   fd '${ZIGPATH}/.*.zig' lib/std >>"${SRCPATH}"
+--   fd '.*.zig' lib/std >>"${SRCPATH}"
+--   FILES=$(cat "${SRCPATH}")
+--   ztags $FILES
+--   if ! test -f "tags"; then (echo "no tags file"; exit 1); fi
+-- ```
+-- NOTE: vimscript wants us to use a list and substitute refuses to work
+-- Output capturing from shell is unnecessary (io.popen)
+-- vim.api.nvim_exec(
+-- [[
+-- let b:filelist = systemlist("fd '.*.zig'")
+-- let b:files = join(b:filelist, ' ')
+-- let b:ztags_cmd = "ztags " . b:files
+-- let b:res =  system(b:ztags_cmd)
+-- ]], false)
+add_cmd('Retag', function()
+  if vim.bo.filetype == 'zig' then
+    local fd_exec = plenary.job:new({command = 'fd', args = { '.*.zig' }}):sync()
+    plenary.job:new({ command = 'ztags', args = fd_exec }):start()
+  end
+end, {})
 
 -- TODO optional argument in which register to copy the file path
 --

@@ -83,6 +83,7 @@ alias          dvia='${HOME}/.local/appimages/nvim.appimage -u DEFAULT'
 alias        histup='${HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
 alias       aliases='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
 alias        bashrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
+alias           dfs='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
 alias   aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
 alias   aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
 alias     templates='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
@@ -131,6 +132,9 @@ alias  zbuildglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH
 # & && echo "$!" && wait "$!"
 alias  zbuild='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install  && cd ..'
 alias  zbrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+alias  watchtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
+# auditd (access monitoring framework)
+# bpftrace (general tracing solution to create + run ebpf programs)
 #alias  zbRel='mkdir -p buildRel/ && cd buildRel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 # NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
 #mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..

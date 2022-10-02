@@ -23,7 +23,7 @@ local function load_options()
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
   vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
-  vim.o.cmdheight = 2
+  vim.o.cmdheight = 0 -- shortcut vim.o.ch
   vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim
   --vim.o.completeopt = 'menu,menuone,noselect' --nvim-cmp
   vim.o.cursorline = true
@@ -33,7 +33,8 @@ local function load_options()
   vim.o.ignorecase = true --lower case chars also search for upper ones
   vim.o.incsearch = true --highlight as searching
   vim.o.isfname = vim.o.isfname .. ',@-@'
-  vim.o.laststatus = 3 --one global statusline instead of per window
+  --vim.o.laststatus = 3 --one global statusline instead of per window
+  vim.o.laststatus = 0 --disappearing statusline
   vim.o.lazyredraw = true -- do not redraw screen in mid of macro
   vim.o.mouse = 'nv'
   vim.o.number = true

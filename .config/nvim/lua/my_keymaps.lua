@@ -50,6 +50,7 @@ map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
+-- Note: * and # also work, but they autojump to next search result
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- idea |copy_history:| keypress to extract search properly from history without \V
 --map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
