@@ -117,6 +117,10 @@ callback = function()
 -- end                                             --DEBUG
 -- fp:close()                                      --DEBUG
 --
+-- Debugging Python types
+-- print(type(tokenInfo_json))
+-- print(tokenInfo_obj.__dict__)
+--
 -- Debugging Zig types
 -- @compileLog(@TypeOf(input));
 --
