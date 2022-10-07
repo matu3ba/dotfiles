@@ -4,6 +4,8 @@ import json
 import urllib.parse
 import urllib.request
 
+import xml.etree.ElementTree as ET
+
 # POST requires to use request.Request with data field
 req = urllib.request.Request(url, data=logindata,
                              headers={'content-type': 'application/json'})
@@ -76,3 +78,53 @@ def parseSemanticVersion(semver_str: str) -> dict:
     res_dict["minor"] = minor
     res_dict["bugfix"] = bugfix
     return res_dict
+
+# taken from https://stackoverflow.com/a/3229493/9306292
+def prettyDict(d, indent=0):
+   for key, value in d.items():
+      print('  ' * indent + str(key))
+      if isinstance(value, dict):
+         prettyDict(value, indent+1)
+      else:
+         print('  ' * (indent+1) + str(value))
+
+# do not use xml.dom.minidom, it breaks space and newlines:
+# https://bugs.python.org/issue5752
+# use instead ElementTree
+
+## parsing standard conform xml (see xmlns, xmlns:xsi, xsi:schemaLocation, and targetNamespace)
+##   W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures
+##   most relevant fields: tag, attrib, text, tail
+def getPort() -> int:
+    tree = ET.parse('test.xml')
+    root = tree.getroot()
+    xml_port = None
+    try:
+        # To ensure occurence of exactly 1 element, use
+        #   children = findAll(parent)
+        #   assert(len(children)) == 1
+        #   idea: figure out how to do function chaining in Python
+        xml_port = root.find("opt1").find("opt2")
+    except (ET.ParseError, AttributeError):
+        return -1
+    if (__debug__):
+        print("xml_port: ", xml_port)
+
+    port = 0
+    try:
+        port = int(xml_port.text)
+    except ValueError:
+        print("ValueError")
+        return -1
+    if (__debug__):
+        print("port: ", port)
+    return port
+
+# To add new nodes to ElementTree, use (beware that they dont have pretty print):
+#newxml_s1 = ET.SubElement(newxml_s2, "slave")
+#newxml_s1.text = str(someboolean).lower()   # there is also capitalize()
+
+# requires Python 3.9
+# no alternative to `ET.indent(tree, space="    ", level=0)`
+# The other options to prettyprint are very broken or not part of Python libstd
+# (xml.dom.ext).
