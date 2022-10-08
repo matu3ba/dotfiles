@@ -46,7 +46,36 @@ add_cmd('Bashrc', bashrc_edit, {})
 --    require('plenary.reload').reload_module(dir)
 --  end
 --end, {})
-add_cmd('CUtil', [[lua require('my_utils').reload()]], {})
+
+-- Reload init.lua
+add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
+add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
+--plenary is broken with both
+-- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", true) end, {})
+-- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", false) end, {})
+
+add_cmd('Style',
+  function(opts)
+    require('material.functions').change_style(opts.args)
+  end, {
+    nargs = 1,
+    complete = function(_, _, _)
+      return { "darker", "lighter", "palenight", "oceanic", "deep ocean" }
+    end,
+  }
+)
+
+-- vim.keymap.set("n", "<leader>sv", "", {
+--   silent = true,
+--   desc = "reload init.lua",
+--   callback = function()
+--     vim.cmd([[
+--       update $MYVIMRC
+--       source $MYVIMRC
+--     ]])
+--     vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
+--   end,
+-- })
 
 --map('v', '<leader>b', '"+y', opts)
 ---- TODO call a lua function to call correct builder

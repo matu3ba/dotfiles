@@ -1,5 +1,10 @@
 ---- nvim-cmp setup ----
-local cmp = require 'cmp'
+local has_cmp, cmp = pcall(require, 'cmp')
+if not has_cmp then
+  --error 'Please install cmp with packer'
+  return
+end
+
 cmp.setup {
   mapping = cmp.mapping.preset.insert {
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),

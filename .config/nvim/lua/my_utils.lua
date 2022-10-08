@@ -23,32 +23,51 @@ M.dump = function(...)
   return ...
 end
 
-M.reload = function()
+M.reloadconfig = function()
+  local luacache = (_G.__luacache or {}).cache
+  -- TODO unload commands, mappings + ?symbols?
   for pkg, _ in pairs(package.loaded) do
-    if
-      pkg:match '^lazy'
-      or pkg:match '^mapping'
-      or pkg:match '^plugrc'
-      or pkg:match '^ui'
-      or pkg:match '^editor'
-      or pkg:match '^plugins'
-      or pkg:match '^syntax'
-      or pkg:match '^terminal'
-      or pkg:match '^utils'
+    if pkg:match '^my_.+'
     then
+      print(pkg)
       package.loaded[pkg] = nil
+      if luacache then
+        lucache[pkg] = nil
+      end
     end
   end
-
   dofile(vim.env.MYVIMRC)
   vim.notify('Config reloaded!', vim.log.levels.INFO)
 end
 
+M.makeScratch = function()
+  vim.api.nvim_command('enew') -- equivalent to :enew
+  vim.bo[0].buftype="nofile" -- set the current buffer's (buffer 0) buftype to nofile
+  vim.bo[0].bufhidden="hide"
+  vim.bo[0].swapfile=false
+end
+
+-- Notes for terminal stuff
+-- vim.api.nvim_command('botright split new') -- split a new window
+-- vim.api.nvim_win_set_height(0, 30) -- set the window height
+-- local win_handle = vim.api.nvim_tabpage_get_win(0) -- get the window handler
+-- local buf_handle = vim.api.nvim_win_get_buf(0) -- get the buffer handler
+-- jobID = vim.api.nvim_call_function("termopen", {"$SHELL"})
+-- vim.api.nvim_buf_set_option(buf_handle, 'modifiable', true)
+-- vim.api.nvim_buf_set_lines(buf_handle, 0, 0, true, {"ls"})
+-- nvim_get_channel_info(&channel).pty
+
 M.listpackages = function()
+  -- buf_open_scratch is missing in vim.api
+  -- local bufnr = vim.api.nvim_create_buf(true, true)
+  -- print(bufnr)
+  -- vim.api.nvim_open_win(bufnr, 0, win_opts)
+  vim.api.nvim_command('enew')
+  local contents = {}
   for pkg, _ in pairs(package.loaded) do
-    print(pkg)
-    print '\n'
+    table.insert(contents, pkg)
   end
+  vim.api.nvim_buf_set_lines(0, 0, -1, true, contents)
 end
 
 M.reloadModule = function(module)

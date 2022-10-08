@@ -35,6 +35,7 @@ end
 ]]
 end
 
+-- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
 -- TODO: simple task runner
 -- TODO: simple diff that respects gitignore
 -- TODO: build + test + spawn suite for debugging
@@ -95,6 +96,7 @@ callback = function()
 --:echo '123'
 
 -- :h builtin-function-list
+-- :h lua-fs (os.path python functions)
 
 -- Debugging Lua types and values
 -- print(type(fd_exec[1]))
