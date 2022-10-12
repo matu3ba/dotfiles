@@ -128,3 +128,33 @@ def getPort() -> int:
 # no alternative to `ET.indent(tree, space="    ", level=0)`
 # The other options to prettyprint are very broken or not part of Python libstd
 # (xml.dom.ext).
+
+## Html GET or POST gives me always Access denied and jenkins has no proper
+# description how to access their api or files with bare Python (bruh).
+# Workaround: curl -s --user USER:TOKEN
+
+# .strip() is necessary after file read, because Python automatically adds "\n"
+
+## Basic logging of html messages
+import requests
+import logging
+# These two lines enable debugging at httplib level (requests->urllib3->http.client)
+# You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
+# The only thing missing will be the response.body which is not logged.
+import http.client as http_client
+http_client.HTTPConnection.debuglevel = 1
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = True
+
+## Better one: wireshark + tracking html messages
+
+## HTML POST file upload with authorization and file renaming
+files = [ ('file',('filename_renaming',open(path_file, 'rb'), 'application/octet-stream')) ]
+response = requests.request("POST", upload_url,
+             headers={'Authorization': ('Bearer ' + token)},
+                      #'content-type': 'multipart/form-data'},
+             data={},
+             files=files)

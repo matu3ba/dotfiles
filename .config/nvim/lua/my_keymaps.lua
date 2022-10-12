@@ -498,6 +498,36 @@ map('n', ';eu', [[<cmd>lua require("harpoon.term").sendCommand(4, "\n")<CR>]], o
 map('n', ';ei', [[<cmd>lua require("harpoon.term").sendCommand(5, "\n")<CR>]], opts)
 map('n', ';eo', [[<cmd>lua require("harpoon.term").sendCommand(6, "\n")<CR>]], opts)
 
+appendLogFileByDate = function(content)
+  local current_date = os.date("%Y%m%d") -- year month day according to strftime
+  local fp = assert(io.open( (current_date .. ".log"), "a"))
+  fp:write(content)
+  fp:close()
+end
+
+-- must be global, because keybindings dont accept lua functions yet
+getCurrentLinePlusNewline = function()
+  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  local curline = vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, false)[1]
+  return curline .. "\n"
+end
+
+-- send line under cursor as command to harpoon terminal
+-- c means cursor
+map('n', ';cj', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(1, getCurrentLinePlusNewline())<CR>]], opts)
+map('n', ';ck', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(2, getCurrentLinePlusNewline())<CR>]], opts)
+map('n', ';cl', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(3, getCurrentLinePlusNewline())<CR>]], opts)
+map('n', ';cu', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(4, getCurrentLinePlusNewline())<CR>]], opts)
+map('n', ';ci', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(5, getCurrentLinePlusNewline())<CR>]], opts)
+map('n', ';co', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(6, getCurrentLinePlusNewline())<CR>]], opts)
+
+-- map('n', ';cj', [[<cmd>lua require("harpoon.term").sendCommand(1, getCurrentLinePlusNewline())<CR>]], opts)
+-- map('n', ';ck', [[<cmd>lua require("harpoon.term").sendCommand(2, getCurrentLinePlusNewline())<CR>]], opts)
+-- map('n', ';cl', [[<cmd>lua require("harpoon.term").sendCommand(3, getCurrentLinePlusNewline())<CR>]], opts)
+-- map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(4, getCurrentLinePlusNewline())<CR>]], opts)
+-- map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(5, getCurrentLinePlusNewline())<CR>]], opts)
+-- map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(6, getCurrentLinePlusNewline())<CR>]], opts)
+
 -- repeat last command
 map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
 map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "!!\n")<CR>]], opts)
