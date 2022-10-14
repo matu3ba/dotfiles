@@ -22,6 +22,9 @@ local function load_options()
   end
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
+  -- TODO better setup with github.com/neovim/neovim/12092
+  -- powershell Get-Clipboard | wc
+  -- echo foo | clip.exe
   vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
   vim.o.cmdheight = 0 -- shortcut vim.o.ch
   vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim
@@ -34,7 +37,7 @@ local function load_options()
   vim.o.incsearch = true --highlight as searching
   vim.o.isfname = vim.o.isfname .. ',@-@'
   --vim.o.laststatus = 3 --one global statusline instead of per window
-  vim.o.laststatus = 0 --disappearing statusline
+  vim.o.laststatus = 3 --disappearing statusline
   vim.o.lazyredraw = true -- do not redraw screen in mid of macro
   vim.o.mouse = 'nv'
   vim.o.number = true

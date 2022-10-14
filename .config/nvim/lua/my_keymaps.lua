@@ -173,7 +173,7 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 ---- buffer navigation ----
 --map('n', ']b', '<cmd>bn<CR>', opts)
 --map('n', '[b', '<cmd>bp<CR>', opts)
---map('n', ';l', '<cmd>ls<CR>', opts) -- list buffers
+--map('n', ';l', '<cmd>ls<CR>', opts) -- list buffers -- ; taken for running stuff
 --map('n', ';e', '<cmd>bn<CR>', opts) -- previous buffer
 --map('n', ';y', '<cmd>bp<CR>', opts) -- next buffer
 --map('n', ';b', '<cmd>ls<CR>', opts) -- list buffers
