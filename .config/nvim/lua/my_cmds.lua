@@ -38,15 +38,6 @@ add_cmd('Bashrc', bashrc_edit, {})
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd
 
--- why are keybindings and plugin cache not reloaded?
---add_cmd('CRel', function()
---  local lua_dirs = vim.fn.glob('./lua/*', 0, 1)
---  for _, dir in ipairs(lua_dirs) do
---    dir = string.gsub(dir, './lua/', '')
---    require('plenary.reload').reload_module(dir)
---  end
---end, {})
-
 -- Reload init.lua
 add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
 add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
@@ -78,7 +69,6 @@ add_cmd('Style',
 -- })
 
 --map('v', '<leader>b', '"+y', opts)
----- TODO call a lua function to call correct builder
 --buf_cwd = getcwd(0)
 --=> zig build, if build.zig exists in current folder
 --=> better use proper harpoon functions
@@ -94,7 +84,7 @@ add_cmd('Style',
 --    end,
 --    {}
 --)
--- TODO command to invoke chepa
+-- idea command to invoke chepa
 --add_cmd(
 --    'Chepa',
 --    function()

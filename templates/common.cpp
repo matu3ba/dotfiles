@@ -76,5 +76,9 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
     return NULL;
 }
 
-
-
+// SHENNANIGAN: default values prevent the class from being an aggregate, so
+// list initialization breaks with a very unhelpful message like:
+// error: could not convert xxx from race-enclosed initializer list
+//
+// The lsp is even worse/more unhelpful claiming "no matching constructor" without
+// bothering any explanation.

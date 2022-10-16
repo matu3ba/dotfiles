@@ -22,9 +22,12 @@ local function load_options()
   end
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
-  -- TODO better setup with github.com/neovim/neovim/12092
-  -- powershell Get-Clipboard | wc
-  -- echo foo | clip.exe
+  -- based on github.com/neovim/neovim/12092 and wiki
+  -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip
+  -- curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
+  -- unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
+  -- chmod +x /tmp/win32yank.exe
+  -- sudo mv /tmp/win32yank.exe /usr/local/bin/
   vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
   vim.o.cmdheight = 0 -- shortcut vim.o.ch
   vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim

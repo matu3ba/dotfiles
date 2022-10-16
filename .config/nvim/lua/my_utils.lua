@@ -47,8 +47,8 @@ M.makeScratch = function()
   vim.bo[0].swapfile=false
 end
 
--- Notes for terminal stuff
--- vim.api.nvim_command('botright split new') -- split a new window
+-- ###### Notes for terminal stuff ######
+-- vim.api.nvim_command('botright split new') -- split a new window (no lua api yet)
 -- vim.api.nvim_win_set_height(0, 30) -- set the window height
 -- local win_handle = vim.api.nvim_tabpage_get_win(0) -- get the window handler
 -- local buf_handle = vim.api.nvim_win_get_buf(0) -- get the buffer handler
@@ -56,6 +56,32 @@ end
 -- vim.api.nvim_buf_set_option(buf_handle, 'modifiable', true)
 -- vim.api.nvim_buf_set_lines(buf_handle, 0, 0, true, {"ls"})
 -- nvim_get_channel_info(&channel).pty
+
+-- vim.env does not contain all environment variables, for example EDITOR is missing
+-- vim.env.CMDLOG = 'bar'
+-- print(vim.env.CMDLOG) -- called from subshells, however works
+
+M.printPairsToTmp = function(table)
+  local fp = assert(io.open("/tmp/tmpfile", "a"))
+  for key,value in pairs(table) do
+    fp:write(key)
+    fp:write(", ")
+    fp:write(value)
+    fp:write("\n")
+  end
+  fp:close()
+end
+
+M.printIpairsToTmp = function(table)
+  local fp = assert(io.open("/tmp/tmpfile", "a"))
+  for index,value in ipairs(table) do
+    fp:write(index)
+    fp:write(", ")
+    fp:write(tostring(value))
+    fp:write("\n")
+  end
+  fp:close()
+end
 
 M.listpackages = function()
   -- buf_open_scratch is missing in vim.api

@@ -512,6 +512,40 @@ getCurrentLinePlusNewline = function()
   return curline .. "\n"
 end
 
+-- ####### Log the current executed shell command to a user-set file #######
+-- 1. Bash solution (requires setting environment variable for flexibility)
+-- prefix current bash content with the log function and executes it
+-- assume: logAndExec() is defined as:
+--   logAndExec() {
+--     params=("$@")  # Put command-line into "params" as an array
+--     printf "%s\t%q" "$(date)" "${params[0]}" >> "$LOGFILE" # Print date, a tab, and the command name...
+--     printf " %q" "${params[@]:1}" >> "$LOGFILE" # then the arguments (with quotes/escapes as needed and spaces between)
+--     printf "\n" >> "$LOGFILE"
+--     "${params[@]}"  #Run the command-line
+--   } # End of exe() function
+-- 2. copy via yy to system clipboard and paste it from lua code
+--   * breaks for WSL/containers, where bash does not use system clipboard
+-- 3. open content in cmdline by opening content in $EDITOR via pressing `v`
+--   with unsaved buffer into /tmp/
+--   * ideally would attach to local neovim instance as tcp connection with
+--     control line, but --remote is not fully functional yet
+--   * instead, must send the command to the other instance cmdlline:
+--     `sendCommand(1, ':lua callfn(arg1, arg2,..)<CR>')`
+--     or provide the cwd to use for the other neovim instance.
+
+harpoonBashLogAndExecCmd = function(harpoon_term_nr)
+  -- TODO: check, if bash is in vi mode
+  -- Escape ensures visual mode in vi mode
+  require("harpoon.term").sendCommand(harpoon_term_nr, "\27")
+  -- open cli args in EDITOR (other neovim instance)
+  require("harpoon.term").sendCommand(harpoon_term_nr, "v")
+  -- send the log lua function exec cmd to other neovim instance
+  require("harpoon.term").sendCommand(harpoon_term_nr, ":lua appendLogFileByDate(getCurrentLinePlusNewline())\n")
+  -- quit other neovim instance
+  require("harpoon.term").sendCommand(harpoon_term_nr, ":q\n")
+  -- shell will execute command
+end
+
 -- send line under cursor as command to harpoon terminal
 -- c means cursor
 map('n', ';cj', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(1, getCurrentLinePlusNewline())<CR>]], opts)
@@ -527,6 +561,15 @@ map('n', ';co', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());requ
 -- map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(4, getCurrentLinePlusNewline())<CR>]], opts)
 -- map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(5, getCurrentLinePlusNewline())<CR>]], opts)
 -- map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(6, getCurrentLinePlusNewline())<CR>]], opts)
+
+-- log the command and then execute it
+-- doesnt detect cli failures, because there is no standard to encode them
+map('n', ';cj', [[<cmd>lua harpoonBashLogAndExecCmd(1)<CR>]], opts)
+map('n', ';ck', [[<cmd>lua harpoonBashLogAndExecCmd(2)<CR>]], opts)
+map('n', ';cl', [[<cmd>lua harpoonBashLogAndExecCmd(3)<CR>]], opts)
+map('n', ';cu', [[<cmd>lua harpoonBashLogAndExecCmd(4)<CR>]], opts)
+map('n', ';ci', [[<cmd>lua harpoonBashLogAndExecCmd(5)<CR>]], opts)
+map('n', ';co', [[<cmd>lua harpoonBashLogAndExecCmd(6)<CR>]], opts)
 
 -- repeat last command
 map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
