@@ -1,5 +1,4 @@
 -- init.lua --
-require 'my_globals'
 local has_packer, _ = pcall(require, 'packer')
 if has_packer then
   require 'my_packer'
@@ -146,6 +145,10 @@ callback = function()
 --    outfile << content;
 --}
 --
+
+-- remove trailing carriage returns (^M), ie of windows
+--:e ++ff=dos
+--:set ff=unix
 -- convert windows line ending to linux:
 -- :%s/^M$//
 -- convert tabs to spaces:

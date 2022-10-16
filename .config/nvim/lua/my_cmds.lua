@@ -9,8 +9,8 @@ local add_cmd = vim.api.nvim_create_user_command
 local nvim_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
 add_cmd('CCmd', nvim_edit .. 'lua/my_cmds.lua', {})
 add_cmd('CDap', nvim_edit .. 'lua/my_dap.lua', {})
-add_cmd('CGl', nvim_edit .. 'lua/my_globals.lua', {})
 add_cmd('CGs', nvim_edit .. 'lua/my_gitsign.lua', {})
+add_cmd('CHa', nvim_edit .. 'lua/my_harpoon.lua', {})
 add_cmd('CInit', nvim_edit .. 'init.lua', {})
 add_cmd('CKey', nvim_edit .. 'lua/my_keymaps.lua', {})
 add_cmd('CNvimcmp', nvim_edit .. 'lua/my_nvimcmp.lua', {})

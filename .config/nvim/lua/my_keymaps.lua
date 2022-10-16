@@ -8,10 +8,10 @@ local map = vim.api.nvim_set_keymap
 --  look for better prefix than , for window navigation, tab nvagiation mappings (splits, tabs, switching, file drawer etc)
 --  <Space> general mapleader for fast operations
 --  TODO figure out where to put fuzzy finding mappings (e.g. files, buffers, helptags etc)
---  ;       runnig tests and special commands
+--  ;       runnig tests and shell commands
 --  \       find and replace helpers
---  _       unmapped
---  -       unmapped
+--  _       backwards jump
+--  -       forwards jump
 --  TODO conflicting keybinding: YSurround yS, ys
 --  TODO conflicting keybinding: comment_toggle_blocks/linewise gb,gc
 --  <C-s>   shell stuff
@@ -117,13 +117,12 @@ _G.CopyMatchingChar = function(backwards, register)
 end
 
 --SAME LINE SELECTION AND COPY MOVEMENTS--
---TODO clarify if there is a cursor move api for lua ie for selecting
---TODO select forward + backwards
+--idea select forward + backwards
 --TODO copy forward + backwards, if only 1 possible match on same line
 --for "",'',``,(),{},[]
 ---- copy forward/backwards until first occurence of same symbol
-map('n', '-', ':lua CopyMatchingChar(false, [[""]])<CR>', opts)
-map('n', '_', ':lua CopyMatchingChar(true, [[""]])<CR>', opts)
+-- map('n', '-', ':lua CopyMatchingChar(false, [[""]])<CR>', opts)
+-- map('n', '_', ':lua CopyMatchingChar(true, [[""]])<CR>', opts)
 
 map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
@@ -423,7 +422,7 @@ map(
   '<leader>rg',
   [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]],
   opts
-) -- ripgrep string
+) -- ripgrep string search
 map(
   'n',
   '<leader>ss',
@@ -498,20 +497,6 @@ map('n', ';eu', [[<cmd>lua require("harpoon.term").sendCommand(4, "\n")<CR>]], o
 map('n', ';ei', [[<cmd>lua require("harpoon.term").sendCommand(5, "\n")<CR>]], opts)
 map('n', ';eo', [[<cmd>lua require("harpoon.term").sendCommand(6, "\n")<CR>]], opts)
 
-appendLogFileByDate = function(content)
-  local current_date = os.date("%Y%m%d") -- year month day according to strftime
-  local fp = assert(io.open( (current_date .. ".log"), "a"))
-  fp:write(content)
-  fp:close()
-end
-
--- must be global, because keybindings dont accept lua functions yet
-getCurrentLinePlusNewline = function()
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  local curline = vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, false)[1]
-  return curline .. "\n"
-end
-
 -- ####### Log the current executed shell command to a user-set file #######
 -- 1. Bash solution (requires setting environment variable for flexibility)
 -- prefix current bash content with the log function and executes it
@@ -533,45 +518,36 @@ end
 --     `sendCommand(1, ':lua callfn(arg1, arg2,..)<CR>')`
 --     or provide the cwd to use for the other neovim instance.
 
-harpoonBashLogAndExecCmd = function(harpoon_term_nr)
-  -- TODO: check, if bash is in vi mode
-  -- Escape ensures visual mode in vi mode
-  require("harpoon.term").sendCommand(harpoon_term_nr, "\27")
-  -- open cli args in EDITOR (other neovim instance)
-  require("harpoon.term").sendCommand(harpoon_term_nr, "v")
-  -- send the log lua function exec cmd to other neovim instance
-  require("harpoon.term").sendCommand(harpoon_term_nr, ":lua appendLogFileByDate(getCurrentLinePlusNewline())\n")
-  -- quit other neovim instance
-  require("harpoon.term").sendCommand(harpoon_term_nr, ":q\n")
-  -- shell will execute command
-end
+-- send line under cursor as command to harpoon terminal
+-- c means cursor content log and exec
+map('n', ';cj', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(1)<CR>]], opts)
+map('n', ';ck', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(2)<CR>]], opts)
+map('n', ';cl', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(3)<CR>]], opts)
+map('n', ';cu', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(4)<CR>]], opts)
+map('n', ';ci', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(5)<CR>]], opts)
+map('n', ';co', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(6)<CR>]], opts)
 
 -- send line under cursor as command to harpoon terminal
--- c means cursor
-map('n', ';cj', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(1, getCurrentLinePlusNewline())<CR>]], opts)
-map('n', ';ck', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(2, getCurrentLinePlusNewline())<CR>]], opts)
-map('n', ';cl', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(3, getCurrentLinePlusNewline())<CR>]], opts)
-map('n', ';cu', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(4, getCurrentLinePlusNewline())<CR>]], opts)
-map('n', ';ci', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(5, getCurrentLinePlusNewline())<CR>]], opts)
-map('n', ';co', [[<cmd>lua appendLogFileByDate(getCurrentLinePlusNewline());require("harpoon.term").sendCommand(6, getCurrentLinePlusNewline())<CR>]], opts)
-
--- map('n', ';cj', [[<cmd>lua require("harpoon.term").sendCommand(1, getCurrentLinePlusNewline())<CR>]], opts)
--- map('n', ';ck', [[<cmd>lua require("harpoon.term").sendCommand(2, getCurrentLinePlusNewline())<CR>]], opts)
--- map('n', ';cl', [[<cmd>lua require("harpoon.term").sendCommand(3, getCurrentLinePlusNewline())<CR>]], opts)
--- map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(4, getCurrentLinePlusNewline())<CR>]], opts)
--- map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(5, getCurrentLinePlusNewline())<CR>]], opts)
--- map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(6, getCurrentLinePlusNewline())<CR>]], opts)
+-- n means no log cursor content exec it
+map('n', ';nj', [[<cmd>lua require("harpoon.term").sendCommand(1, require("my_utils").getCurrLinePlNL())<CR>]], opts)
+map('n', ';nk', [[<cmd>lua require("harpoon.term").sendCommand(2, require("my_utils").getCurrLinePlNL())<CR>]], opts)
+map('n', ';nl', [[<cmd>lua require("harpoon.term").sendCommand(3, require("my_utils").getCurrLinePlNL())<CR>]], opts)
+map('n', ';nu', [[<cmd>lua require("harpoon.term").sendCommand(4, require("my_utils").getCurrLinePlNL())<CR>]], opts)
+map('n', ';ni', [[<cmd>lua require("harpoon.term").sendCommand(5, require("my_utils").getCurrLinePlNL())<CR>]], opts)
+map('n', ';no', [[<cmd>lua require("harpoon.term").sendCommand(6, require("my_utils").getCurrLinePlNL())<CR>]], opts)
 
 -- log the command and then execute it
 -- doesnt detect cli failures, because there is no standard to encode them
-map('n', ';cj', [[<cmd>lua harpoonBashLogAndExecCmd(1)<CR>]], opts)
-map('n', ';ck', [[<cmd>lua harpoonBashLogAndExecCmd(2)<CR>]], opts)
-map('n', ';cl', [[<cmd>lua harpoonBashLogAndExecCmd(3)<CR>]], opts)
-map('n', ';cu', [[<cmd>lua harpoonBashLogAndExecCmd(4)<CR>]], opts)
-map('n', ';ci', [[<cmd>lua harpoonBashLogAndExecCmd(5)<CR>]], opts)
-map('n', ';co', [[<cmd>lua harpoonBashLogAndExecCmd(6)<CR>]], opts)
+-- s means shell content exec and log
+map('n', ';sj', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(1)<CR>]], opts)
+map('n', ';sk', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(2)<CR>]], opts)
+map('n', ';sl', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(3)<CR>]], opts)
+map('n', ';su', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(4)<CR>]], opts)
+map('n', ';si', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(5)<CR>]], opts)
+map('n', ';so', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(6)<CR>]], opts)
 
 -- repeat last command
+-- r means repeat last command
 map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
 map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "!!\n")<CR>]], opts)
 map('n', ';rl', [[<cmd>lua require("harpoon.term").sendCommand(3, "!!\n")<CR>]], opts)
@@ -580,6 +556,7 @@ map('n', ';ri', [[<cmd>lua require("harpoon.term").sendCommand(5, "!!\n")<CR>]],
 map('n', ';ro', [[<cmd>lua require("harpoon.term").sendCommand(6, "!!\n")<CR>]], opts)
 
 -- send strings from register as command + execute it
+-- C-s means cmd from string X
 map('n', '<C-s>j', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts) -- C-s for control send to
 map('n', '<C-s>k', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('k') .. "\n")<CR>]], opts)
 map('n', '<C-s>l', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('l') .. "\n")<CR>]], opts)

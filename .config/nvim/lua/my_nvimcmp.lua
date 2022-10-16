@@ -1,7 +1,8 @@
 ---- nvim-cmp setup ----
 local has_cmp, cmp = pcall(require, 'cmp')
-if not has_cmp then
-  --error 'Please install cmp with packer'
+local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
+if not has_cmp or not has_lspconfig then
+  --error 'Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig'
   return
 end
 
@@ -75,10 +76,7 @@ cmp.setup.cmdline(':', {
 })
 
 -- Setup lspconfig.
---local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-local lspconfig = require 'lspconfig'
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 lspconfig['clangd'].setup { capabilities = capabilities }
 lspconfig['julials'].setup { capabilities = capabilities }
 lspconfig['jedi_language_server'].setup{ capabilities = capabilities }

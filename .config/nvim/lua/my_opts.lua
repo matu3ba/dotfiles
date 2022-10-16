@@ -57,7 +57,6 @@ local function load_options()
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
-
   vim.wo.colorcolumn = '80'
   vim.wo.list = true
   vim.wo.listchars = 'tab:⇨|,nbsp:␣,trail:‗,extends:>,precedes:<' --eol:↵, tab:|⇆⇥_, tab:‗‗,
@@ -78,16 +77,8 @@ local function load_options()
   vim.bo.scrollback = 100000 -- terminal scrollback
   -- tabstop/expandtab breaks inconsistently for c++ and lua
 
-  -- TODO without following or similar setting :extab is broken, investigate
-  --set smartindent
-  --set expandtab
-  --set shiftwidth=4
-  --set tabstop=4
+  -- :retab just works, so no need for extab
   --set softtabstop=4
-  --
-  --testArgument
-  --
-  --
 end
 
 load_options()

@@ -1,4 +1,19 @@
+--! Dependency free functions
 local M = {}
+
+M.appDateLog = function(content)
+  local current_date = os.date("%Y%m%d") -- year month day according to strftime
+  local fp = assert(io.open( (current_date .. ".log"), "a"))
+  fp:write(content)
+  fp:close()
+end
+
+-- must be global, because keybindings dont accept lua functions yet
+M.getCurrLinePlNL = function()
+  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  local curline = vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, false)[1]
+  return curline .. "\n"
+end
 
 --map('v', '<leader>p', [[lua require('my_utils').preserve("p")]], opts)
 --does not work as expected, from https://vi.stackexchange.com/a/34495
@@ -81,6 +96,11 @@ M.printIpairsToTmp = function(table)
     fp:write("\n")
   end
   fp:close()
+end
+
+M.Print = function(v)
+  print(vim.inspect(v))
+  return v
 end
 
 M.listpackages = function()
