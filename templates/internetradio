@@ -1,0 +1,34 @@
+1. Install ffmpeg to use ffplay
+2. Setup radio stations with urls from
+https://www.radio-browser.info
+and either use a .pl file with the following entries to start
+  Title1=Jazzloft
+  File1=STREAMURL
+  Length1=-1
+  NumberOfEntries=1
+  Version=2
+or use a bash script
+#!/bin/bash
+  declare -A RADIOURL
+  RADIOURL["RADIO1"]="URI"
+  RADIOURL["RADIO2"]="URI"
+  echo "Please select radiostation:"
+  select ENTRY in "${!RADIOURL[@]}"; do
+    TITLE="${ENTRY}"
+    URI=${RADIOURL[${ENTRY}]}
+    #ffplay -x 100 -y 50 -window_title "${TITLE}" ${URI} &>/dev/null
+    ffplay ${URI} &>/dev/null
+  done
+3. Start the respective script
+4. If wanted, record the played music with your tweaks for bitradio
+  ffmpeg -i URI -acodec copy $(date +"%Y%m%d_%H%M%S").opus
+
+Drawbacks
+- no getting of correct meta information
+- no automatic setting of correct title
+- no cutting
+- no next/prev station on keypress
+
+Notes
+- requires annoying setup for WSL1 https://github.com/microsoft/WSL/issues/4205
+  and WSL2 https://github.com/microsoft/WSL/issues/5816

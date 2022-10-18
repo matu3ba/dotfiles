@@ -1,0 +1,4 @@
+cd without args shows pwd
+dir shows ls
+variables are used with %VAR%
+batch files have .bat as extension, but .cmd and .btm also exists

@@ -1,0 +1,39 @@
+#include <QtTest>
+#include <QtCore/QObject>
+
+class UnittestExample: public QObject
+{
+    Q_OBJECT
+    private stuff:
+        void initTestCase();
+        void cleanupTestCase();
+        void TestExample1_data();
+        void TestExample1();
+    void examplefn();
+};
+
+Q_DECLARE_METATYPE(std::string);
+// all aggregate types
+
+UnittestExample::TestExample1_data()
+{
+	QTest::addColumn<Example::SomeType>("someinput");
+	QTest::addColumn<std::string>("expected_output");
+	QTest::newRow("minimal test")
+    << Example::SomeType
+    {
+
+    }
+    << std::string("expected output");
+}
+
+UnittestExample::TestExample1()
+{
+	QFETCH(Example::SomeType, someinput);
+	QFETCH(std::string, expected_output);
+    std::string actual_output = givemeoutput(someinput);
+	QCOMPARE(actual_output, expected_output);
+}
+
+QTEST_APPLESS_MAIN
+#include "themoc.moc" // generated

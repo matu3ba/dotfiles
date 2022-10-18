@@ -75,6 +75,10 @@
 #git archive -o archive.tar
 #tar -xf archive.tar
 
+# git push of data (not deletion etc) require the local branch to have the same
+# name as the remote branch or will fail with
+#   error: failed to push some refs to 'git@REMOTE:REPO.git'
+
 alias gwt='git worktree'
 alias grst='git restore'
 alias g='git'

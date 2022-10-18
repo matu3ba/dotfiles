@@ -49,6 +49,8 @@ end
 -- explicit writing of macro content: let @a='0fa'
 -- NOTE: use C-r C-r to insert contents of the a register to prevent execution on pasting!
 -- Appending macros of register a with qA..q
+-- @@ replays last macro
+-- @: replays last command
 
 -- working with regex
 -- :help non-greedy
@@ -57,6 +59,8 @@ end
 -- another option for multiple matches is :%s/\v(style|class)\=".{-}"//g
 -- To match escaped string symbols of JSON use /\\".\{-}\\"
 -- and not /\\".*\\"
+-- literal substitution requires very non magic mode https://stackoverflow.com/a/46235399
+-- TODO: selection + substitute selection with (simplify)
 
 -- stylua: ignore start
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
