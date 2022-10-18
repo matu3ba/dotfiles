@@ -259,6 +259,7 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- add to harpoon
 
 ---- Scripting ----
+-- TODO: fixup with vim.fs
 -- copy path under cursor: yiW
 -- pull current filename into where you are: Ctrl+R %
 -- :let @+ = expand("%:p")
@@ -269,7 +270,9 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- local p = Path:new fileAbs
 -- local fname = p.filename
 add_cmd('Frel', function() vim.fn.setreg('+', vim.fn.expand('%')) end, {}) -- copy relative path
+add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.fn.expand('%'))) end, {}) -- copy relative path
 add_cmd('Fabs', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end, {}) -- copy absolute path
+add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.fn.expand('%:p'))) end, {}) -- copy absolute path
 add_cmd('Fonly', function() vim.fn.setreg('+', vim.fn.expand('%:t')) end, {}) -- copy only filename
 add_cmd('Fline', function()
   local fname = vim.fn.expand('%:t')
@@ -284,6 +287,8 @@ add_cmd('Fcolumn', function()
   vim.fn.setreg('+', fnamecol)
 end, {}) -- copy filename:line:column
 
+add_cmd('ShAbsPath', function() print(vim.fn.expand('%:p')) end, {})
+add_cmd('ShDate', function() print(os.date()) end, {})
 
 -- Retag only local files with https://github.com/gpanders/ztags
 -- Use zls for the rest. To index everything, ramfs (/tmp) would
