@@ -154,7 +154,8 @@ map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quitAnd.. (enter windowing in hy
 --vim.api.nvim_set_keymap('n', "<leader>)", "vi)pgvy", { noremap = true })
 
 -- color switching --
-map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
+-- map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
+map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>]], opts) -- switch material style
 ---- spell ---- [s]s,z=,zg add to wortbook, zw remove from wordbook
 --map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
 ---- tab navigation ----

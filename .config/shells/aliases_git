@@ -79,6 +79,34 @@
 # name as the remote branch or will fail with
 #   error: failed to push some refs to 'git@REMOTE:REPO.git'
 
+##### Git config #####
+# fix missing remotes:
+#   git config remote.downstream.fetch "+refs/heads/*:refs/remotes/downstream/*"
+# TODO: fixup moving git repos
+# Bare configs .bare/config referenced by file content .git look like this:
+# [core]
+#   repositoryformatversion = 0
+#   filemode = true
+#   bare = true
+# [remote "downstream"]
+#   url = https://github.com/ziglang/zig-bootstrap
+#   fetch = +refs/heads/*:refs/remotes/downstream/*
+# [branch "master"]
+#   remote = downstream
+#   merge = refs/heads/master
+# Regular repo configs .git/config look like this:
+# [core]
+#   repositoryformatversion = 0
+#   filemode = true
+#   bare = false
+#   logallrefupdates = true
+# [remote "origin"]
+#   url = https://github.com/neovim/neovim
+#   fetch = +refs/heads/*:refs/remotes/origin/*
+# [branch "master"]
+#   remote = origin
+#   merge = refs/heads/master
+
 alias gwt='git worktree'
 alias grst='git restore'
 alias g='git'

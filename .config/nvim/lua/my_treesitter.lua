@@ -1,13 +1,14 @@
 require('nvim-treesitter.configs').setup {
-  ensure_installed = 'maintained',
+  -- ensure_installed = 'maintained',
+  ensure_installed = { 'bash', 'c', 'cpp', 'julia', 'python', 'rust', 'lua', 'typescript', 'vim', 'zig' },
   highlight = {
     enable = true,
-    disable = function(lang, bufnr)
-      -- local too_many_lines = vim.api.nvim_buf_line_count(bufnr) > 50000
-      -- local slow_lang = (lang == 'cpp' or lang == 'c' or lang == 'rust' or lang == 'zig')
-      -- return lang == 'latex' or (slow_lang and too_many_lines)
-      return vim.api.nvim_buf_line_count(bufnr) > 1000
-    end,
+    -- disable = function(lang, bufnr)
+    --   -- local too_many_lines = vim.api.nvim_buf_line_count(bufnr) > 50000
+    --   -- local slow_lang = (lang == 'cpp' or lang == 'c' or lang == 'rust' or lang == 'zig')
+    --   -- return lang == 'latex' or (slow_lang and too_many_lines)
+    --   return vim.api.nvim_buf_line_count(bufnr) > 1000
+    -- end,
     --"rust", "zig"
     --custom_captures = {
     --  -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
@@ -23,9 +24,9 @@ require('nvim-treesitter.configs').setup {
   --    node_decremental = "grm",
   --  },
   --},
-  --indent = {
-  --  enable = true,
-  --},
+  indent = {
+    enable = true,
+  },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()
   rainbow = {

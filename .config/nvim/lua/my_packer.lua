@@ -8,12 +8,11 @@ return require('packer').startup(function()
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>ma
   -- TODO: publish the git worktree helper scripts
-  --use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   ---- lsp+competion ----
   use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   --use { 'hrsh7th/cmp-buffer' } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
-  use { 'hrsh7th/cmp-cmdline' } -- TODO: deactivate completions for :e (broken for that use case)
+  use { 'hrsh7th/cmp-cmdline' } -- completions for :e are broken, so deactivated
   use { 'hrsh7th/cmp-nvim-lsp' }
   use { 'hrsh7th/cmp-path' }
   use { 'hrsh7th/nvim-cmp' }
@@ -33,6 +32,24 @@ return require('packer').startup(function()
   -- s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
+  -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
+  -- :GdbStart gdb -tui -x SCRIPT exec
+  -- :Gdb command
+  -- <f4>   Until                        (`:GdbUntil`)
+  -- <f5>   Continue                     (`:GdbContinue`)
+  -- <f10>  Next                         (`:GdbNext`)
+  -- <f11>  Step                         (`:GdbStep`)
+  -- <f12>  Finish                       (`:GdbFinish`)
+  -- <f8>   Toggle breakpoint            (`:GdbBreakpointToggle`)
+  -- <c-p>  Frame Up                     (`:GdbFrameUp`)
+  -- <c-n>  Frame Down                   (`:GdbFrameDown`)
+  -- <f9> NORMAL: Eval word under cursor (`:GdbEvalWord`)
+  --      VISUAL: Eval the range         (`:GdbEvalRange`)
+  -- see nvimgdb#GlobalInit() for commands and lua functions like NvimGdb.i():send('f')
+  -- TODO:
+  -- hover, goto frame, exit + edit history with latest debug point action
+  -- saved in file with increased number, default to latest number on selection
+  use { 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
   --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
 
   -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite], C-m on path to open dir in dirbuf
@@ -61,8 +78,6 @@ return require('packer').startup(function()
   -- press <CR> to mark match at cursor ignored
   -- navigate without changing with C-j, C-k
   -- ga: change all occurences
-  use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
-  use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
   use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
 
   ---- telescope ----
@@ -77,18 +92,6 @@ return require('packer').startup(function()
   --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
 
   ---- languages ----
-  -- Lua
-  --use { 'bfredl/nvim-luadev' } --lua repl, setup mappings for execution
-  --use { 'jbyuki/one-small-step-for-vimkind', requires = { 'mfussenegger/nvim-dap' } } -- lua debugging runtime, setup
-  --<Plug>(Luadev-RunLine)  Execute the current line
-  --<Plug>(Luadev-Run)      Operator to execute lua code over a movement or text object.
-  --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
-  --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
-  --TODO: find something like scrollbackedit from zellij for neovim terminal
-  --TODO masterplan: Vim macro to lua function translation
-  --  1. read current keybinding including inbuilds => refactor core keyevent handling in neoim (https://github.com/linty-org/key-menu.nvim/issues/10)
-  --  2. track the mode, last action and read keys to lookup next action => or capture this in neovim without executing it
-  -- related: use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
   -- Zig
   --use { 'neomake/neomake' } -- get useful comments for code semantics
   use { 'LnL7/vim-nix' } -- flakes highlighting: wait until nix converts their stuff to flakes
@@ -99,8 +102,24 @@ return require('packer').startup(function()
   ---- VIM ----
   use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
 
+  -- As of now, which-key breaks terminals
+  -- use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
+  -- use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
+  -- use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
   -- use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- idea setup + comapre with harpoon approach
+  -- Lua
+  --use { 'bfredl/nvim-luadev' } --lua repl, setup mappings for execution
+  --use { 'jbyuki/one-small-step-for-vimkind', requires = { 'mfussenegger/nvim-dap' } } -- lua debugging runtime, setup
+  --<Plug>(Luadev-RunLine)  Execute the current line
+  --<Plug>(Luadev-Run)      Operator to execute lua code over a movement or text object.
+  --<Plug>(Luadev-RunWord)  Eval identifier under cursor, including table.attr
+  --<Plug>(Luadev-Complete) in insert mode: complete (nested) global table fields
+  --idea: find something like scrollbackedit from zellij for neovim terminal
+  --idea: masterplan: Vim macro to lua function translation
+  --  1. read current keybinding including inbuilds => refactor core keyevent handling in neoim (https://github.com/linty-org/key-menu.nvim/issues/10)
+  --  2. track the mode, last action and read keys to lookup next action => or capture this in neovim without executing it
+  -- related: use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
 
   --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
   --workaround: command

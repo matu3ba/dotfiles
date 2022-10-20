@@ -1,9 +1,9 @@
 --! Dependecy harpoon
 local M = {}
 local has_harpoon, harpoon = pcall(require, 'harpoon')
-local has_harpoon, harp_term = pcall(require, 'harpoon.term')
+local has_harpoonterm, harp_term = pcall(require, 'harpoon.term')
 
-if not has_harpoon then
+if not has_harpoon or not has_harpoonterm then
   --error 'Please install ThePrimeagen/harpoon
   return
 end

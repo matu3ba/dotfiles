@@ -1,0 +1,2 @@
+sudo umount /dev/sdx
+sudo dd bs=4M if=path/to/archlinux-version-x86_64.iso of=/dev/sdx && sync
