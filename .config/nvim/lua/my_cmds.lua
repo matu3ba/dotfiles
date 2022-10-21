@@ -276,13 +276,16 @@ add_cmd('Fabs', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end, {}) -- 
 add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.fn.expand('%:p'))) end, {}) -- copy absolute path
 add_cmd('Fonly', function() vim.fn.setreg('+', vim.fn.expand('%:t')) end, {}) -- copy only filename
 add_cmd('Fline', function()
-  local fname = vim.fn.expand('%:t')
+  --local fname = vim.fn.expand('%:t')
+  local fileAbs = vim.api.nvim_buf_get_name(0)
+  local fname = vim.fs.basename(fileAbs)
   local lineNum = vim.api.nvim_win_get_cursor(0)[1]
   local fnamecol = fname .. ':' .. tostring(lineNum)
   vim.fn.setreg('+', fnamecol)
 end, {}) -- copy filename:line
 add_cmd('Fcolumn', function()
-  local fname = vim.fn.expand('%:t')
+  local fileAbs = vim.api.nvim_buf_get_name(0)
+  local fname = vim.fs.basename(fileAbs)
   local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
   local fnamecol = fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2])
   vim.fn.setreg('+', fnamecol)
