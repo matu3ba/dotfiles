@@ -7,6 +7,7 @@ return require('packer').startup(function()
   -- git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>ma
+  use { 'ojroques/vim-oscyank' } -- copy paste with ssh
   -- TODO: publish the git worktree helper scripts
   ---- lsp+competion ----
   use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }

@@ -6,11 +6,10 @@ cat /proc/config.gz | gunzip > running.config
 Watching based on notify events:
 inotifywait -e modify,create,delete -m -r /path/to/your/dir
 
-Trace systemcalls:
-strace ./binary
-
 Get list of open files from process
 lsof
+Get list of locked files
+lslocks
 
 Monitor changes based on inode level (application must change directory
 inode on file insertion, so one might miss events):
@@ -23,3 +22,49 @@ auditctl -W <path>
 TODO:
 - bpftrace with monitoring
 - if absolutely necessary bcc (painful to install)
+
+Trace systemcalls: strace ./binary
+Common options
+    -c – Rough estimation of what time is spend and where (use -S for sorting)
+    -f – Track process including forked child processes
+    -o my-process-trace.txt – Log strace output to file
+    -p 1234 – Track process by PID
+    -P /tmp – Track process when interacting with path
+    -T – Print time spent in each syscall
+    -t - Prefix trace with Wall time
+Track by specific system call group
+    -e trace=%ipc – Track communication between processes (IPC)
+    -e trace=%memory – Track memory syscalls
+    -e trace=%network – Track memory syscalls
+    -e trace=%process – Track process calls (like fork, exec)
+    -e trace=%signal – Track process signal handling (like HUP, exit)
+    -e trace=%file – Track file related syscalls
+    -e trace=%desc - Trace descriptor related system calls
+    -yy, --decode-fds=all - Print all available information associated with file descriptors
+
+To trace file descriptor info, use
+strace -f -e trace=%desc -yy CMD
+strace -f -e trace=%desc -yy ./build/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone &> debug.strace
+strace -f -e trace=%desc -yy ./relbuild/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone &> release.strace
+
+Trace and debug system ressources (memory, file descriptors etc): Valgrind
+    -v                              increase verbosity level
+    --vgdb=no|yes|full [yes]        Allow external gdb to control program
+    --trace-children=yes|no [no]
+    --track-fds=yes|all|no [no]
+    --time-stamp=no|yes
+    --log-fd=nr [2=stderr]
+    --log-file=file (%p PID for multiple processes, %n for several files from same filename)
+    --log-socket=ip:port
+Most used Memcheck
+    --leak-check=full|no|summary [summary]
+    --track-origins=yes|no [no]     Show origins of undefined values
+    --read-var-info=yes|no [no]     Read debug info on stack and global vars to
+                                    Print better error messages
+Error related options
+    --quiet                         Only show real errors, not pedantic (like fds 012 not closed)
+    -s shorthand for --show-error-list=yes  Show errors as list
+
+To trace child processes, use
+valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log CMD
+valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log ./build/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone

@@ -215,6 +215,8 @@ alias rgv='rg --vimgrep'
 # fd: find all files (with extension) in dir
 #fd regex /some/path
 #fd '' -e zig lib/std
+# List files with absolute path: Very useful in combiniation with vim/neovim gf
+#fd -a filename
 #List executables by change date, TODO
 #find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
 #fd --type f -x sed -i -e 's/apple/orange/g'
@@ -228,6 +230,8 @@ alias rgv='rg --vimgrep'
 #rg --vimgrep lines+columns -u[u[u]] unrestricted
 #rg -F 'fixed_string'
 #rg '\bword\b' word boundaries
+# Show full path in ripgrep results:
+#rg -p
 #PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 #{n}(exactly),{n,m}(at least n, no more than m),
 

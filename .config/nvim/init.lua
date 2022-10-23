@@ -200,7 +200,10 @@ callback = function()
 -- Assume
 --PWD=$(git rev-parse --show-toplevel) == pwd.
 -- Create Makefiles
---
+
+-- Removing Zig cache
+--ZIGCACHE=$(fd -uu zig-cache) && rm -fr $ZIGCACHE && fd -uu zig-cache
+
 -- Run Makefile for unit test
 --
 -- Run unit test
