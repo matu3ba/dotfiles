@@ -1,3 +1,16 @@
+____Usage____
+    ssh user@domain@ip
+Options
+    -x    Disable X11 forwarding
+    -X    Enable X11 forwarding
+    -Y    Enable trusted X11 forwarding
+    -f    Go to background before cmd execution
+    -L    Port forwarding option
+Environment variables
+     DISPLAY, HOME, LOGNAME, MAIL, PATH, TZ, USER
+     and all variables prefixed with SSH_
+
+____Configuration____
 ~/.ssh/config for configs:
 AddKeysToAgent yes
 # NAME account

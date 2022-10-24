@@ -47,9 +47,12 @@ return require('packer').startup(function()
   -- <f9> NORMAL: Eval word under cursor (`:GdbEvalWord`)
   --      VISUAL: Eval the range         (`:GdbEvalRange`)
   -- see nvimgdb#GlobalInit() for commands and lua functions like NvimGdb.i():send('f')
-  -- TODO:
   -- hover, goto frame, exit + edit history with latest debug point action
   -- saved in file with increased number, default to latest number on selection
+  -- TODO: build your own mouse hover? (use f9 to print locals instead of auto)
+  -- TODO: scratch window for gdb history
+  -- TODO: add commands from neovim wiki to record trace +
+  -- TODO: setup reverse stepping
   use { 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
   --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
 

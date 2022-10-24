@@ -123,4 +123,8 @@ env -i MyVar=$(python -c 'print("xyz")') gdb
 (gdb) unset environment
 (gdb) python gdb.execute("set environment Myvar=\xff")
 (gdb) show environment
-3. shell wrapper, TODO
+(gdb) set environment LD_LIBRARY_PATH ./lib
+3. shell wrapper
+LD_LIBRARY_PATH=./lib gdb -x dscr ./bin/executable
+4. neovim, vim
+:lua vim.env.LD_LIBRARY_PATH="./lib", :let $LD_LIBRARY_PATH = "./lib"
