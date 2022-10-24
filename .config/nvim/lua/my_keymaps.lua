@@ -134,14 +134,16 @@ map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
 map('v', '<leader>dd', '"_dd', opts) -- TODO dont walk 1 line down from eol
 -- note: vimscript can not handle marks in between commands
 map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
-map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
+map('v', '<leader>Y', '<cmd>OSCYank<CR>', opts) -- yank/copy over ssh
+map('n', '<leader>Y', '<Plug>OSCYank', opts) -- yank/copy over ssh
+-- map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
 -- C-w delete word, C-y paste word, C-p,C-n,C-i complete path
 -- C-h delete last character,
 -- A-o and A-h are used to switch to visual mode, where ^ and $ work to jump etc
 -- visualmode: f is file lookup, v opens command for copying (also executes!)
 -- C-a,C-f,C-g,C-k,C-l,C-v,C-b free in emacs mode
-map('t', '<C-q>', [[<C-\><C-n>]], opts) -- quit terminal editing
-map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quitAnd.. (enter windowing in hydra)
+map('t', '<C-q>', [[<C-\><C-n>]], opts) -- Quit terminal editing
+map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quit And enter windowing
 
 -- pasting without moving cursor: p`[       <<<--- without ]
 
