@@ -1,4 +1,8 @@
-local telescope = require 'telescope'
+local ok_telescope, telescope = pcall(require, 'telescope')
+if not ok_telescope then
+  return
+  --vim.notify("telescope not installed...", vim.log.ERROR)
+end
 
 -- '-uu',
 telescope.setup {
@@ -38,8 +42,16 @@ telescope.setup {
   --},
 }
 
+local ok_fzf, _ = pcall(require, 'fzf_lib')
+local ok_gh, _ = pcall(require, 'gh')
+local ok_dir, _ = pcall(require, 'dir-telescope')
+
+if not ok_fzf or not ok_gh or not ok_dir then
+  return
+end
 telescope.load_extension 'fzf'
 telescope.load_extension 'gh'
+telescope.load_extension 'dir'
 -- telescope.load_extension 'hop'
 
 --telescope.load_extension 'send_to_harpoon'

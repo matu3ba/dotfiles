@@ -90,7 +90,9 @@ return require('packer').startup(function()
   --use { 'nvim-telescope/telescope-hop.nvim' } -- TODO fix setup: no numbers are showing up
   -- Telescope gh issues author=windwp label=bug search=miscompilation
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
-  ---- treesitter ---- crashes on macro-heavy code ----
+  -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
+  use { 'princejoogie/dir-telescope.nvim', config = function() require('dir-telescope').setup({hidden = true,respect_gitignore = true,}) end, }
+  ---- treesitter ----
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith
   --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'

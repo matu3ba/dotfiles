@@ -418,7 +418,7 @@ map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_works
 map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
 map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
 map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
-
+map('n', '<leader>fd', [[<cmd>lua FileInDirectory<CR>]], opts) -- find files
 --.grep_string({ search = vim.fn.input("Grep For > ")})
 map(
   'n',
@@ -432,6 +432,12 @@ map(
   [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.input("grep:")}<CR>]],
   opts
 ) -- search string
+map(
+  'n',
+  '<leader>fs',
+  [[<cmd>lua GrepInDirectory<CR> }<CR>]],
+  opts
+) -- forwardIntoDir searchstring
 map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
 -- <C-p> for projects ?
 --map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
