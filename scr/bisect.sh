@@ -14,3 +14,11 @@
 # make || exit 125
 # check for some output with
 # ./app ARGS | grep 'YOUROUTPUT'
+
+# Typically use for bisecting:
+#git checkout LASTKNOWN_GOODCOMMIT
+#git bisect start master HEAD
+#git run script.sh
+
+#git bisect reset
+#git switch master

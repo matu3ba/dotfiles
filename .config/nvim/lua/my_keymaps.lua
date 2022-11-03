@@ -134,6 +134,7 @@ map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
 map('v', '<leader>dd', '"_dd', opts) -- TODO dont walk 1 line down from eol
 -- note: vimscript can not handle marks in between commands
 map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
+map('n', 'C-p', 'p`[', opts) -- ] paste without movement
 map('v', '<leader>Y', '<cmd>OSCYank<CR>', opts) -- yank/copy over ssh
 map('n', '<leader>Y', '<Plug>OSCYank', opts) -- yank/copy over ssh
 -- map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
@@ -603,10 +604,10 @@ map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts
 map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
 
 ---- nnn ----
-map('n', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
-map('n', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
-map('t', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
-map('t', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
+-- map('n', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
+-- map('n', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
+-- map('t', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
+-- map('t', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
 
 ---- gtest ----
 --map('n', ']t', [[<cmd>GTestNext<CR>]], opts)

@@ -1,0 +1,6 @@
+ls /dev/ttyUSB*
+sudo adduser user@domain dialout
+To immediately apply the change, use `su user@domain`
+screen /dev/ttyUSB0 115200
+
+TODO: add stuff for setting terminal type + size

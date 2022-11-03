@@ -158,3 +158,20 @@ response = requests.request("POST", upload_url,
                       #'content-type': 'multipart/form-data'},
              data={},
              files=files)
+
+## Get if port is used without psutils (doing reliably requires Kernel module)
+import subprocess # control external process within python
+netstat_out = subprocess.run(["netstat", "-tupln", "-W"], check=True, capture_output=True)
+port_table = netstat_out.stdout.decode("utf-8").split("\n")
+header_split = port_table[1].split(' ')
+assert header_split[3] == "Local", "3rd split in header is not 'Local'"
+assert header_split[4] == "Address", "4rd split in header is not 'Address'"
+for line in range(2,len(port_table)):
+  if port_table[line] == '':
+    continue
+  data_split = port_table[line].split()
+  addr_split = data_split[3].split(':')
+  assert len(addr_split) > 0, "splitting broken, port detection failed"
+  #assert len(addr_split) > 1, print(addr_split)
+  port = addr_split[len(addr_split)-1]
+  print(port)
