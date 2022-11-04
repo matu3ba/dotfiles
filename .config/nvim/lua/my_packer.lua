@@ -33,6 +33,9 @@ return require('packer').startup(function()
   -- s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
+  --use { 'smjonas/inc-rename.nvim' } -- TODO setup
+  --use { 'smjonas/live-command.nvim' } -- TODO setup
+
   -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
   -- :GdbStart gdb -tui -x SCRIPT exec
   -- :Gdb command
@@ -82,7 +85,7 @@ return require('packer').startup(function()
   -- press <CR> to mark match at cursor ignored
   -- navigate without changing with C-j, C-k
   -- ga: change all occurences
-  use { 'ThePrimeagen/harpoon' } -- <l> [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
+  use { 'ThePrimeagen/harpoon' } -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
 
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z

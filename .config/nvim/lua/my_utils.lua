@@ -1,6 +1,14 @@
 --! Dependency free functions
 local M = {}
 
+M.IsWSL = function()
+  local fp = assert(io.open("/proc/version", "rb"));
+  local content = fp:read("*all")
+  fp:close()
+  local found_wsl = string.find(content, "microsoft")
+  return found_wsl ~= nil
+end
+
 M.appDateLog = function(content)
   local current_date = os.date("%Y%m%d") -- year month day according to strftime
   local fp = assert(io.open( (current_date .. ".log"), "a"))

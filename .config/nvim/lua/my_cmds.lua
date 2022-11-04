@@ -3,6 +3,7 @@ local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then
   error('Please install plenary for all features.')
 end
+local utils = require 'my_utils'
 
 ---- Configuration files editing ----
 local add_cmd = vim.api.nvim_create_user_command
@@ -260,36 +261,41 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- add to harpoon
 
 ---- Scripting ----
--- TODO: fixup with vim.fs
 -- copy path under cursor: yiW
 -- pull current filename into where you are: Ctrl+R %
--- :let @+ = expand("%:p")
--- With plenary:
--- local Path = require "plenary.path"
--- local path = Path.path
--- local fileAbs = vim.api.nvim_buf_get_name(0)
--- local p = Path:new fileAbs
--- local fname = p.filename
-add_cmd('Frel', function() vim.fn.setreg('+', vim.fn.expand('%')) end, {}) -- copy relative path
-add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.fn.expand('%'))) end, {}) -- copy relative path
-add_cmd('Fabs', function() vim.fn.setreg('+', vim.fn.expand('%:p')) end, {}) -- copy absolute path
-add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.fn.expand('%:p'))) end, {}) -- copy absolute path
-add_cmd('Fonly', function() vim.fn.setreg('+', vim.fn.expand('%:t')) end, {}) -- copy only filename
+-- vimscript register assignment: :let @+ = expand("%:p")
+-- Note: Relative paths are only respected until cwd. If the path goes via parent dir, the absolute path is returned.
+add_cmd('Frel', function() vim.fn.setreg('+', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
+add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
+add_cmd('Fabs', function() vim.fn.setreg('+', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
+add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
+add_cmd('Fonly', function() vim.fn.setreg('+', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
 add_cmd('Fline', function()
-  --local fname = vim.fn.expand('%:t')
-  local fileAbs = vim.api.nvim_buf_get_name(0)
-  local fname = vim.fs.basename(fileAbs)
+  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
   local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-  local fnamecol = fname .. ':' .. tostring(lineNum)
-  vim.fn.setreg('+', fnamecol)
+  vim.fn.setreg('+', fname .. ':' .. tostring(lineNum))
 end, {}) -- copy filename:line
 add_cmd('Fcolumn', function()
-  local fileAbs = vim.api.nvim_buf_get_name(0)
-  local fname = vim.fs.basename(fileAbs)
+  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
   local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
-  local fnamecol = fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2])
-  vim.fn.setreg('+', fnamecol)
+  vim.fn.setreg('+', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
 end, {}) -- copy filename:line:column
+
+if utils.IsWSL() then
+  add_cmd('FabsW', function() vim.fn.setreg('w', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
+  add_cmd('FabsDirW', function() vim.fn.setreg('w', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
+  add_cmd('FonlyW', function() vim.fn.setreg('w', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
+  add_cmd('FlineW', function()
+    local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+    vim.fn.setreg('w', fname .. ':' .. tostring(lineNum))
+  end, {}) -- copy filename:line
+  add_cmd('FcolumnW', function()
+    local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+    local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
+    vim.fn.setreg('w', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
+  end, {}) -- copy filename:line:column
+end
 
 add_cmd('ShAbsPath', function() print(vim.fn.expand('%:p')) end, {})
 add_cmd('ShDate', function() print(os.date()) end, {})
@@ -330,29 +336,6 @@ end, {})
 -- TODO optional argument in which register to copy the file path
 --
 --:%!jq
-
----- Ideas to configure buffer stuff, ie with toggleterm used here: ----
---local files = {
---  python = "python3 -i " .. exp("%:t"),
---  lua = "lua " .. exp("%:t"),
---  c = "gcc -o temp " .. exp("%:t") .. " && ./temp && rm ./temp",
---  cpp = "clang++ -o temp " .. exp("%:t") .. " && ./temp && rm ./temp",
---  java = "javac "
---    .. exp("%:t")
---    .. " && java "
---    .. exp("%:t:r")
---    .. " && rm *.class",
---  rust = "cargo run",
---  javascript = "node " .. exp("%:t"),
---  typescript = "tsc " .. exp("%:t") .. " && node " .. exp("%:t:r") .. ".js",
---}
---function Run_file()
---  local command = files[vim.bo.filetype]
---  if command ~= nil then
---    Open_term:new({ cmd = command, close_on_exit = false }):toggle()
---    print("Running: " .. command)
---  end
---end
 
 -- :Man for man page.
 -- local mappings: K or C-], C-t, gO for outline

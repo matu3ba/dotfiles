@@ -5,6 +5,10 @@ const std = @import("std");
 // const char = std.mem.bytesAsValue(u16, codepoint[0..2]); // U+0080...U+07FF
 // const char2 = @bitCast(u16, arr[idx..][0..2].*);
 
+// String shorthand conversions => &. and &[_][]const u8
+// builder.pathJoin(&[_][]const u8 { "foo", "bar", "baz"})
+// builder.pathJoin(&.{ "foo", "bar", "baz"})
+
 const factorial_lookup_table = createFactorialLookupTable(u128, 25);
 pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: comptime_int) [num_terms]Int {
     if (@typeInfo(Int) != .Int) {

@@ -201,7 +201,7 @@ callback = function()
 --PWD=$(git rev-parse --show-toplevel) == pwd.
 -- Create Makefiles
 
--- Removing Zig cache
+-- Removing Zig cache (for nested in project build.zig file)
 --ZIGCACHE=$(fd -uu zig-cache) && rm -fr $ZIGCACHE && fd -uu zig-cache
 
 -- Run Makefile for unit test
