@@ -49,7 +49,7 @@ keybinds {
     }
 
     tab clear-defaults=true {
-        bind "Enter" "Esc" { SwitchToMode "normal"; }
+        bind "Enter" "Esc" "Space" { SwitchToMode "normal"; }
         bind "h" "Left" { GoToPreviousTab; }
         bind "l" "Right" { GoToNextTab; }
         bind "n" { NewTab; }
@@ -71,14 +71,14 @@ keybinds {
         bind "Tab" { ToggleTab; }
     }
     resize clear-defaults=true {
-        bind "Enter" "Esc" { SwitchToMode "normal"; }
+        bind "Enter" "Esc" "Space" { SwitchToMode "normal"; }
         bind "h" "Left" { Resize "Left"; }
         bind "j" "Down" { Resize "Down"; }
         bind "k" "Up" { Resize "Up"; }
         bind "l" "Right" { Resize "Right"; }
-        bind "=" { Resize "Increase"; }
+        bind "Alt =" { Resize "Increase"; }
         bind "Alt +" { Resize "Increase"; }
-        bind "-" { Resize "Decrease"; }
+        bind "Alt -" { Resize "Decrease"; }
         bind "Alt n" { NewPane; }
         bind "Alt h" { MoveFocus "Left"; }
         bind "Alt l" { MoveFocus "Right"; }
@@ -87,7 +87,7 @@ keybinds {
     }
 
     move clear-defaults=true {
-        bind "Enter" "Esc" { SwitchToMode "normal"; }
+        bind "Enter" "Esc" "Space" { SwitchToMode "normal"; }
         bind "h" "Left" { MovePane "Left"; }
         bind "j" "Down" { MovePane "Down"; }
         bind "k" "Up" { MovePane "Up"; }
