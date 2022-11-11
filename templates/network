@@ -6,3 +6,4 @@ networkmanager
 networkctl list
 nmcli
 nmtui
+avahi-discover

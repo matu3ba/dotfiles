@@ -42,6 +42,8 @@ end
 -- until stage2 allows users to get Sema info
 -- TODO: idea for analysis IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
 -- TODO: complete deltadebug/zig-reduce to get complete AST<->source locations
+-- TODO: https://jdhao.github.io/2020/11/15/nvim_text_objects/
+--       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros

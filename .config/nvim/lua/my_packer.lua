@@ -94,7 +94,8 @@ return require('packer').startup(function()
   -- Telescope gh issues author=windwp label=bug search=miscompilation
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
-  use { 'princejoogie/dir-telescope.nvim', config = function() require('dir-telescope').setup({hidden = true,respect_gitignore = true,}) end, }
+  --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
+  --use { 'princejoogie/dir-telescope.nvim', config = function() require('dir-telescope').setup({hidden = false,respect_gitignore = false,}) end, }
   ---- treesitter ----
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use { 'mizlan/iswap.nvim' } --:Iswap, as mapping :ISwapWith

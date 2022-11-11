@@ -120,6 +120,13 @@ def getPort() -> int:
         print("port: ", port)
     return port
 
+def queryXmlField():
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    version_query = root.findall("./field1/field2/version")
+    assert(len(version_query) == 1)
+    curr_version = int(version_query[0].text[4:])
+
 # To add new nodes to ElementTree, use (beware that they dont have pretty print):
 #newxml_s1 = ET.SubElement(newxml_s2, "slave")
 #newxml_s1.text = str(someboolean).lower()   # there is also capitalize()
