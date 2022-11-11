@@ -10,8 +10,9 @@ local function load_options()
     mapleader = ' ',
     material_style = 'lighter', -- default, darker, lighter, oceanic, deep ocean, palenight
     material_lighter_contrast = false,
+    nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb workaround: autosearch breaks plugin
     --coq_settings = { auto_start = true },
-    --doge_mapping = "<leader>d"; --TODO get doge to work
+    --doge_mapping = "<leader>do"; --idea get doge to work
     --netrw_browse_split = 0
     --netrw_banner = 0
     --netrw_winsize = 25
@@ -69,7 +70,7 @@ local function load_options()
   vim.bo.spelllang = 'en,de'
   vim.bo.swapfile = false
 
-  -- TODO: https://stackoverflow.com/a/159065
+  -- note: https://stackoverflow.com/a/159065
   --vim.bo.expandtab = false --use Tab character on pressing Tab key
   vim.bo.expandtab = false --expand tabs to spaces: use fuzzy impl
   vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation

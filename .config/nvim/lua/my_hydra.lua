@@ -7,7 +7,7 @@ end
 --local cmd = require('hydra.keymap-util').cmd
 --local pcmd = require('hydra.keymap-util').pcmd
 
--- TODO hydra keybinding to attach + send cmds to debug session
+-- note hydra keybinding to attach + send cmds to debug session
 -- should this session be in harpoon? in hydra?
 
 local M = {}
@@ -62,7 +62,7 @@ M.window_hdyra = Hydra({
 M.window_hdyra = Hydra({
    body = '<leader>b',
    heads = {
-      -- TODO https://github.com/anuvyklack/hydra.nvim/issues/39
+      -- note https://github.com/anuvyklack/hydra.nvim/issues/39
       { 's', '<cmd>ls<CR>' }, -- show buffers
       { 'l', '<cmd>bn<CR>' }, -- next buffer
       { 'h', '<cmd>bp<CR>' }, -- previous buffer

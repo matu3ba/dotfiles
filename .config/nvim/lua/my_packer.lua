@@ -12,11 +12,22 @@ return require('packer').startup(function()
   ---- lsp+competion ----
   use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
-  --use { 'hrsh7th/cmp-buffer' } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
-  use { 'hrsh7th/cmp-cmdline' } -- completions for :e are broken, so deactivated
-  use { 'hrsh7th/cmp-nvim-lsp' }
-  use { 'hrsh7th/cmp-path' }
+  ---- completions ----
+  -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
+  -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
+  -- C-x + C-v | C-z | C-]    vim, stop, tags
+  -- C-x + C-o                user function (omnifunction)
+  -- C-x + C-u                user function (completefunc)
+  -- C-x + C-d | C-i          macros, include paths
   use { 'hrsh7th/nvim-cmp' }
+  use { 'hrsh7th/cmp-nvim-lsp' }
+  -- use { 'hrsh7th/cmp-path' } -- performance problems (no timeout etc)
+  -- use { 'hrsh7th/cmp-buffer' } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
+  use { 'hrsh7th/cmp-cmdline' } -- completions for :e, /, buffer are broken
+  -- Harpoon idea: terminal view with custom binding to have something like gdb:
+  -- server pwd > register  +  cat filename under cursor
+  -- Idea: pipe things (append or overwrite) into scratch buffer window to gf it
+  -- => workaround for wraparound not working
 
   ---- shiny stuff ----
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
@@ -30,7 +41,7 @@ return require('packer').startup(function()
   -- leap: s|S char1 char2 (<space>|<tab>)* label?
   -- leap: gs in all other windows on the tab page
   -- leap: enter repeates, tab reverses the motion
-  -- s|S char1 char2 <space>? (<space>|<tab>)* label?
+  -- (unused default breaks nvim-surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
   --use { 'smjonas/inc-rename.nvim' } -- TODO setup
@@ -58,17 +69,12 @@ return require('packer').startup(function()
   -- TODO: setup reverse stepping
   use { 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
   --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
-
   -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite], C-m on path to open dir in dirbuf
   use { 'elihunter173/dirbuf.nvim', config = function() require("dirbuf").setup { write_cmd = "DirbufSync -confirm" } end, }
   use { 'anuvyklack/hydra.nvim' } -- my_hydra.lua
-
-  -- TODO visual mode gc,gb clash
+  -- note visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
   use { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end, }
-  -- :Neogen [function/class/type]
-  use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
-
   -- use { 'nicwest/vim-camelsnek' } -- idea setup
   -- selection S' to put ' around selected text
   -- ysiw' for inner word with '
@@ -90,7 +96,6 @@ return require('packer').startup(function()
   ---- telescope ----
   use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } } --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } -- 1.65x speed of fzf
-  --use { 'nvim-telescope/telescope-hop.nvim' } -- TODO fix setup: no numbers are showing up
   -- Telescope gh issues author=windwp label=bug search=miscompilation
   use { 'nvim-telescope/telescope-github.nvim' } --Telescope gh issues|pull_request|gist|run
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
@@ -102,18 +107,15 @@ return require('packer').startup(function()
   --'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
 
   ---- languages ----
-  -- Zig
   --use { 'neomake/neomake' } -- get useful comments for code semantics
   use { 'LnL7/vim-nix' } -- flakes highlighting: wait until nix converts their stuff to flakes
-  -- booperlv/nvim-gomove
-  use { 'ziglang/zig.vim' } -- idea replacement
-  ---- Organization stuff
+  use { 'ziglang/zig.vim' } -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
+  ---- Organization
   use { 'jbyuki/venn.nvim' } --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
-  ---- VIM ----
-  use { 'mbbill/undotree' } -- :UndotreeToggle <l>u, rarely used
-
+  use { 'mbbill/undotree' } -- :UndotreeToggle, rarely used (<l>u unmapped)
   -- As of now, which-key breaks terminals
-  -- use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
+  use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
+
   -- use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
   -- use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
@@ -131,9 +133,7 @@ return require('packer').startup(function()
   --  2. track the mode, last action and read keys to lookup next action => or capture this in neovim without executing it
   -- related: use { 'linty-org/key-menu.nvim' } -- idea replace which-key once https://github.com/linty-org/key-menu.nvim/issues/10 is resolved
 
-  --problem: https://github.com/asbjornhaland/telescope-send-to-harpoon.nvim/issues/1
-  --workaround: command
-  --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon,
+  --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon
   --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
   --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
   --use { '~/dev/git/lua/telescope-project.nvim' } -- idea fixit
@@ -142,6 +142,12 @@ return require('packer').startup(function()
   -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
   --use { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
 
+  -- :DogeGenerate {doc_standard}
+  -- use { 'kkoomen/vim-doge' }
+  -- :Neogen [function/class/type]
+  --use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
+  -- use { 'booperlv/nvim-gomove' } -- moving blocks sidewarsd up,down etc
+  --use { 'nvim-telescope/telescope-hop.nvim' } -- idea fix setup: no numbers are showing up
   --use { 'ms-jpq/coq_nvim', branch = 'coq' } -- autocompletion plugin for various sources, very frequent updates (ca. 4 days)
   --use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } --9000+ Snippets. BUT: own way of updating may fail => annoying
   --use { 'delphinus/cmp-ctags' } -- does not search multiple files and spawns 1 process for each file
@@ -156,6 +162,7 @@ return require('packer').startup(function()
   --use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
   -- replacement of vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
   -- look into https://github.com/jonatan-branting/nvim-better-n
+
   --use { 'tpope/vim-repeat' } -- repeating with ., superseded with https://this-week-in-neovim.org/2022/Aug/15#article-dot-repeat
   --use { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
   --use { 'vim-table' }
@@ -180,5 +187,6 @@ return require('packer').startup(function()
   --use { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
   --use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim', config = function() require('neogit').setup() -- --:Neogit -- very complex
   --use { 'folke/lsp-trouble.nvim', requires = 'kyazdani42/nvim-web-devicons', config = function() require("trouble").setup() end } --:Trouble,<l>xx/xw/xd/xl/xq/xr
+
 end)
 -- stylua: ignore end

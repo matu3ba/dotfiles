@@ -7,15 +7,14 @@ local map = vim.api.nvim_set_keymap
 -- Principle:
 --  look for better prefix than , for window navigation, tab nvagiation mappings (splits, tabs, switching, file drawer etc)
 --  <Space> general mapleader for fast operations
---  TODO figure out where to put fuzzy finding mappings (e.g. files, buffers, helptags etc)
+--  idea figure out where to put fuzzy finding mappings (e.g. files, buffers, helptags etc)
 --  ;       runnig tests and shell commands
---  \       find and replace helpers
+--  \       find and replace helpers ?
 --  _       backwards jump
 --  -       forwards jump
---  TODO conflicting keybinding: YSurround yS, ys
---  TODO conflicting keybinding: comment_toggle_blocks/linewise gb,gc
+--  note conflicting keybinding: YSurround yS, ys
+--  note conflicting keybinding: comment_toggle_blocks/linewise gb,gc
 --  <C-s>   shell stuff
--- TODO use C-, C-. for something: Maybe use for replace repeat, forward search?
 
 -- C-n: [count] lines downward |linewise|.
 -- C-m: [count] lines downward, on the first non-blank character |linewise|
@@ -46,7 +45,7 @@ local map = vim.api.nvim_set_keymap
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
-map('n', ',', [["_diwP]], opts) -- keep pasting over the same thing, old map: C-p
+map('n', ',', [[viwP]], opts) -- keep pasting over the same thing, simple instead of broken for EOL [["_diwP]]
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
@@ -62,76 +61,12 @@ map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor
 --nnoremap <leader>e :exe getline(line('.'))<cr> -- Run the current line as if it were a command
 -- idea come up with something to select whole word under cursor, ie this.is.a.word(thisnot)
 
---- Copy content to matching char into register
--- without match, a message is printed
--- @param backwards boolean if search is forwards or backwards
--- @param register register where content is copied to
-_G.CopyMatchingChar = function(backwards, register)
-  local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
-  local crow = tup_rowcol[1]
-  local ccol = tup_rowcol[2] -- 0 indexed => use +1
-  local cchar = vim.api.nvim_get_current_line():sub(ccol + 1, ccol + 1)
-  local matchchar = {
-    ['('] = ')',
-    [')'] = '(',
-    ['{'] = '}',
-    ['}'] = '{',
-    ['['] = ']',
-    [']'] = '[',
-    ['<'] = '>',
-    ['>'] = '<',
-    ['"'] = '"',
-    ["'"] = "'",
-    ['|'] = '|',
-    ['`'] = '`',
-    ['/'] = '/',
-    ['\\'] = '\\',
-  }
-  -- TODO searchpos: stopline only works forwards
-  -- => flag 'b' is not using starting line
-  local tup_search
-  if backwards == false then
-    tup_search = vim.fn.searchpos(matchchar[cchar], 'nz', crow + 1) -- +1 to search until next line?
-  else
-    tup_search = vim.fn.searchpos(matchchar[cchar], 'bnz') -- +1 to search until next line?
-  end
-  local srow = tup_search[1]
-  local scol = tup_search[2]
-  if srow == 0 and scol == 0 and backwards == false then
-    print 'no matching forward character'
-    return
-  end
-  if (srow == 0 and scol == 0 and backwards == true) or srow ~= crow or (backwards == true and ccol < scol) then
-    print 'no matching backwards character'
-    return
-  end
-  local copytext
-  if backwards == false then
-    copytext = vim.api.nvim_get_current_line():sub(ccol + 1, scol)
-    print(string.format([[%s %s:%s]], [[write -> into]], register, copytext))
-  else
-    copytext = vim.api.nvim_get_current_line():sub(scol, ccol + 1)
-    print(string.format([[%s %s:%s]], [[write <- into]], register, copytext))
-  end
-  vim.fn.setreg(register, copytext)
-end
-
---SAME LINE SELECTION AND COPY MOVEMENTS--
---idea select forward + backwards
---TODO copy forward + backwards, if only 1 possible match on same line
---for "",'',``,(),{},[]
----- copy forward/backwards until first occurence of same symbol
--- map('n', '-', ':lua CopyMatchingChar(false, [[""]])<CR>', opts)
--- map('n', '_', ':lua CopyMatchingChar(true, [[""]])<CR>', opts)
-
 map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
---map('v', '<leader>d', '"_d', opts) -- stuff, TODO conflicting keybinding
-map('v', '<leader>dd', '"_dd', opts) -- TODO dont walk 1 line down from eol
 -- note: vimscript can not handle marks in between commands
 map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
 map('n', 'C-p', 'p`[', opts) -- ] paste without movement
@@ -165,14 +100,8 @@ map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>
 map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 -- next,previous,specific number gt,gT,num gt
--- TODO prefix for left hand to keep hjl for navigation
---map('n', ',t', '<cmd>tabnew<CR>', opts) -- Newtab (like in browser)
---map('n', ',w', '<cmd>tabclose<CR>', opts) -- Closetab (like in browser)
 ---- window navigation ----
--- see my_hydra.lua
---map('n', ';S', '<cmd>Sexplore<CR>', opts) -- Sexplore
---map('n', ';V', '<cmd>Vexplore<CR>', opts) -- Vexplore
---map('n', ';E', '<cmd>Explore<CR>', opts) -- Explore
+map('n', ';d', '<cmd>DirBuf<CR>', opts) -- Sexplore
 ---- buffer navigation ----
 --map('n', ']b', '<cmd>bn<CR>', opts)
 --map('n', '[b', '<cmd>bp<CR>', opts)
@@ -182,10 +111,10 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 --map('n', ';b', '<cmd>ls<CR>', opts) -- list buffers
 --nnoremap <expr> <C-b> v:count ? ':<c-u>'.v:count.'buffer<cr>' : ':set nomore<bar>ls<bar>set more<cr>:buffer<space>'
 --:bdel for buffer deletion
---TODO think how to pick buffer quick: ideally fuzzy search matches in telescope to add them
+--question think how to pick buffer quick: ideally fuzzy search matches in telescope to add them
 --Then assign quickjump mappings in the picker.
 --Store everything in a session file.
---TODO think how to delete buffers quick
+--question think how to delete buffers quick
 ---- error navigation ----
 map('n', ']q', '<cmd>qn<CR>', opts)
 map('n', '[q', '<cmd>qp<CR>', opts)
@@ -225,7 +154,7 @@ map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in termin
 -- more aracane: z+,z-,z. like zt,zb,zz
 -- view movements left+righ: z+es(full page), hl(1char), HL(halfpage)
 -- vim-surround: ds|cs|ys,yS etc is conflicting
--- vim-easy-align TODO
+-- vim-easy-align
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
 -- C-t jumps back to the beginning of file entering from goto definition
 -- :set nowrapscan => error out on end of file
@@ -285,10 +214,10 @@ map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in termin
 -- :his, C-g|C-t search
 -- last inserted text is in . register to be used with ".p
 -- It should be possible from insertion mode to paste with C-a
--- C-d|n|p|a|l manual completions TODO explain
+-- C-d|n|p|a|l manual completions
 -- C-n,C-p to complete from all buffers
 -- C-x C-n to complete from current buffer
--- :his, C-g|C-t search
+-- :his, C-g|C-t TODO search
 
 -- selection mode
 -- word selected + K => search manual entry
@@ -340,49 +269,6 @@ map('n', '<leader>re', '<cmd>LspRestart<CR>', opts) -- restart lsp
 -- :tag file.c, :tags for overview (or selection on multiple matches)
 -- C-] to go to tag definition, C-t to jump back
 -- :ts/:tselect definitions for last tag
---- Switch between header and source file.
--- Header is identified with .h, source file with precedense .cpp, .cc.
--- TODO: figure out how to call vimscript commands without global variables
---_G.SwitchHeaderSourceTags = function()
---  filename = vim.fn.expand '%'
---  vim.api.nvim_exec(
---  [[
---  let l:origfname = expand('%')
---  "let l:filenamenoext = expand('%:t:r')
---  "let l:fname = ''
---  "if expand('%:e') ==# 'h' then
---  "  let l:fname = l:filenamenoext . '.cpp'
---  "  exec 'tag ' . l:fname
---  "  if l:origfname !=# expand('%') then
---  "    return
---  "  else
---  "    let l:fname = l:filenamenoext . '.cc'
---  "    exec 'tag ' . l:fname
---  "  endif
---  "else
---  "  let l:fname = l:filenamenoext . '.h'
---  "  exec 'tag ' . l:fname
---  "endif
---  ]],
---  false)
---  --local filename_noext = vim.fn.expand '%:t:r'
---  --if (vim.fn.expand '%:e' == 'h') then
---  --  local cppname = filename_noext .. ".cpp"
---  --  -- fallback: exe 'tag '.tag_name
---  --  -- TODO: solve this with git ls-files and regex match
---  --  vim.fn.tag(cppname)
---  --  if (filename ~= vim.fn.expand('%')) then
---  --    return
---  --  else
---  --    local ccname = filename_noext .. ".cpp"
---  --    vim.fn.tag(cppname)
---  --  end
---  --else
---  --  local hname = filename_noext .. ".h"
---  --  vim.fn.tag(cppname)
---  --end
---end
---map('n', '<leader>st', ':lua SwitchHeaderSourceTags()<CR>', opts)
 
 ---- coq autocompleter ----
 -- default bindings. C-h next snippet, C-w|u deletion of word, C-k preview
@@ -395,13 +281,9 @@ map('n', '<leader>re', '<cmd>LspRestart<CR>', opts) -- restart lsp
 --      \ 'keymap.bigger_preview': '<C-k>',
 --      \ }
 
---map('n', 'gDD', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)   -- gt, gT used for tabnext
---map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts) -- conflicting
 --map('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
 --map('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
 --map('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
---map('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
---map('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 -- exploring code base with mouse mapping 1. to close and 2. to navigate
 --map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
@@ -483,8 +365,6 @@ map('n', '<leader>cu', [[<cmd>lua require("harpoon.term").gotoTerminal(4)<CR>]],
 map('n', '<leader>ci', [[<cmd>lua require("harpoon.term").gotoTerminal(5)<CR>]], opts)
 map('n', '<leader>co', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
 -- ; as prefix for runners
-
--- TODO: show number of terminal
 
 -- lua has \ddd as decimal string escapes
 -- send enter to each terminal
@@ -576,7 +456,7 @@ map('t', '<C-x>u', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(4)<
 map('t', '<C-x>i', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(5)<CR>]], opts)
 map('t', '<C-x>o', [[<C-\><C-n><cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]], opts)
 
--- TODO we additionally match against the minor mode here
+-- idea we additionally match against the minor mode here
 -- vim.api.nvim_get_mode().mode: first char is major mode, second (if existing) minor mode
 -- map('nt', '<C-x>j', [[<cmd>lua require("harpoon.term").gotoTerminal(1)<CR>]], opts) -- x terminal harpoon
 -- map('nt', '<C-x>k', [[<cmd>lua require("harpoon.term").gotoTerminal(2)<CR>]], opts)

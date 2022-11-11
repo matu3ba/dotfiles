@@ -46,9 +46,11 @@ M.dump = function(...)
   return ...
 end
 
+-- TODO understand lua print(vim.inspect(package.loaded, { depth = 1 }))
+-- to unload commands, mappings + relevant plugin symbols
+-- https://neovim.discourse.group/t/reload-init-lua-and-all-require-d-scripts/971/15
 M.reloadconfig = function()
   local luacache = (_G.__luacache or {}).cache
-  -- TODO unload commands, mappings + ?symbols?
   for pkg, _ in pairs(package.loaded) do
     if pkg:match '^my_.+'
     then
@@ -63,11 +65,37 @@ M.reloadconfig = function()
   vim.notify('Config reloaded!', vim.log.levels.INFO)
 end
 
-M.makeScratch = function()
-  vim.api.nvim_command('enew') -- equivalent to :enew
-  vim.bo[0].buftype="nofile" -- set the current buffer's (buffer 0) buftype to nofile
-  vim.bo[0].bufhidden="hide"
-  vim.bo[0].swapfile=false
+-- M.makeFileScratch = function(filepath)
+--   local uri = vim.uri_from_fname(filepath)
+--   local bufnr = vim.uri_to_bufnr(uri)
+--   vim.bo[bufnr].bufhidden = ""
+--   vim.bo[bufnr].buflisted = true
+--   vim.bo[bufnr].buftype = ""
+--   vim.bo[bufnr].readonly = false
+--   vim.bo[bufnr].swapfile = false
+-- end
+
+-- :ls! to list all bufs
+-- TODO: store and load scratch/notes files
+-- scratch -> notes (persistent)
+-- make neovim instance
+M.makeFileScratch = function(filepath)
+--M.makeNamedScratch = function(filepath, scratchname)
+  -- local bufs = vim.api.nvim_list_bufs()
+  --for i, v in ipairs(bufs) do
+  --  if(vim.api.nvim_buf_get_name(v) == "abspath_tocompare") then
+  --    print("matching comparison")
+  --  end
+  --  print(k, ", ", v)
+  --end
+  local uri = vim.uri_from_fname(filepath)
+  local bufnr = vim.uri_to_bufnr(uri)
+  vim.bo[bufnr].bufhidden = ""
+  vim.bo[bufnr].buflisted = true
+  vim.bo[bufnr].buftype = ""
+  vim.bo[bufnr].readonly = false
+  vim.bo[bufnr].swapfile = false
+  return true
 end
 
 -- ###### Notes for terminal stuff ######
@@ -133,5 +161,62 @@ M.reloadModule = function(module)
   end
   vim.notify('Module ' .. module .. ' reloaded!', vim.log.levels.INFO)
 end
+
+--- Copy content to matching char into register
+-- without match, a message is printed
+-- @param backwards boolean if search is forwards or backwards
+-- @param register register where content is copied to
+_G.CopyMatchingChar = function(backwards, register)
+  local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
+  local crow = tup_rowcol[1]
+  local ccol = tup_rowcol[2] -- 0 indexed => use +1
+  local cchar = vim.api.nvim_get_current_line():sub(ccol + 1, ccol + 1)
+  local matchchar = {
+    ['('] = ')',
+    [')'] = '(',
+    ['{'] = '}',
+    ['}'] = '{',
+    ['['] = ']',
+    [']'] = '[',
+    ['<'] = '>',
+    ['>'] = '<',
+    ['"'] = '"',
+    ["'"] = "'",
+    ['|'] = '|',
+    ['`'] = '`',
+    ['/'] = '/',
+    ['\\'] = '\\',
+  }
+  -- note searchpos: stopline only works forwards
+  -- => flag 'b' is not using starting line
+  local tup_search
+  if backwards == false then
+    tup_search = vim.fn.searchpos(matchchar[cchar], 'nz', crow + 1) -- +1 to search until next line?
+  else
+    tup_search = vim.fn.searchpos(matchchar[cchar], 'bnz') -- +1 to search until next line?
+  end
+  local srow = tup_search[1]
+  local scol = tup_search[2]
+  if srow == 0 and scol == 0 and backwards == false then
+    print 'no matching forward character'
+    return
+  end
+  if (srow == 0 and scol == 0 and backwards == true) or srow ~= crow or (backwards == true and ccol < scol) then
+    print 'no matching backwards character'
+    return
+  end
+  local copytext
+  if backwards == false then
+    copytext = vim.api.nvim_get_current_line():sub(ccol + 1, scol)
+    print(string.format([[%s %s:%s]], [[write -> into]], register, copytext))
+  else
+    copytext = vim.api.nvim_get_current_line():sub(scol, ccol + 1)
+    print(string.format([[%s %s:%s]], [[write <- into]], register, copytext))
+  end
+  vim.fn.setreg(register, copytext)
+end
+---- copy forward/backwards until first occurence of same symbol
+-- map('n', '-', ':lua require("my_utils").CopyMatchingChar(false, [[""]])<CR>', opts)
+-- map('n', '_', ':lua require("my_utils").CopyMatchingChar(true, [[""]])<CR>', opts)
 
 return M

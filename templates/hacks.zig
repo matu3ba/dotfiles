@@ -26,6 +26,11 @@ fn testme() !void {
 test "printErrorSet" {
     printErrorSet(testme);
 }
+
+pub fn printErrorSet2() void {
+    const e = @field(anyerror, "NotFound");
+    std.debug.print("{}\n", .{@TypeOf(e)});
+}
 //switch(err) {....} inside catch |err| {....} the compiler will yell at you for all unhandled errors
 
 fn range(len: usize) []const void {
@@ -33,6 +38,18 @@ fn range(len: usize) []const void {
 }
 // usage (i will increment from 0->9):
 //for (range(10)) |_, i| { ... }
+
+// Zig will get multi-object for loop: https://github.com/ziglang/zig/issues/7257
+//const nums = [3]usize {42, 42, 42};
+//const chars = [3]u8 {'a', 'b', 'c'};
+// easy "zip" iteration (all arguments must have the same length)
+//for (nums, chars) |n, c| { ... }
+// easy range loops
+//for (0..3) |idx| { ... } /
+// but this won't work anymore (old syntax)
+//for (chars) |c, idx| { ... }
+// now you need a range if you want an index
+//for (chars, 0..) |elem, idx| { ... }
 
 // switch on union field
 fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {

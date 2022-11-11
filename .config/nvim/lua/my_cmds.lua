@@ -333,7 +333,7 @@ add_cmd('Retag', function()
   end
 end, {})
 
--- TODO optional argument in which register to copy the file path
+-- idea optional argument in which register to copy the file path
 --
 --:%!jq
 

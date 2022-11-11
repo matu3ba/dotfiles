@@ -37,8 +37,7 @@ cmp.setup {
     --  },
     --},
     { name = 'nvim_lsp' },
-    -- TODO setup inbuild completions to work properly by adjusting C-n,Cp
-    -- or setup vim-gutentags
+    -- note setup inbuild completions to work properly by adjusting C-n,C-p or setup vim-gutentags
     --{ name = 'tags' },
     --{ name = 'cmp_ctags' },
     -- { name = 'vsnip' }, -- For vsnip users.
@@ -58,19 +57,18 @@ cmp.setup {
 --})
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'buffer' },
-  },
-})
+-- cmp.setup.cmdline('/', {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = {
+--     { name = 'buffer' },
+--   },
+-- })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' },
-  }, {
+  sources = cmp.config.sources(
+  {
     { name = 'cmdline' },
   }),
 })
