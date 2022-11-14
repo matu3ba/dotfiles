@@ -1,0 +1,25 @@
+regular diff:
+diffutils: diff
+git: git diff
+
+small arbitrary diffs:
+diffoscope
+
+simple binary diff:
+https://superuser.com/questions/125376/how-do-i-compare-binary-files-in-linux
+(can not be aborted)
+diff --color -y <(xxd foo1.bin) <(xxd foo2.bin)
+
+better binary diff:
+radare2: radiff2
+https://github.com/radareorg/radare2
+
+excellent binary diff:
+IDA+money, if no x86 or no cloud: diaphora
+
+small but nice:
+1. compare size
+2. diff
+3. compare list of sections
+4. for each section compare the section content
+5. optionally print the section

@@ -29,6 +29,14 @@ return require('packer').startup(function()
   -- Idea: pipe things (append or overwrite) into scratch buffer window to gf it
   -- => workaround for wraparound not working
 
+  -- default mappings: textobjects: ii, ai, goto: [i,]i
+  -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
+  use { 'echasnovski/mini.indentscope', config = function() require("mini.indentscope").setup({}) end, }
+  -- ga no preview, gA preview
+  use { 'echasnovski/mini.align', config = function() require("mini.align").setup({}) end, }
+  -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
+  use { 'echasnovski/mini.ai', config = function() require("mini.ai").setup({}) end, }
+  --use { 'echasnovski/mini.completion' } -- TODO: think how to configure nvim-cmp to use something else than C-n|p
   ---- shiny stuff ----
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
@@ -44,14 +52,14 @@ return require('packer').startup(function()
   -- (unused default breaks nvim-surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
-  --use { 'smjonas/inc-rename.nvim' } -- TODO setup
-  --use { 'smjonas/live-command.nvim' } -- TODO setup
 
   -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
   -- :GdbStart gdb -tui -x SCRIPT exec
   -- :Gdb command
   -- <f4>   Until                        (`:GdbUntil`)
   -- <f5>   Continue                     (`:GdbContinue`)
+  -- <f6>   Reverse-Next                 (`:TODO`), TODO
+  -- <f7>   Reverse-Step                 (`:TODO`), TODO
   -- <f10>  Next                         (`:GdbNext`)
   -- <f11>  Step                         (`:GdbStep`)
   -- <f12>  Finish                       (`:GdbFinish`)
@@ -64,9 +72,19 @@ return require('packer').startup(function()
   -- hover, goto frame, exit + edit history with latest debug point action
   -- saved in file with increased number, default to latest number on selection
   -- TODO: build your own mouse hover? (use f9 to print locals instead of auto)
-  -- TODO: scratch window for gdb history
-  -- TODO: add commands from neovim wiki to record trace +
-  -- TODO: setup reverse stepping
+  -- TODO: scratch window for gdb history, awaiting response https://github.com/sakhnik/nvim-gdb/issues/177
+  -- https://github.com/neovim/neovim/wiki/FAQ#debug
+  -- enable coredumps: ulimit -c unlimited
+  -- if needed: systemd-coredump
+  -- coredumpctl -1 gdb
+  --2>&1 coredumpctl -1 gdb | tee -a bt.txt
+  -- gdb "reverse debugging"
+  -- * set record full insn-number-max unlimited
+  -- * continue, record
+  -- * revert-next, reverse-step
+  -- gdb server
+  -- * gdbserver :666 build/bin/nvim 2> gdbserver.log
+  -- * gdb build/bin/nvim -ex 'remote localhost:666'
   use { 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
   --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
   -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite], C-m on path to open dir in dirbuf
@@ -116,6 +134,8 @@ return require('packer').startup(function()
   -- As of now, which-key breaks terminals
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
 
+  -- use { 'smjonas/inc-rename.nvim' } -- idea setup
+  -- use { 'smjonas/live-command.nvim' } -- idea setup
   -- use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
   -- use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
   -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
@@ -145,6 +165,7 @@ return require('packer').startup(function()
   -- :DogeGenerate {doc_standard}
   -- use { 'kkoomen/vim-doge' }
   -- :Neogen [function/class/type]
+  -- use { 'cshuaimin/ssr.nvim' }
   --use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
   -- use { 'booperlv/nvim-gomove' } -- moving blocks sidewarsd up,down etc
   --use { 'nvim-telescope/telescope-hop.nvim' } -- idea fix setup: no numbers are showing up

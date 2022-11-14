@@ -65,6 +65,11 @@ M.reloadconfig = function()
   vim.notify('Config reloaded!', vim.log.levels.INFO)
 end
 
+M.makeScratch = function(scratchpath)
+  local buf = vim.api.nvim_create_buf(true, true) -- listed, scratch: nomodified, nomodeline
+  vim.api.nvim_win_set_buf(0, buf)
+end
+
 -- M.makeFileScratch = function(filepath)
 --   local uri = vim.uri_from_fname(filepath)
 --   local bufnr = vim.uri_to_bufnr(uri)

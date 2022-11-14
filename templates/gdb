@@ -75,6 +75,7 @@ finish/f
 continue/c
 
 print/formwat WHAT
+ptype WHAT
 display/format WHAT
 undisplay DISPLAY ..
 enable display DISPLAY
