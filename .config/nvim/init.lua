@@ -210,3 +210,7 @@ callback = function()
 --
 -- Run unit test
 --
+
+-- Pretty print
+-- json: jq
+-- xml: xmllint --format -

@@ -40,7 +40,7 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 #prepare mount points: sudo mkdir /mnt/iso, sudo umount /mnt/iso
 #mount iso file: sudo mount file.sio /mnt/iso -o loop
 #change owner: sudo chown -R USER:GROUP FILE, flag --from=USER:GROUP, symbolic link -h
-#compress/tar/zip: gzip -k files, tar -f? folder, zip -r folder.zip folder
+#compress/tar/zip: gzip -k files, tar -f archive files, zip -r folder.zip dir
 #7z a testfiles.7z file1, 7z x testfiles.7z
 # NEVER use 7z e unless wanting to have cluttered files around
 #run commands at specific time: at (programs needs daemon config after installation)

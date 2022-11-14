@@ -136,6 +136,12 @@ def queryXmlField():
 # The other options to prettyprint are very broken or not part of Python libstd
 # (xml.dom.ext).
 
+def writeFile(tree: object, filepath: str, use_bom: bool):
+    with open(filepath, 'wb') as file:
+        if (True == use_bom):
+            file.write('<?xml version="1.0" encoding="UTF-8"?>\n\n'.encode('utf-8'))
+        tree.write(file, encoding='utf-8')
+
 ## Html GET or POST gives me always Access denied and jenkins has no proper
 # description how to access their api or files with bare Python (bruh).
 # Workaround: curl -s --user USER:TOKEN

@@ -1,0 +1,18 @@
+
+The ideal solution:
+- text based configuration, no graphical interface
+- separation into controller and runner
+- strictly typed, simplified posix shell (very portable)
+  * skalib runner (the dude that made s6)?
+  * zig build has no sandboxing and neither convenient path hackery + high initial delay
+- authentication
+- artefact caching interface
+  * uri based + authentication or what is the simplest way?
+- prevents writes outside the current working directory (on default)
+- config changes to file require admin ok
+- remote gdb
+
+jenkins
+- custom DSL requires still clicking around things
+- webhooks are annoying to setup: "Generic Webhook Trigger"
+- Groovy Sandbox
