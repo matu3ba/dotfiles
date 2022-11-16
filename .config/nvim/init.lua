@@ -152,6 +152,11 @@ callback = function()
 --}
 --
 
+-- C-r C-o/C-r C-r register: paste text literally
+-- C-r register: pasting from register
+
+-- verbatim replace (snomagic)
+-- :sno/search/replace/g
 -- remove trailing carriage returns (^M), ie of windows
 --:e ++ff=dos
 --:set ff=unix

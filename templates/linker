@@ -17,3 +17,9 @@ are already undefined references are linked. So you need to put the "consuming"
 objects at the start of the link line, and the "supplying" objects at the end.
 
 idea: instructions on how to debug lld etc
+
+objdump -h to dump section list
+objdump --help | vi
+
+extern only, demangle
+nm -g -C build/stage3/bin/zig

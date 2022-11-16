@@ -31,7 +31,7 @@ get_local_ipaddress = subprocess.run(["hostname", "-I"], check=True, capture_out
 stdout_local_ipaddress = get_local_ipaddress.stdout
 local_ipaddress = stdout_local_ipaddress.decode("utf-8").strip()
 
-test1_json = json.loads('{"key1":true,"address:"value2"}')
+test1_json = json.loads('{"key1":true,"address":"value2"}')
 print(type(test1_json['address']))
 test1_json['address'] = get_local_ipaddress # localhost
 test1_json_utf8b = json.dumps(test1_json, separators=(',', ':'), indent=None).encode("utf-8")
@@ -188,3 +188,16 @@ for line in range(2,len(port_table)):
   #assert len(addr_split) > 1, print(addr_split)
   port = addr_split[len(addr_split)-1]
   print(port)
+
+
+## Naive way to open next free file to write logs
+def openLogHandle(log_dir: str, proc_name: str) -> IO[str]:
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+    i: int  = 0
+    path: str = os.path.join(log_dir, proc_name+str(i)+".log")
+    while os.path.exists(path):
+        i += 1
+        path = os.path.join(log_dir, proc_name+str(i)+".log")
+    print("new file: ", path)
+    return open(path, 'w+')

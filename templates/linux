@@ -19,9 +19,11 @@ ausearch -k <key>
 auditctl -l
 auditctl -W <path>
 
-TODO:
-- bpftrace with monitoring
-- if absolutely necessary bcc (painful to install)
+sleep 10m && systemctl suspend
+
+auditd (access monitoring framework)
+bpftrace (general tracing solution to create + run ebpf programs)
+TODO: usage with monitoring, is bcc necessary?
 
 Trace systemcalls: strace ./binary
 Common options

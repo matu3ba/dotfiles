@@ -15,6 +15,7 @@ trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM
 wait 20 &
 pid_wait=$!
 kill $! # default SIGTERM
+wait $!
 
 # string/* is used verbatim without match and we dont have nullglob against that
 # workaround with (extra case for symlinks)

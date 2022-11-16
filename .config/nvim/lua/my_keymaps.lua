@@ -45,7 +45,7 @@ local map = vim.api.nvim_set_keymap
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
-map('n', ',', [[viwP]], opts) -- keep pasting over the same thing, simple instead of broken for EOL [["_diwP]]
+map('n', ',', [[viwP]], opts) -- keep pasting over the same thing for current word, simple instead of broken for EOL [["_diwP]]
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
@@ -68,7 +68,8 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
 -- note: vimscript can not handle marks in between commands
-map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing, old map: C-p
+map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing until EOL
+--map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing
 map('n', 'C-p', 'p`[', opts) -- ] paste without movement
 map('v', '<leader>Y', '<cmd>OSCYank<CR>', opts) -- yank/copy over ssh
 map('n', '<leader>Y', '<Plug>OSCYank', opts) -- yank/copy over ssh
