@@ -50,6 +50,10 @@
 #git ls-files --others --exclude-standard
 #git ls-files --others --exclude-standard || rsync -av --files-from=- /pathfrom /pathto
 
+#change file permission
+#git ls-tree HEAD
+#git update-index --chmod=+x script.sh
+
 #get diffed file names by operation(adding,moving etc), lowerspace also works
 #git diff COMMIT1 COMMIT2 --name-only --diff-filter=A
 #Added, Copied, Deleted, Modified, Renamed + type (T changed9, Unmerged, (X unknown), Broken
@@ -219,8 +223,9 @@ alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
 alias gmum='git merge upstream/master'
 alias gma='git merge --abort'
 
-alias gpush='git push'
-alias gpushd='git push --dry-run'
+alias gp='git push'
+alias gpd='git push --dry-run'
+alias gpf='git push --force'
 
 # To show the content of a stash run
 # git stash show -p STASH/STASHNUMBER

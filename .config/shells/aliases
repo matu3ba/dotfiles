@@ -34,7 +34,7 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 #printer: cupsenable, cupsdisable, lpstat, lprm, lpstat -u
 #usb-stick: ls /dev/disk/, fdisk /dev/sdX, p,d,n,t=>b,a(activate), mkfs -t vfat /dev/sdX1
 #hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)
-#uncompress/untar/unzip: gzip -dk file.gz, tar -xf archive.tar.xz, unzip archive.zip
+#uncompress/untar/unzip: gzip -dk file.gz, tar -xf archive.tar.xz -C subdir, unzip archive.zip
 #tar x extract, z through gzip, f file as input, O extract to stdout
 #write usb stick: dd if=file.iso of=/dev/disk2 bs=4M status=progress conv=fdatasync
 #prepare mount points: sudo mkdir /mnt/iso, sudo umount /mnt/iso
@@ -200,6 +200,8 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 alias du='dust'
 alias rgv='rg --vimgrep'
 #alias rgv='rg --vimgrep'
+# replace in sed without regex
+#find ./ -maxdepth 1 -type f -exec sed 's|literal_pattern|replacement_string|g' {} \;
 # replace occurences with word
 #find ./ -type f -exec sed -i -e 's/apple/orange/g' {} \;
 # find files with exec bit
@@ -207,7 +209,7 @@ alias rgv='rg --vimgrep'
 # find files with regex on busybox:
 #find ./ -regex '.*lighttpd.*'
 # find files with exec bit and delete unless the script
-#fd -E clean.sh -t x -x rm {} \;
+#fd -E -maxdepth 1 clean.sh -t x -x rm {} \;
 # fd: find files based on extension and delete ({} is implicit if not given)
 #fd -I -e o -t f -x rm {}
 # fd: find files based on regex and delete (implicit {})

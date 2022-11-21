@@ -10,9 +10,18 @@ The ideal solution:
   * uri based + authentication or what is the simplest way?
 - prevents writes outside the current working directory (on default)
 - config changes to file require admin ok
+- default logging of common paths to fast debug problems
 - remote gdb
+- remote ssh
 
 jenkins
 - custom DSL requires still clicking around things
 - webhooks are annoying to setup: "Generic Webhook Trigger"
 - Groovy Sandbox
+- No support for bare checkout without repo in cwd
+- No default logging of common paths for common errors (can not find groovy script)
+
+- In Jenkinsfile, check out the main repository in the subdirectory using dir():
+dir('subDir') {
+    checkout scm
+}
