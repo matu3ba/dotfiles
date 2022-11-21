@@ -13,6 +13,9 @@ The ideal solution:
 - default logging of common paths to fast debug problems
 - remote gdb
 - remote ssh
+- Mutual exclusive locks on pipelines (for sharing ressouces via network)
+- Atomiticity of artifact cache access (per node)
+- Process limitation of harware usage
 
 jenkins
 - custom DSL requires still clicking around things
@@ -20,6 +23,9 @@ jenkins
 - Groovy Sandbox
 - No support for bare checkout without repo in cwd
 - No default logging of common paths for common errors (can not find groovy script)
+- No model for mutual exclusive locks on pipelines
+- No atomiticity of artifact cache access
+- Missing process limitation of harware usage
 
 - In Jenkinsfile, check out the main repository in the subdirectory using dir():
 dir('subDir') {
