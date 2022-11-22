@@ -67,12 +67,8 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
--- note: vimscript can not handle marks in between commands
-map('n', '<leader>p', [[v$Pa<CR><Esc>k$]], opts) -- keep pasting over the same thing adding EOL
---map('n', '<leader>p', [[mm"_Dp`m]], opts) -- keep pasting over the same thing (more complex)
-map('n', 'C-p', 'p`[', opts) -- ] paste without movement
-map('v', '<leader>Y', '<cmd>OSCYank<CR>', opts) -- yank/copy over ssh
-map('n', '<leader>Y', '<Plug>OSCYank', opts) -- yank/copy over ssh
+map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL)
+map('n', 'C-p', 'p`[', opts) -- ] paste without cursor movement
 -- map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
 -- C-w delete word, C-y paste word, C-p,C-n,C-i complete path
 -- C-h delete last character,

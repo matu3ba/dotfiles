@@ -7,7 +7,6 @@ return require('packer').startup(function()
   -- git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>ma
-  use { 'ojroques/vim-oscyank' } -- copy paste with ssh, zellij also supports ANSI OSC52
   -- TODO: publish the git worktree helper scripts
   ---- lsp+competion ----
   use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }
@@ -85,7 +84,8 @@ return require('packer').startup(function()
   -- gdb server
   -- * gdbserver :666 build/bin/nvim 2> gdbserver.log
   -- * gdb build/bin/nvim -ex 'remote localhost:666'
-  use { 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
+  -- more severe issues with stability (editor becomes completely unresponsive) :-( )
+  --use { 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
   --use { 'luukvbaal/nnn.nvim', config = function() require('nnn').setup() end, } --<l>n and :Np
   -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite], C-m on path to open dir in dirbuf
   use { 'elihunter173/dirbuf.nvim', config = function() require("dirbuf").setup { write_cmd = "DirbufSync -confirm" } end, }
@@ -161,6 +161,12 @@ return require('packer').startup(function()
   --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
   -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
   --use { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
+
+  -- map('v', '<leader>y', '<cmd>OSCYankReg +<CR>', opts) -- yank/copy over ssh register +
+  -- map('v', '<leader>Y', '<cmd>OSCYank<CR>', opts) -- yank/copy over ssh selection
+  -- map('n', '<leader>Y', '<Plug>OSCYank', opts) -- yank/copy over ssh current line
+  -- :OSCYank, <Plug>OSCYank, :OSCYankReg +
+  -- use { 'ojroques/vim-oscyank' } -- copy paste with ssh, zellij also supports ANSI OSC52
 
   -- :DogeGenerate {doc_standard}
   -- use { 'kkoomen/vim-doge' }

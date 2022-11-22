@@ -7,6 +7,7 @@ pretty printing:
 echo 'source ${HOME}/dev/git/zig/zig/master/tools/zig_gdb_pretty_printers.py' >> ${HOME}/.gdbinit
 source ${HOME}/dev/git/zig/zig/master/tools/stage1_gdb_pretty_printers.py
 source ${HOME}/dev/git/zig/zig/master/tools/stage2_gdb_pretty_printers.py
+and append 'Path(file).parent' to 'sys.path' before the import
 
 alternative use:
 ~/.gdbinit:
@@ -129,3 +130,32 @@ env -i MyVar=$(python -c 'print("xyz")') gdb
 LD_LIBRARY_PATH=./lib gdb -x dscr ./bin/executable
 4. neovim, vim
 :lua vim.env.LD_LIBRARY_PATH="./lib", :let $LD_LIBRARY_PATH = "./lib"
+
+TODO:
+start process from gdb and signal it from gdb script
+
+
+set/show scheduler-locking mode
+where mode is replay, step, on (OS-dependent)
+set/show schedule-multiple
+
+set scheduler-locking on
+set scheduler-locking off
+set scheduler-locking step
+
+if that does not work:
+- use rr
+if that does not work:
+- send remote command to running gdb session on what process to attach
+  * set port of gdb process beforehand
+  * remote commands for the setting
+if that does not work
+- attach to the running process in a timely manner after initialization via
+  sending gdb command for attaching to tmux/zellij pane
+  * make sure the pane is already spawned to minimize delay
+if that does not work
+- debugging inside qemu runner
+if that does not work:
+- reduce the problem + printf debugging of all intermediat artefacts
+  * we have no way to introspect the problem, so we can only try to modify
+    the system behavior

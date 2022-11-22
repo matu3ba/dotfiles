@@ -280,8 +280,26 @@ add_cmd('Fcolumn', function()
   local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
   vim.fn.setreg('+', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
 end, {}) -- copy filename:line:column
+-- ssh
+add_cmd('FrelS', function() vim.fn.setreg('s', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
+add_cmd('FrelDirS', function() vim.fn.setreg('s', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
+add_cmd('FabsS', function() vim.fn.setreg('s', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
+add_cmd('FabsDirS', function() vim.fn.setreg('s', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
+add_cmd('FonlyS', function() vim.fn.setreg('s', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
+add_cmd('FlineS', function()
+  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+  local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+  vim.fn.setreg('s', fname .. ':' .. tostring(lineNum))
+end, {}) -- copy filename:line
+add_cmd('FcolumnS', function()
+  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+  local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
+  vim.fn.setreg('s', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
+end, {}) -- copy filename:line:column
 
 if utils.IsWSL() then
+  add_cmd('FrelW', function() vim.fn.setreg('w', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
+  add_cmd('FrelDirW', function() vim.fn.setreg('w', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
   add_cmd('FabsW', function() vim.fn.setreg('w', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
   add_cmd('FabsDirW', function() vim.fn.setreg('w', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
   add_cmd('FonlyW', function() vim.fn.setreg('w', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename

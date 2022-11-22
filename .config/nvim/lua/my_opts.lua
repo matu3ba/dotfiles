@@ -10,7 +10,8 @@ local function load_options()
     mapleader = ' ',
     material_style = 'lighter', -- default, darker, lighter, oceanic, deep ocean, palenight
     material_lighter_contrast = false,
-    nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb workaround: autosearch breaks plugin
+    nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
+    nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
     --coq_settings = { auto_start = true },
     --doge_mapping = "<leader>do"; --idea get doge to work
     --netrw_browse_split = 0
@@ -80,6 +81,7 @@ local function load_options()
 
   -- :retab just works, so no need for extab
   --set softtabstop=4
+  --:lua vim.env.LD_LIBRARY_PATH="./lib", :let $LD_LIBRARY_PATH = "./lib"
 end
 
 load_options()
