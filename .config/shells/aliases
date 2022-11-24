@@ -208,8 +208,11 @@ alias rgv='rg --vimgrep'
 #find ./ -type f -perm /1 -exec rm {} \;
 # find files with regex on busybox:
 #find ./ -regex '.*lighttpd.*'
-# find files with exec bit and delete unless the script
-#fd -E -maxdepth 1 clean.sh -t x -x rm {} \;
+# ignore files
+#find . ! -name '*.html' ! -path '*.svn*' -exec grep 'SearchString' {} /dev/null \;
+
+# find files with exec bit and delete unless the script (exluding bit)
+#fd -E excludepattern -maxdepth 1 clean.sh -t x -x rm {} \;
 # fd: find files based on extension and delete ({} is implicit if not given)
 #fd -I -e o -t f -x rm {}
 # fd: find files based on regex and delete (implicit {})

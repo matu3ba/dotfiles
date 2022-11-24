@@ -118,6 +118,7 @@ alias g='git'
 alias ga='git add'
 alias gaa='git add -A'
 alias gap='git apply'
+alias gapr='git apply -R'
 
 # TODO: provide a hydra on worktree scripts or git commands in general
 alias gb='git branch'

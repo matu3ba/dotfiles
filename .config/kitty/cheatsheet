@@ -14,3 +14,5 @@ ctrl + shift + 1,2,3,4 select pane
 shift+ctrl+click       open output in pager
 
 Seaching: not natively supported. requires plugin.
+
+kitty --debug-font-fallback

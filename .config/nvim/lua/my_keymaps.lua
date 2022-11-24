@@ -21,7 +21,7 @@ local map = vim.api.nvim_set_keymap
 -- :helpgrep|Telescope help_tags and map quickfixlist cnext and cprev + getting through search history
 -- C-n, C-p next,previous line, C-m newline beginning
 -- C-i, C-o next previous cursor position list
--- C-d|u|y|e down|up|small up|small down|
+-- C-d|u|y|e down|up|small up|small down| -> 20C-d sets to 20 lines, max height/2
 --https://www.hillelwayne.com/post/intermediate-vim/
 
 -- enable the following once which-key fixes

@@ -109,6 +109,8 @@ return require('packer').startup(function()
   -- press <CR> to mark match at cursor ignored
   -- navigate without changing with C-j, C-k
   -- ga: change all occurences
+  -- TODO handroll debugger control for gdb via server and pipe stuff to buffer
+  -- TODO command to extract debug points out of gdb (visualize shoudl work fine)
   use { 'ThePrimeagen/harpoon' } -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
 
   ---- telescope ----
