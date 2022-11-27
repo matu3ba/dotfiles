@@ -48,6 +48,8 @@ To trace file descriptor info, use
 strace -f -e trace=%desc -yy CMD
 strace -f -e trace=%desc -yy ./build/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone &> debug.strace
 strace -f -e trace=%desc -yy ./relbuild/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone &> release.strace
+To trace children and with file descriptor info
+strace -ff -yy
 
 Trace and debug system ressources (memory, file descriptors etc): Valgrind
     -v                              increase verbosity level

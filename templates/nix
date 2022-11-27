@@ -49,3 +49,15 @@ $ nix develop
 warning: Git tree '/home/user/dev/git/zig/zig/master' is dirty
 error: getting status of '/nix/store/17iqqnm1l9admxzbpc9rgdz7fq7pkr2y-source/flake.nix': No such file or directory
 ```
+
+Looking very useful:
+https://github.com/nh2/nixos-vm-building
+https://github.com/m-bdf/nixos-init-freedom
+https://github.com/cachix/devenv
+https://github.com/tweag/nickel, successor to nix, but very early mvp 0.1
+
+
+https://blog.wesleyac.com/posts/the-curse-of-nixos
+bad:
+- 1. own programming language, complicated and annoying to understand
+- 2. no real isolation (only path hackery), but overlayfs on Linux itself has many limitations (paths and stacking)
