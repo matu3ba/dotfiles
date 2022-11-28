@@ -1,0 +1,34 @@
+" Based on https://tlvince.com/vim-respect-xdg with some tweaks
+" for syntax highlighting, but otherwise minimal.
+" Annoyingly, git bash has no $XDG_CACHE_HOME etc, so we use $HOME/.cache etc.
+
+" Setup: mkdir -p $HOME/.cache/vim/{undo,swap,backup} $HOME/.config/vim $HOME/.local/share
+" Usage: export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+"        call vim
+
+if empty("$XDG_CACHE_HOME")
+  let $XDG_CACHE_HOME="$HOME/.cache"
+endif
+if empty("$XDG_CONFIG_HOME")
+  let $XDG_CONFIG_HOME="$HOME/.config"
+endif
+if empty("$XDG_DATA_HOME")
+  let $XDG_DATA_HOME="$HOME/.local/share"
+endif
+
+set directory=$XDG_CACHE_HOME/vim/swap,~/,/tmp
+set backupdir=$XDG_CACHE_HOME/vim/backup,~/,/tmp
+set undodir=$XDG_CACHE_HOME/vim/undo,~/,/tmp
+set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
+let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
+
+
+"   Highlighting
+" Setup:
+" mkdir -p $HOME/.config/vim
+" git clone https://github.com/ziglang/zig.vim $HOME/.config/vim/zig.vim
+" :source $MYVIMRC
+if isdirectory($HOME/.config/vim/zig.vim)
+  set runtimepath^=$HOME/.config/vim/zig.vim
+endif
