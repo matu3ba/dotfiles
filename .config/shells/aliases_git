@@ -187,6 +187,8 @@ alias gs='git status'
 alias gsp='git status --porcelain'
 alias gcl='git clone'
 
+alias grbm='git rebase master'
+alias grbM='git rebase main'
 alias grbi='git rebase -i'
 alias grbisq='git rebase -i --autosquash'
 alias gsw='git switch'

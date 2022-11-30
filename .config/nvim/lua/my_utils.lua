@@ -171,7 +171,7 @@ end
 -- without match, a message is printed
 -- @param backwards boolean if search is forwards or backwards
 -- @param register register where content is copied to
-_G.CopyMatchingChar = function(backwards, register)
+M.CopyMatchingChar = function(backwards, register)
   local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
   local crow = tup_rowcol[1]
   local ccol = tup_rowcol[2] -- 0 indexed => use +1

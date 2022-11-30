@@ -23,6 +23,9 @@ set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
 set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
 let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
 
+"   Clipboard
+set clipboard=unnamedplus " make all yanking/deleting automatically copy to system cliboard
+" :echo has('clipboard') = 0 " no clipboard set
 
 "   Highlighting
 " Setup:

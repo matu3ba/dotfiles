@@ -59,7 +59,7 @@ local function load_options()
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
-  vim.wo.colorcolumn = '80'
+  vim.wo.colorcolumn = '80,120,150'
   vim.wo.list = true
   vim.wo.listchars = 'tab:⇨|,nbsp:␣,trail:‗,extends:>,precedes:<' --eol:↵, tab:|⇆⇥_, tab:‗‗,
   vim.wo.number = true

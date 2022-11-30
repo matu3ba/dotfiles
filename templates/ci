@@ -17,6 +17,9 @@ The ideal solution:
 - Atomiticity of artifact cache access (per node)
 - Process limitation of harware usage
 
+=> build DSL from source + DSL has automatic sandboxing checked via Linter, such
+that one only needs to review non-sandboxed parts (authentication cache etc).
+
 jenkins
 - custom DSL requires still clicking around things
 - webhooks are annoying to setup: "Generic Webhook Trigger"

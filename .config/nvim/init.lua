@@ -160,8 +160,11 @@ callback = function()
 -- remove trailing carriage returns (^M), ie of windows
 --:e ++ff=dos
 --:set ff=unix
+--C-vC-m inserts ^M
 -- convert windows line ending to linux:
 -- :%s/^M$//
+-- somehow this also works
+-- :%s/\r//g
 -- convert tabs to spaces:
 -- :retab
 -- convert command with space to newline with \
@@ -169,6 +172,7 @@ callback = function()
 -- convert back cmd separated by \ to space separated commands
 -- /\\\n/ /
 -- convert symbols into hex: !%xxd
+-- show non-text ascii symbols with :ascii
 
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$
