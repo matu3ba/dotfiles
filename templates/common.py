@@ -201,3 +201,28 @@ def openLogHandle(log_dir: str, proc_name: str) -> IO[str]:
         path = os.path.join(log_dir, proc_name+str(i)+".log")
     print("new file: ", path)
     return open(path, 'w+')
+
+def unpackoperator():
+  carCompany = ['Audi','BMW','Lamborghini']
+  print(*carCompany)
+  techStackOne = {"React": "Facebook", "Angular" : "Google", "dotNET" : "Microsoft"}
+  techStackTwo = {"dotNET" : "Microsoft"}
+  mergedStack = {**techStackOne, **techStackTwo}
+  print(mergedStack)
+
+
+## read config file json
+def readWconf(filepath: str) -> dict:
+  fh = os.open(filepath, os.O_RDONLY)
+  fcontent = os.read(fh, 100000)
+  os.close(fh)
+  json1 = json.loads(fcontent)
+  return json1
+
+## write config file json
+def writeWconf(conf: dict, filepath, **fmt) -> int:
+  defaultFmt = { 'indent': 2, 'sort_keys': True, 'ensure_ascii': False }
+  fmt = { **defaultFmt, **fmt }
+  with open(filepath, 'w+', encoding='utf-8') as fph:
+      json.dump(conf, fph, ensure_ascii=fmt['ensure_ascii'], indent=fmt['indent'], sort_keys=fmt['sort_keys'])
+  return 0

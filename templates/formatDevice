@@ -4,3 +4,4 @@ FAT32 partitioning
 sudo parted /dev/sdb --script -- mklabel msdos
 sudo parted /dev/sdb --script -- mkpart primary fat32 1MiB 100%
 sudo mkfs.vfat -F32 /dev/sdb1
+sudo parted /dev/sdb --script print

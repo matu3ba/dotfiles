@@ -20,6 +20,7 @@ auditctl -l
 auditctl -W <path>
 
 sleep 10m && systemctl suspend
+journalctl -n 200
 
 auditd (access monitoring framework)
 bpftrace (general tracing solution to create + run ebpf programs)
@@ -79,3 +80,15 @@ wireshark file.tcpdump
 
 Accurate Performance measuring:
 sudo perf stat -r 10 -d alacritty -e false
+
+Hot/Cold Flame Graphs (separate, mixed, integrated)
+git clone https://github.com/brendangregg/FlameGraph
+cd FlameGraph
+
+perf record -g build
+perf script > out.perf
+./stackcollapse-perf.pl out.perf > out.folded
+./flamegraph.pl out.folded > flamegraph.svg
+
+https://github.com/flamegraph-rs/flamegraph
+which has also a nice guide.

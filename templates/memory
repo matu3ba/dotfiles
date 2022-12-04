@@ -23,3 +23,6 @@ potentially ambiguous cases
 see https://github.com/ziglang/zig/issues/6396#issuecomment-1097287569
 
 3. simpler things?
+
+CppMem: Interactive C/C++ memory model
+http://svr-pes20-cppmem.cl.cam.ac.uk/cppmem/

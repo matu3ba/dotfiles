@@ -1,3 +1,7 @@
 HACK
 TODO
 FIXME
+
+c/c++
+cpplint, flawfinder
+hefty dependency: oclint
