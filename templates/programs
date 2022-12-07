@@ -18,3 +18,14 @@ git clone --depth 1 https://github.com/adobe-fonts/source-code-pro.git ~/.fonts/
 fc-cache -f -v ~/.fonts/adobe-fonts/source-code-pro
 fc-list | grep -i SourceCodePro
 echo "finished installing"
+
+Install CMake from source to workaround to old versions:
+cd ~/dev/git/cpp
+git clone https://github.com/Kitware/CMake
+# either
+# ./bootstrap && make && sudo make install
+mkdir -p build
+cd build
+cmake -GNinja -DCMAKE_BUILD_TYPE="RelWithDebInfo" ..
+ninja
+PATH="${HOME}/dev/git/cpp/CMake/bin:${PATH}"

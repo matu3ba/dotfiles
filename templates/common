@@ -5,3 +5,16 @@ FIXME
 c/c++
 cpplint, flawfinder
 hefty dependency: oclint
+
+IsOverlapping( for [start,end) intervals]:
+assume: intervals
+       | |
+     | |
+dont overlap, xa < xb and ya < yb
+      ya       yb
+      |--------|
+xa |--|xb
+   |----|
+         |----|
+ya > xa => ya - xa < xb - xa ?
+else    => xa < yb ?

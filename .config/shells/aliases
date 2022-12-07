@@ -204,6 +204,7 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 #alias l='exa'
 alias du='dust'
 alias rgv='rg --vimgrep'
+alias rgi="rg -g '!tests' -g '!src/include'"
 #alias rgv='rg --vimgrep'
 # replace in sed without regex
 #find ./ -maxdepth 1 -type f -exec sed 's|literal_pattern|replacement_string|g' {} \;
