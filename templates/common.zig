@@ -134,3 +134,11 @@ fn usageSortContext() void {
     defer skipl_index.deinit();
     std.sort.sort(usize, skipl_index.items, &skiplist, sortTokenRange);
 }
+
+// explicit error set
+fn somefunction() error{errname}!void {}
+
+// in build.zig use -D (as desribed in zig build -h)
+// zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
+// Otherwise for libstd tests, use
+// zig test lib/std/fmt.zig --zig-lib-dir lib --main-pkg-path lib/std

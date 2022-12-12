@@ -21,6 +21,9 @@ end
 
 using the printing:
 p variable
+p/t variable
+p/x variable
+
 
 ps -p pid (posix)
 pgrep pname

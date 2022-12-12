@@ -29,3 +29,8 @@ cd build
 cmake -GNinja -DCMAKE_BUILD_TYPE="RelWithDebInfo" ..
 ninja
 PATH="${HOME}/dev/git/cpp/CMake/bin:${PATH}"
+
+Image viewer
+feh on X11 or swaybg on Wayland
+git clone https://git.finalrewind.org/feh
+git clone https://github.com/swaywm/swaybg
