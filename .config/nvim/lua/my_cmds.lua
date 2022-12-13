@@ -29,9 +29,9 @@ local df_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/'
 add_cmd('Dotfiles', df_edit, {})
 local df_configs_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/'
 add_cmd('Config', df_configs_edit, {})
-local aliases_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases/'
+local aliases_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases'
 add_cmd('Aliases', aliases_edit, {})
-local aliases_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases_git/'
+local aliases_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases_git'
 add_cmd('AliasesGit', aliases_git_edit, {})
 local templates_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/templates/'
 add_cmd('Templates', templates_git_edit, {})
