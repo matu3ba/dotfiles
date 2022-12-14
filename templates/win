@@ -1,2 +1,12 @@
 Perf traces
 https://github.com/google/UIforETW
+
+workaround admin privileges for installer files (.exe):
+insert into run.bat with :set encoding=ansi
+set __COMPAT_LAYER=RunAsInvoker
+start INSTALLER.exe
+and call it from cmd.exe as run.bat
+
+zig:
+Look into the ci scripts for windows https://github.com/ziglang/zig/tree/master/ci
+and get https://ziglang.org/deps/zig+llvm+lld+clang-x86_64-windows-gnu-$VERSION.zip

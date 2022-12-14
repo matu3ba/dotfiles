@@ -85,7 +85,8 @@ add_test(NAME test1 COMMAND test1)
 
 
 # Debugging
-# --trace,  --trace-expand, --debug-output
+# --trace,  --trace-expand, --debug-output, --debug-trycompile
+# And check the created log files.
 # run cmake with -LH to get all variables printed after configuration.
 
 # function(PRINT_VAR VARNAME)
