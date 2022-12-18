@@ -1,19 +1,10 @@
 require('nvim-treesitter.configs').setup {
   -- ensure_installed = 'maintained',
   ensure_installed = { 'bash', 'c', 'cpp', 'julia', 'python', 'rust', 'lua', 'typescript', 'vim', 'zig' },
+  auto_install = true,
   highlight = {
     enable = true,
-    -- disable = function(lang, bufnr)
-    --   -- local too_many_lines = vim.api.nvim_buf_line_count(bufnr) > 50000
-    --   -- local slow_lang = (lang == 'cpp' or lang == 'c' or lang == 'rust' or lang == 'zig')
-    --   -- return lang == 'latex' or (slow_lang and too_many_lines)
-    --   return vim.api.nvim_buf_line_count(bufnr) > 1000
-    -- end,
-    --"rust", "zig"
-    --custom_captures = {
-    --  -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
-    --  ["foo.bar"] = "Identifier",
-    --},
+    additional_vim_regex_highlighting = false,
   },
   --incremental_selection = {
   --  enable = true,

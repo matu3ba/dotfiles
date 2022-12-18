@@ -36,7 +36,8 @@ return require('packer').startup(function()
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
   use { 'echasnovski/mini.ai', config = function() require("mini.ai").setup({}) end, }
   --use { 'echasnovski/mini.completion' } -- TODO: think how to configure nvim-cmp to use something else than C-n|p
-  ---- shiny stuff ----
+
+  use { 'tpope/vim-fugitive', }
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
   use { 'lewis6991/gitsigns.nvim', branch = 'main' }

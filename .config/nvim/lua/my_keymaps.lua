@@ -42,6 +42,7 @@ local map = vim.api.nvim_set_keymap
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
+map('n', '<leader>ex', [[<cmd>Dirbuf<CR>]], opts) -- fast saving of local file
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
@@ -53,7 +54,13 @@ map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary sear
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- idea |copy_history:| keypress to extract search properly from history without \V
 --map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
+
+-- '>+1<CR>gv=gv'  move text selection up with correct indent
+-- '<-2<CR>gv=gv'  move text selection down with correct indent
+
+map('n', 'J', 'mzJ`z', opts) -- J(join) with cursor remaining at same plac
 map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor to next line
+map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 -- idea parse current line until no ending \ inside register instead of blindly executing
 --map('n', '<leader>e', [[:exe getline(line('.'))<CR>]], opts) -- Run the current line as if it were a command
 --nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
@@ -68,7 +75,8 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
 map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL)
-map('n', 'C-p', 'p`[', opts) -- ] paste without cursor movement
+map('n', '<C-p>', 'p`[', opts) -- ] paste without cursor movement
+map('n', '<leader>sr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], opts)
 -- map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
 -- C-w delete word, C-y paste word, C-p,C-n,C-i complete path
 -- C-h delete last character,
@@ -321,7 +329,7 @@ map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]]
 ---- leap ----
 map('n', '-', '<Plug>(leap-forward)', {}) -- -> forward
 map('n', '_', '<Plug>(leap-backward)', {}) -- _> inverse forward
-map('n', 'gs', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
+map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
 
 ---- gitsigns ---- in file git operations (:Gitsigns debug_messages)
 -- mappings are workaround of https://github.com/lewis6991/gitsigns.nvim/issues/498
@@ -340,6 +348,9 @@ map('n', 'gs', '<Plug>(leap-cross-window)', {}) -- search and go across the wind
 --map('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>', opts)
 --map('n', '<leader>hD', '<cmd>Gitsigns diffthis "~"<CR>', opts)
 --map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>', opts)
+
+-- vim-fugitive
+map('n', '<leader>gs', '<cmd>Git<CR>', opts)
 
 ---- harpoon ---- buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140

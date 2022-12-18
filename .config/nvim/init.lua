@@ -62,6 +62,8 @@ end
 -- To match escaped string symbols of JSON use /\\".\{-}\\"
 -- and not /\\".*\\"
 -- literal substitution requires very non magic mode https://stackoverflow.com/a/46235399
+-- replacement with argument:
+-- %s/\(.\)word/replacement \1
 -- TODO: selection + substitute selection with (simplify)
 
 -- stylua: ignore start
