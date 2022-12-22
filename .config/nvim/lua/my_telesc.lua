@@ -43,15 +43,16 @@ telescope.setup {
 }
 
 local ok_fzf, _ = pcall(require, 'fzf_lib')
-local ok_gh, _ = pcall(require, 'gh')
-local ok_dir, _ = pcall(require, 'dir-telescope')
+local ok_gh, _ = pcall(require, 'gh') -- also fails if github cli not installed
+local ok_undo, _ = pcall(require, 'telescope-undo')
 
-if not ok_fzf or not ok_gh or not ok_dir then
-  return
-end
-telescope.load_extension 'fzf'
-telescope.load_extension 'gh'
-telescope.load_extension 'dir'
+if ok_fzf then telescope.load_extension 'fzf' end
+if ok_gh then telescope.load_extension 'gh' end
+if ok_undo then telescope.load_extension 'undo' end
+
+-- issue #6 still pending (unusable)
+-- local ok_dir, _ = pcall(require, 'dir-telescope')
+-- if ok_dir then telescope.load_extension 'dir' end
 -- telescope.load_extension 'hop'
 
 --telescope.load_extension 'send_to_harpoon'

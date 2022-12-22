@@ -1,14 +1,14 @@
 -- stylua: ignore start
 return require('packer').startup(function()
-  -- use { 'lewis6991/impatient.nvim' }
   ---- general ----
-  --use { 'nanotee/nvim-lua-guide' }
   -- mkdir -p ~/.local/share/nvim/site/pack/packer/start/
   -- git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+  -- TODO change to folke/lazy.nvim
   use { 'wbthomason/packer.nvim' } -- WIP : 'nvim-telescope/telescope-packer.nvim'
   use { 'marko-cerovac/material.nvim' } --<l>ma
   -- TODO: publish the git worktree helper scripts
   ---- lsp+competion ----
+  -- TODO change to VonHeikemen/lsp-zero.nvim and adjust
   use { 'williamboman/mason.nvim', config = function() require("mason").setup() end, }
   use { 'neovim/nvim-lspconfig' } --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   ---- completions ----
@@ -133,9 +133,13 @@ return require('packer').startup(function()
   use { 'ziglang/zig.vim' } -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
   ---- Organization
   use { 'jbyuki/venn.nvim' } --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
+  use { 'debugloop/telescope-undo.nvim' } -- browse via <C-n>,<C-p>, <C-CR> revert state, <CR> yank additions, <S-CR> yank deletions
   use { 'mbbill/undotree' } -- :UndotreeToggle, rarely used (<l>u unmapped)
   -- As of now, which-key breaks terminals
   use { 'folke/which-key.nvim', config = function() require('which-key').setup() end, } -- :Telescope builtin.keymaps
+
+  -- lua hacking
+  -- chrigieser/nvim-genghis convenience file operations in lua
 
   -- use { 'smjonas/inc-rename.nvim' } -- idea setup
   -- use { 'smjonas/live-command.nvim' } -- idea setup

@@ -6,7 +6,7 @@ c/c++
 cpplint, flawfinder
 hefty dependency: oclint
 
-IsOverlapping( for [start,end) intervals]:
+isOverlapping( for [start,end) intervals]:
 assume: intervals
        | |
      | |
@@ -18,3 +18,27 @@ xa |--|xb
          |----|
 ya > xa => ya - xa < xb - xa ?
 else    => xa < yb ?
+
+intersection( for [start,end) intervals]:
+[max(xa,ya),min(xb,yb)]
+
+With above formula, detecting overlaps of a recurring timer interval and an absolute one:
+Given fixed interval [    ]  and variable interval [  ]
+                     ya   yb                       xa xb
+1. overlap, if ya > xa => ya - xa < xb - xa ?
+2.             ya <=xa => xa < yb ?
+case 1:
+search for last timestep with xa < ya:
+    xa + x*reocc <= ya
+<=>           x  <= (ya-xa)/reocc
+<=>           x  = btm((ya-xa)/reocc)
+<=>           x  = (ya-xa)/reocc  [for integers]
+and manually check, if xa + x*reocc == ya.
+If not: check ya - xa < xb - xa ? (then overlap with x).
+case 2:
+search for first timestep with xa >= ya:
+    xa + x*reocc >= ya
+<=>           x  >= (ya-xa)/reocc
+<=>           x  = ceil((ya-xa)/reocc)
+<=>           x  = (ya-xa+1)/reocc  [for integers]
+        check xa < yb ?

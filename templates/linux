@@ -92,3 +92,15 @@ perf script > out.perf
 
 https://github.com/flamegraph-rs/flamegraph
 which has also a nice guide.
+
+Portable performance estimation (simulation of execution + cache behavior):
+(Valgrind analysis makes code 10x-100x slower)
+callgrind collects statistics about cache misses, callgrind extends function info
+valgrind --tool=callgrind --fn-skip="0x*" --fn-skip="llvm*"
+
+KCachegrind visualizes performance in a callgraph, callee map, source code and machine code views
+* requires X11 and KDE libs
+requires --dump-instr=yes|no
+--simulate-cache=[yes|no]
+--callgrind-out-file=<file>
+valgrind --tool=callgrind --help
