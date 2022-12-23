@@ -8,7 +8,7 @@ local function load_options()
     vim_apm_log = true, -- ???
     --vim_be_good_log_file = true,
     mapleader = ' ',
-    material_style = 'lighter', -- default, darker, lighter, oceanic, deep ocean, palenight
+    material_style = 'darker', -- default, darker, lighter, oceanic, deep ocean, palenight
     material_lighter_contrast = false,
     nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
     nvimgdb_use_find_executables = 0, -- nvim-gdb too slow

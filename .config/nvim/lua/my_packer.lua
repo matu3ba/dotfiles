@@ -40,7 +40,7 @@ return require('packer').startup(function()
   use { 'tpope/vim-fugitive', }
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
   --use { 'lewis6991/gitsigns.nvim', branch = 'main', config = function() require('gitsigns').setup() end }
-  use { 'lewis6991/gitsigns.nvim', branch = 'main' }
+  -- use { 'lewis6991/gitsigns.nvim', branch = 'main' }
   --use { 'tpope/vim-fugitive' } -- idea try without, find plugin for in buffer interative rebasing
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
@@ -51,7 +51,7 @@ return require('packer').startup(function()
   -- leap: enter repeates, tab reverses the motion
   -- (unused default breaks nvim-surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
-  use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
+  -- use { 'ggandor/leap.nvim', branch = 'main', } -- repeat action not yet supported
 
   -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
   -- :GdbStart gdb -tui -x SCRIPT exec
