@@ -1,7 +1,7 @@
 ---- Dependencies ----
 local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then
-  error('Please install plenary for all features.')
+  print('Please install plenary for all features.')
 end
 local utils = require 'my_utils'
 

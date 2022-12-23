@@ -1,21 +1,32 @@
 -- init.lua --
-local has_packer, _ = pcall(require, 'packer')
-if has_packer then
-  require 'my_packer'
-else
-  error 'Please install packer, instructions in my_packer.lua'
-end
 require 'my_opts'
--- require 'my_lsp' -- setup in my_nvimcmp.lua
-require 'my_telesc'
-require 'my_nvimcmp'
---require('my_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
---require('my_dap') -- idea setup one small step for vimkind
-require 'my_keymaps'
+-- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim//lazy/lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local has_lazy = vim.loop.fs_stat(lazypath)
+if not has_lazy then
+  print 'Please install lazy, instructions in init.lua'
+else
+  vim.opt.runtimepath:prepend(lazypath)
+  require("lazy").setup("my_plugins", {})
+  -- TODO add missing pcalls/checks for plugin existence
+  require 'my_nvimcmp'
+  require('my_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+  require 'my_telesc'
+  require 'my_gitsign'
+  require 'my_hydra'
+  vim.cmd [[colorscheme material]]
+end
+
 require 'my_cmds'
-require 'my_gitsign'
-require 'my_hydra'
-vim.cmd [[colorscheme material]]
+require 'my_keymaps'
+-- local has_packer, _ = pcall(require, 'packer')
+-- if has_packer then
+--   require 'my_packer'
+-- else
+--   error 'Please install packer, instructions in my_packer.lua'
+-- end
+-- require 'my_lsp' -- setup in my_nvimcmp.lua
+--require('my_dap') -- idea setup one small step for vimkind
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
 -- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
