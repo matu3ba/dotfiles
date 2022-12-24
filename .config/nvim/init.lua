@@ -9,23 +9,17 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require("lazy").setup("my_plugins", {})
   -- TODO add missing pcalls/checks for plugin existence
-  require 'my_nvimcmp'
   require('my_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'
   require 'my_hydra'
+  require 'my_lsp' -- setup in my_nvimcmp.lua
   vim.cmd [[colorscheme material]]
 end
 
 require 'my_cmds'
 require 'my_keymaps'
--- local has_packer, _ = pcall(require, 'packer')
--- if has_packer then
---   require 'my_packer'
--- else
---   error 'Please install packer, instructions in my_packer.lua'
--- end
--- require 'my_lsp' -- setup in my_nvimcmp.lua
+--require 'my_nvimcmp'
 --require('my_dap') -- idea setup one small step for vimkind
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
@@ -46,7 +40,6 @@ end
 end
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
--- TODO: simple task runner
 -- TODO: simple diff that respects gitignore
 -- TODO: build + test + spawn suite for debugging
 -- idea: investigate use cases of ropes and implement one for Zig <-- defered

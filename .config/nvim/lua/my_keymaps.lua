@@ -252,22 +252,7 @@ map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in termin
 --nnoremap <leader>db :Telescope dap list_breakpoints<CR>
 
 ---- lspconfig ----
--- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-map('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
-map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts) -- **g**oto definition
-map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
---map('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts) -- **g**oto signature
-map('n', 'gr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts) -- **g**oto rename
-map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts) -- Kuckstu definition
-map('n', '[e', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts) -- next error
-map('n', ']e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts) -- previous error
-map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- code action
-map('n', '<leader>cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts) -- line diagnostics
-map('n', '<leader>rf', '<cmd>lua vim.lsp.buf.references()<CR>', opts) -- references
-map('n', '<leader>ql', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts) -- buffer diagnostics to location list
-map('n', '<leader>qf', '<cmd>lua vim.diagnostic.setqflist()<CR>', opts) -- all diagnostics to quickfix list
-map('n', '<leader>fo', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts) -- references
-map('n', '<leader>re', '<cmd>LspRestart<CR>', opts) -- restart lsp
+-- see in lua/my_lsp.lua lsp.on_attach
 
 ---- ctags ----
 -- switch between source and header with `:e %<.c` with %< representing the current file without the ending

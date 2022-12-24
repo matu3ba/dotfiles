@@ -3,7 +3,7 @@ return {
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/size/pack
-  { "marko-cerovac/material.nvim", dependencies = { "nvim-lua/plenary.nvim", lazy = false }, } --<l>ma
+  { "marko-cerovac/material.nvim", dependencies = { "nvim-lua/plenary.nvim", lazy = false }, }, --<l>ma
   -- TODO: publish the git worktree helper scripts
   { "williamboman/mason.nvim", config = function() require("mason").setup() end },
 
@@ -15,15 +15,32 @@ return {
   -- C-x + C-o                user function (omnifunction)
   -- C-x + C-u                user function (completefunc)
   -- C-x + C-d | C-i          macros, include paths
-  { "lhrsh7th/nvim-cmp", },
-  { "hrsh7th/cmp-nvim-lsp", },
-  { "hrsh7th/cmp-path" } -- performance problems (no timeout etc)
-  -- { "hrsh7th/cmp-buffer" } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
-  { "hrsh7th/cmp-cmdline", }, -- completions for :e, /, buffer are broken
+  { "VonHeikemen/lsp-zero.nvim", dependencies = {
+      -- LSP Support
+      {"neovim/nvim-lspconfig"},
+      {"williamboman/mason.nvim"},
+      {"williamboman/mason-lspconfig.nvim"},
+      -- Autocompletion
+      {"hrsh7th/nvim-cmp"},
+      {"hrsh7th/cmp-buffer"},
+      {"hrsh7th/cmp-path"},
+      {"saadparwaiz1/cmp_luasnip"},
+      {"hrsh7th/cmp-nvim-lsp"},
+      {"hrsh7th/cmp-nvim-lua"},
+      -- Snippets
+      {"L3MON4D3/LuaSnip"},
+      {"rafamadriz/friendly-snippets"},
+  }},
+
+  -- { "lhrsh7th/nvim-cmp", },
+  -- { "hrsh7th/cmp-nvim-lsp", },
+  -- { "hrsh7th/cmp-path" } -- performance problems (no timeout etc)
+  -- -- { "hrsh7th/cmp-buffer" } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
+  -- { "hrsh7th/cmp-cmdline", }, -- completions for :e, /, buffer are broken
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
-  { "echasnovski/mini.indentscope", config = function() require("mini.indentscope").setup({}) end, lazy = true },
+  { "echasnovski/mini.indentscope", config = function() require("mini.indentscope").setup({}) end },
   -- ga no preview, gA preview
   { "echasnovski/mini.align", config = function() require("mini.align").setup({}) end, lazy = true },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
