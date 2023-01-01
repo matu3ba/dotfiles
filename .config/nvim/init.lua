@@ -9,7 +9,7 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require("lazy").setup("my_plugins", {})
   -- TODO add missing pcalls/checks for plugin existence
-  require('my_treesitter') -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+  require 'my_treesitter'  -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'
   require 'my_hydra'
@@ -91,7 +91,7 @@ callback = function()
 
 -- keywords (capitalized): hack,todo,fixme
 
--- type() and inspect()
+-- type(), inspect(), :Inspect, vim.show_pos(), vim.inspect_pos()
 -- idea Repltikzbuild: compare mtimes
 -- check hash implementations in lua5.1 for incremental builds
 -- xxhash has luajit implementation -> not needed, only mtime comparison
@@ -109,7 +109,7 @@ callback = function()
 -- :h builtin-function-list
 -- :h lua-fs (os.path python functions)
 
--- Debugging Lua types and values
+-- Debugging Lua types + values, see also ./lua/my_utils.lua dump, printPairsToTmp, printIpairsToTmp
 -- print(type(fd_exec[1]))
 -- :g/.*DEBUG$/del
 -- local fp = assert(io.open("/tmp/tmpfile", "w")) --DEBUG
@@ -120,7 +120,6 @@ callback = function()
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp:close()                                      --DEBUG
-
 -- local fp = assert(io.open("/tmp/tmpfile", "w")) --DEBUG
 -- for index,tables in ipairs(repo_paths) do       --DEBUG
 --   fp:write(index)                               --DEBUG
@@ -129,7 +128,12 @@ callback = function()
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp:close()                                      --DEBUG
---
+-- Debugging Environment variables
+-- :redir @a
+-- :fancy command
+-- :redir END
+-- visual mode: "ap
+
 -- Debugging Python types
 -- print(type(tokenInfo_json))
 -- print(tokenInfo_obj.__dict__)

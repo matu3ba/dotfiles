@@ -32,11 +32,8 @@ return {
       {"rafamadriz/friendly-snippets"},
   }},
 
-  -- { "lhrsh7th/nvim-cmp", },
-  -- { "hrsh7th/cmp-nvim-lsp", },
-  -- { "hrsh7th/cmp-path" } -- performance problems (no timeout etc)
-  -- -- { "hrsh7th/cmp-buffer" } -- broken: https://github.com/hrsh7th/cmp-buffer/issues/54
-  -- { "hrsh7th/cmp-cmdline", }, -- completions for :e, /, buffer are broken
+  -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)
+  { "hrsh7th/cmp-cmdline" }, -- completions for :e, /
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99

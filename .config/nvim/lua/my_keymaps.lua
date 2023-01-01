@@ -42,7 +42,7 @@ local map = vim.api.nvim_set_keymap
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
-map('n', '<leader>ex', [[<cmd>Dirbuf<CR>]], opts) -- fast saving of local file
+map('n', '<leader>ex', [[<cmd>Dirbuf<CR>]], opts) -- fast :Dirbuf
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
@@ -85,6 +85,10 @@ map('n', '<leader>sr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], o
 -- C-a,C-f,C-g,C-k,C-l,C-v,C-b free in emacs mode
 map('t', '<C-q>', [[<C-\><C-n>]], opts) -- Quit terminal editing
 map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quit And enter windowing
+
+-- treesitter
+-- see lua/my_treesitter.lua
+-- gV node incremental selection, gS scope incremental selection
 
 -- pasting without moving cursor: p`[       <<<--- without ]
 

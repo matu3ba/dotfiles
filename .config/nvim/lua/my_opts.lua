@@ -30,6 +30,7 @@ local function load_options()
   -- unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
   -- chmod +x /tmp/win32yank.exe
   -- sudo mv /tmp/win32yank.exe /usr/local/bin/
+  -- win HACK: vnoremap <silent> <C-v> :!powershell.exe -command "Get-Clipboard" 2> /dev/null<CR>
   vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
   vim.o.cmdheight = 0 -- shortcut vim.o.ch
   vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim

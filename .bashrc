@@ -63,7 +63,6 @@ _open_files_for_editing() {
 ################################################################################
 
 #### USER alias ####
-. $HOME/dotfiles/.config/shells/oh_aliases
 . $HOME/dotfiles/.config/shells/bash_aliases
 . $HOME/dotfiles/.config/shells/aliases
 . $HOME/dotfiles/.config/shells/aliases_git
@@ -74,21 +73,19 @@ if [ $XDG_SESSION_TYPE == 'wayland' ] ; then
   export CLUTTER_BACKEND='wayland'
 fi
 
-PATH=$PATH:"${HOME}/.cargo/bin"
-PATH=$PATH:"${HOME}/.local/bin"
-PATH=$PATH:"${HOME}/.local/appimages"
-PATH=$PATH:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-PATH=$PATH:"${HOME}/dev/git/zi/zig/master/build" # zig stages 0,1,2
-PATH=$PATH:"${HOME}/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
-PATH=$PATH:"${HOME}/.luarocks/bin"
-PATH=$PATH:"${HOME}/.local/lua-language-server/bin"
-PATH=$PATH:"${HOME}/.local/nvim/bin" # neovim testing
-#PATH=$PATH:"${HOME}/dev/git/go/oh" # oh shell: nice introspection, but too slow
-PATH=$PATH:"${HOME}/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
+PATH=$PATH:"$HOME/.cargo/bin"
+PATH=$PATH:"$HOME/.local/bin"
+PATH=$PATH:"$HOME/.local/appimages"
+PATH=$PATH:"$HOME/dev/git/cpp/kakoune/libexec/kak"
+PATH=$PATH:"$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
+PATH=$PATH:"$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
+PATH=$PATH:"$HOME/.luarocks/bin"
+PATH=$PATH:"$HOME/.local/nvim/bin" # neovim testing
+PATH=$PATH:"$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
 
 #testing www.ziglang.org
-#PATH=$PATH:"${HOME}"/src/zig-doctest/zig-cache/bin
-#PATH=$PATH:"${HOME}"/src/hugo
+#PATH=$PATH:"$HOME/src/zig-doctest/zig-cache/bin"
+#PATH=$PATH:"$HOME/src/hugo"
 
 # there is no very reliable and simple other way to have ssh agent running
 #eval "$(ssh-agent -s)"
@@ -106,5 +103,3 @@ eval "$(zoxide init bash)" # quickjumper
 # BEGIN_KITTY_SHELL_INTEGRATION
 if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
 # END_KITTY_SHELL_INTEGRATION
-
-alias luamake=/home/misterspoon/.local/lua-language-server/3rd/luamake/luamake

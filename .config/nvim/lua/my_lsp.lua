@@ -10,7 +10,7 @@ lsp.ensure_installed({
 local has_cmp, cmp = pcall(require, 'cmp')
 local has_lspconfig, _ = pcall(require, 'lspconfig')
 if not has_cmp or not has_lspconfig then
-  --error 'Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig'
+  print('Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig')
   return
 end
 
@@ -60,17 +60,17 @@ lsp.on_attach(function(client, bufnr)
   --vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end, opts)
 end)
 
+lsp.configure('zls', {force_setup = true})
 lsp.setup()
 
--- TODO: does not work
--- cmp.setup.cmdline(':', {
---
---   mapping = cmp.mapping.preset.cmdline(),
---   sources = cmp.config.sources(
---   {
---     { name = 'cmdline' },
---   }),
--- })
+cmp.setup.cmdline(':', {
+
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources(
+  {
+    { name = 'cmdline' },
+  }),
+})
 
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- capabilities.textDocument.completion.completionItem.snippetSupport = true

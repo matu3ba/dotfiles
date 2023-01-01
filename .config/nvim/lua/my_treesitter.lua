@@ -1,29 +1,30 @@
 require('nvim-treesitter.configs').setup {
   -- ensure_installed = 'maintained',
-  ensure_installed = { 'bash', 'c', 'cpp', 'julia', 'python', 'rust', 'lua', 'typescript', 'vim', 'zig' },
+  ensure_installed = { 'bash', 'c', 'cpp', 'julia', 'lua', 'python', 'rust', 'typescript', 'vim', 'zig' },
   auto_install = true,
+
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-  --incremental_selection = {
-  --  enable = true,
-  --  keymaps = {
-  --    init_selection = "gnn",
-  --    node_incremental = "grn",
-  --    scope_incremental = "grc",
-  --    node_decremental = "grm",
-  --  },
-  --},
+  incremental_selection = {
+   enable = true,
+   keymaps = {
+     init_selection = false, --"gnn",
+     node_incremental = "gV", -- node = Vertex incremental
+     scope_incremental = "gS", -- Scope incremental
+     node_decremental = false, --"grm",
+   },
+  },
   indent = {
-    enable = true,
+    enable = false, -- TODO: broken for Zig
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()
   rainbow = {
     enable = true,
     extended_mode = true,
-    max_file_lines = 1000,
+    max_file_lines = 10000,
   },
   --refactor = {
   --  highlight_definitions = { enable = true },
