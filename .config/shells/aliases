@@ -6,12 +6,13 @@ alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
 #alias ls='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
 alias rmmkdbuild='rm -fr build/; mkdir build'
-alias cdnvimplugs='cd ${HOME}/.local/share/nvim/site/pack/packer/start'
 alias mma='${HOME}/dev/git/cpp/mold/build/mold -run make -j$(nproc)'
 alias readcommentsectionELF='readelf -p .comment'
 alias replunderscore='for f in *\ *; do mv "$f" "${f// /_}"; done'
 alias sortby_filesize='echo "find FILE -type f -exec wc -l {} + | sort -rn"'
 alias sus='systemctl suspend'
+alias chmb='chmod +x ./b.sh'
+alias chmt='chmod +x ./t.sh'
 #pidof name, pgrep name, pgrep -P pid, pidstat -p 51648, ls /proc/pid
 #To query ip+port of active processes install net-tools and use
 #netstat -plnt
@@ -82,6 +83,7 @@ alias          dvia='${HOME}/.local/appimages/nvim.appimage -u DEFAULT'
 alias        histup='${HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
 alias       aliases='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
 alias        bashrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
+alias        fishrc='${HOME}/.local/appimages/nvim.appimage "$HOME/.config/fish/config.fish"'
 alias           dfs='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
 alias   aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
 alias   aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
@@ -93,7 +95,7 @@ alias           cvi='${HOME}/.local/nvim/bin/nvim -u NONE'
 alias           dvi='${HOME}/.local/nvim/bin/nvim -u DEFAULT'
 alias      histupvi='${HOME}/.local/nvim/bin/nvim "/var/log/"' # pacman.log or apt/
 alias     aliasesvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
-alias      bashrcvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.bashrc"'
+alias      fishrcvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/fish/config.fish"'
 alias aliases_gitvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_git"'
 alias aliases_nixvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
 alias   templatesvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/templates"'
@@ -129,27 +131,28 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 # Zig
 # Major "--debug-log" targets are: compilation, module, sema, codegen, and link
 # requires debug mode or to set -Dlog=true on compiling Zig
-alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
-#alias  zbcmdeb='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
+#alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
 alias  zbcmdeb='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
-alias  zbcmrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
-alias  zbcmrelsafe='mkdir -p build3/ && cd build3/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
-alias  watchtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
+alias  zbcmrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+#alias   zbcmrs='mkdir -p buildrs/ && cd buildrs/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+alias    zwtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
 
 # the zig-bootstrap version is usually too old to build current master
-# alias  zbdebboot='/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-# alias  zbrelboot='/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 -Dreleaase --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-alias  zbdeb='zig build -p stage3 --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-alias  zbrel='zig build -p stage3 -Dreleaase --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+# alias  zbdebb='/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+# alias  zbrelb='/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 -Dreleaase --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+alias  zbdeb='zig build -p deb --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+alias  zbrel='${HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+#alias   zbrs='${HOME}/dev/git/zi/zig/master/buildrs/stage3/bin/zig build -p rs -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias   zup1='./build/stage3/bin/zig build update-zig1'
-#alias  zbRel='mkdir -p buildRel/ && cd buildRel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+#alias  zbsel='mkdir -p buildsel/ && cd buildsel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 # NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
 #mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
 #mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
 # alias  zblocrel='mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 # alias  zblocdeb='mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
-alias      zig3='./build/stage3/bin/zig'
-alias   zig3rel='./buildrel/stage3/bin/zig'
+alias      zd='./deb/stage3/bin/zig'
+alias      zr='./rel/stage3/bin/zig'
+alias      zn='${HOME}/dev/git/zi/zig/master/rel/bin/zig'
 alias   arocc='${HOME}/dev/git/zi/arocc/zig-out/bin/arocc'
 alias  zigdebc='${HOME}/dev/git/zi/zig/debug/build/stage3/bin/zig'
 alias  zigdeb='${HOME}/dev/git/zi/zig/debug/stage3/bin/zig'
@@ -200,7 +203,7 @@ alias rsync_move='rsync -avz --progress -h --remove-source-files'
 alias rsync_update='rsync -avzu --progress -h'
 alias rsync_synchronize='rsync -avzu --delete --progress -h'
 alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
-# TODO rsync without permissions
+#33 TODO rsync without permissions
 
 # program aliases
 #alias l='exa'

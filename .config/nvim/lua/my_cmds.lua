@@ -38,7 +38,15 @@ local templates_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/templates/'
 add_cmd('Templates', templates_git_edit, {})
 -- we cant or dont want to unify all bashrcs
 local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.bashrc'
+local fishrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/fish/config.fish'
 add_cmd('Bashrc', bashrc_edit, {})
+add_cmd('Fishrc', fishrc_edit, {})
+
+-- fast script hacking
+add_cmd('EB', 'edit ./b.sh', {})
+add_cmd('ET', 'edit ./t.sh', {})
+add_cmd('Epos', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/posix.sh', {})
+add_cmd('Ebash', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/bash.sh', {})
 
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd

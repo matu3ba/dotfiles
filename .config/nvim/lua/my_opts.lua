@@ -24,6 +24,7 @@ local function load_options()
   end
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
+  vim.o.editorconfig_enable = false -- add .editorconfig, see editorconfig.org
   -- based on github.com/neovim/neovim/12092 and wiki
   -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip
   -- curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
@@ -68,6 +69,7 @@ local function load_options()
   vim.wo.signcolumn = 'yes'
   vim.wo.spell = false
   vim.wo.wrap = false
+
 
   vim.bo.spelllang = 'en,de'
   vim.bo.swapfile = false

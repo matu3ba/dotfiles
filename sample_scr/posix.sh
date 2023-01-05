@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -e
+CWD=$(pwd)
+trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM
+
 # unless commands return non-zero status, use
 set -e
 # temporary set

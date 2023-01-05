@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+set -e
+CWD=$(pwd)
+trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM
+
+shopt -s nullglob
+
 # for general posix things, see ./posix.sh
 
 # string/* is used verbatim without match, except we set nullglob

@@ -6,8 +6,6 @@ return {
   { "marko-cerovac/material.nvim", dependencies = { "nvim-lua/plenary.nvim", lazy = false }, }, --<l>ma
   -- TODO: publish the git worktree helper scripts
   { "williamboman/mason.nvim", config = function() require("mason").setup() end },
-
-  { "neovim/nvim-lspconfig" }, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
   ---- completions ----
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
@@ -17,7 +15,7 @@ return {
   -- C-x + C-d | C-i          macros, include paths
   { "VonHeikemen/lsp-zero.nvim", dependencies = {
       -- LSP Support
-      {"neovim/nvim-lspconfig"},
+      {"neovim/nvim-lspconfig"}, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
       {"williamboman/mason.nvim"},
       {"williamboman/mason-lspconfig.nvim"},
       -- Autocompletion
@@ -57,8 +55,11 @@ return {
   -- (unused default breaks nvim-surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   { "ggandor/leap.nvim" }, -- repeat action not yet supported
-  -- :Dirbuf, <CR>, gh (toggel hidden files), -, :w[rite], C-m on path to open dir in dirbuf
-  { "elihunter173/dirbuf.nvim", config = function() require("dirbuf").setup { write_cmd = "DirbufSync -confirm" } end },
+  -- Remote editing
+  -- nvim oil-ssh://[username@]hostname[:port]/[path]
+  -- g? help, <CR>|C-s|C-h select +[vsplit|split, C-p preview, C-c close, C-l refresh,
+  -- - parent, _ open cwd, ` cd, ~ tcd, g. toggle hidden
+  { "stevearc/oil.nvim", config = function() require("oil").setup() end },
   { "anuvyklack/hydra.nvim" }, -- my_hydra.lua
   -- note visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA

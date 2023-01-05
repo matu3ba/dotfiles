@@ -109,8 +109,10 @@ map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>
 map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 -- next,previous,specific number gt,gT,num gt
----- window navigation ----
-map('n', ';d', '<cmd>DirBuf<CR>', opts) -- Sexplore
+---- fast command exec ----
+map('n', ';d', '<cmd>e .<CR>', opts) -- dir
+map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts)
+map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts)
 ---- buffer navigation ----
 --map('n', ']b', '<cmd>bn<CR>', opts)
 --map('n', '[b', '<cmd>bp<CR>', opts)
