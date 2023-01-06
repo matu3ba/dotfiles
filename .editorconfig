@@ -1,0 +1,9 @@
+root = true
+charset = utf-8
+[{*.c,*.cpp,*.zig}]
+indent_style = space
+indent_size = 4
+
+[{*.bashrc,*.cmake,*.json,*.lua,*.md,*.py,*.sh,*.zig}]
+indent_style = space
+indent_size = 2

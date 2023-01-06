@@ -167,10 +167,13 @@ M.reloadModule = function(module)
   vim.notify('Module ' .. module .. ' reloaded!', vim.log.levels.INFO)
 end
 
---- Copy content to matching char into register
+--- Copy forward/backwards until first occurence of same symbol into register
 -- without match, a message is printed
 -- @param backwards boolean if search is forwards or backwards
 -- @param register register where content is copied to
+--
+-- map('n', '-', ':lua require("my_utils").CopyMatchingChar(false, [[""]])<CR>', opts)
+-- map('n', '_', ':lua require("my_utils").CopyMatchingChar(true, [[""]])<CR>', opts)
 M.CopyMatchingChar = function(backwards, register)
   local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
   local crow = tup_rowcol[1]
@@ -220,8 +223,52 @@ M.CopyMatchingChar = function(backwards, register)
   end
   vim.fn.setreg(register, copytext)
 end
----- copy forward/backwards until first occurence of same symbol
--- map('n', '-', ':lua require("my_utils").CopyMatchingChar(false, [[""]])<CR>', opts)
--- map('n', '_', ':lua require("my_utils").CopyMatchingChar(true, [[""]])<CR>', opts)
+
+--TODO integrate into cmp-buffer
+-- https://github.com/vE5li/cmp-buffer
+-- https://github.com/hrsh7th/cmp-buffer/compare/main...vE5li:cmp-buffer:main
+M.swap_camel_and_snake_case = function(name)
+    local new_name = ""
+    local first_character = string.sub(name, 1, 1)
+
+    -- is snake case
+    if string.lower(first_character) == first_character then
+
+        local next_capital = true
+
+        for i = 1, #name do
+            local character = name:sub(i, i)
+
+            if character == "_" then
+                next_capital = true
+            else
+                if next_capital then
+                    new_name = new_name .. string.upper(character)
+                    next_capital = false
+                else
+                    new_name = new_name .. character
+                end
+            end
+        end
+
+    -- is camel case
+    else
+        for i = 1, #name do
+            local character = name:sub(i, i)
+
+            if string.upper(character) == character then
+                if i > 1 then
+                    new_name = new_name .. "_"
+                end
+                new_name = new_name .. string.lower(character)
+            else
+                new_name = new_name .. character
+            end
+        end
+    end
+
+    return new_name
+end
+
 
 return M

@@ -4,7 +4,6 @@ return {
   -- rm -fr $HOME/.local/share/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/size/pack
   { "marko-cerovac/material.nvim", dependencies = { "nvim-lua/plenary.nvim", lazy = false }, }, --<l>ma
-  -- TODO: publish the git worktree helper scripts
   { "williamboman/mason.nvim", config = function() require("mason").setup() end },
   ---- completions ----
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
@@ -40,7 +39,7 @@ return {
   { "echasnovski/mini.align", config = function() require("mini.align").setup({}) end, lazy = true },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
   { "echasnovski/mini.ai", config = function() require("mini.ai").setup({}) end, lazy = true },
-  -- { "echasnovski/mini.completion" } -- TODO: think how to configure nvim-cmp to use something else than C-n|p
+  -- { "echasnovski/mini.completion" } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
   { "tpope/vim-fugitive" }, -- anything better for in buffer interative rebasing?
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
@@ -80,8 +79,8 @@ return {
   -- press <CR> to mark match at cursor ignored
   -- navigate without changing with C-j, C-k
   -- ga: change all occurences
-  -- TODO handroll debugger control for gdb via server and pipe stuff to buffer
-  -- TODO command to extract debug points out of gdb (visualize shoudl work fine)
+  -- idea handroll debugger control for gdb via server and pipe stuff to buffer
+  -- idea command to extract debug points out of gdb (visualize shoudl work fine)
   { "ThePrimeagen/harpoon" }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   ---- telescope ----
   { "nvim-telescope/telescope.nvim", dependencies = { { "nvim-lua/popup.nvim", lazy = false }, { "nvim-lua/plenary.nvim", lazy = false } } }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
@@ -108,15 +107,15 @@ return {
 
   -- lua hacking
   -- chrigieser/nvim-genghis convenience file operations in lua
-  --spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
+  -- spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
 
   -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
   -- :GdbStart gdb -tui -x SCRIPT exec
   -- :Gdb command
   -- <f4>   Until                        (`:GdbUntil`)
   -- <f5>   Continue                     (`:GdbContinue`)
-  -- <f6>   Reverse-Next                 (`:TODO`), TODO
-  -- <f7>   Reverse-Step                 (`:TODO`), TODO
+  -- <f6>   Reverse-Next                 (`:idea`), idea
+  -- <f7>   Reverse-Step                 (`:idea`), idea
   -- <f10>  Next                         (`:GdbNext`)
   -- <f11>  Step                         (`:GdbStep`)
   -- <f12>  Finish                       (`:GdbFinish`)
@@ -128,8 +127,8 @@ return {
   -- see nvimgdb#GlobalInit() for commands and lua functions like NvimGdb.i():send('f')
   -- hover, goto frame, exit + edit history with latest debug point action
   -- saved in file with increased number, default to latest number on selection
-  -- TODO: build your own mouse hover? (use f9 to print locals instead of auto)
-  -- TODO: scratch window for gdb history, awaiting response https://github.com/sakhnik/nvim-gdb/issues/177
+  -- idea: build your own mouse hover? (use f9 to print locals instead of auto)
+  -- idea: scratch window for gdb history, awaiting response https://github.com/sakhnik/nvim-gdb/issues/177
   -- https://github.com/neovim/neovim/wiki/FAQ#debug
   -- enable coredumps: ulimit -c unlimited
   -- if needed: systemd-coredump
@@ -143,5 +142,7 @@ return {
   -- * gdbserver :666 build/bin/nvim 2> gdbserver.log
   -- * gdb build/bin/nvim -ex 'remote localhost:666'
   -- more severe issues with stability (editor becomes completely unresponsive) :-( )
-  --{ 'sakhnik/nvim-gdb' } -- TODO: fix https://github.com/sakhnik/nvim-gdb/issues/177
+  --{ 'sakhnik/nvim-gdb' } -- idea: fix https://github.com/sakhnik/nvim-gdb/issues/177
+  --{ "glepnir/mutchar.nvim" }, idea setup
+
 }

@@ -1,7 +1,9 @@
 https://nullprogram.com/blog/2015/05/15/ how clone() works
 
-get Kernel config
+get Kernel compilation+runtime config
 cat /proc/config.gz | gunzip > running.config
+ls /boot/config-*
+ls /usr/src/linux*
 
 Watching based on notify events:
 inotifywait -e modify,create,delete -m -r /path/to/your/dir
