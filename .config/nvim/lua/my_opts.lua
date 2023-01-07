@@ -81,6 +81,9 @@ local function load_options()
   vim.wo.spell = false
   vim.wo.wrap = false
 
+  -- print current filetype for nvim, treesitter
+  -- :lua print(vim.bo.filetype)
+  -- :lua print(require("nvim-treesitter.parsers").filetype_to_parsername[vim.bo.filetype])
 
   vim.bo.spelllang = 'en,de'
   vim.bo.swapfile = false

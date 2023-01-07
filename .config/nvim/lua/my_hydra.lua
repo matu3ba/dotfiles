@@ -76,7 +76,7 @@ local venn_hint = [[
  Arrow^^^^^^   Select region with <C-v>
  ^ ^ _K_ ^ ^   _f_: surround it with box
  _H_ ^ ^ _L_
- ^ ^ _J_ ^ ^                      _<Esc>_
+ ^ ^ _J_ ^ ^                      _<C-c>_
 ]]
 
 M.venn_hydra = Hydra({
@@ -100,7 +100,7 @@ M.venn_hydra = Hydra({
       { 'K', '<C-v>k:VBox<CR>' },
       { 'L', '<C-v>l:VBox<CR>' },
       { 'f', ':VBox<CR>', { mode = 'v' }},
-      { '<Esc>', nil, { exit = true } },
+      { '<C-c>', nil, { exit = true } },
    }
 })
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 CWD=$(pwd)
 trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM

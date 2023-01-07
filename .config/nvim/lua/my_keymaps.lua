@@ -42,7 +42,8 @@ local map = vim.api.nvim_set_keymap
 -- <l>a|b|e|i| (j|k|l)? |o|q|k|s|u|v|w|x|y
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
-map('n', '<leader>ex', [[<cmd>Dirbuf<CR>]], opts) -- fast :Dirbuf
+
+map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
@@ -111,8 +112,14 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 -- next,previous,specific number gt,gT,num gt
 ---- fast command exec ----
 map('n', ';d', '<cmd>e .<CR>', opts) -- dir
-map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts)
-map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts)
+map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts)       -- build b.sh
+map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts)       -- test  t.sh
+map('n', ';1', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t1.sh\n")<CR>]], opts)      -- test t1.sh
+map('n', ';2', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t2.sh\n")<CR>]], opts)      -- test t2.sh
+map('n', ';3', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t3.sh\n")<CR>]], opts)      -- test t3.sh
+map('n', ';4', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t4.sh\n")<CR>]], opts)      -- test t4.sh
+map('n', ';5', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t5.sh\n")<CR>]], opts)      -- test t5.sh
+map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR>]], opts)      -- test t6.sh
 ---- buffer navigation ----
 --map('n', ']b', '<cmd>bn<CR>', opts)
 --map('n', '[b', '<cmd>bp<CR>', opts)

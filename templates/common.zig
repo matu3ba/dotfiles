@@ -138,6 +138,23 @@ fn usageSortContext() void {
 // explicit error set
 fn somefunction() error{errname}!void {}
 
+const reserved_size = std.math.max(std.fs.MAX_PATH_BYTES + 2 * maxAsciiDigits(u64), std.mem.page_size);
+var args_buffer: [reserved_size]u8 = undefined;
+var args_allocator = std.heap.FixedBufferAllocator.init(&args_buffer);
+
+const Cli = struct {
+    test_runner_exe_path: []u8,
+};
+
+fn processArgs(static_alloc: std.mem.Allocator) Cli {
+    const args = std.process.argsAlloc(static_alloc) catch {
+        @panic("Too many bytes passed over the CLI to Test Runner/Control.");
+    };
+    return .{
+        .test_runner_exe_path = args[0],
+    };
+}
+
 // in build.zig use -D (as desribed in zig build -h)
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
 // Otherwise for libstd tests, use
