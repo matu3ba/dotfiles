@@ -19,6 +19,10 @@ fc-cache -f -v ~/.fonts/adobe-fonts/source-code-pro
 fc-list | grep -i SourceCodePro
 echo "finished installing"
 
+Hex editor
+git clone https://github.com/WerWolv/ImHex
+./dist/compiling
+
 Install CMake from source to workaround to old versions:
 cd ~/dev/git/cpp
 git clone https://github.com/Kitware/CMake

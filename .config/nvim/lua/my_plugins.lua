@@ -58,7 +58,7 @@ return {
   -- nvim oil-ssh://[username@]hostname[:port]/[path]
   -- g? help, <CR>|C-s|C-h select +[vsplit|split, C-p preview, C-c close, C-l refresh,
   -- - parent, _ open cwd, ` cd, ~ tcd, g. toggle hidden
-  { "stevearc/oil.nvim", config = function() require("oil").setup() end },
+  { "stevearc/oil.nvim", config = function() require("oil").setup({view_options = { show_hidden = true, } }) end },
   { "anuvyklack/hydra.nvim" }, -- my_hydra.lua
   -- note visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
@@ -70,7 +70,7 @@ return {
   -- word -> ysiw" -> "word"
   -- *word_another bla -> ysit<space>" -> "word_another"* bla
   -- (da da) ->(  ysa") -> ("da da")
-  -- { "kylechui/nvim-surround", config = function() require("nvim-surround").setup() end, }, -- stylish
+  { "kylechui/nvim-surround", config = function() require("nvim-surround").setup() end, }, -- stylish
   -- gm, M to mark word/region, M delete word
   -- g!M matches only full word
   -- do stuff, r, e etc
@@ -93,6 +93,7 @@ return {
   ---- treesitter ----
   { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
   { "mizlan/iswap.nvim" }, --:Iswap, as mapping :ISwapWith
+  -- { "CKolkey/ts-node-action", dependencies = { 'nvim-treesitter' }, config = function() require("ts-node-action").setup({}) end },
 
   ---- languages ----
   --{ "neomake/neomake" } -- get useful comments for code semantics
