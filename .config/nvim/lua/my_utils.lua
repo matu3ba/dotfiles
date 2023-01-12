@@ -2,7 +2,8 @@
 local M = {}
 
 M.IsWSL = function()
-  local fp = assert(io.open("/proc/version", "rb"));
+  -- assert breaks on Windows
+  local fp = io.open("/proc/version", "rb");
   local content = fp:read("*all")
   fp:close()
   local found_wsl = string.find(content, "microsoft")

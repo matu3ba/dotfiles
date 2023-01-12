@@ -1,3 +1,8 @@
+# installing Zig + adding to PATH
+# Linux
+
+# Windows
+
 export CC="$ZIG cc -fno-sanitize=all"
 export CXX="$ZIG c++ -fno-sanitize=all"
 

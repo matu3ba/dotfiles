@@ -1,0 +1,27 @@
+# setup image
+qemu-img create -f qcow2 alpine.qcow2 8G
+
+# install command: OVMF.fd is uefi bootram
+# -trace events=/tmp/events \
+qemu-system-x86_64 -m 512 -nic user -boot d -cdrom \
+alpine-virt-3.17.1-x86_64.iso -hda alpine.qcow2 -display gtk \
+-enable-kvm
+
+qemu-system-x86_64 -m 512 -nic user -boot d -cdrom \
+alpine-virt-3.17.1-x86_64.iso -hda alpine.qcow2 \
+-display gtk -enable-kvm
+
+qemu-system-x86_64 \
+-enable-kvm -boot d \
+-cdrom alpine-virt-3.17.1-x86_64.iso \
+-bios OVMF.fd \
+-m 6G -cpu host -smp 2 -hda alpine.img
+
+#-serial mon:stdio \
+#qemu -trace events=/tmp/events
+
+# run command
+qemu-system-x86_64 -enable-kvm -boot d \
+-bios OVMF.fd \
+-serial mon:stdio \
+-m 6G -cpu host -smp 2 -hda alpine.img

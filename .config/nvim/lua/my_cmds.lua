@@ -47,6 +47,7 @@ add_cmd('EB', 'edit ./b.sh', {})
 add_cmd('ET', 'edit ./t.sh', {})
 add_cmd('Epos', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/posix.sh', {})
 add_cmd('Ebash', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/bash.sh', {})
+add_cmd('EZ', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/sh.zig', {})
 
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd
@@ -308,23 +309,21 @@ add_cmd('FcolumnS', function()
   vim.fn.setreg('s', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
 end, {}) -- copy filename:line:column
 
-if utils.IsWSL() then
-  add_cmd('FrelW', function() vim.fn.setreg('w', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
-  add_cmd('FrelDirW', function() vim.fn.setreg('w', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
-  add_cmd('FabsW', function() vim.fn.setreg('w', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
-  add_cmd('FabsDirW', function() vim.fn.setreg('w', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
-  add_cmd('FonlyW', function() vim.fn.setreg('w', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
-  add_cmd('FlineW', function()
-    local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-    vim.fn.setreg('w', fname .. ':' .. tostring(lineNum))
-  end, {}) -- copy filename:line
-  add_cmd('FcolumnW', function()
-    local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-    local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
-    vim.fn.setreg('w', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
-  end, {}) -- copy filename:line:column
-end
+-- add_cmd('FrelW', function() vim.fn.setreg('w', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
+-- add_cmd('FrelDirW', function() vim.fn.setreg('w', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
+-- add_cmd('FabsW', function() vim.fn.setreg('w', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
+-- add_cmd('FabsDirW', function() vim.fn.setreg('w', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
+-- add_cmd('FonlyW', function() vim.fn.setreg('w', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
+-- add_cmd('FlineW', function()
+--   local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+--   local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+--   vim.fn.setreg('w', fname .. ':' .. tostring(lineNum))
+-- end, {}) -- copy filename:line
+-- add_cmd('FcolumnW', function()
+--   local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+--   local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
+--   vim.fn.setreg('w', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
+-- end, {}) -- copy filename:line:column
 
 add_cmd('ShAbsPath', function() print(vim.fn.expand('%:p')) end, {})
 add_cmd('ShDate', function() print(os.date()) end, {})
