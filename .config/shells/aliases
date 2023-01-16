@@ -3,6 +3,9 @@
 alias l='ls --color=auto --hyperlink=auto --group-directories-first -h'
 alias ls='ls --color=auto --hyperlink=auto --group-directories-first -h'
 alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
+
+alias pxcl='pwd | xclip -sel clip -i'
+alias pwlc='pwd | wl-copy'
 #alias ls='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
 alias rmmkdbuild='rm -fr build/; mkdir build'

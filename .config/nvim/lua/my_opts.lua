@@ -12,6 +12,7 @@ local function load_options()
     material_lighter_contrast = false,
     nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
     nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
+    --editorconfig = true, -- can be global or local, add .editorconfig, see editorconfig.org
     --coq_settings = { auto_start = true },
     --doge_mapping = "<leader>do"; --idea get doge to work
     --netrw_browse_split = 0
@@ -35,7 +36,7 @@ local function load_options()
   -- # [lib/**.js]
   -- # indent_style = space
   -- # indent_size = 2
-  vim.o.editorconfig_enable = true -- add .editorconfig, see editorconfig.org
+  vim.b.editorconfig = true -- add .editorconfig, see editorconfig.org
   -- based on github.com/neovim/neovim/12092 and wiki
   -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip
   -- curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip

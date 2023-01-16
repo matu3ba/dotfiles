@@ -17,7 +17,8 @@ require('nvim-treesitter.configs').setup {
    },
   },
   indent = {
-    enable = false, -- TODO: broken for Zig
+    enable = true, -- TODO: broken for Zig, Python
+    disable = { "zig" }, -- "python",
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()

@@ -122,6 +122,7 @@ alias g='git'
 #ga -A all files, ga . new+modified files, ga -u deleted+modified files
 alias ga='git add'
 alias gaa='git add -A'
+alias gau='git add -u' # add modified files
 alias gap='git apply'
 alias gapr='git apply -R'
 
