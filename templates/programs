@@ -39,6 +39,15 @@ feh on X11 or swaybg on Wayland
 git clone https://git.finalrewind.org/feh
 git clone https://github.com/swaywm/swaybg
 
+Installing mosh
+* perl, protobuf+compiler, ncurses, zlib, utempter, openssl
+git clone https://github.com/mobile-shell/mosh
+cd mosh
+./autogen.sh
+./configure
+make
+make install
+
 Installing zls, ztags
 git clone https://github.com/gpanders/ztags
 cd ztags && zig build -Drelease-safe

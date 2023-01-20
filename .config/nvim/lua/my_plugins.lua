@@ -29,6 +29,8 @@ return {
       {"rafamadriz/friendly-snippets"},
   }},
 
+  -- use ({ "andymass/vim-matchup", event = "CursorMoved" })
+
   -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)
   { "hrsh7th/cmp-cmdline" }, -- completions for :e, /
 

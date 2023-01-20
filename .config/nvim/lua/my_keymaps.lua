@@ -134,8 +134,8 @@ map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR
 --Store everything in a session file.
 --question think how to delete buffers quick
 ---- error navigation ----
-map('n', ']q', '<cmd>qn<CR>', opts)
-map('n', '[q', '<cmd>qp<CR>', opts)
+map('n', ']q', '<cmd>cn<CR>', opts)
+map('n', '[q', '<cmd>cp<CR>', opts)
 ---- shell navigation ----
 map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- search terminal (for command prompt)
 map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in terminal output
@@ -404,12 +404,29 @@ map('n', ';eo', [[<cmd>lua require("harpoon.term").sendCommand(6, "\n")<CR>]], o
 
 -- send line under cursor as command to harpoon terminal
 -- c means cursor content log and exec
-map('n', ';cj', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(1)<CR>]], opts)
-map('n', ';ck', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(2)<CR>]], opts)
-map('n', ';cl', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(3)<CR>]], opts)
-map('n', ';cu', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(4)<CR>]], opts)
-map('n', ';ci', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(5)<CR>]], opts)
-map('n', ';co', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(6)<CR>]], opts)
+map('n', ';lj', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(1)<CR>]], opts)
+map('n', ';lk', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(2)<CR>]], opts)
+map('n', ';ll', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(3)<CR>]], opts)
+map('n', ';lu', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(4)<CR>]], opts)
+map('n', ';li', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(5)<CR>]], opts)
+map('n', ';lo', [[<cmd>lua require("my_harpoon").lineUnderCursorLogAndSendToShell(6)<CR>]], opts)
+
+-- send keyboard interrupt (SIGTERM) to process run in shell (C-c == ETX == \003)
+map('n', ';cj', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+map('n', ';ck', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+map('n', ';cl', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+
+
+-- send G to shell window/buffer to jump to bottom TODO
+-- map('n', ';Gj', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';Gk', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';Gl', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';Gu', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';Gi', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';Go', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
 
 -- send line under cursor as command to harpoon terminal
 -- n means no log cursor content exec it

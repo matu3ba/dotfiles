@@ -37,7 +37,6 @@ lsp.setup_nvim_cmp({
 })
 
 lsp.on_attach(function(client, bufnr)
-  print("help")
   local opts = {buffer = bufnr, remap = false}
   -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
   vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
@@ -62,6 +61,28 @@ end)
 
 lsp.configure('zls', {force_setup = true})
 lsp.setup()
+
+-- modify defaults of VonHeikemen/lsp-zero.nvim 0b312c34372ec2b0daec722d1b7fad77b84bef5b:
+-- 1. get completion from all buffers
+local cmp_config = lsp.defaults.cmp_config({
+  sources = {
+    {name = 'path'},
+    {name = 'nvim_lsp', keyword_length = 3},
+    {name = 'luasnip', keyword_length = 2},
+    {
+      name = 'buffer',
+      keyword_length = 5,
+      option = {
+        get_bufnrs = function ()
+          return vim.api.nvim_list_bufs()
+        end
+      },
+    },
+  },
+})
+
+cmp.setup(cmp_config)
+
 
 cmp.setup.cmdline(':', {
 

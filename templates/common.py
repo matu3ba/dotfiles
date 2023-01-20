@@ -226,3 +226,59 @@ def writeWconf(conf: dict, filepath, **fmt) -> int:
   with open(filepath, 'w+', encoding='utf-8') as fph:
       json.dump(conf, fph, ensure_ascii=fmt['ensure_ascii'], indent=fmt['indent'], sort_keys=fmt['sort_keys'])
   return 0
+
+## test, if current is subdict of expected
+def is_subdict(expected: dict, current: dict):
+    # since python3.9:
+    # return current | expected == current
+    return dict(current, **expected) == current
+
+def merge_1lvldicts(alpha: dict = {}, beta: dict = {}) -> dict:
+    return dict(list(alpha.items()) + list(beta.items()))
+
+## recursive merge dicts
+def merge_dicts(alpha: dict = {}, beta: dict = {}) -> dict:
+    return _merge_dicts_aux(alpha, beta, copy(alpha))
+def _merge_dicts_aux(alpha: dict = {}, beta: dict = {}, result: dict = {}, path: List[str] = None) -> dict:
+    if path is None:
+        path = []
+    for key in beta:
+        if key not in alpha:
+            result[key] = beta[key]
+        else:
+            if isinstance(alpha[key], dict) and isinstance(beta[key], dict):
+                # key value is dict in A and B => merge the dicts
+                _merge_dicts_aux(alpha[key], beta[key], result[key], path + [str(key)])
+            elif alpha[key] == beta[key]:
+                # key value is same in A and B => ignore
+                pass
+            else:
+                # key value differs in A and B => raise error
+                err: str = f"Conflict at {'.'.join(path + [str(key)])}"
+                raise Exception(err)
+    return result
+
+### *** tuples and dicts are annoying to differentiate ***
+
+# dictionary
+dict1 = {
+    "m1": "cp",
+    "m1": "cp"
+}
+# tuple
+tup1 = {
+    "m1": "cp",
+    "m1": "cp"
+},
+
+# at least getting the intention correct, but python is still unhelpful with errror message
+dict2 = dict({
+    "m1": "cp",
+    "m1": "cp"
+})
+# tuple
+tup2 = tuple({
+    "m1": "cp",
+    "m1": "cp"
+}),
+
