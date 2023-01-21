@@ -1,11 +1,19 @@
 #!/usr/bin/env sh
 set -e
-cd /mnt/c/Users/$USER/Desktop
-#grep 'ZIG_LLVM_CLANG_LLD_NAME =' /mnt/c/Users/$USER/Desktop/zig/ci/x86_64-windows-debug.ps1 > /mnt/c/Users/$USER/Desktop/pzdown.txt
+if test -z "$USER"; then
+  # git bash
+  cd /c/Users/$USERNAME/Desktop
+  #grep 'ZIG_LLVM_CLANG_LLD_NAME =' /c/Users/$USERNAME/Desktop/zig/ci/x86_64-windows-debug.ps1 > /c/Users/$USERNAME/Desktop/pzdown.txt
+else
+  # WSL
+  cd /mnt/c/Users/$USER/Desktop
+  #grep 'ZIG_LLVM_CLANG_LLD_NAME =' /mnt/c/Users/$USER/Desktop/zig/ci/x86_64-windows-debug.ps1 > /mnt/c/Users/$USER/Desktop/pzdown.txt
+fi
 TARGET="x86_64-windows-gnu"
 ZIG_LLVM_CLANG_LLD_NAME="zig+llvm+lld+clang-$TARGET-0.11.0-dev.448+e6e459e9e"
 curl https://ziglang.org/deps/$ZIG_LLVM_CLANG_LLD_NAME.zip -o devkit.zip
-unzip devkit.zip -d devkit
+# Windows does not check validity of symlinks
+#unzip devkit.zip -d devkit
 
 #!/usr/bin/env sh
 # set -e
