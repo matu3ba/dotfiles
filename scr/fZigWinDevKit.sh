@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+set -e
+cd /mnt/c/Users/$USER/Desktop
+#grep 'ZIG_LLVM_CLANG_LLD_NAME =' /mnt/c/Users/$USER/Desktop/zig/ci/x86_64-windows-debug.ps1 > /mnt/c/Users/$USER/Desktop/pzdown.txt
+TARGET="x86_64-windows-gnu"
+ZIG_LLVM_CLANG_LLD_NAME="zig+llvm+lld+clang-$TARGET-0.11.0-dev.448+e6e459e9e"
+curl https://ziglang.org/deps/$ZIG_LLVM_CLANG_LLD_NAME.zip -o devkit.zip
+unzip devkit.zip -d devkit
+
+#!/usr/bin/env sh
+# set -e
+# cd /mnt/c/Users/$USER/Desktop
+# ## start get VERSION
+# cd zig
+# # alternative: curl https://github.com/ziglang/zig/blob/master/ci/x86_64-windows.ps1
+# raw_version=$(grep 'ZIG_LLVM_CLANG_LLD_NAME =' ci/x86_64-windows-debug.ps1 | cut -f3-4 -d"-")
+# echo $raw_version
+# len_version=$(echo -n $raw_version | wc -m)
+# echo $len_version
+# # cut " from string
+# VERSION=$(echo $raw_version | cut --complement -c $len_version)
+# echo $VERSION
+# cd ..
+# ## end get VERSION
+# curl https://ziglang.org/deps/zig+llvm+lld+clang-x86_64-windows-gnu-$VERSION.zip -o devkit.zip
+# unzip devkit.zip -d devkit
