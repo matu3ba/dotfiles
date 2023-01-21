@@ -107,10 +107,17 @@ requires --dump-instr=yes|no
 --callgrind-out-file=<file>
 valgrind --tool=callgrind --help
 
-
-Workaround Kernel bugs:
+Workaround hugepage Kernel bug:
 https://unix.stackexchange.com/questions/679706/kcompacd0-using-100-cpu-with-vmware-workstation-16
 cat /sys/kernel/mm/transparent_hugepage/enabled
 cat /sys/kernel/mm/transparent_hugepage/defrag
 echo 0 > /proc/sys/vm/compaction_proactiveness
 sudo sh -c 'echo 0 > /proc/sys/vm/compaction_proactiveness'
+
+Sandboxing
+Fixing Desktop GPU + IPC design problems (for example making dbus superfluous): aracan-fe
+Desktop sandboxing to reduce gigantic attack vector: firejail
+Tight sandboxing: bubblewrap
+firejail:
+configs in /etc/firejail/, /usr/local/etc/firejail, ~/.config/firejail
+tools in /usr/lib/firejail, /usr/local/lib/firejail

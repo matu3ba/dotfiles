@@ -29,10 +29,18 @@ return {
       {"rafamadriz/friendly-snippets"},
   }},
 
+  -- TODO figure out why it does not work.
+  -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
+
   -- use ({ "andymass/vim-matchup", event = "CursorMoved" })
 
   -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)
   { "hrsh7th/cmp-cmdline" }, -- completions for :e, /
+
+  -- macros
+  -- { "chrisgrieser/nvim-recorder" }, -- TODO: setup for debugging macros
+  -- TODO: think about yoinking the macro history parts
+  -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
@@ -41,6 +49,8 @@ return {
   { "echasnovski/mini.align", config = function() require("mini.align").setup({}) end, lazy = true },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
   { "echasnovski/mini.ai", config = function() require("mini.ai").setup({}) end, lazy = true },
+  -- TODO: define a simple hydra + suggest as copy-paste config example
+  -- { "echasnovski/mini.move", config = function() require('mini.move').setup({}) end },
   -- { "echasnovski/mini.completion" } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
   { "tpope/vim-fugitive" }, -- anything better for in buffer interative rebasing?
