@@ -299,6 +299,7 @@ map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in termin
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
 map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
 map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], opts) -- keybindings
+map('n', '<leader>tt', [[<cmd>lua require('telescope.builtin').tags()<CR>]], opts) -- keybindings
 -- builtin.commands, nmap, vmap, imap
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
 map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files

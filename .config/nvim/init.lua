@@ -113,6 +113,8 @@ callback = function()
 -- :h lua-fs (os.path python functions)
 
 -- Debugging Lua types + values, see also ./lua/my_utils.lua dump, printPairsToTmp, printIpairsToTmp
+-- unpack to unpack a table as list
+-- `:lua = vim.fs`, `:lua = x` (short forms of `:lua vim.pretty_print(vim.fs)`)
 -- print(type(fd_exec[1]))
 -- :g/.*DEBUG$/del
 -- local fp = assert(io.open("/tmp/tmpfile", "w")) --DEBUG
@@ -131,6 +133,8 @@ callback = function()
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp:close()                                      --DEBUG
+-- Execute something and add it to current buffer.
+-- :put = execute('messages')
 -- Debugging Environment variables
 -- :redir @a
 -- :fancy command

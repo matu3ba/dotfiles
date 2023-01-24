@@ -354,11 +354,21 @@ add_cmd('ShDate', function() print(os.date()) end, {})
 -- let b:ztags_cmd = "ztags " . b:files
 -- let b:res =  system(b:ztags_cmd)
 -- ]], false)
-add_cmd('Retag', function()
-  if vim.bo.filetype == 'zig' then
-    local fd_exec = plenary.job:new({command = 'fd', args = { '.*.zig' }}):sync()
-    plenary.job:new({ command = 'ztags', args = fd_exec }):start()
-  end
+-- FILES=$(fd '.*.zig' src/ lib/std/)
+-- ztags -a -r $FILES
+add_cmd('RetagZigComp', function()
+  -- if vim.bo.filetype == 'zig' then
+  local fd_exec = plenary.job:new({command = 'fd', args = { '.*.zig', 'src/', 'lib/std/' } }):sync()
+  -- print("fd_exec", vim.pretty_print(fd_exec))
+  plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+  -- end
+end, {})
+add_cmd('RetagZig', function()
+  -- if vim.bo.filetype == 'zig' then
+  local fd_exec = plenary.job:new({command = 'fd', args = { '.*.zig', 'src/' } }):sync()
+  -- print("fd_exec", vim.pretty_print(fd_exec))
+  plenary.job:new({command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+  -- end
 end, {})
 
 -- idea optional argument in which register to copy the file path
