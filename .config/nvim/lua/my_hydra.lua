@@ -93,7 +93,7 @@ M.venn_hydra = Hydra({
       end,
    },
    mode = 'n',
-   body = '<leader>v',
+   body = '<leader>ve',
    heads = {
       { 'H', '<C-v>h:VBox<CR>' },
       { 'J', '<C-v>j:VBox<CR>' },
@@ -104,6 +104,71 @@ M.venn_hydra = Hydra({
    }
 })
 
+local selmove_hint = [[
+ Arrow^^^^^^
+ ^ ^ _k_ ^ ^
+ _h_ ^ ^ _l_
+ ^ ^ _j_ ^ ^                      _<C-c>_
+]]
+
+local ok_minimove, minimove = pcall(require, "mini.move")
+assert(ok_minimove)
+if ok_minimove == true then
+  local opts = {
+    mappings = {
+      left  = '', right = '', down  = '', up    = '',
+      line_left  = '', line_right = '', line_down  = '', line_up    = '',
+    },
+  }
+  minimove.setup(opts)
+  -- setup here prevents needless global vars for opts required by `move_selection()/moveline()`
+  M.minimove_box_hydra = Hydra({
+     name = 'Move Box Selection',
+     hint = selmove_hint,
+     config = {
+        color = 'pink',
+        invoke_on_body = true,
+        hint = {
+           border = 'rounded'
+        },
+        on_enter = function()
+           vim.o.virtualedit = 'all'
+        end,
+     },
+     mode = 'v',
+     body = '<leader>vb',
+     heads = {
+        { 'h', function() minimove.move_selection("left", opts) end },
+        { 'j', function() minimove.move_selection("down", opts) end },
+        { 'k', function() minimove.move_selection("up", opts) end },
+        { 'l', function() minimove.move_selection("right", opts) end },
+        { '<C-c>', nil, { exit = true } },
+     }
+  })
+  M.minimove_line_hydra = Hydra({
+     name = 'Move Line Selection',
+     hint = selmove_hint,
+     config = {
+        color = 'pink',
+        invoke_on_body = true,
+        hint = {
+           border = 'rounded'
+        },
+        on_enter = function()
+           vim.o.virtualedit = 'all'
+        end,
+     },
+     mode = 'v',
+     body = '<leader>vl',
+     heads = {
+        { 'h', function() minimove.move_line("left", opts) end },
+        { 'j', function() minimove.move_line("down", opts) end },
+        { 'k', function() minimove.move_line("up", opts) end },
+        { 'l', function() minimove.move_line("right", opts) end },
+        { '<C-c>', nil, { exit = true } },
+     }
+  })
+end
 
 -- M.dap_hydra = Hydra({
 --   name = "dap",

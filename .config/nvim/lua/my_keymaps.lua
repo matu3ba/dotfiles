@@ -75,7 +75,10 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
-map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL)
+--map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
+-- overwrite line at cursor start with text from register
+map('n', '<leader>p', [[<cmd> lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)
+map('n', '<leader>P', [[<cmd> lua require("my_utils").pasteOverwriteFromRegister('+', false)<CR>]], opts) -- replacement for broken [[v$P]]
 map('n', '<C-p>', 'p`[', opts) -- ] paste without cursor movement
 map('n', '<leader>sr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], opts)
 -- map('n', '<leader>Y', 'gg"+yG', opts) -- copy all

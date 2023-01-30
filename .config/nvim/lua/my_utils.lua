@@ -225,6 +225,63 @@ M.CopyMatchingChar = function(backwards, register)
   vim.fn.setreg(register, copytext)
 end
 
+-- starting at cursor: overwrite text to right with register content
+-- keep_suffix defines, if remaining line suffix should be kept
+M.pasteOverwriteFromRegister = function(register, keep_suffix)
+  local line_content = vim.api.nvim_get_current_line()
+  local reg_content = vim.fn.getreg(register)
+  local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
+  local col_nr = tup_rowcol[2] -- 0 indexed => use +1
+  local col = col_nr + 1
+  local reg_len = string.len(reg_content)
+  local line_len = string.len(line_content)
+  local prefix = string.sub(line_content, 1, col-1) -- until before cursor
+  local suffix = string.sub(line_content, col+reg_len, line_len) -- starting at cursor
+  if keep_suffix == true then
+    vim.api.nvim_set_current_line(prefix .. reg_content .. suffix)
+  else
+    vim.api.nvim_set_current_line(prefix .. reg_content)
+  end
+end
+
+-- starting at cursor: move cursor into direction until non-space symbol
+-- space symbols are [space|tab], direction can be "up" and "down"
+-- overwrite text to right with register content
+-- keep_suffix defines, if remaining line suffix should be kept
+M.moveDirectionUntilNonSpaceSymbol = function(direction)
+  local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
+  local crow = tup_rowcol[1]
+  local ccol = tup_rowcol[2] -- 0 indexed => use +1
+  local cchar = vim.api.nvim_get_current_line():sub(ccol + 1, ccol + 1)
+  local first_char = cchar
+  if first_char ~= " " then
+    return
+  end
+  -- TODO handle out of bounds for correct jump
+  if direction == "up" then
+    while crow > 0 do
+      crow = crow - 1
+      cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)
+      if cchar ~= first_char then
+        break
+      end
+    end
+  elseif direction == "down" then
+    crowcount = vim.api.nvim_buf_line_count(0)
+    while crow < crowcount do
+      crow = crow + 1
+      cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)
+      if cchar ~= first_char then
+        break
+      end
+    end
+  else
+    print("invalid direction given")
+  end
+  vim.api.nvim_win_set_cursor(0, { crow, ccol })
+end
+
+
 --TODO integrate into cmp-buffer
 -- https://github.com/vE5li/cmp-buffer
 -- https://github.com/hrsh7th/cmp-buffer/compare/main...vE5li:cmp-buffer:main

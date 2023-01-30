@@ -42,13 +42,14 @@ telescope.setup {
   --},
 }
 
-local ok_fzf, _ = pcall(require, 'fzf_lib')
-local ok_gh, _ = pcall(require, 'gh') -- also fails if github cli not installed
-local ok_undo, _ = pcall(require, 'telescope-undo')
-
-if ok_fzf then telescope.load_extension 'fzf' end
-if ok_gh then telescope.load_extension 'gh' end
-if ok_undo then telescope.load_extension 'undo' end
+-- pcall on telescope extension does not work:
+-- local ok_fzf, _ = pcall(require, 'fzf-native')
+-- local ok_fzf, _ = pcall(require, 'fzf_lib')
+-- local ok_fzf = pcall(telescope.load_extension, 'fzf_lib')
+-- assert(ok_fzf)
+telescope.load_extension('fzf')
+telescope.load_extension('gh')
+telescope.load_extension('undo')
 
 -- issue #6 still pending (unusable)
 -- local ok_dir, _ = pcall(require, 'dir-telescope')

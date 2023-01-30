@@ -113,7 +113,7 @@ callback = function()
 -- :h lua-fs (os.path python functions)
 
 -- Debugging Lua types + values, see also ./lua/my_utils.lua dump, printPairsToTmp, printIpairsToTmp
--- unpack to unpack a table as list
+-- unpack to unpack a table
 -- `:lua = vim.fs`, `:lua = x` (short forms of `:lua vim.pretty_print(vim.fs)`)
 -- print(type(fd_exec[1]))
 -- :g/.*DEBUG$/del
@@ -238,5 +238,6 @@ callback = function()
 --
 
 -- Pretty print
--- json: jq
+-- json: %!jq
 -- xml: xmllint --format -
+-- tables: :'<,'>!column -t -s \| -o \|

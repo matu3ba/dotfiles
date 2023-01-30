@@ -49,8 +49,15 @@ return {
   { "echasnovski/mini.align", config = function() require("mini.align").setup({}) end, lazy = true },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
   { "echasnovski/mini.ai", config = function() require("mini.ai").setup({}) end, lazy = true },
-  -- TODO: define a simple hydra + suggest as copy-paste config example
-  -- { "echasnovski/mini.move", config = function() require('mini.move').setup({}) end },
+  -- usage in my_hydra.lua
+  { "echasnovski/mini.move", config = function()
+    require('mini.move').setup({
+      mappings = {
+        left  = '', right = '', down  = '', up    = '',
+        line_left  = '', line_right = '', line_down  = '', line_up    = '',
+      },
+    })
+  end },
   -- { "echasnovski/mini.completion" } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
   { "tpope/vim-fugitive" }, -- anything better for in buffer interative rebasing?
@@ -96,14 +103,14 @@ return {
   { "ThePrimeagen/harpoon" }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   ---- telescope ----
   { "nvim-telescope/telescope.nvim", dependencies = { { "nvim-lua/popup.nvim", lazy = false }, { "nvim-lua/plenary.nvim", lazy = false } } }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
-  -- { "nvim-telescope/telescope-fzf-native.nvim", run = "make", }, -- 1.65x speed of fzf
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
   -- Telescope gh issues author=windwp label=bug search=miscompilation
   { "nvim-telescope/telescope-github.nvim" }, --Telescope gh issues|pull_request|gist|run
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
   ---- treesitter ----
-  { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" },
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   { "mizlan/iswap.nvim" }, --:Iswap, as mapping :ISwapWith
   -- { "CKolkey/ts-node-action", dependencies = { 'nvim-treesitter' }, config = function() require("ts-node-action").setup({}) end },
 
