@@ -282,3 +282,6 @@ tup2 = tuple({
     "m1": "cp"
 }),
 
+def getLastListOptindex(li: list) -> int:
+  return len(timeline_msg) - 1 if timeline_msg else None
+

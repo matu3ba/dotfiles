@@ -1,3 +1,17 @@
+Force static linking:
+gcc/g++ -static -static-libstdc++ -static-libgcc
+
+Cross-compiling C++:
+```sh
+sudo apt-get install g++-VERSION-multilib-arm-linux-gnueabihf
+export LD=arm-linux-gnueabihf-ld
+export CXX=arm-linux-gnueabihf-g++-VERSION
+export CXX_FLAGS="-static -static-libstdc++ -static-libgcc"
+make -C builddir
+```
+ldd may stll falsely claim on host system, that the executable is statically build.
+Alternative: buildchroot or zig
+
 or fix the problem with the build system (include guards/linker scripts etc)
 
 undefined symbols

@@ -92,6 +92,9 @@ perf script > out.perf
 ./stackcollapse-perf.pl out.perf > out.folded
 ./flamegraph.pl out.folded > flamegraph.svg
 
+Hardware locality info extraction and experimenting:
+https://github.com/open-mpi/hwloc
+
 https://github.com/flamegraph-rs/flamegraph
 which has also a nice guide.
 

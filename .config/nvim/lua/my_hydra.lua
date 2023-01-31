@@ -158,7 +158,7 @@ if ok_minimove == true then
            vim.o.virtualedit = 'all'
         end,
      },
-     mode = 'v',
+     mode = 'n',
      body = '<leader>vl',
      heads = {
         { 'h', function() minimove.move_line("left", opts) end },
