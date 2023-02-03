@@ -3,6 +3,8 @@ import sys
 import json
 import urllib.parse
 import urllib.request
+import traceback
+from typing import Optional
 
 import xml.etree.ElementTree as ET
 
@@ -227,6 +229,16 @@ def writeWconf(conf: dict, filepath, **fmt) -> int:
       json.dump(conf, fph, ensure_ascii=fmt['ensure_ascii'], indent=fmt['indent'], sort_keys=fmt['sort_keys'])
   return 0
 
+def firstkey(current: dict) -> object:
+    #list(current.keys())[0] # arbitrary position
+    return next(iter(current)) #most efficient
+def firstval(current: dict) -> object:
+    # list(current.values())[0]
+    return next(iter(req.values()))
+def firstkeyval(current: dict) -> object:
+    return next(iter(req.items())) # return next(iter(req.viewitems()))
+
+
 ## test, if current is subdict of expected
 def is_subdict(expected: dict, current: dict):
     # since python3.9:
@@ -285,3 +297,15 @@ tup2 = tuple({
 def getLastListOptindex(li: list) -> int:
   return len(timeline_msg) - 1 if timeline_msg else None
 
+# function to write status + trace to variable
+def getStackTrace() -> str:
+    return repr(traceback.format_stack())
+
+def strlen(s: Optional[str]) -> Optional[int]:
+  if s == None:
+    return None
+  return len(s)
+
+# open mypy issue to annotate module info
+def getModuleInfo(module: object):
+  return getattr(module, 'runTest')

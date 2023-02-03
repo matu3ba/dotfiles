@@ -51,6 +51,8 @@ end
 -- TODO: complete deltadebug/zig-reduce to get complete AST<->source locations
 -- TODO: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+-- last search pattern:
+-- local searched_pattern = vim.fn.getreg("/")
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros

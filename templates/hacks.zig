@@ -56,3 +56,6 @@ fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self
     if (self != field) return null;
     return @field(self, @tagName(field));
 }
+
+// workaround zig libstd bloated formatting:
+// https://github.com/FlorenceOS/Florence/blob/master/lib/output/fmt.zig
