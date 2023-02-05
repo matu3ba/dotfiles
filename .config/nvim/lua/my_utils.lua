@@ -267,7 +267,7 @@ M.moveDirectionUntilNonSpaceSymbol = function(direction)
       end
     end
   elseif direction == "down" then
-    crowcount = vim.api.nvim_buf_line_count(0)
+    local crowcount = vim.api.nvim_buf_line_count(0)
     while crow < crowcount do
       crow = crow + 1
       cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)

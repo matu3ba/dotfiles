@@ -41,6 +41,8 @@ return {
   -- { "chrisgrieser/nvim-recorder" }, -- TODO: setup for debugging macros
   -- TODO: think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
+  -- { "tamton-aquib/keys.nvim", config = function() require("keys").setup({}) end, }, -- :KeysToggle
+
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
@@ -99,8 +101,8 @@ return {
   -- navigate without changing with C-j, C-k
   -- ga: change all occurences
   -- idea handroll debugger control for gdb via server and pipe stuff to buffer
-  -- idea command to extract debug points out of gdb (visualize shoudl work fine)
-  { "ThePrimeagen/harpoon" }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
+  -- idea command to extract debug points out of gdb (visualize should work fine)
+  { "matu3ba/harpoon" }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   ---- telescope ----
   { "nvim-telescope/telescope.nvim", dependencies = { { "nvim-lua/popup.nvim", lazy = false }, { "nvim-lua/plenary.nvim", lazy = false } } }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf

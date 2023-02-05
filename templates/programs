@@ -79,3 +79,5 @@ Run as wayland compatible client
 arcan-wayland -exec
 
 pipeworld?
+
+markdown editor: retext

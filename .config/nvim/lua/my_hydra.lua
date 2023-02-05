@@ -79,6 +79,8 @@ local venn_hint = [[
  ^ ^ _J_ ^ ^                      _<C-c>_
 ]]
 
+-- :setlocal ve=all
+-- :setlocal ve=none
 M.venn_hydra = Hydra({
    name = 'Draw Diagram',
    hint = venn_hint,
@@ -89,7 +91,7 @@ M.venn_hydra = Hydra({
          border = 'rounded'
       },
       on_enter = function()
-         vim.o.virtualedit = 'all'
+         vim.wo.virtualedit = 'all'
       end,
    },
    mode = 'n',
@@ -131,9 +133,6 @@ if ok_minimove == true then
         hint = {
            border = 'rounded'
         },
-        on_enter = function()
-           vim.o.virtualedit = 'all'
-        end,
      },
      mode = 'v',
      body = '<leader>vb',
@@ -154,9 +153,6 @@ if ok_minimove == true then
         hint = {
            border = 'rounded'
         },
-        on_enter = function()
-           vim.o.virtualedit = 'all'
-        end,
      },
      mode = 'n',
      body = '<leader>vl',

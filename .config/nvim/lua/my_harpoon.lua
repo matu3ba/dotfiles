@@ -28,4 +28,16 @@ M.lineUnderCursorLogAndSendToShell = function(harpoon_term_nr)
   harp_term.sendCommand(harpoon_term_nr, currLinePlNL)
 end
 
+M.setCursorToBottom = function(harpoon_term_nr)
+  local term_handle = harp_term.getBufferTerminalId(harpoon_term_nr)
+  local buf_id = term_handle["buf_id"]
+  local term_id = term_handle["term_id"]
+  local windows = vim.fn.win_findbuf(buf_id)
+  if #windows ~= 1 then
+    return
+  end
+  local crowcount = vim.api.nvim_buf_line_count(0)
+  vim.api.nvim_win_set_cursor(windows[1], { crowcount, 0 })
+end
+
 return M

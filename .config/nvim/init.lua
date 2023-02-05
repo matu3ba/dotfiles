@@ -51,6 +51,8 @@ end
 -- TODO: complete deltadebug/zig-reduce to get complete AST<->source locations
 -- TODO: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+-- TODO: statusline with number of search matches based on https://elianiva.my.id/post/neovim-lua-statusline/
+-- (dynamic one + multiple modes)
 -- last search pattern:
 -- local searched_pattern = vim.fn.getreg("/")
 

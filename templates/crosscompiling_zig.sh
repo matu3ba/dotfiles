@@ -9,6 +9,11 @@ export CXX="$ZIG c++ -fno-sanitize=all"
 export CC="$ZIG cc -fno-sanitize=all -s -target TAR -mcpu=MCPU"
 export CXX="$ZIG c++ -fno-sanitize=all -s -target TAR -mcpu=MCPU"
 
+# with the zcc.sh and zcpp.sh in PATH to workaround spaces not being respected
+CC="zcc.sh" CXX="zcpp.sh" cmake -GNinja ../
+# newer cmake versions support an explicit flag:
+cmake -DCMAKE_C_COMPILER=="zig cc" -DCMAKE_CXX_COMPILER="zig cc" -GNinja ../
+
 # often configuration problems for "unknown c compiler"
 
 # to use zig as crosscompiler
