@@ -57,6 +57,7 @@
 
 #change file permission
 #git ls-tree HEAD
+#add execution bit
 #git update-index --chmod=+x script.sh
 
 #get diffed file names by operation(adding,moving etc), lowerspace also works

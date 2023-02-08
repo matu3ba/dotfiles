@@ -302,10 +302,17 @@ def getStackTrace() -> str:
     return repr(traceback.format_stack())
 
 def strlen(s: Optional[str]) -> Optional[int]:
-  if s == None:
+  if s is None:
     return None
   return len(s)
 
 # open mypy issue to annotate module info
 def getModuleInfo(module: object):
   return getattr(module, 'runTest')
+
+# use mypy and charliermarsh/ruff + editor integration
+# for ruff: --line-length 120
+# for mypy: just works
+
+# https://stackoverflow.com/questions/65747247/how-to-print-file-path-and-line-number-while-program-execution
+# https://note.nkmk.me/en/python-script-file-path/

@@ -5,6 +5,7 @@ return {
   -- rm -fr $HOME/.local/share/nvim/size/pack
   { "marko-cerovac/material.nvim", dependencies = { "nvim-lua/plenary.nvim", lazy = false }, }, --<l>ma
   { "williamboman/mason.nvim", config = function() require("mason").setup() end },
+  -- { "ojroques/nvim-osc52" }, TODO setup
   ---- completions ----
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
@@ -28,11 +29,6 @@ return {
       {"L3MON4D3/LuaSnip"},
       {"rafamadriz/friendly-snippets"},
   }},
-
-  -- TODO figure out why it does not work.
-  -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
-
-  -- use ({ "andymass/vim-matchup", event = "CursorMoved" })
 
   -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)
   { "hrsh7th/cmp-cmdline" }, -- completions for :e, /
@@ -91,7 +87,7 @@ return {
   -- word -> ysiw" -> "word"
   -- *word_another bla -> ysit<space>" -> "word_another"* bla
   -- (da da) ->(  ysa") -> ("da da")
-  { "kylechui/nvim-surround", config = function() require("nvim-surround").setup() end, }, -- stylish
+  { "kylechui/nvim-surround", config = function() require("nvim-surround").setup() end, },
   -- gm, M to mark word/region, M delete word
   -- g!M matches only full word
   -- do stuff, r, e etc
@@ -103,6 +99,9 @@ return {
   -- idea handroll debugger control for gdb via server and pipe stuff to buffer
   -- idea command to extract debug points out of gdb (visualize should work fine)
   { "matu3ba/harpoon" }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
+  -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
+  -- any way to place results in buffer?
+  -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }
   ---- telescope ----
   { "nvim-telescope/telescope.nvim", dependencies = { { "nvim-lua/popup.nvim", lazy = false }, { "nvim-lua/plenary.nvim", lazy = false } } }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
@@ -117,6 +116,7 @@ return {
   -- { "CKolkey/ts-node-action", dependencies = { 'nvim-treesitter' }, config = function() require("ts-node-action").setup({}) end },
 
   ---- languages ----
+  { "mfussenegger/nvim-lint" }, -- configuration in my_lint.lua
   --{ "neomake/neomake" } -- get useful comments for code semantics
   { "LnL7/vim-nix" }, -- flakes highlighting: wait until nix converts their stuff to flakes
   { "ziglang/zig.vim" }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
@@ -166,5 +166,7 @@ return {
   -- more severe issues with stability (editor becomes completely unresponsive) :-( )
   --{ 'sakhnik/nvim-gdb' } -- idea: fix https://github.com/sakhnik/nvim-gdb/issues/177
   --{ "glepnir/mutchar.nvim" }, idea setup
+  -- doesnt work for me
+  -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
 
 }

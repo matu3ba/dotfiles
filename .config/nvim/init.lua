@@ -17,6 +17,7 @@ else
   require 'my_gitsign'
   require 'my_hydra'
   require 'my_lsp' -- setup in my_nvimcmp.lua
+  require 'my_lint' -- setup in my_lint.lua
   vim.cmd [[colorscheme material]]
 end
 
@@ -41,6 +42,10 @@ if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
 end
 ]]
 end
+
+-- TODO (advanced) linker workshop to understand linker
+-- TODO (advanced) debugging workshop to understand debugger scheduling and (assembly) inspection techniques
+-- TODO
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
 -- TODO: simple diff that respects gitignore
