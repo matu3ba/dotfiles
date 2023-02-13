@@ -106,10 +106,24 @@ local function get_perc_lin()
   return tostring(math.floor((curr_line/line_count)*100)) .. '%%'
 end
 
+local function get_fileinfo()
+  if vim.bo.buftype == "" then
+    if vim.bo.readonly == true then
+      return "ro"
+    end
+    if vim.bo.modified then
+      return " +"
+    else
+      return "  "
+    end
+  end
+end
+
 function statusline.setup()
   local path = get_path()
   local lincol = get_linecol()
   local perc_lin = get_perc_lin()
+  local file_info = get_fileinfo()
   local search = search_result()
   local git_status = git_statusline()
   local statusline_sections = {
@@ -117,6 +131,8 @@ function statusline.setup()
     lincol,
     " ",
     perc_lin,
+    " ",
+    file_info,
     " ",
     search,
     " ",
