@@ -98,7 +98,8 @@ return {
   -- ga: change all occurences
   -- idea handroll debugger control for gdb via server and pipe stuff to buffer
   -- idea command to extract debug points out of gdb (visualize should work fine)
-  { "matu3ba/harpoon" }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
+  -- buffer manipulation + project search
+  { "matu3ba/harpoon", dev=false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }

@@ -1,4 +1,9 @@
-require('gitsigns').setup {
+local has_gitsigns, gitsigns = pcall(require, "gitsigns")
+if not has_gitsigns then
+  return
+end
+
+gitsigns.setup {
   -- unchanged default settings
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns

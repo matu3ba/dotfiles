@@ -18,6 +18,7 @@ else
   require 'my_hydra'
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
+  require 'my_statusline'
   vim.cmd [[colorscheme material]]
 end
 
