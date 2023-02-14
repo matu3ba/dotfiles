@@ -74,6 +74,7 @@ map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
+map('v', '<leader>d', '"_d', opts) -- delete into blackhole register
 map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
 --map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
 -- overwrite line at cursor start with text from register
