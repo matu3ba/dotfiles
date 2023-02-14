@@ -3,8 +3,13 @@ local lsp = require('lsp-zero')
 lsp.preset('recommended')
 
 lsp.ensure_installed({
-  "lua_ls",
-  "clangd",
+  "lua_ls", -- lua-language-server
+  "clangd", -- clangd
+  "neocmake", -- neocmakelsp
+  "lemminx", -- lemminx
+  "bashls", -- bash-language-server
+  "jedi_language_server", -- jedi-language-server
+  "ltex", -- ltex-ls
 })
 
 local has_cmp, cmp = pcall(require, 'cmp')

@@ -257,6 +257,7 @@ end, {})
 ---- Regex ----
 -- non-greedy search of \"..\" fields
 add_cmd('SelLazyEscStr', [[/\\".\{-}\\"]], {}) -- non-greedy search of \"..\" fields
+add_cmd('SelLazyStr', [[/".\{-}"]], {}) -- non-greedy search of \"..\" fields
 
 ---- Debug ----
 add_cmd('CoutDebug', [[execute 'normal! i' . 'std::cout << DEBUG << "\n";    // DEBUG' . '<Esc>']], {})

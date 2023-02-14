@@ -1,10 +1,12 @@
+import datetime as dt
+import json
 import os
 import sys
-import json
+import time
+import traceback
 import urllib.parse
 import urllib.request
-import traceback
-from typing import Optional
+from typing import Optional, Tuple
 
 import xml.etree.ElementTree as ET
 
@@ -316,3 +318,28 @@ def getModuleInfo(module: object):
 
 # https://stackoverflow.com/questions/65747247/how-to-print-file-path-and-line-number-while-program-execution
 # https://note.nkmk.me/en/python-script-file-path/
+
+# function to wait for event 12 ms
+def waitForEvent() -> int:
+  condition: bool = True # placeholder
+  waiting_ms: int = 12_000 # 12s = 12_000ms
+  start_ms: int = time.time_ns() // 1_000_000
+  approx_end_ms: int = start_ms + waiting_ms
+  now_ms: int = start_ms
+  statvar: int = 0
+  while now_ms  < approx_end_ms:
+    if condition is True:
+      statvar = 2
+      break
+    now_ms = time.time_ns() // 1_000_000
+  if statvar == 2:
+    return 0
+  else:
+    return 1
+
+def fmtDateNow() -> Tuple[str, str]:
+  dt_from = dt.datetime.now(dt.timezone.utc)
+  dt_to = dt_from + dt.timedelta(seconds=300)
+  from_str = dt_from.strftime("%Y-%m-%dT%H:%M:%SZ")
+  to_str = dt_to.strftime("%Y-%m-%dT%H:%M:%SZ")
+  return (from_str, to_str)
