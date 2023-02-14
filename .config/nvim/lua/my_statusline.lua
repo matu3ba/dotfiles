@@ -116,6 +116,26 @@ local function get_fileinfo()
     else
       return "  "
     end
+  elseif vim.bo.buftype == "acwrite" then
+    if vim.bo.modified then
+      return "ac+"
+    else
+      return "ac"
+    end
+  elseif vim.bo.buftype == "help" then
+    return "he"
+  elseif vim.bo.buftype == "nofile" then
+    return "[]"
+  elseif vim.bo.buftype == "nowrite" then
+    return "nw"
+  elseif vim.bo.buftype == "quickfix" then
+    return "qf"
+  elseif vim.bo.buftype == "terminal" then
+    return "te"
+  elseif vim.bo.buftype == "prompt" then
+    return "pr"
+  else
+    return "  "
   end
 end
 
