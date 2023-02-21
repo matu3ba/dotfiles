@@ -2,7 +2,6 @@
 --! Offers 1 mode: usage
 --Many things copied and adjusted from
 --https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
---TODO fix print_lsp_progress
 local has_plenary, plenary = pcall(require, "plenary")
 local has_gitsigns, _ = pcall(require, "gitsigns")
 if not has_plenary or not has_gitsigns then

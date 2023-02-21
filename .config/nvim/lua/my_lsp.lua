@@ -1,5 +1,9 @@
 -- lsp config with lsp-zero --
-local lsp = require('lsp-zero')
+local has_lspzero, lsp = pcall(require, 'lsp-zero')
+if not has_lspzero then
+  -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
+  return
+end
 lsp.preset('recommended')
 
 lsp.ensure_installed({

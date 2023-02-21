@@ -50,17 +50,11 @@ end
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
 -- TODO: simple diff that respects gitignore
--- TODO: build + test + spawn suite for debugging
--- idea: investigate use cases of ropes and implement one for Zig <-- defered
--- until stage2 allows users to get Sema info
--- TODO: idea for analysis IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
+-- TODO: play around with build + test + spawn suite for debugging vs simulation
 -- TODO: complete deltadebug/zig-reduce to get complete AST<->source locations
 -- TODO: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
--- TODO: statusline with number of search matches based on https://elianiva.my.id/post/neovim-lua-statusline/
--- (dynamic one + multiple modes)
--- last search pattern:
--- local searched_pattern = vim.fn.getreg("/")
+-- idea for analysis IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros

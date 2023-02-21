@@ -279,7 +279,7 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- pull current filename into where you are: Ctrl+R %
 -- vimscript register assignment: :let @+ = expand("%:p")
 -- Note: Relative paths are only respected until cwd. If the path goes via parent dir, the absolute path is returned.
--- TODO setup copy file + dir path for oil
+-- TODO setup copy file + dir path for oil with harpoon
 -- https://github.com/stevearc/oil.nvim/issues/50
 add_cmd('Frel', function() vim.fn.setreg('+', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
 add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
