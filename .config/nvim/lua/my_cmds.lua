@@ -381,3 +381,6 @@ end, {})
 
 -- :Man for man page.
 -- local mappings: K or C-], C-t, gO for outline
+
+-- inbuild commands
+-- :sort [u for unique lines]

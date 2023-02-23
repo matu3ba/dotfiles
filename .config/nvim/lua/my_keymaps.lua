@@ -91,6 +91,16 @@ map('n', '<leader>sr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], o
 map('t', '<C-q>', [[<C-\><C-n>]], opts) -- Quit terminal editing
 map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quit And enter windowing
 
+-- list and open buffer with number
+-- :1b, :2b etc
+map('n', '<leader>bb', [[<cmd>ls<CR>]], opts) -- scratch buffer (git status | vi)
+map('n', '<leader>b1', [[<cmd>b1<CR>]], opts) -- scratch buffer (git status | vi)
+-- open window by number
+map('n', '<leader>1', [[<cmd>1wincmd w<CR>]], opts)
+map('n', '<leader>2', [[<cmd>2wincmd w<CR>]], opts)
+map('n', '<leader>3', [[<cmd>3wincmd w<CR>]], opts)
+map('n', '<leader>4', [[<cmd>4wincmd w<CR>]], opts)
+
 -- treesitter
 -- see lua/my_treesitter.lua
 -- gV node incremental selection, gS scope incremental selection
@@ -115,6 +125,7 @@ map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,
 map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 -- next,previous,specific number gt,gT,num gt
 ---- fast command exec ----
+-- harpoon terminals
 map('n', ';d', '<cmd>e .<CR>', opts) -- dir
 map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts)       -- build b.sh
 map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts)       -- test  t.sh
@@ -124,6 +135,8 @@ map('n', ';3', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t3.sh\n")<CR
 map('n', ';4', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t4.sh\n")<CR>]], opts)      -- test t4.sh
 map('n', ';5', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t5.sh\n")<CR>]], opts)      -- test t5.sh
 map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR>]], opts)      -- test t6.sh
+-- idea: execute in window
+-- map('n', ';w1q', [[<cmd>1wincmd q<CR>]], opts)      -- test t6.sh
 ---- buffer navigation ----
 --map('n', ']b', '<cmd>bn<CR>', opts)
 --map('n', '[b', '<cmd>bp<CR>', opts)

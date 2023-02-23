@@ -58,19 +58,20 @@ M.window_hdyra = Hydra({
    },
 })
 
+-- keymaps are much faster + convenient for buffer navigation
 -- keep buffers simple and fast
-M.window_hdyra = Hydra({
-   body = '<leader>b',
-   heads = {
-      -- note https://github.com/anuvyklack/hydra.nvim/issues/39
-      { 's', '<cmd>ls<CR>' }, -- show buffers
-      { 'l', '<cmd>bn<CR>' }, -- next buffer
-      { 'h', '<cmd>bp<CR>' }, -- previous buffer
-      { 'a', '<cmd>ba<CR>' }, -- add current buffer
-      { 'q', '<cmd>bd<CR>' }, -- delete current buffer
-      { '<Esc>', nil,  { exit = true, desc = false } },
-   },
-})
+-- M.window_hdyra = Hydra({
+--    body = '<leader>b',
+--    heads = {
+--       -- note https://github.com/anuvyklack/hydra.nvim/issues/39
+--       { 's', '<cmd>ls<CR>' }, -- show buffers
+--       { 'l', '<cmd>bn<CR>' }, -- next buffer
+--       { 'h', '<cmd>bp<CR>' }, -- previous buffer
+--       { 'a', '<cmd>ba<CR>' }, -- add current buffer
+--       { 'q', '<cmd>bd<CR>' }, -- delete current buffer
+--       { '<Esc>', nil,  { exit = true, desc = false } },
+--    },
+-- })
 
 local venn_hint = [[
  Arrow^^^^^^   Select region with <C-v>
