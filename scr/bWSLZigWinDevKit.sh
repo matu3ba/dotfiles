@@ -31,7 +31,7 @@ PATH="${HOME}/dev/git/cpp/cmake/build/bin/:${PATH}"
 # 1. we can hack cmake to use relative paths
 # 2. Zig somehow accepts unix paths on windows for build stuff
 #
-# TODO:
+# idea:
 # 1. look into hacking cmake
 # 2. create windows batch script for getting version number
 #

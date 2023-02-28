@@ -81,10 +81,6 @@ end
 --   vim.bo[bufnr].swapfile = false
 -- end
 
--- :ls! to list all bufs
--- TODO: store and load scratch/notes files
--- scratch -> notes (persistent)
--- make neovim instance
 M.makeFileScratch = function(filepath)
 --M.makeNamedScratch = function(filepath, scratchname)
   -- local bufs = vim.api.nvim_list_bufs()
@@ -282,7 +278,6 @@ M.moveDirectionUntilNonSpaceSymbol = function(direction)
 end
 
 
---TODO integrate into cmp-buffer
 -- https://github.com/vE5li/cmp-buffer
 -- https://github.com/hrsh7th/cmp-buffer/compare/main...vE5li:cmp-buffer:main
 M.swap_camel_and_snake_case = function(name)

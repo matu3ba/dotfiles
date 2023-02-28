@@ -59,5 +59,5 @@ static_assert(sizeof(int64_t) == 8, "err: int64_t not 8 byte");
 //static_assert(sizeof(int128_t) == 16, "err: int128_t not 16 byte"); poorly supported
 #endif // __cplusplus
 
-// TODO ifdef error else define macro to make macros shorter
+// idea ifdef error else define macro to make macros shorter
 // use typedef, if possible: prevents `short SHORTINT test = 1;` shennanigans.

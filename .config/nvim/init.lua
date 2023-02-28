@@ -11,7 +11,7 @@ if not has_lazy then
 else
   vim.opt.runtimepath:prepend(lazypath)
   require("lazy").setup("my_plugins", {})
-  -- TODO add missing pcalls/checks for plugin existence
+  -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
   require 'my_treesitter'  -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'
@@ -44,17 +44,21 @@ end
 ]]
 end
 
--- TODO (advanced) linker workshop to understand linker
 -- TODO (advanced) debugging workshop to understand debugger scheduling and (assembly) inspection techniques
--- TODO
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
--- TODO: simple diff that respects gitignore
+-- idea: simple diff that respects gitignore https://github.com/ziglibs/diffz
+
+-- TODO (advanced) linker workshop to understand linker
 -- TODO: play around with build + test + spawn suite for debugging vs simulation
--- TODO: complete deltadebug/zig-reduce to get complete AST<->source locations
--- TODO: https://jdhao.github.io/2020/11/15/nvim_text_objects/
+-- * use case: debugging mocking linker failures in C++
+
+-- TODO: reduze with getting AST<->source locations
+-- idea: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
--- idea for analysis IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
+-- LLVM Optimization IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
+-- better C semantics: "RefinedC: Automating the Foundational Verification of
+--                      C Code with Refined Ownership Types"
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros

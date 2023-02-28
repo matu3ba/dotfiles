@@ -30,12 +30,13 @@
 
 # git diff --patch > diff.patch,
 # git apply [-R] diff.patch to [reverse] apply it on a codebase
+# git diff COMMIT~[NR] COMMIT
 
 #show specific file on revision/commit
 #git show REVISION:path/to/file
 #$get combined diff
 #git show -m
-# TODO figure out how to make the following scriptable to find successor of 894e8b4e93d8f3
+# idea figure out how to make the following scriptable to find successor of 894e8b4e93d8f3
 #git log --reverse --ancestry-path 894e8b4e93d8f3^..master | tail -1
 #git rev-list --ancestry-path commit1..commit2 | tail -1
 #history to specific function of file
@@ -67,10 +68,15 @@ alias gshow='git --no-pager show --name-only'
 #git diff COMMIT1 COMMIT2 --name-only --diff-filter=A
 #Added, Copied, Deleted, Modified, Renamed + type (T changed9, Unmerged, (X unknown), Broken
 
+# git diff all unindexed files (diff file must be stored outside the git repo)
+alias gdnew="for next in \$( git ls-files --others --exclude-standard ) ; do git --no-pager diff --no-index /dev/null \$next; done;"
+#get combined diff of tracked and untracked files (diff file must be stored outside the git repo)
+#{ git --no-pager diff; gdnew } > ../all.diff
+
 #get diffed file to unindexed file
 #https://stackoverflow.com/questions/855767/can-i-use-git-diff-on-untracked-files
 #git diff --no-index indexed unindexed
-#TODO get diff between worktrees
+#idea get diff between worktrees
 #1. git ls-files --others --exclude-standard
 #2. loop through list:
 #2.1. check if path prefix/unindexed exists
@@ -130,7 +136,7 @@ alias gau='git add -u' # add modified files
 alias gap='git apply'
 alias gapr='git apply -R'
 
-# TODO: provide a hydra on worktree scripts or git commands in general
+# TODO: switch to fish for multi command completions
 alias gb='git branch'
 alias gba='git branch -avv'
 alias gbd='git branch -d'
@@ -202,7 +208,7 @@ alias grbm='git rebase master'
 alias grbM='git rebase main'
 alias grbi='git rebase -i'
 alias grbisq='git rebase -i --autosquash'
-# TODO consider switching to a shell, which supports autocompletion for aliases (abbreviations)
+# TODO consider switching to fish (supports autocompletion for aliases + abbreviations)
 #alias gsw='git switch'
 alias gsafe='test -n "$(git status --porcelain)" || echo safe'
 alias grbium='git rebase --interactive upstream/master'

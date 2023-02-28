@@ -134,7 +134,7 @@ LD_LIBRARY_PATH=./lib gdb -x dscr ./bin/executable
 4. neovim, vim
 :lua vim.env.LD_LIBRARY_PATH="./lib", :let $LD_LIBRARY_PATH = "./lib"
 
-TODO:
+idea:
 start process from gdb and signal it from gdb script
 
 

@@ -4,4 +4,4 @@ inspect > network > click play > .m3u8 > Content-Length: exists?
 extra > browser tools (ctr+shift+i) > > click play > .m3u8 > Content-Length: exists?
 ffmpeg -i "url_path_to_file.m3u8" -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 file.mp4
 
-#TODO cutting, downsampling etc
+#idea cutting, downsampling etc

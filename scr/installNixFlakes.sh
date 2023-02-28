@@ -6,4 +6,4 @@ nix-env -iA nixpkgs.nixUnstable
 mkdir -p ~/.config/nix
 echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
 
-#TODO look into https://www.yanboyang.com/nixhomemanager/
+#idea look into https://www.yanboyang.com/nixhomemanager/

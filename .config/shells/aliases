@@ -210,7 +210,7 @@ alias rsync_move='rsync -avz --progress -h --remove-source-files'
 alias rsync_update='rsync -avzu --progress -h'
 alias rsync_synchronize='rsync -avzu --delete --progress -h'
 alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
-#33 TODO rsync without permissions
+# TODO rsync without permissions
 
 # program aliases
 #alias l='exa'
@@ -272,7 +272,10 @@ ccd() {
   mkdir -p $1 && cd $1
 }
 ztest() {
-  zig test $1 --zig-lib-dir lib --main-pkg-path lib/std
+  # Takes ~3 minutes.
+  ./rel/bin/zig build test-std -Dskip-release -Dskip-non-native
+# does not work anymore due to #14708
+# zig test $1 --zig-lib-dir lib --main-pkg-path lib/std
 }
 zltest() {
   ./build/stage3/bin/zig test $1 --zig-lib-dir lib --main-pkg-path lib/std

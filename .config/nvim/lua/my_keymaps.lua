@@ -342,7 +342,8 @@ map('n', '<leader>tt', [[<cmd>lua require('telescope.builtin').tags()<CR>]], opt
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
 map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
 map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
-map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
+-- TODO search project from harpoon files
+-- map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
 map('n', '<leader>fd', [[<cmd>FileInDirectory<CR>]], opts) -- find files
 --.grep_string({ search = vim.fn.input("Grep For > ")})
 

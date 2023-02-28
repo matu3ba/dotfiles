@@ -108,8 +108,8 @@ nixos-rebuild switch
 for offline installation without new packages use
 nixos-rebuild switch --option substitute false
 
-TODO rollback links
+idea rollback links
 
 home_manager:
-TODO figure out,
+idea figure out,
 if using flakes or profiles instead would be better

@@ -66,7 +66,7 @@ checking, if ssh deamon (for server) installed:
 sshd --version
 
 checklist ssh correctly running
-1. enable logs: TODO
+1. enable logs: /etc/ssh/sshd_config and `LogLevel DEBUG3` via `man sshd_config`
 2. network works?
 3. ip table correct?
 4. ssh listening?

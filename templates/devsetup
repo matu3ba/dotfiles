@@ -16,9 +16,4 @@ github.com/friendlyanon/cmake-init:
 
 github.com/jasmcaus/tau
 - micro unit testing framework
-TODO (upstream): abi tests
-TODO (upstream): instructions for safety tests
-TODO (upstream): goals and non-goals
-
-TODOs: build framework setup (meson+ninja)
-TODOs: best sanitizer?
+idea: build lib for mocking

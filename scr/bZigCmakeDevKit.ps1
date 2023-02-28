@@ -4,9 +4,9 @@
 #         3. ninja installed (pip install ninja) + in path
 # addStandaloneTests
 #
-# TODO: parse pip show output
+# idea: parse pip show output
 # $env:Path += ';C:\Users\hafer\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\ninja'
-#         (TODO)
+#         (idea)
 #         4. powershell scripts executable (execution in shell):
 #         Get-Content bZig.ps1 | PowerShell.exe -noprofile -
 

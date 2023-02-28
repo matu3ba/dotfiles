@@ -34,8 +34,8 @@ return {
   { "hrsh7th/cmp-cmdline" }, -- completions for :e, /
 
   -- macros
-  -- { "chrisgrieser/nvim-recorder" }, -- TODO: setup for debugging macros
-  -- TODO: think about yoinking the macro history parts
+  -- { "chrisgrieser/nvim-recorder" },
+  -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
   -- { "tamton-aquib/keys.nvim", config = function() require("keys").setup({}) end, }, -- :KeysToggle
 
