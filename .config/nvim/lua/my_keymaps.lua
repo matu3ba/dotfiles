@@ -59,7 +59,9 @@ map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected r
 -- '>+1<CR>gv=gv'  move text selection up with correct indent
 -- '<-2<CR>gv=gv'  move text selection down with correct indent
 
-map('n', 'J', 'mzJ`z', opts) -- J(join) with cursor remaining at same plac
+map('n', 'J', 'mzJ`z', opts) -- J(join) with cursor remaining at same place
+-- TODO
+--map('n', '<leader>J', 'mzJ`z', opts) -- special J(join) with removing space after joined line
 map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor to next line
 map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 -- idea parse current line until no ending \ inside register instead of blindly executing
@@ -100,6 +102,13 @@ map('n', '<leader>1', [[<cmd>1wincmd w<CR>]], opts)
 map('n', '<leader>2', [[<cmd>2wincmd w<CR>]], opts)
 map('n', '<leader>3', [[<cmd>3wincmd w<CR>]], opts)
 map('n', '<leader>4', [[<cmd>4wincmd w<CR>]], opts)
+-- <cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR>
+-- search word in other window
+-- map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR>]], opts)
+-- map('n', '<leader>#', [[<cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR>]], opts)
+-- search word in other window + switch view back
+map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
+map('n', '<leader>#', [[<cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
 
 -- treesitter
 -- see lua/my_treesitter.lua

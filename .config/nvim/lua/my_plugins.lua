@@ -47,6 +47,8 @@ return {
   { "echasnovski/mini.align", config = function() require("mini.align").setup({}) end, lazy = true },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
   { "echasnovski/mini.ai", config = function() require("mini.ai").setup({}) end, lazy = true },
+  -- TODO setup
+  -- { "echasnovski/mini.bracketed", config = function() require("mini.bracketed").setup({}) end, version = false },
   -- usage in my_hydra.lua
   { "echasnovski/mini.move", config = function()
     require('mini.move').setup({
