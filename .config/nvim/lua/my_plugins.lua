@@ -5,7 +5,7 @@ return {
   -- rm -fr $HOME/.local/share/nvim/size/pack
   { "marko-cerovac/material.nvim", dependencies = { "nvim-lua/plenary.nvim", lazy = false }, }, --<l>ma
   { "williamboman/mason.nvim", config = function() require("mason").setup() end },
-  -- { "ojroques/nvim-osc52" }, TODO setup
+  { "ojroques/nvim-osc52", config = function() require("osc52").setup() end },
   ---- completions ----
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus

@@ -1,3 +1,14 @@
+--! Optional dependencies: nvim-osc52
+
+-- non-api mappings
+local ok_osc52, osc52 = pcall(require, 'osc52')
+if ok_osc52 then
+  vim.keymap.set('n', '<leader>c', osc52.copy_operator, {expr=true})
+  vim.keymap.set('n', '<leader>cc', '<leader>c_', {remap=true})
+  vim.keymap.set('x', '<leader>c', osc52.copy_visual)
+  -- TODO: show return status in command line without popup
+end
+
 local opts = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
 -- fast save,quit: ZZ, ZQ
