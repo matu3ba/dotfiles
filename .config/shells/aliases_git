@@ -54,6 +54,9 @@
 #get untracked files as list for scripting
 #git ls-files --others --exclude-standard
 #git ls-files --others --exclude-standard || rsync -av --files-from=- /pathfrom /pathto
+#get file changes of a commit (-nX with X from HEAD)
+alias glogs='git --no-pager log --name-only'
+alias gshow='git --no-pager show --name-only'
 
 #change file permission
 #git ls-tree HEAD

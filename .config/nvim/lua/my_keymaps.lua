@@ -147,6 +147,7 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 ---- fast command exec ----
 -- harpoon terminals
 map('n', ';d', '<cmd>e .<CR>', opts) -- dir
+map('n', ';i', [[<cmd>lua require("harpoon.term").sendCommand(1, "./i.sh\n")<CR>]], opts)       -- build i.sh
 map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts)       -- build b.sh
 map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts)       -- test  t.sh
 map('n', ';1', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t1.sh\n")<CR>]], opts)      -- test t1.sh
