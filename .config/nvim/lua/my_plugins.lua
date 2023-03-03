@@ -39,18 +39,19 @@ return {
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
   -- { "tamton-aquib/keys.nvim", config = function() require("keys").setup({}) end, }, -- :KeysToggle
 
-
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
-  { "echasnovski/mini.indentscope", config = function() require("mini.indentscope").setup({}) end },
+  { "echasnovski/mini.indentscope", version = false, config = function() require("mini.indentscope").setup({}) end },
+
+  -- TODO: lazy loads + mini config
   -- ga no preview, gA preview
-  { "echasnovski/mini.align", config = function() require("mini.align").setup({}) end, lazy = true },
+  { "echasnovski/mini.align", version = false, config = function() require("mini.align").setup({}) end },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
-  { "echasnovski/mini.ai", config = function() require("mini.ai").setup({}) end, lazy = true },
+  { "echasnovski/mini.ai", version = false, config = function() require("mini.ai").setup({}) end },
   -- TODO setup
-  -- { "echasnovski/mini.bracketed", config = function() require("mini.bracketed").setup({}) end, version = false },
+  -- { "echasnovski/mini.bracketed", version = false, config = function() require("mini.bracketed").setup({}) end, version = false },
   -- usage in my_hydra.lua
-  { "echasnovski/mini.move", config = function()
+  { "echasnovski/mini.move", version = false, config = function()
     require('mini.move').setup({
       mappings = {
         left  = '', right = '', down  = '', up    = '',
@@ -58,7 +59,7 @@ return {
       },
     })
   end },
-  -- { "echasnovski/mini.completion" } -- idea: think how to configure nvim-cmp to use something else than C-n|p
+  -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
   { "tpope/vim-fugitive" }, -- anything better for in buffer interative rebasing?
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_

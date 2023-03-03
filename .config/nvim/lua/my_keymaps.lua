@@ -1,4 +1,6 @@
 --! Optional dependencies: nvim-osc52
+--! Note: C+non-alphabetaic, C+letter, C+Shift+letter can not be distinguished
+--! without termcap, so vim + neovim do not support them.
 
 -- non-api mappings
 local ok_osc52, osc52 = pcall(require, 'osc52')
@@ -88,7 +90,7 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>d', '"_d', opts) -- delete into blackhole register
-map('v', '<leader>D', '"_D', opts) -- delete into blackhole register
+map('v', '<leader>D', '"_D', opts) -- delete into blackhole register, TODO bug behavior: "_D != <leader>D
 --map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
 -- overwrite line at cursor start with text from register
 map('n', '<leader>p', [[<cmd> lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)
@@ -113,6 +115,15 @@ map('n', '<leader>1', [[<cmd>1wincmd w<CR>]], opts)
 map('n', '<leader>2', [[<cmd>2wincmd w<CR>]], opts)
 map('n', '<leader>3', [[<cmd>3wincmd w<CR>]], opts)
 map('n', '<leader>4', [[<cmd>4wincmd w<CR>]], opts)
+-- open tab by number for direct access
+map('n', '1', [[1gt]], opts)
+map('n', '2', [[2gt]], opts)
+map('n', '3', [[3gt]], opts)
+map('n', '4', [[4gt]], opts)
+map('n', '5', [[5gt]], opts)
+map('n', '6', [[6gt]], opts)
+map('n', '7', [[7gt]], opts)
+map('n', '8', [[8gt]], opts)
 -- <cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR>
 -- search word in other window
 -- map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR>]], opts)
