@@ -90,11 +90,12 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>d', '"_d', opts) -- delete into blackhole register
-map('v', '<leader>D', '"_D', opts) -- delete into blackhole register, TODO bug behavior: "_D != <leader>D
+-- TODO bug behavior: "_D != <leader>D
+-- map('v', '<leader>D', '"_D', opts) -- delete into blackhole register,
 --map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
 -- overwrite line at cursor start with text from register
-map('n', '<leader>p', [[<cmd> lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)
-map('n', '<leader>P', [[<cmd> lua require("my_utils").pasteOverwriteFromRegister('+', false)<CR>]], opts) -- replacement for broken [[v$P]]
+map('n', '<leader>p', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)
+map('n', '<leader>P', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', false)<CR>]], opts)
 map('n', '<C-p>', 'p`[', opts) -- ] paste without cursor movement
 map('n', '<leader>sr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], opts)
 -- map('n', '<leader>Y', 'gg"+yG', opts) -- copy all
@@ -116,14 +117,14 @@ map('n', '<leader>2', [[<cmd>2wincmd w<CR>]], opts)
 map('n', '<leader>3', [[<cmd>3wincmd w<CR>]], opts)
 map('n', '<leader>4', [[<cmd>4wincmd w<CR>]], opts)
 -- open tab by number for direct access
-map('n', '1', [[1gt]], opts)
-map('n', '2', [[2gt]], opts)
-map('n', '3', [[3gt]], opts)
-map('n', '4', [[4gt]], opts)
-map('n', '5', [[5gt]], opts)
-map('n', '6', [[6gt]], opts)
-map('n', '7', [[7gt]], opts)
-map('n', '8', [[8gt]], opts)
+map('n', '<leader>w1', [[1gt]], opts)
+map('n', '<leader>w2', [[2gt]], opts)
+map('n', '<leader>w3', [[3gt]], opts)
+map('n', '<leader>w4', [[4gt]], opts)
+map('n', '<leader>w5', [[5gt]], opts)
+map('n', '<leader>w6', [[6gt]], opts)
+map('n', '<leader>w7', [[7gt]], opts)
+map('n', '<leader>w8', [[8gt]], opts)
 -- <cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR>
 -- search word in other window
 -- map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR>]], opts)
@@ -131,6 +132,8 @@ map('n', '8', [[8gt]], opts)
 -- search word in other window + switch view back
 map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
 map('n', '<leader>#', [[<cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
+map('n', '<leader>fl', [[<cmd>lua vim.fn.setreg('/', require('my_utils').getCurrLinePl())<CR>]], opts)-- find line
+map('v', 'E', [[g_]], opts) -- goto until before eol
 
 -- treesitter
 -- see lua/my_treesitter.lua

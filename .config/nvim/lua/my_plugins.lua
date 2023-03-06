@@ -48,8 +48,9 @@ return {
   { "echasnovski/mini.align", version = false, config = function() require("mini.align").setup({}) end },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
   { "echasnovski/mini.ai", version = false, config = function() require("mini.ai").setup({}) end },
-  -- TODO setup
-  -- { "echasnovski/mini.bracketed", version = false, config = function() require("mini.bracketed").setup({}) end, version = false },
+  -- [] mappings for buffer, comment, x conflict, diagnostics, file, indent, jump, location,
+  -- location, oldfile, quickfix, treesitter, undo, window, yank
+  { "echasnovski/mini.bracketed", version = false, config = function() require("mini.bracketed").setup({}) end },
   -- usage in my_hydra.lua
   { "echasnovski/mini.move", version = false, config = function()
     require('mini.move').setup({

@@ -249,3 +249,5 @@ callback = function()
 -- json: %!jq
 -- xml: xmllint --format -
 -- tables: :'<,'>!column -t -s \| -o \|
+-- Validate without silently changing things not according to standard.
+-- https://github.com/itchyny/gojq

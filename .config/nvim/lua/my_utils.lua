@@ -17,12 +17,25 @@ M.appDateLog = function(content)
   fp:close()
 end
 
--- must be global, because keybindings dont accept lua functions yet
-M.getCurrLinePlNL = function()
+-- get current line payload
+M.getCurrLinePl = function()
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  local curline = vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, false)[1]
-  return curline .. "\n"
+  return vim.api.nvim_buf_get_lines(0, linenr - 1, linenr, false)[1]
 end
+
+-- get current line payload + NL
+M.getCurrLinePlNL = function()
+  return M.getCurrLinePl() .. "\n"
+end
+
+-- M.windowing = function()
+--   local nr_wins = #vim.api.nvim_list_wins()
+--   local ref = 2
+--   if nr_wins ~= ref then return end
+--   local cur_win = nvim_get_current_win()
+--   vim.api.nvim_set_current_win(winid)
+--   print(#vim.api.nvim_list_wins())
+-- end
 
 --map('v', '<leader>p', [[lua require('my_utils').preserve("p")]], opts)
 --does not work as expected, from https://vi.stackexchange.com/a/34495
