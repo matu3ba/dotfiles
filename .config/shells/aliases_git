@@ -69,9 +69,10 @@ alias gshow='git --no-pager show --name-only'
 #Added, Copied, Deleted, Modified, Renamed + type (T changed9, Unmerged, (X unknown), Broken
 
 # git diff all unindexed files (diff file must be stored outside the git repo)
-alias gdnew="for next in \$( git ls-files --others --exclude-standard ) ; do git --no-pager diff --no-index /dev/null \$next; done;"
+# alias gdnew="for next in \$( git ls-files --others --exclude-standard ) ; do git --no-pager diff --no-index /dev/null \$next; done;"
 #get combined diff of tracked and untracked files (diff file must be stored outside the git repo)
 #{ git --no-pager diff; gdnew } > ../all.diff
+# TODO: combined diff for fish vs posix shell
 
 #get diffed file to unindexed file
 #https://stackoverflow.com/questions/855767/can-i-use-git-diff-on-untracked-files

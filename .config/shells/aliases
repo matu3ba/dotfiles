@@ -1,8 +1,4 @@
 ## shell-independent aliases ##
-# helpers
-alias l='ls --color=auto --hyperlink=auto --group-directories-first -h'
-alias ls='ls --color=auto --hyperlink=auto --group-directories-first -h'
-alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
 
 alias pxcl='pwd | xclip -sel clip -i'
 alias pwlc='pwd | wl-copy'
@@ -180,6 +176,7 @@ alias rmzigcacherec='fd -t d -u "zig-out|zig-cache" -x rm -fr {};'
 # firefox requires profile lookup, even though they provide an option to set the direct path for the profile
 alias   nojail='firejail --noprofile'
 alias  njfoxPM='firejail --noprofile firefox --ProfileManager'
+alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
 #alias   falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --x11=xpra --allow=${TMP1}  falkon  && echo   "${TMP1}"'
 alias    falketh='TMP1="${HOME}/tmpf/falk"   && test -d "${TMP1}" || mkdir ${TMP1} && firejail --net=enp4s0 --whitelist=${TMP1}  falkon  && echo   "${TMP1}"'
 alias   sfalketh='TMP2="${HOME}/tmpf/sfalk"  && test -d "${TMP2}" || mkdir ${TMP2} && firejail --net=enp4s0 --private=${TMP2}               falkon  && rm -fr "${TMP2}"'
@@ -195,7 +192,6 @@ alias       sfoxeth='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${
 alias      sfoxwlan='TMP5="${HOME}/tmpf/sfox"   && test -d "${TMP5}" || mkdir ${TMP5} && firejail --net=wlan0 --private=${TMP5} firefox              && rm -fr "${TMP5}"'
 alias      tbirdeth='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=enp4s0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
 alias     tbirdwlan='TMP6="${HOME}/tmpf/tbird"  && test -d "${TMP6}" || mkdir ${TMP6} && firejail --net=wlan0 --whitelist=${TMP6}         thunderbird && rm -fr "${TMP6}"'
-alias ffoxnoprofile='firejail --noprofile firefox --profileManager'
 
 # sandboxing chromium (enp4s0|wlan0)
 alias  schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
@@ -267,16 +263,10 @@ alias sudo='sudo '
 #shopt -s cdspell
 #complete -d cd
 
-
-ccd() {
-  mkdir -p $1 && cd $1
-}
-ztest() {
-  # Takes ~3 minutes.
-  ./rel/bin/zig build test-std -Dskip-release -Dskip-non-native
-# does not work anymore due to #14708
-# zig test $1 --zig-lib-dir lib --main-pkg-path lib/std
-}
-zltest() {
-  ./build/stage3/bin/zig test $1 --zig-lib-dir lib --main-pkg-path lib/std
-}
+# --- zig test ---
+# Takes ~3 minutes.
+# ./deb/bin/zig build test-std -Dskip-release -Dskip-non-native
+# Does not work anymore due to #14708
+# zig test exec --zig-lib-dir lib --main-pkg-path lib/std
+# Takes ? minutes.
+# ./deb/bin/zig build test-standalone -Dskip-release -Dskip-non-native

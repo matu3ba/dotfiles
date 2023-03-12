@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+TryExec=alacritty
+Exec=alacritty -e ~/.cargo/bin/zellij
+Icon=Alacritty
+Terminal=false
+Categories=System;TerminalEmulator;
+
+Name=AlaZellij
+GenericName=Terminal
+Comment=Alacritty started with zellij
+StartupWMClass=AlaZellij
+Actions=New;
+
+X-Desktop-File-Install-Version=0.26
+
+[Desktop Action New]
+Name=New Terminal
+Exec=alacritty -e ~/.cargo/bin/zellij

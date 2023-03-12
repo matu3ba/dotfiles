@@ -1,3 +1,4 @@
+## bash aliases ##
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -10,3 +11,11 @@ alias ..........="cd ../../../../../../../../.."
 alias ...........="cd ../../../../../../../../../.."
 alias ............="cd ../../../../../../../../../../.."
 alias .............="cd ../../../../../../../../../../../.."
+
+alias l='ls --color=auto --hyperlink=auto --group-directories-first -h'
+alias ls='ls --color=auto --hyperlink=auto --group-directories-first -h'
+alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
+
+#ccd() {
+#  mkdir -p $1 && cd $1
+#}

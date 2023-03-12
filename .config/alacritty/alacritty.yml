@@ -105,3 +105,7 @@ selection:
     #key_bindings:
     #  - { key: N, mods: Control|Shift, action: CreateNewWindow }
     #  - { key: Return, mods: Super, action: ToggleFullScreen }
+# shell:
+#   program: /usr/bin/fish
+#   args:
+#     - --login

@@ -22,6 +22,7 @@ auditctl -l
 auditctl -W <path>
 
 sleep 10m && systemctl suspend
+Get the logs
 journalctl -n 200
 
 auditd (access monitoring framework)

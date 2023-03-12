@@ -153,7 +153,7 @@ on_force_close "quit"
 simplified_ui true
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
-//default_shell "fish"
+default_shell "fish"
 // remove pane frame
 pane_frames false
 // Choose the theme that is specified in the themes section.
