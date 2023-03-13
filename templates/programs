@@ -1,4 +1,4 @@
-Install alacritty on Ubuntu
+Installing alacritty on Ubuntu
 sudo apt install cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 gzip
 git clone https://github.com/alacritty/alacritty; cd alacritty
 cargo build --release
@@ -10,7 +10,7 @@ sudo mkdir -p /usr/local/share/man/man1
 gzip -c extra/alacritty.man | sudo tee /usr/local/share/man/man1/alacritty.1.gz > /dev/null
 gzip -c extra/alacritty-msg.man | sudo tee /usr/local/share/man/man1/alacritty-msg.1.gz > /dev/null
 
-Install Adobe Source Code Pro font on Linux
+Installing Adobe Source Code Pro font on Linux
 echo "installing fonts at $PWD to ~/.fonts/"
 mkdir -p ~/.fonts/adobe-fonts/
 git clone --depth 1 https://github.com/adobe-fonts/source-code-pro.git ~/.fonts/adobe-fonts/source-code-pro
@@ -56,7 +56,7 @@ cd zls && zig build -Drelease-safe
 mv ./zig-out/bin/zls $HOME/.local/bin
 mv ./zig-out/bin/ztags $HOME/Desktop/zigbin
 
-installing arcan
+Installing arcan
 sqlite3, openal, sdl2, opengl, luajit, gbm, kms, freetype, harfbuzz
 libxkbcommon
 (opengl shipped with mesa, gbm?, kms from nvidia)
@@ -78,6 +78,17 @@ arcan /path/to/arcan/tests/interactive/eventtest
 Run as wayland compatible client
 arcan-wayland -exec
 
+Installing fish + zellij
+cargo install zellij
+fish requires rust stable, c++11 compiler, cmake, ncurses header and libs, opt PCRE2, gettext
+Installing to /usr/local with
+mkdir build; cd build
+cmake ..
+make
+sudo make install
+cd $HOME/dotfiles/mustcopy/ && ./cpfiles.sh
+
 pipeworld?
 
 markdown editor: retext
+extracting music: yt-dlp -x
