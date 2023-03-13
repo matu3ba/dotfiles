@@ -56,6 +56,7 @@ local map = vim.api.nvim_set_keymap
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
 
+map('', '<Space>', '<Nop>', opts) -- fix annoying space movements
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
@@ -90,8 +91,7 @@ map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>d', '"_d', opts) -- delete into blackhole register
--- TODO bug behavior: "_D != <leader>D
--- map('v', '<leader>D', '"_D', opts) -- delete into blackhole register,
+map('n', '<leader>D', '"_D', opts) -- delete into blackhole register
 --map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
 -- overwrite line at cursor start with text from register
 map('n', '<leader>p', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)

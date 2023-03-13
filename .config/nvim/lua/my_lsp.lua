@@ -54,8 +54,8 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts) -- Kuckstu definition
   -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
   -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
-  vim.keymap.set('n', '<leader>vws', function() vim.lsp.buf.workspace_symbol() end, opts) -- all symbols
-  vim.keymap.set('n', '<leader>vd', function() vim.lsp.buf.open_float() end, opts) -- all symbols
+  vim.keymap.set('n', '<leader>vws', function() vim.lsp.buf.workspace_symbol() end, opts) -- view workspace symbols
+  vim.keymap.set('n', '<leader>vd', function() vim.lsp.buf.open_float() end, opts) -- view dis
   vim.keymap.set('n', '<leader>ca', function() vim.lsp.buf.code_action() end, opts) -- code action
   vim.keymap.set('n', '<leader>rf', function() vim.lsp.buf.references() end, opts) -- references
   vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, opts) -- restart lsp

@@ -14,7 +14,7 @@ local function load_options()
     nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
     --editorconfig = true, -- can be global or local, add .editorconfig, see editorconfig.org
     --coq_settings = { auto_start = true },
-    --doge_mapping = "<leader>do"; --idea get doge to work
+    --doge_mapping = "<leader>dog"; --idea get doge to work
     --netrw_browse_split = 0
     --netrw_banner = 0
     --netrw_winsize = 25
@@ -64,7 +64,7 @@ local function load_options()
   vim.o.isfname = vim.o.isfname .. ',@-@'
   --vim.o.laststatus = 3 --one global statusline instead of per window
   vim.o.laststatus = 3 --disappearing statusline
-  vim.o.lazyredraw = true -- do not redraw screen in mid of macro
+  vim.o.lazyredraw = true -- no redraw screen in mid of macro
   vim.o.mouse = 'nv'
   vim.o.number = true
   vim.o.relativenumber = true
@@ -73,12 +73,14 @@ local function load_options()
   vim.o.signcolumn = 'yes'
   vim.o.smartcase = true --automatic lower except when upper chars
   vim.o.smartindent = true
-  vim.o.swapfile = false
   vim.o.termguicolors = true
   vim.o.undodir = os.getenv 'HOME' .. '/.config/nvim/undodir' --undotree
   vim.o.undofile = true
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
+  vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
+  vim.o.swapfile = false
+  vim.o.spelllang = 'en,de'
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
   vim.wo.colorcolumn = '80,120,150'
   vim.wo.list = true
@@ -94,16 +96,12 @@ local function load_options()
   -- :lua print(require("nvim-treesitter.parsers").filetype_to_parsername[vim.bo.filetype])
   -- see also :h comment.ft.calculate
 
-  vim.bo.spelllang = 'en,de'
-  vim.bo.swapfile = false
-
+  -- buffer options are only applied from within the buffer, ie via autocommand.
   -- note: https://stackoverflow.com/a/159065
   --vim.bo.expandtab = false --use Tab character on pressing Tab key
-  vim.bo.expandtab = false --expand tabs to spaces: use fuzzy impl
-  vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
-  -- TODO bisect which commit broke scrollback (only 10_000 avaiable)
-  vim.bo.scrollback = 50000 -- terminal scrollback
+  -- vim.bo.expandtab = false --expand tabs to spaces: use fuzzy impl
+  -- vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
+  -- vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
   -- tabstop/expandtab breaks inconsistently for c++ and lua
 
   -- :retab just works, so no need for extab
