@@ -80,12 +80,15 @@ arcan-wayland -exec
 
 Installing fish + zellij
 cargo install zellij
-fish requires rust stable, c++11 compiler, cmake, ncurses header and libs, opt PCRE2, gettext
-Installing to /usr/local with
+dont switch to newer fish versions for now. They might not build on older OS versions.
+git clone https://github.com/fish-shell/fish-shell
+git checkout 3.6.0
+# Installing to /usr/local with
 mkdir build; cd build
 cmake ..
 make
 sudo make install
+# Installing desktop profile for zellij starting fish
 cd $HOME/dotfiles/mustcopy/ && ./cpfiles.sh
 
 pipeworld?
