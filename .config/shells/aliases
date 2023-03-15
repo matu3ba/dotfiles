@@ -30,6 +30,10 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 #get local network address: ifconfig, nmap -sL loclanetworkprefix.*
 #scan local devices of network: nmap -sP addresses.*
 #scan local devices for port 80,443: nmap -p 80,443 addresses.*
+#sudo nmap -p 22 192.168.X.0/24
+#nmap -sV 192.168.X.0/24 | grep -wE '(scan report|ssh)'
+#nmap -sV -p 22 192.168.X.0/24 -oG nmap_output
+#sudo nmap -sn 192.168.X.0/24 -oG nmap_output
 #printer: cupsenable, cupsdisable, lpstat, lprm, lpstat -u
 #usb-stick: ls /dev/disk/, fdisk /dev/sdX, p,d,n,t=>b,a(activate), mkfs -t vfat /dev/sdX1
 #hard-drive: same except t=>L, mkfs -t ext4 /dev/sdX1 (for $HOME)

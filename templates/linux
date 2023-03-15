@@ -130,3 +130,17 @@ Time settings
 sudo hwclock --show --utc
 sudo timedatectl set-timezone Europe/Berlin
 sudo date -s "3 MAR 2023 09:29:00"
+
+Parted
+sudo parted
+print devices
+select /dev/sdX
+> Warning: Unable to open /dev/sdf read-write (Read-only file system).  /dev/sdf has been opened read-only.
+sudo chmod -R 777 /dev/sdX
+> if error: sudo chown -hR $(whoami) /dev/sdX
+sudo mount -orw,remount /dev/sdX
+
+sudo hdparm -r0 /dev/sdX
+/dev/sdX:
+ setting readonly to 0 (off)
+ readonly      =  1 (on)

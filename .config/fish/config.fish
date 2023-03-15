@@ -25,6 +25,19 @@ if status is-interactive
   # universal variables
 
   set -U fish_greeting # no welcome spam
+  # no annoying ../../ typing
+  alias ...="cd ../.."
+  alias ....="cd ../../.."
+  alias .....="cd ../../../.."
+  alias ......="cd ../../../../.."
+  alias .......="cd ../../../../../.."
+  alias ........="cd ../../../../../../.."
+  alias .........="cd ../../../../../../../.."
+  alias ..........="cd ../../../../../../../../.."
+  alias ...........="cd ../../../../../../../../../.."
+  alias ............="cd ../../../../../../../../../../.."
+  alias .............="cd ../../../../../../../../../../../.."
+
 
   #### ported sources ####
   # . $HOME/dotfiles/.config/shells/aliases

@@ -373,3 +373,34 @@ def print_s(dt_in: dt.datetime) -> str:
     return dt_in.strftime(datetimefmt_s)
 def print_ms(dt_in: dt.datetime) -> str:
     return dt_in.strftime(datetimefmt_ms)
+
+# ignore ruff lints with at end eof line:
+# noqa: F821
+# ignore mypy lints with at end eof line:
+# type: ignore
+
+def expectEq(self, actual: object, expected: object, context: str = "") -> int:
+    if actual != expected:
+        if context != "":
+            print(context)
+        print("FAIL: actual:", actual, "expected:", expected)
+        return 1
+    return 0
+
+def expectInRange(self, actual: object, low: object, high: object, context: str = "") -> int:
+    assert isinstance(actual, float) or isinstance(actual, int)
+    assert isinstance(low, float) or isinstance(low, int)
+    assert isinstance(high, float) or isinstance(high, int)
+    if not (low <= actual and actual <= high):
+        if context != "":
+            print(context)
+        print("FAIL:", actual, "not in between [", low, ",", high, "]")
+        return 1
+    return 0
+
+def expectEquation(self, is_true: bool, actual: object) -> int:
+    if is_true is False:
+        print("FAIL: equation false, actual:", actual)
+        return 1
+    return 0
+

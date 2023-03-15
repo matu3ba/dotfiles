@@ -185,12 +185,13 @@ map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR
 --Then assign quickjump mappings in the picker.
 --Store everything in a session file.
 --question think how to delete buffers quick
----- error navigation ----
-map('n', ']q', '<cmd>cn<CR>', opts)
+---- navigation ----
+map('n', ']q', '<cmd>cn<CR>', opts) -- error navigation
 map('n', '[q', '<cmd>cp<CR>', opts)
----- shell navigation ----
-map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- search terminal (for command prompt)
-map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in terminal output
+map('n', ']t', 'gt', opts) -- faster tab navigation for [ sequence C-q ]t
+map('n', '[t', 'gT', opts)
+map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (for command prompt)
+-- map('n', '\\sw', [[/WEXEC<CR>]], opts) -- search for WEXEC (watchexec) in terminal output
 -- use ]-m jump to next method for C-languages
 -- swap left alt to ctrl and c-n and c-p down and up the options
 
