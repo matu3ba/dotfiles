@@ -12,6 +12,7 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require("lazy").setup("my_plugins", {})
   -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
+  -- TODO handle file got deleted without statusline becoming broken
   require 'my_treesitter'  -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'

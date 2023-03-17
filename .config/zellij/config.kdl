@@ -16,7 +16,7 @@
 
 keybinds {
     normal clear-defaults=true {
-        bind "Alt q" { Quit; }
+        bind "Alt z" { Quit; }
         bind "Alt d" { Detach; }
         bind "Alt p" { SwitchToMode "pane"; }
         bind "Alt r" { SwitchToMode "resize"; }

@@ -6,7 +6,7 @@ if not ok_lint then
 end
 
 lint.linters_by_ft = {
-  python = {'mypy','ruff'}
+  python = {'mypy','ruff','clangtidy'}
 }
 
 local ruff = lint.linters.ruff

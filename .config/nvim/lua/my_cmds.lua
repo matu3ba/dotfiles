@@ -3,7 +3,6 @@ local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then
   print('Please install plenary for all features.')
 end
-local utils = require 'my_utils'
 
 ---- Configuration files editing ----
 local add_cmd = vim.api.nvim_create_user_command
@@ -69,6 +68,19 @@ add_cmd('Style',
       return { "darker", "lighter", "palenight", "oceanic", "deep ocean" }
     end,
   }
+)
+_G.beforeTogWrap_colorcolumn = "0"
+add_cmd('TogWrap',
+  function()
+    local tmpcolcol = _G.beforeTogWrap_colorcolumn
+    _G.beforeTogWrap_colorcolumn = vim.wo.colorcolumn
+    vim.wo.colorcolumn = tmpcolcol
+    if vim.wo.wrap == true then
+      vim.wo.wrap = false
+    else
+      vim.wo.wrap = true
+    end
+  end, {}
 )
 
 -- vim.keymap.set("n", "<leader>sv", "", {
