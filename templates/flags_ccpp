@@ -1,3 +1,14 @@
+Just use
+-Weverything
+xor
+-Werror -Wall -Wextra -fsanitize=undefined,address
+-Wpedantic does not work with extensions,
+for example, posix extension allows to cast data to function and back
+which is UB in regular C
+
+Super annoying:
+-Wimplicit-fallthrough
+
 if anyone thinks gcc or clang cli with is usable
 and flags should not be release versioned:
 https://vladiant.github.io/blog/2021/08/14/cpp-compiler-flags

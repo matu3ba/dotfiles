@@ -100,6 +100,7 @@ if status is-interactive
   abbr --add -g        nbnj ' firejail --noprofile {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   abbr --add -g      nbnjnm ' firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   abbr --add -g        nbnm ' make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+  # abbr --add -g         nbz ' CC="zcc.sh" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim DEPS_CMAKE_FLAGS="-DCMAKE_CC_COMPILER=zig\ cc" install'
 
   abbr --add -g      nbasan ' CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
   abbr --add -g      stylua ' stylua --indent-type Spaces --quote-style AutoPreferSingle'
@@ -160,6 +161,12 @@ if status is-interactive
   function falkwlan -d "sandboxing falkon + whitelist download dir"
     set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
   end
+  function sfalketh -d "sandboxing falkon + whitelist download dir"
+    set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--private=$TMP" falkon && rmtmpdir "$TMP"
+  end
+  function sfalkwlan -d "sandboxing falkon + whitelist download dir"
+    set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=wlan0 "--private=$TMP" falkon && rmtmpdir "$TMP"
+  end
   function foxeth -d "sandboxing firefox + whitelist download dir (default profile) "
     set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=enp4s0 "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
   end
@@ -192,7 +199,18 @@ if status is-interactive
   abbr --add -g rgv ' rg --vimgrep'
 
   function ccd -d "create dir and cd into it"
-    mkdir -p $1 && cd $1
+    if test (count $argv) -eq 1
+      mkdir -p $argv[1] && cd $argv[1]
+    else
+      echo "invalid argument number"
+    end
+  end
+  function mpvv -d "mpv video watch"
+    if test (count $argv) -eq 1
+      yt-dlp $argv[1] -o - | mpv - -force-seekable=yes
+    else
+      echo "invalid argument number"
+    end
   end
 end
 
