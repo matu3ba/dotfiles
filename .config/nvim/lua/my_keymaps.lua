@@ -133,6 +133,11 @@ map('n', '<leader>w8', [[8gt]], opts)
 map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
 map('n', '<leader>#', [[<cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
 map('n', '<leader>fl', [[<cmd>lua vim.fn.setreg('/', require('my_utils').getCurrLinePl())<CR>]], opts)-- find line
+map('n', '<leader>vv', [[0vg_]], opts)-- select complete current line
+map('n', '<leader>V', [[^vg_]], opts)-- select current line starting with first word
+map('n', '<leader>yy', [[0vg_y]], opts)-- select complete current line
+map('n', '<leader>Y', [[^vg_y]], opts)-- select current line starting with first word
+
 map('v', 'E', [[g_]], opts) -- goto until before eol
 
 -- treesitter

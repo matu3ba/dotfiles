@@ -40,8 +40,11 @@ if status is-interactive
 
 
   #### ported sources ####
-  # . $HOME/dotfiles/.config/shells/aliases
-  source "$HOME/dotfiles/.config/shells/aliases_git"
+  # source "$HOME/dotfiles/.config/shells/aliases"
+  # source "$HOME/dotfiles/.config/shells/aliases_git"
+
+  # git abbreviations and aliases
+  source "$HOME/.config/fish/git.fish"
 
   # PATH settings
   fish_add_path "$HOME/.cargo/bin"
