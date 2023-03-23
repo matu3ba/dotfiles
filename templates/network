@@ -7,3 +7,31 @@ networkctl list
 nmcli
 nmtui
 avahi-discover
+
+
+ping command examples
+-w TIMEOUT    [to test if there is a connection at all]
+
+list all ip addresses connected to your server
+netstat -tn 2>/dev/null | grep :80 | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -nr | head
+
+To show the gateways (routers):
+ip route
+To show the default gateway[s]:
+ip -4 route show default
+ip -6 route show default
+
+tcpdump options
+-D list of devices
+-c X number of packets before stopping
+-n (ip addresses instead of names)
+-sSIZE limit of capture
+port PORT
+-w write into file
+-i interface
+tcpdump -i hwinterface -w file.tcpdump
+tcpdump -i hwinterface -w file.pcap
+wireshark file.tcpdump
+
+specify a source IP address, destination IP address and source port in tcpdump filter
+tcpdump -i enp1s9 dst 192.168.6.1 and src 192.168.6.2 and src port 80

@@ -77,10 +77,6 @@ To trace child processes, use
 valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log CMD
 valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log ./build/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone
 
-tcpdump -i hwinterface -w file.tcpdump
-wireshark file.tcpdump
-
-
 Accurate Performance measuring:
 sudo perf stat -r 10 -d alacritty -e false
 
