@@ -16,7 +16,7 @@ pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: compti
     }
     var table: [num_terms]Int = undefined;
     table[0] = 1;
-    for (table[1..]) |*entry, i| {
+    for (table[1..], 0..) |*entry, i| {
         entry.* = std.math.mul(Int, table[i], i + 1) catch {
             @compileError("Int type too small for the number of factorial terms specified.");
         };
@@ -82,7 +82,7 @@ fn arraybitset() void {
     comptime var sigabrtmask_bitset = std.bit_set.ArrayBitSet(u32, @typeInfo(std.os.sigset_t).Array.len).initEmpty();
     var sigabrtmask: std.os.system.sigset_t = undefined;
     comptime sigabrtmask_bitset.set(std.os.SIG.ABRT);
-    inline for (sigabrtmask_bitset.masks) |mask, i|
+    inline for (sigabrtmask_bitset.masks, 0..) |mask, i|
         sigabrtmask[i] = mask;
     std.os.sigprocmask(std.os.SIG.UNBLOCK, &sigabrtmask, null);
 }
@@ -153,6 +153,12 @@ fn processArgs(static_alloc: std.mem.Allocator) Cli {
     return .{
         .test_runner_exe_path = args[0],
     };
+}
+
+fn debugCwd(alloc: std.mem.Allocator) void {
+    const cwdstr = std.process.getCwdAlloc(alloc) catch unreachable;
+    defer alloc.free(cwdstr);
+    std.log.debug("cwd: '{s}'", .{cwdstr});
 }
 
 // in build.zig use -D (as desribed in zig build -h)
