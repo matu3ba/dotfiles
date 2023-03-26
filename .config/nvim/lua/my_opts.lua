@@ -2,23 +2,22 @@
 --vim.o.guicursor         = '';
 local function load_options()
   local setvars = {
+    --coq_settings = { auto_start = true },
+    --doge_mapping = "<leader>dog"; --idea get doge to work
+    --netrw_banner = 0
+    --netrw_browse_split = 0
+    --netrw_localrmdir = 'rm -r'
+    --netrw_winsize = 25
+    --vim_be_good_log_file = true,
+    mapleader = ' ',
+    material_lighter_contrast = false,
+    material_style = 'darker', -- default, darker, lighter, oceanic, deep ocean, palenight
+    nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
+    nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
     python3_host_prog = '/usr/bin/python3',
     rg_derive_root = true,
     rustfmt_autosave = true,
     vim_apm_log = true, -- ???
-    --vim_be_good_log_file = true,
-    mapleader = ' ',
-    material_style = 'darker', -- default, darker, lighter, oceanic, deep ocean, palenight
-    material_lighter_contrast = false,
-    nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
-    nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
-    --editorconfig = true, -- can be global or local, add .editorconfig, see editorconfig.org
-    --coq_settings = { auto_start = true },
-    --doge_mapping = "<leader>dog"; --idea get doge to work
-    --netrw_browse_split = 0
-    --netrw_banner = 0
-    --netrw_winsize = 25
-    --netrw_localrmdir = 'rm -r'
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v)
@@ -36,7 +35,6 @@ local function load_options()
   -- # [lib/**.js]
   -- # indent_style = space
   -- # indent_size = 2
-  vim.b.editorconfig = true -- add .editorconfig, see editorconfig.org
   -- windows:
   -- based on github.com/neovim/neovim/12092 and wiki
   -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip
@@ -56,6 +54,18 @@ local function load_options()
   vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim
   --vim.o.completeopt = 'menu,menuone,noselect' --nvim-cmp
   vim.o.cursorline = true
+  -- # EditorConfig as defined in https://EditorConfig.org
+  -- root = true
+  -- charset = utf-8
+  -- [{*.h,*.c,*.cpp}]
+  -- indent_style = tab
+  -- indent_size = tab
+  -- tab_width = 2
+  -- # Indentation override for JS files under lib directory
+  -- # [lib/**.js]
+  -- # indent_style = space
+  -- # indent_size = 2
+  vim.o.editorconfig = true -- add .editorconfig, see editorconfig.org
   vim.o.errorbells = false
   vim.o.hidden = true
   vim.o.hlsearch = true --false
@@ -79,6 +89,7 @@ local function load_options()
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
   vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
+  vim.o.shell = 'fish'
   vim.o.swapfile = false
   vim.o.spelllang = 'en,de'
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)

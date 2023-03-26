@@ -6,6 +6,10 @@ const std = @import("std");
 //var buf = "d_2".*;
 //const bufslice: []u8 = &buf;
 
+//1-item slice via explicit construction
+//const node_slice = [1]Ast.Node.Index{datas[node].rhs};
+//try stack_decls.append(.{ .nodes = &node_slice, .nodes_i = 0 });
+
 //const child_name: [*:0]const u16 = std.unicode.utf8ToUtf16LeStringLiteral("child.exe");
 //const ch_n = @intToPtr([*:0]u16, @ptrToInt(child_name));
 //const ch_n: [*:0]u16 = @ptrCast([*:0]u16, child_name); @ptrCast can not erase const

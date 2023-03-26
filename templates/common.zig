@@ -136,11 +136,12 @@ fn usageSortContext() void {
 }
 
 // explicit error set
-fn somefunction() error{errname}!void {}
+fn somefunction() error{ErrName}!void {}
 
-const reserved_size = std.math.max(std.fs.MAX_PATH_BYTES + 2 * maxAsciiDigits(u64), std.mem.page_size);
-var args_buffer: [reserved_size]u8 = undefined;
-var args_allocator = std.heap.FixedBufferAllocator.init(&args_buffer);
+const reserved_size = 4 * std.mem.page_size;
+var testblock_buffer: [reserved_size]u8 = undefined;
+var fixedbuf_decl = std.heap.FixedBufferAllocator.init(&testblock_buffer);
+const testblock_alloc = fixedbuf_decl.allocator();
 
 const Cli = struct {
     test_runner_exe_path: []u8,

@@ -7,7 +7,7 @@ end
 lsp.preset('recommended')
 
 lsp.ensure_installed({
-  "lua_ls", -- lua-language-server
+  -- "lua_ls", -- lua-language-server
   "clangd", -- clangd
   "neocmake", -- neocmakelsp
   "lemminx", -- lemminx
@@ -46,6 +46,7 @@ lsp.setup_nvim_cmp({
 })
 
 lsp.on_attach(function(client, bufnr)
+  local _ = client
   local opts = {buffer = bufnr, remap = false}
   -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
   vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source

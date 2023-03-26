@@ -38,6 +38,21 @@ if status is-interactive
   alias ............="cd ../../../../../../../../../../.."
   alias .............="cd ../../../../../../../../../../../.."
 
+  # fix $? and $$
+  function bind_status
+    commandline -i (echo '$status')
+  end
+  function bind_self
+    commandline -i (echo '$fish_pid')
+  end
+  function fish_user_key_bindings
+    bind '$?' bind_status
+    bind '$$' bind_self
+  end
+  # fix !!
+  function bangbang --on-event fish_postexec
+    abbr -g !! $argv[1]
+  end
 
   #### ported sources ####
   # source "$HOME/dotfiles/.config/shells/aliases"

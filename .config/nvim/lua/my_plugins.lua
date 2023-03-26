@@ -44,6 +44,8 @@ return {
   { "echasnovski/mini.indentscope", version = false, config = function() require("mini.indentscope").setup({}) end },
 
   -- TODO: lazy loads + mini config
+  -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
+  -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L232-L260
   -- ga no preview, gA preview
   { "echasnovski/mini.align", version = false, config = function() require("mini.align").setup({}) end },
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
