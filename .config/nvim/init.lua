@@ -51,7 +51,6 @@ end
 -- * (assembly) inspection techniques
 -- * tracing + resolving broken logic
 
--- zf: file finder issue creation + neovim plugin setup
 -- zellij keybindings:
 -- A-[1-8] for panes
 -- A-a left tab, A-f right tab

@@ -111,7 +111,8 @@ return {
   -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }
   ---- telescope ----
   { "nvim-telescope/telescope.nvim", dependencies = { { "nvim-lua/popup.nvim", lazy = false }, { "nvim-lua/plenary.nvim", lazy = false } } }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
-  { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
+  { "natecraddock/telescope-zf-native.nvim", lazy = false }, -- simpler algorithm for matching
+  -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
   -- Telescope gh issues author=windwp label=bug search=miscompilation
   { "nvim-telescope/telescope-github.nvim" }, --Telescope gh issues|pull_request|gist|run
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
