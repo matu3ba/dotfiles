@@ -45,7 +45,16 @@ end
 ]]
 end
 
--- TODO (advanced) debugging workshop to understand debugger scheduling and (assembly) inspection techniques
+-- GOOD_TO_KNOW
+-- * debugger scheduling control with gdb
+-- * write some functions for custom debugging print
+-- * (assembly) inspection techniques
+-- * tracing + resolving broken logic
+
+-- zf: file finder issue creation + neovim plugin setup
+-- zellij keybindings:
+-- A-[1-8] for panes
+-- A-a left tab, A-f right tab
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
 -- idea: simple diff that respects gitignore https://github.com/ziglibs/diffz
