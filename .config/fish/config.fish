@@ -230,5 +230,13 @@ if status is-interactive
       echo "invalid argument number"
     end
   end
+
+  # if test -z (pgrep ssh-agent | string collect)
+  # end
+  eval (ssh-agent -c)
+  set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+  set -Ux SSH_AGENT_PID $SSH_AGENT_PID
+  trap "ssh-agent -k" exit
+
 end
 

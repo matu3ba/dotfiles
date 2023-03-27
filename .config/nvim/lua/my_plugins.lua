@@ -18,16 +18,16 @@ return {
       {"neovim/nvim-lspconfig"}, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
       {"williamboman/mason.nvim"},
       {"williamboman/mason-lspconfig.nvim"},
-      -- Autocompletion
+      -- Autocompletion/Snippets (Required)
       {"hrsh7th/nvim-cmp"},
-      {"hrsh7th/cmp-buffer"},
-      {"hrsh7th/cmp-path"},
-      {"saadparwaiz1/cmp_luasnip"},
       {"hrsh7th/cmp-nvim-lsp"},
-      {"hrsh7th/cmp-nvim-lua"},
-      -- Snippets
       {"L3MON4D3/LuaSnip"},
+      -- Optional
+      {"hrsh7th/cmp-buffer"},
+      {"hrsh7th/cmp-nvim-lua"},
+      {"hrsh7th/cmp-path"},
       {"rafamadriz/friendly-snippets"},
+      {"saadparwaiz1/cmp_luasnip"},
   }},
 
   -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)

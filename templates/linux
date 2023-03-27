@@ -127,6 +127,7 @@ sudo hwclock --show --utc
 sudo timedatectl set-timezone Europe/Berlin
 sudo date -s "3 MAR 2023 09:29:00"
 
+
 Parted
 sudo parted
 print devices
@@ -140,3 +141,9 @@ sudo hdparm -r0 /dev/sdX
 /dev/sdX:
  setting readonly to 0 (off)
  readonly      =  1 (on)
+
+Set timezone + date from host:
+
+sudo timedatectl set-timezone Europe/Berlin
+ssh user@domain@ip sudo timedatectl set-timezone Europe/Berlin
+ssh user@domain@ip sudo date -s @$(date -u +"%s")

@@ -1,3 +1,22 @@
+Greg Law - More GDB wizardry and 8 other essential Linux application debugging tools
+
+gdb tui
+C-x-a      toggle to/from tui mode
+C-l        refresh screen
+C-p/C-m    prev,next cmd
+C-x 2      2nd windows, cycle through views
+
+python help(gdb)
+set history save on
+set print pretty on
+set pagination off
+set confirm off
+
+# to fix cross-compiled gdb etc:
+import os
+# to show events
+info handle
+
 Excellent introduction: https://interrupt.memfault.com/blog/advanced-gdb
 
 breakpoints:
@@ -32,6 +51,15 @@ ps aux | grep -i process
 on fork/posix_spawn:
 default: set follow-fork-mode parent
 other:  set follow-fork-mode child
+set detach-on-fork on|off
+info inferiors
+inferior N
+add-inferior <count> <name> [attachPID]
+remove-inferior N
+clone-inferior N
+print $_inferior
+shell sleep 40 &
+shell ps
 
 Debugging on Windows:
 https://remedybg.itch.io/remedybg
@@ -61,11 +89,27 @@ disable BREAKP
 watch WHERE
 samecommands_as_BREAKP WATCHP
 del/enable/disable WATCHP
+watch -l location
+rwatch
+watch foo thread 3
+watch foo if foo > 10
 
 WHERE: fn_name, line_number, file:line_number
 break/watch WHERE if CONDITION
 (CONDITION = C expression evaluating to true or false)
 condition BREAK .. CONDITION
+tbreak   temp breakpoint
+rbreak   regex breakpoint
+command  list cmds to exec when breakpoint hit
+silent   suppress output on breakpoint hit
+save breakpoints   save list of breakpoints to script
+save history       save history of executed gdb cmds
+info line foor.c:42     show PC for line
+info line * $pc         show line begin/end for current pc
+
+Also: gcc -Og, -ggdb3 better than -g
+
+valgrind --vgdb=full --gdb-error=0 ./exec
 
 backtrace
 where (to show stack)
@@ -90,6 +134,17 @@ x/nfu ADDRESS (n how many units,
 WHAT: C expression, filename::varname, fn::varname, {type}address, $register
 
 thread THREAD ..
+thread apply all backtrace
+thread apply all backtrace full
+
+dprintf mutex_liock "m is %p m->magic is %u\n", m,m->magic
+set dprintf-style gdb|call|agent
+set dprintf-function fprintf
+set dprintf-channel mylog
+
+catch catch
+catch syscall nanosleep
+catch syscall 100
 
 set var VARNAME=VAL
 return EXPRESSION
@@ -162,3 +217,10 @@ if that does not work:
 - reduce the problem + printf debugging of all intermediat artefacts
   * we have no way to introspect the problem, so we can only try to modify
     the system behavior
+
+gdbserver localhost:2000 ./exec
+target remote localhost:2000
+
+
+-fno-stack-protectro
+-static

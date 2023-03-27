@@ -23,3 +23,17 @@ f finish,   reverse-finish reverse-finish
 i lo   (to show local vars)
 l      (to list contents of current file)
 watch (to watch access)
+
+rr record ./exec
+while rr record ./exec ; do echo OK; done
+rr replay
+reverse-stepi
+p $sp
+watch * (unsigned long*) (printed address)
+reverse-continue
+print i
+whatis array
+p sizeof array
+
+pgrep -lf exec
+live-record -p PID

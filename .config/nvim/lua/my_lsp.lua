@@ -4,16 +4,23 @@ if not has_lspzero then
   -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
   return
 end
-lsp.preset('recommended')
+lsp.preset({
+  name = 'minimal',
+  set_lsp_keymaps = true,
+  manage_nvim_cmp = true,
+  suggest_lsp_servers = true,
+})
 
+-- sunmenko_lsp lua_ls, lua-language-server
+-- must not use MasonInstall, not sure if MasonUpdate also breaks things
 lsp.ensure_installed({
-  -- "lua_ls", -- lua-language-server
-  "clangd", -- clangd
-  "neocmake", -- neocmakelsp
-  "lemminx", -- lemminx
   "bashls", -- bash-language-server
+  "clangd", -- clangd
   "jedi_language_server", -- jedi-language-server
+  "lemminx", -- lemminx
   "ltex", -- ltex-ls
+  "lua_ls", --lua-language-server, lua_ls
+  "neocmake", -- neocmakelsp
 })
 
 local has_cmp, cmp = pcall(require, 'cmp')

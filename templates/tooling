@@ -1,4 +1,10 @@
 - valgrind
+* cachegrind: cache profiler
+* callgrind: cachegrind + call graphs
+* massif: heap profiler
+* helgrind: race condition finder
+* DRD: like helgrind, but uses less memory
+* Lackey/None: demo/unit test of valgrind itself
 
 C/C++
 -- clang --
@@ -7,3 +13,66 @@ clang-fmt
 clang-tidy
 flags compile-time: -Wthread-safety
 
+clang -g -fsanitize=address foo.c
+gcc -g -fsanitize=address -static-libasan foo.c
+(false positives with fortification)
+__attribute__((no_sanitize_address))
+
+-D_FORTIFIY_SOURCE={0,1,2}
+adds checks to memory, copy printf functions
+-D_FORTIFIY_SOURCE=2
+default on many modern distros
+
+ftrace
+cat /sys/kernel/debug/tracing/trace
+trace-cmd record -e tcp:tcp_destroy_sock
+trace-cmd report
+
+ltrace (dynamic library calls of process)
+ltrace cmd
+ltrace -w=4 cmd
+ltrace -t cmd
+ltrace -l libc.so* c
+ltrace -e malloc+free-@libc.so* cmd
+
+perf trace
+perf trace cmd
+perf trace -p 1234
+perf trace -e read*
+perf trace -D 500
+perf trace record
+perf script
+perf report
+
+gdb
+record btrace
+
+after core dump:
+ls -ltm core*
+gdb -c core.NUM
+bt
+
+gdb ./exec
+record
+break main
+command 1
+>record
+>continue
+>end
+break exit
+command 2
+run
+end
+set pagination off
+set confirm off
+c
+
+gdb ./exec
+bt
+reverse-stepi
+disas
+print $rsp
+x $1
+print /x * (unsigned long*) $sp
+disas (printed thing)
+x (disassembled thing)
