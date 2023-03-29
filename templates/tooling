@@ -1,3 +1,11 @@
+https://reproducible-builds.org/tools/
+diffoscope - https://diffoscope.org/
+rebuilderd - https://github.com/kpcyrd/rebuilderd
+rr -
+ripgrep from BurntSushi (https://github.com/BurntSushi/ripgrep).
+fd-find from sharkdp (https://github.com/sharkdp/fd)
+fz from natecraddock (https://github.com/natecraddock/zf)
+
 - valgrind
 * cachegrind: cache profiler
 * callgrind: cachegrind + call graphs
@@ -76,3 +84,11 @@ x $1
 print /x * (unsigned long*) $sp
 disas (printed thing)
 x (disassembled thing)
+
+            Linux tracing overview
+___________________________________________________________________
+addons+viewers           | trace_cmd, perf-tools, LTTng, kerneshark
+front-end tools          | perf
+tracing frameworks       | ftrace, perf_event, eBPF
+Back-end instrumentation | tracepoints, kprobes, uprobes
+source: https://wiki.st.com/stm32mpu/wiki/Linux_tracing,_monitoring_and_debugging
