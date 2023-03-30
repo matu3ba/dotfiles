@@ -9,17 +9,17 @@ require('nvim-treesitter.configs').setup {
     additional_vim_regex_highlighting = false,
   },
   incremental_selection = {
-   enable = true,
-   keymaps = {
-     init_selection = false, --"gnn",
-     node_incremental = "gV", -- node = Vertex incremental
-     scope_incremental = "gS", -- Scope incremental
-     node_decremental = false, --"grm",
-   },
+    enable = true,
+    keymaps = {
+      init_selection = false, --"gnn",
+      node_incremental = 'gV', -- node = Vertex incremental
+      scope_incremental = 'gS', -- Scope incremental
+      node_decremental = false, --"grm",
+    },
   },
   indent = {
     enable = true, -- broken for Zig, Python
-    disable = { "zig" }, -- "python",
+    disable = { 'zig' }, -- "python",
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()

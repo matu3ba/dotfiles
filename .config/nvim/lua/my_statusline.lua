@@ -2,14 +2,12 @@
 --! Offers 1 mode: usage
 --Many things copied and adjusted from
 --https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
-local has_plenary, plenary = pcall(require, "plenary")
-local has_gitsigns, _ = pcall(require, "gitsigns")
-if not has_plenary or not has_gitsigns then
-  return
-end
+local has_plenary, plenary = pcall(require, 'plenary')
+local has_gitsigns, _ = pcall(require, 'gitsigns')
+if not has_plenary or not has_gitsigns then return end
 
 local statusline = {}
-local statusline_group = vim.api.nvim_create_augroup("custom_statusline", { clear = true })
+local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
 vim.o.statusline = '%!v:lua.require("my_statusline").setup()'
 
 local lsp = {
@@ -23,19 +21,13 @@ local function print_lsp_progress()
     local percentage = message.percentage or 0
     local message_text = ''
     local percentage_text = ''
-    if percentage > 0 then
-      percentage_text = (' - %d%%%%'):format(percentage)
-    end
-    if message.message then
-      message_text = (' (%s)'):format(message.message)
-    end
+    if percentage > 0 then percentage_text = (' - %d%%%%'):format(percentage) end
+    if message.message then message_text = (' (%s)'):format(message.message) end
     lsp.message = ('%s: %s%s%s'):format(message.name, message.title, message_text, percentage_text)
-    if message.done then
-      vim.defer_fn(function()
-        lsp.printed_done = true
-        print_lsp_progress()
-      end, 300)
-    end
+    if message.done then vim.defer_fn(function()
+      lsp.printed_done = true
+      print_lsp_progress()
+    end, 300) end
   else
     lsp.message = ''
     lsp.printed_done = false
@@ -49,9 +41,7 @@ vim.api.nvim_create_autocmd({ 'User' }, {
 })
 
 local function with_icon(value, icon)
-  if not value then
-    return value
-  end
+  if not value then return value end
   return icon .. ' ' .. value
 end
 
@@ -62,12 +52,8 @@ local function git_statusline()
   elseif vim.g.gitsigns_head then
     table.insert(result, vim.g.gitsigns_head)
   end
-  if vim.b.gitsigns_status then
-    table.insert(result, vim.b.gitsigns_status)
-  end
-  if #result == 0 then
-    return ''
-  end
+  if vim.b.gitsigns_status then table.insert(result, vim.b.gitsigns_status) end
+  if #result == 0 then return '' end
   return with_icon(table.concat(result, ' '), '')
 end
 
@@ -75,66 +61,58 @@ local function get_path()
   -- rel_path is absolute, when path not within cwd
   -- plenary handles for us gracefully uris
   local rel_path = plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()
-  if #rel_path < (vim.fn.winwidth(0) / 2) then
-    return rel_path
-  end
+  if #rel_path < (vim.fn.winwidth(0) / 2) then return rel_path end
   return vim.fn.pathshorten(rel_path)
 end
 
 local function search_result()
-  if vim.v.hlsearch == 0 then
-    return ''
-  end
-  local last_search = vim.fn.getreg('/')
-  if not last_search or last_search == '' then
-    return ''
-  end
-  local searchcount = vim.fn.searchcount({ maxcount = 9999 })
+  if vim.v.hlsearch == 0 then return '' end
+  local last_search = vim.fn.getreg '/'
+  if not last_search or last_search == '' then return '' end
+  local searchcount = vim.fn.searchcount { maxcount = 9999 }
   return last_search .. '(' .. searchcount.current .. '/' .. searchcount.total .. ')'
   -- return '(' .. searchcount.current .. '/' .. searchcount.total .. ')'
 end
 
 local function get_linecol()
   local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
-  return ":" .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2])
+  return ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2])
 end
 
 local function get_perc_lin()
   local curr_line = vim.api.nvim_win_get_cursor(0)[1]
   local line_count = vim.api.nvim_buf_line_count(0)
-  return tostring(math.floor((curr_line/line_count)*100)) .. '%%'
+  return tostring(math.floor((curr_line / line_count) * 100)) .. '%%'
 end
 
 local function get_fileinfo()
-  if vim.bo.buftype == "" then
-    if vim.bo.readonly == true then
-      return "ro"
-    end
+  if vim.bo.buftype == '' then
+    if vim.bo.readonly == true then return 'ro' end
     if vim.bo.modified then
-      return " +"
+      return ' +'
     else
-      return "  "
+      return '  '
     end
-  elseif vim.bo.buftype == "acwrite" then
+  elseif vim.bo.buftype == 'acwrite' then
     if vim.bo.modified then
-      return "ac+"
+      return 'ac+'
     else
-      return "ac"
+      return 'ac'
     end
-  elseif vim.bo.buftype == "help" then
-    return "he"
-  elseif vim.bo.buftype == "nofile" then
-    return "[]"
-  elseif vim.bo.buftype == "nowrite" then
-    return "nw"
-  elseif vim.bo.buftype == "quickfix" then
-    return "qf"
-  elseif vim.bo.buftype == "terminal" then
-    return "te"
-  elseif vim.bo.buftype == "prompt" then
-    return "pr"
+  elseif vim.bo.buftype == 'help' then
+    return 'he'
+  elseif vim.bo.buftype == 'nofile' then
+    return '[]'
+  elseif vim.bo.buftype == 'nowrite' then
+    return 'nw'
+  elseif vim.bo.buftype == 'quickfix' then
+    return 'qf'
+  elseif vim.bo.buftype == 'terminal' then
+    return 'te'
+  elseif vim.bo.buftype == 'prompt' then
+    return 'pr'
   else
-    return "  "
+    return '  '
   end
 end
 
@@ -148,16 +126,16 @@ function statusline.setup()
   local statusline_sections = {
     path,
     lincol,
-    " ",
+    ' ',
     perc_lin,
-    " ",
+    ' ',
     file_info,
-    " ",
+    ' ',
     search,
-    " ",
+    ' ',
     git_status,
-    " ",
-    lsp.message
+    ' ',
+    lsp.message,
   }
   return table.concat(statusline_sections)
 end

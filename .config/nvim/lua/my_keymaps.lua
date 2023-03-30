@@ -5,8 +5,8 @@
 -- non-api mappings
 local ok_osc52, osc52 = pcall(require, 'osc52')
 if ok_osc52 then
-  vim.keymap.set('n', '<leader>c', osc52.copy_operator, {expr=true})
-  vim.keymap.set('n', '<leader>cc', '<leader>c_', {remap=true})
+  vim.keymap.set('n', '<leader>c', osc52.copy_operator, { expr = true })
+  vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
   vim.keymap.set('x', '<leader>c', osc52.copy_visual)
   -- TODO: show return status in command line without popup
 end
@@ -132,11 +132,11 @@ map('n', '<leader>w8', [[8gt]], opts)
 -- search word in other window + switch view back
 map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
 map('n', '<leader>#', [[<cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR><cmd>wincmd w<CR>]], opts)
-map('n', '<leader>fl', [[<cmd>lua vim.fn.setreg('/', require('my_utils').getCurrLinePl())<CR>]], opts)-- find line
-map('n', '<leader>vv', [[0vg_]], opts)-- select complete current line
-map('n', '<leader>V', [[^vg_]], opts)-- select current line starting with first word
-map('n', '<leader>yy', [[0vg_y]], opts)-- select complete current line
-map('n', '<leader>Y', [[^vg_y]], opts)-- select current line starting with first word
+map('n', '<leader>fl', [[<cmd>lua vim.fn.setreg('/', require('my_utils').getCurrLinePl())<CR>]], opts) -- find line
+map('n', '<leader>vv', [[0vg_]], opts) -- select complete current line
+map('n', '<leader>V', [[^vg_]], opts) -- select current line starting with first word
+map('n', '<leader>yy', [[0vg_y]], opts) -- select complete current line
+map('n', '<leader>Y', [[^vg_y]], opts) -- select current line starting with first word
 
 map('v', 'E', [[g_]], opts) -- goto until before eol
 
@@ -166,15 +166,15 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 ---- fast command exec ----
 -- harpoon terminals
 map('n', ';d', '<cmd>e .<CR>', opts) -- dir
-map('n', ';i', [[<cmd>lua require("harpoon.term").sendCommand(1, "./i.sh\n")<CR>]], opts)       -- build i.sh
-map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts)       -- build b.sh
-map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts)       -- test  t.sh
-map('n', ';1', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t1.sh\n")<CR>]], opts)      -- test t1.sh
-map('n', ';2', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t2.sh\n")<CR>]], opts)      -- test t2.sh
-map('n', ';3', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t3.sh\n")<CR>]], opts)      -- test t3.sh
-map('n', ';4', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t4.sh\n")<CR>]], opts)      -- test t4.sh
-map('n', ';5', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t5.sh\n")<CR>]], opts)      -- test t5.sh
-map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR>]], opts)      -- test t6.sh
+map('n', ';i', [[<cmd>lua require("harpoon.term").sendCommand(1, "./i.sh\n")<CR>]], opts) -- build i.sh
+map('n', ';b', [[<cmd>lua require("harpoon.term").sendCommand(1, "./b.sh\n")<CR>]], opts) -- build b.sh
+map('n', ';t', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t.sh\n")<CR>]], opts) -- test  t.sh
+map('n', ';1', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t1.sh\n")<CR>]], opts) -- test t1.sh
+map('n', ';2', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t2.sh\n")<CR>]], opts) -- test t2.sh
+map('n', ';3', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t3.sh\n")<CR>]], opts) -- test t3.sh
+map('n', ';4', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t4.sh\n")<CR>]], opts) -- test t4.sh
+map('n', ';5', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t5.sh\n")<CR>]], opts) -- test t5.sh
+map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR>]], opts) -- test t6.sh
 -- idea: execute in window
 -- map('n', ';w1q', [[<cmd>1wincmd q<CR>]], opts)      -- test t6.sh
 ---- buffer navigation ----
@@ -479,7 +479,6 @@ map('n', ';cl', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]],
 map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
 map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
 map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
-
 
 -- send G to shell window/buffer to jump to bottom
 map('n', ';Gj', [[<cmd>lua require("my_harpoon").setCursorToBottom(1)<CR>]], opts)

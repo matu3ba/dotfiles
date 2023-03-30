@@ -1,8 +1,6 @@
 ---- Dependencies ----
 local has_plenary, plenary = pcall(require, 'plenary')
-if not has_plenary then
-  print('Please install plenary for all features.')
-end
+if not has_plenary then print 'Please install plenary for all features.' end
 
 ---- Configuration files editing ----
 local add_cmd = vim.api.nvim_create_user_command
@@ -59,29 +57,21 @@ add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
 -- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", true) end, {})
 -- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", false) end, {})
 
-add_cmd('Style',
-  function(opts)
-    require('material.functions').change_style(opts.args)
-  end, {
-    nargs = 1,
-    complete = function(_, _, _)
-      return { "darker", "lighter", "palenight", "oceanic", "deep ocean" }
-    end,
-  }
-)
-_G.beforeTogWrap_colorcolumn = "0"
-add_cmd('TogWrap',
-  function()
-    local tmpcolcol = _G.beforeTogWrap_colorcolumn
-    _G.beforeTogWrap_colorcolumn = vim.wo.colorcolumn
-    vim.wo.colorcolumn = tmpcolcol
-    if vim.wo.wrap == true then
-      vim.wo.wrap = false
-    else
-      vim.wo.wrap = true
-    end
-  end, {}
-)
+add_cmd('Style', function(opts) require('material.functions').change_style(opts.args) end, {
+  nargs = 1,
+  complete = function(_, _, _) return { 'darker', 'lighter', 'palenight', 'oceanic', 'deep ocean' } end,
+})
+_G.beforeTogWrap_colorcolumn = '0'
+add_cmd('TogWrap', function()
+  local tmpcolcol = _G.beforeTogWrap_colorcolumn
+  _G.beforeTogWrap_colorcolumn = vim.wo.colorcolumn
+  vim.wo.colorcolumn = tmpcolcol
+  if vim.wo.wrap == true then
+    vim.wo.wrap = false
+  else
+    vim.wo.wrap = true
+  end
+end, {})
 
 -- vim.keymap.set("n", "<leader>sv", "", {
 --   silent = true,
@@ -148,9 +138,7 @@ add_cmd('Pmsta', function()
   local line_number = vim.fn.line '.'
   local okularcmd = 'okular --noraise "' .. 'build/main.pdf' .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
   _G.Pid_okular = vim.fn.jobstart(okularcmd)
-  if _G.Pid_okular <= 0 then
-    print '_G.Pid_okular: could not launch okular'
-  end
+  if _G.Pid_okular <= 0 then print '_G.Pid_okular: could not launch okular' end
 end, {})
 add_cmd('Pmsto', function()
   if _G.Pid_okular ~= nil and _G.Pid_okular > 0 then
@@ -158,9 +146,7 @@ add_cmd('Pmsto', function()
     _G.Pid_okular = nil
   end
 end, {})
-add_cmd('Pdffigure', function()
-  vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf')
-end, {})
+add_cmd('Pdffigure', function() vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf') end, {})
 
 -- prints either nt or n
 -- add_cmd('Printmode', function() print(vim.api.nvim_get_mode().mode) end, {})
@@ -341,7 +327,7 @@ end, {}) -- copy filename:line:column
 --   vim.fn.setreg('w', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
 -- end, {}) -- copy filename:line:column
 
-add_cmd('ShAbsPath', function() print(vim.fn.expand('%:p')) end, {})
+add_cmd('ShAbsPath', function() print(vim.fn.expand '%:p') end, {})
 add_cmd('ShDate', function() print(os.date()) end, {})
 
 -- Retag only local files with https://github.com/gpanders/ztags
@@ -374,16 +360,16 @@ add_cmd('ShDate', function() print(os.date()) end, {})
 -- ztags -a -r $FILES
 add_cmd('RetagZigComp', function()
   -- if vim.bo.filetype == 'zig' then
-  local fd_exec = plenary.job:new({command = 'fd', args = { '.*.zig', 'src/', 'lib/std/' } }):sync()
+  local fd_exec = plenary.job:new({ command = 'fd', args = { '.*.zig', 'src/', 'lib/std/' } }):sync()
   -- print("fd_exec", vim.pretty_print(fd_exec))
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
-  local fd_exec = plenary.job:new({command = 'fd', args = { '.*.zig', 'src/' } }):sync()
+  local fd_exec = plenary.job:new({ command = 'fd', args = { '.*.zig', 'src/' } }):sync()
   -- print("fd_exec", vim.pretty_print(fd_exec))
-  plenary.job:new({command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+  plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
 

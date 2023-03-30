@@ -4,57 +4,57 @@ if not has_lspzero then
   -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
   return
 end
-lsp.preset({
+lsp.preset {
   name = 'minimal',
   set_lsp_keymaps = true,
   manage_nvim_cmp = true,
   suggest_lsp_servers = true,
-})
+}
 
 -- sunmenko_lsp lua_ls, lua-language-server
 -- must not use MasonInstall, not sure if MasonUpdate also breaks things
-lsp.ensure_installed({
-  "bashls", -- bash-language-server
-  "clangd", -- clangd
-  "jedi_language_server", -- jedi-language-server
-  "lemminx", -- lemminx
-  "ltex", -- ltex-ls
-  "lua_ls", --lua-language-server, lua_ls
-  "neocmake", -- neocmakelsp
-})
+lsp.ensure_installed {
+  'bashls', -- bash-language-server
+  'clangd', -- clangd
+  'jedi_language_server', -- jedi-language-server
+  'lemminx', -- lemminx
+  'ltex', -- ltex-ls
+  'lua_ls', --lua-language-server, lua_ls
+  'neocmake', -- neocmakelsp
+}
 
 local has_cmp, cmp = pcall(require, 'cmp')
 local has_lspconfig, _ = pcall(require, 'lspconfig')
 if not has_cmp or not has_lspconfig then
-  print('Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig')
+  print 'Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig'
   return
 end
 
 -- local cmp_select = {behavior = cmp.SelectBehavior.Select}
-local cmp_mappings = lsp.defaults.cmp_mappings({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    -- ['<C-t>'] = cmp.mapping.complete({
-    --     config = {
-    --       sources = {
-    --         { name = 'tags' },
-    --       }
-    --     }
-    -- })
-    -- No selection annoyance (= 1 less keypress)
-    --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
-})
+local cmp_mappings = lsp.defaults.cmp_mappings {
+  ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+  ['<C-f>'] = cmp.mapping.scroll_docs(4),
+  ['<C-e>'] = cmp.mapping.abort(),
+  ['<C-y>'] = cmp.mapping.confirm { select = true },
+  ['<C-Space>'] = cmp.mapping.complete(),
+  -- ['<C-t>'] = cmp.mapping.complete({
+  --     config = {
+  --       sources = {
+  --         { name = 'tags' },
+  --       }
+  --     }
+  -- })
+  -- No selection annoyance (= 1 less keypress)
+  --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
+}
 
-lsp.setup_nvim_cmp({
-  mapping = cmp_mappings
-})
+lsp.setup_nvim_cmp {
+  mapping = cmp_mappings,
+}
 
 lsp.on_attach(function(client, bufnr)
   local _ = client
-  local opts = {buffer = bufnr, remap = false}
+  local opts = { buffer = bufnr, remap = false }
   -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
   vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
   vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end, opts) -- **g**oto definition
@@ -76,38 +76,34 @@ lsp.on_attach(function(client, bufnr)
   --vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end, opts)
 end)
 
-lsp.configure('zls', {force_setup = true})
+lsp.configure('zls', { force_setup = true })
 lsp.setup()
 
 -- modify defaults of VonHeikemen/lsp-zero.nvim 0b312c34372ec2b0daec722d1b7fad77b84bef5b:
 -- 1. get completion from all buffers
-local cmp_config = lsp.defaults.cmp_config({
+local cmp_config = lsp.defaults.cmp_config {
   sources = {
-    {name = 'path'},
-    {name = 'nvim_lsp', keyword_length = 3},
-    {name = 'luasnip', keyword_length = 2},
+    { name = 'path' },
+    { name = 'nvim_lsp', keyword_length = 3 },
+    { name = 'luasnip', keyword_length = 2 },
     {
       name = 'buffer',
       keyword_length = 5,
       option = {
-        get_bufnrs = function ()
-          return vim.api.nvim_list_bufs()
-        end
+        get_bufnrs = function() return vim.api.nvim_list_bufs() end,
       },
     },
   },
-})
+}
 
 cmp.setup(cmp_config)
-
 
 cmp.setup.cmdline(':', {
 
   mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources(
-  {
+  sources = cmp.config.sources {
     { name = 'cmdline' },
-  }),
+  },
 })
 
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()

@@ -9,10 +9,9 @@ end
 
 --local utils = require("my_utils");
 
-M.trysend = function()
-  -- sending command to gdb
-  NvimGdb.i():
-print
-
+-- M.trysend = function()
+--   -- sending command to gdb
+--   NvimGdb.i():
+-- print
 
 return M

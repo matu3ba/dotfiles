@@ -12,17 +12,17 @@ cmp.setup {
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-t>'] = cmp.mapping.complete({
-        config = {
-          sources = {
-            { name = 'tags' },
-          }
-        }
-      })
+    ['<C-t>'] = cmp.mapping.complete {
+      config = {
+        sources = {
+          { name = 'tags' },
+        },
+      },
+    },
     -- No selection annoyance (= 1 less keypress)
     --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
   },
-  sources = cmp.config.sources({
+  sources = cmp.config.sources {
     --{ name = 'buffer' },
     --{
     --  name = 'buffer',
@@ -44,7 +44,7 @@ cmp.setup {
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
-  }),
+  },
 }
 
 -- Set configuration for specific filetype.
@@ -67,17 +67,16 @@ cmp.setup {
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources(
-  {
+  sources = cmp.config.sources {
     { name = 'cmdline' },
-  }),
+  },
 })
 
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 lspconfig['clangd'].setup { capabilities = capabilities }
 lspconfig['julials'].setup { capabilities = capabilities }
-lspconfig['jedi_language_server'].setup{ capabilities = capabilities }
+lspconfig['jedi_language_server'].setup { capabilities = capabilities }
 lspconfig['rust_analyzer'].setup { capabilities = capabilities }
 -- npm i -g @angular/language-service
 -- npm i -g typescript

@@ -1,7 +1,6 @@
 local ok_telescope, telescope = pcall(require, 'telescope')
 if not ok_telescope then
-  return
-  --vim.notify("telescope not installed...", vim.log.ERROR)
+  return --vim.notify("telescope not installed...", vim.log.ERROR)
 end
 
 -- '-uu',
@@ -47,10 +46,10 @@ telescope.setup {
 -- local ok_fzf, _ = pcall(require, 'fzf_lib')
 -- local ok_fzf = pcall(telescope.load_extension, 'fzf_lib')
 -- assert(ok_fzf)
-telescope.load_extension('gh')
-telescope.load_extension('undo')
+telescope.load_extension 'gh'
+telescope.load_extension 'undo'
 -- telescope.load_extension('fzf') -- native
-telescope.load_extension("zf-native")
+telescope.load_extension 'zf-native'
 
 -- issue #6 still pending (unusable)
 -- local ok_dir, _ = pcall(require, 'dir-telescope')

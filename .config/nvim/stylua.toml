@@ -1,7 +1,13 @@
-# use default column_width = 120
-line_endings = "Unix"
+call_parentheses = "None"
+collapse_simple_statement = "Always"
+column_width = 150
 indent_type = "Spaces"
 indent_width = 2
+line_endings = "Unix"
 quote_style = "AutoPreferSingle"
-# remove parenthesis around function arguments, if possible
-no_call_parentheses = true
+
+[sort_requires]
+enabled = true
+# -- stylua: ignore
+# -- stylua: ignore start
+# -- stylua: ignore end

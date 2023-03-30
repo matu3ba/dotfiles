@@ -3,16 +3,16 @@ local M = {}
 
 M.IsWSL = function()
   -- assert breaks on Windows
-  local fp = io.open("/proc/version", "rb");
-  local content = fp:read("*all")
+  local fp = io.open('/proc/version', 'rb')
+  local content = fp:read '*all'
   fp:close()
-  local found_wsl = string.find(content, "microsoft")
+  local found_wsl = string.find(content, 'microsoft')
   return found_wsl ~= nil
 end
 
 M.appDateLog = function(content)
-  local current_date = os.date("%Y%m%d") -- year month day according to strftime
-  local fp = assert(io.open( (current_date .. ".log"), "a"))
+  local current_date = os.date '%Y%m%d' -- year month day according to strftime
+  local fp = assert(io.open((current_date .. '.log'), 'a'))
   fp:write(content)
   fp:close()
 end
@@ -24,9 +24,7 @@ M.getCurrLinePl = function()
 end
 
 -- get current line payload + NL
-M.getCurrLinePlNL = function()
-  return M.getCurrLinePl() .. "\n"
-end
+M.getCurrLinePlNL = function() return M.getCurrLinePl() .. '\n' end
 
 -- M.windowing = function()
 --   local nr_wins = #vim.api.nvim_list_wins()
@@ -48,9 +46,7 @@ M.preserve = function(arguments)
   vim.api.nvim_command(args)
   local lastline = vim.fn.line '$'
   -- vim.fn.winrestview(original_cursor)
-  if line > lastline then
-    line = lastline
-  end
+  if line > lastline then line = lastline end
   vim.api.nvim_win_set_cursor(0, { line, col })
 end
 
@@ -66,13 +62,10 @@ end
 M.reloadconfig = function()
   local luacache = (_G.__luacache or {}).cache
   for pkg, _ in pairs(package.loaded) do
-    if pkg:match '^my_.+'
-    then
+    if pkg:match '^my_.+' then
       print(pkg)
       package.loaded[pkg] = nil
-      if luacache then
-        lucache[pkg] = nil
-      end
+      if luacache then lucache[pkg] = nil end
     end
   end
   dofile(vim.env.MYVIMRC)
@@ -95,7 +88,7 @@ end
 -- end
 
 M.makeFileScratch = function(filepath)
---M.makeNamedScratch = function(filepath, scratchname)
+  --M.makeNamedScratch = function(filepath, scratchname)
   -- local bufs = vim.api.nvim_list_bufs()
   --for i, v in ipairs(bufs) do
   --  if(vim.api.nvim_buf_get_name(v) == "abspath_tocompare") then
@@ -105,9 +98,9 @@ M.makeFileScratch = function(filepath)
   --end
   local uri = vim.uri_from_fname(filepath)
   local bufnr = vim.uri_to_bufnr(uri)
-  vim.bo[bufnr].bufhidden = ""
+  vim.bo[bufnr].bufhidden = ''
   vim.bo[bufnr].buflisted = true
-  vim.bo[bufnr].buftype = ""
+  vim.bo[bufnr].buftype = ''
   vim.bo[bufnr].readonly = false
   vim.bo[bufnr].swapfile = false
   return true
@@ -128,23 +121,23 @@ end
 -- print(vim.env.CMDLOG) -- called from subshells, however works
 
 M.printPairsToTmp = function(table)
-  local fp = assert(io.open("/tmp/tmpfile", "a"))
-  for key,value in pairs(table) do
+  local fp = assert(io.open('/tmp/tmpfile', 'a'))
+  for key, value in pairs(table) do
     fp:write(key)
-    fp:write(", ")
+    fp:write ', '
     fp:write(value)
-    fp:write("\n")
+    fp:write '\n'
   end
   fp:close()
 end
 
 M.printIpairsToTmp = function(table)
-  local fp = assert(io.open("/tmp/tmpfile", "a"))
-  for index,value in ipairs(table) do
+  local fp = assert(io.open('/tmp/tmpfile', 'a'))
+  for index, value in ipairs(table) do
     fp:write(index)
-    fp:write(", ")
+    fp:write ', '
     fp:write(tostring(value))
-    fp:write("\n")
+    fp:write '\n'
   end
   fp:close()
 end
@@ -159,7 +152,7 @@ M.listpackages = function()
   -- local bufnr = vim.api.nvim_create_buf(true, true)
   -- print(bufnr)
   -- vim.api.nvim_open_win(bufnr, 0, win_opts)
-  vim.api.nvim_command('enew')
+  vim.api.nvim_command 'enew'
   local contents = {}
   for pkg, _ in pairs(package.loaded) do
     table.insert(contents, pkg)
@@ -244,8 +237,8 @@ M.pasteOverwriteFromRegister = function(register, keep_suffix)
   local col = col_nr + 1
   local reg_len = string.len(reg_content)
   local line_len = string.len(line_content)
-  local prefix = string.sub(line_content, 1, col-1) -- until before cursor
-  local suffix = string.sub(line_content, col+reg_len, line_len) -- starting at cursor
+  local prefix = string.sub(line_content, 1, col - 1) -- until before cursor
+  local suffix = string.sub(line_content, col + reg_len, line_len) -- starting at cursor
   if keep_suffix == true then
     vim.api.nvim_set_current_line(prefix .. reg_content .. suffix)
   else
@@ -263,78 +256,67 @@ M.moveDirectionUntilNonSpaceSymbol = function(direction)
   local ccol = tup_rowcol[2] -- 0 indexed => use +1
   local cchar = vim.api.nvim_get_current_line():sub(ccol + 1, ccol + 1)
   local first_char = cchar
-  if first_char ~= " " then
-    return
-  end
+  if first_char ~= ' ' then return end
   -- TODO handle out of bounds for correct jump
-  if direction == "up" then
+  if direction == 'up' then
     while crow > 0 do
       crow = crow - 1
       cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)
-      if cchar ~= first_char then
-        break
-      end
+      if cchar ~= first_char then break end
     end
-  elseif direction == "down" then
+  elseif direction == 'down' then
     local crowcount = vim.api.nvim_buf_line_count(0)
     while crow < crowcount do
       crow = crow + 1
       cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)
-      if cchar ~= first_char then
-        break
-      end
+      if cchar ~= first_char then break end
     end
   else
-    print("invalid direction given")
+    print 'invalid direction given'
   end
   vim.api.nvim_win_set_cursor(0, { crow, ccol })
 end
 
-
 -- https://github.com/vE5li/cmp-buffer
 -- https://github.com/hrsh7th/cmp-buffer/compare/main...vE5li:cmp-buffer:main
 M.swap_camel_and_snake_case = function(name)
-    local new_name = ""
-    local first_character = string.sub(name, 1, 1)
+  local new_name = ''
+  local first_character = string.sub(name, 1, 1)
 
-    -- is snake case
-    if string.lower(first_character) == first_character then
+  -- is snake case
+  if string.lower(first_character) == first_character then
+    local next_capital = true
 
-        local next_capital = true
+    for i = 1, #name do
+      local character = name:sub(i, i)
 
-        for i = 1, #name do
-            local character = name:sub(i, i)
-
-            if character == "_" then
-                next_capital = true
-            else
-                if next_capital then
-                    new_name = new_name .. string.upper(character)
-                    next_capital = false
-                else
-                    new_name = new_name .. character
-                end
-            end
+      if character == '_' then
+        next_capital = true
+      else
+        if next_capital then
+          new_name = new_name .. string.upper(character)
+          next_capital = false
+        else
+          new_name = new_name .. character
         end
-
-    -- is camel case
-    else
-        for i = 1, #name do
-            local character = name:sub(i, i)
-
-            if string.upper(character) == character then
-                if i > 1 then
-                    new_name = new_name .. "_"
-                end
-                new_name = new_name .. string.lower(character)
-            else
-                new_name = new_name .. character
-            end
-        end
+      end
     end
 
-    return new_name
-end
+    -- is camel case
+  else
+    for i = 1, #name do
+      local character = name:sub(i, i)
 
+      if string.upper(character) == character then
+        if i > 1 then new_name = new_name .. '_' end
+        new_name = new_name .. string.lower(character)
+      else
+        new_name = new_name .. character
+      end
+    end
+  end
+
+  return new_name
+end
 
 return M

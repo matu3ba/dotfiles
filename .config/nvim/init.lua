@@ -4,16 +4,16 @@ require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
 -- cp -r $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
 -- treesitter languages may require: cargo install tree-sitter-cli
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 local has_lazy = vim.loop.fs_stat(lazypath)
 if not has_lazy then
   print 'Please install lazy, instructions in init.lua'
 else
   vim.opt.runtimepath:prepend(lazypath)
-  require("lazy").setup("my_plugins", {})
+  require('lazy').setup('my_plugins', {})
   -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
   -- TODO handle file got deleted without statusline becoming broken
-  require 'my_treesitter'  -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+  require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'
   require 'my_hydra'
