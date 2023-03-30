@@ -30,6 +30,30 @@ if not has_cmp or not has_lspconfig then
   return
 end
 
+--:lua require('lsp-zero.check').inspect_settings('lua_ls')
+lsp.configure('lua_ls', {
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = {'vim'},
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  }
+})
+
 -- local cmp_select = {behavior = cmp.SelectBehavior.Select}
 local cmp_mappings = lsp.defaults.cmp_mappings {
   ['<C-b>'] = cmp.mapping.scroll_docs(-4),
