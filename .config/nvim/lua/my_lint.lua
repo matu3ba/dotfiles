@@ -11,8 +11,8 @@ local ruff = lint.linters.ruff
 ruff.args = {
   '--quiet',
   '--line-length',
-  '120',
-  '-',
+  '150',
+  '-'
 }
 
 vim.api.nvim_create_autocmd({ 'BufWritePost' }, {

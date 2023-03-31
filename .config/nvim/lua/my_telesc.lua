@@ -21,6 +21,21 @@ telescope.setup {
     --     ["<C-h>"] = telescope.extensions.send_to_harpoon.actions.send_selected_to_harpoon
     --   },
     -- },
+    -- find_files = {
+    --   mappings = {
+    --     ["i"] = {
+    --       ["<C-Space>"] = function(prompt_buffer)
+    --         actions.close(prompt_buffer)
+    --         vim.ui.input({ prompt = "glob patterns(comma sep): " }, function(input)
+    --           if not input then return end
+    --           require("telescope.builtin").find_files({
+    --             file_ignore_patterns = vim.split(vim.trim(input), ",", { plain = true })
+    --           })
+    --         end)
+    --       end,
+    --     },
+    --   },
+    -- },
   },
   --extensions = {
   --  hop = {

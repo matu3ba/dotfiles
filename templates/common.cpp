@@ -1,3 +1,9 @@
+#include <array>
+#include <cstdio>
+#include <map>
+#include <string>
+#include <algorithm>
+#include <array>
 /// logging (better would be test based and scoped macros)
 #define DEBUG_FN_ENTER(message)                                                                                   \
     if (debug)                                                                                                    \
@@ -82,3 +88,30 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
 //
 // The lsp is even worse/more unhelpful claiming "no matching constructor" without
 // bothering any explanation.
+
+// map only works with iterators
+// This is extremely easy to miss,
+void iter() {
+    std::map<int, std::string> mapexample;
+    mapexample[1] = "t1";
+    mapexample[2] = "t2";
+    for (auto iter = std::cbegin(mapexample); iter != std::cend(mapexample); ++iter) {
+        printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
+    }
+}
+
+void sortarray() {
+    std::array<int, 5> arr_x {{0,1,2,3,4}};
+    std::sort(arr_x.cbegin(), arr_x.cend());
+}
+
+void sortarray_lambda_expression() {
+    std::array<int, 5> arr_x {{0,1,2,3,4}};
+    std::sort(arr_x.cbegin(), arr_x.cend(), [](int a, int b)
+        {
+              if (a < b)
+                return true;
+              else
+                return false;
+        });
+}
