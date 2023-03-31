@@ -157,6 +157,7 @@ alias grv='git remote -v'
 #alias gbsr='git bisect reset'
 #alias gbss='git bisect start'
 
+# git checkout commit filepath
 alias gco='git checkout'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gc='git commit -v'
