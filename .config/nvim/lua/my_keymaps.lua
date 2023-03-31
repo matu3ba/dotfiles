@@ -330,6 +330,8 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- :tag file.c, :tags for overview (or selection on multiple matches)
 -- C-] to go to tag definition, C-t to jump back
 -- :ts/:tselect definitions for last tag
+-- Unfortunately neovim has no vim.fn.tag binding
+map('n', '<leader>ta', '<cmd>execute "tag " .. expand("<cword>")<CR>', opts)
 
 ---- coq autocompleter ----
 -- default bindings. C-h next snippet, C-w|u deletion of word, C-k preview
