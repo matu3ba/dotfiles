@@ -4,10 +4,6 @@ local function load_options()
   local setvars = {
     --coq_settings = { auto_start = true },
     --doge_mapping = "<leader>dog"; --idea get doge to work
-    --netrw_banner = 0
-    --netrw_browse_split = 0
-    --netrw_localrmdir = 'rm -r'
-    --netrw_winsize = 25
     --vim_be_good_log_file = true,
     mapleader = ' ',
     material_lighter_contrast = false,
@@ -24,17 +20,6 @@ local function load_options()
   end
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
-  -- # EditorConfig as defined in https://EditorConfig.org
-  -- root = true
-  -- charset = utf-8
-  -- [{*.h,*.c,*.cpp}]
-  -- indent_style = tab
-  -- indent_size = tab
-  -- tab_width = 2
-  -- # Indentation override for JS files under lib directory
-  -- # [lib/**.js]
-  -- # indent_style = space
-  -- # indent_size = 2
   -- windows:
   -- based on github.com/neovim/neovim/12092 and wiki
   -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip

@@ -4,6 +4,9 @@ require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
 -- cp -r $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
 -- treesitter languages may require: cargo install tree-sitter-cli
+-- vim.api.nvim_list_runtime_paths(), :h nvim_list_runtime_paths
+-- vim.opt.runtimepath:get(), :h vim.opt
+-- vim.opt.rtp:append()
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 local has_lazy = vim.loop.fs_stat(lazypath)
 if not has_lazy then
