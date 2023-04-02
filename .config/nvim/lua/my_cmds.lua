@@ -361,17 +361,44 @@ add_cmd('ShDate', function() print(os.date()) end, {})
 add_cmd('RetagZigComp', function()
   -- if vim.bo.filetype == 'zig' then
   local fd_exec = plenary.job:new({ command = 'fd', args = { '.*.zig', 'src/', 'lib/std/' } }):sync()
-  -- print("fd_exec", vim.pretty_print(fd_exec))
+  -- print("fd_exec", vim.print(fd_exec))
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
   local fd_exec = plenary.job:new({ command = 'fd', args = { '.*.zig', 'src/' } }):sync()
-  -- print("fd_exec", vim.pretty_print(fd_exec))
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
+
+-- https://github.com/nvim-lua/plenary.nvim/issues/474 prevents us from
+-- using plenary for spawning another neovim instance like this:
+-- add_cmd('CheckTests', function()
+--   -- luacheck: push ignore
+--   local tests_run = plenary.job:new({ command = 'nvim', args = { '--headless', '--noplugin', '-u', 'tests/minimal.lua', '-c', [["PlenaryBustedDirectory tests/ {minimal_init = 'tests/minimal.lua'}"]] } })
+--   -- luacheck: pop ignore
+--   tests_run:start()
+--   tests_run:sync()
+--   print(vim.inspect.inspect(tests_run:result()))
+-- end, {})
+add_cmd('CheckFmt', function()
+  local stylua_run = plenary.job:new({ command = 'stylua', args = { '--color', 'Never', '--check', '.' } })
+  stylua_run:sync()
+  if stylua_run.code ~= 0 then
+    local res_tab = stylua_run:result()
+    for _,tables in ipairs(res_tab) do
+      print(tables)
+    end
+    -- print (vim.inspect(stylua_run:result()));
+  end
+end, {})
+add_cmd('FmtThis', function()
+  local stylua_run = plenary.job:new({ command = 'stylua', args = { '--color', 'Never', '.' } })
+  stylua_run:sync()
+  if stylua_run.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']]; end
+end, {})
+
 
 -- idea optional argument in which register to copy the file path
 --

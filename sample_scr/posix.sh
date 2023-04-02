@@ -14,7 +14,7 @@ set -e
 # Using signal numbers as complete solution is not portable and listing all signal
 # names is ugly/unreadable
 CWD=$(pwd)
-trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM
+trap "cd ${CWD}" EXIT HUP INT QUIT SEGV TERM
 
 wait 20 &
 pid_wait=$!
@@ -113,11 +113,11 @@ fi
 
 # based on https://github.com/dylanaraps/pure-sh-bible
 TEST1=""
-if test -n "${TEST1}"; then echo "length of string non-zero" fi
-if test -z "${TEST1}"; then echo "length of string zero" fi
+if test -n "${TEST1}"; then echo "length of string non-zero"; fi
+if test -z "${TEST1}"; then echo "length of string zero"; fi
 
-if test "${TEST1}" = "${TEST1}"; then echo "equal" fi
-if test "${TEST1}" != "${TEST1}"; then echo "non-equal" fi
+if test "${TEST1}" = "${TEST1}"; then echo "equal"; fi
+if test "${TEST1}" != "${TEST1}"; then echo "non-equal"; fi
 # numeric: - with eq,ne,gt,ge,lt,le
 # file: - with e,f,d,h/L(symbolic link),w,x,s(non-empty)
 # file: - with b(lock),c(haracter),g(set-group-id),p(ipe),t(terminal),u(set-user-id),S(socket)
@@ -138,3 +138,8 @@ if test "${TEST1}" != "${TEST1}"; then echo "non-equal" fi
 # ${VAR?STRING}  Display an error if unset.
 # $- Shell options
 # $$ 	Current shell PID
+
+env -i PATH="$PATH" ls
+env -i HOME="$HOME" LC_CTYPE="${LC_ALL:-${LC_CTYPE:-$LANG}}" PATH="$PATH" USER="$USER" ls
+ssh localhost ls
+env -i bash --noprofile --norc -c "command"

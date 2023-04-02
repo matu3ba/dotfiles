@@ -5,6 +5,9 @@ if not ok_lint then return end
 
 lint.linters_by_ft = {
   python = { 'mypy', 'ruff', 'clangtidy' },
+  -- luacheck: push ignore
+  -- luacheck: pop ignore
+  lua = { 'luacheck' },
 }
 
 local ruff = lint.linters.ruff
