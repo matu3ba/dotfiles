@@ -1,9 +1,11 @@
 --! Dependency free functions
+-- luacheck: globals vim
 local M = {}
 
 M.IsWSL = function()
   -- assert breaks on Windows
   local fp = io.open('/proc/version', 'rb')
+  if fp == nil then return end
   local content = fp:read '*all'
   fp:close()
   local found_wsl = string.find(content, 'microsoft')
@@ -65,7 +67,7 @@ M.reloadconfig = function()
     if pkg:match '^my_.+' then
       print(pkg)
       package.loaded[pkg] = nil
-      if luacache then lucache[pkg] = nil end
+      if luacache then luacache[pkg] = nil end
     end
   end
   dofile(vim.env.MYVIMRC)

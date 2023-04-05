@@ -11,3 +11,4 @@ read_globals = {
 std = luajit
 -- luacheck: push ignore
 -- luacheck: pop ignore
+-- luacheck: globals vim
