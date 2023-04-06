@@ -61,12 +61,20 @@ map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
+
+-- Search helpers
 map('n', ',', [[viwP]], opts) -- keep pasting over the same thing for current word, simple instead of broken for EOL [["_diwP]]
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
 -- Note: * and # also work, but they autojump to next search result
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
+-- TODO search without regex patterns
+--call search('\V' . escape(string, '\'))
+--com! -nargs=1 Search :let @/='\V'.escape(<q-args>, '\\')| normal! n
+-- https://vi.stackexchange.com/questions/17465/how-to-search-literally-without-any-regex-pattern
+-- call search('\V' . escape(string, '\'))
+-- map('v', '\\', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- idea |copy_history:| keypress to extract search properly from history without \V
 --map('n', '<C-j>', '<ESC>', opts) -- better escape binding.
 
