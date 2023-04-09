@@ -1,4 +1,5 @@
--- init.lua --
+--! Main entry point, very common things and autocommands
+-- luacheck: globals vim
 require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
@@ -23,6 +24,7 @@ else
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
   require 'my_statusline'
+  require 'my_buf'
   vim.cmd [[colorscheme material]]
 end
 

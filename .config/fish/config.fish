@@ -137,7 +137,7 @@ if status is-interactive
   abbr --add -g  zigdeb ' {$HOME}/dev/git/zi/zig/debug/stage3/bin/zig'
   abbr --add -g  zigstd ' {$HOME}/.local/appimages/nvim.appimage {$HOME}/dev/git/zi/zig/master/lib/std'
 
-  abbr --add -g  rmzigallcache ' rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
+  abbr --add -g  rmzigallcache ' rm -fr zig-cache/ zig-out/ "$HOME"/.cache/zig/'
   abbr --add -g  rmzigcacherec ' fd -t d -u "zig-out|zig-cache" -x rm -fr {};'
 
   # firejail

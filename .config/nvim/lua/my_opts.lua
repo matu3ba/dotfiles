@@ -8,8 +8,8 @@ local function load_options()
     mapleader = ' ',
     material_lighter_contrast = false,
     material_style = 'darker', -- default, darker, lighter, oceanic, deep ocean, palenight
-    nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
-    nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
+    -- nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
+    -- nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
     python3_host_prog = '/usr/bin/python3',
     rg_derive_root = true,
     rustfmt_autosave = true,
@@ -50,7 +50,7 @@ local function load_options()
   -- # [lib/**.js]
   -- # indent_style = space
   -- # indent_size = 2
-  vim.o.editorconfig = true -- add .editorconfig, see editorconfig.org
+  -- vim.g.editorconfig = true -- add .editorconfig, see editorconfig.org
   vim.o.errorbells = false
   vim.o.hidden = true
   vim.o.hlsearch = true --false
@@ -94,7 +94,7 @@ local function load_options()
 
   -- buffer options are only applied from within the buffer, ie via autocommand.
   -- note: https://stackoverflow.com/a/159065
-  --vim.bo.expandtab = false --use Tab character on pressing Tab key
+  -- vim.bo.expandtab = false --use Tab character on pressing Tab key
   -- vim.bo.expandtab = false --expand tabs to spaces: use fuzzy impl
   -- vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
   -- vim.bo.tabstop = 2 --Tab key: number of spaces for indendation

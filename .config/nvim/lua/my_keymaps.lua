@@ -1,6 +1,8 @@
 --! Optional dependencies: nvim-osc52
 --! Note: C+non-alphabetaic, C+letter, C+Shift+letter can not be distinguished
 --! without termcap, so vim + neovim do not support them.
+-- luacheck: globals vim
+-- luacheck: no max line length
 
 -- non-api mappings
 local ok_osc52, osc52 = pcall(require, 'osc52')
@@ -380,7 +382,7 @@ map('n', '<leader>fd', [[<cmd>FileInDirectory<CR>]], opts) -- find files
 
 -- stylua: ignore start
 map('n', '<leader>rg', [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) -- ripgrep string search
-map('n', '<leader>ss', [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.input("grep:")}<CR>]], opts) -- search string
+map('n', '<leader>ss', [[<cmd>lua require("my_telesc").searchStringRecentReg()<CR>]], opts) -- search string
 map('n', '<leader>fs', [[<cmd>GrepInDirectory<CR>]], opts) -- forwardIntoDir searchstring
 map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
 -- stylua: ignore end

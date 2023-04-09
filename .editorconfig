@@ -1,10 +1,17 @@
 root = true
 charset = utf-8
+trim_trailing_whitespace = true
 
-[{*.c,*.cpp,*.zig}]
-indent_style = space
+[*.{c,cpp,zig}]
 indent_size = 4
-
-[{*.bashrc,*.cmake,*.json,*.lua,*.md,*.py,*.sh}]
 indent_style = space
+trim_trailing_whitespace = true
+
+[*.{bashrc,cmake,json,lua,py,sh}]
 indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.md]
+indent_size = 2
+indent_style = space

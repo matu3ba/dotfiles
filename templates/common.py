@@ -263,7 +263,7 @@ def is_subdict(expected: dict, current: dict):
 def merge_1lvldicts(alpha: dict = {}, beta: dict = {}) -> dict:
     return dict(list(alpha.items()) + list(beta.items()))
 
-## recursive merge dicts
+## recursive merge dicts (not multi-threading safe)
 def merge_dicts(alpha: dict = {}, beta: dict = {}) -> dict:
     return _merge_dicts_aux(alpha, beta, copy.copy(alpha))
 def _merge_dicts_aux(alpha: dict = {}, beta: dict = {}, result: dict = {}, path: Optional[List[str]] = None) -> dict:

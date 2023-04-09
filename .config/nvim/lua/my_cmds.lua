@@ -1,28 +1,32 @@
 ---- Dependencies ----
 local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then print 'Please install plenary for all features.' end
+-- luacheck: globals vim
+-- luacheck: no max line length
+
+local api = vim.api
 
 ---- Configuration files editing ----
-local add_cmd = vim.api.nvim_create_user_command
+local add_cmd = api.nvim_create_user_command
 local nvim_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/nvim/'
+add_cmd('CBuf', nvim_edit .. 'lua/my_buf.lua', {})
 add_cmd('CCmd', nvim_edit .. 'lua/my_cmds.lua', {})
 add_cmd('CDap', nvim_edit .. 'lua/my_dap.lua', {})
-add_cmd('CGs', nvim_edit .. 'lua/my_gitsign.lua', {})
 add_cmd('CGdb', nvim_edit .. 'lua/my_gdb.lua', {})
+add_cmd('CGs', nvim_edit .. 'lua/my_gitsign.lua', {})
 add_cmd('CHa', nvim_edit .. 'lua/my_harpoon.lua', {})
+add_cmd('CHydra', nvim_edit .. 'lua/my_hydra.lua', {})
 add_cmd('CInit', nvim_edit .. 'init.lua', {})
 add_cmd('CKey', nvim_edit .. 'lua/my_keymaps.lua', {})
---add_cmd('CNvimcmp', nvim_edit .. 'lua/my_nvimcmp.lua', {})
 add_cmd('CLi', nvim_edit .. 'lua/my_lint.lua', {})
 add_cmd('CLsp', nvim_edit .. 'lua/my_lsp.lua', {})
 add_cmd('COpts', nvim_edit .. 'lua/my_opts.lua', {})
 add_cmd('CPl', nvim_edit .. 'lua/my_plugins.lua', {})
-add_cmd('OPa', nvim_edit .. 'lua/my_packer.lua', {})
 add_cmd('CSt', nvim_edit .. 'lua/my_statusline.lua', {})
 add_cmd('CTel', nvim_edit .. 'lua/my_telesc.lua', {})
 add_cmd('CTre', nvim_edit .. 'lua/my_treesitter.lua', {})
 add_cmd('CUtil', nvim_edit .. 'lua/my_utils.lua', {})
-add_cmd('CHydra', nvim_edit .. 'lua/my_hydra.lua', {})
+add_cmd('OPa', nvim_edit .. 'lua/my_packer.lua', {})
 
 local df_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/'
 add_cmd('Dotfiles', df_edit, {})
@@ -149,7 +153,7 @@ end, {})
 add_cmd('Pdffigure', function() vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf') end, {})
 
 -- prints either nt or n
--- add_cmd('Printmode', function() print(vim.api.nvim_get_mode().mode) end, {})
+-- add_cmd('Printmode', function() print(api.nvim_get_mode().mode) end, {})
 
 -- add_cmd('Replpdflatex', function()
 --   --local cmd = "terminal watchexec -e tex 'latexmk -pdf -outdir=build main.tex'"
@@ -279,56 +283,41 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- Note: Relative paths are only respected until cwd. If the path goes via parent dir, the absolute path is returned.
 -- TODO setup copy file + dir path for oil with harpoon
 -- https://github.com/stevearc/oil.nvim/issues/50
-add_cmd('Frel', function() vim.fn.setreg('+', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
-add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
-add_cmd('Fabs', function() vim.fn.setreg('+', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
-add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
-add_cmd('Fonly', function() vim.fn.setreg('+', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
-add_cmd('Fline', function()
-  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-  local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-  vim.fn.setreg('+', fname .. ':' .. tostring(lineNum))
-end, {}) -- copy filename:line
-add_cmd('Fcolumn', function()
-  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-  local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
-  vim.fn.setreg('+', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
-end, {}) -- copy filename:line:column
--- ssh
-add_cmd('FrelS', function() vim.fn.setreg('s', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
-add_cmd('FrelDirS', function() vim.fn.setreg('s', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
-add_cmd('FabsS', function() vim.fn.setreg('s', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
-add_cmd('FabsDirS', function() vim.fn.setreg('s', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
-add_cmd('FonlyS', function() vim.fn.setreg('s', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
-add_cmd('FlineS', function()
-  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-  local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-  vim.fn.setreg('s', fname .. ':' .. tostring(lineNum))
-end, {}) -- copy filename:line
-add_cmd('FcolumnS', function()
-  local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-  local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
-  vim.fn.setreg('s', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
-end, {}) -- copy filename:line:column
 
--- add_cmd('FrelW', function() vim.fn.setreg('w', plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()) end, {}) -- copy relative path
--- add_cmd('FrelDirW', function() vim.fn.setreg('w', vim.fs.dirname(plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative())) end, {}) -- copy relative path dir
--- add_cmd('FabsW', function() vim.fn.setreg('w', vim.api.nvim_buf_get_name(0)) end, {}) -- absolute path
--- add_cmd('FabsDirW', function() vim.fn.setreg('w', vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end, {}) -- absolute path dir
--- add_cmd('FonlyW', function() vim.fn.setreg('w', vim.fs.basename(vim.api.nvim_buf_get_name(0))) end, {}) -- only filename
--- add_cmd('FlineW', function()
---   local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
---   local lineNum = vim.api.nvim_win_get_cursor(0)[1]
---   vim.fn.setreg('w', fname .. ':' .. tostring(lineNum))
--- end, {}) -- copy filename:line
--- add_cmd('FcolumnW', function()
---   local fname = vim.fs.basename(vim.api.nvim_buf_get_name(0))
---   local line_col_pair = vim.api.nvim_win_get_cursor(0) -- row is 1, column is 0 indexed
---   vim.fn.setreg('w', fname .. ':' .. tostring(line_col_pair[1]) .. ':' .. tostring(line_col_pair[2]))
--- end, {}) -- copy filename:line:column
-
+--- Sets + register with path [[:line]:column]
+---@param path string Path to set
+---@param line integer|nil Optional line to append
+---@param column integer|nil Optional column to append
+local setPlusCursorInfo = function(path, line, column)
+  local str = path
+  if line ~= nil then str = str .. ':' .. tostring(line) end
+  if column ~= nil then str = str .. ':' .. tostring(column) end
+  vim.fn.setreg('+', str)
+end
+-- stylua: ignore start
+add_cmd('Frel', function() vim.fn.setreg('+', plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
+add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
+add_cmd('FrelLine', function() setPlusCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})
+add_cmd('FrelCol', function()
+  local line_col_pair = api.nvim_win_get_cursor(0)
+  setPlusCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), line_col_pair[1], line_col_pair[2])
+end, {})
+add_cmd('Fabs', function() vim.fn.setreg('+', api.nvim_buf_get_name(0)) end, {})
+add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+add_cmd('FabsLine', function() setPlusCursorInfo(api.nvim_buf_get_name(0), api.nvim_win_get_cursor(0)[1], nil) end, {})
+add_cmd('FabsCol', function()
+  local line_col_pair = api.nvim_win_get_cursor(0)
+  setPlusCursorInfo(api.nvim_buf_get_name(0), line_col_pair[1], line_col_pair[2])
+end, {})
+add_cmd('Fonly', function() vim.fn.setreg('+', vim.fs.basename(api.nvim_buf_get_name(0))) end, {})
+add_cmd('FLine', function() setPlusCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), api.nvim_win_get_cursor(0)[1], nil) end, {})
+add_cmd('FCol', function()
+  local line_col_pair = api.nvim_win_get_cursor(0)
+  setPlusCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), line_col_pair[1], line_col_pair[2])
+end, {})
 add_cmd('ShAbsPath', function() print(vim.fn.expand '%:p') end, {})
 add_cmd('ShDate', function() print(os.date()) end, {})
+-- stylua: ignore end
 
 -- Retag only local files with https://github.com/gpanders/ztags
 -- Use zls for the rest. To index everything, ramfs (/tmp) would
@@ -349,7 +338,7 @@ add_cmd('ShDate', function() print(os.date()) end, {})
 -- ```
 -- NOTE: vimscript wants us to use a list and substitute refuses to work
 -- Output capturing from shell is unnecessary (io.popen)
--- vim.api.nvim_exec(
+-- api.nvim_exec(
 -- [[
 -- let b:filelist = systemlist("fd '.*.zig'")
 -- let b:files = join(b:filelist, ' ')
@@ -383,22 +372,21 @@ end, {})
 --   print(vim.inspect.inspect(tests_run:result()))
 -- end, {})
 add_cmd('CheckFmt', function()
-  local stylua_run = plenary.job:new({ command = 'stylua', args = { '--color', 'Never', '--check', '.' } })
+  local stylua_run = plenary.job:new { command = 'stylua', args = { '--color', 'Never', '--check', '.' } }
   stylua_run:sync()
   if stylua_run.code ~= 0 then
     local res_tab = stylua_run:result()
-    for _,tables in ipairs(res_tab) do
+    for _, tables in ipairs(res_tab) do
       print(tables)
     end
     -- print (vim.inspect(stylua_run:result()));
   end
 end, {})
 add_cmd('FmtThis', function()
-  local stylua_run = plenary.job:new({ command = 'stylua', args = { '--color', 'Never', '.' } })
+  local stylua_run = plenary.job:new { command = 'stylua', args = { '--color', 'Never', '.' } }
   stylua_run:sync()
-  if stylua_run.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']]; end
+  if stylua_run.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']] end
 end, {})
-
 
 -- idea optional argument in which register to copy the file path
 --

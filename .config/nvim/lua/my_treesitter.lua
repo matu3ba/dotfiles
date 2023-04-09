@@ -8,13 +8,14 @@ require('nvim-treesitter.configs').setup {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
+  -- Note, that vib also works for blocks (symbols might be desirable)
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = false, --"gnn",
-      node_incremental = 'gV', -- node = Vertex incremental
-      scope_incremental = 'gS', -- Scope incremental
-      node_decremental = false, --"grm",
+      init_selection = '<leader>vs',
+      node_decremental = 'gsN',
+      node_incremental = 'gsn',
+      scope_incremental = 'gss',
     },
   },
   indent = {

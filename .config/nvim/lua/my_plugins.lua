@@ -2,7 +2,6 @@ return {
   -- clean cache:
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
-  -- rm -fr $HOME/.local/share/nvim/size/pack
   { 'marko-cerovac/material.nvim', dependencies = { 'nvim-lua/plenary.nvim', lazy = false } }, --<l>ma
   {
     'williamboman/mason.nvim',
@@ -153,7 +152,7 @@ return {
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
-  -- { 'matu3ba/buf.nvim', config = function() require('lib_buf').setup() end, dev = true },
+  { 'matu3ba/buf.nvim', dev = true },
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }

@@ -19,6 +19,9 @@ lsp.ensure_installed {
   'jedi_language_server', -- jedi-language-server
   'lemminx', -- lemminx
   'ltex', -- ltex-ls
+  ---@diagnostic disable
+  ---@diagnostic enable
+  -- optionally with postfix disable:doesNotExist
   'lua_ls', --lua-language-server, lua_ls
   'neocmake', -- neocmakelsp
 }
@@ -91,11 +94,11 @@ lsp.configure('lua_ls', {
       },
       diagnostics = {
         -- Get the language server to recognize the `vim` global
-        globals = {'vim'},
+        globals = { 'vim' },
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file("", true),
+        library = vim.api.nvim_get_runtime_file('', true),
         checkThirdParty = false,
       },
       -- Do not send telemetry data containing a randomized but unique identifier

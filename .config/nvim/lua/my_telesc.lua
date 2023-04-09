@@ -1,3 +1,5 @@
+--! Dependency telescope
+-- luacheck: globals vim
 local ok_telescope, telescope = pcall(require, 'telescope')
 if not ok_telescope then
   return --vim.notify("telescope not installed...", vim.log.ERROR)
@@ -78,3 +80,12 @@ telescope.load_extension 'zf-native'
 --telescope.load_extension 'project_scripts'
 --telescope.load_extension 'dap'
 --telescope.load_extension 'z'
+
+local M = {}
+
+M.searchStringRecentReg = function()
+  local recent_copy_del_content = vim.fn.getreg '"'
+  require('telescope.builtin').grep_string { search = recent_copy_del_content }
+end
+
+return M
