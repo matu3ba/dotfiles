@@ -146,7 +146,7 @@ add_cmd('Pmsta', function()
 end, {})
 add_cmd('Pmsto', function()
   if _G.Pid_okular ~= nil and _G.Pid_okular > 0 then
-    _ = vim.fn.jobstop(_G.Pid_okular)
+    local _ = vim.fn.jobstop(_G.Pid_okular)
     _G.Pid_okular = nil
   end
 end, {})
@@ -285,7 +285,7 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- https://github.com/stevearc/oil.nvim/issues/50
 
 --- Sets + register with path [[:line]:column]
----@param path string Path to set
+---@param path string Path to set.
 ---@param line integer|nil Optional line to append
 ---@param column integer|nil Optional column to append
 local setPlusCursorInfo = function(path, line, column)
@@ -388,6 +388,67 @@ add_cmd('FmtThis', function()
   if stylua_run.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']] end
 end, {})
 
+add_cmd('PrintAllWinOptions', function()
+  local win_number = api.nvim_get_current_win()
+  local v = vim.wo[win_number]
+  local all_options = api.nvim_get_all_options_info()
+  local result = ""
+  for key, val in pairs(all_options) do
+      if val.global_local == false and val.scope == "win" then
+          result = result .. "|" .. key .. "=" .. tostring(v[key] or "<not set>")
+      end
+  end
+  print(result)
+end, {})
+
+-- uv.tty_get_winsize() for terminal window size
+-- Note: The conversion froom vim.fn.getwininfo looks abit broken with sigla table entries.
+add_cmd('PrintAllTabInfos', function()
+  local windows = api.nvim_tabpage_list_wins(0)
+  local reg_wins = {}
+  local i = 1
+  for _, win in pairs(windows) do
+    local cfg = vim.api.nvim_win_get_config(win) -- see nvim_open_win()
+    -- check for absence of floating window
+    if cfg.relative == "" then
+      reg_wins[i] = {}
+      local curwin_infos = vim.fn.getwininfo(win)
+      -- reg_wins[i]["loclist"] = curwin_infos[1]["loclist"] -- unused
+      -- reg_wins[i]["quickfix"] = curwin_infos[1]["quickfix"] -- unused
+      -- reg_wins[i]["terminal"] = curwin_infos[1]["terminal"] --unused
+      -- reg_wins[i]["topline"] = curwin_infos[1]["topline"] --unused
+      -- reg_wins[i]["winbar"] = curwin_infos[1]["winbar"] -- unused
+      reg_wins[i]["botline"] = curwin_infos[1]["botline"] -- botmost screen line
+      reg_wins[i]["bufnr"] = curwin_infos[1]["bufnr"] -- buffer number
+      reg_wins[i]["height"] = curwin_infos[1]["height"] -- window height excluding winbar
+      reg_wins[i]["tabnr"] = curwin_infos[1]["tabnr"]
+      reg_wins[i]["textoff"] = curwin_infos[1]["textoff"] -- foldcolumn, signcolumn etc width
+      reg_wins[i]["variables"] = curwin_infos[1]["variables"] --unused
+      reg_wins[i]["width"] = curwin_infos[1]["width"] -- width (textoff to derive rightmost screen column)
+      reg_wins[i]["wincol"] = curwin_infos[1]["wincol"] -- leftmost screen column of window
+      reg_wins[i]["winid"] = curwin_infos[1]["winid"]
+      reg_wins[i]["winnr"] = curwin_infos[1]["winnr"]
+      reg_wins[i]["winrow"] = curwin_infos[1]["winrow"] -- topmost screen line
+
+      -- included with offset + 1 in winrow, wincol
+      local winpos = api.nvim_win_get_position(win) -- top left corner of window
+      reg_wins[i]["row"] = winpos[1]
+      reg_wins[i]["col"] = winpos[2]
+
+      i = i + 1
+    end
+  end
+  print(vim.inspect(reg_wins))
+end, {})
+
+-- source code for session creation with internal data representation is very convoluted
+-- add_cmd('MksessTabView', function()
+--   -- TODO ensure 1 arg and use it as filepath
+--   local old_sessopts = vim.o.sessionoptions
+--   vim.o.sessionoptions = "blank,buffers,help,skiprtp,terminal,winsize"
+--   vim.cmd[[mksession tabviewsess]]
+--   vim.o.sessionoptions = old_sessopts
+-- end, {})
 -- idea optional argument in which register to copy the file path
 --
 --:%!jq

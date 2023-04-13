@@ -1,4 +1,6 @@
--- options and global variables --
+--! Options and global variables
+-- luacheck: globals vim
+
 --vim.o.guicursor         = '';
 local function load_options()
   local setvars = {
@@ -13,13 +15,15 @@ local function load_options()
     python3_host_prog = '/usr/bin/python3',
     rg_derive_root = true,
     rustfmt_autosave = true,
-    vim_apm_log = true, -- ???
+    libbuf_log_level = "trace",
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v)
   end
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
   vim.o.backup = false
+  -- window size is written by terminal and given as
+  -- vim.o.columns/vim.o.lines
   -- windows:
   -- based on github.com/neovim/neovim/12092 and wiki
   -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip

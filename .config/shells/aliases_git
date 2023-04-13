@@ -42,6 +42,9 @@
 #history to specific function of file
 #git log -L :function:path/to/file
 #git log --name-status --follow -M50% -- pathtofile
+#git log -p
+#git log -p --stash
+#git log --oneline --graph --all
 
 # github referencing: y for current commit URL
 
