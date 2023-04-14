@@ -8,7 +8,12 @@ lint.linters_by_ft = {
   -- # noqa: F821
   -- # ignore mypy lints with at end eof line:
   -- # type: ignore
-  python = { 'mypy', 'ruff', 'clangtidy' },
+  python = { 'mypy', 'ruff' },
+  -- // NOLINTBEGIN
+  -- // NOLINTEND
+  -- // NOLINTBEGIN(errorclass)
+  -- somecode // NOLINT
+  cpp = { 'clangtidy' },
   -- luacheck: push ignore
   -- luacheck: pop ignore
   -- luacheck: globals vim

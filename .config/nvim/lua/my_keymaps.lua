@@ -242,7 +242,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- window navigation: <C-w>[+|-|<|>|"|=|s|v|r| and _| height,width,height,width,equalise,split,swap max size horizontal/vertical
 -- view movements up+down: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
 -- more aracane: z+,z-,z. like zt,zb,zz
--- view movements left+righ: z+es(full page), hl(1char), HL(halfpage)
+-- view movements left+right: z+es(full page), hl(1char), HLM(halfpage down,up,mid)
 -- vim-surround: ds|cs|ys,yS etc is conflicting
 -- vim-easy-align
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
