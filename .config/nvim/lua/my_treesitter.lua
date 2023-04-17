@@ -29,6 +29,7 @@ require('nvim-treesitter.configs').setup {
     extended_mode = true,
     max_file_lines = 10000,
   },
+  -- context? if yes: <leader>vj for visual jump
   --refactor = {
   --  highlight_definitions = { enable = true },
   --  highlight_current_scope = { enable = true },

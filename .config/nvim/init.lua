@@ -24,7 +24,9 @@ else
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
   require 'my_statusline'
-  require 'my_buf'
+  -- workaronud lazy caching init.lua loading, but the module might be absent.
+  local has_libbuf, _ = pcall(require, 'libbuf')
+  if has_libbuf then require 'my_buf' end
   vim.cmd [[colorscheme material]]
 end
 
