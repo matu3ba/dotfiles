@@ -441,6 +441,37 @@ add_cmd('PrintAllTabInfos', function()
   print(vim.inspect(reg_wins))
 end, {})
 
+add_cmd('PrintBuffersWithProperties', function()
+  local bufprops = {}
+  local bufs = api.nvim_list_bufs()
+  -- local buf_loaded = nvim_buf_is_loaded()
+  for _, v in ipairs(bufs) do
+    local name = api.nvim_buf_get_name(v)
+    local is_loaded = api.nvim_buf_is_loaded(v)
+    local ty = vim.bo[v].buftype
+    local is_ro = vim.bo[v].readonly
+    local is_hidden = vim.bo[v].bufhidden
+    local is_listed = vim.bo[v].buflisted
+    -- print( i, ', ', v, 'name:', name, 'loaded:', is_loaded, 'ty:', ty, 'ro:', is_ro, 'is_hidden:', is_hidden, 'is_listed:', is_listed)
+    -- readonly, bufhidden, buflisted
+    local row = { name, is_loaded, ty, is_ro, is_hidden, is_listed }
+    bufprops[v] = row
+  end
+  for i, v in pairs(bufprops) do
+    print(i, ', ', vim.inspect(v))
+  end
+  return bufprops
+end, {})
+
+-- Note: There may be options arguments added with dash or dashdash.
+add_cmd('PrintCliArgs', function()
+  local args = "cli args: "
+  for _, v in ipairs(vim.v.argv) do
+    args = args .. v .. " "
+  end
+  print(args)
+end, {})
+
 -- source code for session creation with internal data representation is very convoluted
 -- add_cmd('MksessTabView', function()
 --   -- TODO ensure 1 arg and use it as filepath

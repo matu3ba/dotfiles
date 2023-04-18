@@ -99,12 +99,12 @@ return {
   -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
   { 'tpope/vim-fugitive' }, -- anything better for in buffer interative rebasing?
-  --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle_
+  --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
   {
     'lewis6991/gitsigns.nvim',
     config = function() require('gitsigns').setup() end,
   },
-  --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
+  --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory (does not work with worktrees)
   { 'sindrets/diffview.nvim' },
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
   --requires = { "tpope/vim-repeat" },
@@ -152,7 +152,7 @@ return {
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
-  { 'matu3ba/buf.nvim', dev = true },
+  { 'matu3ba/libbuf.nvim', dev = true },
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }
@@ -180,9 +180,7 @@ return {
   { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
   ---- Organization
   { 'jbyuki/venn.nvim' }, --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
-  { 'debugloop/telescope-undo.nvim' }, -- browse via <C-n>,<C-p>, <C-CR> revert state, <CR> yank additions, <S-CR> yank deletions
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
-  -- As of now, which-key breaks terminals
   {
     'folke/which-key.nvim',
     config = function() require('which-key').setup() end,
@@ -229,4 +227,6 @@ return {
   --{ "glepnir/mutchar.nvim" }, idea setup
   -- doesnt work for me
   -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
+  -- { 'debugloop/telescope-undo.nvim' }, -- browse via <C-n>,<C-p>, <C-CR> revert state, <CR> yank additions, <S-CR> yank deletions
+
 }

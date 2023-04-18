@@ -64,7 +64,6 @@ telescope.setup {
 -- local ok_fzf = pcall(telescope.load_extension, 'fzf_lib')
 -- assert(ok_fzf)
 telescope.load_extension 'gh'
-telescope.load_extension 'undo'
 -- telescope.load_extension('fzf') -- native
 telescope.load_extension 'zf-native'
 
@@ -80,6 +79,9 @@ telescope.load_extension 'zf-native'
 --telescope.load_extension 'project_scripts'
 --telescope.load_extension 'dap'
 --telescope.load_extension 'z'
+
+-- not working
+-- telescope.load_extension 'undo'
 
 local M = {}
 

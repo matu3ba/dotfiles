@@ -12,7 +12,7 @@ const std = @import("std");
 
 //const child_name: [*:0]const u16 = std.unicode.utf8ToUtf16LeStringLiteral("child.exe");
 //const ch_n = @intToPtr([*:0]u16, @ptrToInt(child_name));
-//const ch_n: [*:0]u16 = @ptrCast([*:0]u16, child_name); @ptrCast can not erase const
+//const ch_n: [*:0]u16 = @ptrCast([*:0]u16, child_name); @ptrCast can not erase const, use @constCast
 //0 for inherit handle
 //os.windows.CreateProcessW(null, ch_n, null, null, os.windows.TRUE, 0, null, null, &si, &pi) catch |err| {
 
@@ -38,7 +38,7 @@ pub fn printErrorSet2() void {
 //switch(err) {....} inside catch |err| {....} the compiler will yell at you for all unhandled errors
 
 fn range(len: usize) []const void {
-  return @as([*]void, undefined)[0..len];
+    return @as([*]void, undefined)[0..len];
 }
 // usage (i will increment from 0->9):
 //for (range(10)) |_, i| { ... }
@@ -56,10 +56,12 @@ fn range(len: usize) []const void {
 //for (chars, 0..) |elem, idx| { ... }
 
 // switch on union field
-fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {
-    if (self != field) return null;
-    return @field(self, @tagName(field));
-}
+const Self = struct {
+    fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {
+        if (self != field) return null;
+        return @field(self, @tagName(field));
+    }
+};
 
 // workaround zig libstd bloated formatting:
 // https://github.com/FlorenceOS/Florence/blob/master/lib/output/fmt.zig

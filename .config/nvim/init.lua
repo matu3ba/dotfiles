@@ -267,3 +267,4 @@ callback = function()
 -- tables: :'<,'>!column -t -s \| -o \|
 -- Validate without silently changing things not according to standard.
 -- https://github.com/itchyny/gojq
+-- vim.highlight.range()

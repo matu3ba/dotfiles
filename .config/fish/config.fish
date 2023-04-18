@@ -11,7 +11,7 @@ if status is-interactive
   # echo In (pwd), running $(uname)
   # set os (uname)
   # Command substitutions without a dollar are not expanded within quotes
-  # => ${HOME} is invalid, {$HOME} is valid
+  # => ${HOME} is invalid, use {$HOME} is valid. or use $HOME
   # touch "testing_$(date +%s).txt"
   # set myfile "$(cat myfile)"
   # printf '|%s|' $myfile
@@ -91,7 +91,7 @@ if status is-interactive
   abbr --add -g sus ' systemctl suspend'
 
   abbr --add -g           via ' {$HOME}/.local/appimages/nvim.appimage'
-  abbr --add -g          jvia ' firejail ${HOME}/.local/appimages/nvim.appimage'
+  abbr --add -g          jvia ' firejail $HOME/.local/appimages/nvim.appimage'
   abbr --add -g          cvia ' {$HOME}/.local/appimages/nvim.appimage -u NONE'
   abbr --add -g          dvia ' {$HOME}/.local/appimages/nvim.appimage -u DEFAULT'
   abbr --add -g        histup ' {$HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
@@ -104,7 +104,7 @@ if status is-interactive
   abbr --add -g     templates ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 
   abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
-  abbr --add -g           jvi ' firejail ${HOME}/.local/nvim/bin/nvim'
+  abbr --add -g           jvi ' firejail $HOME/.local/nvim/bin/nvim'
   abbr --add -g           cvi ' {$HOME}/.local/nvim/bin/nvim -u NONE'
   abbr --add -g           dvi ' {$HOME}/.local/nvim/bin/nvim -u DEFAULT'
   abbr --add -g      histupvi ' {$HOME}/.local/nvim/bin/nvim "/var/log/"' # pacman.log or apt/
@@ -124,8 +124,8 @@ if status is-interactive
 
   abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
   abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
-  abbr --add -g  zbdeb ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-  abbr --add -g  zbrel ' ${HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  abbr --add -g  zbdeb ' $HOME/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  abbr --add -g  zbrel ' $HOME/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g   zup1 ' ./build/stage3/bin/zig build update-zig1'
   abbr --add -g   zdoc ' cd {$HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
 

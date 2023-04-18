@@ -110,6 +110,9 @@ lsp.configure('lua_ls', {
   -- force_setup = true,
 })
 
+-- TODO fix ltex to not spell check markdown
+-- lsp.configure('ltex', {})
+
 lsp.setup()
 
 -- modify defaults of VonHeikemen/lsp-zero.nvim 0b312c34372ec2b0daec722d1b7fad77b84bef5b:

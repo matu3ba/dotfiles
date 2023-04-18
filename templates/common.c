@@ -2,6 +2,19 @@
 #include <stdlib.h> // exit
 #include <stdio.h>  // fprintf
 
+// In short: Pointers are a huge footgun in C standard.
+//
+// The proper fix for access a pointer with increased alignment is to use a temporary with memcopy
+// https://stackoverflow.com/questions/7059299/how-to-properly-convert-an-unsigned-char-array-into-an-uint32-t.
+// To only compare pointers decrease alignment with char* pointer.
+// To prune type info for generics use void* pointer. HOWEVER, you are
+// responsible to call a function that provides or provide yourself
+// 1. proper alignment, 2. sufficient storage and 3. if nececssary
+// sufficient padding (ie within structs).
+//
+// Except, by posix extension: casting pointers to functions (and back), because
+// that must be valid for dynamic linking etc.
+
 // Might get superfluous with new C standard (C2x).
 #ifndef GENERATE_ENUM_STRINGS
     #define DECL_ENUM_ELEMENT( element ) element

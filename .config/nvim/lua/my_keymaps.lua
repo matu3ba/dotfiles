@@ -59,6 +59,8 @@ local map = vim.api.nvim_set_keymap
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
 
 map('', '<Space>', '<Nop>', opts) -- fix annoying space movements
+map('n', 'ZD', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
+map('n', 'ZE', '<cmd>bdel<CR>', opts) -- :bdel but faster
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
