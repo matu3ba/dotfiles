@@ -23,6 +23,7 @@ else
   -- TODO create minimal example to ask why gitsignas is very slow and how to expand folds to see
   -- all diff hunks https://github.com/lewis6991/gitsigns.nvim
 
+  require 'my_dap'  -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'
@@ -39,7 +40,6 @@ end
 require 'my_cmds'
 require 'my_keymaps'
 --require 'my_nvimcmp'
---require('my_dap') -- idea setup one small step for vimkind
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
 -- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
