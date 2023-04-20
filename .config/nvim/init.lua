@@ -17,6 +17,12 @@ else
   require('lazy').setup('my_plugins', {})
   -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
   -- TODO handle file got deleted without statusline becoming broken
+
+  -- TODO create minimal bare repo for diffview.nvim problem DiffviewFileHistory not working:
+  -- https://github.com/sindrets/diffview.nvim
+  -- TODO create minimal example to ask why gitsignas is very slow and how to expand folds to see
+  -- all diff hunks https://github.com/lewis6991/gitsigns.nvim
+
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc'
   require 'my_gitsign'

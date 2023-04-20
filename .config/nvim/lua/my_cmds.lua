@@ -55,7 +55,8 @@ add_cmd('EZ', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/sh.zig', {})
 -- :map, :command. :autocmd
 
 -- Reload init.lua
-add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
+-- Reloading your config is not supported with lazy.nvim, use :so instead
+-- add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
 add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
 --plenary is broken with both
 -- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", true) end, {})

@@ -9,6 +9,7 @@ lint.linters_by_ft = {
   -- # ignore mypy lints with at end eof line:
   -- # type: ignore
   python = { 'mypy', 'ruff' },
+  -- clang14 introduced:
   -- // NOLINTBEGIN
   -- // NOLINTEND
   -- // NOLINTBEGIN(errorclass)
