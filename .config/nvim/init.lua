@@ -262,6 +262,9 @@ callback = function()
 -- Removing Zig cache (for nested in project build.zig file)
 --ZIGCACHE=$(fd -uu zig-cache) && rm -fr $ZIGCACHE && fd -uu zig-cache
 
+-- Run current line
+-- :.!python3
+
 -- Run Makefile for unit test
 --
 -- Run unit test

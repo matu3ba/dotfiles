@@ -246,7 +246,6 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- more aracane: z+,z-,z. like zt,zb,zz
 -- view movements left+right: z+es(full page), hl(1char), HLM(halfpage down,up,mid)
 -- vim-surround: ds|cs|ys,yS etc is conflicting
--- vim-easy-align
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
 -- C-t jumps back to the beginning of file entering from goto definition
 -- :set nowrapscan => error out on end of file
@@ -266,18 +265,25 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- :set rnu!   to toggle relative numbers
 -- :set spell!   to toggle spelling
 
+-- Virtual Replace mode
+-- :h gR
+-- text x        bla + gR
+-- text superya  bla
+-- C-T,C-D: hide or reveal old line under shifted characters
+
 -- cmdline
 -- C-z trigger wildmode, C-] abbreviations
 
 ---- insert completion ----
 -- :h i_CTRL-X_CTRL-D
 -- C-n|p complete what is in all buffers
+-- <C-n><C-p> .. <C-n|p> complete keywords in 'complete'
 -- <C-x><C-n|p> complete from current buffer
 -- <C-x><C-d> .. <C-n|p> complete macros
 -- <C-x><C-f> .. <C-n|p> complete file paths
 -- <C-x><C-i> .. <C-n|p> complete include paths
 -- <C-x><C-k> .. <C-n|p> complete keyword in dictionary
--- <C-x><C-l> .. <C-n|p> complete entire lines
+-- <C-x><C-l> .. <C-n|p> complete entire lines (also works for double line by repeated press)
 -- <C-x><C-o> .. <C-n|p> complete user defined function given as omnifunc
 -- <C-x><C-s> .. <C-n|p> complete spelling suggestions
 -- <C-x><C-t> .. <C-n|p> complete thesaurus
@@ -285,6 +291,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- <C-x><C-v> .. <C-n|p> complete vim commands
 -- <C-x><C-z> stop completion
 -- <C-x><C-]> .. <C-n|p> complete words starting at tag
+-- C-e exit, C-v stop + accept
 
 -- <C-@> insert previously inserted text and stop insert
 -- <C-a> insert previously inserted text
@@ -314,7 +321,20 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- selection mode
 -- word selected + K => search manual entry
 
----- dap debugger ----
+---- termdebug ----
+--unfortunately, it seems to have many bugs on neovim. :-/
+--:packadd termdebug
+--:Termdebug file
+--:Break
+--:Delete
+--:Clear
+--:Run cli args
+--:Step, :Over, Finish, Continue, :Stop
+--:Evaluate [expr] / K
+--:help terminal-debug
+--https://www.dannyadam.com/blog/2019/05/debugging-in-vim/
+
+---- dap     ----
 --map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
 --map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
 --map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)

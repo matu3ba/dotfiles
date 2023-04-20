@@ -6,3 +6,7 @@ source ~/dev/git/zi/zig/master/tools/zig_gdb_pretty_printers.py
 #source ~/dev/git/zi/zig/master/tools/stage2_gdb_pretty_printers.py
 #source ~/dev/git/zi/zig/master/tools/stage2_lldb_pretty_printers.py
 source ~/dev/git/zi/zig/master/tools/std_gdb_pretty_printers.py
+
+define hook-quit
+    set confirm off
+end
