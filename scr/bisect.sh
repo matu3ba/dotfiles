@@ -18,7 +18,7 @@
 # Typically use for bisecting:
 #git checkout LASTKNOWN_GOODCOMMIT
 #git bisect start master HEAD
-#git bisect run script.sh
+#git bisect run ./script.sh
 
 #git bisect reset
 #git switch master

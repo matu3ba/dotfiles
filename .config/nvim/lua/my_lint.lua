@@ -4,6 +4,8 @@ local ok_lint, lint = pcall(require, 'lint')
 if not ok_lint then return end
 
 lint.linters_by_ft = {
+  -- # ignore ruff lints for whole file (too long line)
+  -- # ruff: noqa: E501
   -- # ignore ruff lints with at end eof line:
   -- # noqa: F821
   -- # ignore mypy lints with at end eof line:
