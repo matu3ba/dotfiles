@@ -138,6 +138,10 @@ callback = function()
 --print (filename)
 -- vimscript
 --:echo '123'
+-- Shell
+-- printf '\7'
+-- printf '\a'
+-- echo -ne '\7'
 
 -- :h builtin-function-list
 -- :h lua-fs (os.path python functions)

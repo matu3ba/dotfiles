@@ -23,3 +23,9 @@ Tab or Ctrl-i or =   list possible completions
 *               insert all possible completions
 #      prepend # to line and send it to history list
 Ctrl-v insert char literally (quoted insert)
+
+Activate the terminal emulator bell
+-- printf '\7'
+-- printf '\a'
+-- echo -ne '\7'
+

@@ -92,6 +92,12 @@ solarized-light: &light
 colors: *dark
 #window:
   #opacity
+# activated via printf '\7' or printf '\a'
+bell:
+  command:
+    program: paplay
+    args: ["/usr/share/sounds/freedesktop/stereo/complete.oga"]
+
 selection:
   # This string contains all characters that are used as separators for "semantic words" in Alacritty.
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
