@@ -1,5 +1,6 @@
 --! Main entry point, very common things and autocommands
 -- luacheck: globals vim
+-- luacheck: no max line length
 require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
@@ -44,18 +45,13 @@ require 'my_keymaps'
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
 -- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
 _G.Clangfmt = function()
-  -- bufmodified include only modified buffers.
-  -- looking upwards paths for a .clang-format, ideal solution would try to use root git folder
-  -- => use  getbufinfo([{buf}]), bufname() ?
-  -- if dict.name == vim.fn.bufname(%:blubb) then
-  -- cna formatters provide us with more information for smarter cursor positioning???
-  vim.api.nvim_command [[
+  vim.api.nvim_exec2([[
 if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
   let cursor_pos = getpos('.')
   :%!clang-format
   call setpos('.', cursor_pos)
 end
-]]
+]], {})
 end
 
 -- GOOD_TO_KNOW
@@ -109,6 +105,7 @@ vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})
 vim.api.nvim_create_autocmd('TextYankPost', {group = 'MYAUCMDS', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
 --vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:keepjumps keeppatterns %s/\s\+$//e]]}) -- remove trailing spaces
 vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, command = [[:lua Clangfmt()]]})
+
 vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*',
 callback = function()
     if vim.bo.filetype == "markdown" then
@@ -120,6 +117,35 @@ callback = function()
     --vim.api.nvim_command [[:keepjumps keeppatterns %s/\s\+$//e]] -- remove trailing spaces
   end,
 })
+
+-- very verbose
+-- local has_plenary, plenary = pcall(require, 'plenary')
+-- if has_plenary then
+--   -- Runs clangfmt on the whole file.
+--   local clangfmt = function()
+--     if vim.bo.modified then
+--       local abs_fname = vim.api.nvim_buf_get_name(0)
+--       for dir in vim.fs.parents(abs_fname) do
+--         local abs_clangfmt = dir .. "/.clang-format"
+--         local fh = io.open(abs_clangfmt, "r")
+--         local file_exists = fh ~= nil
+--         if file_exists then
+--           io.close(fh)
+--           local cursor_pos = vim.api.nvim_win_get_cursor(0)
+--           local content = vim.api.nvim_buf_get_lines()
+--           local plenary_run = plenary.job:new { command = 'clang-format', args = { "-i", abs_fname } }
+--           local result = plenary_run:sync()
+--           -- result checking etc
+--           vim.api.nvim_buf_set_lines(result)
+--           if plenary_run.code ~= 0 then print [[clangfmt had warning or error. Run ':%!clang-format']] end
+--           vim.api.nvim_win_set_cursor(0, cursor_pos)
+--           return
+--         end
+--       end
+--     end
+--   end
+--   vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, callback = function() clangfmt() end})
+-- end
 -- stylua: ignore end
 
 -- keywords (capitalized): hack,todo,fixme

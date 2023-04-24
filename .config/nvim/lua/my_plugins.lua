@@ -42,6 +42,7 @@ return {
   { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
 
   -- macros
+  -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- TODO setup
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?

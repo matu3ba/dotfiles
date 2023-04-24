@@ -1,0 +1,10 @@
+Visual-only Exploration on massive scale (>1m nodes)
+github.com/graphia-app/graphia
+
+Medium scale graphs < 1m nodes. not great graph routines:
+github.com/gephi/gephi
+github.com/networkx/networkx
+high quality graph routiens: scikit
+
+flexible, but diy:
+graph-tools https://git.skewed.de/count0/graph-tool

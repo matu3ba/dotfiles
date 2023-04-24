@@ -60,7 +60,10 @@ end
 local function get_path()
   -- rel_path is absolute, when path not within cwd
   -- plenary handles for us gracefully uris
-  local rel_path = plenary.path:new(vim.api.nvim_buf_get_name(0)):make_relative()
+  local bufname = vim.api.nvim_buf_get_name(0)
+  -- neovim should always return valid path and unlist the buffer instead, but if it fails, use
+  -- if bufname == nil then return "[DELETED]" end
+  local rel_path = plenary.path:new(bufname):make_relative()
   if #rel_path < (vim.fn.winwidth(0) / 2) then return rel_path end
   return vim.fn.pathshorten(rel_path)
 end
@@ -85,42 +88,41 @@ local function get_perc_lin()
   return tostring(math.floor((curr_line / line_count) * 100)) .. '%%'
 end
 
-local function get_fileinfo()
+local function get_bufinfo()
+  if vim.bo.readonly == true then return 'ro ' end
+  local buf_info
   if vim.bo.buftype == '' then
-    if vim.bo.readonly == true then return 'ro' end
-    if vim.bo.modified then
-      return ' +'
-    else
-      return '  '
-    end
+    buf_info = '  '
   elseif vim.bo.buftype == 'acwrite' then
-    if vim.bo.modified then
-      return 'ac+'
-    else
-      return 'ac'
-    end
+    buf_info = 'ac'
   elseif vim.bo.buftype == 'help' then
-    return 'he'
+    buf_info = 'he'
   elseif vim.bo.buftype == 'nofile' then
-    return '[]'
+    buf_info = '[]'
   elseif vim.bo.buftype == 'nowrite' then
-    return 'nw'
+    buf_info = 'nw'
   elseif vim.bo.buftype == 'quickfix' then
-    return 'qf'
+    buf_info = 'qf'
   elseif vim.bo.buftype == 'terminal' then
-    return 'te'
+    buf_info = 'te'
   elseif vim.bo.buftype == 'prompt' then
-    return 'pr'
+    buf_info = 'pr'
   else
-    return '  '
+    buf_info = '  '
   end
+  if vim.bo.modified then
+    buf_info = buf_info .. '+'
+  else
+    buf_info = buf_info .. ' '
+  end
+  return buf_info
 end
 
 function statusline.setup()
   local path = get_path()
   local lincol = get_linecol()
   local perc_lin = get_perc_lin()
-  local file_info = get_fileinfo()
+  local buf_info = get_bufinfo()
   local search = search_result()
   local git_status = git_statusline()
   local statusline_sections = {
@@ -129,7 +131,7 @@ function statusline.setup()
     ' ',
     perc_lin,
     ' ',
-    file_info,
+    buf_info,
     ' ',
     search,
     ' ',

@@ -15,7 +15,7 @@ local function load_options()
     python3_host_prog = '/usr/bin/python3',
     rg_derive_root = true,
     rustfmt_autosave = true,
-    libbuf_log_level = "trace",
+    -- libbuf_log_level = "debug", -- annoying plenary log defaults.
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v)
