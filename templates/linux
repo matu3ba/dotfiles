@@ -128,6 +128,7 @@ sudo timedatectl set-timezone Europe/Berlin
 sudo date -s "3 MAR 2023 09:29:00"
 
 
+Storage (block and flash) device troubleshooting
 Parted
 sudo parted
 print devices
@@ -137,10 +138,15 @@ sudo chmod -R 777 /dev/sdX
 > if error: sudo chown -hR $(whoami) /dev/sdX
 sudo mount -orw,remount /dev/sdX
 
+Kernel view of sdcard/block device:
 sudo hdparm -r0 /dev/sdX
 /dev/sdX:
  setting readonly to 0 (off)
  readonly      =  1 (on)
+ External reasons
+ - 1. dip switch set to readonly
+ - 2. incorrect positioning or faulty reader
+ - 3. internal component detected fault
 
 Set timezone + date from host:
 
