@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 
 // typesafe version of (u16*)codepoint with codepoint type u8*
 // codepoint created from Utf8View which is [_]u8
@@ -135,6 +136,14 @@ fn usageSortContext() void {
     std.sort.sort(usize, skipl_index.items, &skiplist, sortTokenRange);
 }
 
+fn usageFBA() void {
+    var cmdline_buffer: [4096]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&cmdline_buffer);
+    const args = std.process.argsAlloc(fba.allocator()) catch
+        @panic("unable to parse command line args");
+    _ = args;
+}
+
 // explicit error set
 fn somefunction() error{ErrName}!void {}
 
@@ -161,6 +170,10 @@ fn debugCwd(alloc: std.mem.Allocator) void {
     defer alloc.free(cwdstr);
     std.log.debug("cwd: '{s}'", .{cwdstr});
 }
+
+// conditional emitting of global symbol
+const VarT = if (!builtin.is_test) u32 else void;
+threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 
 // in build.zig use -D (as desribed in zig build -h)
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
