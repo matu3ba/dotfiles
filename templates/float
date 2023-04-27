@@ -1,0 +1,49 @@
+Practical float knowledge from https://blog.demofox.org/2017/11/21/floating-point-precision/
+
+3.5 is between 2 and 4. That means we are diving the range of numbers 2 to 4 using the mantissa bits.
+A float has 23 bits of mantissa, so the precision we have at 3.5 is:
+(4-2)/2^23=2/2^23
+Smallest value that you can subtract is precision around that value.
+With double, we get 52 bit of mantissa:
+(4-2)/2^52=2/2^52
+and likewise for halffloats (16bit):
+(4-2)/2^10=2/1024
+
+Half float has as maximum exponent 15 (2^4-1), so at large precision is 2^15-2^16
+Precision at that range is (2^16-2^15)/2^10 = 32.0.
+
+To get precision:
+n   | exponent | range | half | float | double | long double
+--- | --- | --------- | --------------
+n=0 | 2^0 | [2^0-2^1] | (2^n-2^(n-1))/2^10 | (2^n-2^(n-1))/2^23 | (2^n-2^(n-1))/2^52 | (2^n-2^(n-1))/2^112
+0 | 1 | [1 2] | (2^(n+1)-2^n)/2^10 | (2^(n+1)-2^n)/2^23 | (2^(n+1)-2^n)/2^52 | (2^(n+1)-2^n)/2^112
+
+In short for a range defined as :
+Precision(n) = (2^(n+1)-2^n)/man, man = {10,23,52,112}, where n = integers, n >= 0.
+
+How many digits are reliable? A float has 23 bits of mantissa and 2^23=8_388_608.
+So regardless of exponent, we have 6-7 digits of precision.
+For double, this mean 2^52=4_503_599_627_370_496 or 15 to 16 digits.
+
+When do precision issues occur? Assume a float, 30fps game, frame delta = 0.0333.
+When will adding frame delta break things due to accuracy?
+range/matissa = precision
+=> range = matissa * precision
+range = 2^23 * 0.0333 = 279340.6464 (without taking into account precision at that range)
+
+To get n, use ceil(log2(279340.6464)).
+
+value = pow(2, ceil(log2(mantissa * precision)))
+which is in python 2**math.ceil(math.log2(2**23 * 0.0333)) = 524288 seconds.
+Full table:
+2**math.ceil(math.log2(2**10 * 0.0333)) = 64s
+2**math.ceil(math.log2(2**23 * 0.0333)) = 524288s.
+2**math.ceil(math.log2(2**52 * 0.0333)) = 281474976710656 = 2^48 approx.= 1_000^4 = 10^12
+2**math.ceil(math.log2(2**112 * 0.0333)) = alot.
+
+Floats can store exactly all integers from [-2^(mantissa+1), +2^(mantissa+1)]:
+mantissa: 10, 23, 52, 112.
+=> [-2048, 2048], [-8_388_608, 8_388_608], [-4_503_599_627_370_496, 4_503_599_627_370_496] [-big, big]
+Compare that with unsinged integers:
+[-32_768, 32_767], [-2147483648, 2147483647], [-9_223_372_036_854_775_808, 9_223_372_036_854_775_807], [-big, big]
+and we get for halffloat a factor of 16x, float a factor of 256 and double a factor of 2048x.
