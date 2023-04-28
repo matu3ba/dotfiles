@@ -80,6 +80,7 @@ alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Crese
 
 alias glsm='git ls-files -m'
 alias glss='git ls-files -s'
+alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 
 alias gm='git merge --ff-only'
 

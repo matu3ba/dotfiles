@@ -179,3 +179,21 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
 // Otherwise for libstd tests, use
 // zig test lib/std/fmt.zig --zig-lib-dir lib --main-pkg-path lib/std
+
+fn simpleCAS() !void {
+    const Available = enum(u8) {
+        NotStarted,
+        Started,
+        Finished,
+    };
+    var available: Available = .NotStarted;
+    // type, ptr_checked, expect .NotStarted, new_value .Started
+    // if expect satisfied => apply new value + return null
+    //           otherwise => no value applied, retun old value in available
+    const state = @cmpxchgStrong(Available, &available, .NotStarted, .Started, .SeqCst, .SeqCst) orelse return null;
+    switch (state) {
+        .NotStarted => unreachable, // can not be .Notstarted
+        .Started => std.log.debug("ok"),
+        .Finished => std.log.debug("no need to start again"),
+    }
+}

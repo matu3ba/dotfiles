@@ -122,12 +122,6 @@ firejail:
 configs in /etc/firejail/, /usr/local/etc/firejail, ~/.config/firejail
 tools in /usr/lib/firejail, /usr/local/lib/firejail
 
-Time settings
-sudo hwclock --show --utc
-sudo timedatectl set-timezone Europe/Berlin
-sudo date -s "3 MAR 2023 09:29:00"
-
-
 Storage (block and flash) device troubleshooting
 Parted
 sudo parted
@@ -148,8 +142,11 @@ sudo hdparm -r0 /dev/sdX
  - 2. incorrect positioning or faulty reader
  - 3. internal component detected fault
 
-Set timezone + date from host:
-
+Time settings locally
+sudo hwclock --show --utc
+sudo timedatectl set-timezone Europe/Berlin
+sudo date -s "3 MAR 2023 09:29:00"
+Set settings from host to target
 sudo timedatectl set-timezone Europe/Berlin
 ssh user@domain@ip sudo timedatectl set-timezone Europe/Berlin
 ssh user@domain@ip sudo date -s @$(date -u +"%s")

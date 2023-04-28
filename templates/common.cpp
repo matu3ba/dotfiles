@@ -4,6 +4,8 @@
 #include <string>
 #include <algorithm>
 #include <array>
+#include <atomic>
+#include <vector>
 /// logging (better would be test based and scoped macros)
 #define DEBUG_FN_ENTER(message)                                                                                   \
     if (debug)                                                                                                    \
@@ -102,16 +104,61 @@ void iter() {
 
 void sortarray() {
     std::array<int, 5> arr_x {{0,1,2,3,4}};
-    std::sort(arr_x.cbegin(), arr_x.cend());
+    std::sort(arr_x.begin(), arr_x.end()); // cbegin, cend
 }
 
 void sortarray_lambda_expression() {
     std::array<int, 5> arr_x {{0,1,2,3,4}};
-    std::sort(arr_x.cbegin(), arr_x.cend(), [](int a, int b)
+    std::sort(arr_x.begin(), arr_x.end(), [](int a, int b)
         {
               if (a < b)
                 return true;
               else
                 return false;
         });
+}
+
+void simpleCAS() {
+    std::atomic<bool> is_initialized(false);
+
+    // imagine 2 threads could do stuff with is_initialized
+
+    // CAS: expect atomic transition is_initialized false -> true, no spurious wakeups.
+    // atomic equal with expected => replace with desired
+    //                       else => load memory into expected
+    bool expected = false;
+    const bool desired = true;
+    is_initialized.compare_exchange_strong(expected, desired);
+    if (true == expected) {
+        return; // already initialized
+    }
+
+}
+
+void always_emplace_back() {
+    std::vector<int> someints;
+    someints.push_back(1); // might make unnecessary copies, which can be seen in the move call.
+    someints.emplace_back(1); // can leverage constructor as arguments
+}
+
+// SHENNANIGAN: managed objects like std::string or std::vector require manual
+// call of the destructor with active tag and construction of the destructor
+// `~Union(){}`.
+union S
+{
+    std::string str;
+    std::vector<int> vec;
+    ~S() {} // whole union occupies max(sizeof(string), sizeof(vector<int>))
+};
+int libmain() {
+    S s = {"Hello, world"};
+    // at this point, reading from s.vec is undefined behavior
+    printf("s.str = %s\n", s.str.c_str());
+    s.str.~basic_string();
+    return 0;
+}
+
+bool contains(std::map<int,int>& container, int search_key) {
+    // return container.end() != container.find(search_key);
+    return 1 == container.count(search_key); // std::map enforces 0 or 1 matches
 }

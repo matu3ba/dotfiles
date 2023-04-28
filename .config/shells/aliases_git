@@ -242,8 +242,9 @@ alias gloga='git log --oneline --decorate --graph --all'
 alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias glp='_git_log_prettily'
 
-alias glsm='git ls-files -m'
-alias glss='git ls-files -s'
+alias glsm='git ls-files -m' # modified
+alias glss='git ls-files -s' # staged
+alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 
 alias gm='git merge --ff-only'
 #alias gmf='git merge --ff-only'
