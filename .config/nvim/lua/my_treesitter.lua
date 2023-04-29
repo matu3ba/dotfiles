@@ -1,7 +1,7 @@
 -- TODO how to pcall nvim-treesitter.configs ?
 require('nvim-treesitter.configs').setup {
   -- ensure_installed = 'maintained',
-  ensure_installed = { 'bash', 'c', 'cpp', 'help', 'julia', 'lua', 'python', 'rust', 'typescript', 'vim', 'zig' },
+  ensure_installed = { 'bash', 'c', 'cpp', 'julia', 'lua', 'python', 'rust', 'typescript', 'vim', 'vimdoc', 'zig' },
   auto_install = true,
 
   highlight = {
