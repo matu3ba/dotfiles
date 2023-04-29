@@ -1,5 +1,6 @@
 --! Options and global variables
 -- luacheck: globals vim
+local utils = require 'my_utils'
 
 --vim.o.guicursor         = '';
 local function load_options()
@@ -73,7 +74,8 @@ local function load_options()
   vim.o.smartcase = true --automatic lower except when upper chars
   vim.o.smartindent = true
   vim.o.termguicolors = true
-  vim.o.undodir = os.getenv 'HOME' .. '/.config/nvim/undodir' --undotree
+  -- neovim core has to this date no path functions + separator in core and neither stdpath
+  vim.o.undodir = utils.pathJoin(vim.fn.stdpath('config'), 'undodir') --undotree
   vim.o.undofile = true
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
