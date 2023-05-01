@@ -10,7 +10,8 @@ else
   #grep 'ZIG_LLVM_CLANG_LLD_NAME =' /mnt/c/Users/$USER/Desktop/zig/ci/x86_64-windows-debug.ps1 > /mnt/c/Users/$USER/Desktop/pzdown.txt
 fi
 TARGET="x86_64-windows-gnu"
-ZIG_LLVM_CLANG_LLD_NAME="zig+llvm+lld+clang-$TARGET-0.11.0-dev.448+e6e459e9e"
+VERSION="0.11.0-dev.1869+df4cfc2ec"
+ZIG_LLVM_CLANG_LLD_NAME="zig+llvm+lld+clang-$TARGET-$VERSION"
 curl https://ziglang.org/deps/$ZIG_LLVM_CLANG_LLD_NAME.zip -o devkit.zip
 # Windows does not check validity of symlinks
 #unzip devkit.zip -d devkit

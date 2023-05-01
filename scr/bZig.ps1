@@ -27,7 +27,8 @@ Set-Location -Path $COMMON_DIR
 # [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/$ZIG_LLVM_CLANG_LLD_NAME.zip", "$PWD")
 
 $TARGET="x86_64-windows-gnu"
-$ZIG_LLVM_CLANG_LLD_NAME="zig+llvm+lld+clang-$TARGET-0.11.0-dev.448+e6e459e9e"
+$VERSION="0.11.0-dev.1869+df4cfc2ec"
+$ZIG_LLVM_CLANG_LLD_NAME="zig+llvm+lld+clang-$TARGET-$VERSION"
 $DEVKIT = "$(Get-Location)\devkit\$ZIG_LLVM_CLANG_LLD_NAME"
 
 #$ZIGEXEC = "$DEVKIT\bin\zig.exe"
