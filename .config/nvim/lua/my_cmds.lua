@@ -10,45 +10,55 @@ local utils = require 'my_utils'
 ---- Configuration files editing ----
 local add_cmd = api.nvim_create_user_command -- NOTE: lua does not follow symlinks
 local nvim_edit = 'edit ' .. vim.fn.stdpath('config')
-add_cmd('CBuf', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_buf.lua', {})
-add_cmd('CCmd', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_cmds.lua', {})
-add_cmd('CDap', nvim_edit .. utils.path_separator .. 'lua' .. utils.path_separator .. 'my_dap.lua', {})
-add_cmd('CGdb', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_gdb.lua', {})
-add_cmd('CGs', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_gitsign.lua', {})
-add_cmd('CHa', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_harpoon.lua', {})
-add_cmd('CHydra', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_hydra.lua', {})
-add_cmd('CInit', nvim_edit .. utils.path_separator.. 'init.lua', {})
-add_cmd('CKey', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_keymaps.lua', {})
-add_cmd('CLi', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_lint.lua', {})
-add_cmd('CLsp', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_lsp.lua', {})
-add_cmd('COpts', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_opts.lua', {})
-add_cmd('CPl', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_plugins.lua', {})
-add_cmd('CSt', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_statusline.lua', {})
-add_cmd('CTel', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_telesc.lua', {})
-add_cmd('CTre', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_treesitter.lua', {})
-add_cmd('CUtil', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_utils.lua', {})
-add_cmd('OPa', nvim_edit .. utils.path_separator.. 'lua' .. utils.path_separator .. 'my_packer.lua', {})
+local sep = utils.path_separator
+add_cmd('CBuf', nvim_edit .. sep .. 'lua' .. sep  .. 'my_buf.lua', {})
+add_cmd('CCmd', nvim_edit .. sep .. 'lua' .. sep  .. 'my_cmds.lua', {})
+add_cmd('CDap', nvim_edit .. sep  .. 'lua' .. sep  .. 'my_dap.lua', {})
+add_cmd('CGdb', nvim_edit .. sep .. 'lua' .. sep  .. 'my_gdb.lua', {})
+add_cmd('CGs', nvim_edit .. sep .. 'lua' .. sep  .. 'my_gitsign.lua', {})
+add_cmd('CHa', nvim_edit .. sep .. 'lua' .. sep  .. 'my_harpoon.lua', {})
+add_cmd('CHydra', nvim_edit .. sep .. 'lua' .. sep  .. 'my_hydra.lua', {})
+add_cmd('CInit', nvim_edit .. sep .. 'init.lua', {})
+add_cmd('CKey', nvim_edit .. sep .. 'lua' .. sep  .. 'my_keymaps.lua', {})
+add_cmd('CLi', nvim_edit .. sep .. 'lua' .. sep  .. 'my_lint.lua', {})
+add_cmd('CLsp', nvim_edit .. sep .. 'lua' .. sep  .. 'my_lsp.lua', {})
+add_cmd('COpts', nvim_edit .. sep .. 'lua' .. sep  .. 'my_opts.lua', {})
+add_cmd('CPl', nvim_edit .. sep .. 'lua' .. sep  .. 'my_plugins.lua', {})
+add_cmd('CSt', nvim_edit .. sep .. 'lua' .. sep  .. 'my_statusline.lua', {})
+add_cmd('CTel', nvim_edit .. sep .. 'lua' .. sep  .. 'my_telesc.lua', {})
+add_cmd('CTre', nvim_edit .. sep .. 'lua' .. sep  .. 'my_treesitter.lua', {})
+add_cmd('CUtil', nvim_edit .. sep .. 'lua' .. sep  .. 'my_utils.lua', {})
+add_cmd('OPa', nvim_edit .. sep .. 'lua' .. sep  .. 'my_packer.lua', {})
+
+local home = nil
+if utils.is_windows == true then
+  home = os.getenv 'HOMEPATH'
+  assert(home ~= nil)
+else
+  home = os.getenv 'HOME'
+  assert(home ~= nil)
+end
+
+local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
+local df_configs_edit = df_edit .. sep .. '.config'
+local df_config_shells_edit = df_configs_edit .. sep .. 'shells'
+local df_sample_scr_edit = df_edit .. sep .. 'sample_scr'
+add_cmd('Dotfiles', df_edit, {})
+add_cmd('Config', df_configs_edit, {})
+add_cmd('Aliases', df_config_shells_edit .. sep .. 'aliases', {})
+add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
+add_cmd('Templates', df_edit .. sep .. 'templates', {})
+
+add_cmd('Epos', df_sample_scr_edit .. sep .. 'posix.sh', {}) -- fast script hacking
+add_cmd('Ebash', df_sample_scr_edit .. sep .. 'bash.sh', {})
+add_cmd('EZ', df_sample_scr_edit .. sep .. 'sh.zig', {})
 
 if utils.is_windows == false then
-  local df_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/'
-  add_cmd('Dotfiles', df_edit, {})
-  local df_configs_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/'
-  add_cmd('Config', df_configs_edit, {})
-  local aliases_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases'
-  add_cmd('Aliases', aliases_edit, {})
-  local aliases_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/.config/shells/aliases_git'
-  add_cmd('AliasesGit', aliases_git_edit, {})
-  local templates_git_edit = 'edit ' .. os.getenv 'HOME' .. '/dotfiles/templates/'
-  add_cmd('Templates', templates_git_edit, {})
   -- we cant or dont want to unify all bashrcs
   local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.bashrc'
   local fishrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/fish/config.fish'
   add_cmd('Bashrc', bashrc_edit, {})
   add_cmd('Fishrc', fishrc_edit, {})
-
-  add_cmd('Epos', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/posix.sh', {}) -- fast script hacking
-  add_cmd('Ebash', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/bash.sh', {})
-  add_cmd('EZ', 'edit ' .. os.getenv 'HOME' .. '/dotfiles/sample_scr/sh.zig', {})
 end
 
 add_cmd('EB', 'edit ./b.sh', {}) -- fast script hacking
