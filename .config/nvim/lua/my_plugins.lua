@@ -172,6 +172,10 @@ return {
   ---- treesitter ----
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
+  --TODO copy code to print cursor context from
+  --https://github.com/nvim-treesitter/nvim-treesitter-context
+  --https://github.com/SmiteshP/nvim-navic
+  --https://github.com/utilyre/barbecue.nvim
   -- { "CKolkey/ts-node-action", dependencies = { 'nvim-treesitter' }, config = function() require("ts-node-action").setup({}) end },
 
   ---- languages ----

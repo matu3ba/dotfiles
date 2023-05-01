@@ -1,0 +1,36 @@
+Instructions to bring up cmake and llvm on very old systems with cmake.
+
+```sh
+mkdir -p "$HOME/dev/git/cpp" && cd "$HOME/dev/git/cpp"
+git clone https://github.com/Kitware/CMake
+cd CMake && mkdir build && cd build && cmake .. -GNinja && ninja
+```
+
+```sh
+#!/usr/bin/env sh
+# simple llvm build recipe
+#git clone --depth=1 https://github.com/llvm/llvm-project
+#git fetch
+#git tag
+#git checkout TAG
+set -e
+
+mkdir build-release
+cd build-release
+PATH="$HOME/dev/git/cpp/CMake/build/bin:$PATH"
+CC=clang-12
+CXX=clang++-12
+cmake ../llvm \
+  -DCMAKE_INSTALL_PREFIX=$HOME/.local/llvm \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_PROJECTS="all" \
+  -DLLVM_ENABLE_LIBXML2=OFF \
+  -DLLVM_ENABLE_TERMINFO=OFF \
+  -DLLVM_ENABLE_LIBEDIT=OFF \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DLLVM_PARALLEL_LINK_JOBS=1 \
+  -DCMAKE_CXX_COMPILER=$CXX \
+  -DCMAKE_C_COMPILER=$CC \
+  -G Ninja
+ninja install
+```
