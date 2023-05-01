@@ -1,4 +1,5 @@
--- lsp config with lsp-zero --
+--! Lsp config with lsp-zero
+-- luacheck: globals vim
 local has_lspzero, lsp = pcall(require, 'lsp-zero')
 if not has_lspzero then
   -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
@@ -11,12 +12,13 @@ lsp.preset {
   suggest_lsp_servers = true,
 }
 
--- sunmenko_lsp lua_ls, lua-language-server
+-- Manual:
+-- 'bashls', -- bash-language-server
+-- 'jedi_language_server', -- jedi-language-server
+
 -- must not use MasonInstall, not sure if MasonUpdate also breaks things
 lsp.ensure_installed {
-  'bashls', -- bash-language-server
   'clangd', -- clangd
-  'jedi_language_server', -- jedi-language-server
   'lemminx', -- lemminx
   'ltex', -- ltex-ls
   ---@diagnostic disable

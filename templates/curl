@@ -1,3 +1,5 @@
 // fetching single files from github
 curl https://raw.githubusercontent.com/orlp/pdqsort/master/pdqsort.h > pdqsort.h
 curl -JLO URL
+// fetch zip file
+curl -LO ZIPFILE

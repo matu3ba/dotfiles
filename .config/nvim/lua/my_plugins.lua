@@ -191,6 +191,8 @@ return {
     config = function() require('which-key').setup() end,
   }, -- :Telescope builtin.keymaps
 
+  -- remote work without sshfs and vanilla editor: chipsenkbeil/distant.nvim
+
   -- lua hacking
   -- chrigieser/nvim-genghis convenience file operations in lua
   -- spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
