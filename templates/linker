@@ -37,3 +37,6 @@ objdump --help | vi
 
 extern only, demangle
 nm -g -C build/stage3/bin/zig
+
+`nm` - show symbol table of an object or library.
+`gcc -###` - gcc shows full commands it passes to the underlying tools.

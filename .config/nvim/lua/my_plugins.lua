@@ -157,7 +157,7 @@ return {
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }
-  ---- telescope ----
+  ---- telescope ---- resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
   {
     'nvim-telescope/telescope.nvim',
     dependencies = { { 'nvim-lua/popup.nvim', lazy = false }, { 'nvim-lua/plenary.nvim', lazy = false } },
@@ -169,7 +169,10 @@ return {
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
+  ---- fzf ----
+  --TODO
   ---- treesitter ----
+
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
   --TODO copy code to print cursor context from

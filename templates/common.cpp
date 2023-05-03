@@ -91,7 +91,7 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
 // The lsp is even worse/more unhelpful claiming "no matching constructor" without
 // bothering any explanation.
 
-// map only works with iterators
+// map only works with iterators AND SHOULD ONLY BE USED WITH ITERATORS, see below
 // This is extremely easy to miss,
 void iter() {
     std::map<int, std::string> mapexample;
@@ -162,3 +162,28 @@ bool contains(std::map<int,int>& container, int search_key) {
     // return container.end() != container.find(search_key);
     return 1 == container.count(search_key); // std::map enforces 0 or 1 matches
 }
+
+// SHENNANIGAN: Random access operators on hashmap use on non-existent of object
+// a default constructor or fail with an extremely bogous error message, if none
+// is given.
+// It always better to never use hashmap[key], because there is no check for the elements
+// existence or values (typically raw C values) object creation can remain undefined.
+// tldr; do not use hashmap[key], use `auto search_hashmap = hashmap.find();`
+// and write via iterator or use `emplace`.
+
+class T1 {
+public:
+    T1(); // needed to allow convenient random access via [] operator
+    T1(const std::string &t1): mName(t1) {};
+    std::string mName;
+    std::string prop1;
+};
+class T2 {
+public:
+    std::map<std::string, T1> mapex1;
+    void AddT1 (const std::string &t1str) {
+        T1 t1obj(t1str);
+        mapex1.emplace(t1str, t1obj);
+        mapex1[t1str].prop1 = "blabla";
+    }
+};

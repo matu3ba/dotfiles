@@ -65,13 +65,13 @@ if status is-interactive
   fish_add_path "$HOME/.cargo/bin"
   fish_add_path "$HOME/.local/bin"
   fish_add_path "$HOME/.local/appimages"
-  fish_add_path "$HOME/dev/git/cpp/kakoune/libexec/kak"
   # fish_add_path "$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
   # fish_add_path "$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig
   fish_add_path "$HOME/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
   fish_add_path "$HOME/.luarocks/bin"
   fish_add_path "$HOME/.local/nvim/bin" # neovim testing
   fish_add_path "$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
+  fish_add_path "$HOME/dev/git/cpp/llvm-project/build-release/bin" # llvm tooling
 
   if test "$XDG_SESSION_TYPE" = "wayland"
     set -U QT_QPA_PLATFORM "wayland"

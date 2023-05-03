@@ -1,4 +1,6 @@
 Instructions to bring up cmake and llvm on very old systems with cmake.
+Note: Using `-DLLVM_ENABLE_PROJECTS="all" \` might break, so use minimal necessary output.
+libc and compiler-rt are other common options, but also not necessary.
 
 ```sh
 mkdir -p "$HOME/dev/git/cpp" && cd "$HOME/dev/git/cpp"
@@ -23,7 +25,7 @@ CXX=clang++-12
 cmake ../llvm \
   -DCMAKE_INSTALL_PREFIX=$HOME/.local/llvm \
   -DCMAKE_BUILD_TYPE=Release \
-  -DLLVM_ENABLE_PROJECTS="all" \
+  -DLLVM_ENABLE_PROJECTS="lld;lldb;clang;clang-tools-extra" \
   -DLLVM_ENABLE_LIBXML2=OFF \
   -DLLVM_ENABLE_TERMINFO=OFF \
   -DLLVM_ENABLE_LIBEDIT=OFF \
@@ -33,4 +35,10 @@ cmake ../llvm \
   -DCMAKE_C_COMPILER=$CC \
   -G Ninja
 ninja install
+```
+
+If the INSTALL_PREFIX has been forgotten, use
+```
+cmake -DCMAKE_INSTALL_PREFIX=/tmp/llvm -P cmake_install.cmake
+mv /tmp/llvm $HOME/.local/llvmXX_rel
 ```
