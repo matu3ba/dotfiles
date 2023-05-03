@@ -216,7 +216,9 @@ alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 # program aliases
 #alias l='exa'
 alias du='dust'
-alias rgv='rg --vimgrep'
+alias rgv=' rg --vimgrep --color always'
+alias rgn=' rg --vimgrep'
+alias rgp=' rg -p'
 alias rgi="rg -g '!tests' -g '!src/include'"
 #alias rgv='rg --vimgrep'
 # replace in sed without regex

@@ -213,7 +213,9 @@ if status is-interactive
   abbr --add -g cpv ' rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 
   abbr --add -g du ' dust'
-  abbr --add -g rgv ' rg --vimgrep'
+  abbr --add -g rgv ' rg --vimgrep --color always'
+  abbr --add -g rgn ' rg --vimgrep'
+  abbr --add -g rgp ' rg -p'
 
   function ccd -d "create dir and cd into it"
     if test (count $argv) -eq 1

@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+#
 # 1. simple example
 gcc -o func_dep.c
 gcc -o bar_dep.c
@@ -8,7 +9,6 @@ gcc -o simplemain.c
 # ranlib libsimplefunc.a
 
 # 2. circular example
-
 gcc -o func_dep.c
 gcc -o bar_dep.c
 gcc -o frodo_dep.c
