@@ -15,12 +15,12 @@ lsp.preset {
 -- Manual:
 -- 'bashls', -- bash-language-server
 -- 'jedi_language_server', -- jedi-language-server
+-- 'ltex', -- ltex-ls
 
 -- must not use MasonInstall, not sure if MasonUpdate also breaks things
 lsp.ensure_installed {
   'clangd', -- clangd
   'lemminx', -- lemminx
-  'ltex', -- ltex-ls
   ---@diagnostic disable
   ---@diagnostic enable
   -- optionally with postfix disable:doesNotExist

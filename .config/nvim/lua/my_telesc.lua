@@ -63,9 +63,9 @@ telescope.setup {
 -- local ok_fzf, _ = pcall(require, 'fzf_lib')
 -- local ok_fzf = pcall(telescope.load_extension, 'fzf_lib')
 -- assert(ok_fzf)
-telescope.load_extension 'gh'
+-- telescope.load_extension 'gh'
 -- telescope.load_extension('fzf') -- native
-telescope.load_extension 'zf-native'
+-- telescope.load_extension 'zf-native'
 
 -- issue #6 still pending (unusable)
 -- local ok_dir, _ = pcall(require, 'dir-telescope')
@@ -89,5 +89,10 @@ M.searchStringRecentReg = function()
   local recent_copy_del_content = vim.fn.getreg '"'
   require('telescope.builtin').grep_string { search = recent_copy_del_content }
 end
+
+-- print(vim.inspect(require('telescope.actions.history').History.enabled))
+-- keep_last_buf?
+-- Observation: Memory is not cleaned up, if Esc is presed.
+
 
 return M

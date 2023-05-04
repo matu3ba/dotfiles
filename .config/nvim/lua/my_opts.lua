@@ -1,5 +1,6 @@
 --! Options and global variables
 -- luacheck: globals vim
+-- luacheck: no max line length
 local utils = require 'my_utils'
 
 --vim.o.guicursor         = '';
@@ -16,7 +17,7 @@ local function load_options()
     python3_host_prog = '/usr/bin/python3',
     rg_derive_root = true,
     rustfmt_autosave = true,
-    -- libbuf_log_level = "debug", -- annoying plenary log defaults.
+    -- libbuf_log_level = "trace",
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v)

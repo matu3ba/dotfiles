@@ -1,8 +1,12 @@
+--! Plugin table used by lazy.nvim
+-- luacheck: globals vim
+-- luacheck: no max line length
 return {
   -- clean cache:
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
-  { 'marko-cerovac/material.nvim', dependencies = { 'nvim-lua/plenary.nvim', lazy = false } }, --<l>ma
+  { 'matu3ba/plenary.nvim', dev = true },
+  { 'marko-cerovac/material.nvim' }, --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
   {
     'williamboman/mason.nvim',
     config = function() require('mason').setup() end,
@@ -158,14 +162,14 @@ return {
   -- any way to place results in buffer?
   -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }
   ---- telescope ---- resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
-  {
-    'nvim-telescope/telescope.nvim',
-    dependencies = { { 'nvim-lua/popup.nvim', lazy = false }, { 'nvim-lua/plenary.nvim', lazy = false } },
-  }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
-  { 'natecraddock/telescope-zf-native.nvim', lazy = false }, -- simpler algorithm for matching
+  -- {
+  --   'nvim-telescope/telescope.nvim',
+  --   dependencies = { { 'nvim-lua/popup.nvim', lazy = false }, { 'nvim-lua/plenary.nvim', lazy = false } },
+  -- }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
+  -- { 'natecraddock/telescope-zf-native.nvim', lazy = false }, -- simpler algorithm for matching
   -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
   -- Telescope gh issues author=windwp label=bug search=miscompilation
-  { 'nvim-telescope/telescope-github.nvim' }, --Telescope gh issues|pull_request|gist|run
+  -- { 'nvim-telescope/telescope-github.nvim' }, --Telescope gh issues|pull_request|gist|run
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
