@@ -1,5 +1,12 @@
 --! Lsp config with lsp-zero
 -- luacheck: globals vim
+
+-- setup neodev before lsp
+-- local has_neodev, neodev = pcall(require, 'neodev')
+-- if has_neodev then
+--   neodev.setup({})
+-- end
+
 local has_lspzero, lsp = pcall(require, 'lsp-zero')
 if not has_lspzero then
   -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
@@ -86,6 +93,7 @@ lsp.configure('zls', { force_setup = true })
 -- table.insert(runtime_path, 'lua/?.lua')
 -- table.insert(runtime_path, 'lua/?/init.lua')
 --:lua require('lsp-zero.check').inspect_settings('lua_ls')
+-- managed by neodev.nvim
 lsp.configure('lua_ls', {
   settings = {
     Lua = {

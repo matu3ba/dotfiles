@@ -43,6 +43,7 @@ require 'my_keymaps'
 
 -- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
 -- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
+-- vim.api.nvim_call_function("stdpath", { "cache" })
 _G.Clangfmt = function()
   vim.api.nvim_exec2([[
 if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))

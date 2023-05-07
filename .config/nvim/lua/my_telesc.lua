@@ -65,7 +65,7 @@ telescope.setup {
 -- assert(ok_fzf)
 -- telescope.load_extension 'gh'
 -- telescope.load_extension('fzf') -- native
--- telescope.load_extension 'zf-native'
+telescope.load_extension 'zf-native'
 
 -- issue #6 still pending (unusable)
 -- local ok_dir, _ = pcall(require, 'dir-telescope')

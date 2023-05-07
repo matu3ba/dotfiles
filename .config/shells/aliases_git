@@ -166,6 +166,7 @@ alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gc='git commit -v'
 alias gcmsg='git commit -m'
 alias gca='git commit --amend'
+# To ignore indentation changes in git diff, add -w
 alias gd='git diff'
 alias gdn='git diff --name-only'
 alias gdc='git diff --cached'
