@@ -16,3 +16,6 @@ shift+ctrl+click       open output in pager
 Seaching: not natively supported. requires plugin.
 
 kitty --debug-font-fallback
+
+Ctrl + shift + g       open last command in less
+Ctrl + shift + h       open all history (scrollable)

@@ -9,6 +9,8 @@ require 'my_opts'
 -- :lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 -- vim.opt.runtimepath:get(), :h vim.opt
 -- vim.opt.rtp:append()
+-- set environment variable NVIM_APPNAME to use $XDG_CONFIG_HOME/NVIM_APPNAME
+-- NVIM_APPNAME=nvim is implicit, if NVIM_APPNAME is not defined.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 local has_lazy = vim.loop.fs_stat(lazypath)
 if not has_lazy then
@@ -22,10 +24,11 @@ else
   -- https://github.com/sindrets/diffview.nvim
   -- TODO create minimal example to ask why gitsignas is very slow and how to expand folds to see
   -- all diff hunks https://github.com/lewis6991/gitsigns.nvim
+  -- try https://github.com/cipharius/kakoune-arcan
 
   require 'my_dap'  -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
-  -- require 'my_telesc'
+  require 'my_telesc'
   require 'my_gitsign'
   require 'my_hydra'
   require 'my_lsp' -- setup in my_nvimcmp.lua
@@ -86,6 +89,10 @@ end
 -- Appending macros of register a with qA..q
 -- @@ replays last macro
 -- @: replays last command
+-- Frequent problem: autocommand make macro execution slow
+-- Solutions (noa = noautocmd): 1. :set lazyredraw, 2. :noa normal 10000@q
+-- Formatting comments is slow
+-- Solution: select comments + press gq
 
 -- working with regex
 -- :help non-greedy

@@ -7,6 +7,9 @@ require('nvim-treesitter.configs').setup {
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
+    -- nvim gcc/c-family/c-common.cc from git://gcc.gnu.org/git/gcc.git
+    -- freezes editor and configured clangd provides us with highlighting
+    disable = { 'c', 'cpp', 'python', 'zig' },
   },
   -- Note, that vib also works for blocks (symbols might be desirable)
   incremental_selection = {
@@ -19,16 +22,16 @@ require('nvim-treesitter.configs').setup {
     },
   },
   indent = {
-    enable = true, -- broken for Zig, Python
-    disable = { 'cpp', 'python', 'zig' },
+    enable = true,
+    disable = { 'cpp', 'python', 'zig' }, -- broken
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-    max_file_lines = 10000,
-  },
+  -- rainbow = {
+  --   enable = true,
+  --   extended_mode = true,
+  --   max_file_lines = 10000,
+  -- },
   -- context? if yes: <leader>vj for visual jump
   --refactor = {
   --  highlight_definitions = { enable = true },
@@ -39,6 +42,7 @@ require('nvim-treesitter.configs').setup {
   --      smart_rename = "grr",
   --    },
   --  },
+  --  configured in mini.bracketed
   --  navigation = {
   --    enable = true,
   --    keymaps = {

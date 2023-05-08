@@ -76,7 +76,7 @@ fi
 PATH=$PATH:"$HOME/.cargo/bin"
 PATH=$PATH:"$HOME/.local/bin"
 PATH=$PATH:"$HOME/.local/appimages"
-PATH=$PATH:"$HOME/dev/git/cpp/kakoune/libexec/kak"
+# PATH=$PATH:"$HOME/dev/git/cpp/kakoune/libexec/kak"
 # PATH=$PATH:"$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
 # PATH=$PATH:"$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
 PATH=$PATH:"$HOME/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
