@@ -238,6 +238,8 @@ callback = function()
 
 -- C-r C-o/C-r C-r register: paste text literally
 -- C-r register: pasting from register
+-- set number, set nonumber `set nu!`, likewise `set rnu!`
+-- set all to list all settings
 
 -- verbatim replace (snomagic)
 -- :sno/search/replace/g

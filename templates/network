@@ -36,6 +36,11 @@ wireshark file.tcpdump
 specify a source IP address, destination IP address and source port in tcpdump filter
 tcpdump -i enp1s9 dst 192.168.6.1 and src 192.168.6.2 and src port 80
 
+To get THEIP, use `ip a` and look for dynamic (typically DNS)
+IP=THEIP
+PORT=80
+sudo tcpdump -n -i eth0 -w file.tcpdump "(src port PORT or dst port PORT) and not (src net YOURIP or dst net YOURIP)"
+
 Alternatives to tcpdump on Windows(tcpdump does not work in WSL): winpcap, wireshark, netsh trace
 netsh trace start capture=yes IPv4.Address=192.168.122.2
 Reading trace on Windows with "Message Analyzer".
