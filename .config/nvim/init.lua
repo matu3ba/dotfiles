@@ -89,10 +89,19 @@ end
 -- Appending macros of register a with qA..q
 -- @@ replays last macro
 -- @: replays last command
--- Frequent problem: autocommand make macro execution slow
--- Solutions (noa = noautocmd): 1. :set lazyredraw, 2. :noa normal 10000@q
--- Formatting comments is slow
--- Solution: select comments + press gq
+-- Formatting is slow
+-- Solution:
+-- select comments + press gq
+-- press = on selection, see :h =
+
+-- Problem: Macros are slow.something slows down macro execution
+-- Solutions:
+-- :TSDisable wxyz,
+-- :set lazyredraw
+-- :noa normal 10000@q
+-- :LspStop,
+-- :lua require('cmp').setup.buffer { enabled = false }
+-- or use vanilla vim
 
 -- working with regex
 -- :help non-greedy
