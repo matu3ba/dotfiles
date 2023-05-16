@@ -11,3 +11,5 @@
 pub fn main() void {
     @import("std").debug.print("hello there\n", .{});
 }
+
+// old hack for running zig compiler on document: ///usr/bin/env -S zig run

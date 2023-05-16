@@ -65,3 +65,14 @@ const Self = struct {
 
 // workaround zig libstd bloated formatting:
 // https://github.com/FlorenceOS/Florence/blob/master/lib/output/fmt.zig
+
+// example for how to hack around or use optional slice?[LEN]u8)
+fn memcpyslice() void {
+    const LEN = 100;
+    var msg: ?[LEN]u8 = null;
+    const src = "somemsg";
+    const src_len = src.len;
+    msg = .{undefined} ** LEN;
+    @memcpy(msg.?[0..src_len], "somemsg");
+    std.debug.print("msg: {?s}\n", .{msg});
+}
