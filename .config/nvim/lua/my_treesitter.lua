@@ -1,8 +1,29 @@
 -- TODO how to pcall nvim-treesitter.configs ?
 require('nvim-treesitter.configs').setup {
   -- ensure_installed = 'maintained',
-  ensure_installed = { 'bash', 'c', 'cpp', 'julia', 'lua', 'python', 'rust', 'typescript', 'vim', 'vimdoc', 'zig' },
-  auto_install = true,
+  ensure_installed = {
+    'bash',
+    'diff',
+    'fish',
+    'git_config',
+    'git_rebase',
+    'gitattributes',
+    'gitignore',
+    'json',
+    'julia',
+    'lua',
+    'luadoc',
+    'make',
+    'markdown',
+    'nix',
+    'python',
+    'rust',
+    'toml',
+    'typescript',
+    'vim',
+    'vimdoc'
+  },
+  -- 'c', 'cpp', zig
 
   highlight = {
     enable = true,
@@ -10,7 +31,7 @@ require('nvim-treesitter.configs').setup {
     -- nvim gcc/c-family/c-common.cc from git://gcc.gnu.org/git/gcc.git
     -- freezes editor and configured clangd provides us with highlighting
     -- zig does not need treesitter for highlighting (zls also provides info)
-    disable = { 'c', 'cpp', 'zig' },
+    disable = { 'zig' },
   },
   -- Note, that vib also works for blocks (symbols might be desirable)
   incremental_selection = {
@@ -21,11 +42,11 @@ require('nvim-treesitter.configs').setup {
       node_incremental = 'gsn',
       scope_incremental = 'gss',
     },
-    disable = { 'c', 'cpp', 'zig' }, -- slow, so opt-in
+    disable = { 'zig' }, -- slow, so opt-in
   },
   indent = {
     enable = true,
-    disable = { 'c', 'cpp', 'python', 'zig' }, -- broken
+    disable = { 'python', 'zig' }, -- broken
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()

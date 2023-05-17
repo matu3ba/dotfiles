@@ -83,7 +83,6 @@ return {
     'echasnovski/mini.bracketed',
     version = false,
     config = function() require('mini.bracketed').setup {} end,
-    lazy = true,
   },
   -- usage in my_hydra.lua
   {
@@ -182,16 +181,11 @@ return {
 
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
-  --TODO copy code to print cursor context from
-  --https://github.com/nvim-treesitter/nvim-treesitter-context
-  --https://github.com/SmiteshP/nvim-navic
-  --https://github.com/utilyre/barbecue.nvim
-  -- { "CKolkey/ts-node-action", dependencies = { 'nvim-treesitter' }, config = function() require("ts-node-action").setup({}) end },
 
   ---- languages ----
   { 'mfussenegger/nvim-lint' }, -- configuration in my_lint.lua
   --{ "neomake/neomake" } -- get useful comments for code semantics
-  { 'LnL7/vim-nix' }, -- flakes highlighting: wait until nix converts their stuff to flakes
+  -- { 'LnL7/vim-nix' }, -- flakes highlighting: wait until nix converts their stuff to flakes
   { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
   ---- Organization
   { 'jbyuki/venn.nvim' }, --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
