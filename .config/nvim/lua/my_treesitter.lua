@@ -9,7 +9,8 @@ require('nvim-treesitter.configs').setup {
     additional_vim_regex_highlighting = false,
     -- nvim gcc/c-family/c-common.cc from git://gcc.gnu.org/git/gcc.git
     -- freezes editor and configured clangd provides us with highlighting
-    disable = { 'c', 'cpp', 'python', 'zig' },
+    -- zig does not need treesitter for highlighting (zls also provides info)
+    disable = { 'c', 'cpp', 'zig' },
   },
   -- Note, that vib also works for blocks (symbols might be desirable)
   incremental_selection = {
@@ -20,10 +21,11 @@ require('nvim-treesitter.configs').setup {
       node_incremental = 'gsn',
       scope_incremental = 'gss',
     },
+    disable = { 'c', 'cpp', 'zig' }, -- slow, so opt-in
   },
   indent = {
     enable = true,
-    disable = { 'cpp', 'python', 'zig' }, -- broken
+    disable = { 'c', 'cpp', 'python', 'zig' }, -- broken
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()
@@ -66,4 +68,6 @@ require('nvim-treesitter.configs').setup {
   --  lint_events = {"BufWrite", "CursorHold"},
   --},
 }
-require('iswap').setup {}
+
+-- Disable until https://github.com/mizlan/iswap.nvim/issues/77 is resolved.
+-- require('iswap').setup {}

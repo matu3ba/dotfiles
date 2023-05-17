@@ -187,3 +187,8 @@ public:
         mapex1[t1str].prop1 = "blabla";
     }
 };
+
+// SHENNANIGAN: C++11 emplace() may return false, even though items were added
+// to the std::map. Worse, the behavior is not consistent.
+// Must use find() to workaround the behavior. C++17 has insert() for that.
+// more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html

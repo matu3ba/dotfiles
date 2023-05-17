@@ -83,6 +83,7 @@ return {
     'echasnovski/mini.bracketed',
     version = false,
     config = function() require('mini.bracketed').setup {} end,
+    lazy = true,
   },
   -- usage in my_hydra.lua
   {
@@ -180,7 +181,7 @@ return {
   ---- treesitter ----
 
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
-  { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
+  -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
   --TODO copy code to print cursor context from
   --https://github.com/nvim-treesitter/nvim-treesitter-context
   --https://github.com/SmiteshP/nvim-navic

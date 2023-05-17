@@ -103,6 +103,10 @@ end
 -- :lua require('cmp').setup.buffer { enabled = false }
 -- or use vanilla vim
 
+-- Problem: External command break vim cmd sequence, neither :ex '%!d' | w nor :%!d | w work.
+-- Solution: !echo > %, windows !echo. > %
+-- Solution including discarding local changes :e! | !echo > %
+
 -- working with regex
 -- :help non-greedy
 -- Instead of .* use .\{-}, for example %s/style=".\{-}"//g to remove occurences of style="..."
@@ -133,6 +137,12 @@ callback = function()
     --vim.api.nvim_command [[:keepjumps keeppatterns %s/\s\+$//e]] -- remove trailing spaces
   end,
 })
+
+-- setups after special keypress
+-- 1. load treesitter cmd: :LoT
+-- 2. toggle autocmds?
+-- 3. unload all bloat cmd: :LoQ
+-- 4. ??
 
 -- very verbose
 -- local has_plenary, plenary = pcall(require, 'plenary')

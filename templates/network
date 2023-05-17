@@ -44,3 +44,6 @@ sudo tcpdump -n -i eth0 -w file.tcpdump "(src port PORT or dst port PORT) and no
 Alternatives to tcpdump on Windows(tcpdump does not work in WSL): winpcap, wireshark, netsh trace
 netsh trace start capture=yes IPv4.Address=192.168.122.2
 Reading trace on Windows with "Message Analyzer".
+
+Adding static ip address to connect to same subsystem
+sudo ip a a 192.168.XX.XX/24 dev interface
