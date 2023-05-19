@@ -2,6 +2,9 @@
 #include <stdlib.h> // exit
 #include <stdio.h>  // fprintf
 
+// Standards
+// http://port70.net/~nsz/c/
+
 // In short: Pointers are a huge footgun in C standard.
 //
 // The proper fix for access a pointer with increased alignment is to use a temporary with memcopy

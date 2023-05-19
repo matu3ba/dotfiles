@@ -243,6 +243,9 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 #fd '' -e zig lib/std
 # List files with absolute path: Very useful in combiniation with vim/neovim gf
 #fd -a filename
+#find last changed file
+#fd -x stat -f "%m%t%N" | sort -nr
+#fd --type f . --exec-batch ls -lt
 #List executables by change date, TODO executables
 #find . -type f -executable -printf "%T@ %Tc %p\n" | sort -n
 #fd has no convenient way for print formatting, so one is forced to use the "changed" filters
