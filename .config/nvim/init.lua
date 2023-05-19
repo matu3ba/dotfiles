@@ -19,6 +19,7 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
   -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
+  -- TODO after selection: show size of selection
 
   -- TODO create minimal bare repo for diffview.nvim problem DiffviewFileHistory not working:
   -- https://github.com/sindrets/diffview.nvim

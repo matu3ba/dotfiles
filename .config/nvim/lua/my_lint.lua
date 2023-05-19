@@ -28,9 +28,9 @@ lint.linters_by_ft = {
 local ruff = lint.linters.ruff
 ruff.args = {
   '--quiet',
-  '--line-length',
-  '150',
-  '-',
+  '--ignore', -- '--line-length',
+  'E501', -- '150',
+  '-'
 }
 
 vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
