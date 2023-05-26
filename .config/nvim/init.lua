@@ -26,6 +26,7 @@ else
   -- TODO create minimal example to ask why gitsignas is very slow and how to expand folds to see
   -- all diff hunks https://github.com/lewis6991/gitsigns.nvim
   -- try https://github.com/cipharius/kakoune-arcan
+  -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
 
   require 'my_dap'  -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
@@ -119,6 +120,7 @@ end
 -- replacement with argument:
 -- %s/\(.\)word/replacement \1
 -- TODO: selection + substitute selection with (simplify)
+-- fast select full function: va{V      no}
 
 -- stylua: ignore start
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt

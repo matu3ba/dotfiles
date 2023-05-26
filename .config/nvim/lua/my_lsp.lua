@@ -23,10 +23,10 @@ lsp.preset {
 -- 'bashls', -- bash-language-server
 -- 'jedi_language_server', -- jedi-language-server
 -- 'ltex', -- ltex-ls
+-- 'clangd', -- clangd
 
 -- must not use MasonInstall, not sure if MasonUpdate also breaks things
 lsp.ensure_installed {
-  'clangd', -- clangd
   'lemminx', -- lemminx
   ---@diagnostic disable
   ---@diagnostic enable
@@ -88,7 +88,8 @@ lsp.on_attach(function(client, bufnr)
   --vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end, opts)
 end)
 
-lsp.configure('zls', { force_setup = true })
+lsp.configure('clangd', { force_setup = true })
+
 -- local runtime_path = vim.split(package.path, ';')
 -- table.insert(runtime_path, 'lua/?.lua')
 -- table.insert(runtime_path, 'lua/?/init.lua')
@@ -119,6 +120,8 @@ lsp.configure('lua_ls', {
   },
   -- force_setup = true,
 })
+
+lsp.configure('zls', { force_setup = true })
 
 -- TODO fix ltex to not spell check markdown
 -- lsp.configure('ltex', {})

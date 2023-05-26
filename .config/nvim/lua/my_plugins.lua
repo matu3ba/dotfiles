@@ -5,7 +5,7 @@ return {
   -- clean cache:
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
-  { 'matu3ba/plenary.nvim', dev = true },
+  { 'nvim-lua/plenary.nvim' },
   { 'marko-cerovac/material.nvim' }, --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
   {
     'williamboman/mason.nvim',
