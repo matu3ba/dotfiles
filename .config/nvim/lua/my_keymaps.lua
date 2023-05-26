@@ -171,7 +171,7 @@ map('v', 'E', [[g_]], opts) -- goto until before eol
 --vim.api.nvim_set_keymap('n', "<leader>)", "vi)pgvy", { noremap = true })
 
 -- color switching --
-map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
+-- map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
 ---- spell ---- [s]s,z=,zg add to wortbook, zw remove from wordbook
 --map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
 ---- tab navigation ----
@@ -405,7 +405,7 @@ map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]]
 -- map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
 -- map('n', '<leader>fd', [[<cmd>FileInDirectory<CR>]], opts) -- find files
 --.grep_string({ search = vim.fn.input("Grep For > ")})
--- map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>]], opts) -- switch material style
+map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>]], opts) -- switch material style
 
 -- stylua: ignore start
 -- TODO: resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
