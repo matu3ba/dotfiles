@@ -1,0 +1,5 @@
+gcc fixed points can hide underlying bits like int, long etc.
+And they offer no type checks for ranges etc, so they are error prone.
+https://stackoverflow.com/questions/74776106/understanding-fixed-point-notation-in-gcc-clang
+
+decimal fixed points look on first sight ok and were also added to c23.

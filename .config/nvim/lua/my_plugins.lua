@@ -178,6 +178,7 @@ return {
   ---- fzf ----
   --TODO
   ---- treesitter ----
+  -- replacement without perf issues for context.vim would be great
 
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
