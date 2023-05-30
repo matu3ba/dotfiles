@@ -2,6 +2,7 @@
 import copy # control copy behavior of python
 import datetime as dt
 import json
+import math
 import os
 import subprocess # control external process within python
 import time
@@ -417,3 +418,23 @@ def combineDictsFromStr():
   dict2_str += dict1_str + '}'
   dict2 = json.loads(dict2_str)
   _ = dict2
+
+def fstrings():
+  variable = 10 # formatters: s(tring),d(integer),n(umber),e(xponent notation), f(ixedpoint notation), %(percentage)
+  print(f"Numeric {variable =}")
+  print(f"without formatting {variable}")
+  print(f"with formatting {variable:d}")
+  print(f"with formatting {variable:n}")
+  print(f"with spacing {variable:10d}\n")
+  variable = math.pi
+  print(f"with formatting {variable:e}")
+  print(f"with formatting {variable:f}")
+
+  variable = 1200356.8796
+  print(f"Numeric {variable =}")
+  print(f"2 decimal places {variable:.2f}")
+  print(f"and comma {variable:,.2f}")
+  print(f"and forced plus sign{variable:+,.2f}")
+
+  # for debugging
+  print(f"{variable=}")
