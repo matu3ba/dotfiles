@@ -47,3 +47,16 @@ Reading trace on Windows with "Message Analyzer".
 
 Adding static ip address to connect to same subsystem
 sudo ip a a 192.168.XX.XX/24 dev interface
+
+sudo nft flush ruleset
+sudo nft add table nat
+
+Port forwarding ssh to https:
+
+sudo sysctl net.ipv4.ip_forward=1
+sudo nft flush ruleset
+sudo nft add table nat
+sudo nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
+sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
+sudo nft 'add rule nat prerouting ip daddr 192.168.XX.YY tcp dport { 443 } dnat 192.168.XX.YY:22'
+sudo nft 'add rule nat postrouting masquerade'

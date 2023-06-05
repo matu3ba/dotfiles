@@ -133,6 +133,7 @@ lsp.setup()
 local cmp_config = lsp.defaults.cmp_config {
   sources = {
     { name = 'path' },
+    { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp', keyword_length = 3 },
     { name = 'luasnip', keyword_length = 2 },
     {

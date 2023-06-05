@@ -41,6 +41,8 @@ return {
       { 'hrsh7th/cmp-path' },
       { 'rafamadriz/friendly-snippets' },
       { 'saadparwaiz1/cmp_luasnip' },
+      -- own
+      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
     },
   },
 
@@ -147,6 +149,9 @@ return {
     'kylechui/nvim-surround',
     config = function() require('nvim-surround').setup() end,
   },
+  -- { 'text-case.nvim' }, --TODO
+  -- { 'monaqa/dial.nvim' }, --TODO
+  -- { 'andymass/vim-matchup' }, --TODO
   -- gm, M to mark word/region, M delete word
   -- g!M matches only full word
   -- do stuff, r, e etc
@@ -159,6 +164,7 @@ return {
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
+  -- use instead track.nvim?
   { 'matu3ba/libbuf.nvim', dev = true },
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
@@ -195,6 +201,8 @@ return {
     'folke/which-key.nvim',
     config = function() require('which-key').setup() end,
   }, -- :Telescope builtin.keymaps
+
+  -- { 'registers.nvim' },
 
   -- remote work without sshfs and vanilla editor: chipsenkbeil/distant.nvim
 
@@ -241,4 +249,19 @@ return {
   -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
   -- { 'debugloop/telescope-undo.nvim' }, -- browse via <C-n>,<C-p>, <C-CR> revert state, <CR> yank additions, <S-CR> yank deletions
 
+-- commonly known JSON file formats: schemastore.nvim
+-- toggleterm.nvim
+-- nvim-dap
+-- nvim-dap-ui
+-- nvim-dap-virtual-text
+
+-- nvim-treesitter
+-- nvim-treesitter-context
+-- nvim-treesitter-textobjects
+-- nvim-treesitter-textsubjects
+
+-- telescope-dap.nvim
+-- telescope-symbols.nvim
+-- telescope-ui-select.nvim
+-- text-case.nvim
 }
