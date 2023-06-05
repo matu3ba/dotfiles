@@ -21,6 +21,8 @@ else
   -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
   -- TODO after selection: show size of selection
 
+  -- TODO https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
+  -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab
   -- TODO create minimal bare repo for diffview.nvim problem DiffviewFileHistory not working:
   -- https://github.com/sindrets/diffview.nvim
   -- TODO create minimal example to ask why gitsignas is very slow and how to expand folds to see
