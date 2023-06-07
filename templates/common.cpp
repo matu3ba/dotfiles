@@ -6,6 +6,8 @@
 #include <array>
 #include <atomic>
 #include <vector>
+
+#include <cstring> // C++ has no string split method, so use strok() or strsep()
 /// logging (better would be test based and scoped macros)
 #define DEBUG_FN_ENTER(message)                                                                                   \
     if (debug)                                                                                                    \
@@ -188,7 +190,33 @@ public:
     }
 };
 
-// SHENNANIGAN: C++11 emplace() may return false, even though items were added
-// to the std::map. Worse, the behavior is not consistent.
-// Must use find() to workaround the behavior. C++17 has insert() for that.
+
+// SHENNANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
 // more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html
+
+void stringRawDataAccess(std::string &comp) {
+    std::string component_name = comp.c_str(); // copy construct
+    // char* p_component_name = component_name.data(); returns const char*
+    char* p_component_name = &component_name[0];
+    // component_X_Y, X,Y in [0-9]+
+    // char* component_name = "some_example_t1";
+    if (p_component_name == nullptr) return;
+    char* name = strtok(p_component_name, "_");
+    if (name == nullptr) return;
+    printf("%s\n", name);
+
+    // awkward hackaround
+    int the_int = -1;
+    try {
+        the_int = std::stoi(std::string(comp));
+    } catch (...) {
+        goto ACTIONEXIT;
+    }
+ACTIONEXIT:
+    printf("%d\n", the_int);
+
+    char* end;
+    long i = strtol(p_component_name, &end, 10);
+    i = i;
+    // This requires usage of errno, so pick your poison.
+}

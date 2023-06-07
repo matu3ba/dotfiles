@@ -19,3 +19,15 @@ alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
 #ccd() {
 #  mkdir -p $1 && cd $1
 #}
+
+# assume: $1 contains https..dirname.git
+makeWorkTree() {
+  worktreesfolder=$(basename -s .git "$1")
+  echo "$worktreesfolder"
+  mkdir "$worktreesfolder"
+  cd "$worktreesfolder"
+  git clone --bare "$1" .bare
+  # make sure git knows where the gitdir is
+  echo "gitdir: ./.bare" > .git
+  git worktree add master
+}

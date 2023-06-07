@@ -234,6 +234,20 @@ if status is-interactive
       echo "invalid argument number"
     end
   end
+  function makeWorkTree -d "create worktree into cwd from https url with ending .git"
+    if test (count $argv) -eq 1
+      set worktreesfolder (basename -s .git "$argv[1]")
+      echo "$worktreesfolder"
+      mkdir "$worktreesfolder"
+      cd "$worktreesfolder"
+      git clone --bare "$argv[1]" .bare
+      # make sure git knows where the gitdir is
+      echo "gitdir: ./.bare" > .git
+      git worktree add master
+    else
+      echo "invalid argument number"
+    end
+  end
 
   # if test -z (pgrep ssh-agent | string collect)
   # end

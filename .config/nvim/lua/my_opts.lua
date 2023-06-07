@@ -11,7 +11,7 @@ local function load_options()
     --vim_be_good_log_file = true,
     mapleader = ' ',
     material_lighter_contrast = false,
-    material_style = 'darker', -- default, darker, lighter, oceanic, deep ocean, palenight
+    material_style = 'palenight', -- default, darker, lighter, oceanic, deep ocean, palenight
     -- nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
     -- nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
     python3_host_prog = '/usr/bin/python3',

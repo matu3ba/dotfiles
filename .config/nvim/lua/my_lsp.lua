@@ -122,6 +122,8 @@ lsp.configure('lua_ls', {
 })
 
 lsp.configure('zls', { force_setup = true })
+-- pip3 install -U --user jedi-language-server
+lsp.configure('jedi_language_server', { force_setup = true })
 
 -- TODO fix ltex to not spell check markdown
 -- lsp.configure('ltex', {})
@@ -133,7 +135,8 @@ lsp.setup()
 local cmp_config = lsp.defaults.cmp_config {
   sources = {
     { name = 'path' },
-    { name = 'nvim_lsp_signature_help' },
+    -- usage blocker(jedi): https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/36
+    -- { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp', keyword_length = 3 },
     { name = 'luasnip', keyword_length = 2 },
     {
