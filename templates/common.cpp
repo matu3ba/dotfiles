@@ -1,10 +1,11 @@
-#include <array>
-#include <cstdio>
-#include <map>
-#include <string>
 #include <algorithm>
 #include <array>
+#include <array>
 #include <atomic>
+#include <cstdio>
+#include <map>
+#include <mutex>
+#include <string>
 #include <vector>
 
 #include <cstring> // C++ has no string split method, so use strok() or strsep()
@@ -186,7 +187,7 @@ public:
     void AddT1 (const std::string &t1str) {
         T1 t1obj(t1str);
         mapex1.emplace(t1str, t1obj);
-        mapex1[t1str].prop1 = "blabla";
+        mapex1[t1str].prop1 = "blabla"; // potential footgun!
     }
 };
 
@@ -220,3 +221,13 @@ ACTIONEXIT:
     i = i;
     // This requires usage of errno, so pick your poison.
 }
+
+class ClassWithMutex { // class with mutex
+  std::string s1;
+  std::mutex m1;
+  // copy constructor
+  ClassWithMutex(const ClassWithMutex& class1) {
+    s1 = class1.s1;
+    // mutex has forbidden move and copy constructor, so it must be omitted.
+  }
+};
