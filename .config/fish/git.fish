@@ -1,6 +1,6 @@
 ## git abbreviations to get the nice shell completions ##
-abbr --add -g glogs 'git --no-pager log --name-only'
-abbr --add -g glogs 'git --no-pager show --name-only'
+abbr --add -g glgn 'git --no-pager log --name-only'
+abbr --add -g gshn 'git --no-pager show --name-only'
 abbr --add -g gwt   'git worktree'
 abbr --add -g grst  'git restore'
 abbr --add -g g     'git'
@@ -44,9 +44,9 @@ alias grph='git rev-parse HEAD'
 
 abbr --add -g gs   'git status'
 abbr --add -g gsh  'git show'
-abbr --add -g gshm 'git show'
-abbr --add -g gsb  'git show'
-abbr --add -g gss  'git show'
+abbr --add -g gshm 'git show -m'
+abbr --add -g gsb  'git show -sb'
+abbr --add -g gss  'git show -s'
 
 abbr --add -g grb  'git rebase'
 alias grbm='git rebase master'

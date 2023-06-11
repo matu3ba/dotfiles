@@ -59,8 +59,8 @@
 #git ls-files --others --exclude-standard
 #git ls-files --others --exclude-standard || rsync -av --files-from=- /pathfrom /pathto
 #get file changes of a commit (-nX with X from HEAD)
-alias glogs='git --no-pager log --name-only'
-alias gshow='git --no-pager show --name-only'
+alias glgn='git --no-pager log --name-only'
+alias gshn='git --no-pager show --name-only'
 
 #change file permission
 #git ls-tree HEAD
@@ -201,7 +201,7 @@ alias gbsudUpMain='git branch --set-upstream-to=upstream/main upstream'
 alias gscbDown='git branch --set-upstream-to=downstream/$(git branch --show-current)'
 alias gscbUp='git branch --set-upstream-to=upstream/$(git branch --show-current)'
 
-alias gsh='git show'
+alias gshow='git show'
 alias gshps='git show --pretty=short --show-signature'
 alias gshm='git show -m'
 alias gsb='git status -sb'
