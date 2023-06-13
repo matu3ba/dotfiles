@@ -81,12 +81,19 @@ if status is-interactive
   end
 
   set -U EDITOR "nvim"
-  set -U GPG_TTY "$(tty)"
-  set -U SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+  set -Ux GPG_TTY "$(tty)"
+  set -Ux SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
   gpgconf --launch "gpg-agent"
   trap "gpgconf --kill gpg-agent" exit
-  zoxide init fish | source
 
+  # if test -z (pgrep ssh-agent | string collect)
+  # end
+  # eval (ssh-agent -c)
+  # set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+  # set -Ux SSH_AGENT_PID $SSH_AGENT_PID
+  # trap "ssh-agent -k" exit
+
+  zoxide init fish | source
 
   alias l ' ls --color=auto --hyperlink=auto --group-directories-first -h'
   abbr --add -g sus ' systemctl suspend'
@@ -248,13 +255,6 @@ if status is-interactive
       echo "invalid argument number"
     end
   end
-
-  # if test -z (pgrep ssh-agent | string collect)
-  # end
-  eval (ssh-agent -c)
-  set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
-  set -Ux SSH_AGENT_PID $SSH_AGENT_PID
-  trap "ssh-agent -k" exit
 
 end
 

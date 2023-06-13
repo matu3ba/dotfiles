@@ -82,3 +82,38 @@ Host github.com
   PreferredAuthentications publickey
   IdentityFile ~/.ssh/github_ed25519
   IdentitiesOnly yes
+
+____Setup signing commits with gpg____
+fish
+set -U GPG_TTY "$(tty)"
+set -U SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch "gpg-agent"
+trap "gpgconf --kill gpg-agent" exit
+bash
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch 'gpg-agent'
+trap 'gpgconf --kill gpg-agent' exit
+
+// YYYY-MM-DD being expiration date
+gpg --quick-generate-key \
+    'Your_Name <your.email@example.com> (optional_comment)' \
+    ed25519 cert YYYY-MM-DD
+// save keyfingerprint to env var without spaces (it says key-Fingerprint on the output)
+export KEYFP=keyfingerprint
+export KEYFP=keyfingerprint
+// subkeys for sign, encrypt, authenticate
+gpg --quick-add-key $KEYFP ed25519 sign 1y
+gpg --quick-add-key $KEYFP cv25519 encr 1y
+gpg --quick-add-key $KEYFP ed25519 auth 1y
+// verify that it works
+gpg -K
+gpg --list-secret-keys --keyid-format=long
+
+Adjust the .gitconfig with the output(without any 0x in front):
+[user]
+  email = MAIL
+  name = NAME
+  signingkey = OUTPUT_SIGNKEY!
+[commit]
+ gpgsign = true

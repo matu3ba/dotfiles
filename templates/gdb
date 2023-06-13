@@ -1,5 +1,8 @@
 Greg Law - More GDB wizardry and 8 other essential Linux application debugging tools
 
+ps aux | grep execname
+gdb pathtoexec -p PID
+
 gdb tui
 C-x-a      toggle to/from tui mode
 C-l        refresh screen
