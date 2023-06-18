@@ -5,6 +5,7 @@ return {
   -- clean cache:
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
+  -- { 'https://mzte.de/git/LordMZTE/znvim' },
   { 'nvim-lua/plenary.nvim' },
   { 'marko-cerovac/material.nvim' }, --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
   {
@@ -168,7 +169,8 @@ return {
   { 'matu3ba/libbuf.nvim', dev = true },
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
-  -- { "https://sr.ht/~vigoux/azy.nvim", build = "make lib" }
+  -- git clone https://github.com/jake-stewart/jfind && cd jfind && cmake -S . -B build && cd build && make -j$(nproc) && sudo make install
+  { "jake-stewart/jfind.nvim", branch = "main" },
   ---- telescope ---- resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
   {
     'nvim-telescope/telescope.nvim',

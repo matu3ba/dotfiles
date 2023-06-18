@@ -28,5 +28,6 @@
   rebase = false
 [core]
   autocrlf = false
-[commit]
- gpgsign = true
+# handled via cli option
+# [commit]
+#  gpgsign = true

@@ -32,7 +32,8 @@ else
 
   require 'my_dap'  -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
-  require 'my_telesc'
+  require 'my_telesc' -- more flexible
+  require 'my_jfind' -- faster than telescope
   require 'my_gitsign'
   require 'my_hydra'
   require 'my_lsp' -- setup in my_nvimcmp.lua

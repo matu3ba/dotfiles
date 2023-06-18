@@ -1,4 +1,4 @@
---! Statusline with optional dependency plenary, gitsigns
+--! Statusline with dependency plenary, gitsigns
 --! Offers 1 mode: usage
 --Many things copied and adjusted from
 --https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua

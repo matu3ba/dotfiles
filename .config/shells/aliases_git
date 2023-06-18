@@ -163,7 +163,8 @@ alias grv='git remote -v'
 # git checkout commit filepath
 alias gco='git checkout'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
-alias gc='git commit -v'
+alias gc='git commit -v -S' # sign is faster
+alias gcn='git commit -v' # nosign
 alias gcmsg='git commit -m'
 alias gca='git commit --amend'
 # To ignore indentation changes in git diff, add -w

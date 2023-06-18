@@ -21,7 +21,8 @@ abbr --add -g grpr  'git remote prune'
 abbr --add -g grv   'git remote -v'
 
 abbr --add -g gco   'git remote checkout'
-abbr --add -g gc    'git commit -v'
+abbr --add -g gc    'git commit -v -S' # sign is faster
+abbr --add -g gcn   'git commit -v' # nosign
 abbr --add -g gcmsg 'git commit -m'
 abbr --add -g gca   'git commit --amend'
 

@@ -1,10 +1,12 @@
 https://reproducible-builds.org/tools/
 diffoscope - https://diffoscope.org/
 rebuilderd - https://github.com/kpcyrd/rebuilderd
-rr -
+rr - https://github.com/rr-debugger/rr
 ripgrep from BurntSushi (https://github.com/BurntSushi/ripgrep).
 fd-find from sharkdp (https://github.com/sharkdp/fd)
 fz from natecraddock (https://github.com/natecraddock/zf)
+jfind from jake-stewart (https://github.com/jake-stewart/jfind)
+znvim from LordMZTE (https://mzte.de/git/LordMZTE/znvim) (glpv3)
 
 - valgrind
 * cachegrind: cache profiler
