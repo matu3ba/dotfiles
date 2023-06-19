@@ -24,27 +24,26 @@ return {
   -- C-x + C-u                user function (completefunc)
   -- C-x + C-d | C-i          macros, include paths
 
-  -- { 'folke/neodev.nvim' }, -- lua dev, TODO: investiage advantages
+  -- { 'rafcamlet/nvim-luapad' }, -- lua dev
+  { 'folke/neodev.nvim', opts = {} }, -- lua dev
   {
     'VonHeikemen/lsp-zero.nvim',
+    branch = 'v2.x',
     dependencies = {
       -- LSP Support
       { 'neovim/nvim-lspconfig' }, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
-      { 'williamboman/mason.nvim' },
-      { 'williamboman/mason-lspconfig.nvim' },
-      -- Autocompletion/Snippets (Required)
+      -- Autocompletion
       { 'hrsh7th/nvim-cmp' },
       { 'hrsh7th/cmp-nvim-lsp' },
       { 'L3MON4D3/LuaSnip' },
       -- Optional
+      { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end, },
+      -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
       { 'hrsh7th/cmp-buffer' },
       { 'hrsh7th/cmp-nvim-lua' },
       { 'hrsh7th/cmp-path' },
-      { 'rafamadriz/friendly-snippets' },
-      { 'saadparwaiz1/cmp_luasnip' },
-      -- own
       { 'hrsh7th/cmp-nvim-lsp-signature-help' },
-    },
+    }
   },
 
   -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)

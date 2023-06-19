@@ -1,23 +1,18 @@
 --! Lsp config with lsp-zero
 -- luacheck: globals vim
+-- luacheck: no max line length
 
 -- setup neodev before lsp
--- local has_neodev, neodev = pcall(require, 'neodev')
--- if has_neodev then
---   neodev.setup({})
--- end
+local has_neodev, neodev = pcall(require, 'neodev')
+if has_neodev then
+  neodev.setup {}
+end
 
 local has_lspzero, lsp = pcall(require, 'lsp-zero')
 if not has_lspzero then
   -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
   return
 end
-lsp.preset {
-  name = 'minimal',
-  set_lsp_keymaps = true,
-  manage_nvim_cmp = true,
-  suggest_lsp_servers = true,
-}
 
 -- Manual:
 -- 'bashls', -- bash-language-server
@@ -42,27 +37,8 @@ if not has_cmp or not has_lspconfig then
   return
 end
 
--- local cmp_select = {behavior = cmp.SelectBehavior.Select}
-local cmp_mappings = lsp.defaults.cmp_mappings {
-  ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-  ['<C-f>'] = cmp.mapping.scroll_docs(4),
-  ['<C-e>'] = cmp.mapping.abort(),
-  ['<C-y>'] = cmp.mapping.confirm { select = true },
-  ['<C-Space>'] = cmp.mapping.complete(),
-  -- ['<C-t>'] = cmp.mapping.complete({
-  --     config = {
-  --       sources = {
-  --         { name = 'tags' },
-  --       }
-  --     }
-  -- })
-  -- No selection annoyance (= 1 less keypress)
-  --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
-}
-
-lsp.setup_nvim_cmp {
-  mapping = cmp_mappings,
-}
+lsp.extend_cmp()
+local cmp_action = lsp.cmp_action()
 
 lsp.on_attach(function(client, bufnr)
   local _ = client
@@ -118,11 +94,13 @@ lsp.configure('lua_ls', {
       },
     },
   },
-  -- force_setup = true,
+  force_setup = true,
 })
 
 lsp.configure('zls', { force_setup = true })
 -- pip3 install -U --user jedi-language-server
+-- pipx install jedi-language-server
+-- lsp.configure.
 lsp.configure('jedi_language_server', { force_setup = true })
 
 -- TODO fix ltex to not spell check markdown
@@ -132,11 +110,11 @@ lsp.setup()
 
 -- modify defaults of VonHeikemen/lsp-zero.nvim 0b312c34372ec2b0daec722d1b7fad77b84bef5b:
 -- 1. get completion from all buffers
-local cmp_config = lsp.defaults.cmp_config {
+cmp.setup {
   sources = {
     { name = 'path' },
     -- usage blocker(jedi): https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/36
-    -- { name = 'nvim_lsp_signature_help' },
+    { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp', keyword_length = 3 },
     { name = 'luasnip', keyword_length = 2 },
     {
@@ -147,12 +125,29 @@ local cmp_config = lsp.defaults.cmp_config {
       },
     },
   },
+  -- window = {
+  -- },
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-y>'] = cmp.mapping.confirm { select = true },
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
+    ['<C-f>'] = cmp_action.luasnip_jump_forward(),
+    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+    -- ['<C-t>'] = cmp.mapping.complete({
+    --     config = {
+    --       sources = {
+    --         { name = 'tags' },
+    --       }
+    --     }
+    -- })
+    -- No selection annoyance (= 1 less keypress)
+    --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
+  },
 }
 
-cmp.setup(cmp_config)
-
 cmp.setup.cmdline(':', {
-
   mapping = cmp.mapping.preset.cmdline(),
   sources = cmp.config.sources {
     { name = 'cmdline' },

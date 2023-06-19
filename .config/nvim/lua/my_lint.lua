@@ -10,6 +10,9 @@ lint.linters_by_ft = {
   -- # noqa: F821
   -- # ignore mypy lints with at end eof line:
   -- # type: ignore
+  -- pipx install mypy
+  -- pipx install ruff
+  -- Converting to pipx might require to rm ~/.local/bin/deps
   python = { 'mypy', 'ruff' },
   -- clang14 introduced:
   -- // NOLINTBEGIN
