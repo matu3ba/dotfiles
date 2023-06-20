@@ -93,3 +93,6 @@ void printBits(int32_t const size, void * const ptr)
     status = puts(""); // write empty string followed by newline
     if (status < 0) abort();
 }
+
+// easy preventable ub:
+// - unhandled enum case: flag

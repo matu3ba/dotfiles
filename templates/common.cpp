@@ -231,3 +231,12 @@ class ClassWithMutex { // class with mutex
     // mutex has forbidden move and copy constructor, so it must be omitted.
   }
 };
+
+// SHENNANIGAN Providing a const char* to function with reference will use the stack-local
+// memory instead of using a copy. If further, c_str() is used to emplace into a std::map,
+// this leads to UB due to usage of invalid memory once the stack local memory goes out of scope.
+// - 1. In doubt, alloc a copy with `std::string newstring = std::string(some_string)`
+// - 2. Especially in std::map or other owned containers.
+// - 3. **Only** if there is an explicit comment on the storage including
+//      handling of move and copy constructor, use `(const) char*` as provided
+//      argument for `(const) std::string &`.

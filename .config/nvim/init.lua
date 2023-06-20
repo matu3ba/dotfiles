@@ -12,6 +12,8 @@ require 'my_opts'
 -- set environment variable NVIM_APPNAME to use $XDG_CONFIG_HOME/NVIM_APPNAME
 -- NVIM_APPNAME=nvim is implicit, if NVIM_APPNAME is not defined.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+-- local has_lazy = vim.uv.fs_stat(lazypath)
+-- workaround git commit failure
 local has_lazy = vim.loop.fs_stat(lazypath)
 if not has_lazy then
   print 'Please install lazy, instructions in init.lua'
@@ -20,6 +22,7 @@ else
   require('lazy').setup('my_plugins', {})
   -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
   -- TODO after selection: show size of selection
+  -- TODO show context of functions, either via vim or via lua regex
 
   -- TODO https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
   -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab

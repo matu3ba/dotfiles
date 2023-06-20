@@ -1,7 +1,10 @@
 --! Jfind configuration for fast searching with dependency jfind
 local has_jfind, jfind = pcall(require, 'jfind')
 local has_key, key = pcall(require, 'jfind.key')
-if not has_jfind or not has_key then return end
+if not has_jfind or not has_key then
+  -- print("not has_jfind or not has_key")
+  return
+end
 
 jfind.setup({
     exclude = {

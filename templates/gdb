@@ -225,5 +225,13 @@ gdbserver localhost:2000 ./exec
 target remote localhost:2000
 
 
--fno-stack-protectro
+-fno-stack-protector
 -static
+
+Simple reverse execution without rr:
+break executable:line
+run
+print somestuff
+awatch *$1
+record full
+continue

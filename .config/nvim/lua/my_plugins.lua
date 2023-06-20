@@ -169,7 +169,7 @@ return {
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- git clone https://github.com/jake-stewart/jfind && cd jfind && cmake -S . -B build && cd build && make -j$(nproc) && sudo make install
-  { "jake-stewart/jfind.nvim", branch = "main" },
+  { "jake-stewart/jfind.nvim", branch = "1.0" },
   ---- telescope ---- resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
   {
     'nvim-telescope/telescope.nvim',

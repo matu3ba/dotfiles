@@ -3,9 +3,13 @@
 local ok_lint, lint = pcall(require, 'lint')
 if not ok_lint then return end
 
+-- python3 -m pip install --user --upgrade pip
+-- pip3 install -U --user ruff
+-- pip3 install -U --user mypy
+
 lint.linters_by_ft = {
   -- # ignore ruff lints for whole file (too long line)
-  -- # ruff: noqa: E501
+  -- # ruff: noqa: E501 E701
   -- # ignore ruff lints with at end eof line:
   -- # noqa: F821
   -- # ignore mypy lints with at end eof line:
@@ -29,10 +33,13 @@ lint.linters_by_ft = {
 }
 
 local ruff = lint.linters.ruff
+-- E501: max line length
+-- E701: Multiple statements on one line.
+-- --line-length 150
 ruff.args = {
   '--quiet',
-  '--ignore', -- '--line-length',
-  'E501', -- '150',
+  '--ignore',
+  'E501,E701',
   '-'
 }
 
