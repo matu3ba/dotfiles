@@ -39,6 +39,7 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
 {
     seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
+// TODO: get better non-cryptographic hash
 
 // Macros for creating enum + string for lookup up to 256 values from https://stackoverflow.com/a/5094430
 // Usage:
@@ -240,3 +241,5 @@ class ClassWithMutex { // class with mutex
 // - 3. **Only** if there is an explicit comment on the storage including
 //      handling of move and copy constructor, use `(const) char*` as provided
 //      argument for `(const) std::string &`.
+
+// SHENNANIGAN Reinterpreting bytes requires reinterpret_cast instead of static_cast.

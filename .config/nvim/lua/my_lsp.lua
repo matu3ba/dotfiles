@@ -16,7 +16,7 @@ end
 
 -- Manual:
 -- 'bashls', -- bash-language-server
--- 'jedi_language_server', -- jedi-language-server
+-- 'jedi_language_server', -- pipx install jedi-language-server
 -- 'ltex', -- ltex-ls
 -- 'clangd', -- clangd
 

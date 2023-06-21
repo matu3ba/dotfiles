@@ -42,3 +42,6 @@ search for first timestep with xa >= ya:
 <=>           x  = ceil((ya-xa)/reocc)
 <=>           x  = (ya-xa+1)/reocc  [for integers]
         check xa < yb ?
+
+Always use SI units or other units, if possible and not clear from context.
+This does also include generics.

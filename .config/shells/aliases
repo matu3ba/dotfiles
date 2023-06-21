@@ -221,51 +221,57 @@ alias rgn=' rg --vimgrep'
 alias rgp=' rg -p'
 alias rgi="rg -g '!tests' -g '!src/include'"
 #alias rgv='rg --vimgrep'
-# replace in sed without regex
-#find ./ -maxdepth 1 -type f -exec sed 's|literal_pattern|replacement_string|g' {} \;
-# replace occurences with word
-#find ./ -type f -exec sed -i -e 's/apple/orange/g' {} \;
-# find files with exec bit
-#find ./ -type f -perm /1 -exec rm {} \;
-# find files with regex on busybox:
-#find ./ -regex '.*lighttpd.*'
-# ignore files
-#find . ! -name '*.html' ! -path '*.svn*' -exec grep 'SearchString' {} /dev/null \;
 
-# find files with exec bit and delete unless the script (exluding bit)
-#fd -E excludepattern -maxdepth 1 clean.sh -t x -x rm {} \;
-# fd: find files based on extension and delete ({} is implicit if not given)
-#fd -I -e o -t f -x rm {}
-# fd: find files based on regex and delete (implicit {})
-#fd -I -t d zig-cache -x rm -fr
-# fd: find all files (with extension) in dir
-#fd regex /some/path
-#fd '' -e zig lib/std
-# List files with absolute path: Very useful in combiniation with vim/neovim gf
-#fd -a filename
-#find last changed file
-#fd -x stat -f "%m%t%N" | sort -nr
-#fd --type f . --exec-batch ls -lt
-#List executables by change date, TODO executables
-#find . -type f -executable -printf "%T@ %Tc %p\n" | sort -n
-#fd has no convenient way for print formatting, so one is forced to use the "changed" filters
-#fd -t x --changed-before now etc dont work
-#find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
-#fd --type f -x sed -i -e 's/apple/orange/g'
+# sed: SED_PATTERN FILE
+# in-place replace verbatim: sed -i 's|literal_pattern|replacement_string|g'
+# in-place replace regex: sed -i -e 's/literal_pattern/replacement_string/g'
+
+# find
+# find ./ -maxdepth 1 -type f -exec SED_PATTERN {} \;
+# rm files with exec bit: find ./ -type f -perm /1 -exec rm {} \;
+# replace occurences with word
+# ignore files
+# find . ! -name '*.html' [! -path '*.svn*' ..] -exec grep 'SearchString' {} /dev/null \;
+# list executables by change date, TODO executables
+# find . -type f -executable -printf "%T@ %Tc %p\n" | sort -n
+# list all sections of an elf file sorted by change time
+# find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
+
+# busybox find
+# find ./ -regex '.*lighttpd.*'
+
+
+# fd-find
+# rm files with exec bit unless script:
+# fd -E excludepattern -maxdepth 1 clean.sh -t x -x rm {} \;
+# find files based on extension and delete ({} is implicit if not given)
+# fd -I -e o -t f -x rm {}
+# find files based on regex and delete (implicit {})
+# fd -I -t d zig-cache -x rm -fr
+# find all files (with extension) in dir
+# fd regex /some/path
+# fd '' -e zig lib/std
+# list files with absolute path: fd -a filename
+# find last changed file: fd -x stat -f "%m%t%N" | sort -nr
+# batch execution: fd --type f . --exec-batch ls -lt
+# fd has no convenient way for print formatting, so one is forced to use the "changed" filters
+# fd -t x --changed-before now etc dont work
+# fd --type f -x sed -i -e 's/apple/orange/g'
 
 # busybox grep (very slow)
-#grep -r regex .
+# grep -r regex .
+
 # ripgrep
-#rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
-#rg -g '*.rs' to ignore file ending
-#rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
-#rg --vimgrep lines+columns -u[u[u]] unrestricted
-#rg -F 'fixed_string'
-#rg '\bword\b' word boundaries
-# Show full path in ripgrep results:
-#rg -p
-#PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
-#{n}(exactly),{n,m}(at least n, no more than m),
+# usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
+# {n}(exactly),{n,m}(at least n, no more than m),
+# rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
+# rg -g '*.rs' to ignore file ending
+# rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
+# rg --vimgrep lines+columns -u[u[u]] unrestricted
+# rg -F 'fixed_string'
+# rg '\bword\b' word boundaries
+# full path results:
+# rg -p
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

@@ -1,10 +1,16 @@
 # import sys
+import _thread
 import copy # control copy behavior of python
 import datetime as dt
+import http.client as http_client
 import json
+import logging
 import math
 import os
+import requests
+import signal
 import subprocess # control external process within python
+# import threading
 import time
 import traceback
 import urllib.parse
@@ -13,9 +19,6 @@ import urllib.request
 from typing import Optional, Tuple, List, IO
 import xml.etree.ElementTree as ET
 
-import requests
-import logging
-import http.client as http_client
 
 url = "localhost"
 logindata = b"password123"
@@ -103,7 +106,7 @@ def prettyDict(d, indent=0):
       else:
          print('  ' * (indent+1) + str(value))
 
-# do not use xml.dom.minidom, it breaks space and newlines:
+# SHENNANIGAN do not use xml.dom.minidom, it breaks space and newlines:
 # https://bugs.python.org/issue5752
 # use instead ElementTree
 
@@ -438,3 +441,11 @@ def fstrings():
 
   # for debugging
   print(f"{variable=}")
+
+# SHENNANIGAN os.kill() does not call registered cleanup function `atexit.register(exit_cleanup)`
+# by deamonzed threads. Must store pids of child processes and clean them explicitly or
+# signal main thread via
+def signalMainThread(self) -> None:
+    pass
+    # before Python 3.10: _thread.interrupt_main()
+    # since Python 3.10: _thread.interrupt_main(signum=signal.SIGKILL)
