@@ -4,6 +4,32 @@ The mocking structure for a class `Variable` in path
 ```c
 // Variable.h
 #pragma once
+// <-- Defining Exception for the singleton -->
+class Variable {
+  static Variable* Instance();
+  //Variable() = delete; // forbid default constructor to prevent [] access in std::map
+  Variable()
+  ~Variable();
+private:
+  static Variable* mpInstance;
+};
+```
+```c
+// Variable.cpp
+Variable* Variable::mpInstance = nullptr;
+Variable* Variable::Instance() {
+  if (mpInstance == nullptr) {
+    // some logging and throwing exception
+  }
+  return mpInstance;
+}
+Variable::Variable() {};
+Variable::~Variable() {};
+// /* static */
+```
+```c
+// VariableMock.h
+#pragma once
 #include "CoolClass/Variable.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -32,7 +58,7 @@ private:
 };
 ```
 ```c
-// Variable.cpp
+// VariableMock.cpp
 #include <stdlib.h>
 #include "mocks/lib/CoolClass/VariableMock.h"
 using ::testing::NiceMock;
@@ -84,10 +110,12 @@ Simplified (thus incorrect) usage. Note that `..` is to simplify arguments.
   test_object->AddVariable(..);
 ```
 
-Make sure that all functions in namespace `Variable::` exist and that the
-source is used or the library containing the mock linked. Also, make sure that
-all functions in the mock `.cpp` are prefixed `Variable::`. Otherwise, there
-will be bogus linker errors. Remind, that the mock must be first on the linker
-line, so that it includes the necessary original symbols as needed. If the mock
-is used as dependency from another mock, the other mock should be first on the
-linker line.
+- Make sure that all functions in namespace `Variable::` exist and that the
+  source is used or the library containing the mock linked.
+- Also, make sure that all functions in the mock `.cpp` are prefixed
+  `Variable::`. Otherwise, there will be bogus linker errors. Remind, that the
+  mock must be first on the linker line, so that it includes the necessary
+  original symbols as needed.
+- If the mock is used as dependency from another mock, the other mock should be
+  first on the linker line.
+- Only public functions must be mocked.
