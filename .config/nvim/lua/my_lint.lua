@@ -18,6 +18,8 @@ lint.linters_by_ft = {
   -- pipx install mypy
   -- pipx install ruff
   -- Converting to pipx might require to rm ~/.local/bin/deps
+  -- fd -e py --max-depth=1 -x ruff check {}
+  -- fd -e py --max-depth=1 -x ruff check --fix {}
   python = { 'mypy', 'ruff' },
   -- clang14 introduced:
   -- // NOLINTBEGIN
@@ -40,7 +42,7 @@ local ruff = lint.linters.ruff
 ruff.args = {
   '--quiet',
   '--ignore',
-  'E501,E701',
+  'E501,E701,E702',
   '-'
 }
 

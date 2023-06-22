@@ -1,4 +1,5 @@
 # import sys
+# import threading
 import _thread
 import copy # control copy behavior of python
 import datetime as dt
@@ -10,7 +11,6 @@ import os
 import requests
 import signal
 import subprocess # control external process within python
-# import threading
 import time
 import traceback
 import urllib.parse
@@ -18,7 +18,6 @@ import urllib.request
 
 from typing import Optional, Tuple, List, IO
 import xml.etree.ElementTree as ET
-
 
 url = "localhost"
 logindata = b"password123"
@@ -449,3 +448,11 @@ def signalMainThread(self) -> None:
     pass
     # before Python 3.10: _thread.interrupt_main()
     # since Python 3.10: _thread.interrupt_main(signum=signal.SIGKILL)
+
+# O(1) lookup structure in Python via seq_no being index into storage_msg.
+# See also https://wiki.python.org/moin/TimeComplexity and DOD (most simple
+# version is append-only list). Incorrect type notations for understandability.
+# msg = { "somejson": "something" }        # msg format
+# lookup = hashmap(seq_no, seq_ind_list)   # hashmap of sequence number -> index into storage_msg
+# timeline = list((seq_no, msg))           # (seq_no, msg) is a tuple
+# storage_msg: list = list()               # list of messages

@@ -1,0 +1,11 @@
+ideas for the ideal cli test system for non-timing and timing based testing:
+
+- design rules to distinguish observable behavior without timing from
+  timing-related behavior and how to work around that
+- design rules for making a multi-threaded/process tool (piecewise) deterministically
+  to write test queries for the collected data of the behavior
+- test system for multi-threaded/process time based test collection and human output
+
+- Query system options for test behavior: You are basically writing a RAM database
+  best TODO intro
+- Make it stupidly simple.
