@@ -1,1 +1,50 @@
-TODO
+### Linux Bootprocess ###
+
+Typical x86_64
+- 0. Power
+- 1. Booting SoC periphery (Typically via mainboard)
+- 2. CPU platform executing its own operating system based on minix (IME)
+- 3. BIOS/UEFI
+- 4. Boot Device
+- 5. SPL(secondary program loader) (typically grub2 or on newer systems systemd-boot)
+- 6. Kernel (Linux)
+- 7. Pid1 (systemd)
+- 8. User space
+
+ARM Boot process, see https://linux-sunxi.org/Boot_Process
+- 0. Power
+- 1. Primary Program Loader (PPL) to boot SoC (BROM, see https://linux-sunxi.org/BROM)
+- 2. SPL (U-Boot) to select the Kernel, partitions and prepare device tree
+- 3. Kernel (Linux)
+  * statically boots fixed device tree specified by u-boot
+  * firmware update needs to update the device tree
+- 4. Pid1 (systemd)
+- 5. User space
+
+On ARM the layout looks like the following (see sw-description and swupdate-update.sh in buildroot repository):
+```
++--------+------+------------+-----------+---------+-----------------+-----------+
+| Boot   | Name | Name #2    | Actual    |Partition|   offset[KB]        | Comment   |
+| stage  | #1   | #2         | program   |         |    (LBA)            |           |
+| number |      |            | name      |         |                     |           |
++--------+------+------------+-----------+---------+---------------------+-----------+
+| 1      | PPL  | 1st stage  | [B]ROM    | no part | internal            | not shown |
+|        |      | bootloader |           |         |                     | in fdisk  |
++--------+------+-------------+-----------+--------+---------------------+-----------+
+| 2      | SPL  | 2nd stage  | u-boot    | part0   | 8                   |           |
+|        |      | bootloader |           |         |                     |           |
++--------+------+------------+-----------+---------+---------------------+-----------+
+| 3      |  -   | 3rd stage  | kernel1   | part1   | 48 + ..             |           |
++--------+------+------------+-----------+--------------+----------------+-----------+
+| 4      |  -   | -          | rootfs1   | part2   | 48                  |           |
+|        |      |            |           |         | + kernel[s]_size    |           |
+|        |      |            |           |         | + kernel[s]_padding |           |
++--------+------+------------+-----------+---------+---------------------+-----------+
+| 4      |  -   | -          | rootfs2   | part3   | ...                 |           |
++--------+------+------------+-----------+---------+---------------------+-----------+
+| 5      |  -   | -          | overlayfs | part4   | ...                 |           |
++--------+------+------------+-----------+---------+---------------------+-----------+
+```
+Note: Bootloader (u-boot) needs to satisfy necessary offset for the Master Boot Record (MBR),
+which contains the partition table.
+Output via `sudo fdisk -l`, which should show /dev/mmcblkX.
