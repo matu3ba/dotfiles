@@ -1,0 +1,41 @@
+### qemu_raspberry_pi ###
+Based on https://interrupt.memfault.com/blog/emulating-raspberry-pi-in-qemu
+
+wget https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2023-05-03/2023-05-03-raspios-bullseye-arm64.img.xz
+xz -d 2023-05-03-raspios-bullseye-arm64.img.xz
+
+fdisk -l ./2023-05-03-raspios-bullseye-arm64.img
+..
+Sector size (logical/physical): 512 bytes / 512 bytes
+..
+Device                                   Boot  Start     End Sectors  Size Id Type
+./2023-05-03-raspios-bullseye-arm64.img1        8192  532479  524288  256M  c W95 FAT32 (LBA)
+./2023-05-03-raspios-bullseye-arm64.img2      532480 8617983 8085504  3.9G 83 Linux
+shows Kernel (FAT32) and device tree (Linux)
+
+offset_of_partition = start_sector * sector_size, start_sector = 8192, sector_size = 512
+=> 8192 * 512 = 4194304
+
+sudo mkdir /mnt/image
+sudo mount -o loop,offset=4194304 ./2023-05-03-raspios-bullseye-arm64.img /mnt/image/
+
+# copy kernel and device tree
+cp /mnt/image/bcm2710-rpi-3-b-plus.dtb ~
+cp /mnt/image/kernel8.img ~
+
+# setup ssh
+openssl passwd -6
+
+# put in the image alongside with the username pi
+echo 'pi:$6$rBoByrWRKMY1EHFy$ho.LISnfm83CLBWBE/yqJ6Lq1TinRlxw/ImMTPcvvMuUfhQYcMmFnpFXUPowjy2br1NA0IACwF9JKugSNuHoe0' | sudo tee /mnt/image/userconf
+# enable ssh
+sudo touch /mnt/image/ssh
+
+# qemu wants an image size with power of 2
+qemu-img resize ./2023-05-03-raspios-bullseye-arm64.img 8G
+
+# starting qemu
+qemu-system-aarch64 -machine raspi3b -cpu cortex-a72 -nographic -dtb bcm2710-rpi-3-b-plus.dtb -m 1G -smp 4 -kernel kernel8.img -sd 2023-05-03-raspios-bullseye-arm64.img -append "rw earlyprintk loglevel=8 console=ttyAMA0,115200 dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" -device usb-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22
+
+# connect via other shell
+ssh -p 2222 pi@localhost

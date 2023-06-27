@@ -8,6 +8,8 @@ fz from natecraddock (https://github.com/natecraddock/zf)
 jfind from jake-stewart (https://github.com/jake-stewart/jfind)
 znvim from LordMZTE (https://mzte.de/git/LordMZTE/znvim) (glpv3)
 
+xpack for windows reproducible build framework (https://xpack.github.io/)
+
 - valgrind
 * cachegrind: cache profiler
 * callgrind: cachegrind + call graphs

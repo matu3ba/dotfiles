@@ -19,6 +19,17 @@ nm -gD yourLib.so
 C++ demangling
 nm -gDC yourLib.so
 nm yourlib | c++filt
+nm -D /usr/lib/libc.so.6 | egrep 'memcpy|sleep'
+
+"I" The symbol is an indirect reference to another symbol.
+"i" ... For ELF format files this indicates that the symbol is an indirect function.
+```
+if you have no strong linkage of a symbol, but multiple weak linkages,
+the tie breaker is the SIZE, and presumably if SIZE are all same,
+then first one found on command line.
+```
+However, usually weak linkage can be overwritten by strong one.
+Weak linkage further does mean that one does not need to use the symbols.
 
 linking
 -Iincludepath
