@@ -159,3 +159,8 @@ https://askubuntu.com/questions/144852/cant-format-my-usb-drive-i-have-already-t
 show process tree
 ps -ef --forest
 pstree
+
+kernel memory usage inaccuracies + gdb memory inspection
+https://tbrindus.ca/sometimes-the-kernel-lies-about-process-memory-usage/
+sandbox performance + ptrace
+https://tbrindus.ca/on-online-judging-part-1/

@@ -197,3 +197,16 @@ fn simpleCAS() !void {
         .Finished => std.log.debug("no need to start again"),
     }
 }
+
+// SHENNANIGAN performance: array assignments work with =
+test {
+    var x: u8 = 100;
+    var a: [1_000_000]u8 = .{x} ** 1_000_000;
+    var b: [1_000_000]u8 = undefined;
+
+    // a pile of code
+
+    b = a; // spot the performance issue
+
+    // a pile of code
+}

@@ -51,7 +51,8 @@ sudo ip a a 192.168.XX.XX/24 dev interface
 sudo nft flush ruleset
 sudo nft add table nat
 
-Port forwarding ssh to https:
+Port forwarding ssh to https(usage via 'ssh user@192.168.XX.YY -p 443') taken from
+https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)
 
 sudo sysctl net.ipv4.ip_forward=1
 sudo nft flush ruleset

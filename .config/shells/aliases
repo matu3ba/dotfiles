@@ -272,6 +272,10 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # rg '\bword\b' word boundaries
 # full path results:
 # rg -p
+# only filenames, only directory entries
+# rg -l
+# only show to be searched filepaths:
+# rg --files
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

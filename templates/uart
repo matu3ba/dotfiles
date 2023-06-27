@@ -12,3 +12,7 @@ putty
 1. Connection type serial
 2. cmd.exe enter `mode` and better `reg query HKLM\HARDWARE\DEVICEMAP\SERIALCOMM`
 3. Speed 115200
+
+checking if devices exists
+dmesg | grep tty
+ls /sys/class/tty/ttyUSB*

@@ -243,3 +243,89 @@ class ClassWithMutex { // class with mutex
 //      argument for `(const) std::string &`.
 
 // SHENNANIGAN Reinterpreting bytes requires reinterpret_cast instead of static_cast.
+
+// SHENNANIGAN https://en.cppreference.com/w/cpp/container/map/find
+// "Compiler decides whether to return iterator of (non) const type by way of
+// accessing map. Not the standard???
+
+// Object oriented in-place mutex storage, with aforementioned limitation might not work.
+class Variable {
+public:
+    Variable() = delete; // forbid default constructor to prevent [] access in std::map
+    Variable(std::string value) : mValue(value) {} // initializer list
+    Variable(const Variable& aCpyVar) {
+        mValue = aCpyVar.mValue;
+    } // mutex requires copy constructor
+    std::string mValue;
+    std::mutex mValueMutex; // must not be initialized and must not be copied
+};
+struct struct_iter {
+    std::map<std::string, Variable> map_str_str;
+};
+int findReturnsMutIterAssignBoolValue(struct struct_iter* str_iter_ptr, std::string search_key, bool value) {
+    auto var_iter = str_iter_ptr->map_str_str.find(search_key);
+    if (var_iter == str_iter_ptr->map_str_str.end()) return 1;
+    { // locked section
+        std::unique_lock<std::mutex> lock(var_iter->second.mValueMutex);
+        if (true == value) var_iter->second.mValue = std::string("true");
+        else var_iter->second.mValue = std::string("false");
+    }
+    return 0;
+}
+std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, std::string search_key, bool value) {
+    std::map<std::string, Variable> res;
+    std::map<std::string, Variable>::iterator var_iter;
+    for (var_iter = str_iter_ptr->map_str_str.begin(); var_iter != str_iter_ptr->map_str_str.end(); var_iter++) {
+        std::unique_lock<std::mutex> lock(var_iter->second.mValueMutex);
+        res.emplace(var_iter->first, var_iter->second); // multiple keys not possible in std::map
+    }
+    return res;
+}
+// Naive DOD-based intrusive structure would use
+// 1. std::vector for value_storage
+// 2. std::map<std::string, int> for the index into value_storage
+// 3. std::vector<int, std::mutex> for the mutexes
+
+// SHENNANIGAN googlemock requires default constructor, even though usage can
+// create UB (for types without explicit default constructor).
+// Workaround: Make default constructor protected and use FriendOfVariable2.
+// #define protected public
+// #include <Variable.h>
+// #undef protected
+class Variable2 {
+private:
+    friend class FriendOfVariable2;
+protected:
+    Variable2(): mValue("") {}
+public:
+    // Variable2() = delete; // forbid default constructor to prevent [] access in std::map
+    Variable2(std::string value) : mValue(value) {} // initializer list
+    Variable2& operator=(Variable2 other) { // user-defined copy assignment (copy-and-swap idiom)
+        std::swap(mValue, other.mValue);
+        return *this;
+    }
+    Variable2(const Variable2& aCpyVar) {
+        mValue = aCpyVar.mValue;
+    } // mutex requires copy constructor
+    std::string mValue;
+    std::mutex mValueMutex; // must not be initialized and must not be copied
+};
+struct struct_iter2 {
+    std::map<std::string, Variable2> map_str_str;
+};
+class FriendOfVariable2 {
+    FriendOfVariable2() {
+        mVar = Variable2();
+    }
+    Variable2 mVar;
+};
+
+// SHENNANIGAN namespaces can not befriended, so test code relying on those
+// plus macros or templaces forces use of macro hacks to prevent outlined above
+// to prevent accidental use of the default constructor: In short, friend
+// classes are a leaky abstraction (useless or force to use the pattern
+// everywhere).
+// => In practice it is simpler to use
+// - 1. hacks
+// - 2. horrible behavior
+// - 3. DOD / C with more sane ~~namespaces~~classes + more typed macros

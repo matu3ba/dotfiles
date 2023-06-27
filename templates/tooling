@@ -94,3 +94,6 @@ front-end tools          | perf
 tracing frameworks       | ftrace, perf_event, eBPF
 Back-end instrumentation | tracepoints, kprobes, uprobes
 source: https://wiki.st.com/stm32mpu/wiki/Linux_tracing,_monitoring_and_debugging
+
+Embedded (mutli-partition swapping)
+https://sbabic.github.io/swupdate/swupdate.html
