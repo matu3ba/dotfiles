@@ -80,7 +80,7 @@ if status is-interactive
     set -U CLUTTER_BACKEND "wayland"
   end
 
-  set -U EDITOR "nvim"
+  set -Ux EDITOR "nvim"
   set -Ux GPG_TTY "$(tty)"
   set -Ux SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
   gpgconf --launch "gpg-agent"
