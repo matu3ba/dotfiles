@@ -109,6 +109,7 @@ return {
 
   { 'tpope/vim-fugitive' }, -- anything better for in buffer interative rebasing?
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
+  -- :Gitsigns show @~1
   {
     'lewis6991/gitsigns.nvim',
     config = function() require('gitsigns').setup() end,

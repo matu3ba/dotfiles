@@ -99,8 +99,8 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
 // This is extremely easy to miss,
 void iter() {
     std::map<int, std::string> mapexample;
-    mapexample[1] = "t1";
-    mapexample[2] = "t2";
+    mapexample[1] = "t1"; // do not use this, reason below
+    mapexample[2] = "t2"; // do not use this
     for (auto iter = std::cbegin(mapexample); iter != std::cend(mapexample); ++iter) {
         printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
     }
@@ -196,8 +196,9 @@ public:
 // SHENNANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
 // more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html
 
+// Also does split string.
 void stringRawDataAccess(std::string &comp) {
-    std::string component_name = comp.c_str(); // copy construct
+    std::string component_name = comp.c_str(); // may or may not copy construct (careful)
     // char* p_component_name = component_name.data(); returns const char*
     char* p_component_name = &component_name[0];
     // component_X_Y, X,Y in [0-9]+
