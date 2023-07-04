@@ -164,3 +164,11 @@ kernel memory usage inaccuracies + gdb memory inspection
 https://tbrindus.ca/sometimes-the-kernel-lies-about-process-memory-usage/
 sandbox performance + ptrace
 https://tbrindus.ca/on-online-judging-part-1/
+
+DeviceTree (x86 uses different names for devicetree like ACPI tables, PCI enumeration, USB etc)
+https://unix.stackexchange.com/questions/289563/how-to-list-the-kernel-device-tree
+evice-tree-compiler
+dtc -I fs /sys/firmware/devicetree/base
+find /proc/device-tree/ -type f -exec head {} + | less
+
+https://github.com/quark-zju/lrun

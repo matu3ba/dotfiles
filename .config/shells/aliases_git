@@ -64,6 +64,7 @@ alias gshn='git --no-pager show --name-only'
 
 #change file permission
 #git ls-tree HEAD
+#git ls-tree -r branch --name-onyl *.py
 #add execution bit
 #git update-index --chmod=+x script.sh
 

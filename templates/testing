@@ -1,3 +1,15 @@
+Known bad designs:
+- 1. googlemock forces to use default constructors and has horrible error messages with huge boilerplate
+  * use injection instead
+- 2. qtest / test frameworks are very verbose
+  * use own test framework or language ones, unless specific use cases can be isolated
+- 3. data driven tests via macros is the same as using a table without understandable error messages.
+  * use a table + for loop instead
+- 4. tight coupling of unrelated components
+  * use weak coupling, if feasible
+- 5. no unnecessary classes / boilerplate
+  * dont decouple strongly related things, because classes create costs via pointer indirection
+
 ideas for the ideal cli test system for non-timing and timing based testing:
 
 - design rules to distinguish observable behavior without timing from

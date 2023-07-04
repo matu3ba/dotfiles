@@ -235,3 +235,6 @@ print somestuff
 awatch *$1
 record full
 continue
+
+tracing function calls
+https://gist.github.com/quark-zju/a20ae638601d2fac476e

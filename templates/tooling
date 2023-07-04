@@ -47,6 +47,8 @@ ltrace -t cmd
 ltrace -l libc.so* c
 ltrace -e malloc+free-@libc.so* cmd
 
+To get an overview: sudo tiptop
+
 perf trace
 perf trace cmd
 perf trace -p 1234

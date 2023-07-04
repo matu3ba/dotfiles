@@ -49,3 +49,10 @@ Compare that with unsinged integers:
 and we get for halffloat a factor of 16x, float a factor of 256 and double a factor of 2048x.
 
 Graphical illustration: https://float.exposed/0x7f7fffff
+
+LLVM:
+-The general vibe is to produce any sort of NaN.
+- In special non IEE754-ones have non-compliant behavior.
+- x78 is known to be broken.
+
+TODO mention arch behavior for NaN

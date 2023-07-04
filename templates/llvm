@@ -42,3 +42,5 @@ If the INSTALL_PREFIX has been forgotten, use
 cmake -DCMAKE_INSTALL_PREFIX=/tmp/llvm -P cmake_install.cmake
 mv /tmp/llvm $HOME/.local/llvmXX_rel
 ```
+
+TODO runtime instrumentation for tracing / logging.

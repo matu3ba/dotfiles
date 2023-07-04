@@ -285,7 +285,9 @@ callback = function()
 -- / / \\\r/g
 -- convert back cmd separated by \ to space separated commands
 -- /\\\n/ /
+-- show hex symbols: nvim -b FILE
 -- convert symbols into hex: !%xxd
+-- reverse convert (before saving): :%!xxd -r
 -- show non-text ascii symbols with :ascii
 
 -- std::cout << "dbg1\n"; // DEBUG

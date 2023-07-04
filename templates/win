@@ -15,3 +15,7 @@ Getting ntdll (and win32) calls
 https://learn.microsoft.com/en-us/sysinternals/downloads/procmon
 https://www.x86matthew.com/view_post?id=lognt32
 http://jacquelin.potier.free.fr/winapioverride32/
+
+Timetravel debugging
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview
+https://github.com/microsoft/WinDbg-Samples/blob/master/TTDQueries/tutorial-instructions.md
