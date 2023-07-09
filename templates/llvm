@@ -44,3 +44,14 @@ mv /tmp/llvm $HOME/.local/llvmXX_rel
 ```
 
 TODO runtime instrumentation for tracing / logging.
+
+SHENNANIGANS
+1. Rewrite
+- 1.1 Pointer semantics (same applies for C)
+- 1.2 Memory synchronization semantics (same applies for C)
+- Justifications:
+  * based on paper "RVSDG: An Intermediate Representation for Optimizing Compilers"
+  * 1. LLVM IR requires frequent normalization into SSA form, which looks like it
+    eats up any performance advantage over the more general graph form
+  * 2. Tracing optimizations and writing validation code along IR requires an
+    own tracing system per optimization instead of using graph representation

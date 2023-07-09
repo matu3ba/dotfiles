@@ -20,16 +20,12 @@ if not has_lazy then
 else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
-  -- TODO add missing pcalls/checks in treesitter and telescope-fzf-native
-  -- TODO after selection: show size of selection
-  -- TODO show context of functions, either via vim or via lua regex
+  -- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
+  -- TODO config: show size of last copy + selection in cmdline
+  -- TODO config: show context of functions, either via vim or via lua regex
 
-  -- TODO https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
+  -- idea https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
   -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab
-  -- TODO create minimal bare repo for diffview.nvim problem DiffviewFileHistory not working:
-  -- https://github.com/sindrets/diffview.nvim
-  -- TODO create minimal example to ask why gitsignas is very slow and how to expand folds to see
-  -- all diff hunks https://github.com/lewis6991/gitsigns.nvim
   -- try https://github.com/cipharius/kakoune-arcan
   -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
 
@@ -77,17 +73,10 @@ end
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
 -- idea: simple diff that respects gitignore https://github.com/ziglibs/diffz
-
--- TODO (advanced) linker workshop to understand linker
--- TODO: play around with build + test + spawn suite for debugging vs simulation
--- * use case: debugging mocking linker failures in C++
-
--- TODO: reduze with getting AST<->source locations
+-- TODO project: testing lib to build + test + spawn suite with optional debugging vs simulation
+-- idea project: reduze with getting AST<->source locations
 -- idea: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
--- LLVM Optimization IR: "RVSDG: An Intermediate Representation for Optimizing Compilers"
--- better C semantics: "RefinedC: Automating the Foundational Verification of
---                      C Code with Refined Ownership Types"
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros
@@ -125,7 +114,7 @@ end
 -- literal substitution requires very non magic mode https://stackoverflow.com/a/46235399
 -- replacement with argument:
 -- %s/\(.\)word/replacement \1
--- TODO: selection + substitute selection with (simplify)
+-- idea: selection + substitute selection with (simplify)
 -- fast select full function: va{V      no}
 
 -- stylua: ignore start

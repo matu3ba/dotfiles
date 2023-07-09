@@ -96,3 +96,10 @@ void printBits(int32_t const size, void * const ptr)
 
 // easy preventable ub:
 // - unhandled enum case: flag
+
+// Composable annotations for verification with separation logic for pointer
+// semantics, which requires minimal user input and produces Coq proofs.
+// "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types"
+// Main drawbacks:
+// * Requires expert crafting rules
+// * existentially quantified Coq variables (evars) for proofs must be carefully chosen

@@ -107,6 +107,10 @@ requires --dump-instr=yes|no
 --callgrind-out-file=<file>
 valgrind --tool=callgrind --help
 
+Determine cache hierachy and line size on CPU with 'lstopo', ie with
+* lstopo - -v --no-io
+* TODO Intel Performance guides says cache lines are loaded and stored in 128B chunks
+
 Workaround hugepage Kernel bug:
 https://unix.stackexchange.com/questions/679706/kcompacd0-using-100-cpu-with-vmware-workstation-16
 cat /sys/kernel/mm/transparent_hugepage/enabled

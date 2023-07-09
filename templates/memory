@@ -26,3 +26,12 @@ see https://github.com/ziglang/zig/issues/6396#issuecomment-1097287569
 
 CppMem: Interactive C/C++ memory model
 http://svr-pes20-cppmem.cl.cam.ac.uk/cppmem/
+
+Allocation classes
+https://pzurita.wordpress.com/2015/06/29/memory-stomp-allocator-for-unreal-engine-4/
+* memory allocation info to debug Memory 1. overrun, 2. underrun, 3. use after free
+* works via tagging memory pages via OS (execute, read, write, and no-access) and
+  using 2 pages with typically layout 1 for overruns or layout 2 for underruns:
+  + 1. [empty space, alloc info, sentinel, allocation, page tagged as no-access].
+  + 2. [page tagged as no-access, alloc info, sentinel, allocation, empty space (set with pattern)].
+* Causes can also be UB https://www.gangofcoders.net/solution/what-is-a-memory-stomp/

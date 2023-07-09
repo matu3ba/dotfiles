@@ -58,3 +58,9 @@ Tracing linker
 mold -run make --trace
 ld --trace
 lld --trace
+
+TODO linker types + tasks
+
+debugging sections:
+* naively via stack frame + uncompressed debug sections
+* unwinding logic + compressed debug sections

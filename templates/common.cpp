@@ -330,3 +330,18 @@ class FriendOfVariable2 {
 // - 1. hacks
 // - 2. horrible behavior
 // - 3. DOD / C with more sane ~~namespaces~~classes + more typed macros
+
+// PERF of exceptions with handling
+// * Walk the stack with the help of the exception tables until it finds a handler for that exception
+//   in the function info tables.
+// * Unwind the stack until it gets to that handler.
+// * Actually call the handler.
+// => Even with additional bookkeeping by OS, this is slow.
+// => ~1.5us per level of stack, see https://stackoverflow.com/questions/1018800/cost-of-throwing-c0x-exceptions/1019020#1019020
+// without handling on x86_64 OS does heavy lifting, on x86 not.
+
+// idea if needed
+// - minimal own unit testing lib
+//   * high perf + 0BSD to let others steal the code
+// - minimal own injection lib
+//   * high perf + 0BSD to let others steal the code

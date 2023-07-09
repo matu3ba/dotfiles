@@ -44,7 +44,9 @@ Some more falsehoods:
 6. On systems without virtualization, CLOCK_MONOTONIC never goes backwards. On some platforms this can occur due to clock skew between CPUs.
 
 tldr;
-- use ISO 8601 TZ
+- use ISO 8601 TZ, because there is no more compact alternative to TAI yet
+- bear in mind that 'unix time' can 1. be simple uptick clock, 2. synchronized with utc or 3. be configured as TAI
+- check for TAI configuration on the system, see https://en.wikipedia.org/wiki/Unix_time#Variant_that_counts_leap_seconds
 - consider use of CLOCK_BOOTTIME
 - time steps are increased and decreased to prevent introduction of leaps
 - leap seconds are discrete jumps, so strictly speaking one needs to record 1. timestamp and 2. known leaps to
@@ -52,3 +54,7 @@ ensure that leap seconds are correctly taken into account, if one uses any strin
 - 'Precision Time Protocol' is used to synchronize timestamps to 'International Atomic Time' or 'Coordinated Universal Time'
 - 'Terrestrial Time' is the idealization used for 'International Atomic Time'
 - time is relative, so all time data must be seen in the appropriate context
+
+There is no portable api to check Kernel time configurations, so if needed you need
+to 1. setup your own Kernels xor 2. provide your own time synchronization network
+and accept + handle offline inaccuracies and leap seconds yourself.
