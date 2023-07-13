@@ -11,6 +11,7 @@ import os
 import requests
 import signal
 import subprocess # control external process within python
+import sys
 import time
 import traceback
 import urllib.parse
@@ -19,6 +20,8 @@ import urllib.request
 from typing import Optional, Tuple, List, IO
 import xml.etree.ElementTree as ET
 
+signal_was_handled = False
+cleanup_was_called = False
 url = "localhost"
 logindata = b"password123"
 json_newconf = {"testjson":[{"t1":1,"t2":2},{"t1":11,"t2":12}]}
@@ -257,11 +260,38 @@ def firstkeyval(current: dict) -> object:
     return next(iter(current.items())) # return next(iter(req.viewitems()))
 
 
-## test, if current is subdict of expected
-def is_subdict(expected: dict, current: dict):
+def is_subdict(small: dict, big: dict) -> bool:
+    """
+    Test, if 'small' is subdict of 'big'
+    Example: big = {'pl' : 'key1': {'key2': 'value2'}}
+    Then small = {'pl' : 'key1': {'key2': 'value2'}, 'otherkey'..} matches,
+    but small = {'pl' : 'key1': {'key2': 'value2', 'otherkey'..}}
+    or small = {'pl' : 'key1': {'key2': {'value2', 'otherkey'..}}} not.
+    """
     # since python3.9:
-    # return current | expected == current
-    return dict(current, **expected) == current
+    # return big | small == big
+    # also:
+    # return {**big, **small} == big
+    return dict(big, **small) == big
+
+def has_fieldsvals(small: dict, big: dict) -> bool:
+    """
+    Test, if 'small' has all values of of 'big'
+    Example: big = {'pl' : 'key1': {'key2': 'value2'}}
+    Then small = {'pl' : 'key1': {'key2': 'value2'}, 'otherkey'..} matches,
+    small = {'pl' : 'key1': {'key2': 'value2', 'otherkey'..}} matches,
+    and small = {'pl' : 'key1': {'key2': {'value2', 'otherkey'..}}} matches.
+    """
+    for key, value in small.items():
+        if key in big:
+            if isinstance(small[key], dict):
+                if not has_fieldsvals(small[key], big[key]):
+                    return False
+            elif value != big[key]:
+                return False
+        else:
+            return False
+    return True
 
 def merge_1lvldicts(alpha: dict = {}, beta: dict = {}) -> dict:
     return dict(list(alpha.items()) + list(beta.items()))
@@ -449,6 +479,20 @@ def signalMainThread(self) -> None:
     # before Python 3.10: _thread.interrupt_main()
     # since Python 3.10: _thread.interrupt_main(signum=signal.SIGKILL)
 
+# related: installing signal handler for SIGINT
+def cleanup():
+  global cleanup_was_called
+  cleanup_was_called = True
+  pass
+def handle_sigint(signalnum, frame):
+  global signal_was_handled
+  if signal_was_handled: sys.exit(1) # exit early on signal within signal
+  signal_was_handled = True
+  if cleanup_was_called is False:
+    cleanup()
+    sys.exit(1) # signal intention to exit to interpreter for exit_cleanup to be run
+signal.signal(signal.SIGINT, handle_sigint)
+
 # O(1) lookup structure in Python via seq_no being index into storage_msg.
 # See also https://wiki.python.org/moin/TimeComplexity and DOD (most simple
 # version is append-only list). Incorrect type notations for understandability.
@@ -456,3 +500,12 @@ def signalMainThread(self) -> None:
 # lookup = hashmap(seq_no, seq_ind_list)   # hashmap of sequence number -> index into storage_msg
 # timeline = list((seq_no, msg))           # (seq_no, msg) is a tuple
 # storage_msg: list = list()               # list of messages
+
+# readline() with timeout io file api is broken, see https://github.com/python/cpython/issues/51571
+# Workaround
+# * 1. Read from Kernel structure and append chunk-wise to buffer from socket until stop event.
+# * 2. After each read, try line = readline() from the buffer and remove the line on success.
+# * 3. On failure of reading line, continue with 1.
+# * 4. Teardown should also use readSocket to read all Kernel memory, if a stop was signaled.
+# Note: utf-8 decoding must also be done and select or an equivalent should be used to check,
+# if data for reading exists.

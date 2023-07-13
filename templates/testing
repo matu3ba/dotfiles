@@ -1,3 +1,28 @@
+Best Practice taken from "Large Scale Architecture: The Unreasonable Effectiveness of Simplicity - Randy Shoup"
+
+Test-Driven Development
+* inbox zero for bugs (immediately fixed, when they come up)
+* feature flags to [dis|en]able feature for particular set of users
+=> decouple feature delivery from code delivery
+
+"All of the pain that we feel when writing unit tests points at underlying
+design problems."
+=> Integration Testing is hard (especially time scaling for simulation + translation to real system).
+=> Unit testing *must* be easy.
+
+Continuous Delivery
+* iteratively identify and remove bottlenecks for teams
+* "what would it take to deploy application every day?"
+* 3x-5x improvements in deployment frequency, lead time, change failure rate, mean-time-to-restore
+
+Simple transactions
+* Dont use "distributed transactions".
+* Model transaction as state machine of successive atomic events (workflow)
+* Roll back with compensating operations in reverse
+* Explicitly expose intermediate states in the interface
+
+* Consider event-driven "dataflow" depending on architecture
+
 Known bad designs:
 - 1. googlemock forces to use default constructors and has horrible error messages with huge boilerplate
   * use injection instead

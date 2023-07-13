@@ -56,3 +56,11 @@ LLVM:
 - x78 is known to be broken.
 
 TODO mention arch behavior for NaN
+
+Subnormal numbers
+Smallest Normal Number Largest Normal Number taken from $E_{min}$, $E^{max}$.
+TODO explanation with python code
+https://stackoverflow.com/questions/8341395/what-is-a-subnormal-floating-point-number
+
+TODO Steal python code to show error propagation
+https://people.orie.cornell.edu/snp32/orie_6125/ieee754/ieee754.html

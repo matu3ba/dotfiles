@@ -118,8 +118,7 @@ backtrace
 where (to show stack)
 backtrace full
 where full (to show call stack and print local vars in each frame)
-frame FRAME .. (select stack frame to operate on)
-
+frame address|apply|function|level|view STACK_FRAME
 step/s
 next/n
 finish/f
@@ -238,3 +237,6 @@ continue
 
 tracing function calls
 https://gist.github.com/quark-zju/a20ae638601d2fac476e
+
+https://gist.github.com/shekkbuilder/8b52e2cf4142c35ba6de
+for dbx, gdb, windbg, ntsd, edebug etc but not lldb

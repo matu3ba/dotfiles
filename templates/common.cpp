@@ -345,3 +345,14 @@ class FriendOfVariable2 {
 //   * high perf + 0BSD to let others steal the code
 // - minimal own injection lib
 //   * high perf + 0BSD to let others steal the code
+
+// SHENNANIGAN
+// "static initialization order ‘fiasco’ (problem)"
+// 2 static objects in 'x.cpp' and 'y.cpp', y.init() calls method on x object.
+// poor solution "Construct On First Use Idiom", which never destructs
+// better solution "Make it a lib" to provide explicit context instead of implicit
+// object one, because comptime-code execution should not hide control flow
+// okayish solution "Explicit dependencies on objects/strong coupling"
+
+// SHENNANIGAN
+// << operator uses as few digits as possible to print, also omitting '.0' digits.

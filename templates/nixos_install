@@ -2,6 +2,7 @@ based on "NixOS Installation Guide" by Wil T
 iso installation on system
 
 sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fdatasync
+sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fsync
 
 sudo fdisk /dev/sdX
 p print

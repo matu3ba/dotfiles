@@ -1,3 +1,18 @@
+Memory in hardware
+
+0-write optimizations analysis (not used due to introducing CVEs)
+- which cache the filled regions fit in
+- L3 performance gets weird
+- Intel l2_lines_out.silent, l2_lines_out.non_silent shows L2 cache fills and
+  evicted line triggered by L2 cache fill (MESI cache states)
+- silent evictions => unmodified lines in E or S state, non-silent evictions in
+  M, E or S state line with E and S being made in some unknown matter
+- 0-writes to cache line already 0 get partial elided
+- performance goes up from 60% (Skylake) to 96% (Icelake) for l2->l3 writebacks
+  and from 20% (Icelake) up to 45% L3 and 25% RAM speedups (Icelake)
+https://travisdowns.github.io/blog/2020/05/13/intel-zero-opt.html
+https://travisdowns.github.io/blog/2020/05/18/icelake-zero-opt.html
+
 memory models
 1. synchronisation of memory from parallel execution works via fences https://stackoverflow.com/a/61711095
 // Software Memory Models in C++
