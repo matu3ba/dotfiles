@@ -364,14 +364,14 @@ add_cmd('ShDate', function() print(os.date()) end, {})
 -- ztags -a -r $FILES
 add_cmd('RetagZigComp', function()
   -- if vim.bo.filetype == 'zig' then
-  local fd_exec = plenary.job:new({ command = 'fd', args = { '.*.zig', 'src/', 'lib/std/' } }):sync()
+  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src/', 'lib/std/' } }):sync()
   -- print("fd_exec", vim.print(fd_exec))
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
-  local fd_exec = plenary.job:new({ command = 'fd', args = { '.*.zig', 'src/' } }):sync()
+  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src/' } }):sync()
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})

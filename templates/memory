@@ -26,6 +26,49 @@ memory models
 available via atomic_var.store(true, std::memory_order_release)
 => architecture-dependent and messy (stuff like spurious wakeups exist and costs can vary significantly)
 
+Out of thin air problem of C11/C++11 memory semantics
+```Zig
+const std = @import("std");
+var X: i32 = 0;
+var Y: i32 = 0;
+
+fn inc1() void {
+    const new = @atomicLoad(i32, &X, .Unordered);
+    @atomicStore(i32, &Y, new, .Unordered);
+}
+
+fn inc2() void {
+    const new = @atomicLoad(i32, &Y, .Unordered);
+    @atomicStore(i32, &X, new, .Unordered);
+}
+
+pub fn main() !void {
+    const t1 = std.Thread.spawn(.{}, inc1, .{});
+    const t2 = std.Thread.spawn(.{}, inc2, .{});
+    t1.join()
+    t2.join()
+    // out of thin value problem (below assertions could be wrong):
+    // Load operations of 2 threads both see results of store operations of
+    // other thread. store 37 in Y, because 37 is loaded from X, which was
+    // stored to X because loaded 37 from Y, which is the value that was stored
+    // in Y.
+    std.debug.assert(@atomicLoad(i32, &X, .Unordered) == 0);
+    std.debug.assert(@atomicLoad(i32, &Y, .Unordered) == 0);
+}
+```
+Note: No optimization compiler implements consume ordering, because "dependent"
+is hard to define and track along optimizations.
+
+Compiler Fences, https://marabos.nl/atomics/memory-ordering.html
+
+TODO continue at https://marabos.nl/atomics/hardware.html with assembly examples
+
+Due to the lack of ordering guarantees, the load operations of these two
+threads might both see the result of the store operation of the other thread,
+allowing for a cycle in the order of operations: we store 37 in Y because we
+loaded 37 from X, which was stored to X because we loaded 37 from Y, which is
+the value we stored in Y.
+
 2. pointer semantics: 3 cases to handle provenance
 1. known and reused (no ambiguity on usage)
 2. can be derived ie from pointer casts (pick one and check, if it works)

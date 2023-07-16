@@ -176,3 +176,22 @@ dtc -I fs /sys/firmware/devicetree/base
 find /proc/device-tree/ -type f -exec head {} + | less
 
 https://github.com/quark-zju/lrun
+
+How to debug linux Kernel with gdb and qemu
+https://stackoverflow.com/questions/11408041/how-to-debug-the-linux-kernel-with-gdb-and-qemu/33203642#33203642
+
+Program start in the Kernel on Posix summarized from https://lwn.net/Articles/631631/
+and https://lwn.net/Articles/519085/ on example of exec(ve)
+1. ELF file for executable (rather than shared library or object file) must contain program header table after ELF header
+2. Kernel only cares about 3 segments:
+  * 1. PT_LOAD (areas of the new program's running memory including code and data sections [including BSS to be zerod]),
+  * 2. PT_INTERP identifiying runtime linker
+  * 3. PT_GNU_STACK to indicate, if stack should be made executable or not
+3. Tear down old state
+4. Setup of all the things
+5. Stack population including the auxiliary vector, environment and arguments
+  * 'LD_SHOW_AUXV=1 sleep 1000'
+  * 'cat /proc/PID/auxv > auxvals'
+  * 'od -t d8 /proc/PID/auxv'
+  * #include <sys/auxv.h>
+    unsigned long int getauxval(unsigned long int type);

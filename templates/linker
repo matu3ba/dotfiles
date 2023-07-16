@@ -64,3 +64,51 @@ TODO linker types + tasks
 debugging sections:
 * naively via stack frame + uncompressed debug sections
 * unwinding logic + compressed debug sections
+
+Dynamic Array Tags, d_tag as specified by System V ABI contains:
+Symbol                                 Executable   Shared object
+DT_PREINIT_ARRAY, DT_PREINIT_ARRAYSZ   optional     ignored
+DT_INIT_ARRAY, DT_INIT_ARRAYSZ         optional     optional
+DT_FINIT_ARRAY, DT_FINIT_ARRAYSZ       optional     optional
+
+C++ objects should in practice never be constructed via the preinit/init array above!
+https://stackoverflow.com/questions/15265295/understanding-the-libc-init-array
+```
+#######  Part of the linker script may look like: #########
+  .preinit_array     :
+  {
+    PROVIDE_HIDDEN (__preinit_array_start = .);
+    KEEP (*(.preinit_array*))
+    PROVIDE_HIDDEN (__preinit_array_end = .);
+  } >FLASH
+  .init_array :
+  {
+    PROVIDE_HIDDEN (__init_array_start = .);
+    KEEP (*(SORT(.init_array.*)))
+    KEEP (*(.init_array*))
+    PROVIDE_HIDDEN (__init_array_end = .);
+  } >FLASH
+  ...
+```
+
+Sections named '.init, .ctors, .preinit_array, .init_array' => initialization of C/C++ objects,
+Sections '.fini, .fini_array, .dtors' are for tear down C/C++ objects.
+.preinit_array, .init_array contain arrays of functions to be called on initialization
+
+'.ctors' and '.dtors' are deprecated artifacts not implemented by ld.ldd and unused
+in newer ABI implementations like AArch64 and RISC-V.
+
+Rename '.ctors' and '.dtors' section with:
+objcopy --rename-section .ctors=.init_array --rename-section .dtors=.fini_array $file
+
+Debug "static initialization order ‘fiasco’ (problem)" with
+--shuffle-sections=.init_array=-1 --shuffle-sections=.fini_array=-1
+or REVERSE in a linker script except for shared objects using DT_NEEDED.
+
+Nitty details on https://maskray.me/blog/
+
+Decide, if object file dynamically or statically linked:
+readelf --program-headers --wide main.out
+readelf -x .interp main.out
+readelf --dynamic main.out
+or more simpler `file file.out` to check for PT_DYNAMIC

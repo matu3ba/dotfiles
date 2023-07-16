@@ -211,3 +211,5 @@ gcc -o frodo_dep.c
 ar r libfunc_dep.a func_dep.o frodo_dep.o
 ranlib libfunc_dep.a
 ```
+
+-s to force regeneration of archive symbol table
