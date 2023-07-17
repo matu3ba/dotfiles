@@ -2,6 +2,8 @@ if status is-interactive
   # Commands to run in interactive sessions can go here
   # export variables
   # set -x MyVariable SomeValue, --export
+  # erase variable
+  # set -e MyVariable
   # append/prepend to list $PATH (echo $PATH, count $PATH)
   # set PATH $PATH /usr/local/bin
   # indexing has beginning 1 or backwards from -1, slices $PATH[-1..2]

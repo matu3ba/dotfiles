@@ -167,6 +167,7 @@ def writeFile(tree: object, filepath: str, use_bom: bool):
 # description how to access their api or files with bare Python (bruh).
 # Workaround: curl -s --user USER:TOKEN
 
+# SHENNANIGAN
 # .strip() is necessary after file read, because Python automatically adds "\n"
 
 ## Basic logging of html messages
@@ -259,7 +260,7 @@ def firstval(current: dict) -> object:
 def firstkeyval(current: dict) -> object:
     return next(iter(current.items())) # return next(iter(req.viewitems()))
 
-
+# SHENNANIGAN Dictionary is missing this common method
 def is_subdict(small: dict, big: dict) -> bool:
     """
     Test, if 'small' is subdict of 'big'
@@ -274,6 +275,7 @@ def is_subdict(small: dict, big: dict) -> bool:
     # return {**big, **small} == big
     return dict(big, **small) == big
 
+# SHENNANIGAN Dictionary is missing this common method
 def has_fieldsvals(small: dict, big: dict) -> bool:
     """
     Test, if 'small' has all values of of 'big'
@@ -296,8 +298,11 @@ def has_fieldsvals(small: dict, big: dict) -> bool:
 def merge_1lvldicts(alpha: dict = {}, beta: dict = {}) -> dict:
     return dict(list(alpha.items()) + list(beta.items()))
 
-## recursive merge dicts (not multi-threading safe)
+# SHENNANIGAN Dictionary is missing this common method
 def merge_dicts(alpha: dict = {}, beta: dict = {}) -> dict:
+    """
+    Recursive merge dicts. Not multi-threading safe.
+    """
     return _merge_dicts_aux(alpha, beta, copy.copy(alpha))
 def _merge_dicts_aux(alpha: dict = {}, beta: dict = {}, result: dict = {}, path: Optional[List[str]] = None) -> dict:
     if path is None:
@@ -318,8 +323,7 @@ def _merge_dicts_aux(alpha: dict = {}, beta: dict = {}, result: dict = {}, path:
                 raise Exception(err)
     return result
 
-### *** tuples and dicts are annoying to differentiate ***
-
+### SHENNANIGAN tuples and dicts are annoying to differentiate
 # dictionary
 dict1 = {
     "m1": "cp",
@@ -331,7 +335,7 @@ tup1 = {
     "m2": "cp"
 },
 
-# at least getting the intention correct, but python is still unhelpful with errror message
+# at least getting the intention correct, but python is still unhelpful with error message
 dict2 = dict({
     "m1": "cp",
     "m2": "cp"
@@ -345,6 +349,7 @@ tup2 = tuple({
 def getLastListOptindex(timeline_msg: list) -> Optional[int]:
   return len(timeline_msg) - 1 if timeline_msg else None
 
+# SHENNANIGAN stack trace formatting is inefficient and one can not use g[f|F] to jump to location
 # function to write status + trace to variable
 def getStackTrace() -> str:
     return repr(traceback.format_stack())
@@ -437,13 +442,13 @@ def expectEquation(self, is_true: bool, actual: object) -> int:
         return 1
     return 0
 
+# SHENNANIGAN: Mixed " and ' strings are invalid json
 # Dict -> str is inconsistent to json -> str, so workaround with
 # dict_asjson_lower = str(dict1).replace("'", '"')
 def combineDictsFromStr():
   dict1 = {"t1":"val1","t2arr":[{"t2_int":0,"t2_str":"12.0"}], \
     "t3int":30}
   dict1_str_raw = str(dict1)
-  # workaround Python shennanigan (mixed " and ' strings are invalid json)
   dict1_str = dict1_str_raw.replace("'", '"')
   dict2_str = '{"anotherone":"yes", '
   dict2_str +=  '"t3int":30,"t4str":'
@@ -493,6 +498,7 @@ def handle_sigint(signalnum, frame):
     sys.exit(1) # signal intention to exit to interpreter for exit_cleanup to be run
 signal.signal(signal.SIGINT, handle_sigint)
 
+# PERF
 # O(1) lookup structure in Python via seq_no being index into storage_msg.
 # See also https://wiki.python.org/moin/TimeComplexity and DOD (most simple
 # version is append-only list). Incorrect type notations for understandability.
@@ -501,6 +507,7 @@ signal.signal(signal.SIGINT, handle_sigint)
 # timeline = list((seq_no, msg))           # (seq_no, msg) is a tuple
 # storage_msg: list = list()               # list of messages
 
+# SHENNANIGAN
 # readline() with timeout io file api is broken, see https://github.com/python/cpython/issues/51571
 # Workaround
 # * 1. Read from Kernel structure and append chunk-wise to buffer from socket until stop event.

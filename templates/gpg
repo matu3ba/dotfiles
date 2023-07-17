@@ -23,6 +23,14 @@ gpg -K
 // use authentication subkey for authentication in SSH
 // here using GnuPG as an SSH agent
 
+// Adjust the .gitconfig with the output(without any 0x in front):
+[user]
+  email = MAIL
+  name = NAME
+  signingkey = OUTPUT_SIGNKEY!
+[commit]
+ gpgsign = true
+
 // add to .bashrc (and adjust other gpg-agent entries)
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
@@ -44,6 +52,7 @@ strace connection request to gpg server
 
 gpg --list-secret-keys --keyid-format LONG
 entry ssb   cv25519/GPG_KEY_ID
+To add gpg key to remote hoster (github, gitlab etc):
 gpg --armor --export GPG_KEY_ID
 git config --global user.signingkey GPG_KEY_ID
 

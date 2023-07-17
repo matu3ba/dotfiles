@@ -79,6 +79,10 @@ valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log ./build
 
 Accurate Performance measuring:
 sudo perf stat -r 10 -d alacritty -e false
+Less noise with:
+https://github.com/andrewrk/poop/issues/39
+https://github.com/lpechacek/cpuset
+TODO commands
 
 Hot/Cold Flame Graphs (separate, mixed, integrated)
 git clone https://github.com/brendangregg/FlameGraph
@@ -154,6 +158,9 @@ Set settings from host to target
 sudo timedatectl set-timezone Europe/Berlin
 ssh user@domain@ip sudo timedatectl set-timezone Europe/Berlin
 ssh user@domain@ip sudo date -s @$(date -u +"%s")
+
+systemctl status systemd-timesyncd
+journalctl -u systemd-timesyncd
 
 harddrive - storage device problems
 https://askubuntu.com/questions/144852/cant-format-my-usb-drive-i-have-already-tried-with-mkdosfs-and-gparted/933035#933035
