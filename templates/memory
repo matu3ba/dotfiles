@@ -1,4 +1,4 @@
-Memory in hardware
+Memory, from basic to complex.
 
 0-write optimizations analysis (not used due to introducing CVEs)
 - which cache the filled regions fit in
@@ -13,6 +13,31 @@ Memory in hardware
 https://travisdowns.github.io/blog/2020/05/13/intel-zero-opt.html
 https://travisdowns.github.io/blog/2020/05/18/icelake-zero-opt.html
 
+Allocation classes
+https://pzurita.wordpress.com/2015/06/29/memory-stomp-allocator-for-unreal-engine-4/
+* memory allocation info to debug Memory 1. overrun, 2. underrun, 3. use after free
+* works via tagging memory pages via OS (execute, read, write, and no-access) and
+  using 2 pages with typically layout 1 for overruns or layout 2 for underruns:
+  + 1. [empty space, alloc info, sentinel, allocation, page tagged as no-access].
+  + 2. [page tagged as no-access, alloc info, sentinel, allocation, empty space (set with pattern)].
+* Causes can also be UB https://www.gangofcoders.net/solution/what-is-a-memory-stomp/
+
+Pointer semantics+preovenance, 3 cases:
+1. known and reused (no ambiguity on usage)
+2. can be derived ie from pointer casts (pick one and check, if it works)
+3. unknown (external code and no encoding of IR etc)
+potentially ambiguous cases
+1. ptr->int->ptr cast + usage
+2. int->ptr->int cast + usage
+3. ptr->int union cast usage
+4. int->ptr union cast usage
+see https://github.com/ziglang/zig/issues/6396#issuecomment-1097287569
+
+3. simpler things?
+
+CppMem: Interactive C/C++ memory model
+http://svr-pes20-cppmem.cl.cam.ac.uk/cppmem/
+
 memory models
 1. synchronisation of memory from parallel execution works via fences https://stackoverflow.com/a/61711095
 // Software Memory Models in C++
@@ -26,7 +51,7 @@ memory models
 available via atomic_var.store(true, std::memory_order_release)
 => architecture-dependent and messy (stuff like spurious wakeups exist and costs can vary significantly)
 
-Out of thin air problem of C11/C++11 memory semantics
+SHENNANIGAN Out of thin air problem of C11/C++11 memory semantics
 ```Zig
 const std = @import("std");
 var X: i32 = 0;
@@ -59,37 +84,157 @@ pub fn main() !void {
 Note: No optimization compiler implements consume ordering, because "dependent"
 is hard to define and track along optimizations.
 
-Compiler Fences, https://marabos.nl/atomics/memory-ordering.html
-
-TODO continue at https://marabos.nl/atomics/hardware.html with assembly examples
-
 Due to the lack of ordering guarantees, the load operations of these two
 threads might both see the result of the store operation of the other thread,
 allowing for a cycle in the order of operations: we store 37 in Y because we
 loaded 37 from X, which was stored to X because we loaded 37 from Y, which is
 the value we stored in Y.
 
-2. pointer semantics: 3 cases to handle provenance
-1. known and reused (no ambiguity on usage)
-2. can be derived ie from pointer casts (pick one and check, if it works)
-3. unknown (external code and no encoding of IR etc)
-potentially ambiguous cases
-1. ptr->int->ptr cast + usage
-2. int->ptr->int cast + usage
-3. ptr->int union cast usage
-4. int->ptr union cast usage
-see https://github.com/ziglang/zig/issues/6396#issuecomment-1097287569
+```Zig
+@fence(order: AtomicOrder) void
+@atomicStore(comptime T: type, ptr: *T, value: T, comptime ordering: builtin.AtomicOrder) void
+@atomicLoad(comptime T: type, ptr: *const T, comptime ordering: builtin.AtomicOrder) T
+@atomicRmw(comptime T: type, ptr: *T, comptime op: builtin.AtomicRmwOp, operand: T, comptime ordering: builtin.AtomicOrder) T
+@cmpxchgWeak(comptime T: type, ptr: *T, expected_value: T, new_value: T, success_order: AtomicOrder, fail_order: AtomicOrder) ?T
+@cmpxchgStrong(comptime T: type, ptr: *T, expected_value: T, new_value: T, success_order: AtomicOrder, fail_order: AtomicOrder) ?T
+```
+Rust has additionally compiler fence: 'std::sync::atomic::compiler_fence', which
+effects are restricted to just the compiler.
+This means that it does not prevent the processor from reordering instructions.
+Potential use cases:
+- 1. Unix signal handler
+- 2. Interrupt on embedded systems
+Because it happens on the same core, the usualy ways in which processor might
+affect memory ordering dont apply.
 
-3. simpler things?
+See also https://reviews.llvm.org/D92842
+For example `asm volatile( ::: "memory" )` can be replaced with
+`void atomic_signal_fence( memory_order order );` and Zig might instead use
+its own inline assembly flavor to get the same effect.
 
-CppMem: Interactive C/C++ memory model
-http://svr-pes20-cppmem.cl.cam.ac.uk/cppmem/
+Via Kernel one can also forcefully inject a (sequentially consistent) atomic fence
+into all concurrently running threads of the same process on Linux via 'membarrier'
+and on Windows via 'FlushProcessWriteBuffers' to replace two matching fences
+with a lightwide compiler and heavyweight process-wide barrier on the other side.
 
-Allocation classes
-https://pzurita.wordpress.com/2015/06/29/memory-stomp-allocator-for-unreal-engine-4/
-* memory allocation info to debug Memory 1. overrun, 2. underrun, 3. use after free
-* works via tagging memory pages via OS (execute, read, write, and no-access) and
-  using 2 pages with typically layout 1 for overruns or layout 2 for underruns:
-  + 1. [empty space, alloc info, sentinel, allocation, page tagged as no-access].
-  + 2. [page tagged as no-access, alloc info, sentinel, allocation, empty space (set with pattern)].
-* Causes can also be UB https://www.gangofcoders.net/solution/what-is-a-memory-stomp/
+aarch64 as 'zig build-exe -OReleaseFast -target aarch64-unknown-linux-musl'
+x86_64 as 'zig build-exe -OReleaseFast -target x86_64-unknown-linux-musl'
+```
+godbolt zig -OReleaseFast
+Zig
+export fn add_ten(num: *i32) void {
+    num.* += 10;
+}
+aarch64
+add_ten:
+    ldr w8, [x0]      ; load x0 into w8 register
+    add w8, w8, #10   ; add 10 to register w8 and stores result into w8
+    str w8, [x0]      ; store w8 into x0 register
+    ret               ; return to caller context
+x86_64
+add_ten:
+    add dword ptr [rdi], 10   ; load from register rdi, add to it 10 and store into rdi
+    ; dword ptr is called size directive dword = 32bit
+    ret                       ; return to caller contex
+```
+
+```Zig
+export fn store(num: *i32) void {
+    @atomicStore(i32, num, 10, .Unordered)
+    // identical to `x = 10;` as i32 is atomic on both architectures.
+    // The same happens on other relaxed operations.
+}
+```
+Likewise, Rmw operations such as addition can be be done often in
+one instruciton on CISC, but take three instructions on RISC.
+However, Rmw operations are not atomic, as they are split by the processor into
+several microinstructions.
+
+To make instructions atomic, Intel provides `lock` as instruction prefix to make
+the operation atomic (add, usb, and, not, or, xor, [bts, btr, btc]).
+This causes the processor to temporarily block other cores from memory for the
+duration of the instruction.
+
+Other than xadd and xchg none of the lock-prefixable instructions have a variant
+to reuse the provided register.
+Single bit instructions are bts(bit test and complement), btr(bit test and complement),
+btc(bit test and complement), which also allow lock prefixes.
+
+Modifying more than 1 bit can not be represented in a single x86-64 instruction
+and likewise not fetch_max and fetch_min.
+
+```
+export fn atomicrmw(x: *i32) i32 {
+    return @atomicRmw(i32, x, .Add, 10, .SeqCst);
+}
+x86-64
+atomicrmw:
+    mov          eax, 10
+    lock xadd    dword ptr [rdi], eax
+    ret
+aarch64
+atomicrmw:
+.LBB0_1:
+    ldaxr   w8, [x0]
+    add     w9, w8, #10
+    stlxr   w10, w9, [x0]
+    cbnz    w10, .LBB0_1
+    mov     w0, w8        ; .SeqCst adds this one
+    ret
+```
+
+The closest thing to a compare and exchange loop on RISC is load-linked/store-conditional
+(LL/SC) loop.
+- store is conditional, such that it refuses to store to memory if any other
+  thread has overwritten the value since it was loaded
+- can retry on failure
+- offers to be less precise when tracking memory changes trading more cycles
+  for less memory usage and instead observe access
+
+Later versions of aarch64 (ARMv8.1) include new CISC instructions for atomic
+operations, for example 'ldadd' (equivalent to fetch_add) without LL/SC loop.
+If using 'cas' instruction, then there is no differences between '@cmpxchgWeak'
+and '@cmpxchgStrong' (like on x86_64).
+
+See also "The AArch64 processor (aka arm64)" part 13: Atomic access for a more
+in-depth understanding of AArch64.
+```
+export fn cas_weak(x: *i32) void {
+    _ = @cmpxchgWeak(i32, x, 0, 100, .Monotonic, .Monotonic);
+}
+x86-64
+cas_weak:
+    mov    ecx, 100                     ; move 100 into register ecx
+    xor    eax, eax                     ; set eax to 0
+    lock   cmpxchg dword ptr [rdi], ecx ; compare and exchange with dword from ecx
+    ret
+aarch64
+cas_weak:
+    ldxr    w8, [x0]     ; load exclusive register x0 into w8
+    cbz     w8, .LBB0_2  ; compare and branch to label at PC-relative offset
+                         ; with hint not subroutine call or return
+    clrex                ; clear exclusive (local record of executing processor
+                         ; that addres shas had request for exclusive access)
+    ret
+.LBB0_2:
+    mov     w8, #100     ; move constant 100 to register w8
+    stxr    w9, w8, [x0] ; store exclusive register, return status into register x0
+    ret
+```
+
+Cache comes from french word caché, meaning hidden. Cache coherence ensures that
+the view between processors on the memory is coherence, meaning well-defined/
+in a consistent state.
+Protocols vary per architecture, processor model and cache level.
+
+TODO explain MESI, MOESI, MESIF in x86_64 and/or from hardware perspective
+based on "Efficient Virtual Cache Coherency for Multi-core Systems and Accelerators".
+
+ARM is not cache coherent for flexibility, which means that each system can
+choose its own coherency.
+On ARM one can write instructions into memory, but due to d-cache and i-cache
+not being coherent the written instructions might be masked by contents of i-cache
+causing execution of old or invalid instructions.
+See https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/caches-and-self-modifying-code
+https://events.static.linuxfound.org/sites/events/files/slides/slides_10.pdf
+https://stackoverflow.com/questions/39295261/how-to-synchronize-on-arm-when-one-thread-is-writing-code-which-the-other-thread

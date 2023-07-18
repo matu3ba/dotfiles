@@ -117,3 +117,9 @@ Adjust the .gitconfig with the output(without any 0x in front):
   signingkey = OUTPUT_SIGNKEY!
 [commit]
  gpgsign = true
+
+ssh-add -l
+
+FAQ
+Problem sign_and_send_pubkey: signing failed for ED25519 PRIVATE_KEY_PATH from agent: agent refused operation
+Solution restart?
