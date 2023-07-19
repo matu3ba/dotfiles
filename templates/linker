@@ -112,3 +112,37 @@ readelf --program-headers --wide main.out
 readelf -x .interp main.out
 readelf --dynamic main.out
 or more simpler `file file.out` to check for PT_DYNAMIC
+
+
+##### ld featues #####
+2 Invocation
+- file
+- archive, shared, default (-Bstatic, -Bdynamic)
+- AUDITLIB to DT_AUDIT entry of dynamic section
+  (colon separated list of audit interfaces to use)
+  * if linker finds object with audit entry, it will add DT_DEPAUDIT in output file
+  * only meaningful for ELF with rtld-audit interface
+- input format
+- script file input
+- FORCE_COMMON_ALLOCATION
+- non-contiguous regions xor INSERT statements
+- set entry symbol
+- exclude libs
+- symbols in .def files are often exported regardless of exclude options
+- export symbol(s) to dynamic table (from file)
+- auxilary name
+- filter
+- DT_SONAME used by dynamic linker instead of file name given to linker
+- incremental link
+- use DT_INIT instead of _init
+- TODO continue at '-l namespec'
+
+TODO 3 Linker Scripts
+
+TODO 4 Linker Plugins
+
+TODO 5 Machine Dependent Features
+
+TODO 6 BFD
+
+TODO 7 MRI Compatible Script Files

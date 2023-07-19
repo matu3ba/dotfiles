@@ -20,14 +20,25 @@ if not has_lazy then
 else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
+  -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
+  -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
+  -- TODO extract hardening flags from https://blog.mayflower.de/5800-Hardening-Compiler-Flags-for-NixOS.html
+  -- TODO add missing features of https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
+  -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
   -- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
   -- TODO config: show size of last copy + selection in cmdline
   -- TODO config: show context of functions, either via vim or via lua regex
+  -- TODO open source ascii editor, ideally within neovim. inspiration https://monodraw.helftone.com/
+  -- idea setup mutt http://kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/
+  -- or https://webgefrickel.de/blog/a-modern-mutt-setup but there seem to be no significant advantages (no lua etc)
+  --
+  -- TODO get better keyboard, for example ultimate hacker's keyboard
 
   -- idea https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
   -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab
   -- try https://github.com/cipharius/kakoune-arcan
   -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
+  -- idea keybindings for sending to terminal to gdb
 
   require 'my_dap'  -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s

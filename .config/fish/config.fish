@@ -87,6 +87,10 @@ if status is-interactive
   set -Ux SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
   gpgconf --launch "gpg-agent"
   trap "gpgconf --kill gpg-agent" exit
+  # gpgconf --kill gpg-agent
+  # gpg-connect-agent reloadagent /bye
+  # gpg-connect-agent updatestartuptty /bye >/dev/null
+  # TODO flags GIT_VERB=1 git push
 
   # if test -z (pgrep ssh-agent | string collect)
   # end

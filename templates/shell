@@ -1,3 +1,11 @@
+Purpose
+Shell is a convenience cli and arbitrary complex scripting glue for
+4 main goals:
+- 1. piping
+- 2. basic text processing
+- 3. basic job control
+- 4. path hackery.
+
 There is a complete wiki dedicated to the weird quirks of bash:
 https://wiki.bash-hackers.org/syntax/expansion/brace
 
@@ -11,3 +19,15 @@ SHENNANIGAN process spawning
 - There is no standard way to signal a process is initialized to the parent process
 - Shell has only quirky signaling ways: (named) pipe, (temp) file
   * Example: 'stty -F /dev/ttyS0 min 0 time 10 &' takes time to spawn
+
+  > Yes, but why is this characterized as something negative?
+
+SHENNANIGAN
+Shells are not properly supported in any OS except plan9, since
+- 1. the OS provides no enforcement or convention of CLI API interface (there
+     is no enforced encoding standard or checkable stuff),
+- 2. the OS provides no rules for file names to be shell-friendly and
+- 3. there are no dedicated communication channels towards shells or in between
+     programs and shells.
+Thus, shells remain a hack around the system that is "simple to implement the
+initials" and is annoying to use and write at many corner cases.

@@ -137,5 +137,7 @@ State of art is that there is nothing more general non-proprietary
 https://stackoverflow.com/questions/6507190/linker-script-generator and each
 vendor has its own solution https://github.com/sifive/ldscript-generator
 
-TODO: Write Zig library doing 1+2 sane defaults from hardware description +
+idea: Write Zig library doing 1+2 sane defaults from hardware description +
 adjust by user data.
+BLOCKED_BY https://github.com/ziglang/zig/issues/3206
+potential solution https://github.com/MasterQ32/link.zig-concept-art

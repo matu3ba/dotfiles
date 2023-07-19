@@ -1,0 +1,29 @@
+```zsh
+#!/usr/local_rwth/bin/zsh
+# test.sh
+#SBATCH --account=thes0766            # thesis number
+#SBATCH --job-name=preparation      # Job name
+#SBATCH --mail-type=END,FAIL         # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --mail-user=jan.hafer@rwth-aachen.de    # Where to send mail
+#SBATCH --nodes=1                    # Run all processes on a single node
+#SBATCH --ntasks=1                   # Run a single task
+#SBATCH --cpus-per-task=4            # Number of CPU cores per task
+#SBATCH --mem=1gb                    # Job memory request
+#SBATCH --partition=c18m             # partition
+#SBATCH --time=00:01:00              # Time limit hrs:min:sec
+#SBATCH --output=parallel_%j.log     # Standard output and error log
+pwd; hostname; date
+./subscript.sh
+echo "finished"
+
+# total memory 16GB = 16384M, (10GB = 10240M)
+# use: --mem-per-cpu=16384M
+# time limit: --time=d-hh:mm:ss
+```
+
+```zsh
+#!/usr/local_rwth/bin/zsh
+# subscript.sh
+
+echo "successfully called subscript"
+```

@@ -1,5 +1,10 @@
 // fetching single files from github
 curl https://raw.githubusercontent.com/orlp/pdqsort/master/pdqsort.h > pdqsort.h
 curl -JLO URL
+curl -v -JLO URL
+
 // fetch zip file
 curl -LO ZIPFILE
+
+curl -SsO https://ziglang.org/builds/zig-0.8.0-dev.2047+bf67a3fdc.tar.xz
+tar -xvf TARFILE

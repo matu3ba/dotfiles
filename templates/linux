@@ -83,6 +83,11 @@ Less noise with:
 https://github.com/andrewrk/poop/issues/39
 https://github.com/lpechacek/cpuset
 TODO commands
+Estimations:
+https://www.uops.info/
+better: https://uica.uops.info/
+pile of assembly manuals
+https://www.agner.org/optimize/
 
 Hot/Cold Flame Graphs (separate, mixed, integrated)
 git clone https://github.com/brendangregg/FlameGraph

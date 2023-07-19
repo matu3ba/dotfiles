@@ -40,6 +40,11 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
     seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
 // TODO: get better non-cryptographic hash
+// xxhash claims 31 GB/s, so thats ~10 byte/clock cycle on a 3 GHz cpu
+// ssic" old-school hash is for (string) |char| hash = 31 *% hash +% char;,
+// which has a multiply and add on the critical path, so it has 5-7 cycles of
+// latency per byte, plus 11 or so for the branch mispredict at the end of the loop.
+// FNV hash algorithm ?
 
 // Macros for creating enum + string for lookup up to 256 values from https://stackoverflow.com/a/5094430
 // Usage:

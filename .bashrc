@@ -72,6 +72,8 @@ export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch 'gpg-agent'
 trap 'gpgconf --kill gpg-agent' exit
+# Problem sign_and_send_pubkey: signing failed for ED25519 PRIVATE_KEY_PATH from agent: agent refused operation
+# gpg-connect-agent updatestartuptty /bye >/dev/null
 
 eval "$(zoxide init bash)" # quickjumper
 

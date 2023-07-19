@@ -43,3 +43,6 @@ precedence of the dir.
 is also specified with -I, the -I option is ignored. The directory is still
 searched but as a system directory at its normal position in the system include
 chain."
+
+SHENNANIGAN broken LLVM tooling
+pp-trace -callbacks=MacroExpands -- clang -Ilib -E test2.c > test2.c.clang
