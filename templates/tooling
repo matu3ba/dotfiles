@@ -10,6 +10,11 @@ znvim from LordMZTE (https://mzte.de/git/LordMZTE/znvim) (glpv3)
 
 xpack for windows reproducible build framework (https://xpack.github.io/)
 
+proprietary
+whitebox - program execution tracer and visualizer
+tracy -- frame tracer and visualizer
+
+
 - valgrind
 * cachegrind: cache profiler
 * callgrind: cachegrind + call graphs
