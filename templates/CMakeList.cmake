@@ -4,6 +4,8 @@
 # 2. external projects (antipattern, projects should provide direct commands)
 # 3. lib + exe generation
 # 4. use googletest
+# 5. debugging
+# 6. SHENNANIGAN
 
 # 0. CMake is best used in the command line.
 # Example `set(CMAKE_BUILD_TYPE "Release" CACHE STRING FORCE)` required for debugging symbols.
@@ -84,7 +86,7 @@ target_link_libraries(test1 gtest_main yourcoollib project_addon ${PROJECT_LIBRA
 add_test(NAME test1 COMMAND test1)
 
 
-# Debugging
+# 5. Debugging
 # --trace,  --trace-expand, --debug-output, --debug-trycompile
 # And check the created log files.
 # run cmake with -LH to get all variables printed after configuration.
@@ -95,3 +97,9 @@ add_test(NAME test1 COMMAND test1)
 # PRINT_VAR("CMAKE_CXX_COMPILER")
 
 # cmake -P to run a single script
+
+# 6. SHENNANIGAN
+# As of cmake v3.26.5
+# To get only the used file paths, we must use --trace-format=json-v1
+# and extract field 'file' from each returned json
+# Compare this to 'ninja -d explain' or 'ninja -v' printing the reasons and commands.

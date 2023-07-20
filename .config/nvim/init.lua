@@ -279,6 +279,8 @@ callback = function()
 -- :%s/^M$//
 -- somehow this also works
 -- :%s/\r//g
+-- convert linux line ending to windows:
+-- :%s//\r/g
 -- convert tabs to spaces:
 -- :retab
 -- convert command with space to newline with \

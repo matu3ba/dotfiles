@@ -7,6 +7,12 @@ if not ok_lint then return end
 -- pip3 install -U --user ruff
 -- pip3 install -U --user mypy
 
+-- updating pip
+-- pip list --outdated
+-- pip freeze > req.txt
+-- sed -i 's|==|>=|g' req.txt
+-- pip3 install --user -r req.txt --upgrade
+
 lint.linters_by_ft = {
   -- # ignore ruff lints for whole file (too long line)
   -- # ruff: noqa: E501 E701

@@ -205,6 +205,10 @@ return {
     config = function() require('which-key').setup() end,
   }, -- :Telescope builtin.keymaps
 
+  -- open files from a neovim terminal buffer in your current neovim instance instead of a nested one.
+  -- reuse some lua socket code?
+  -- https://github.com/willothy/flatten.nvim
+
   -- { 'registers.nvim' },
 
   -- remote work without sshfs and vanilla editor: chipsenkbeil/distant.nvim

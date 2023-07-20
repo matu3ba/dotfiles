@@ -61,6 +61,16 @@ git config --global user.signingkey GPG_KEY_ID
 git commit -S -m "commit_message"
 git config --global commit.gpgsign true
 
+Tracing commands with
+GIT_TRACE=1 git commit -S
+GIT_TRACE=1 git commit -S --amend
+And for example
+gpg --status-fd=2 -bsau <your GPG key>
+
+Typical workaround is to restart gpg-agent:
+killall gpg-agent
+gpg-agent daemon
+
 -- More commands --
 based on https://danielpecos.com/2019/03/30/how-to-rotate-your-openpgp-gnupg-keys/
 

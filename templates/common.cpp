@@ -326,6 +326,12 @@ class FriendOfVariable2 {
     Variable2 mVar;
 };
 
+// SHENNANIGAN googlemock creates default return values for mocked objects, which
+// hides the origin of errors and invalidates iterators and pointers.
+// SHENNANIGAN cheat sheet by fuchsia is better than official docs and cook book
+// Solution: EXPECT_CALL(testobject, testfunction(_, _, _)).WillOnce(DoAll(SetArgReferee<0>(v), SetArgReferee<1>(i), Return(true)));
+// adjusted from https://fuchsia.googlesource.com/third_party/googletest/+/HEAD/googlemock/docs/cheat_sheet.md
+
 // SHENNANIGAN namespaces can not befriended, so test code relying on those
 // plus macros or templaces forces use of macro hacks to prevent outlined above
 // to prevent accidental use of the default constructor: In short, friend

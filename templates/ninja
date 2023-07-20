@@ -1,1 +1,6 @@
 ninja [install] [-j X] [-v]
+
+Most common options:
+ninja -t rules
+ninja -d explain
+ninja -v

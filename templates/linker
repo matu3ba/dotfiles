@@ -113,7 +113,6 @@ readelf -x .interp main.out
 readelf --dynamic main.out
 or more simpler `file file.out` to check for PT_DYNAMIC
 
-
 ##### ld featues #####
 2 Invocation
 - file
@@ -146,3 +145,16 @@ TODO 5 Machine Dependent Features
 TODO 6 BFD
 
 TODO 7 MRI Compatible Script Files
+
+TODO:
+* double check the stateful parts or things requiring io of ld
+* how they can be solved with other means
+https://sourceware.org/binutils/docs-2.37/ld.pdf
+
+elf/system v abi stuff + layout or is there more missing?
+https://github.com/badgeteam/BadgerOS/blob/main/linker.ld
+ESP32 binary built in the ld linker with ELF
+you need to objcopy to binary to receive an ESP executable
+
+TODO: explain dlopen, dlsym
+https://stackoverflow.com/questions/11741580/dlopen-loadlibrary-on-same-application
