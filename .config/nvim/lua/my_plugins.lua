@@ -84,7 +84,9 @@ return {
   {
     'echasnovski/mini.bracketed',
     version = false,
-    config = function() require('mini.bracketed').setup {} end,
+    config = function() require('mini.bracketed').setup {
+      treesitter = { options = { add_to_jumplist = true } },
+    } end,
   },
   -- usage in my_hydra.lua
   {

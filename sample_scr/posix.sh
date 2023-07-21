@@ -161,3 +161,6 @@ stopwatch() {
         sleep 0.1
     done
 }
+
+# SHENNANIGAN
+# Posix shell has no utility to remove control of process from host shell

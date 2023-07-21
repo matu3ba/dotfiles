@@ -22,15 +22,28 @@ else
   require('lazy').setup('my_plugins', {})
   -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
-  -- TODO extract hardening flags from https://blog.mayflower.de/5800-Hardening-Compiler-Flags-for-NixOS.html
-  -- TODO add missing features of https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
+  -- TODO web search via shell from https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
   -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
+  -- * \ prefix for find and replace helpers
+  --   + also do them
+  -- * wrapping breakindent
+  -- * substitute visual block
+  -- * goto other end of visual selection with o
+  -- * make dot work on visual selections
+  -- * execute macro over visual selection
+  -- * clone current paragraph
+  -- * rotate tabs: tabm0
+
   -- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
-  -- TODO config: show size of last copy + selection in cmdline
-  -- TODO config: show context of functions, either via vim or via lua regex
+  -- idea config: toggle show size of last copy + selection in cmdline
+  -- idea config: toggle show context of functions, either via vim or via lua regex
   -- TODO open source ascii editor, ideally within neovim. inspiration https://monodraw.helftone.com/
   -- idea setup mutt http://kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/
   -- or https://webgefrickel.de/blog/a-modern-mutt-setup but there seem to be no significant advantages (no lua etc)
+  -- TODO
+  -- https://github.com/gto76/linux-cheatsheet
+  -- https://github.com/gto76/python-cheatsheet
+  -- container and sandboxing cheat sheet
   --
   -- TODO get better keyboard, for example ultimate hacker's keyboard
 

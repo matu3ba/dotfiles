@@ -332,6 +332,19 @@ class FriendOfVariable2 {
 // Solution: EXPECT_CALL(testobject, testfunction(_, _, _)).WillOnce(DoAll(SetArgReferee<0>(v), SetArgReferee<1>(i), Return(true)));
 // adjusted from https://fuchsia.googlesource.com/third_party/googletest/+/HEAD/googlemock/docs/cheat_sheet.md
 
+// SHENNANIGAN googlemock can require to introduce additional objects to prevent segfaults etc.
+//   Mock function call argument (prevent null pointer access in non-mocked function):
+// EXPECT_CALL(testobject, testfunction(_)).Times(AtLeast(1))
+//                 .WillRepeatedly(Return(returnval));
+// ON_CALL(testobject, defaultfunctioncall(_,_,_,_,_))
+//                 .WillByDefault(Return(1));
+// EXPECT_CALL(testobject, testfunction(_,"specialval1",_,_,_))
+//                 .Times(AtLeast(0))
+//                 .WillRepeatedly(DoAll(SetArgReferee<2>(mockedarg1),Return(0)));
+// EXPECT_CALL(testobject, testfunction(_,"specialval2",_,_,_))
+//                 .Times(AtLeast(0))
+//                 .WillRepeatedly(DoAll(SetArgReferee<2>(mockedarg2),Return(0)));
+
 // SHENNANIGAN namespaces can not befriended, so test code relying on those
 // plus macros or templaces forces use of macro hacks to prevent outlined above
 // to prevent accidental use of the default constructor: In short, friend

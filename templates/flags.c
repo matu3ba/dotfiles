@@ -42,3 +42,24 @@ $grep -o "\[\-W.*\].*" compilation_results.txt | sort -u
 // annoyances by -Wall: -Wmissing-braces is relative useless
 // ideal solution: clang -g -std=c17 -Weverything *.c -o binary
 // + use sanitizer?
+//
+
+// Basic Hardening
+// format
+// -Wformat -Wformat-security -Werror=format-security
+// stackprotector
+// -fstack-protector-strong --param ssp-buffer-size=4
+// fortify (block various buffer size things and replace unlimited length buffer fn calls with lenght limited ones)
+// -O2 -D_FORTIFY_SOURCE=2
+// pic (position independent code for ASLR)
+// -fPIC
+// make signed overflow defined (trapping)
+// -fno-strict-overflow
+// relro (relocate read only to make GOT read-only potentially breaking dynamic shared object loading)
+// -z relro
+// bindnow (resolve alldynamic symbols at program load to enable relro above)
+// -z bindnow
+
+// TODO explain and show how to check what is used for
+// * -Wall
+// * -Wextra

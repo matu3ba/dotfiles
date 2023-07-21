@@ -16,3 +16,10 @@ putty
 checking if devices exists
 dmesg | grep tty
 ls /sys/class/tty/ttyUSB*
+
+dumping content:
+hexdump /dev/ttyS1
+
+Sniffing tty traffic:
+- intercepttty
+- socat
