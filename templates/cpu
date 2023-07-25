@@ -1,0 +1,24 @@
+CPU functionality and assembly below caches
+
+- AMD Zen dont have a single physical location where each register lives
+- AMD Zen use a Register File (RF) and a Register Allocation Table (RAT)
+- during vzeroupper the zero bit is set, but rolled back on branch-misprediction causing use-after-free
+- RF is shared by everything on the same physical core (including hyperthreads)
+
+Good fuzzing techniques based on https://lock.cmpxchg8b.com/zenbleed.html:
+- performance counters
+- reverse execution
+- oracles from test CPU, ie within simulator
+- reset instruction level parallelism
+- generate random program and automatically transform it into a serialized one:
+```asm
+movnti [rbp+0x0],ebx  movnti [rbp+0x0],ebx
+                      sfence
+rcr dh,1              rcr dh,1
+                      lfence
+sub r10, rax          sub r10, rax
+                      mfence
+rol rbx, cl           rol rbx, cl
+                      nop
+xor edi,[rbp-0x57]    xor edi,[rbp-0x57]
+```

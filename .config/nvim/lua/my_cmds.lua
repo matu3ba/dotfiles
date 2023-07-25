@@ -285,8 +285,8 @@ add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of 
 add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 
 ---- Quickfixlist ----
---<C-q>f to telescope results to quickfixlist
--- there is no quickfixlists overview (how many quickfixlists exist)
+-- Press <C-q> to add telescope results to quickfixlist
+-- :copen opens, :ccl closes quickfixlist, C-w K moves qf list to top.
 -- See :h :cdo for more help
 -- :cfdo :badd %
 -- add to harpoon
@@ -310,6 +310,7 @@ local setPlusCursorInfo = function(path, line, column)
   vim.fn.setreg('+', str)
 end
 -- stylua: ignore start
+-- TODO: copy cwd into copy register
 add_cmd('Frel', function() vim.fn.setreg('+', plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
 add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
 add_cmd('FrelLine', function() setPlusCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})

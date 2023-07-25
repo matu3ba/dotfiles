@@ -58,6 +58,8 @@ local function load_options()
   -- # indent_size = 2
   -- vim.g.editorconfig = true -- add .editorconfig, see editorconfig.org
   vim.o.errorbells = false
+  -- vim.o.grepprg = 'grepprg' -- default: grep -n $* /dev/null
+  -- vim.o.grepformat = '%f:%l:%c:%m,%f:%l:%m' -- default: %f:%l:%m,%f:%l%m,%f  %l%m
   vim.o.hidden = true
   vim.o.hlsearch = true --false
   vim.o.ignorecase = true --lower case chars also search for upper ones

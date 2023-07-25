@@ -1,0 +1,67 @@
+List common ports with protocol names
+port  |  description
+------|-----------------------
+0     | reserved, system-allocated dynamic port
+7     | echo
+13    | daytime
+14    | previously netstat
+20    | FTP data
+21    | FTP control
+22    | ssh
+23    | telnet
+25    | SMTP
+37    | time
+49    | TACAS
+53    | DNS
+67    | Bootstrap server (used by DHCP)
+68    | Bootstrap client (used by DHCP)
+69    | TFTP
+70    | Gopher
+79    | Finger
+80    | HTPP
+88    | Kerberos
+95    | SUPDUP
+101   | NIC
+102   | TSAO (class 0 protocol)
+104   | DICOM
+105   | CCS0 Nameserver
+107   | RTelnet
+113   | Ident (used by IRC) or auth
+115   | SFTP
+118   | SQL
+177   | XDMCP (remote login to X Display manager server)
+194   | IRC
+220   | IMAP
+443   | HTTPS
+465   | SMPT over SSL (obsolete) or URL Cisco or SMTPS
+502   | Modbus
+514   | Remote shell
+520   | RIP (Router Information Protocl)
+521   | RIPng
+525   | Timeserver
+530   | RPC
+546   | DHCPv6 client
+547   | DHCPv6 server
+554   | RTSP
+593   | HTTP RPC (Microsoft exchange server)
+631   | IPP (Internet Printing protocol) or CUPS
+636   | LDAPS (Lightweight Directory Access Protocol)
+647   | DHCP Failover
+666   | doom or airserv-ng (remote control wireless devices)
+698   | OLSR (for mobile ad hoc networks)
+701   | LMP
+802   | MOdbus/Tcp Security
+829   | Certificate Management (obtaining PKI)
+847   | DHCP Failover
+853   | DNS over TLS/QUIC/DTLS
+873   | rsync
+953   | RNDC (bind remote name control)
+989   | FTPS data (FTP over TLS/SSL)
+990   | FTPS control (FTP over TLS/SSL)
+992   | Telnet over TLS/SSL
+993   | IMAPS (IMAP over TLS/SSL)
+
+Get currrently used web ports:
+sudo netstat -pltu
+Get currrently used ttys
+ls /dev/tty*

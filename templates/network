@@ -62,6 +62,7 @@ sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
 sudo nft 'add rule nat prerouting ip daddr 192.168.XX.YY tcp dport { 443 } dnat 192.168.XX.YY:22'
 sudo nft 'add rule nat postrouting masquerade'
 
+Print hostname entries:
 host -t a DNS
 dig +short DNS
 getent hosts DNS
@@ -69,3 +70,6 @@ nslookup DNS
 python -c 'import socket; print socket.gethostbyname("DNS")'
 To search for specific hostname (not all devices provide one), use
 nmap -sP 192.168.178.0/24 | grep YOUR_HOSTNAME
+And local:
+hostname
+cat /proc/sys/kernel/hostname

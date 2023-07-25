@@ -1,3 +1,9 @@
-TODO add apis, which can be considered portable from my work on Zig with brief reasoning
+TODO add apis, which can be considered portable from my work on Zig with brief
+reasoning
 
-TODO explain https://eklitzke.org/path-max-is-tricky
+https://eklitzke.org/path-max-is-tricky
+https://blog.r-project.org/2023/03/07/path-length-limit-on-windows/
+Potential Long paths >32KB can make stack usage unfeasible and introduce lots
+of complexity via allocator.
+This makes all libraries slow, which dont provide user-decision on the allocator
+and can hoist pointer access and alike.

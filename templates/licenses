@@ -1,0 +1,26 @@
+1. Softwarelicense extraction from free text is a mess, since free text detection
+is unreliable for unknown patterns.
+2. https://github.com/jpeddicord/askalono works good for text pattern detection
+or one could use a neuronal network, but both solution do not catch all potential
+license violations.
+3. The core of a license is 1. software component and 2. license owner followed
+by 3. license date (for eventual copyright ownership expiration date)
+4. The following is a semi-unreliable sanity check for GPL, but free licenses
+are hard to detect without assumption of words to detect that a text is a license
+(a license owner can be very creative in wording)
+```sh
+#!/usr/bin/env bash
+# Script to extract license info semi-automatically
+
+COMPONENTS=(
+  component1 component2
+)
+for ((i=0;i<${#COMPONENTS[*]};++i)); do
+  # echo "${COMPONENTS[i]}"
+  # echo "components/${COMPONENTS[i]}/"
+  rg --vimgrep -B 10 -A 10 'reproduce|SPDX|copyright|General Pulic' "components/${COMPONENTS[i]}/"
+done
+```
+5. Build systems with license annotations can not detect conflicting license information
+6. Legal risks can only be mitigated via human labor ior if there are reliable
+to use legal ways to detect license texts in a machine readable way.
