@@ -450,6 +450,10 @@ map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across t
 
 -- vim-fugitive
 map('n', '<leader>gs', '<cmd>Git<CR>', opts)
+map('n', '<leader>g2', '<cmd>diffget //2<CR>', opts)
+map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)
+map('n', '<leader>p2', '<cmd>diffput //2<CR>', opts)
+map('n', '<leader>p3', '<cmd>diffput //3<CR>', opts)
 
 ---- harpoon ---- buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140

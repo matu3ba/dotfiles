@@ -380,3 +380,11 @@ class FriendOfVariable2 {
 
 // SHENNANIGAN
 // << operator uses as few digits as possible to print, also omitting '.0' digits.
+
+// SHENNANIGAN
+// The linker is a separate thing without knowledge on the compiler invocation,
+// so it does not explain linking failures with context.
+// Linkerpath filepath:line: undefined reference to `classname::functionname()'
+// Most likely, functionname() was declared in class, but no implementation
+// given as classname::functionname().
+// Other typical causes are incorrect usage of mocking or linker substitution.

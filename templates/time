@@ -58,3 +58,7 @@ ensure that leap seconds are correctly taken into account, if one uses any strin
 There is no portable api to check Kernel time configurations, so if needed you need
 to 1. setup your own Kernels xor 2. provide your own time synchronization network
 and accept + handle offline inaccuracies and leap seconds yourself.
+
+UTC timestamp -> unix time conversion for size and speed from
+https://blog.reverberate.org/2020/05/12/optimizing-date-algorithms.html
+- TODO is all the standard stuff implemented in Zig including correction by using context for data adjustments?

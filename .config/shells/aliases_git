@@ -141,7 +141,6 @@ alias gau='git add -u' # add modified files
 alias gap='git apply'
 alias gapr='git apply -R'
 
-# TODO: switch to fish for multi command completions
 alias gb='git branch'
 alias gba='git branch -avv'
 alias gbd='git branch -d'
@@ -212,11 +211,12 @@ alias gs='git status'
 alias gsp='git status --porcelain'
 alias gcl='git clone'
 
+alias grbe='git rebase --exec' # rebuild_cmd
 alias grbm='git rebase master'
 alias grbM='git rebase main'
 alias grbi='git rebase -i'
 alias grbisq='git rebase -i --autosquash'
-# TODO consider switching to fish (supports autocompletion for aliases + abbreviations)
+
 #alias gsw='git switch'
 alias gsafe='test -n "$(git status --porcelain)" || echo safe'
 alias grbium='git rebase --interactive upstream/master'

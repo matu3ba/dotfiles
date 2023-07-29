@@ -170,7 +170,6 @@ alias  zigdeb='${HOME}/dev/git/zi/zig/debug/stage3/bin/zig'
 # curl -s https://ziglang.org/download/index.json | jq '.master'.'"x86_64-linux"'.'"tarball"'
 alias  zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zi/zig/master/lib/std'
 # -lc to link libc, --lib-dir to use non-standard lib directory (defined in global env)
-# TODO document qemu runners
 #./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
 #zigtest is pending support for pipes other than the standard ones to be robust
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'

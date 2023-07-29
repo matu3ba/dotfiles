@@ -1,3 +1,6 @@
+Analyzing build times:
+https://github.com/aras-p/ClangBuildAnalyzer
+
 Dumping preprocessor state
 -d
 -d<arg>
@@ -35,7 +38,7 @@ Include comments from within macros in preprocessed output
 2. groups -isystem searches together as first seen on command line and in the end
 3. absolute search list first searches all -I dirs, then it searches all -isystem dirs
 
-MAJOR FOOTGUN
+SHENNANIGAN MAJOR FOOTGUN
 When clang gets a `-isystem` dir that interferes with `-I` it silently removes
 the dir from `-I` and adds it to `-isystem`, in effect demoting the search
 precedence of the dir.

@@ -1,5 +1,6 @@
 CPU functionality and assembly below caches
 
+#### CPU functionality
 - AMD Zen dont have a single physical location where each register lives
 - AMD Zen use a Register File (RF) and a Register Allocation Table (RAT)
 - during vzeroupper the zero bit is set, but rolled back on branch-misprediction causing use-after-free
@@ -22,3 +23,6 @@ rol rbx, cl           rol rbx, cl
                       nop
 xor edi,[rbp-0x57]    xor edi,[rbp-0x57]
 ```
+
+#### Assembly
+Practical assembly usage https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide

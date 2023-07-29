@@ -504,4 +504,4 @@ end, {})
 -- local mappings: K or C-], C-t, gO for outline
 
 -- inbuild commands
--- :sort [u for unique lines]
+-- :sort [u for unique lines] [n for numerical]

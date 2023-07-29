@@ -62,14 +62,40 @@ sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
 sudo nft 'add rule nat prerouting ip daddr 192.168.XX.YY tcp dport { 443 } dnat 192.168.XX.YY:22'
 sudo nft 'add rule nat postrouting masquerade'
 
-Print hostname entries:
+Get all responding ips:
+arp -[a|e]
+
+Print hostname entries via working DNS:
 host -t a DNS
 dig +short DNS
 getent hosts DNS
 nslookup DNS
 python -c 'import socket; print socket.gethostbyname("DNS")'
-To search for specific hostname (not all devices provide one), use
+
+Get multicast ip in ip4 only network:
+ping -v4 DNS
+Search for ips with open ports 80:
+nmap -p 80 192.168.178.0/24 --open
+
+Search for specific hostname (not all devices provide one):
 nmap -sP 192.168.178.0/24 | grep YOUR_HOSTNAME
-And local:
+nmap -L 192.168.178.0/24 | grep YOUR_HOSTNAME
+Get local hostname:
 hostname
 cat /proc/sys/kernel/hostname
+Set hostname permanently
+hostnamectl set-hostname SOMESTRING|URL
+cat /etc/hostname
+
+Retrieve all ips via broadcast (ipv4 broadcast is disabled per default on
+Linux, but ipv6 all node multicast addresse is not):
+ping ff02::1%eth0 -w 2
+Hop to the next pc via link local address (requires network interface ethX):
+ssh user@IPV6(ANUM:ANUM:..)%ethX
+
+Get MAC address of other device:
+nmap -sn 192.168.178.0/24
+Get MAC address of current device:
+ip a
+cat /sys/class/net/enp0s3/address
+ind /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf "%P: " -execdir cat {}/address \;
