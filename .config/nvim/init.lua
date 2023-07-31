@@ -20,6 +20,7 @@ if not has_lazy then
 else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
+  -- TODO quit without closing
   -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
   -- TODO web search via shell from https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html

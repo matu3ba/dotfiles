@@ -22,8 +22,9 @@ https://stackoverflow.com/questions/29832037/how-to-get-script-directory-in-posi
 https://unix.stackexchange.com/questions/85249/why-not-use-which-what-to-use-then
 
 
-Shells are for exactly 3 purposes of very limited sized programs and use
+Shells are for exactly 4 purposes of very limited sized programs and use
 an ideally type-checked language otherwise:
-1. filepath manipulation with globbing and alike
+1. filepath manipulation with globbing and alike (path hackery)
 2. piping programs and their output
 3. simple execution flow with respective job control
+4. basic text processing

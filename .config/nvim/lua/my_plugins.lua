@@ -81,6 +81,7 @@ return {
   },
   -- [] mappings for buffer, comment, x conflict, diagnostics, file, indent, jump, location,
   -- location, oldfile, quickfix, treesitter, undo, window, yank
+  -- TODO remove [c,]c, overlap
   {
     'echasnovski/mini.bracketed',
     version = false,

@@ -242,8 +242,10 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- visual mode regular
 -- window navigation: <C-w>[+|-|<|>|"|=|s|v|r| and _| height,width,height,width,equalise,split,swap max size horizontal/vertical
 -- view movements up+down: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
+-- move screen: C-[y|e|u|d|b|f] updown one line, updown1/2scrren, uppagelastline,downpagefirstline
+-- move screen opts: :h scrollbind, scrollback :set scb, :set noscb
 -- more aracane: z+,z-,z. like zt,zb,zz
--- view movements left+right: z+es(full page), hl(1char), HLM(halfpage down,up,mid)
+-- view movements left+right: z+es(full page), hl(1char), HLM(halfpage down,up,mid),
 -- vim-surround: ds|cs|ys,yS etc is conflicting
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
 -- C-t jumps back to the beginning of file entering from goto definition
@@ -399,7 +401,7 @@ map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], 
 map('n', '<leader>tt', [[<cmd>lua require('telescope.builtin').tags()<CR>]], opts) -- keybindings
 -- -- builtin.commands, nmap, vmap, imap
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
-map('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
+map('n', '<leader>tf', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
 map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
 -- TODO search project from harpoon files
 -- map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
@@ -430,7 +432,16 @@ map('n', '-', '<Plug>(leap-forward)', {}) -- -> forward
 map('n', '_', '<Plug>(leap-backward)', {}) -- _> inverse forward
 map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
 
+---- diff ----
+---1. manually (ie python code with too many conflicts)
+---:e filetoshowthediffs
+---:windo diffthis, :diffupdate, :diffoff!
+---2. :Gvdiffsplit!
+---:diffget //2|//3, :diffput
+---C-w,C-o
 ---- gitsigns ---- in file git operations (:Gitsigns debug_messages)
+--gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
+-- :Gitsigns show @~1
 -- mappings are workaround of https://github.com/lewis6991/gitsigns.nvim/issues/498
 --map('n', ']c', '<cmd>Gitsigns next_hunk<CR>', opts)
 --map('n', '[c', '<cmd>Gitsigns prev_hunk<CR>', opts)
