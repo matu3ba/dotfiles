@@ -25,6 +25,7 @@ else
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
   -- TODO web search via shell from https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
   -- TODO walk through https://www.youtube.com/@devopstoolbox/videos
+  -- TODO walk through https://github.com/bregman-arie/devops-exercises
   -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
   -- * \ prefix for find and replace helpers
   --   + also do them

@@ -79,13 +79,14 @@ return {
     version = false,
     config = function() require('mini.ai').setup {} end,
   },
-  -- [] mappings for buffer, comment, x conflict, diagnostics, file, indent, jump, location,
+  -- [] mappings for buffer, komment, x conflict, diagnostics, file, indent, jump, location,
   -- location, oldfile, quickfix, treesitter, undo, window, yank
-  -- TODO remove [c,]c, overlap
+  -- [c,]c, used for diff
   {
     'echasnovski/mini.bracketed',
     version = false,
     config = function() require('mini.bracketed').setup {
+      comment = { suffix = 'v' }, -- verbose comment
       treesitter = { options = { add_to_jumplist = true } },
     } end,
   },

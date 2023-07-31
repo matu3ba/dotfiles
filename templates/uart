@@ -7,6 +7,8 @@ screen /dev/ttyUSB0 115200
 
 stty rows 50 cols 132
 
+C-a,k kill screen
+C-a,d detach screen (screen -r to reattach)
 
 putty
 1. Connection type serial
