@@ -25,4 +25,42 @@ xor edi,[rbp-0x57]    xor edi,[rbp-0x57]
 ```
 
 #### Assembly
+- Integer operations are usually faster than the same-sized float number
+- Integer division is slower than the respective float due to higher precision
+- There are no SIMD routines for integer division
+  * one can use conversion to float instead
+  * most of the time one can workaround division
+
 Practical assembly usage https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide
+
+'ForwardCom: An open-standard instruction set for high-performance microprocessors'
+by Agner Fog el al. for non-embedded systems with some interesting ideas:
+https://lock.cmpxchg8b.com/zenbleed.html
+* 1. designed for non-embedded systems (instructions are typically bigger)
+* 2. pic on default => code and data can be relocated independently from another
+* 3. no global status flags or status register
+* 4. can store constant data in instruction codes
+* 5. no microcode
+* 6. Function libraries instead of static/dynamic libs usable for both
+* 7. calculate the required stack size (non recursive)
+  + TODO
+* 8. simpler memory management + reduces fragmentation as side effect
+  + TODO
+* 9. (optimal) register allocation across program modules and function libraries
+  + TODO
+* 10. strong security features
+  + TODO
+* 11. standards to establish compatibility between different programming languages and different platforms???
+  + TODO
+* 12. vector register of variable len
+  + TODO
+* 13. atomics and cache synchronization???
+TODO include feedback from https://github.com/ForwardCom/manual/issues/29
+
+RISC5 looks ideal for embedded systems, where instructions are typically smaller
+(addresses, constants, etc).
+It even has an instruction for flushing the complete cache + clear internal state.
+
+Interesting ideas
+'Efficient virtual cache coherency for multicore systems and accelerators' by Xuan Guo
+* TODO

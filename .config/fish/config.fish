@@ -137,13 +137,14 @@ if status is-interactive
   abbr --add -g      nbasan ' CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 
   abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
-  abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
   abbr --add -g  zbdeb ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-  abbr --add -g  zbrel ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zdeb ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+
+  abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+  abbr --add -g  zbrel ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zrel ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-  abbr --add -g   zup1 ' ./build/stage3/bin/zig build update-zig1'
-  abbr --add -g   zdoc ' cd {$HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
+
+  # abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && /usr/bin/time -v ninja install && cd ..'
 
   abbr --add -g        zd ' ./deb/stage3/bin/zig'
   abbr --add -g        zr ' ./rel/stage3/bin/zig'
@@ -152,6 +153,8 @@ if status is-interactive
   abbr --add -g  zigdebc ' {$HOME}/dev/git/zi/zig/debug/build/stage3/bin/zig'
   abbr --add -g  zigdeb ' {$HOME}/dev/git/zi/zig/debug/stage3/bin/zig'
   abbr --add -g  zigstd ' {$HOME}/.local/appimages/nvim.appimage {$HOME}/dev/git/zi/zig/master/lib/std'
+  abbr --add -g   zup1 ' ./build/stage3/bin/zig build update-zig1'
+  abbr --add -g   zdoc ' cd {$HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
 
   abbr --add -g  rmzigallcache ' rm -fr zig-cache/ zig-out/ "$HOME"/.cache/zig/'
   abbr --add -g  rmzigcacherec ' fd -t d -u "zig-out|zig-cache" -x rm -fr {};'

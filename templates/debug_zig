@@ -5,6 +5,7 @@
 --verbose-cc
 --verbose-llvm-cpu-features
 
+
 and the clang flags, if needed.
 
 As I understand it, this is a regression.
@@ -21,3 +22,5 @@ I'd use this strategy (probably try 1+2 first) to identify the cause unless the 
   * Try tracing all function calls in gdb via https://gist.github.com/quark-zju/a20ae638601d2fac476e or the lldb one to get the big picture
   * step through interesting bits
   * report your findings + scripts how to reproduce them
+
+TODO dense assembly of function via grep? objdump?

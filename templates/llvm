@@ -10,42 +10,75 @@ cd CMake && mkdir build && cd build && cmake .. -GNinja && ninja
 
 ```sh
 #!/usr/bin/env sh
-# simple llvm build recipe
+# simple llvm build recipe with workarounds in case of memory limitations
 #git clone --depth=1 https://github.com/llvm/llvm-project
 #git fetch
 #git tag
 #git checkout TAG
 set -e
 
-mkdir build-release
-cd build-release
+echo "bootstrap clang"
+mkdir -p build-relbs && cd build-relbs
 PATH="$HOME/dev/git/cpp/CMake/build/bin:$PATH"
 CC=clang-12
 CXX=clang++-12
 cmake ../llvm \
-  -DCMAKE_INSTALL_PREFIX=$HOME/.local/llvm \
   -DCMAKE_BUILD_TYPE=Release \
-  -DLLVM_ENABLE_PROJECTS="lld;lldb;clang;clang-tools-extra" \
-  -DLLVM_ENABLE_LIBXML2=OFF \
-  -DLLVM_ENABLE_TERMINFO=OFF \
-  -DLLVM_ENABLE_LIBEDIT=OFF \
-  -DLLVM_ENABLE_ASSERTIONS=ON \
-  -DLLVM_PARALLEL_LINK_JOBS=1 \
   -DCMAKE_CXX_COMPILER=$CXX \
   -DCMAKE_C_COMPILER=$CC \
+  -DCMAKE_INSTALL_PREFIX=$HOME/.local/llvmbs \
+  -DLLVM_CCACHE_BUILD=ON \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DLLVM_ENABLE_LIBEDIT=OFF \
+  -DLLVM_TOOL_LLVM_LTO2_BUILD=OFF \
+  -DLLVM_TOOL_LLVM_LTO_BUILD=OFF \
+  -DLLVM_TOOL_LTO_BUILD=OFF \
+  -DLLVM_ENABLE_LIBXML2=OFF \
+  -DLLVM_ENABLE_PROJECTS="lld;lldb;clang;clang-tools-extra" \
+  -DLLVM_ENABLE_TERMINFO=OFF \
+  -DLLVM_PARALLEL_LINK_JOBS=1 \
+  -DLLVM_USE_LINKER=lld \
   -G Ninja
-ninja install
+cmake --build . --target install
+# alternative: ninja install -j 4
+
+# Prevent C++ abi mismatches ('c++ compiler != llvm c++ libs') from $DCMAKE_INSTALL_PREFIX
+echo "building clang with clang"
+CC=$HOME/.local/llvmbs/bin/clang
+CXX=$HOME/.local/llvmbs/bin/clang++
+cd ../
+mkdir -p build-release && cd build-release
+mkdir build-relbs
+cd build-relbs
+cmake ../llvm \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER=$CXX \
+  -DCMAKE_C_COMPILER=$CC \
+  -DCMAKE_INSTALL_PREFIX=$HOME/.local/llvm \
+  -DLLVM_CCACHE_BUILD=ON \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DLLVM_ENABLE_LIBEDIT=OFF \
+  -DLLVM_TOOL_LLVM_LTO2_BUILD=OFF \
+  -DLLVM_TOOL_LLVM_LTO_BUILD=OFF \
+  -DLLVM_TOOL_LTO_BUILD=OFF \
+  -DLLVM_ENABLE_LIBXML2=OFF \
+  -DLLVM_ENABLE_PROJECTS="lld;lldb;clang;clang-tools-extra" \
+  -DLLVM_ENABLE_TERMINFO=OFF \
+  -DLLVM_PARALLEL_LINK_JOBS=1 \
+  -DLLVM_USE_LINKER=lld \
+  -G Ninja
+cmake --build . --target install
 ```
 
 If the INSTALL_PREFIX has been forgotten, use
 ```
 cmake -DCMAKE_INSTALL_PREFIX=/tmp/llvm -P cmake_install.cmake
-mv /tmp/llvm $HOME/.local/llvmXX_rel
+mv /tmp/llvm $HOME/.local/llvm[bs]
 ```
 
 TODO runtime instrumentation for tracing / logging.
 
-SHENNANIGANS
+SHENNANIGAN
 1. Rewrite
 - 1.1 Pointer semantics (same applies for C)
 - 1.2 Memory synchronization semantics (same applies for C)
@@ -55,3 +88,12 @@ SHENNANIGANS
     eats up any performance advantage over the more general graph form
   * 2. Tracing optimizations and writing validation code along IR requires an
     own tracing system per optimization instead of using graph representation
+
+SHENNANIGAN
+llvm lto takes painfully much memory (>15GB with gcc linker, docs mention up to 15GB with lld)
+* Make sure to use
+```
+  -DLLVM_TOOL_LLVM_LTO2_BUILD=OFF \
+  -DLLVM_TOOL_LLVM_LTO_BUILD=OFF \
+  -DLLVM_TOOL_LTO_BUILD=OFF \
+```

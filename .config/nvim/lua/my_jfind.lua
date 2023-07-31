@@ -1,4 +1,6 @@
 --! Jfind configuration for fast searching with dependency jfind
+-- luacheck: globals vim
+-- luacheck: no max line length
 local has_jfind, jfind = pcall(require, 'jfind')
 local has_key, key = pcall(require, 'jfind.key')
 if not has_jfind or not has_key then
@@ -26,6 +28,7 @@ jfind.setup({
     },
     border = "rounded",
     -- tmux = true,
+  --
 });
 
 -- or you can provide more customization
@@ -56,3 +59,20 @@ vim.keymap.set("n", "<leader>gr", function()
         }
     })
 end)
+
+-- TODO
+-- local jfind = require("jfind")
+-- local Key = require("jfind.key")
+--
+-- jfind.liveGrep({
+--     selectAll = true,
+--     callback = {
+--         [Key.DEFAULT] = function(results)
+--             local qflist = {};
+--             for i, v in pairs(results) do
+--                 qflist[i] = {filename = v[1], lnum = v[2]}
+--             end
+--             vim.fn.setqflist(qflist)
+--         end
+--     }
+-- })

@@ -182,6 +182,13 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test C:\cygwin64\home\kcbanner\kit\zig\lib\std\std.zig -target x86_64-windows-gnu -mcpu x86_64 -I C:\cygwin64\home\kcbanner\kit\zig\test --zig-lib-dir C:\cygwin64\home\kcbanner\kit\zig\lib --test-filter "DWARF expressions"
 // zig test .\lib\std\std.zig -target x86_64-windows-gnu -mcpu x86_64 -I .\test --zig-lib-dir .\lib --test-filter "DWARF expressions"
 // zig test ./lib/std/std.zig -target x86_64-windows-gnu -mcpu x86_64 -I ./test --zig-lib-dir ./lib --test-filter "DWARF expressions"
+// Run tests within valgrind via:
+// zig test valgrind.zig -lc --test-cmd valgrind --test-cmd '-s' --test-cmd-bin
+// Run tests within qemu:
+// zig test qemu.zig -target aarch64-linux-none --test-cmd qemu-aarch64 --test-cmd-bin
+// Emit assembly or llvm ir
+// zig build-exe -OReleaseSmall -femit-asm=min.s min.zig
+// zig build-exe -OReleaseSmall -femit-llvm=min.ll min.zig
 
 fn simpleCAS() !void {
     const Available = enum(u8) {
@@ -213,3 +220,52 @@ test {
 
     // a pile of code
 }
+
+// SHENNANIGAN
+// Parameter Reference Optimization
+// examples from @SpexGuy's talk
+
+const BigStruct = struct {
+    vals: [4]u128,
+};
+
+fn total(
+    b: BigStruct, // implicit: b: *const BigStruct
+) u128 {
+    return b.vals[0] + b.vals[1] + b.vals[2] + b.vals[3];
+}
+
+fn totalAll(structs: []const BigStruct) u128 {
+    var sum: u128 = 0;
+    for (structs) |*s| {
+        sum += total(s.*); // implicit: total(&(s.*));
+    }
+    return sum;
+}
+
+// TODO general value initialization
+// const List = struct {
+//     items: []T,
+//     capacity: usize,
+//     fn add(self: *List,
+//         item: T, // implicit: item: *const T
+//         ) void {
+//         if (self.isFull()) {
+//             self.grow();
+//         }
+//         self.items.len += 1;
+//         slef.items[self.items.len-1] = item; // implicit: item.*
+//     }
+// };
+// test {
+//     list.add(list.items[0]); // implicit: list.add(&list.items[0]);
+// }
+
+// SHENNANIGAN
+// Parameter Reference Optimization
+// TODO example
+
+// SHENNANIGAN
+// RLS (Result location semantics) is implicit, but copies are eliminated
+// This leads to surprising and potentially unwanted behavior.
+// TODO example

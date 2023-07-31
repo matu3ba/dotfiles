@@ -1,6 +1,5 @@
 Memory, from basic to complex.
 
-
 https://stackoverflow.com/questions/4087280/approximate-cost-to-access-various-caches-and-main-memory
 Core i7 Xeon 5500 Series Data Source Latency (approximate)               [Pg. 22]
 local  L1 CACHE hit,                              ~4 cycles (   2.1 -  1.2 ns )
@@ -29,6 +28,38 @@ http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/
   and from 20% (Icelake) up to 45% L3 and 25% RAM speedups (Icelake)
 https://travisdowns.github.io/blog/2020/05/13/intel-zero-opt.html
 https://travisdowns.github.io/blog/2020/05/18/icelake-zero-opt.html
+
+Data and addresses must be aligned to be loaded and stored on cpus.
+See https://en.wikipedia.org/wiki/Data_structure_alignment
+- CPUs work on multiple of word sizes
+- CPUs have more die space for other operations and higher performance, if they
+  dont need to handle non-aligned data
+- Therefore, unaligned data must be shifted internally, padded, zerod, etc
+
+Virtual memory can exist in form of "Paged Virtual memory" and "Segmented virtual memory".
+The Kernel (CPU in privileged mode) and the CPU itself can access the MMU
+(Memory Manage Unit), which is a hardware unit (typically of the CPU) which
+does the virtual memory<->real memory handling including lookup+caching.
+The MMU also prevents non-allowed access to memory regions via what is called
+MPU (Memory Protection Unit) and has the TLB (Translation Lookaside Buffer) to
+speed up the translation process.
+"Segmented virtual memory" leads to memory management details leaking to the user
+and these details make handling more involved and thus the routine slower.
+Thus 'segmented virtual memory' is typically more advantages in embedded devices,
+since 1. performance is not most important, 2. it allows more dense packing of
+needed memory 3. stack size can be adjusted on demand and 4. each function
+prologue can check the remaining free space if it would overflow the stack
+(since the details are not hidden).
+Small memory pages are typically 4KB, so the execution context would need to be
+highly concurrent or complex to justify usage.
+
+From https://en.wikipedia.org/wiki/Data_structure_alignment
+- Alignment to (multiple) cache lines improves performance by preventing false sharing
+  (unintended sharing between threads leading to cache misses or cache bouncing)
+- Address translation (PCI remapping, MMU operations) works via page load + offset
+- Therefore, aligned addresses (base-address + offset) lets the hardware map a
+  virtual address to a physical one by substituting the higher bits instead of
+  doing more costly artithmetic
 
 Allocation classes
 https://pzurita.wordpress.com/2015/06/29/memory-stomp-allocator-for-unreal-engine-4/
@@ -255,3 +286,24 @@ causing execution of old or invalid instructions.
 See https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/caches-and-self-modifying-code
 https://events.static.linuxfound.org/sites/events/files/slides/slides_10.pdf
 https://stackoverflow.com/questions/39295261/how-to-synchronize-on-arm-when-one-thread-is-writing-code-which-the-other-thread
+
+Timing Channels:
+from "Systematic Prevention of On-Core Timing Channels by Full Temporal Partitioning"
+1. In-order execution results
+__Problem__ Has time channels from hardware events (RISC-V) => clearing valid cache bits not enough.
+  Why Cache has secondary state (the state machine controlling cache-line replacement),
+  wich can be exploited as a covert channel.
+__Solution__ Temporal partitioning via reliable user space flush executing fence
+  instruction fence.t, which clearing such state + guaranteeing history-independent
+  context-switch latency
+__Cost__ cold, unmitigated case: fence.t adds < 21 000 cycles to context-switch routine.
+  => 1 GHz + a context-switch frequency of 100 Hz => over-head of about 0.2 %
+  => indirect costs for applications not evaluated (used L3 cache very small)
+  => fetch needed memory with ~90ns access cost from RAM
+2.  Ouf-of-order execution untested
+Idea (full flush may add unreasonable latency):
+- 1. Spatial partitioning of "cores L3 memory area" with access permission bits for other cores
+  * "L3 cache paging system" sounds slow
+  * side stepping L3 cache would leak cache internals
+  * think about it abit more
+- 2. Temporal partitioning

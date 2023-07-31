@@ -36,6 +36,11 @@ To me unclear if solved:
 - check if linker speak has a formal model
 - Model for coroutine cancellation
 
+Austral as language with linear type system without boilerplate (might become decent DSL)
+https://borretti.me/article/introducing-austral
+https://austral-lang.org/spec/spec.html#linearity
+- cogent uses also a linear type system https://trustworthy.systems/projects/TS/cogent.pml.
+
 (Cringe) thoughts on a perfect language:
 ```
 Consider the theoretical optimal language being bootstrapped (in multiple steps)

@@ -85,3 +85,6 @@ do {                                                           \
 
 // idea ifdef error else define macro to make macros shorter
 // use typedef, if possible: prevents `short SHORTINT test = 1;` shennanigans.
+
+// figure out default symbols of host
+// echo | gcc -dM -E -

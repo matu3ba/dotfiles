@@ -166,6 +166,8 @@ ssh user@domain@ip sudo date -s @$(date -u +"%s")
 
 systemctl status systemd-timesyncd
 journalctl -u systemd-timesyncd
+systemctl --user unmask pulseaudio pulseaudio.socket
+systemctl --user status pipewire pipewire-pulse pulseaudio pulseaudio.socket
 
 harddrive - storage device problems
 https://askubuntu.com/questions/144852/cant-format-my-usb-drive-i-have-already-tried-with-mkdosfs-and-gparted/933035#933035

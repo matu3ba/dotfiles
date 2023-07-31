@@ -31,3 +31,12 @@ Shells are not properly supported in any OS except plan9, since
      programs and shells.
 Thus, shells remain a hack around the system that is "simple to implement the
 initials" and is annoying to use and write at many corner cases.
+
+SHENNANIGAN
+Escape unusual characters for usage, ie as shell variables:
+find . -exec printf "%q\n" {} \;
+find . -path RELPATH -exec printf "%q\n" {} \;
+Note: This is very slow.
+
+SHENNANIGAN find
+only supports '-path RELATIVEPATH' forcing more typing

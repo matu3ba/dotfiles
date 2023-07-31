@@ -47,5 +47,17 @@ is also specified with -I, the -I option is ignored. The directory is still
 searched but as a system directory at its normal position in the system include
 chain."
 
-SHENNANIGAN broken LLVM tooling
-pp-trace -callbacks=MacroExpands -- clang -Ilib -E test2.c > test2.c.clang
+SHENNANIGAN
+pp-trace truncates macro expansion output without offering control over output size
+
+pp-trace [<pp-trace-options>] <source-file> [-- <clang-options>]
+-callbacks <comma-separated-globs>
+FileChanged, FileSkipped, FileNotFound, InclusionDirective, moduleImport,
+EndOfMainFile, Ident, PragmaDirective, PragmaComment, PragmaDetectMismatch,
+PragmaDebug, PragmaMessage, PragmaDiagnosticPush, PragmaDiagnosticPop,
+PragmaDiagnostic, PragmaOpenCLExtension, PragmaWarning, PragmaWarningPush,
+PragmaWarningPop, MacroExpands, MacroDefined, MacroUndefined, Defined,
+SourceRangeSkipped, If, Elif, Ifdef, Ifndef, Else, Endif
+pp-trace -callbacks=MacroExpands test.c -- -Ilib
+pp-trace -callbacks=MacroExpands -output test.pptrace test.c -- -Ilib
+clang -E test.c > test.E

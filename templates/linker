@@ -43,8 +43,20 @@ objects at the start of the link line, and the "supplying" objects at the end.
 
 idea: instructions on how to debug lld etc
 
+objdump -S to intermix the source
+objdump -d for only the dump
 objdump -h to dump section list
 objdump --help | vi
+Dump useful info from binary with debugging symbols
+objdump -dxS -Mintel binary
+Dump to show symbol names/relocations (used in linker) when disassembling.
+objdump -drwC -Mintel object
+Disassemble all, line numbers and all headers to get the memory address failure:
+objdump -Dlx binary | less
+To disassemble symbol + line numbers:
+objdump -dl binary | less
+To disassemble headers + line numbers (address is outside text segment):
+objdump -xl binary | less
 
 extern only, demangle
 nm -g -C build/stage3/bin/zig
@@ -146,15 +158,14 @@ TODO 6 BFD
 
 TODO 7 MRI Compatible Script Files
 
-TODO:
-* double check the stateful parts or things requiring io of ld
-* how they can be solved with other means
-https://sourceware.org/binutils/docs-2.37/ld.pdf
+literature: https://sourceware.org/binutils/docs-2.37/ld.pdf
 
-elf/system v abi stuff + layout or is there more missing?
+embedded linker example
 https://github.com/badgeteam/BadgerOS/blob/main/linker.ld
 ESP32 binary built in the ld linker with ELF
 you need to objcopy to binary to receive an ESP executable
 
-TODO: explain dlopen, dlsym
+TODO: explain dlopen, dlsym in terms of assembly
 https://stackoverflow.com/questions/11741580/dlopen-loadlibrary-on-same-application
+TODO summarize https://www.qualys.com/2023/06/06/renderdoc/renderdoc.txt
+by functionality

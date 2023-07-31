@@ -137,6 +137,7 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 #alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
 alias  zbcmdeb='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
 alias  zbcmrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+# cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && /usr/bin/time -v ninja install
 #alias   zbcmrs='mkdir -p buildrs/ && cd buildrs/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
 alias    zwtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
 
@@ -266,6 +267,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 # {n}(exactly),{n,m}(at least n, no more than m),
 # rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
+# TODO: figure out why globbing does not work
 # rg -g '*.rs' to ignore file ending
 # rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
 # rg --vimgrep lines+columns -u[u[u]] unrestricted

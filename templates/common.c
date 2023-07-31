@@ -103,3 +103,35 @@ void printBits(int32_t const size, void * const ptr)
 // Main drawbacks:
 // * Requires expert crafting rules
 // * existentially quantified Coq variables (evars) for proofs must be carefully chosen
+
+int f(int* a) {
+    *a=*a+1;
+    return *a;
+}
+
+// SHENNANIGAN
+void seuqence_points_ub() {
+    int a = 0;
+    // a = a++ + b++; // Multiple unsequenced modifications to a
+    // Same problem without warnings:
+    a = f(&a) + f(&a);
+}
+
+// SHENNANIGAN
+// Aliasing protection in C/C++ is based on type equivalence (in Rust not):
+void aliasing_loader_clobberd_by_store(int* a, const int* b) {
+  for (int i=0; i<10; i+=1) {
+    a[i] += *b;
+  }
+}
+
+void noaliasing(int* a, const long* b) {
+  for (int i=0; i<10; i+=1) {
+    a[i] += *b;
+  }
+}
+void noaliasing_with_restrict(int* __restrict__ a, const int* b) {
+  for (int i=0; i<10; i+=1) {
+    a[i] += *b;
+  }
+}

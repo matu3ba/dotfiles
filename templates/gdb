@@ -97,6 +97,23 @@ rwatch
 watch foo thread 3
 watch foo if foo > 10
 
+assembly
+layout asm/code
+layout regs
+info r
+si
+
+x86
+execution can be described by base, stack, instruction pointer (%rbp, %rsp, %rip)
+special one is %rflags
+function args: %rdi, %rsi, %rdx, %rcx, %r8, %r9
+return value (accumulator): %rax
+Calle-saved are %rbx, %r12, %r13, %r14, %r15, %rsp, %rbp [%rip is general]
+Types of assembly: computation, data movement, control flow, constrains/reordering
+register (%rbp), immediate ($0x4), memory (0x4, symbol_name, symbol_name(%rip),
+symbol_name+4(%rip), (%rax), 0x4(%rax), (%rax,%rbx), (%rax,%rbx,4), 0x18(%rax,%rbx,4) )
+rip-relative addressing is called pic code.
+
 WHERE: fn_name, line_number, file:line_number
 break/watch WHERE if CONDITION
 (CONDITION = C expression evaluating to true or false)

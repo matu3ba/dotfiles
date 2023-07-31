@@ -9,6 +9,8 @@ jfind from jake-stewart (https://github.com/jake-stewart/jfind)
 znvim from LordMZTE (https://mzte.de/git/LordMZTE/znvim) (glpv3)
 
 xpack for windows reproducible build framework (https://xpack.github.io/)
+rizin - reverse debugging
+grafana - visualization
 
 proprietary
 whitebox - program execution tracer and visualizer
