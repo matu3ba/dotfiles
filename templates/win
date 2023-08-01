@@ -19,3 +19,13 @@ http://jacquelin.potier.free.fr/winapioverride32/
 Timetravel debugging
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview
 https://github.com/microsoft/WinDbg-Samples/blob/master/TTDQueries/tutorial-instructions.md
+
+Performance profiling
+http://euccas.github.io/blog/20180213/performance-profiling-tools-on-windows.html
+(including memory usage)
+https://learn.microsoft.com/en-us/visualstudio/profiling/memory-usage-without-debugging2?view=vs-2022
+
+Memory profiling
+https://thatonegamedev.com/cpp/memory-profiling-on-windows-for-c/
+https://stackoverflow.com/questions/4322678/how-to-do-memory-profiling-on-windows
+https://stackoverflow.com/questions/413477/is-there-a-good-valgrind-substitute-for-windows
