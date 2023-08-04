@@ -236,6 +236,7 @@ alias glgr='git log --grep=' # git log grep (grep the log)
 #git log --grep|--invert-grep
 #git grep 'regexp' $(git rev-list --all)
 
+#--stat --shortstat --numstat --graph --oneline
 alias glg='git log --stat'
 alias glgp='git log --stat -p'
 alias glgg='git log --graph'
@@ -250,6 +251,9 @@ alias glsm='git ls-files -m' # modified
 alias glss='git ls-files -s' # staged
 alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 
+#TODO
+#merge with merge message no rebase
+#merge without merge message no rebase
 alias gm='git merge --ff-only'
 #alias gmf='git merge --ff-only'
 alias gmom='git merge downstream/master'

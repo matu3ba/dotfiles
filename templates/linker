@@ -169,3 +169,5 @@ TODO: explain dlopen, dlsym in terms of assembly
 https://stackoverflow.com/questions/11741580/dlopen-loadlibrary-on-same-application
 TODO summarize https://www.qualys.com/2023/06/06/renderdoc/renderdoc.txt
 by functionality
+
+TODO explain https://en.wikipedia.org/wiki/DLL_injection

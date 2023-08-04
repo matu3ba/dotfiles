@@ -51,11 +51,14 @@ and we get for halffloat a factor of 16x, float a factor of 256 and double a fac
 Graphical illustration: https://float.exposed/0x7f7fffff
 
 LLVM:
--The general vibe is to produce any sort of NaN.
+- The general vibe is to produce any sort of NaN, which allows more optimizations,
+  but is not strictly conformant.
 - In special non IEE754-ones have non-compliant behavior.
 - x78 is known to be broken.
+- In contrast, gcc offers '-fsignaling-nans' and '-frounding-math' for full IEE754 compliance
+  (assuming same rounding mode is in effect everywhere), see https://gcc.gnu.org/wiki/FloatingPointMath
 
-TODO mention arch behavior for NaN
+Since IEE754-2008 silent NaN must be TODO and signaling NaN must be TODO.
 
 Subnormal numbers
 Smallest Normal Number Largest Normal Number taken from $E_{min}$, $E^{max}$.

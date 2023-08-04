@@ -243,6 +243,12 @@ fn totalAll(structs: []const BigStruct) u128 {
     return sum;
 }
 
+// fn debug_backtrace_stacktrace() {
+// {
+//     std.debug.print("putting '{s}'\n", .{dylib.id.?.name});
+//     std.debug.dumpCurrentStackTrace(null);
+// }
+
 // TODO general value initialization
 // const List = struct {
 //     items: []T,

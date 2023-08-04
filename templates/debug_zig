@@ -24,3 +24,7 @@ I'd use this strategy (probably try 1+2 first) to identify the cause unless the 
   * report your findings + scripts how to reproduce them
 
 TODO dense assembly of function via grep? objdump?
+
+* qemu-system-avr available
+* qemu-avr programs is not available
+=> TODO

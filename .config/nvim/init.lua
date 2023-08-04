@@ -20,7 +20,16 @@ if not has_lazy then
 else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
-  -- TODO quit without closing
+  -- TODO windowing
+  -- * 1. quit without closing
+  -- * 2. close terminal command
+  -- * 3. C-w t left of tab
+  -- * 4. :tabm shortcuts
+  -- * 5. combine commands to replace terminal buffer
+  -- * 6. runner
+  -- * 7. one shot replace keypressed terminal with given command under same named register (uiojl)
+  -- * 8. replace terminal under cursor with given command under same named register upon keypress (repeat)
+
   -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
   -- TODO web search via shell from https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
@@ -364,3 +373,6 @@ callback = function()
 -- Validate without silently changing things not according to standard.
 -- https://github.com/itchyny/gojq
 -- vim.highlight.range()
+--
+-- Github issue url maker command
+-- :%s/(#\(\d\+\))/(<a href="https:\/\/github.com\/ziglang\/zig\/issues\/\1">#\1<\/a>)/g
