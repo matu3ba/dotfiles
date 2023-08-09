@@ -307,3 +307,10 @@ Idea (full flush may add unreasonable latency):
   * side stepping L3 cache would leak cache internals
   * think about it abit more
 - 2. Temporal partitioning
+
+https://wiki.debian.org/Hugepages
+* Linux: Huge pages
+  + see templates/linux
+* BSD: Super Pages
+* Windows: Large Pages
+  + see templates/win

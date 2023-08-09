@@ -45,3 +45,13 @@ search for first timestep with xa >= ya:
 
 Always use SI units or other units, if possible and not clear from context.
 This does also include generics.
+
+Good Abstraction: Criteria
+- common?
+- useful?
+- restrictions?
+- coupling?
+- composable?
+Good Abstraction: How?
+* bottom-up design: start with application code to inform lib
+* null hypothesis: dont use a lib, then develop one

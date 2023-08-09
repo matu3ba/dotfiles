@@ -1,0 +1,90 @@
+From strangeloop "Stop writing dead programs"
+
+Batch processing
+- long feedback loops: 45min compile cycles
+- ideas on time & state:
+  + compile/run cycle
+  + linear execution
+  + starts from blank state, runs to termination
+  + program is input output transformer
+  + no runtime introspection
+  + fialures halt the program
+
+PL Theory
+- program as static artifact
+- algebraic: syntax + semantics
+- no concerns for pragmatics
+- mathematics envy/theorem proving
+
+Syntax and semantics:
+APL 1 + 1 2 3 4
+
+State & time
+- ps and kill is not handled by runtime
+- Erlang/Ito ps, kills and introspection works
+- maria.cloud with graphically things
+- Propagators: dataflow, truth maintenance, provenance
+
+Program representations
+- fixed fonts
+- 80 characters
+- VT100 escape codes
+- vi was used with more ergonomic keyboard than todays keyboards:
+```
+      1 2 3 4 5 6 7 8 9 0 * ?? [ ] ??
+esc   q w e r t y u i o p
+ctrl   a s d f g h j k l + \
+shift   z x c v b m n < > /
+```
+with hjkl being left-, down-, up-, right-arrow if used with ctrl.
+ATM3A.
+- picture programming
+- pragmatics
+
+Interactive Programming (live-coding)
+- opposite of batch programming
+- programming environment
+- environment + progrma combined durign development
+  + no compile/run cycle
+  + no blank state/run to termination
+  + runtime introspection
+  + failuers dont halt the program
+
+Model Checkers
+- protocols are hard, so verify them
+- high cost of failure
+
+Assumptions
+- dynamic languages imply buggy approximations
+- spec is wrong
+- spec correct => still wrong due to changes
+- debuggability > correctness by construction
+- Programming is mostly programming (explorative programming)
+
+Problems
+- synchronization: smalltalk
+
+Debugging example
+- undefined function
+  * select action in debugger runtime
+    + may abort
+    + may recompile
+    + may call other function instead
+    + may try again calling one function (continue running right before the event)
+    + may apply recompiled image(s) to currently halted program state
+
+Fast compiler?
+- blank state/run termination style
+- data science workloads often take a long time to initialize
+- gui application state often tedious to reproduce
+  * serialization/deserialization strategy possible (significant runtime cost)
+  * timeouts are annyoing
+- being able to attach to long-running servers
+
+stop the world gcs
+stop the world typecheckers
+
+- datarabbit
+- selfdocumenting programs
+- Clerk as literate programming
+- Hest by Ivan Reeze as graphical executed state machine.

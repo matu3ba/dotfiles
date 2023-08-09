@@ -1,0 +1,141 @@
+Based on talk by kprotty "Proficient Parallel Programming"
+paralellism: doing 2 or more things at the same time
+concurrency: doing 2 things not necessary at the same time
+OS provides paralellism on top of concurrency.
+
+Why?
+- Getting things done faster
+- Success stories
+- Speed up existing slow code
+Why not?
+- Tasks rely on each other
+- Entire system needs to change
+- Given concurrency solution exists (SIMD, non-blocking IO[io_uring,..], GPU,..)
+- Single threaded fast enough
+
+Cost comparison
+- sort 100 items: 3us
+- thread wakeup: 5us
+- thread spawn: 25us
+- sorting 1000 items: 45us
+
+Use cases
+- more IO
+- more computation
+
+Dilemma
+- single threaded and determinstic (best for fuzzing and simulation testing)
+- trace of program run as flamegraph
+  * shows major blocking parts
+  * problem: sorting => solution: faster, incremental
+  * problem: hashing => faster hashing
+
+Preparation
+- Measure performance with benchmarks
+- profile to see whats worth offloading
+- reach for existing solutions
+
+Mindset
+- What are you willing to use? SIMD, threads, entirely different language ie Futhark for GPU programming
+- different rules:
+  * duplicate work > communicating
+  * read eagerly > write
+- avoid 3 sins
+  * spinning (lyign)
+  * dependencies (stealing)
+  * contention (useless beating)
+
+Spinning
+```md
+while not check(state):
+  ~~continue~~
+  ~~pause unbounded~~
+  ~~yield()~~ Most impls of yield only do check current code. yield to unrelated thread also bad.
+  ~~sleep(N)~~ Good for throughput, bad for latency.
+```
+Use events instead (Signalling > Polling unless low level driver things)
+# consumer                 |  # producer
+while not check(state):    |  ready(state)
+  event.wait()             |  event.set()
+
+# wait                     |  # set
+threads.push(self)         |  ready(state)
+sleep()                    |   .pop_all()
+                           |   .for_eacH(wake)
+Problem Thundering Herd (All threads are woken up to hammer CPU)
+Solution Change to chained wake
+
+Competition
+Run as many tasks as you can
+Race to register pattern (once, CPU pipelining):
+- doing work nontheless and the first one is allowed to write
+- minimize time in critical section
+- avoid (deferred) handoffs
+  * good for fairness
+  * bad for throughput
+- chennal > mutex, because its easier to mess up size of critical section
+- WaitGroup instad of multiple join(): do 1 syscall instead of N syscalls
+- EventListener > ConditionVariable: wait for arbitrary condition without walk through mutex
+- Channels too much overhead: Prefer RwLock
+  * instead of Mutex: Writers block everyone, Readers only block Writers
+  * RCU instead of RwLock for specific high performance cases
+    + readers dont block writers at all
+    + single writer to swap out the item
+
+Contention
+- resolving collision is main performance killer of threads
+- cas loop
+```
+old = atomic_load(ptr)
+while true:
+  new = old + 1
+  old = atomic_cas(ptr, old, new) catch break
+```
+- for simple instructions use the hardware primitives
+```
+old = atmoic_fetch_add(ptr, 1)
+```
+- too complex operation
+  * use backoff operation for ca. 2x throughput
+```
+while true:
+  old = atmoic_load(ptr)
+  new = complex(old)
+  _  = aomitc_cas(ptr, old, new) catch break
+  backoff()
+```
+- lockfree queue
+  * check length before (reading can be quick)
+
+```
+# push(itm)                                   | # pop()
+with lock(mutex)                              | if LOAD() == 0:
+  array.push(item)                            |   return error.Empty
+  STORE(len(array))                           | with lock(mutex):
+                                              |   defer STORE(len(array)
+                                              |   return array.pop()
+```
+- lockfree queue: only use STORE, if pop did return an operation to prevent write collision resolution
+```
+# push(itm)                                   | # pop()
+with lock(mutex)                              | if LOAD() == 0:
+  array.push(item)                            |   return error.Empty
+  STORE(len(array))                           | with lock(mutex):
+                                              |   item = try array.pop()
+                                              |   STORE(len(array))
+                                              |   return item
+```
+- Partition
+  * futex: [N]Mutex<WaitQueue> as table of wait queues
+  * dashmap: [N]RwLock<Hashmap> a hashmap, but a lot of them
+  * align(cache_line) to prevent cache line contention
+  * batch operations before contending (allocatores and injector do these)
+
+- Optimize single threaded first
+- Measure things for a strategy
+- Try existing solutions
+- ASIC
+  * accumulate
+  * satiate
+  * isolate
+  * consolidate

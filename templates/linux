@@ -209,3 +209,6 @@ and https://lwn.net/Articles/519085/ on example of exec(ve)
   * 'od -t d8 /proc/PID/auxv'
   * #include <sys/auxv.h>
     unsigned long int getauxval(unsigned long int type);
+
+Enable huge pages
+* https://wiki.debian.org/Hugepages

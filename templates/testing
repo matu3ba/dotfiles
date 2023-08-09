@@ -46,3 +46,7 @@ ideas for the ideal cli test system for non-timing and timing based testing:
 - Query system options for test behavior: You are basically writing a RAM database
   best TODO intro
 - Make it stupidly simple.
+
+TODO explain property based testing, metamorphic testic
+https://github.com/cryptocode/marble
+https://www.cockroachlabs.com/blog/metamorphic-testing-the-database/

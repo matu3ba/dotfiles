@@ -23,6 +23,10 @@ I'd use this strategy (probably try 1+2 first) to identify the cause unless the 
   * step through interesting bits
   * report your findings + scripts how to reproduce them
 
+zig build-exe -femit-llvm-ir=bad.ll
+llc -filetype=asm bad.ll -o bad_ll.s
+objdump -dxS -Mintel bad_ll.s &> badecodegen_ll_s.dump
+
 TODO dense assembly of function via grep? objdump?
 
 * qemu-system-avr available

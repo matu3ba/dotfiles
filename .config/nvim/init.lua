@@ -45,6 +45,7 @@ else
   -- * execute macro over visual selection
   -- * clone current paragraph
   -- * rotate tabs: tabm0
+  -- TODO always show context of cursor <<<<<<<<<
 
   -- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
   -- idea config: toggle show size of last copy + selection in cmdline

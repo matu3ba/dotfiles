@@ -177,11 +177,13 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 
 // in build.zig use -D (as desribed in zig build -h)
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
+// zig build test-std -Dtest-filter="getDefaultPageSize smoke test" -fqemu
 // Otherwise for libstd tests, use
 // zig test lib/std/fmt.zig --zig-lib-dir lib --main-pkg-path lib/std
 // zig test C:\cygwin64\home\kcbanner\kit\zig\lib\std\std.zig -target x86_64-windows-gnu -mcpu x86_64 -I C:\cygwin64\home\kcbanner\kit\zig\test --zig-lib-dir C:\cygwin64\home\kcbanner\kit\zig\lib --test-filter "DWARF expressions"
 // zig test .\lib\std\std.zig -target x86_64-windows-gnu -mcpu x86_64 -I .\test --zig-lib-dir .\lib --test-filter "DWARF expressions"
 // zig test ./lib/std/std.zig -target x86_64-windows-gnu -mcpu x86_64 -I ./test --zig-lib-dir ./lib --test-filter "DWARF expressions"
+// zig test ./lib/std/std.zig  -I ./test --zig-lib-dir ./lib --test-filter "getPageSize smoke test"
 // Run tests within valgrind via:
 // zig test valgrind.zig -lc --test-cmd valgrind --test-cmd '-s' --test-cmd-bin
 // Run tests within qemu:

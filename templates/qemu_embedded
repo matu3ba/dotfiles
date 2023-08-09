@@ -1,3 +1,7 @@
+### qemu_avr ###
+https://yeah.nah.nz/embedded/qemu-avr/
+https://qemu-project.gitlab.io/qemu/system/target-avr.html
+
 ### qemu_embedded ###
 General steps:
 - 1. linker script to define memory layout for correct placement of _start

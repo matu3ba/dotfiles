@@ -410,7 +410,7 @@ map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]]
 map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>]], opts) -- switch material style
 
 -- stylua: ignore start
--- TODO: resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
+-- telescope leaks memory at cancellation points (unless the query can processes quickly)
 map('n', '<leader>rg', [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) -- ripgrep string search
 map('n', '<leader>ss', [[<cmd>lua require("my_telesc").searchStringRecentReg()<CR>]], opts) -- search string
 map('n', '<leader>fs', [[<cmd>GrepInDirectory<CR>]], opts) -- forwardIntoDir searchstring

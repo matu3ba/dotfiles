@@ -29,3 +29,14 @@ Memory profiling
 https://thatonegamedev.com/cpp/memory-profiling-on-windows-for-c/
 https://stackoverflow.com/questions/4322678/how-to-do-memory-profiling-on-windows
 https://stackoverflow.com/questions/413477/is-there-a-good-valgrind-substitute-for-windows
+
+Large and huge pages on Windows (2MB, 1GB)
+https://mahdytech.com/large-pages-how-when/
+- Large-Pages cannot be paged out, so they remain in RAM
+- SeLockMemoryPrivilege is needed for a user, but it is persistent
+```pwsh
+$objUser = New-Object System.Security.Principal.NTAccount("USER")
+$strSID = $objUser.Translate([System.Security.Principal.SecurityIdentifier])
+$strSID.Value
+```
+TODO finish up, if needed

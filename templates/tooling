@@ -7,20 +7,28 @@ fd-find from sharkdp (https://github.com/sharkdp/fd)
 fz from natecraddock (https://github.com/natecraddock/zf)
 jfind from jake-stewart (https://github.com/jake-stewart/jfind)
 znvim from LordMZTE (https://mzte.de/git/LordMZTE/znvim) (glpv3)
+zellij: s-e (scrollback-edit, does not work?)
+
+fdupes or fork jdupes - finding duplicates
+fdupes -qdN -r /ops/backup/
 
 xpack for windows reproducible build framework (https://xpack.github.io/)
 rizin - reverse debugging
 grafana - visualization
+windirstat for directory overview - https://windirstat.net/
+
+xml parser: yxml (https://code.blicky.net/yorhel/yxml)
+disk usage explorer: ncdu (https://code.blicky.net/yorhel/ncdu) or KDE filelight
+simple header testing framework: utest.h (https://github.com/sheredom/utest.h)
 
 proprietary
 whitebox - program execution tracer and visualizer
 tracy -- frame tracer and visualizer
 
-
 - valgrind
 * cachegrind: cache profiler
 * callgrind: cachegrind + call graphs
-* massif: heap profiler
+* massif: heap profiler (massif-visualizer as graphical frontend)
 * helgrind: race condition finder
 * DRD: like helgrind, but uses less memory
 * Lackey/None: demo/unit test of valgrind itself
