@@ -145,6 +145,11 @@ sudo chmod -R 777 /dev/sdX
 > if error: sudo chown -hR $(whoami) /dev/sdX
 sudo mount -orw,remount /dev/sdX
 
+Windows fileserver (samba) mounting
+UID=$(id -u)
+sudo mount -t cifs -o 'user=USER,domain=DOMAIN,uid=$UID,gid=domain users@domain.local' //fileserver/dirpath /mnt/mntdir
+getent passwd username@domain
+
 Kernel view of sdcard/block device:
 sudo hdparm -r0 /dev/sdX
 /dev/sdX:

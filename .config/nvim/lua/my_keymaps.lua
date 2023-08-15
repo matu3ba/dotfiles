@@ -73,6 +73,11 @@ map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary sear
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
 -- Note: * and # also work, but they autojump to next search result
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
+-- 1. cgn to cut global next or something
+-- 2. /pattern/e
+-- 3. /pattern\zsworld
+-- during selection: press o or O
+
 -- TODO search without regex patterns
 --call search('\V' . escape(string, '\'))
 --com! -nargs=1 Search :let @/='\V'.escape(<q-args>, '\\')| normal! n

@@ -86,6 +86,8 @@ SHENNANIGAN
   * based on paper "RVSDG: An Intermediate Representation for Optimizing Compilers"
   * 1. LLVM IR requires frequent normalization into SSA form, which looks like it
     eats up any performance advantage over the more general graph form
+    + optimizations are always destructive due to normalization
+      xor would have unfeasible storage overhead
   * 2. Tracing optimizations and writing validation code along IR requires an
     own tracing system per optimization instead of using graph representation
 

@@ -20,6 +20,9 @@
 #overwrite current branch with other branch without losing content
 #git tag old-email-branch
 #git reset --hard staging
+# recover from losing (un)commited changes by git reset --hard
+#git reflog show
+#git reset HEAD@{2}
 
 #remove last commit (--soft vs --hard)
 #git reset HEAD~1

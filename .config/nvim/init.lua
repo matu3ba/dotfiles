@@ -26,9 +26,33 @@ else
   -- * 3. C-w t left of tab
   -- * 4. :tabm shortcuts
   -- * 5. combine commands to replace terminal buffer
-  -- * 6. runner
+  -- * 6. runner + hack workaround (copy everything between prompts)
   -- * 7. one shot replace keypressed terminal with given command under same named register (uiojl)
   -- * 8. replace terminal under cursor with given command under same named register upon keypress (repeat)
+  -- TODO lsp
+  -- luasnips setup to create snippets for common stuff
+  -- TODO venn:
+  -- * hjkl ◄▼▲►
+  --   + motivational Python example:
+  --   #      ┌─────────────────────────┐
+  --   #      ▼  ▼──────────┐           │
+  --   # inactive(1)───▼    │       maybe_active(0)
+  --   #    ▲ ▼     error_detected(3)───▲
+  --   #   active(2)─────▲
+  -- * ascii mode
+  --   + hkl <^>
+  --   + hj as ◄▼ /
+  --   + kl as ▲► /
+  --   + kh as ◄▲ \
+  --   + jl as ▼► \
+  --   + boxes as
+  --     +-----+
+  --     |     |
+  --     |     |
+  --     +-----+
+  -- * inline text spacing adjustments
+
+  -- "Seven habits of effective text editing" by Bram Moolenaar
 
   -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
