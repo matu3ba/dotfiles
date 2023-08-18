@@ -21,6 +21,13 @@ https://learn.microsoft.com/en-us/windows/console/handlerroutine
 
 
 unixoid (Linux)
+Generally, the existence of a process id at a timepoint does not mean that the
+same process still lives. Another process could reuse the pid in the meantime
+and one has to use process supervision via pid 1 or parent<->child process to
+ensure the behavior.
+To handle potentially malicious processes, one has to spawn reaper processes
+to kill the child.
+
 Signal      Standard   Action   Comment
 ────────────────────────────────────────────────────────────────────────
 SIGABRT      P1990      Core    Abort signal from abort(3)
@@ -132,3 +139,16 @@ Linux kernel supports a range of 33 different real-time signals, numbered 32 to 
 
 TODO properly explain trick from https://ldpreload.com/blog/signalfd-is-useless
 to handle multiple signals via self pipe
+
+Okayish intro
+https://www.jmoisio.eu/en/blog/2020/04/20/handling-signals-correctly-in-a-linux-application/
+https://www.jmoisio.eu/en/blog/2020/10/13/non-blocking-server-c-linux/
+1. Get pid via reading /proc
+2. Use pid with kill
+3. 'killed process' calls poll on pollfds (containing signalfd)
+better: use use dedicated process management framework instead of
+potential racy kill call with pid or not handling of blocked programs
+signalfd.
+Hereby 'signalfd' saves a separate thread only for signal handling.
+
+SA_NODEFER may lose signals, but can catch them.
