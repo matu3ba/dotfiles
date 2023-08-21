@@ -99,5 +99,7 @@ Get MAC address of current device:
 ip a
 cat /sys/class/net/enp0s3/address
 ind /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf "%P: " -execdir cat {}/address \;
+To get all routes
+ip r
 
 iwconfig wlan0 | grep -i --color quality

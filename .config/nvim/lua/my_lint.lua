@@ -52,6 +52,25 @@ ruff.args = {
   '-'
 }
 
+-- # Checks
+-- CHECKS="clang-*,cppcoreguidelines-*,modernize-*,performance-*,-clang-diagnostic-old-style-cast,-clang-diagnostic-sign-conversion,\
+-- -modernize-use-auto,-cppcoreguidelines-special-member-functions,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-constant-array-index,\
+-- -clang-diagnostic-conversion,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-type-cstyle-cast,-clang-diagnostic-missing-variable-declarations,\
+-- -clang-diagnostic-documentation-unknown-command,-clang-diagnostic-covered-switch-default"
+--
+-- # Warnings (from qtcreator - options - c++ - code model - clang)
+-- WARN="-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-macros -Wno-newline-eof -Wno-exit-time-destructors -Wno-global-constructors \
+-- -Wno-gnu-zero-variadic-macro-arguments -Wno-documentation -Wno-shadow -Wno-switch-enum -Wno-missing-prototypes -Wno-used-but-marked-unused \
+-- -Wno-unknown-pragmas -Wno-unused-parameter"
+--
+-- clang-tidy \
+--     -checks="$CHECKS" \
+
+-- local clang_tidy = lint.linters.clang_tidy
+-- clang_tidy.args = {
+--   '--quiet',
+-- }
+
 vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
   callback = function() lint.try_lint() end,
 })

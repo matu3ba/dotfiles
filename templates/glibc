@@ -4,3 +4,31 @@ lseek(fd, -4, SEEK_CUR) does not move cursor without returning -1.
 Subsequent writes then can create 4GB files due to internal overflow.
 man lseek does not specify this awkward behavior on negative offsets with SEEK_CUR.
 solution: keep track of current absolute position and use SEEK_SET.
+
+Get version with
+/lib/x86_64-linux-gnu/libc.so.6
+or
+ldd --version
+or
+strings /sysroot/lib/libc.so.6 | grep GLIBC
+or via compiling a program
+```
+#include <gnu/libc-version.h>
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    // method 1, use macro
+    printf("%d.%d\n", __GLIBC__, __GLIBC_MINOR__);
+
+    // method 2, use gnu_get_libc_version
+    puts(gnu_get_libc_version());
+
+    // method 3, use confstr function
+    char version[30] = {0};
+    confstr(_CS_GNU_LIBC_VERSION, version, 30);
+    puts(version);
+
+    return 0;
+}
+```

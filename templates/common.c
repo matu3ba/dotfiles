@@ -1,6 +1,8 @@
 #include <stdint.h> // uint32_t, uint8_t
 #include <stdlib.h> // exit
 #include <stdio.h>  // fprintf
+#include <errno.h>  // errno
+#include <limits.h> // limit
 
 // Standards
 // http://port70.net/~nsz/c/
@@ -17,6 +19,8 @@
 //
 // Except, by posix extension: casting pointers to functions (and back), because
 // that must be valid for dynamic linking etc.
+
+// TODO code example
 
 // Might get superfluous with new C standard (C2x).
 #ifndef GENERATE_ENUM_STRINGS
@@ -103,6 +107,8 @@ void printBits(int32_t const size, void * const ptr)
 // Main drawbacks:
 // * Requires expert crafting rules
 // * existentially quantified Coq variables (evars) for proofs must be carefully chosen
+//   + finding existential variables is usually the hardest problem in automatized proves,
+//     so it looks unfeasible to automatize for "non-experts"
 
 int f(int* a) {
     *a=*a+1;
@@ -133,5 +139,60 @@ void noaliasing(int* a, const long* b) {
 void noaliasing_with_restrict(int* __restrict__ a, const int* b) {
   for (int i=0; i<10; i+=1) {
     a[i] += *b;
+  }
+}
+
+// SHENNANIGAN
+// Additional pointer semantics created unnecessary UB, so one has to compare
+// against 0 to be always compatible.
+void ptr_cmp(int* a, const int* b) {
+  if (a == 0 && b == 0) {
+    *a = *a + *b;
+  }
+}
+// Using this from C is UB:
+//   extern C {
+//     int* a = nullptr;
+//   }
+// or using this from C++ is UB:
+//   int* a = void*;
+
+// SHENNANIGAN
+// No readable, portable simple to use, handling all standard cases for ascii standard
+// conversion routines for string to integer. <C++23> is worse without boost.
+// This code is uselessly verbose (ignore non-portable printf qualifiers for now) taken from
+// https://wiki.sei.cmu.edu/confluence/display/c/ERR34-C.+Detect+errors+when+converting+a+string+to+a+number
+// Note, that errno can be set directly.
+// #include <errno.h> #include <limits.h> #include <stdlib.h> #include <stdio.h>
+void convert_string_to_int(const char *buff) {
+  char *end;
+  int si;
+  errno = 0;
+  const long sl = strtol(buff, &end, 10);
+  if (end == buff) {
+    (void) fprintf(stderr, "%s: not a decimal number\n", buff);
+  } else if ('\0' != *end) {
+    (void) fprintf(stderr, "%s: extra characters at end of input: %s\n", buff, end);
+  } else if ((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno) {
+    (void) fprintf(stderr, "%s out of range of type long\n", buff);
+  } else if (sl > INT_MAX) {
+    (void) fprintf(stderr, "%ld greater than INT_MAX\n", sl);
+  } else if (sl < INT_MIN) {
+    (void) fprintf(stderr, "%ld less than INT_MIN\n", sl);
+  } else {
+    si = (int)sl;
+    // ..
+  }
+}
+void convert_string_to_int_simple(const char *buff) {
+  char *end;
+  int si;
+  errno = 0;
+  const long sl = strtol(buff, &end, 10);
+  if ( (end != buff) && ('\0' == *end)
+    && !((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno)
+    && (sl >= INT_MIN) && (sl <= INT_MAX)) {
+    si = (int)sl;
+    // ..
   }
 }

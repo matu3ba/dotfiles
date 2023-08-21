@@ -88,3 +88,16 @@ do {                                                           \
 
 // figure out default symbols of host
 // echo | gcc -dM -E -
+
+// Survival flags
+// -Wno-shadow -Wno-switch-enum -Wno-missing-prototypes
+// -Wno-unknown-pragmas -Wno-unused-parameter
+
+// CLANG_TIDY_FLAGS="clang-*,cppcoreguidelines-*,modernize-*,performance-*"
+// clang-tidy \
+//   -checks="$CHECKS" \
+//   -header-filter="$H*" $file \
+//   -- \
+//   -std=c++1z \
+//   -D_REENTRANT -fPIC \
+//   $WARN $DEFINES $INCLUDES

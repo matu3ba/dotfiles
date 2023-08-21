@@ -388,3 +388,14 @@ class FriendOfVariable2 {
 // Most likely, functionname() was declared in class, but no implementation
 // given as classname::functionname().
 // Other typical causes are incorrect usage of mocking or linker substitution.
+
+// performance traps https://wolchok.org/posts/cxx-trap-1-constant-size-vector/
+
+// SHENNANIGAN
+// C++ conversion string to int is worse without boost, so use C's strtol from templates/common.c
+// https://stackoverflow.com/questions/11598990/is-stdstoi-actually-safe-to-use
+
+// Logging exceptions
+// catch (const std::exception &e) {
+//     log(e.what());
+// }

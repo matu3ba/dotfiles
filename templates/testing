@@ -1,4 +1,5 @@
 Best Practice taken from "Large Scale Architecture: The Unreasonable Effectiveness of Simplicity - Randy Shoup"
+and extended by personal experience.
 
 Test-Driven Development
 * inbox zero for bugs (immediately fixed, when they come up)
@@ -14,9 +15,20 @@ Continuous Delivery
 * iteratively identify and remove bottlenecks for teams
 * "what would it take to deploy application every day?"
 * 3x-5x improvements in deployment frequency, lead time, change failure rate, mean-time-to-restore
+* configurable email notification on failures
+* automatic running on code additions (both locally and over review platform)
+* configurable text file
+* blocking jobs logic to prevent usage of (multi) system resource usage
+* upper limit definitions
+* explanation of overall system design
+* at least user-based and ideally least capability-based compartmentalization for security
+* being portable (at least with virtualisation ie for security) and open source for customizability and code quality
+* understandable and machine readable built artifact reasoning logs
+* tamper prevention and signing of artifacts
+=> security setup must be user configurable aka user must be admin on bare metal machine
 
 Simple transactions
-* Dont use "distributed transactions".
+* Don't use "distributed transactions".
 * Model transaction as state machine of successive atomic events (workflow)
 * Roll back with compensating operations in reverse
 * Explicitly expose intermediate states in the interface
@@ -24,7 +36,7 @@ Simple transactions
 * Consider event-driven "dataflow" depending on architecture
 
 Known bad designs:
-- 1. googlemock forces to use default constructors and has horrible error messages with huge boilerplate
+- 1. forcing of default constructors
   * use injection instead
 - 2. qtest / test frameworks are very verbose
   * use own test framework or language ones, unless specific use cases can be isolated
@@ -32,10 +44,61 @@ Known bad designs:
   * use a table + for loop instead
 - 4. tight coupling of unrelated components
   * use weak coupling, if feasible
-- 5. no unnecessary classes / boilerplate
-  * dont decouple strongly related things, because classes create costs via pointer indirection
+- 5. unnecessary classes and other boilerplate
+  * don't decouple strongly related things, because classes create costs via pointer indirection
+  * moving around code takes time
+- 6. code review of most important logic, regarding overall design, good practices and testing
+- 7. Unreadable error context + diagnosis (google mocks)
+- 8. Unit test or component test frameworks are complex, have no single known concise documentation page for usage (google mocks)
+     inclusive or have no good keywords for searching the use case
 
-ideas for the ideal cli test system for non-timing and timing based testing:
+Unit tests
+- must never depend on timing (deadlines or waiting times)
+- must be as independent as possible from external factors excluding the tested ones
+
+Component/partial integration tests
+- must have clear visible distinguishment including separate build step to unit tests
+- ie mocking must justify by test description 1. long compilation, 2. long testing times, 3. existence
+  + example: usage of network component ie writing data over socket must be justified
+
+Integration tests via
+- Simulation on long hardware timeouts: plan timeout length and scale timeouts
+  by maximum allowed factor to be able to represent minimal timeout without
+  affecting system behavior (justify minimal timeout and/or why time scaling not possible otherwise)
+- Simulation: remove network unless testing network behavior intended and justify why
+
+Design
+- specifications (Lastenheft) with basic supported use cases
+- requirements (Pflichtenheft) for timing behavior (initialization, deinitialization, maximum latencies, waiting times)
+- clean termination for good automatic error diagnosis in most cases
+- system resource supervision after basic initial implementation (timing behavior, memory etc)
+- justification of permanent latency introductions (threads) (in real time system all temporary latency must be justified)
+- justification under what constrains and why system remains consistent (see definition for data base)
+
+Build system
+- correct
+- as fast as possible
+- caching
+- cache clearing
+- easy cross compilation
+- easy cross platform simulation
+- easy packaging and package usage
+
+Meetings
+- all important decisions should be mathematical and understandable
+- pre and postreview of relevant things via overall transcription
+- time slots for speaking
+- slides with short talk, if understanding is important
+- in doubt, unless it is about business/money idea, YAGNI (You aren't gonna need it.)
+- separate informative from non-informative parts
+
+Materials
+- ssh has >0.2s delay per key press, virtual machine is worse
+- headset, ergonomic keyboard, set of good writing material
+- if feasible: comparable (embedded) devices for playing at home
+- fixed places and system for where items are to remain and database for lookup items
+
+Ideas for the ideal cli test system for non-timing and timing based testing:
 
 - design rules to distinguish observable behavior without timing from
   timing-related behavior and how to work around that
@@ -47,6 +110,6 @@ ideas for the ideal cli test system for non-timing and timing based testing:
   best TODO intro
 - Make it stupidly simple.
 
-TODO explain property based testing, metamorphic testic
+TODO explain property based testing, metamorphic testing
 https://github.com/cryptocode/marble
 https://www.cockroachlabs.com/blog/metamorphic-testing-the-database/

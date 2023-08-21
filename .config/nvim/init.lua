@@ -26,7 +26,8 @@ else
   -- * 3. C-w t left of tab
   -- * 4. :tabm shortcuts
   -- * 5. combine commands to replace terminal buffer
-  -- * 6. runner + hack workaround (copy everything between prompts)
+  -- * 6. runner + hack workaround (copy everything between prompts under jkluoi keys, delete and add terminal)
+  --   + test runner does not play nice with Python behavior of being less unbuffered on terminal and more buffered on non-terminal
   -- * 7. one shot replace keypressed terminal with given command under same named register (uiojl)
   -- * 8. replace terminal under cursor with given command under same named register upon keypress (repeat)
   -- TODO lsp
@@ -51,7 +52,7 @@ else
   --     |     |
   --     +-----+
   -- * inline text spacing adjustments
-
+  -- vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
 
   -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
@@ -382,6 +383,10 @@ callback = function()
 
 -- Removing Zig cache (for nested in project build.zig file)
 --ZIGCACHE=$(fd -uu zig-cache) && rm -fr $ZIGCACHE && fd -uu zig-cache
+
+-- Remove externally installed broken treesitter parsers
+-- rm ~/.local/nvim/lib/nvim/parser/c.so
+-- rm ~/.local/nvim/lib/nvim/parser/cpp.so
 
 -- Run current line
 -- :.!python3

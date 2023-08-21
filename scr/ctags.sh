@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 set -e
 PATH="/usr/local/bin:$PATH"
 PID=$$

@@ -6,6 +6,11 @@
 " Usage: export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 "        call vim
 
+
+"   Embedded devices without config
+":set nu
+":set hlsearch
+
 if empty("$XDG_CACHE_HOME")
   let $XDG_CACHE_HOME="$HOME/.cache"
 endif

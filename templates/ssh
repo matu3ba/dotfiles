@@ -10,17 +10,7 @@ Environment variables
      DISPLAY, HOME, LOGNAME, MAIL, PATH, TZ, USER
      and all variables prefixed with SSH_
 
-____Configuration____
-~/.ssh/config for configs:
-AddKeysToAgent yes
-# NAME account
-Host github.com
-  HostName github.com
-  User git
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/PRIVATEKEYNAME
-  IdentitiesOnly yes
-
+____Generating_keys____
 Generating private key with 200 instead of 16 default rounds.
 With
 COMMENT="$(date +'%Y%m%d')${USER}@${HOSTNAME}"
@@ -41,13 +31,25 @@ You see inside ~/.ssh/authorized_keys on the target, which keys were authorized.
 Note, that if you add /root/.ssh/authorized_keys to get root access on the
 target, it is identical to ~/.ssh/authorized_keys, if you are root.
 
-If there are problems:
+If there are problems either:
 1. restart ssh daemon (dropbear, ssh etc)
 2. add configuration
 3. add ~/.ssh/authorized_keys by other means on the target
 3. ssh-add pathtokey
 4. ssh-copy-id user@ip
 like in ./scr/gen_ssh.sh
+or on "Permission denied (publickey,password).":
+0. Fixup your config like described (PreferredAuthentications, IdentitiesOnly)
+1. Re-enable passwd authentication in /etc/ssh/sshd_config:
+PasswordAuthentication yes
+2. Restart ssh server:
+service sshd restart
+3. Copy key after login:
+ssh-copy-id -i ~/.ssh/id_rsa.pub USER@HOST -p PORT
+4. Next login should work without password:
+ssh USER@HOST
+5. Disable password in /etc/ssh/sshd_config:
+PasswordAuthentication no
 
 ssh may complain with `WARNING: UNPROTECTED PRIVATE KEY FILE!`
 Fix it on the machine with:
@@ -73,17 +75,7 @@ checklist ssh correctly running
 5. firewall or netfilter, firejail etc blocking things?
 6. where to look for more help
 
-github ssh config might need
-
-Host github.com
-  HostName ssh.github.com
-  Port 443
-  User git
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/github_ed25519
-  IdentitiesOnly yes
-
-____Setup signing commits with gpg____
+____Setup_gpg____
 fish
 set -U GPG_TTY "$(tty)"
 set -U SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
@@ -120,8 +112,38 @@ Adjust the .gitconfig with the output(without any 0x in front):
 
 ssh-add -l
 
-FAQ
+____Configuration____
+~/.ssh/config for configs:
+AddKeysToAgent yes
+# NAME account
+Host github.com
+  HostName github.com
+  User git
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/PRIVATEKEYNAME
+  IdentitiesOnly yes
+
+github ssh config might need
+
+Host github.com
+  HostName ssh.github.com
+  Port 443
+  User git
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/github_ed25519
+  IdentitiesOnly yes
+
+Config Options
+*PreferredAuthentications* keyboard-interactive,password,publickey,hostbased,gssapi-with-mic
+To use explicitly the given config key for the host, set
+*IdentitiesOnly* yes
+
+____FAQ____
 Problem https://superuser.com/questions/1631020/gpg-agent-ssh-support-throwing-sign-and-send-pubkey-signing-failed-for-rsa-no
 sign_and_send_pubkey: signing failed for ED25519 PRIVATE_KEY_PATH from agent: agent refused operation
 Solution
-gpg-connect-agent updatestartuptty /bye >/dev/null
+1. create new empty tab in tmux/zellij or ideally new terminal emulator to
+   force handling of tty in that window
+2. gpg-connect-agent updatestartuptty /bye >/dev/null
+3. scp does not work, ie creates files with weird names.
+   ALWAYS append : or scp has cp behavior.

@@ -145,6 +145,13 @@ sudo chmod -R 777 /dev/sdX
 > if error: sudo chown -hR $(whoami) /dev/sdX
 sudo mount -orw,remount /dev/sdX
 
+Fixup user, group, permissions and capabilities:
+sudo chown user.group binary
+sudo chmod 366 binary
+sudo setcap 'cap_net_bind_service=ep' binary
+Note: 'sudo cp binary /usr/bin/binary' removes capabilities (non-copyable) and adjusts owner and permissions.
+To restore behavior, consider deleting the file from the overlayfs (ie 'rm /mnt/overlay/root/bin/binary').
+
 Windows fileserver (samba) mounting
 UID=$(id -u)
 sudo mount -t cifs -o 'user=USER,domain=DOMAIN,uid=$UID,gid=domain users@domain.local' //fileserver/dirpath /mnt/mntdir
