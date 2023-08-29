@@ -7,6 +7,8 @@ nix-channel --udpate
 __ home-manager __
 manages ${HOME}
 should be used as standalone to work everywhere, where nix works
+without this impurities may creep in
+temporary usage: nix-shell -p gnumake -p python27
 
 __ flakes __
 project-specific setups, overlays etc

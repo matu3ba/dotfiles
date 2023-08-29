@@ -28,6 +28,7 @@ else
   -- * 5. combine commands to replace terminal buffer
   -- * 6. runner + hack workaround (copy everything between prompts under jkluoi keys, delete and add terminal)
   --   + test runner does not play nice with Python behavior of being less unbuffered on terminal and more buffered on non-terminal
+--     overseer.nvim?
   -- * 7. one shot replace keypressed terminal with given command under same named register (uiojl)
   -- * 8. replace terminal under cursor with given command under same named register upon keypress (repeat)
   -- TODO lsp

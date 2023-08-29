@@ -570,7 +570,7 @@ public:
 // helper function.
 
 // SHENNANIGAN
-// Checking, if typename is a string is complex (even with C++17)
+// Checking, if typename is a string is complex (even with C++17 extension)
 template<typename STR>
 inline constexpr bool is_string_class_decayed = false;
 template<typename... STR>
@@ -618,3 +618,11 @@ static_assert(!is_string_class<std::vector<char>>);
 
 // Singleton http://www.java2s.com/example/cpp/template/create-the-singleton-template.html
 // https://stackoverflow.com/questions/41328038/singleton-template-as-base-class-in-c
+
+// Using C++ as C with templates:
+// 1. Compile with g++, link with gcc
+//   g++ -nodefaultlibs -fno-exceptions -fno-rtti -std=c++11 -c main.cpp -o main.o
+//   gcc -o main main.o
+// 2. Using clang
+//   clang++ -nodefaultlibs -fno-exceptions -fno-rtti -std=c++11 -c main.cpp -o main.o
+// Mac might need `-nostdlib -L libcpath` due to automatically invoking -stdlib=libc++.

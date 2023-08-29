@@ -92,6 +92,7 @@ network.wifi.enabled = true;
 xor
 network.networkmanager.enabled = true;
 (they are mutually exclusive).
+(networking.wireless.enable = true;?)
 
 on breakage:
 boot with your startup medium and mount your partition

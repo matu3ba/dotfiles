@@ -92,6 +92,8 @@ do {                                                           \
 // Survival flags
 // -Wno-shadow -Wno-switch-enum -Wno-missing-prototypes
 // -Wno-unknown-pragmas -Wno-unused-parameter
+// -fsanitize=unsigned-integer-overflow (must be separate, because it breaks C standard, unlike -ftrapv this one actually works)
+// -fsanitize=undefined
 
 // CLANG_TIDY_FLAGS="clang-*,cppcoreguidelines-*,modernize-*,performance-*"
 // clang-tidy \

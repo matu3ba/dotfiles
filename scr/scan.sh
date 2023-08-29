@@ -20,12 +20,12 @@ cd "${DIR}"
 # A4, color is default
 # --mode Gray
 # --resolution 300
-scanimage -b --format tiff -d 'OUTHELP' --source 'OUTHELP_SOURCE' --resolution 150 -x 210 -y 297
+scanimage -b --format tiff -d 'OUTHELP_DEVICE' --source 'OUTHELP_SOURCE' --resolution 150 -x 210 -y 297
 
+FILES=$(find ./ | cut -sd / -f 2-)
 for scans in * ; do
   tiff2pdf -j "${scans}" -o "${scans%%.*}.pdf"
 done
 
-#convert *.tif "$CUR/$1"
-#convert *.tiff "$CUR/$1"
-pdfunite ./*.pdf "$CUR/$1"
+PDFFILES=$(find ./ -regex ".*\.\(pdf\)" | cut -sd / -f 2-)
+pdfunite ${PDFFILES} "$CUR/$1"

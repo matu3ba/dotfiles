@@ -26,7 +26,7 @@ Interesting formal things of programming languages:
 - 6. atomic memory reordering semantics
   * out of thin air problem in C11 as most known example, see ./templates/memory
 - 7. pointer semantics is based on Separation logic (extension of Hoare Type
-  Theory) with associated aliases
+  Theory with associated aliases)
    * instead of "update the value", "update the value for all associated
      aliases"
    * unsettled in LLVM blocking CHERI usage (mixed tagged pointer capabilities)
@@ -40,23 +40,23 @@ Austral as language with linear type system without boilerplate (might become de
 https://borretti.me/article/introducing-austral
 https://austral-lang.org/spec/spec.html#linearity
 - cogent uses also a linear type system https://trustworthy.systems/projects/TS/cogent.pml.
+Note: There are other more domain-specific fully verified languages, ie for message passing
+compiling to C code or for signal processing etc (Simulink).
 
-(Cringe) thoughts on a perfect language:
+Thoughts on a theoretical optimal language:
 ```
-Consider the theoretical optimal language being bootstrapped (in multiple steps)
-from assembly.
+Consider a language being bootstrapped (in multiple steps) from assembly.
 Such language needs to have a freestanding build, link and dependency resolving
 tool to impregnate every system for multiplying the fragments.
-1.    can not build+link to the target: broken.
+1.    can not build+link on the target: broken.
 2.    can not resolve to find the ingredients: broken.
 3.    too slow for the job: broken.
 4.    too undefined: broken.
 5.    no hotswapping and REPL for debugging: broken
 6.    no usable async: broken
 7.    no formal correctness proof of spec and parts: unfinished
-Finishing 6th step is cursed and 7th perfection: the language for the ubermensch.
 
-One possible outline of the plan:
+One possible strategy:
 1.    Have super simple to use + expressive + portable language
 2.    Fix build scripts (simple to use + expressive)
 3.    Fix dependency tracking+resolving (simple to use + expressive) => come up
@@ -68,4 +68,30 @@ One possible outline of the plan:
       checker due to bigger AST and the fast compiler).
 6.    Formal analysis interface to compiler (API to extract ASTs + PIE for analysis).
 7.    World domination. Build a temple or something.
+
+State of art:
+- (Partially) verifiable are static and more simple language like 'Structured Text',
+  'CompCert C' up to pure functional languages (io restricted) like TODO
+- Hotswapping and/or with REPL are interpreted languages like Julia, Python, R
+  and all functional + logic Programming Languages
+- Static languages intended for optimizing compilers like Rust, C, C++, D
+
+System implementation details towards correctness:
+- 1. Correctness requires to simplify data representation and handling (both
+     serialized and unserialized)
+- 2. Correctness requires to limit functionality to what is necessary
+- 3. Correctness requires to have a system to limit expressivity
+- 4. Correctness requires an axiomatic functional model
+- 5. Correctness requires a functional proof of all related parts in an abstract model
+- 6. Full trust into correctness requires a fully mechanized proof of all code
+     under a correct model of hardware for all known hardware assumptions
+     * Accepted tradeoff: Hardware failures are not under control of compiler,
+       so the user is responsible to take them into account.
+
+Candidates for an optimal language (independen of domain) working on at least 3 points:
+- Compcert C is working on frontend verification and semantics of linker speak (3+4+7 solved, 3+5 unclear)
+- Rust satisfies 3, 4 for safe Rust and is kinda working on 6 (no completion
+  model), but it is not simple, so it can not be optimal (no realistic chance
+  to prove correctness or to reduce bug count to 0)
+- Zig's strategy is currently to working on 1-3 for version1_0, 4 is missing PRO and RVO)
 ```

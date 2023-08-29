@@ -188,6 +188,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test valgrind.zig -lc --test-cmd valgrind --test-cmd '-s' --test-cmd-bin
 // Run tests within qemu:
 // zig test qemu.zig -target aarch64-linux-none --test-cmd qemu-aarch64 --test-cmd-bin
+// WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
 // Emit assembly or llvm ir
 // zig build-exe -OReleaseSmall -femit-asm=min.s min.zig
 // zig build-exe -OReleaseSmall -femit-llvm=min.ll min.zig

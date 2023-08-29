@@ -196,3 +196,18 @@ void convert_string_to_int_simple(const char *buff) {
     // ..
   }
 }
+
+// SHENNANIGAN
+// create a list data structure implies 3 options:
+// * Make it generic using preprocessor directives (boils down to reimplementing or using TODO)
+// * Make it generic using 'void *' instead of actual types
+// * Not making generic and reimplement for each type.
+
+// SHENNANIGAN
+// `malloc(sizeof(MyType) * count)` breaks, if count is not given
+// TODO strongly typed C solution
+// C++ solution:
+// template<typename T>
+// __attribute__((malloc)) static inline T * allocate(size_t count) {
+//     return reinterpret_cast<T*>(malloc(count * sizeof(T)));
+// }

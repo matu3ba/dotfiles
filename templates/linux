@@ -224,3 +224,9 @@ and https://lwn.net/Articles/519085/ on example of exec(ve)
 
 Enable huge pages
 * https://wiki.debian.org/Hugepages
+
+To make oom killer less likely to kill a relevant process, use
+  echo 1000 > /proc/self/oom_score_adj
+  cat /proc/self/oom_score_adj
+Ideally, disable overcommit alltogether, but the fork-model with virtual memory
+copies makes this for many cases unfeasible.
