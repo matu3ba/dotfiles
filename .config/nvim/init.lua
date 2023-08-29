@@ -21,10 +21,10 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
   -- TODO windowing
-  -- * 1. quit without closing
-  -- * 2. close terminal command
-  -- * 3. C-w t left of tab
-  -- * 4. :tabm shortcuts
+  -- * 1. quit without closing   <leader>qw
+  -- * 2. close terminal command <leader>qc instead of ZD or ZE
+  -- * 3. C-w t left of tab      <C-w>HJKL ?
+  -- * 4. :tabm shortcuts        <
   -- * 5. combine commands to replace terminal buffer
   -- * 6. runner + hack workaround (copy everything between prompts under jkluoi keys, delete and add terminal)
   --   + test runner does not play nice with Python behavior of being less unbuffered on terminal and more buffered on non-terminal

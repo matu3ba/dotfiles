@@ -19,4 +19,4 @@ struct example {
   T mtValue;
 };
 // The same can be done in an incompatible way with C maros and
-// generic selection since C11.
+// generic selection since C11. see templates/common.h "C11's Generic selection"

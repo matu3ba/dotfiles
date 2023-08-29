@@ -2,6 +2,13 @@ Greg Law - More GDB wizardry and 8 other essential Linux application debugging t
 
 ps aux | grep execname
 gdb pathtoexec -p PID
+TODO: common debugging use cases
+- 1. interrupting process on attach + print stack trace
+- 2. printing stack traces of threads without interrupting process (strace?)
+- 3. attach to process + loop detection
+- 4. prevent internal timer firing to kill process
+
+TODO coredumpctl from https://www.baeldung.com/linux/managing-core-dumps
 
 gdb tui
 C-x-a      toggle to/from tui mode

@@ -128,6 +128,9 @@ if status is-interactive
   abbr --add -g aliases_nixvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
   abbr --add -g   templatesvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/templates"'
 
+  # neovim installation needs manual fixups to remove additional installed parsers, because c and c++ parsers are very broken:
+  # rm ~/.local/nvim/lib/nvim/parser/c.so
+  # rm ~/.local/nvim/lib/nvim/parser/cpp.so
   abbr --add -g          nb ' {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   abbr --add -g        nbnj ' firejail --noprofile {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   abbr --add -g      nbnjnm ' firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'

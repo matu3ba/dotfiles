@@ -355,6 +355,18 @@ class FriendOfVariable2 {
 // - 2. horrible behavior
 // - 3. DOD / C with more sane ~~namespaces~~classes + more typed macros
 
+// SHENNANIGAN googlemock
+// inline implementation in headers can not be mocked and fail with bogous errors
+//   error: redefinition of ‘Ctor::Ctor(const string&)’
+//   ..
+//   error: redefinition of ‘Ctor::Ctor(const string&)’
+// for each such used function.
+
+// SHENNANIGAN googlemock
+// Template types force senseless duplicate code (not DRY),
+// because templated functions can not be linked against. See 'SHENNANIGAN DESIGN ERROR'.
+// https://github.com/google/googletest/issues/2660
+
 // PERF of exceptions with handling
 // * Walk the stack with the help of the exception tables until it finds a handler for that exception
 //   in the function info tables.
@@ -399,3 +411,210 @@ class FriendOfVariable2 {
 // catch (const std::exception &e) {
 //     log(e.what());
 // }
+
+// SHENNANIGAN
+// error: Unkown classname, did you mean xyz?
+// headers with classes include another:
+//  h1.h: #include h2.h
+//  h2.h: #include h1.h
+// must use in h1.h (assumed to be main class) as class declaration
+//  class h2;
+
+// SHENNANIGAN
+// Template usage with base class adding to map via emplace (base class with interfaces is not
+// templated, specialized one is) may have undecipherable error messages (due no automatic upcast to base class):
+//   file.cpp:1032:64:   required from here
+//   /usr/include/c++/9/ext/new_allocator.h:146:4: error: no matching function for call to ‘std::pair<const std::__cxx11::basic_string<char>, std::shared_ptr<FileInterface> >::pair(std::__cxx11::basic_string<char>, std::shared_ptr<File<std::__cxx11::basic_string<char> > >&)’
+//     146 |  { ::new((void *)__p) _Up(std::forward<_Args>(__args)...); }
+//         |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// It does not matter to use std::shared_ptr<Variable<std::string>> var_obj = std::make_shared<Variable<std::string>>(varValue, varName.c_str(), varPath.c_str(), varAttr);
+//      or std::shared_ptr<Variable<std::string>> var_obj(new Variable<std::string>>(varValue, varName.c_str(), varPath.c_str(), varAttr));
+// Solution:
+//   1. Make functions within interface class templated (no virtual) or purely virtual (no body and write 'virtual fnname() = 0;')
+//   2. Remove all data from interface class
+//   4. Check, if constructor of base class is public to make it accessible to specialized one
+//   5. Use one of the following patterns:
+//     + 1. fns not impacting object lifetime should use 'int foo(bar& b)'
+//     + 2. fns consuming object should use 'baseobjfn(unique_ptr<specialobj> b)' and be called with std::move to move the value into fn
+//     + 3. fns extending lifetime object should use 'baseobjfn(shared_ptr<specialobj>)' and care should be taken to avoid circular references
+
+// SHENNANIGAN DESIGN ERROR
+// Virtual functions can only be used with overloaded and explicit implementations,
+// because templated functions can not be linked against.
+//    class Base {
+//    public:
+//       template <typename T> void f( T a ) {}
+//       virtual void f( int a ) { std::cout << "base" << std::endl; }
+//    };
+//    class Derived : public Base {
+//    public:
+//       virtual void f( int a ) { std::cout << "derived" << std::endl; }
+//    };
+//    int main() {
+//       Derived d;
+//       Base& b = d;
+//       b.f( 5 ); // The compiler will prefer the non-templated method and print "derived"
+//    }
+// Solution: 1. Use regular function overloading (copy-pasta or spaghetti code) or
+// 2. template <typename T> std::string GetValueAsString() {}
+//    template <typename Y=T>
+//    std::string GetValueAsString() {
+//      if (std::is_same<Y, std::string>::value) { return mtVal; }
+//      else { return std::to_string(mtVal); }
+//    }
+// Solution 2. has drawback, that caller must know type or lookup must be annotated somewhere (ie in the base class),
+// so we have barely an advantage over not using enum + union.
+
+// Constructor types assignment operator types
+class ExampleClass {
+    int mValue;
+    std::mutex mMut;
+    // move constructor (move means much (2) ampersand arg)
+    ExampleClass(ExampleClass&& aCpyVar) {
+        mValue = aCpyVar.mValue;
+    }
+    // simple constructor
+    ExampleClass(int aValue) {
+        mValue = aValue;
+    }
+    // copy constructor
+    ExampleClass(const ExampleClass& aCpyVar) {
+        mValue = aCpyVar.mValue;
+    } // mutex requires copy constructor
+
+    // move assign operator (move means much (2) ampersand arg)
+    ExampleClass& operator=(ExampleClass&& other) {
+        // swap lifts destruction and deallocation out of a critical/hot section
+        // and instead is UB on target as different allocator and it leaves swapped items "destroyed"
+        std::swap(mValue, other.mValue);
+        return *this;
+    };
+    // simple assign operator
+    ExampleClass& operator=(ExampleClass& other) {
+        // move leaves moved items "undestroyed" to have defined state for different allocators having UB
+        // => no allocations => use std::swap
+        // => allocations => use std::move
+        mValue = std::move(other.mValue);
+        return *this;
+    };
+    // copy assign operator (must have a public copy assignment operator), also allowed signature: const ExampleClass&
+    ExampleClass& operator=(ExampleClass other) {
+        return *this;
+    };
+};
+
+// https://stackoverflow.com/questions/1226634/how-to-use-base-classs-constructors-and-assignment-operator-in-c
+// You can and might need to explicitly call constructors and assignment operators.
+class Base {
+public:
+    Base(const Base&) { /*...*/ }
+    Base& operator=(const Base&) { /*...*/ } // simple assign op, NOLINT
+    Base& operator=(const Base&&) { /*...*/ } // move assign op, NOLINT
+};
+
+class Derived : public Base {
+    int additional_;
+public:
+    Derived(const Derived& d)
+        : Base(d) // dispatch to base copy constructor
+        , additional_(d.additional_) {}
+    Derived& operator=(const Derived& d) { // simple assign op
+        Base::operator=(d);
+        additional_ = d.additional_;
+        return *this;
+    }
+    Derived& operator=(const Derived&& d) { // move assign op
+        Base::operator=(std::move(d));
+        additional_ = d.additional_;
+        return *this;
+    }
+};
+
+// Debugging templates guidelines
+// * static_assert everywhere
+// * Sandboxes: Test as soon as it starts behaving weird, ideally with commits (ie on separate branch)
+// * Specify temporary types for better source location info, debugging, to prevent compiler limitations etc
+// * use typeid: std::cout << "testing type " << typeid(T).name() << std::endl;
+// * remove unnecessary default implemenations
+//     template<typename T, bool is_integral = boost::is_numeric<T>::value >
+//       struct my_traits;
+//
+//     template<typename T>
+//       struct my_traits<T, true> {
+//         typedef uint32_t cast_type;
+//       };
+//
+//     template<typename T>
+//       void print_whole_number(T &val) {
+//         std::cout << static_cast<my_traits<T>::cast_type>(val) << std::endl;
+//       }
+// * use templight or metashell
+// * try https://cppinsights.io
+// * std::cout << "testing type " << typeid(T).name() << std::endl;
+
+// From https://gpfault.net/posts/mapping-types-to-values.txt.html
+// SHENNANIGAN
+// std::type_info::hash_code can return different values for different types
+// type_id and dynamic_cast are the other options
+// std::type_index
+
+// Nice template overview: https://caiorss.github.io/C-Cpp-Notes/CPP-template-metaprogramming.html
+// function overloading and the object code need a unique function name for
+// every function, the compiler generates an unique name for every function
+// overload, classes and template classes. This process is called name mangling,
+// or name decoration and is unique to each compiler.
+// Possible Template Parameters: 1. class or typename, 2. Integers, 3. Function pointer, 4. Member function pointer
+
+// SHENNANIGAN
+// Non-template classes need to be stored in helper structure or have lookup
+// helper function.
+
+// SHENNANIGAN
+// Checking, if typename is a string is complex (even with C++17)
+template<typename STR>
+inline constexpr bool is_string_class_decayed = false;
+template<typename... STR>
+inline constexpr bool is_string_class_decayed<std::basic_string<STR...>> = true;
+// decay_t will remove const, & and volatile from the type
+template<typename STR>
+inline constexpr bool is_string_class = is_string_class_decayed<std::decay_t<STR>>;
+template <typename TChar, typename TString>
+inline constexpr bool is_string = is_string_class<TString> && std::is_same_v<TChar, typename TString::value_type>;
+static_assert(is_string_class<std::string>);
+static_assert(is_string_class<const std::wstring&>); // that's why we need decay_t
+static_assert(!is_string_class<int>);
+static_assert(!is_string_class<const double>);
+static_assert(!is_string_class<const char*>);
+static_assert(!is_string_class<std::vector<char>>);
+
+// SHENNANIGAN
+// stringstream is simpler to use than template code (DIY is annoying)
+// std::string GetValueAsString() override {
+//     std::stringstream ss;
+//     ss << (*mtValue);
+//     return ss.str();
+// }
+
+// SHENNANIGAN
+// std::to_string not defined for std::string, which is ennoying for generics
+
+// SHENNANIGAN
+// Errors are unfeasible to decipher. Consider
+// std::string GetValueAsString1() {
+//   if (!std::is_same<bool, Y>::value && !std::numeric_limits<Y>::is_integer && !std::is_floating_point<Y>::value) { return *mtValue; }
+//   else { return std::to_string(*mtValue); }
+// }
+// template <typename Y=T>
+// std::string GetValueAsString2() {
+//   if (std::is_same<std::basic_string<char>, Y>::value) { return *mtValue; }
+//   return std::to_string(*mtValue);
+// }
+// Neither function works and comparing types in templates is very cryptic.
+
+// SHENNANIGAN
+// Errors from pure virtual functions, ie destructors, which are needed are cryptic:
+// undefined reference to `VarInterface::~VarInterface()'
+// Solution: Change 'virtual ~VarInterface() = 0' to 'virtual ~VarInterface() {}'
+
+// Singleton http://www.java2s.com/example/cpp/template/create-the-singleton-template.html
+// https://stackoverflow.com/questions/41328038/singleton-template-as-base-class-in-c

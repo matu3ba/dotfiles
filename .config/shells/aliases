@@ -108,6 +108,9 @@ alias   templatesvi='${HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/templates"'
 #alias      initrc='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/ion/initrc"'
 # factory defaults: neovim --clean, neovim -u init.lua, neovim --clean -u init.lua file.zig (debugging plugins)
 
+# fixup neovim installation
+# rm ~/.local/nvim/lib/nvim/parser/c.so
+# rm ~/.local/nvim/lib/nvim/parser/cpp.so
 alias        fbim='./configure && ${HOME}/dev/git/cpp/mold/build/mold -run make && sudo make install-strip && sudo firecfg && sudo -K'
 alias         fbi='./configure && make && sudo make install-strip && sudo firecfg && sudo -K'
 alias          nb='${HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'

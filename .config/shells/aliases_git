@@ -49,6 +49,10 @@
 #git log -p --stash
 #git log --oneline --graph --all
 
+# Get number of commits since or between commits
+# git describe COMIMIT_RANGE --tag TAGNAME
+# git log --oneline COMIMIT_RANGE
+
 # github referencing: y for current commit URL
 
 #rmgitfilesrecursive

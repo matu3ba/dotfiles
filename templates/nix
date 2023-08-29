@@ -56,8 +56,11 @@ https://github.com/m-bdf/nixos-init-freedom
 https://github.com/cachix/devenv
 https://github.com/tweag/nickel, successor to nix, but very early mvp 0.1
 
+Probably nicest book yet for flakes but not complete and structured:
+https://nixos-and-flakes.thiscute.world/
 
 https://blog.wesleyac.com/posts/the-curse-of-nixos
 bad:
 - 1. own programming language, complicated and annoying to understand
 - 2. no real isolation (only path hackery), but overlayfs on Linux itself has many limitations (paths and stacking)
+  * related to core design issue of Linux (Unix file permission system), which stores permission of user and group in each file

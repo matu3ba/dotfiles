@@ -99,3 +99,7 @@ llvm lto takes painfully much memory (>15GB with gcc linker, docs mention up to 
   -DLLVM_TOOL_LLVM_LTO_BUILD=OFF \
   -DLLVM_TOOL_LTO_BUILD=OFF \
 ```
+
+SHENNANIGAN
+https://stackoverflow.com/questions/11485531/what-exactly-phi-instruction-does-and-how-to-use-it-in-llvm
+https://mlir.llvm.org/docs/Rationale/Rationale/#block-arguments-vs-phi-nodes
