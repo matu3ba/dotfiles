@@ -78,7 +78,7 @@ local function load_options()
   vim.o.smartindent = true
   vim.o.termguicolors = true
   -- neovim core has to this date no path functions + separator in core and neither stdpath
-  vim.o.undodir = utils.pathJoin(vim.fn.stdpath('config'), 'undodir') --undotree
+  vim.o.undodir = utils.pathJoin(vim.fn.stdpath 'config', 'undodir') --undotree
   vim.o.undofile = true
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results

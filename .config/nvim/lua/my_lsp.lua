@@ -4,9 +4,7 @@
 
 -- setup neodev before lsp
 local has_neodev, neodev = pcall(require, 'neodev')
-if has_neodev then
-  neodev.setup {}
-end
+if has_neodev then neodev.setup {} end
 
 local has_lspzero, lsp = pcall(require, 'lsp-zero')
 if not has_lspzero then

@@ -37,13 +37,13 @@ return {
       { 'hrsh7th/cmp-nvim-lsp' },
       { 'L3MON4D3/LuaSnip' },
       -- Optional
-      { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end, },
+      { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end },
       -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
       { 'hrsh7th/cmp-buffer' },
       { 'hrsh7th/cmp-nvim-lua' },
       { 'hrsh7th/cmp-path' },
       { 'hrsh7th/cmp-nvim-lsp-signature-help' },
-    }
+    },
   },
 
   -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)
@@ -85,10 +85,12 @@ return {
   {
     'echasnovski/mini.bracketed',
     version = false,
-    config = function() require('mini.bracketed').setup {
-      comment = { suffix = 'v' }, -- verbose comment
-      treesitter = { options = { add_to_jumplist = true } },
-    } end,
+    config = function()
+      require('mini.bracketed').setup {
+        comment = { suffix = 'v' }, -- verbose comment
+        treesitter = { options = { add_to_jumplist = true } },
+      }
+    end,
   },
   -- usage in my_hydra.lua
   {
@@ -110,7 +112,6 @@ return {
     end,
   },
   -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
-
 
   --fugitive <leader> [gs|g2|g3|p2|p3]
   -- TODO best shortcuts and brief usage
@@ -191,11 +192,11 @@ return {
   -- any way to place results in buffer?
   -- git clone https://github.com/jake-stewart/jfind && cd jfind && cmake -S . -B build && cd build && make -j$(nproc) && sudo make install
   -- ctrl-e, ctrl-a, ctrl-w, ctrl-f, ctrl-b for editing navigation, ctrl-p and ctrl-n for history.
-  { "jake-stewart/jfind.nvim", branch = "2.0" },
+  { 'jake-stewart/jfind.nvim', branch = '2.0' },
   ---- telescope ---- resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
   {
     'nvim-telescope/telescope.nvim',
-    dependencies = { { 'nvim-lua/popup.nvim', lazy = false }, },
+    dependencies = { { 'nvim-lua/popup.nvim', lazy = false } },
   }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
   { 'natecraddock/telescope-zf-native.nvim', lazy = false }, -- simpler algorithm for matching
   -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
@@ -277,19 +278,19 @@ return {
   -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
   -- { 'debugloop/telescope-undo.nvim' }, -- browse via <C-n>,<C-p>, <C-CR> revert state, <CR> yank additions, <S-CR> yank deletions
 
--- commonly known JSON file formats: schemastore.nvim
--- toggleterm.nvim
--- nvim-dap
--- nvim-dap-ui
--- nvim-dap-virtual-text
+  -- commonly known JSON file formats: schemastore.nvim
+  -- toggleterm.nvim
+  -- nvim-dap
+  -- nvim-dap-ui
+  -- nvim-dap-virtual-text
 
--- nvim-treesitter
--- nvim-treesitter-context
--- nvim-treesitter-textobjects
--- nvim-treesitter-textsubjects
+  -- nvim-treesitter
+  -- nvim-treesitter-context
+  -- nvim-treesitter-textobjects
+  -- nvim-treesitter-textsubjects
 
--- telescope-dap.nvim
--- telescope-symbols.nvim
--- telescope-ui-select.nvim
--- text-case.nvim
+  -- telescope-dap.nvim
+  -- telescope-symbols.nvim
+  -- telescope-ui-select.nvim
+  -- text-case.nvim
 }

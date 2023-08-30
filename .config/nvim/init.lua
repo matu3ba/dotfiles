@@ -28,19 +28,12 @@ else
   -- * 5. combine commands to replace terminal buffer
   -- * 6. runner + hack workaround (copy everything between prompts under jkluoi keys, delete and add terminal)
   --   + test runner does not play nice with Python behavior of being less unbuffered on terminal and more buffered on non-terminal
---     overseer.nvim?
+  --     overseer.nvim?
   -- * 7. one shot replace keypressed terminal with given command under same named register (uiojl)
   -- * 8. replace terminal under cursor with given command under same named register upon keypress (repeat)
-  -- TODO lsp
-  -- luasnips setup to create snippets for common stuff
+  -- TODO lsp, remove lsp-zero.nvim
+  -- luasnips setup to create snippets for common stuff with
   -- TODO venn:
-  -- * hjkl ◄▼▲►
-  --   + motivational Python example:
-  --   #      ┌─────────────────────────┐
-  --   #      ▼  ▼──────────┐           │
-  --   # inactive(1)───▼    │       maybe_active(0)
-  --   #    ▲ ▼     error_detected(3)───▲
-  --   #   active(2)─────▲
   -- * ascii mode
   --   + hkl <^>
   --   + hj as ◄▼ /
@@ -92,7 +85,7 @@ else
   -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
   -- idea keybindings for sending to terminal to gdb
 
-  require 'my_dap'  -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
+  require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc' -- more flexible
   require 'my_jfind' -- faster than telescope
@@ -115,13 +108,16 @@ require 'my_keymaps'
 -- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
 -- vim.api.nvim_call_function("stdpath", { "cache" })
 _G.Clangfmt = function()
-  vim.api.nvim_exec2([[
+  vim.api.nvim_exec2(
+    [[
 if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
   let cursor_pos = getpos('.')
   :%!clang-format
   call setpos('.', cursor_pos)
 end
-]], {})
+]],
+    {}
+  )
 end
 
 -- GOOD_TO_KNOW

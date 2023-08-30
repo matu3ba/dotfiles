@@ -9,6 +9,8 @@ end
 
 -- note hydra keybinding to attach + send cmds to debug session
 -- should this session be in harpoon? in hydra?
+-- hydra does not work with <C-hjkl> and looks broken for insertion mode,
+-- likely due to [neo]vim key handling
 
 local M = {}
 
@@ -73,11 +75,12 @@ M.window_hdyra = Hydra {
 --    },
 -- })
 
+-- (◄,▼,▲,►) in utf16: (0x25C4,0x25BC,0x25B2,0x25BA)
 local venn_hint = [[
- Arrow^^^^^^   Select region with <C-v>
- ^ ^ _K_ ^ ^   _f_: surround it with box
- _H_ ^ ^ _L_
- ^ ^ _J_ ^ ^                      _<C-c>_
+ Arrow^^^^^^  Select region with <C-v>^^^^^^
+ ^ ^ _K_ ^ ^  _f_: Surround with box ^ ^ ^ ^
+ _H_ ^ ^ _L_  _<C-h>_: ◄, _<C-j>_: ▼
+ ^ ^ _J_ ^ ^  _<C-k>_: ▲, _<C-l>_: ► _<C-c>_
 ]]
 
 -- :setlocal ve=all
@@ -96,6 +99,10 @@ M.venn_hydra = Hydra {
   mode = 'n',
   body = '<leader>ve',
   heads = {
+    { '<C-h>', 'xi<C-v>u25c4<Esc>' }, -- mode = 'v' somehow breaks
+    { '<C-j>', 'xi<C-v>u25bc<Esc>' },
+    { '<C-k>', 'xi<C-v>u25b2<Esc>' },
+    { '<C-l>', 'xi<C-v>u25ba<Esc>' },
     { 'H', '<C-v>h:VBox<CR>' },
     { 'J', '<C-v>j:VBox<CR>' },
     { 'K', '<C-v>k:VBox<CR>' },
@@ -104,6 +111,21 @@ M.venn_hydra = Hydra {
     { '<C-c>', nil, { exit = true } },
   },
 }
+
+-- symbols (-,|,^,<,>,/,\)
+-- local venn_hint_ascii   = [[
+--  - and | moves^^   Confirmation moves^^^^
+--  ^ ^ _K_ ^ ^ ^ ^   _<C-h>_: ◄, _<C-j>_: ▼
+--  _H_ ^ ^ _L_ ^ ^   ^     ^       ^   ^  ^
+--  ^ ^ _J_ ^ ^ ^ ^   _<C-k>_: ▲, _<C-l>_: ►
+--  ◄ + ▲ = \ ^ ^ ^   ◄ + ◄ / ► + ► = - / -
+--  ► + ▲ = / ^ ^ ^   ▲ + ▲ / ▼ + ▼ = | / |
+--  ◄ + ▼ = \ ^ ^ ^   other followup symbol
+--  ► + ▼ = / ^ ^ ^   + ◄▲► = <^> and ▼ = nop
+--  _F_: surround^^   _f_: surround     ^^ ^
+--  + corners ^  ^^   overwritten corners
+--                               _<C-c>_
+-- ]]
 
 local selmove_hint = [[
  Arrow^^^^^^

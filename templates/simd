@@ -1,3 +1,4 @@
 TODO simple simd intro in Zig based on http://0x80.pl/articles/simd-strfind.html
 
 idea portable simd library akind to https://github.com/google/highway
+not NURBS, but still very impressive https://bitbucket.org/kfj/vspline/src/master/

@@ -49,7 +49,7 @@ ruff.args = {
   '--quiet',
   '--ignore',
   'E501,E701,E702',
-  '-'
+  '-',
 }
 
 -- # Checks

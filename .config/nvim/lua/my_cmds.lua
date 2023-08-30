@@ -9,27 +9,27 @@ local utils = require 'my_utils'
 
 ---- Configuration files editing ----
 local add_cmd = api.nvim_create_user_command -- NOTE: lua does not follow symlinks
-local nvim_edit = 'edit ' .. vim.fn.stdpath('config')
+local nvim_edit = 'edit ' .. vim.fn.stdpath 'config'
 local sep = utils.path_separator
-add_cmd('CBuf', nvim_edit .. sep .. 'lua' .. sep  .. 'my_buf.lua', {})
-add_cmd('CCmd', nvim_edit .. sep .. 'lua' .. sep  .. 'my_cmds.lua', {})
-add_cmd('CDap', nvim_edit .. sep  .. 'lua' .. sep  .. 'my_dap.lua', {})
-add_cmd('CGdb', nvim_edit .. sep .. 'lua' .. sep  .. 'my_gdb.lua', {})
-add_cmd('CGs', nvim_edit .. sep .. 'lua' .. sep  .. 'my_gitsign.lua', {})
-add_cmd('CHa', nvim_edit .. sep .. 'lua' .. sep  .. 'my_harpoon.lua', {})
-add_cmd('CHydra', nvim_edit .. sep .. 'lua' .. sep  .. 'my_hydra.lua', {})
+add_cmd('CBuf', nvim_edit .. sep .. 'lua' .. sep .. 'my_buf.lua', {})
+add_cmd('CCmd', nvim_edit .. sep .. 'lua' .. sep .. 'my_cmds.lua', {})
+add_cmd('CDap', nvim_edit .. sep .. 'lua' .. sep .. 'my_dap.lua', {})
+add_cmd('CGdb', nvim_edit .. sep .. 'lua' .. sep .. 'my_gdb.lua', {})
+add_cmd('CGs', nvim_edit .. sep .. 'lua' .. sep .. 'my_gitsign.lua', {})
+add_cmd('CHa', nvim_edit .. sep .. 'lua' .. sep .. 'my_harpoon.lua', {})
+add_cmd('CHydra', nvim_edit .. sep .. 'lua' .. sep .. 'my_hydra.lua', {})
 add_cmd('CInit', nvim_edit .. sep .. 'init.lua', {})
-add_cmd('CKey', nvim_edit .. sep .. 'lua' .. sep  .. 'my_keymaps.lua', {})
-add_cmd('CLi', nvim_edit .. sep .. 'lua' .. sep  .. 'my_lint.lua', {})
-add_cmd('CLsp', nvim_edit .. sep .. 'lua' .. sep  .. 'my_lsp.lua', {})
-add_cmd('COpts', nvim_edit .. sep .. 'lua' .. sep  .. 'my_opts.lua', {})
-add_cmd('CPl', nvim_edit .. sep .. 'lua' .. sep  .. 'my_plugins.lua', {})
-add_cmd('CSt', nvim_edit .. sep .. 'lua' .. sep  .. 'my_statusline.lua', {})
-add_cmd('CJfi', nvim_edit .. sep .. 'lua' .. sep  .. 'my_jfind.lua', {})
-add_cmd('CTel', nvim_edit .. sep .. 'lua' .. sep  .. 'my_telesc.lua', {})
-add_cmd('CTre', nvim_edit .. sep .. 'lua' .. sep  .. 'my_treesitter.lua', {})
-add_cmd('CUtil', nvim_edit .. sep .. 'lua' .. sep  .. 'my_utils.lua', {})
-add_cmd('OPa', nvim_edit .. sep .. 'lua' .. sep  .. 'my_packer.lua', {})
+add_cmd('CKey', nvim_edit .. sep .. 'lua' .. sep .. 'my_keymaps.lua', {})
+add_cmd('CLi', nvim_edit .. sep .. 'lua' .. sep .. 'my_lint.lua', {})
+add_cmd('CLsp', nvim_edit .. sep .. 'lua' .. sep .. 'my_lsp.lua', {})
+add_cmd('COpts', nvim_edit .. sep .. 'lua' .. sep .. 'my_opts.lua', {})
+add_cmd('CPl', nvim_edit .. sep .. 'lua' .. sep .. 'my_plugins.lua', {})
+add_cmd('CSt', nvim_edit .. sep .. 'lua' .. sep .. 'my_statusline.lua', {})
+add_cmd('CJfi', nvim_edit .. sep .. 'lua' .. sep .. 'my_jfind.lua', {})
+add_cmd('CTel', nvim_edit .. sep .. 'lua' .. sep .. 'my_telesc.lua', {})
+add_cmd('CTre', nvim_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
+add_cmd('CUtil', nvim_edit .. sep .. 'lua' .. sep .. 'my_utils.lua', {})
+add_cmd('OPa', nvim_edit .. sep .. 'lua' .. sep .. 'my_packer.lua', {})
 
 local home = nil
 if utils.is_windows == true then
@@ -409,11 +409,9 @@ add_cmd('PrintAllWinOptions', function()
   local win_number = api.nvim_get_current_win()
   local v = vim.wo[win_number]
   local all_options = api.nvim_get_all_options_info()
-  local result = ""
+  local result = ''
   for key, val in pairs(all_options) do
-      if val.global_local == false and val.scope == "win" then
-          result = result .. "|" .. key .. "=" .. tostring(v[key] or "<not set>")
-      end
+    if val.global_local == false and val.scope == 'win' then result = result .. '|' .. key .. '=' .. tostring(v[key] or '<not set>') end
   end
   print(result)
 end, {})
@@ -427,7 +425,7 @@ add_cmd('PrintAllTabInfos', function()
   for _, win in pairs(windows) do
     local cfg = vim.api.nvim_win_get_config(win) -- see nvim_open_win()
     -- check for absence of floating window
-    if cfg.relative == "" then
+    if cfg.relative == '' then
       reg_wins[i] = {}
       local curwin_infos = vim.fn.getwininfo(win)
       -- reg_wins[i]["loclist"] = curwin_infos[1]["loclist"] -- unused
@@ -435,22 +433,22 @@ add_cmd('PrintAllTabInfos', function()
       -- reg_wins[i]["terminal"] = curwin_infos[1]["terminal"] --unused
       -- reg_wins[i]["topline"] = curwin_infos[1]["topline"] --unused
       -- reg_wins[i]["winbar"] = curwin_infos[1]["winbar"] -- unused
-      reg_wins[i]["botline"] = curwin_infos[1]["botline"] -- botmost screen line
-      reg_wins[i]["bufnr"] = curwin_infos[1]["bufnr"] -- buffer number
-      reg_wins[i]["height"] = curwin_infos[1]["height"] -- window height excluding winbar
-      reg_wins[i]["tabnr"] = curwin_infos[1]["tabnr"]
-      reg_wins[i]["textoff"] = curwin_infos[1]["textoff"] -- foldcolumn, signcolumn etc width
-      reg_wins[i]["variables"] = curwin_infos[1]["variables"] --unused
-      reg_wins[i]["width"] = curwin_infos[1]["width"] -- width (textoff to derive rightmost screen column)
-      reg_wins[i]["wincol"] = curwin_infos[1]["wincol"] -- leftmost screen column of window
-      reg_wins[i]["winid"] = curwin_infos[1]["winid"]
-      reg_wins[i]["winnr"] = curwin_infos[1]["winnr"]
-      reg_wins[i]["winrow"] = curwin_infos[1]["winrow"] -- topmost screen line
+      reg_wins[i]['botline'] = curwin_infos[1]['botline'] -- botmost screen line
+      reg_wins[i]['bufnr'] = curwin_infos[1]['bufnr'] -- buffer number
+      reg_wins[i]['height'] = curwin_infos[1]['height'] -- window height excluding winbar
+      reg_wins[i]['tabnr'] = curwin_infos[1]['tabnr']
+      reg_wins[i]['textoff'] = curwin_infos[1]['textoff'] -- foldcolumn, signcolumn etc width
+      reg_wins[i]['variables'] = curwin_infos[1]['variables'] --unused
+      reg_wins[i]['width'] = curwin_infos[1]['width'] -- width (textoff to derive rightmost screen column)
+      reg_wins[i]['wincol'] = curwin_infos[1]['wincol'] -- leftmost screen column of window
+      reg_wins[i]['winid'] = curwin_infos[1]['winid']
+      reg_wins[i]['winnr'] = curwin_infos[1]['winnr']
+      reg_wins[i]['winrow'] = curwin_infos[1]['winrow'] -- topmost screen line
 
       -- included with offset + 1 in winrow, wincol
       local winpos = api.nvim_win_get_position(win) -- top left corner of window
-      reg_wins[i]["row"] = winpos[1]
-      reg_wins[i]["col"] = winpos[2]
+      reg_wins[i]['row'] = winpos[1]
+      reg_wins[i]['col'] = winpos[2]
 
       i = i + 1
     end
@@ -482,9 +480,9 @@ end, {})
 
 -- Note: There may be options arguments added with dash or dashdash.
 add_cmd('PrintCliArgs', function()
-  local args = "cli args: "
+  local args = 'cli args: '
   for _, v in ipairs(vim.v.argv) do
-    args = args .. v .. " "
+    args = args .. v .. ' '
   end
   print(args)
 end, {})

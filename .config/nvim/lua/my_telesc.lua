@@ -94,5 +94,4 @@ end
 -- keep_last_buf?
 -- Observation: Memory is not cleaned up, if Esc is presed.
 
-
 return M

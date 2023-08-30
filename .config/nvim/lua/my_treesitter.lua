@@ -21,7 +21,7 @@ require('nvim-treesitter.configs').setup {
     'toml',
     'typescript',
     'vim',
-    'vimdoc'
+    'vimdoc',
   },
   -- 'c', 'cpp', zig
 
