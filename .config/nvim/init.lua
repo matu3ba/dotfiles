@@ -257,7 +257,7 @@ callback = function()
 
 -- Debugging Lua types + values, see also ./lua/my_utils.lua dump, printPairsToTmp, printIpairsToTmp
 -- unpack to unpack a table
--- `:lua = vim.fs`, `:lua = x` (short forms of `:lua vim.pretty_print(vim.fs)`)
+-- `:lua = vim.fs`, `:lua = x` (short forms of `:lua vim.print(vim.fs)`)
 -- print(type(fd_exec[1]))
 -- :g/.*DEBUG$/del
 -- local fp = assert(io.open("/tmp/tmpfile", "w")) --DEBUG
@@ -276,6 +276,11 @@ callback = function()
 --   fp:write("\n")                                --DEBUG
 -- end                                             --DEBUG
 -- fp:close()                                      --DEBUG
+-- :lua file = assert(io.open("tmpfile123", "a")); file:write(vim.o.backup); file:close()
+
+-- Debugging Neovim with vimscript via writing settings to file
+-- :call writefile([], './tmpfile123')
+-- :call writefile(split(g:material_lighter_contrast, "\n", 1), glob('./tmpfile123'), 'b')
 -- Execute something and add it to current buffer.
 -- :put = execute('messages')
 -- Debugging Environment variables

@@ -177,13 +177,13 @@ map('v', 'E', [[g_]], opts) -- goto until before eol
 
 -- color switching --
 -- map('n', '<leader>ma', [[<cmd>lua require('material.functions').toggle_style()<CR>]], opts) -- switch material style
----- spell ---- [s]s,z=,zg add to wortbook, zw remove from wordbook
+--== spell [s]s,z=,zg add to wortbook, zw remove from wordbook
 --map('n', '<leader>sp', [[<cmd>lua ToggleOption(vim.wo.spell)<CR>]], opts)
----- tab navigation ----
+--== tab navigation
 map('n', '<C-w>t', '<cmd>tabnew<CR>', opts) -- next,previous,specific number gt,gT,num gt
 map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 -- next,previous,specific number gt,gT,num gt
----- fast command exec ----
+--== fast command exec
 -- harpoon terminals
 map('n', ';d', '<cmd>e .<CR>', opts) -- dir
 map('n', ';i', [[<cmd>lua require("harpoon.term").sendCommand(1, "./i.sh\n")<CR>]], opts) -- build i.sh
@@ -197,7 +197,7 @@ map('n', ';5', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t5.sh\n")<CR
 map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR>]], opts) -- test t6.sh
 -- idea: execute in window
 -- map('n', ';w1q', [[<cmd>1wincmd q<CR>]], opts)      -- test t6.sh
----- buffer navigation ----
+--== buffer navigation
 --map('n', ']b', '<cmd>bn<CR>', opts)
 --map('n', '[b', '<cmd>bp<CR>', opts)
 --map('n', ';l', '<cmd>ls<CR>', opts) -- list buffers -- ; taken for running stuff
@@ -210,7 +210,7 @@ map('n', ';6', [[<cmd>lua require("harpoon.term").sendCommand(1, "./t6.sh\n")<CR
 --Then assign quickjump mappings in the picker.
 --Store everything in a session file.
 --question think how to delete buffers quick
----- navigation ----
+--==navigation
 -- map('n', ']q', '<cmd>cn<CR>', opts) -- error navigation
 -- map('n', '[q', '<cmd>cp<CR>', opts)
 -- map('n', ']t', 'gt', opts) -- faster tab navigation for [ sequence C-q ]t
@@ -280,7 +280,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- cmdline
 -- C-z trigger wildmode, C-] abbreviations
 
----- insert completion ----
+--==insert completion
 -- :h i_CTRL-X_CTRL-D
 -- C-n|p complete what is in all buffers
 -- <C-n><C-p> .. <C-n|p> complete keywords in 'complete'
@@ -327,7 +327,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- selection mode
 -- word selected + K => search manual entry
 
----- termdebug ----
+--==termdebug
 --unfortunately, it seems to have many bugs on neovim. :-/
 --:packadd termdebug
 --:Termdebug file
@@ -340,7 +340,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 --:help terminal-debug
 --https://www.dannyadam.com/blog/2019/05/debugging-in-vim/
 
----- dap     ----
+--==dap
 --map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
 --map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
 --map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
@@ -364,10 +364,12 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 --nnoremap <leader>dc :Telescope dap commands<CR>
 --nnoremap <leader>db :Telescope dap list_breakpoints<CR>
 
----- lspconfig ----
+--==lspconfig
+--vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+--vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 -- see in lua/my_lsp.lua lsp.on_attach
 
----- ctags ----
+--==ctags
 -- switch between source and header with `:e %<.c` with %< representing the current file without the ending
 -- :tag file.c, :tags for overview (or selection on multiple matches)
 -- C-] to go to tag definition, C-t to jump back
@@ -375,7 +377,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- Unfortunately neovim has no vim.fn.tag binding
 map('n', '<leader>ta', '<cmd>execute "tag " .. expand("<cword>")<CR>', opts)
 
----- coq autocompleter ----
+--==coq autocompleter
 -- default bindings. C-h next snippet, C-w|u deletion of word, C-k preview
 --let g:coq_settings = {
 --      \ 'auto_start': v:true,
@@ -393,7 +395,7 @@ map('n', '<leader>ta', '<cmd>execute "tag " .. expand("<cword>")<CR>', opts)
 --map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
 
----- telescope ---- fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
+--==telescope fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
 -- vimgrep AA also sends into a quickfix
 -- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
 -- :norm {Vim} run command on every line
@@ -432,19 +434,19 @@ map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]]
 --map('n', '<leader>ed', [[<cmd>lua require'telescope'.extensions.project-scripts.edit{}<CR>]], opts)  -- edit_script
 --map('n', '<leader>ex', [[<cmd>lua require'telescope'.extensions.project-scripts.run{}<CR>]], opts)   -- run_script
 
----- leap ----
+--==leap
 map('n', '-', '<Plug>(leap-forward)', {}) -- -> forward
 map('n', '_', '<Plug>(leap-backward)', {}) -- _> inverse forward
 map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
 
----- diff ----
+--==diff
 ---1. manually (ie python code with too many conflicts)
 ---:e filetoshowthediffs
 ---:windo diffthis, :diffupdate, :diffoff!
 ---2. :Gvdiffsplit!
 ---:diffget //2|//3, :diffput
 ---C-w,C-o
----- gitsigns ---- in file git operations (:Gitsigns debug_messages)
+--== gitsigns in file git operations (:Gitsigns debug_messages)
 --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
 -- :Gitsigns show @~1
 -- mappings are workaround of https://github.com/lewis6991/gitsigns.nvim/issues/498
@@ -471,7 +473,7 @@ map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)
 map('n', '<leader>p2', '<cmd>diffput //2<CR>', opts)
 map('n', '<leader>p3', '<cmd>diffput //3<CR>', opts)
 
----- harpoon ---- buffer navigation
+--==harpoon buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140
 map('n', '<leader>j', [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- bare means fast navigate
 map('n', '<leader>k', [[<cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
@@ -614,13 +616,13 @@ map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]
 map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
 map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
 
----- nnn ----
+--==nnn
 -- map('n', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
 -- map('n', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
 -- map('t', '<leader>ne', [[<cmd> NnnExplorer<CR>]], opts) -- file exlorer
 -- map('t', '<leader>np', [[<cmd> NnnPicker<CR>]], opts) -- file exlorer
 
----- gtest ----
+--==gtest
 --map('n', ']t', [[<cmd>GTestNext<CR>]], opts)
 --map('n', '[t', [[<cmd>GTestPrev<CR>]], opts)
 --map('t', '<leader>tu', [[<cmd>GTestRunUnderCursor<CR>]], opts) -- lightspeed breaks this binding

@@ -2,119 +2,188 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+--==LspInstallationsAndUsage
+
+-- Manual:
+-- 'bashls', -- 'bash-language-server'
+-- 'jedi_language_server', -- 'jedi-language-server'
+-- 'ltex', -- 'ltex-ls'
+-- 'clangd', -- 'clangd'
+-- 'lemminx', -- 'lemminx'
+
+-- pip3 install -U --user jedi-language-server
+-- pipx install jedi-language-server
+
+-- must not use MasonInstall, not sure if MasonUpdate also breaks things
+-- lsp.ensure_installed {
+--   ---@diagnostic disable
+--   ---@diagnostic enable
+--   -- optionally with postfix disable:doesNotExist
+--   -- 'lua_ls', --lua-language-server, lua_ls
+--   -- 'neocmake', -- neocmakelsp
+-- }
+
+--==PluginChecks
+
 -- setup neodev before lsp
 local has_neodev, neodev = pcall(require, 'neodev')
 if has_neodev then neodev.setup {} end
 
-local has_lspzero, lsp = pcall(require, 'lsp-zero')
-if not has_lspzero then
-  -- vim.notify("lsp-zero not installed...", vim.log.ERROR)
-  return
-end
-
--- Manual:
--- 'bashls', -- bash-language-server
--- 'jedi_language_server', -- pipx install jedi-language-server
--- 'ltex', -- ltex-ls
--- 'clangd', -- clangd
-
--- must not use MasonInstall, not sure if MasonUpdate also breaks things
-lsp.ensure_installed {
-  'lemminx', -- lemminx
-  ---@diagnostic disable
-  ---@diagnostic enable
-  -- optionally with postfix disable:doesNotExist
-  'lua_ls', --lua-language-server, lua_ls
-  'neocmake', -- neocmakelsp
-}
-
 local has_cmp, cmp = pcall(require, 'cmp')
-local has_lspconfig, _ = pcall(require, 'lspconfig')
+local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
 if not has_cmp or not has_lspconfig then
   print 'Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig'
   return
 end
 
-lsp.extend_cmp()
-local cmp_action = lsp.cmp_action()
+local has_cmpnvimlsp, cmpnvimlsp = pcall(require, 'cmp_nvim_lsp')
+local has_luasnip, luasnip = pcall(require, 'luasnip')
+if not has_cmpnvimlsp or not has_luasnip then
+  print 'Please install saadparwaiz1/cmp_luasnip and L3MON4D3/LuaSnip'
+  return
+end
 
-lsp.on_attach(function(client, bufnr)
-  local _ = client
-  local opts = { buffer = bufnr, remap = false }
-  -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-  vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
-  vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end, opts) -- **g**oto definition
-  vim.keymap.set('n', 'gr', function() vim.lsp.buf.rename() end, opts) -- **g**oto rename
-  vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts) -- Kuckstu definition
-  -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
-  -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
-  vim.keymap.set('n', '<leader>vws', function() vim.lsp.buf.workspace_symbol() end, opts) -- view workspace symbols
-  vim.keymap.set('n', '<leader>vd', function() vim.lsp.buf.open_float() end, opts) -- view dis
-  vim.keymap.set('n', '<leader>ca', function() vim.lsp.buf.code_action() end, opts) -- code action
-  vim.keymap.set('n', '<leader>rf', function() vim.lsp.buf.references() end, opts) -- references
-  vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, opts) -- restart lsp
+--==LspConfigurations
 
-  vim.keymap.set('n', '<leader>cd', function() vim.lsp.diagnostic.show_line_diagnostics() end, opts) -- line diagnostics
-  vim.keymap.set('n', '<leader>fo', function() vim.lsp.buf.formatting() end, opts) -- formatting
-  --vim.keymap.set('n', '<leader>re', function() vim.cmd#'LspRestart' end', opts) -- restart lsp
-  vim.keymap.set('n', '<leader>ql', function() vim.diagnostic.setloclist() end, opts) -- buffer diagnostics to location list
-  vim.keymap.set('n', '<leader>qf', function() vim.diagnostic.setqflist() end, opts) -- all diagnostics to quickfix list
-  --vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end, opts)
-end)
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-lsp.configure('clangd', { force_setup = true })
-
--- local runtime_path = vim.split(package.path, ';')
--- table.insert(runtime_path, 'lua/?.lua')
--- table.insert(runtime_path, 'lua/?/init.lua')
---:lua require('lsp-zero.check').inspect_settings('lua_ls')
--- managed by neodev.nvim
-lsp.configure('lua_ls', {
+local capabilities = cmpnvimlsp.default_capabilities() -- get the cmp_nvim_lsp ones
+lspconfig.clangd.setup { capabilities = capabilities } -- removed capabilities = capabilities
+--require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
+lspconfig.julials.setup {}
+--require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
+lspconfig.rust_analyzer.setup { capabilities = capabilities }
+lspconfig.texlab.setup {
+  capabilities = capabilities,
   settings = {
-    Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
-        -- path = runtime_path,
-      },
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = { 'vim' },
-      },
-      workspace = {
-        -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file('', true),
-        checkThirdParty = false,
-      },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = {
-        enable = false,
+    texlab = {
+      auxDirectory = { 'build' },
+      build = {
+        --args = { '-pdflatex=lualatex', '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' }
+        --args = { '-pdflatex=lualatex', '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', 'main.tex' }
+        args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', 'main.tex' },
       },
     },
   },
-  force_setup = true,
+}
+lspconfig.zls.setup { capabilities = capabilities } --capabilities = capabilities
+
+lspconfig.lua_ls.setup {
+  on_init = function(client)
+    local path = client.workspace_folders[1].name -- neovim config dir
+
+    -- Debug common problems
+    -- vim.print(client.config.settings)
+    -- local file = assert(io.open("tmpfile123", "a"));
+    -- file:write(vim.inspect(client.config.settings) .. "\n");
+    -- file:close()
+
+    -- :lua print(client.workspace_folders[1].name .. "\n")
+    -- :lua print(tostring(not vim.loop.fs_stat(client.workspace_folders[1].name..'/.luarc.json')) .. "\n")
+    -- :lua print(tostring(not vim.loop.fs_stat(client.workspace_folders[1].name..'/.luarc.jsonc')) .. "\n")
+
+    if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+      -- vim.print("special client setup")
+      client.config.settings = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+        -- cmd = { sumneko_binary, "--logpath", "$HOME/.cache/lua-language-server/", "--metapath", "$HOME/.cache/lua-language-server/meta/"}
+        diagnostics = {
+          globals = { 'vim' }, -- does not work and "$HOME/.cache/lua-language-server/" does not exist
+        },
+        runtime = {
+          version = 'LuaJIT'
+        },
+        workspace = {
+          library = { vim.env.VIMRUNTIME },
+          -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+          -- library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
+        }
+      })
+
+      client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+    end
+    return true
+  end
+}
+
+--==Keybindings
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = ev.buf }
+    -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+
+    -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+    vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
+    -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<leader>ws', function() vim.lsp.buf.workspace_symbol() end, opts) -- view workspace symbols
+    vim.keymap.set('n', '<leader>wf', function() vim.lsp.buf.open_float() end, opts) -- view dis
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set({'n','v'}, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<leader>ql', function() vim.diagnostic.setloclist() end, opts) -- buffer diagnostics to location list
+    vim.keymap.set('n', '<leader>qf', function() vim.diagnostic.setqflist() end, opts) -- all diagnostics to quickfix list
+    -- vim.keymap.set('n', '<leader>fo', function() vim.lsp.buf.formatting() end, opts) -- formatting
+    -- vim.keymap.set('n', '<space>f', function()
+    --   vim.lsp.buf.format { async = true }
+    -- end, opts)
+    -- vim.keymap.set('n', '<leader>re', function() vim.cmd#'LspRestart' end', opts) -- restart lsp
+  end,
 })
 
-lsp.configure('zls', { force_setup = true })
--- pip3 install -U --user jedi-language-server
--- pipx install jedi-language-server
--- lsp.configure.
-lsp.configure('jedi_language_server', { force_setup = true })
+--==CompleterSetup
 
--- TODO fix ltex to not spell check markdown
--- lsp.configure('ltex', {})
-
-lsp.setup()
-
--- modify defaults of VonHeikemen/lsp-zero.nvim 0b312c34372ec2b0daec722d1b7fad77b84bef5b:
--- 1. get completion from all buffers
 cmp.setup {
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-y>'] = cmp.mapping.confirm { select = true },
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
+    ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item()), -- needed for unknown reasons
+    ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item()),
+    -- C-b (back) C-f (forward) for snippet placeholder navigation. TODO not working?
+    -- ['<C-t>'] = cmp.mapping.complete({
+    --     config = {
+    --       sources = {
+    --         { name = 'tags' },
+    --       }
+    --     }
+    -- })
+    -- No selection annoyance (= 1 less keypress)
+    --['<CR>'] = cmp.mapping.confirm { -- Accept currently selected item.
+    --  behavior = cmp.ConfirmBehavior.Replace,
+    --  select = true,
+    --},
+  },
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
   sources = {
     { name = 'path' },
-    -- usage blocker(jedi): https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/36
     { name = 'nvim_lsp_signature_help' },
-    { name = 'nvim_lsp', keyword_length = 3 },
-    { name = 'luasnip', keyword_length = 2 },
+    { name = 'nvim_lsp',               keyword_length = 3 },
+    { name = 'luasnip',                keyword_length = 2 },
     {
       name = 'buffer',
       keyword_length = 5,
@@ -125,24 +194,6 @@ cmp.setup {
   },
   -- window = {
   -- },
-  mapping = {
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-y>'] = cmp.mapping.confirm { select = true },
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-d>'] = cmp.mapping.scroll_docs(4),
-    ['<C-f>'] = cmp_action.luasnip_jump_forward(),
-    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
-    -- ['<C-t>'] = cmp.mapping.complete({
-    --     config = {
-    --       sources = {
-    --         { name = 'tags' },
-    --       }
-    --     }
-    -- })
-    -- No selection annoyance (= 1 less keypress)
-    --['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item.
-  },
 }
 
 cmp.setup.cmdline(':', {
@@ -151,64 +202,3 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' },
   },
 })
-
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
--- capabilities.textDocument.completion.completionItem.snippetSupport = true
--- require('lspconfig').clangd.setup {} -- removed capabilities = capabilities
--- --require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
--- require('lspconfig').julials.setup {}
--- --require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
--- require('lspconfig').rust_analyzer.setup { capabilities = capabilities }
--- require('lspconfig').texlab.setup {
---   settings = {
---     texlab = {
---       auxDirectory = { 'build' },
---       build = {
---         --args = { '-pdflatex=lualatex', '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' }
---         --args = { '-pdflatex=lualatex', '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', 'main.tex' }
---         args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', 'main.tex' },
---       },
---     },
---   },
--- }
--- require('lspconfig').zls.setup {} --capabilities = capabilities
-
---USER = vim.fn.expand '$USER'
---Sumneko_root_path = '/home/' .. USER .. '/.local/lua-language-server'
---Sumneko_binary = Sumneko_root_path .. '/bin/Linux/lua-language-server'
---local runtime_path = vim.split(package.path, ';')
---table.insert(runtime_path, 'lua/?.lua')
---table.insert(runtime_path, 'lua/?/init.lua')
---require('lspconfig').sumneko_lua.setup {
---  --cmd = { Sumneko_binary, '-E', Sumneko_root_path .. '/main.lua' },
---  settings = {
---    Lua = {
---      runtime = {
---        version = 'LuaJIT', -- LuaJIT lua version
---        path = runtime_path, --lua path
---      },
---      diagnostics = {
---        globals = { 'vim' }, --recognize vim global
---      },
---      workspace = {
---        library = vim.api.nvim_get_runtime_file('', true), -- runtime files
---      },
---      telemetry = {
---        enable = false,
---      },
---    },
---  },
---}
--- Jump directly to the first available definition every time.
---vim.lsp.handlers["textDocument/definition"] = function(_, result)
---  if not result or vim.tbl_isempty(result) then
---    print "[LSP] Could not find definition"
---    return
---  end
---
---  if vim.tbl_islist(result) then
---    vim.lsp.util.jump_to_location(result[1], "utf-8")
---  else
---    vim.lsp.util.jump_to_location(result, "utf-8")
---  end
---end
