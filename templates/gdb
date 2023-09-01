@@ -4,11 +4,16 @@ ps aux | grep execname
 gdb pathtoexec -p PID
 TODO: common debugging use cases
 - 1. interrupting process on attach + print stack trace
+
 - 2. printing stack traces of threads without interrupting process (strace?)
+gcore (needs ptrace, see PERMISSIONS)
 - 3. attach to process + loop detection
+
 - 4. prevent internal timer firing to kill process
 
 TODO coredumpctl from https://www.baeldung.com/linux/managing-core-dumps
+
+
 
 gdb tui
 C-x-a      toggle to/from tui mode
@@ -264,3 +269,24 @@ https://gist.github.com/quark-zju/a20ae638601d2fac476e
 
 https://gist.github.com/shekkbuilder/8b52e2cf4142c35ba6de
 for dbx, gdb, windbg, ntsd, edebug etc but not lldb
+
+PERMISSIONS aka capabilities
+Linux provides no per-user ptrace permission model to allow one user to debug
+all processes, so one has to use the Linux capability shell wrapper for this or
+set capability on the binary itself. Another alternative is to use the syscalls.
+Enable ptrace once (https://bbs.archlinux.org/viewtopic.php?id=278831)
+sudo -E capsh --caps="cap_setpcap,cap_setuid,cap_setgid+ep cap_sys_ptrace+eip" --keep=1 --user="$USER" --addamb="cap_sys_ptrace" --shell=/usr/bin/gdb -- -p
+Debug and set capabilities to executables from https://blog.container-solutions.com/linux-capabilities-in-practice
+capsh --print, grep Cap /proc/$BASHPID/status, capsh --decode=0000003fffffffff
+sudo setcap 'cap_net_raw+p' ./ping
+/etc/sysctl.conf
+## CL. Disable ptrace for users (temporarily)
+kernel.user_ptrace = 0
+kernel.user_ptrace_self = 0
+/etc/sysctl.d/10-ptrace.conf
+## Enable ptrace for users (permanently)
+kernel.yama.ptrace_scope
+
+CPP
+Print std::string values
+p *(char**)0x7fffffffbfc0

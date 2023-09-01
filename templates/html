@@ -1,1 +1,14 @@
 html tidy
+
+get request
+/test/demo_form.php?name1=value1&name2=value2
+
+post request
+not realistically possible to do only in url
+
+curl -v -H "Content-Type: application/json" -X POST \
+     -d '{"name1":"value1 name","name2":"value2"}' http://www.example.com/details
+curl -v -H "Content-Type: application/json" -X POST \
+     -d '{"name1":"value1 name","name2":"value2"}' http://www.example.com/details
+curl -v -H "content-type: application/json" -H "Authorization: Bearer $BEARER_TOKEN" -X POST \
+     -d '{"name1":"value1 name","name2":"value2"}' http://www.example.com/details

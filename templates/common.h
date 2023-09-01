@@ -4,6 +4,35 @@
 #include <stdlib.h> // assert: exit
 #include <stdio.h>  // assert: fprintf
 
+// Maro expansion once for validity yields in slightly more ugly code and unused
+// value warning, so omit it. See link for discussion.
+#define STRINGIFY(A) ((A),STRINGIFY_INTERN(A))
+#define PPCAT(A) ((A),(B),PPCAT_INTERN(A,B))
+// and do instead
+#define STRINGIFY_INTERN(A) (#A)
+#define STRINGIFY(A) STRINGIFY_INTERN(A)
+#define PPCAT_INTERN(A,B) A ## B
+#define PPCAT(A,...) PPCAT_INTERN(A,__VA_ARGS__)
+#define COMBINE(WORD,...) STRINGIFY(PPCAT(WORD,__VA_ARGS__))
+#define test0 testme
+#define test1 1
+#define RESULT COMBINE(test0, test1)
+#define emptystr ""
+#define test2 testme2
+
+void printbanana(const char* str) {
+    printf("t2: %s\n", str);
+}
+int usage_ppcat() {
+    const char* testme1 = "banana";
+    const char* testme2 = "bestbanana";
+    printf("t1: %s\n", COMBINE(test0, test1)); // t1: testme1
+    printbanana(PPCAT(test0, test1)); // t1: testme1
+    printbanana(PPCAT(test2)); // t2: bestbanana
+    return 0;
+}
+// see also https://stackoverflow.com/questions/1644868/define-macro-for-debug-printing-in-c/1644898#1644898
+
 #ifdef TRUE
 #error "TRUE already defined"
 #else
@@ -73,13 +102,25 @@ _Static_assert(sizeof(int64_t) == 8, "err: int64_t not 8 byte");
 //     STATIC_ASSERT(OBJ_IS_OF_TYPE(timespecval1.tv_sec, int64_t));
 //     STATIC_ASSERT(OBJ_IS_OF_TYPE(timespecval1.tv_nsec, int64_t));
 // }
-
 // Hygienic macros
 #define TEST_FUNC(a,b)                                         \
 do {                                                           \
     STATIC_ASSERT(OBJ_IS_OF_TYPE(a, int64_t));                 \
     STATIC_ASSERT(OBJ_IS_OF_TYPE(b, int64_t));                 \
 } while(0)
+
+#define add(...) _Generic ( &(int[]){__VA_ARGS__}, \
+                            int(*)[2]: add2,       \
+                            int(*)[3]: add3) (__VA_ARGS__)
+int add2 (int a, int b);
+int add3 (int a, int b, int c);
+int add_typesafe_generic_selection_c11 (void) {
+  printf("%d\n", add(1, 2));
+  printf("%d\n", add(1, 2, 3));
+  //printf("%d\n", add(1, 2, 3, 4)); Compiler error for this.
+}
+int add2 (int a, int b) { return a + b; }
+int add3 (int a, int b, int c) { return a + b + c; }
 
 #endif // __cplusplus
 
@@ -94,6 +135,9 @@ do {                                                           \
 // -Wno-unknown-pragmas -Wno-unused-parameter
 // -fsanitize=unsigned-integer-overflow (must be separate, because it breaks C standard, unlike -ftrapv this one actually works)
 // -fsanitize=undefined
+// -Wstring-conversion
+
+// Check during development specifically clang -Weverything
 
 // CLANG_TIDY_FLAGS="clang-*,cppcoreguidelines-*,modernize-*,performance-*"
 // clang-tidy \
@@ -103,3 +147,8 @@ do {                                                           \
 //   -std=c++1z \
 //   -D_REENTRANT -fPIC \
 //   $WARN $DEFINES $INCLUDES
+
+// C/C++ mixing survival guide
+// 1. Add -Wstring-conversion and either 1. handle char* in callee fns or 2. always pass std::string family
+// 2. Use std::string or memory-managing containers in callee fns or document lifetime explicitly.
+// 3. Always initialize within managed containers xor delete default constructors

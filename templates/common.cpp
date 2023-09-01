@@ -109,6 +109,13 @@ void iter() {
     for (auto iter = std::cbegin(mapexample); iter != std::cend(mapexample); ++iter) {
         printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
     }
+    std::string* ptr_str = nullptr; // or 0 if portability is needed
+    for (auto iter = std::begin(mapexample); iter != std::end(mapexample); ++iter) {
+        printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
+        ptr_str = &iter->second;
+    }
+    auto search = mapexample.find(1);
+    if (search != mapexample.end()) ptr_str = &search->second;;
 }
 
 void sortarray() {
@@ -292,6 +299,22 @@ std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, 
 // 2. std::map<std::string, int> for the index into value_storage
 // 3. std::vector<int, std::mutex> for the mutexes
 
+// googletest reference
+// http://google.github.io/googletest/reference/actions.html
+
+// SHENNANIGAN googlemock googletest
+// std::shared_ptr is not assignable
+//   MOCK_METHOD3(TheMock_MockedFn, uint8_t(Object::enum0 e0, const std::string &arg1, std::shared_ptr<VarI> & var2));
+//     EXPECT_CALL(*THE_MOCK, TheMock_MockedFn(_,"arg",_))
+//       .Times(AtLeast(0))
+//       .WillRepeatedly(DoAll(SetArgPointee<2>(map.find("map_key")->second),Return(0)));
+// One must use
+//   MOCK_METHOD3(TheMock_MockedFn, uint8_t(Object::enum0 e0, const std::string &arg1, std::shared_ptr<VarI> var2));
+//     EXPECT_CALL(*THE_MOCK, TheMock_MockedFn(_,"arg",_))
+//       .Times(AtLeast(0))
+//       .WillRepeatedly(DoAll(SetArgReferee<2>(map.find("map_key")->second),Return(0)));
+// or use 'Invoke(object_pointer, &class::method)' instead of 'SetArgReferee<X>(..>)'.
+
 // SHENNANIGAN googlemock requires default constructor, even though usage can
 // create UB (for types without explicit default constructor).
 // Workaround: Make default constructor protected and use FriendOfVariable2.
@@ -365,6 +388,8 @@ class FriendOfVariable2 {
 // SHENNANIGAN googlemock
 // Template types force senseless duplicate code (not DRY),
 // because templated functions can not be linked against. See 'SHENNANIGAN DESIGN ERROR'.
+// Googlemock assumes it can link against .h code, which is not the case for templates
+// and all code should be directly used in the unit test instead like "inline fns".
 // https://github.com/google/googletest/issues/2660
 
 // PERF of exceptions with handling
@@ -531,6 +556,7 @@ public:
 };
 
 // Debugging templates guidelines
+// * do *never* try to separate templates code into .h and .cpp. It will not work. Use .hpp.
 // * static_assert everywhere
 // * Sandboxes: Test as soon as it starts behaving weird, ideally with commits (ie on separate branch)
 // * Specify temporary types for better source location info, debugging, to prevent compiler limitations etc

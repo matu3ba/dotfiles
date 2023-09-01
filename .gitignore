@@ -1,1 +1,6 @@
 /patches/
+/example/gdb/build/
+
+build/
+zig-cache/
+zig-out/

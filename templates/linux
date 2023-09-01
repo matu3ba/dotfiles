@@ -134,7 +134,8 @@ Tight sandboxing: bubblewrap
 firejail:
 configs in /etc/firejail/, /usr/local/etc/firejail, ~/.config/firejail
 tools in /usr/lib/firejail, /usr/local/lib/firejail
-
+Landlock LSM: kernel documentation, Landlock: unprivileged access control
+* scoped access-control (i.e. sandboxing)
 Storage (block and flash) device troubleshooting
 Parted
 sudo parted

@@ -314,3 +314,5 @@ https://wiki.debian.org/Hugepages
 * BSD: Super Pages
 * Windows: Large Pages
   + see templates/win
+
+Pointer tagging with TBI for AArch64 https://www.linaro.org/blog/top-byte-ignore-for-fun-and-memory-savings/

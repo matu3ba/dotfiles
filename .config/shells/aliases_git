@@ -290,3 +290,32 @@ alias gsap0='git stash apply stash@{0}'
 
 alias gsi='git submodule init'
 alias gsu='git submodule update'
+
+# SHENNANIGAN
+# git itself doesn't track along renames. So it ends with a rename and you
+# gotta pick up the track with the new name.
+# TODO adjust for renames
+##!/usr/bin/env zsh
+#
+#if [[ -z "$1" ]]; then
+#  git log --all                                                        \
+#    --full-history --name-only --color=always --pretty="format:"       \
+#    | sort                                                             \
+#    | uniq                                                             \
+#    | rg -v "^$"                                                       \
+#    | fzf                                                              \
+#      --ansi --no-sort --track                                         \
+#      --preview="git log --color=always -- {} | bat --color=always -p" \
+#      --bind "ctrl-m:execute(zsh -c '$0 {}')"
+#else
+#  git log                                                                                                               \
+#    --full-history                                                                                                      \
+#    --pretty='format:%C(yellow)%h %Cblue%cs%Creset %s'                                                                  \
+#    -- $1                                                                                                               \
+#    | fzf                                                                                                               \
+#      --ansi                                                                                                            \
+#      --preview "git show --color=always  {1}:$1 || git show --color=always  --name-status {1} | bat --color=always -p" \
+#      --bind "ctrl-m:execute(
+#          git show {1}:$1 | nvim -c set\ bt=nowrite || git show {1} | nvim -c set\ bt=nowrite -
+#      )"
+#fi
