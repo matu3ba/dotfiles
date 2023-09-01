@@ -231,3 +231,12 @@ To make oom killer less likely to kill a relevant process, use
   cat /proc/self/oom_score_adj
 Ideally, disable overcommit alltogether, but the fork-model with virtual memory
 copies makes this for many cases unfeasible.
+
+ptrace basics, see PERMISSIONS in templates/gdb
+  PTRACE_ATTACH - connect to the process.
+  PTRACE_PEEKTEXT - look at the attached process' code memory (for example to disassemble the code)
+  PTRACE_PEEKDATA - look at the attached process' data memory (to display variables)
+  PTRACE_POKETEXT - write to process' code memory
+  PTRACE_POKEDATA - write to process' data memory.
+  PTRACE_GETREGS - copy the current register values.
+  PTRACE_SETREGS - change the current register values (e.g. a debug command of set variable x = 7, if x happens to be in a register)

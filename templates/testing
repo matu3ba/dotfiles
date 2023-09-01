@@ -113,3 +113,45 @@ Ideas for the ideal cli test system for non-timing and timing based testing:
 TODO explain property based testing, metamorphic testing
 https://github.com/cryptocode/marble
 https://www.cockroachlabs.com/blog/metamorphic-testing-the-database/
+
+"Compile-time function call interception for testing in C/C++" by Gabor Marton and Zoltan Porkolab
+for some terminology
+function call interception (FCI) methods:
+- Load-time FCI (LD_PRELOAD unreliable with member functions)
+- Run-time FCI (ptrace not portable, cannot instrument inline functions)
+- Pre-compilation-time FCI (macros may be uncompilable or have hazardous side effect)
+- Link-time FCI (wrap in linker to use wrapper for specified symbol unusable if
+  symbol is in same translation unit where referenced)
+- Post-compilation-time FCI (Bnary Rewriting and Call Interception via disassembling and adjusting program)
+- Compile-time FCI (gcc/clang -finstrument-function to instrument all fn calls
+  with code before and after body of fn with shortcoming that intercepted fns
+  can not be replaced)
+```h
+    void __cyg_profile_func_enter(void *this_fn, void *call_site);
+    void __cyg_profile_func_exit(void *this_fn, void *call_site);
+```
+
+four-phase test pattern:
+- setup system under test (SUT)
+- SUT runs
+- compare expected outcome
+- teardown SUT
+given-when-then pattern
+- given precondition
+- when specified behavior
+- then expected changes
+=> test setup should be strictly part of the visible test code
+A seam is an abstract concept introduced by Feathers to identify points where we can break dependencies
+(if modifying the source code is not an option):
+Preprocessor, Compiler, Object, Linker
+
+'Compile-time FCI seam' looks like googlemock with EXPECT_CALL, MOCKMETHOX.
+'Post-compile-time FCI seam'
+"FCI with Call Expression Instrumentation" is not contextualized, but looks
+like 'Run-time FCI seam' due to runtime setup of replacement function, and
+'Compile-time FCI seam' due to using compiler intrinsics. 1 compiler
+instrumentation module and 2 runtime library. 1 modifies code to check whether
+function has to be replaced, 2 provides fns to setup replacements.
+SUBSTITUTE(D::foo, D_fake_foo); is implemented via __function_id, but only in
+gcc.
+'Post-compile-time FCI seam' is not contextualized.

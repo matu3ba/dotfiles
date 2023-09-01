@@ -652,3 +652,6 @@ static_assert(!is_string_class<std::vector<char>>);
 // 2. Using clang
 //   clang++ -nodefaultlibs -fno-exceptions -fno-rtti -std=c++11 -c main.cpp -o main.o
 // Mac might need `-nostdlib -L libcpath` due to automatically invoking -stdlib=libc++.
+//
+// Separately linking libc++:
+// clang your.cpp -lstdc++

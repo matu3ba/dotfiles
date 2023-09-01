@@ -2,14 +2,19 @@ Greg Law - More GDB wizardry and 8 other essential Linux application debugging t
 
 ps aux | grep execname
 gdb pathtoexec -p PID
-TODO: common debugging use cases
+Common debugging use cases, for practical usage see ../example/gdb/ starting with inf_loop.c
 - 1. interrupting process on attach + print stack trace
-
-- 2. printing stack traces of threads without interrupting process (strace?)
+gdb -p PID
+- 2. printing stack traces of threads without interrupting process
 gcore (needs ptrace, see PERMISSIONS)
 - 3. attach to process + loop detection
-
+  variations: 1. (partial) repitive state, 2. non-repitive state
+  * usual approach: running, then use C-c for SIGINT (requires that process does support halting)
+  * practical approach if SIGINT makes system unobservable: bisect graphically code base based on log data
 - 4. prevent internal timer firing to kill process
+  must provide own timer logic + 1. either dll injection, 2. LD_PRELOAD or 3. 'function instrumentation hocks'
+  see https://github.com/martong/finstrument_mock
+  Compile-Time Function Call Interception for Testing in C/C++
 
 TODO coredumpctl from https://www.baeldung.com/linux/managing-core-dumps
 
@@ -173,6 +178,7 @@ set dprintf-style gdb|call|agent
 set dprintf-function fprintf
 set dprintf-channel mylog
 
+Extremely handy to catch signals or exceptions:
 catch catch
 catch syscall nanosleep
 catch syscall 100
@@ -180,6 +186,7 @@ catch syscall 100
 set var VARNAME=VAL
 return EXPRESSION
 
+Print general info:
 directory DIR
 list
 list filename:fn
