@@ -16,7 +16,7 @@ return {
     'ojroques/nvim-osc52',
     config = function() require('osc52').setup() end,
   },
-  ---- completions ----
+  --==completions
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
   -- C-x + C-v | C-z | C-]    vim, stop, tags
@@ -29,7 +29,7 @@ return {
   -- { 'rafcamlet/nvim-luapad' }, -- lua dev
   { 'folke/neodev.nvim', opts = {} }, -- lua dev
 
-  { -- LSP
+  { --==LSP
     { 'neovim/nvim-lspconfig' }, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
     -- Autocompletion
     { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
@@ -43,13 +43,12 @@ return {
     { 'hrsh7th/cmp-nvim-lua' },
     { 'hrsh7th/cmp-path' },
     { 'hrsh7th/cmp-nvim-lsp-signature-help' },
-    -- },
   },
 
-  -- cmd line completions (breaks cmdline visuals for :echo $<C-d>)
+  --==cmd line completions (breaks cmdline visuals for :echo $<C-d>)
   { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
 
-  -- macros
+  --==macros
   -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- TODO setup
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
@@ -171,6 +170,8 @@ return {
     'kylechui/nvim-surround',
     config = function() require('nvim-surround').setup() end,
   },
+  --==taskrunner
+  { 'stevearc/overseer.nvim', opts = {}, },
   -- { 'text-case.nvim' }, --TODO
   -- { 'monaqa/dial.nvim' }, --TODO
   -- { 'andymass/vim-matchup' }, --TODO
@@ -185,6 +186,7 @@ return {
   -- idea handroll debugger control for gdb via server and pipe stuff to buffer
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
+  --==bufferactions
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- use instead track.nvim?
   { 'matu3ba/libbuf.nvim', dev = true },
@@ -192,8 +194,10 @@ return {
   -- any way to place results in buffer?
   -- git clone https://github.com/jake-stewart/jfind && cd jfind && cmake -S . -B build && cd build && make -j$(nproc) && sudo make install
   -- ctrl-e, ctrl-a, ctrl-w, ctrl-f, ctrl-b for editing navigation, ctrl-p and ctrl-n for history.
+
+  --==finder
   { 'jake-stewart/jfind.nvim', branch = '2.0' },
-  ---- telescope ---- resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
+  -- TODO resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
   {
     'nvim-telescope/telescope.nvim',
     dependencies = { { 'nvim-lua/popup.nvim', lazy = false } },
@@ -205,15 +209,12 @@ return {
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
-  ---- fzf ----
-  --TODO
-  ---- treesitter ----
+  --==treesitter
   -- replacement without perf issues for context.vim would be great
-
-  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
 
-  ---- languages ----
+  --==languages
   { 'mfussenegger/nvim-lint' }, -- configuration in my_lint.lua
   --{ "neomake/neomake" } -- get useful comments for code semantics
   -- { 'LnL7/vim-nix' }, -- flakes highlighting: wait until nix converts their stuff to flakes

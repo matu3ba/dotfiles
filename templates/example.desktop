@@ -32,6 +32,9 @@ TerminalOptions=\s--noclose
 5. Only absolute qualified paths are accepted besides the Execed argument.
 * Shells can be used as workaround. Even more annoyingly, gtk-launch and dex do not test for this behavior.
 At least ~/.configpath works.
+6. 'update-desktop-database -v ~/.local/share/applications' should work, but logout and login is more reliable.
+'xdg-desktop-menu install --novendor' looks superfluous.
+'desktop-file-install' merely moves applications into '--dir'.
 
 ```desktop
 [Desktop Entry]

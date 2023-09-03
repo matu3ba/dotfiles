@@ -40,3 +40,7 @@ $strSID = $objUser.Translate([System.Security.Principal.SecurityIdentifier])
 $strSID.Value
 ```
 TODO finish up, if needed
+
+wireguard on windows https://rair.dev/wireguard-windows-multiple-simultaneous-tunnels/
+https://git.zx2c4.com/wireguard-windows/about/docs/netquirk.md
+https://github.com/WireGuard/wireguard-windows

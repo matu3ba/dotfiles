@@ -3,22 +3,27 @@ Greg Law - More GDB wizardry and 8 other essential Linux application debugging t
 ps aux | grep execname
 gdb pathtoexec -p PID
 Common debugging use cases, for practical usage see ../example/gdb/ starting with inf_loop.c
-- 1. interrupting process on attach + print stack trace
+- 1. debug running process (interrupts on attach)
 gdb -p PID
-- 2. printing stack traces of threads without interrupting process
+  * dump program state
+generate-core-file
+- 2. dump program state without interrupting process
 gcore (needs ptrace, see PERMISSIONS)
-- 3. attach to process + loop detection
+- 3. automatically dump program state
+coredumpctl
+TODO
+https://wiki.archlinux.org/title/Core_dump
+https://www.baeldung.com/linux/managing-core-dumps
+
+Debug approaches
+- 1. attach to process + loop detection
   variations: 1. (partial) repitive state, 2. non-repitive state
   * usual approach: running, then use C-c for SIGINT (requires that process does support halting)
   * practical approach if SIGINT makes system unobservable: bisect graphically code base based on log data
-- 4. prevent internal timer firing to kill process
+- 2. prevent internal timer firing to kill process
   must provide own timer logic + 1. either dll injection, 2. LD_PRELOAD or 3. 'function instrumentation hocks'
   see https://github.com/martong/finstrument_mock
   Compile-Time Function Call Interception for Testing in C/C++
-
-TODO coredumpctl from https://www.baeldung.com/linux/managing-core-dumps
-
-
 
 gdb tui
 C-x-a      toggle to/from tui mode

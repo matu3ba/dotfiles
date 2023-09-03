@@ -162,6 +162,9 @@ end
 -- vim.api.nvim_buf_set_lines(buf_handle, 0, 0, true, {"ls"})
 -- nvim_get_channel_info(&channel).pty
 
+-- https://github.com/sar/neogit.nvim/blob/2b89410f77947838a7e79ec90ed6075e51846dc1/lua/neogit/process.lua#L101
+-- scroll to end
+
 -- vim.env does not contain all environment variables, for example EDITOR is missing
 -- vim.env.CMDLOG = 'bar'
 -- print(vim.env.CMDLOG) -- called from subshells, however works

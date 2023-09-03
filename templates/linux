@@ -240,3 +240,8 @@ ptrace basics, see PERMISSIONS in templates/gdb
   PTRACE_POKEDATA - write to process' data memory.
   PTRACE_GETREGS - copy the current register values.
   PTRACE_SETREGS - change the current register values (e.g. a debug command of set variable x = 7, if x happens to be in a register)
+
+https://www.wireguard.com/quickstart/
+wg
+wg-quick
+https://rair.dev/wireguard-ssh/

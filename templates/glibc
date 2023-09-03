@@ -32,3 +32,9 @@ int main() {
     return 0;
 }
 ```
+
+Location of C standard library
+LIBCLOC=$(gcc --print-file-name=libc.a)
+
+Locate all libc.a
+locate libc.a

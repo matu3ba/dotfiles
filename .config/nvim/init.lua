@@ -34,17 +34,7 @@ else
   -- TODO lsp, remove lsp-zero.nvim
   -- luasnips setup to create snippets for common stuff with
   -- TODO venn:
-  -- * ascii mode
-  --   + hkl <^>
-  --   + hj as ◄▼ /
-  --   + kl as ▲► /
-  --   + kh as ◄▲ \
-  --   + jl as ▼► \
-  --   + boxes as
-  --     +-----+
-  --     |     |
-  --     |     |
-  --     +-----+
+  -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
   -- * inline text spacing adjustments
   -- vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
@@ -94,6 +84,7 @@ else
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
   require 'my_statusline'
+  require 'my_over'
   -- workaronud lazy caching init.lua loading, but the module might be absent.
   local has_libbuf, _ = pcall(require, 'libbuf')
   if has_libbuf then require 'my_buf' end

@@ -184,6 +184,8 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test .\lib\std\std.zig -target x86_64-windows-gnu -mcpu x86_64 -I .\test --zig-lib-dir .\lib --test-filter "DWARF expressions"
 // zig test ./lib/std/std.zig -target x86_64-windows-gnu -mcpu x86_64 -I ./test --zig-lib-dir ./lib --test-filter "DWARF expressions"
 // zig test ./lib/std/std.zig  -I ./test --zig-lib-dir ./lib --test-filter "getPageSize smoke test"
+// zig test lib/std/std.zig --zig-lib-dir lib --main-pkg-path lib/std --test-filter "your test name"
+// zig test lib/std/std.zig --test-filter "your test name"
 // Run tests within valgrind via:
 // zig test valgrind.zig -lc --test-cmd valgrind --test-cmd '-s' --test-cmd-bin
 // Run tests within qemu:
@@ -192,7 +194,6 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // Emit assembly or llvm ir
 // zig build-exe -OReleaseSmall -femit-asm=min.s min.zig
 // zig build-exe -OReleaseSmall -femit-llvm=min.ll min.zig
-
 fn simpleCAS() !void {
     const Available = enum(u8) {
         NotStarted,
