@@ -211,3 +211,8 @@ void convert_string_to_int_simple(const char *buff) {
 // __attribute__((malloc)) static inline T * allocate(size_t count) {
 //     return reinterpret_cast<T*>(malloc(count * sizeof(T)));
 // }
+
+// typedef struct convention
+typedef struct structname {
+    int some_var;
+} structname_s;

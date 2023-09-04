@@ -1,10 +1,14 @@
 --! Statusline with dependency plenary, gitsigns
 --! Offers 1 mode: usage
---Many things copied and adjusted from
---https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
+-- luacheck: globals vim
+-- luacheck: no max line length
+-- Many things copied and adjusted from
+-- https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
 local has_plenary, plenary = pcall(require, 'plenary')
 local has_gitsigns, _ = pcall(require, 'gitsigns')
+local has_navic, navic = pcall(require, 'nvim-navic')
 if not has_plenary or not has_gitsigns then return end
+
 
 local statusline = {}
 local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
@@ -118,6 +122,23 @@ local function get_bufinfo()
   return buf_info
 end
 
+local function get_context()
+  -- idea: non-lsp context retrieval for simple languages?
+  if not has_navic or not navic.is_available(0) then return '' end
+  local data = navic.get_data()
+  if data == nil or next(data) == nil then return '' end
+  local data_1 = data[1]
+  if data_1 ~= nil and data_1["name"] ~= nil then
+    if data_1["icon"] ~= nil then
+      return data_1["icon"] .. data_1["name"]
+    else
+      return data_1["name"]
+    end
+  else
+    return ''
+  end
+end
+
 function statusline.setup()
   local path = get_path()
   local lincol = get_linecol()
@@ -125,6 +146,7 @@ function statusline.setup()
   local buf_info = get_bufinfo()
   local search = search_result()
   local git_status = git_statusline()
+  local context = get_context()
   local statusline_sections = {
     path,
     lincol,
@@ -136,6 +158,8 @@ function statusline.setup()
     search,
     ' ',
     git_status,
+    ' ',
+    context,
     ' ',
     lsp.message,
   }

@@ -257,6 +257,7 @@ callback = function()
 -- end                                             --DEBUG
 -- fp:close()                                      --DEBUG
 -- :lua file = assert(io.open("tmpfile123", "a")); file:write(vim.o.backup); file:close()
+-- :lua file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(vim.o.backup)); file:close()
 
 -- Debugging Neovim with vimscript via writing settings to file
 -- :call writefile([], './tmpfile123')

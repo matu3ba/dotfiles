@@ -43,19 +43,44 @@ if not has_cmpnvimlsp or not has_luasnip then
   return
 end
 
+-- :lua vim.print(require('nvim-navic').is_available(0))
+-- :lua vim.print(require('nvim-navic').get_data())
+local has_navic, navic = pcall(require, 'nvim-navic')
+if not has_navic then
+  print 'Please install SmiteshP/nvim-navic'
+  return
+end
+
 --==LspConfigurations
 
 -- local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-local capabilities = cmpnvimlsp.default_capabilities() -- get the cmp_nvim_lsp ones
-lspconfig.clangd.setup { capabilities = capabilities } -- removed capabilities = capabilities
+local common_capabilities = cmpnvimlsp.default_capabilities() -- get the cmp_nvim_lsp ones
+
+local common_on_attach = function(client, bufnr)
+  if client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
+end
+
+lspconfig.clangd.setup {
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
+}
 --require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
-lspconfig.julials.setup {}
+lspconfig.julials.setup {
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
+}
 --require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
-lspconfig.rust_analyzer.setup { capabilities = capabilities }
+lspconfig.rust_analyzer.setup {
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
+}
 lspconfig.texlab.setup {
-  capabilities = capabilities,
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
   settings = {
     texlab = {
       auxDirectory = { 'build' },
@@ -67,9 +92,13 @@ lspconfig.texlab.setup {
     },
   },
 }
-lspconfig.zls.setup { capabilities = capabilities } --capabilities = capabilities
+lspconfig.zls.setup {
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
+}
 
 lspconfig.lua_ls.setup {
+  on_attach = common_on_attach,
   on_init = function(client)
     local path = client.workspace_folders[1].name -- neovim config dir
 

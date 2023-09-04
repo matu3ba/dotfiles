@@ -62,7 +62,10 @@ return {
     version = false,
     config = function() require('mini.indentscope').setup {} end,
   },
-  -- { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" }, -- TODO optionally show context in statusline
+
+  -- :lua vim.print(require('nvim-navic').is_available(0))
+  -- :lua vim.print(require('nvim-navic').get_data())
+  { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" }, -- TODO context in statusline
 
   -- TODO: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
