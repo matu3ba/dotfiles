@@ -655,3 +655,8 @@ static_assert(!is_string_class<std::vector<char>>);
 //
 // Separately linking libc++:
 // clang your.cpp -lstdc++
+
+// SHENNANIGAN
+// make_shared is faster due having references next to storage
+// make_shared and weak_ptr do not co-exist well, because one can only call the
+// destructor to remove all associated memory.

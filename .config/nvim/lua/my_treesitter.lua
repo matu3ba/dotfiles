@@ -1,4 +1,21 @@
--- TODO how to pcall nvim-treesitter.configs ?
+-- my_keymaps.lua
+-- treesitter
+-- see lua/my_treesitter.lua
+-- gV node incremental selection, gS scope incremental selection
+
+--- Remove externally installed broken treesitter parsers---
+--- rm ~/.local/nvim/lib/nvim/parser/c.so
+--- rm ~/.local/nvim/lib/nvim/parser/cpp.so
+
+-- SHENNANIGAN DESIGN
+-- treesitter can not be disabled: if it is installed, it will be loaded and
+-- throw errors.
+-- pcall nvim-treesitter.configs still not supported
+-- treesitter languages may require: cargo install tree-sitter-cli
+-- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
+--require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+-- idea: https://jdhao.github.io/2020/11/15/nvim_text_objects/
+--       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 require('nvim-treesitter.configs').setup {
   -- ensure_installed = 'maintained',
   ensure_installed = {

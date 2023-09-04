@@ -62,6 +62,7 @@ return {
     version = false,
     config = function() require('mini.indentscope').setup {} end,
   },
+  -- { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" }, -- TODO optionally show context in statusline
 
   -- TODO: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
@@ -87,7 +88,7 @@ return {
     config = function()
       require('mini.bracketed').setup {
         comment = { suffix = 'v' }, -- verbose comment
-        treesitter = { options = { add_to_jumplist = true } },
+        -- treesitter = { options = { add_to_jumplist = true } },
       }
     end,
   },
@@ -209,11 +210,6 @@ return {
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
-  --==treesitter
-  -- replacement without perf issues for context.vim would be great
-  -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
-  -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
-
   --==languages
   { 'mfussenegger/nvim-lint' }, -- configuration in my_lint.lua
   --{ "neomake/neomake" } -- get useful comments for code semantics
@@ -289,6 +285,11 @@ return {
   -- nvim-treesitter-context
   -- nvim-treesitter-textobjects
   -- nvim-treesitter-textsubjects
+  --==treesitter
+  -- replacement without perf issues for context.vim would be great
+  -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
+
 
   -- telescope-dap.nvim
   -- telescope-symbols.nvim

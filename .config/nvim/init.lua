@@ -5,7 +5,6 @@ require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
 -- cp -r $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
--- treesitter languages may require: cargo install tree-sitter-cli
 -- :lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 -- vim.opt.runtimepath:get(), :h vim.opt
 -- vim.opt.rtp:append()
@@ -56,7 +55,6 @@ else
   -- * rotate tabs: tabm0
   -- TODO always show context of cursor <<<<<<<<<
 
-  -- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
   -- idea config: toggle show size of last copy + selection in cmdline
   -- idea config: toggle show context of functions, either via vim or via lua regex
   -- TODO open source ascii editor, ideally within neovim. inspiration https://monodraw.helftone.com/
@@ -76,7 +74,6 @@ else
   -- idea keybindings for sending to terminal to gdb
 
   require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
-  require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
   require 'my_telesc' -- more flexible
   require 'my_jfind' -- faster than telescope
   require 'my_gitsign'
@@ -125,8 +122,6 @@ end
 -- idea: simple diff that respects gitignore https://github.com/ziglibs/diffz
 -- TODO project: testing lib to build + test + spawn suite with optional debugging vs simulation
 -- idea project: reduze with getting AST<->source locations
--- idea: https://jdhao.github.io/2020/11/15/nvim_text_objects/
---       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 
 -- working with macros
 -- https://stackoverflow.com/questions/2024443/saving-vim-macros
@@ -185,12 +180,6 @@ callback = function()
     --vim.api.nvim_command [[:keepjumps keeppatterns %s/\s\+$//e]] -- remove trailing spaces
   end,
 })
-
--- setups after special keypress
--- 1. load treesitter cmd: :LoT
--- 2. toggle autocmds?
--- 3. unload all bloat cmd: :LoQ
--- 4. ??
 
 -- very verbose
 -- local has_plenary, plenary = pcall(require, 'plenary')
@@ -376,10 +365,6 @@ callback = function()
 
 -- Removing Zig cache (for nested in project build.zig file)
 --ZIGCACHE=$(fd -uu zig-cache) && rm -fr $ZIGCACHE && fd -uu zig-cache
-
--- Remove externally installed broken treesitter parsers
--- rm ~/.local/nvim/lib/nvim/parser/c.so
--- rm ~/.local/nvim/lib/nvim/parser/cpp.so
 
 -- Run current line
 -- :.!python3

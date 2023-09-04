@@ -161,10 +161,6 @@ map('n', '<leader>Y', [[^vg_y]], opts) -- select current line starting with firs
 
 map('v', 'E', [[g_]], opts) -- goto until before eol
 
--- treesitter
--- see lua/my_treesitter.lua
--- gV node incremental selection, gS scope incremental selection
-
 -- pasting without moving cursor: p`[       <<<--- without ]
 
 -- write path into variable user_cwd
