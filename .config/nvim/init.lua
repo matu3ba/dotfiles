@@ -72,11 +72,12 @@ else
   -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
   -- idea keybindings for sending to terminal to gdb
 
-  require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   require 'my_telesc' -- more flexible
   require 'my_jfind' -- faster than telescope
   require 'my_gitsign'
   require 'my_hydra'
+  require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
+  -- neodev setup is in my_dap
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
   require 'my_statusline'

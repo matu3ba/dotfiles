@@ -25,9 +25,13 @@
 
 --==PluginChecks
 
--- setup neodev before lsp
+-- neodev has setup in my_dap.lua
 local has_neodev, neodev = pcall(require, 'neodev')
-if has_neodev then neodev.setup {} end
+if has_neodev then
+  neodev.setup {
+    library = { plugins = { "nvim-dap-ui" }, types = true },
+  }
+end
 
 local has_cmp, cmp = pcall(require, 'cmp')
 local has_lspconfig, lspconfig = pcall(require, 'lspconfig')

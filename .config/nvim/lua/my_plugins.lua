@@ -242,6 +242,14 @@ return {
   -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
   -- :GdbStart gdb -tui -x SCRIPT exec
   -- :Gdb command
+
+  --'nvim-telescope/telescope-dap.nvim',
+  { 'rcarriga/nvim-dap-ui' },
+  { 'mfussenegger/nvim-dap' },
+  { 'theHamsta/nvim-dap-virtual-text' },
+  -- nvim-dap
+  -- nvim-dap-ui
+  -- nvim-dap-virtual-text
   -- <f4>   Until                        (`:GdbUntil`)
   -- <f5>   Continue                     (`:GdbContinue`)
   -- <f6>   Reverse-Next                 (`:idea`), idea
@@ -280,9 +288,6 @@ return {
 
   -- commonly known JSON file formats: schemastore.nvim
   -- toggleterm.nvim
-  -- nvim-dap
-  -- nvim-dap-ui
-  -- nvim-dap-virtual-text
 
   -- nvim-treesitter
   -- nvim-treesitter-context

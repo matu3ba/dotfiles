@@ -82,21 +82,22 @@ if status is-interactive
     set -U CLUTTER_BACKEND "wayland"
   end
 
-  set -Ux EDITOR "nvim"
-  set -Ux GPG_TTY "$(tty)"
-  set -Ux SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
-  gpgconf --launch "gpg-agent"
-  trap "gpgconf --kill gpg-agent" exit
+  set -gx EDITOR "nvim"
+
+  #set -gx GPG_TTY "$(tty)"
+  #set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+  # gpgconf --launch "gpg-agent"
+  # trap "gpgconf --kill gpg-agent" exit
   # gpgconf --kill gpg-agent
   # gpg-connect-agent reloadagent /bye
   # gpg-connect-agent updatestartuptty /bye >/dev/null
-  # TODO flags GIT_VERB=1 git push
+  # GIT_VERB=1 git push
 
   # if test -z (pgrep ssh-agent | string collect)
   # end
   # eval (ssh-agent -c)
-  # set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
-  # set -Ux SSH_AGENT_PID $SSH_AGENT_PID
+  # set -gx SSH_AUTH_SOCK $SSH_AUTH_SOCK
+  # set -gx SSH_AGENT_PID $SSH_AGENT_PID
   # trap "ssh-agent -k" exit
 
   zoxide init fish | source
@@ -268,5 +269,21 @@ if status is-interactive
     end
   end
 
+  # Note: Other shells do not know what gpg server is currently attached to.
+  function startGpg -d "start gpg with ssh to workaround pinentry-tty bugs"
+    gpgconf --launch "gpg-agent"
+    set -gx GPG_TTY "$(tty)"
+    set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+    # idea modify prompt, process name and title
+  end
+  function reconnectGpg -d "reconnect to gpg client to workaround pinentry-tty bugs"
+    gpg-connect-agent updatestartuptty /bye >/dev/null
+  end
+  function stopGpg -d "stop gpg with ssh to workaround pinentry-tty bugs"
+    set -e GPG_TTY
+    set -e SSH_AUTH_SOCK
+    # idea modify prompt, process name and title
+    gpgconf --kill gpg-agent
+  end
 end
 

@@ -61,3 +61,12 @@ Read this file into an array, splitting by newline, in a single line of code. It
 
 There are helpers out there for most common situations
 - unfeasible due to big scope
+
+SHENNANIGAN
+.bashrc
+[[ $- != *i* ]] && return # If not running interactively, don't do anything
+
+For root
+[[ "$(whoami)" = "root" ]] && return
+is not the same as
+test "$(whoami)" = "root" && return

@@ -337,10 +337,19 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 --https://www.dannyadam.com/blog/2019/05/debugging-in-vim/
 
 --==dap
---map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
+--:DapContinue
+map('n', '<leader>da', [[<cmd>lua require'debugHelper'.attach()<CR>]], opts)
+map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], opts)
+
+map('n', '<leader>dt', [[<cmd>lua require("dapui").toggle()<CR>]], opts)
+map('n', '<leader>db', [[<cmd>DapToggleBreakpoint<CR>]], opts)
+map('n', '<leader>dc', [[<cmd>DapContinue<CR>]], opts)
+map('n', '<leader>dr', [[<cmd>require("dapui").open({reset = true})<CR>]], opts)
 --map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
 --map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
 --map('n', '<A-j>', [[<cmd>lua require'dap'.step_over()<CR>]], opts)
+
+--map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
 --map('n', '<leader>ds', [[<cmd>lua require'dap'.stop()<CR>]], opts)
 --map('n', '<leader>dc', [[<cmd>lua require'dap'.continue()<CR>]], opts)
 --map('n', '<leader>dk', [[<cmd>lua require'dap'.up()<CR>]], opts)
@@ -351,8 +360,6 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 --map('n', '<leader>dvi', [[<cmd>lua require'dap.ui.variables'.visual_hover()<CR>]], opts)
 --map('n', '<leader>d?', [[<cmd>lua require'dap.ui.variables'.scopes()<CR>]], opts)
 --map('n', '<leader>de', [[<cmd>lua require'dap'.set_exception_breakpoints({"all"})<CR>]], opts)
---map('n', '<leader>da', [[<cmd>lua require'debugHelper'.attach()<CR>]], opts)
---map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], opts)
 -- visual dap --
 --map('n', <leader>di, [[<cmd>lua require'dap.ui.widgets'.hover()<CR>]], opts)
 --map('n', <leader>d?, [[<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>]], opts)
