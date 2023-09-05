@@ -53,7 +53,6 @@ else
   -- * execute macro over visual selection
   -- * clone current paragraph
   -- * rotate tabs: tabm0
-  -- TODO always show context of cursor <<<<<<<<<
 
   -- idea config: toggle show size of last copy + selection in cmdline
   -- idea config: toggle show context of functions, either via vim or via lua regex

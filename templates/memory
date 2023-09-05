@@ -316,3 +316,23 @@ https://wiki.debian.org/Hugepages
   + see templates/win
 
 Pointer tagging with TBI for AArch64 https://www.linaro.org/blog/top-byte-ignore-for-fun-and-memory-savings/
+
+Process stack
++-----------+ <- high address
+| foo       | <-- XPS
+|           |
++-----------+ <- low address
+
+sub $8, %rsp
+mov $rax, ($rsp)
++-----------+ <- high address
+| foo       | <-- XPS
+| %rax val  |
++-----------+ <- low address
+pop rax
+equivalent to
+mov (%rsp), %rax
+add %8, %rsp
+
+Stack frame layout
+TODO https://eli.thegreenplace.net/2011/09/06/stack-frame-layout-on-x86-64

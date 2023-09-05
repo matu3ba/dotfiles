@@ -46,6 +46,8 @@ SHENNANGIAN
 TODO summarize solutions
 https://forum.defcon.org/node/245741
 https://forum.defcon.org/node/245748
+Many people poked https://www.cyberark.com/resources/threat-research-blog/dont-trust-this-title-abusing-terminal-emulators-with-ansi-escape-characters
+https://unix.stackexchange.com/questions/15101/how-to-avoid-escape-sequence-attacks-in-terminals
 
 zutty
 https://tomscii.sig7.se/2020/11/How-Zutty-works

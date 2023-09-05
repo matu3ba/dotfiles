@@ -176,6 +176,13 @@ next/n
 finish/f
 continue/c
 
+Show stack context
+x/100x $sp
+info frame
+bt
+x/x $esp for hex x/d $esp for signed x/u $esp for unsigned, x/1s for 1 byte string
+current instruction via x/i $eip
+
 print/formwat WHAT
 ptype WHAT
 display/format WHAT
@@ -315,3 +322,16 @@ kernel.yama.ptrace_scope
 CPP
 Print std::string values
 p *(char**)0x7fffffffbfc0
+Print vector
+print *(x._m_impl._m_start+0)
+
+SHENNANIGAN
+Printing std::map entries fails with 'Could not find operator[].', because map entry is std::string.
+Solution 1:
+std::string make_string(const char *x) { return x; }
+p mymap.at(make_string("Mars"))
+Solution 2:
+set $mystr = (std::string*) malloc(sizeof(std::string))
+call $mystr->basic_string()
+call $mystr->assign("foo")
+call some_function(*$mystr)

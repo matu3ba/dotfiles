@@ -490,39 +490,57 @@ class FriendOfVariable2 {
 // Solution 2. has drawback, that caller must know type or lookup must be annotated somewhere (ie in the base class),
 // so we have barely an advantage over not using enum + union.
 
-// Constructor types assignment operator types
+// Constructor types and assignment operator types
 class ExampleClass {
     int mValue;
     std::mutex mMut;
     // move constructor (move means much (2) ampersand arg)
+    // ExampleClass ex2 = std::move(ex1); // or ExampleClass ex2 = &&ex1;
+    // default: requires opt-in unless other constructors forbidden (move-only type)
     ExampleClass(ExampleClass&& aCpyVar) {
         mValue = aCpyVar.mValue;
     }
     // simple constructor
+    // ExampleClass ex1(1);
+    // default: used on default in constructor
     ExampleClass(int aValue) {
         mValue = aValue;
     }
-    // copy constructor
+    // copy constructor: ExampleClass ex1(1); ExampleClass ex2(ex1); // also ExampleClass ex2 = ex1;
+    // default: requires opt-in unless other constructors forbidden
     ExampleClass(const ExampleClass& aCpyVar) {
         mValue = aCpyVar.mValue;
     } // mutex requires copy constructor
 
-    // move assign operator (move means much (2) ampersand arg)
+    // TODO check this manually
+    // On absence of assignment operators primitive types are assigned, whereas
+    // the according default assignment (and on absence simple constructor) is
+    // called
+
+    // move assign operator (move means much (2) ampersand arg) usually used for move-only types
+    // ExampleClass ex1(1); ExampleClass ex2(2); ex2 = std:move(ex1); // or ex2 = &&ex1;
+    // default: requires opt-in unless other assignment operators forbidden (as move-only type)
     ExampleClass& operator=(ExampleClass&& other) {
         // swap lifts destruction and deallocation out of a critical/hot section
         // and instead is UB on target as different allocator and it leaves swapped items "destroyed"
         std::swap(mValue, other.mValue);
         return *this;
     };
-    // simple assign operator
+    // simple assign operator (C++98 style)
+    // ExampleClass ex2(1), ex1(2); ex2 = ex1;
+    // default: used on default for assignments unless forbidden
     ExampleClass& operator=(ExampleClass& other) {
-        // move leaves moved items "undestroyed" to have defined state for different allocators having UB
+        // move leaves moved items "undestroyed" to have defined state for
+        // different allocators usage not being UB
         // => no allocations => use std::swap
         // => allocations => use std::move
         mValue = std::move(other.mValue);
         return *this;
     };
-    // copy assign operator (must have a public copy assignment operator), also allowed signature: const ExampleClass&
+    // copy assign operator (must have a public copy assignment operator), also
+    // allowed signature: const ExampleClass& ExampleClass ex1(1); ExampleClass
+    // ExampleClass ex2(1), ex1(2); ex2 = std::copy(ex1); // or ex2=ex1; if simple assign operator forbidden
+    // default: requires opt-in unless other assignment operators forbidden
     ExampleClass& operator=(ExampleClass other) {
         return *this;
     };
