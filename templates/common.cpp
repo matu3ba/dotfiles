@@ -595,6 +595,8 @@ public:
 // * use templight or metashell
 // * try https://cppinsights.io
 // * std::cout << "testing type " << typeid(T).name() << std::endl;
+// * To generalize a type (GetVarAsString) via base class, one has to
+//   overload the pure function and use inner functions as templates.
 
 // From https://gpfault.net/posts/mapping-types-to-values.txt.html
 // SHENNANIGAN
@@ -678,3 +680,8 @@ static_assert(!is_string_class<std::vector<char>>);
 // make_shared is faster due having references next to storage
 // make_shared and weak_ptr do not co-exist well, because one can only call the
 // destructor to remove all associated memory.
+
+// SHENNANIGAN
+// Problem auto does verbatim replacement of the return type, which can hide a stack-local copy
+// Solution: Only use 'auto' for well-known iterators and status tuples, **never**
+// for objects.

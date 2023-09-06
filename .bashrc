@@ -1,6 +1,6 @@
 ##==bashrc
 
-# If not running interactively, don't do anything
+# If not running interactively, don't do anything (regex requires [[ ]].)
 [[ $- != *i* ]] && return
 
 #_set_my_PS1() {
@@ -98,12 +98,33 @@ stopGpg() {
   unset -v SSH_AUTH_SOCK
 }
 
+countdown() {
+    start="$(( $(date '+%s') + $1))"
+    while [ $start -ge $(date +%s) ]; do
+        time="$(( $start - $(date +%s) ))"
+        printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
+        sleep 0.1
+    done
+}
+
+stopwatch() {
+    start=$(date +%s)
+    while true; do
+        time="$(( $(date +%s) - $start))"
+        printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
+        sleep 0.1
+    done
+}
+
 export -f startGpg
 export -f reconnectGpg
 export -f stopGpg
+export -f countdown
+export -f stopwatch
 
-##==zoxide
-eval "$(zoxide init bash)" # quickjumper
+
+##==quickjumper
+eval "$(zoxide init bash)"
 
 ##==kitty
 if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi

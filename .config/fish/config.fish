@@ -285,5 +285,11 @@ if status is-interactive
     # idea modify prompt, process name and title
     gpgconf --kill gpg-agent
   end
+  function countdown -d "TODO countdown in seconds shown as H:M:S"
+    sleep(0.1)
+  end
+  function stopwatch -d "TODO stopwatch showing time running H:M:S since start"
+    sleep(0.1)
+  end
 end
 

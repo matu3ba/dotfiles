@@ -4,12 +4,14 @@
 
 --==LspInstallationsAndUsage
 
--- Manual:
+-- Manual (nvim-lsp name -- mason name):
 -- 'bashls', -- 'bash-language-server'
 -- 'jedi_language_server', -- 'jedi-language-server'
 -- 'ltex', -- 'ltex-ls'
 -- 'clangd', -- 'clangd'
 -- 'lemminx', -- 'lemminx'
+-- 'typst_lsp' -- 'typst-lsp'
+-- 'tsserver'  -- 'typescript-language-server'
 
 -- pip3 install -U --user jedi-language-server
 -- pipx install jedi-language-server
@@ -68,20 +70,29 @@ local common_on_attach = function(client, bufnr)
   end
 end
 
-lspconfig.clangd.setup {
-  capabilities = common_capabilities,
-  on_attach = common_on_attach,
-}
+-- local lsps_with_common_setup = {"clangd", "jedi_language_server", "julials", "rust_analyzer", "tsserver", "zls"}
+-- Common setup function for lsps.
+-- local common_setup = function(lsp)
+--   lspconfig.lsp_name.setup {
+--     capabilities = common_capabilities,
+--     on_attach = common_on_attach,
+--   }
+-- end
+-- for _, lsp_n in ipairs(lsps_with_common_setup) do
+--   common_setup(lsp_n)
+-- end
+
+-- stylua: ignore start
+lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 --require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
-lspconfig.julials.setup {
-  capabilities = common_capabilities,
-  on_attach = common_on_attach,
-}
---require'lspconfig'.pyls.setup{ on_attach=require'completion'.on_attach }
-lspconfig.rust_analyzer.setup {
-  capabilities = common_capabilities,
-  on_attach = common_on_attach,
-}
+lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.julials.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.tsserver.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+-- lspconfig.typst_lsp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+-- stylua: ignore end
+
 lspconfig.texlab.setup {
   capabilities = common_capabilities,
   on_attach = common_on_attach,
@@ -96,10 +107,6 @@ lspconfig.texlab.setup {
     },
   },
 }
-lspconfig.zls.setup {
-  capabilities = common_capabilities,
-  on_attach = common_on_attach,
-}
 
 lspconfig.lua_ls.setup {
   on_attach = common_on_attach,
@@ -108,9 +115,7 @@ lspconfig.lua_ls.setup {
 
     -- Debug common problems
     -- vim.print(client.config.settings)
-    -- local file = assert(io.open("tmpfile123", "a"));
-    -- file:write(vim.inspect(client.config.settings) .. "\n");
-    -- file:close()
+    -- :lua local file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(client.config.settings) .. "\n"); file:close()
 
     -- :lua print(client.workspace_folders[1].name .. "\n")
     -- :lua print(tostring(not vim.loop.fs_stat(client.workspace_folders[1].name..'/.luarc.json')) .. "\n")
@@ -141,7 +146,6 @@ lspconfig.lua_ls.setup {
 }
 
 --==Keybindings
-
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
@@ -183,7 +187,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 --==CompleterSetup
-
 cmp.setup {
   mapping = {
     ['<C-Space>'] = cmp.mapping.complete(),
@@ -207,6 +210,7 @@ cmp.setup {
     --  select = true,
     --},
   },
+
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
@@ -228,9 +232,9 @@ cmp.setup {
   -- window = {
   -- },
 }
-
 cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline(),
+
   sources = cmp.config.sources {
     { name = 'cmdline' },
   },

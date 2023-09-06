@@ -335,3 +335,6 @@ set $mystr = (std::string*) malloc(sizeof(std::string))
 call $mystr->basic_string()
 call $mystr->assign("foo")
 call some_function(*$mystr)
+
+Nice exercises to practice debugging.
+https://github.com/guyinatuxedo/nightmare/tree/master

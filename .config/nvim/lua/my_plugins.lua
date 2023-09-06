@@ -227,6 +227,10 @@ return {
     config = function() require('which-key').setup() end,
   }, -- :Telescope builtin.keymaps
 
+  -- jupyter and markdown live preview, TODO
+  -- https://github.com/kiyoon/jupynium.nvim
+  -- https://github.com/tamton-aquib/neorg-jupyter
+
   -- open files from a neovim terminal buffer in your current neovim instance instead of a nested one.
   -- reuse some lua socket code?
   -- https://github.com/willothy/flatten.nvim

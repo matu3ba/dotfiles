@@ -16,6 +16,7 @@ import time
 import traceback
 import urllib.parse
 import urllib.request
+import functools
 
 from typing import Optional, Tuple, List, IO
 import xml.etree.ElementTree as ET
@@ -516,3 +517,23 @@ signal.signal(signal.SIGINT, handle_sigint)
 # * 4. Teardown should also use readSocket to read all Kernel memory, if a stop was signaled.
 # Note: utf-8 decoding must also be done and select or an equivalent should be used to check,
 # if data for reading exists.
+
+# store function (partial evaluated) and expand it upon call ie list of arguments, ie
+# to store functions and arguments to execute at later point
+print_with_hello = functools.partial(print, "Hello")
+print_with_hello("World", 123, "blabla")
+print_with_hello()
+
+# Store function and call at later point:
+def fn1(arg: int) -> int:
+  return 1
+def fn2(arg: int) -> int:
+  return 2
+flist = [ fn1, fn2 ]
+flist[0](1)
+
+def run_cleanupfn(cleanup_args: list) -> None:
+  for i in range(0, len(cleanup_args)):
+    fn = cleanup_args[0]
+    args = cleanup_args[1:]
+    fn[i][0](*args)
