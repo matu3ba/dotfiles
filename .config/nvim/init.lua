@@ -20,23 +20,15 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
   -- TODO windowing
-  -- * 1. quit without closing   <leader>qw
-  -- * 2. close terminal command <leader>qc instead of ZD or ZE
-  -- * 3. C-w t left of tab      <C-w>HJKL ?
-  -- * 4. :tabm shortcuts        <
-  -- * 5. combine commands to replace terminal buffer
-  -- * 6. runner + hack workaround (copy everything between prompts under jkluoi keys, delete and add terminal)
-  --   + test runner does not play nice with Python behavior of being less unbuffered on terminal and more buffered on non-terminal
-  --     overseer.nvim?
-  -- * 7. one shot replace keypressed terminal with given command under same named register (uiojl)
-  -- * 8. replace terminal under cursor with given command under same named register upon keypress (repeat)
-  -- TODO lsp, remove lsp-zero.nvim
-  -- luasnips setup to create snippets for common stuff with
-  -- TODO venn:
-  -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
-  -- * inline text spacing adjustments
-  -- vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
+  -- * 1. :tabm shortcuts        hydra tab mode
+  -- * 2. combine commands to replace terminal buffer
+  -- * 3. think of a sane way to share cmds between overseer and shell (via registers?)
+  -- * 4. luasnips setup to create snippets for common stuff with
+  -- * 5. vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
+
+  -- TODO https://github.com/birth-software/birth
+  -- TODO advanced gdb to test signaling + reliable attaching of gdb to a process
 
   -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
@@ -57,7 +49,7 @@ else
   -- idea config: toggle show size of last copy + selection in cmdline
   -- idea config: toggle show context of functions, either via vim or via lua regex
   -- TODO open source ascii editor, ideally within neovim. inspiration https://monodraw.helftone.com/
-  -- idea setup mutt http://kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/
+  -- idea email setup Kernel development mutt http://kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/
   -- or https://webgefrickel.de/blog/a-modern-mutt-setup but there seem to be no significant advantages (no lua etc)
   -- TODO
   -- https://github.com/gto76/linux-cheatsheet

@@ -1,0 +1,36 @@
+Overview of Kernel use case groups
+- excution environments (kernel [task, module, virtual machine], user [process, thread])
+- inter process communication (pipe, io_uring?, locks, shared memory, signals, sockets, streams, wait groups, ..)
+- io management (block, io_uring, stream, virtual device access, ..)
+- memory management (kernel, stack, heap, paging [if CPU has MMU, PMU], ..)
+- permission and access management
+- time management (hardware timers, scheduling, sleeps/timeouts, set/get current time, ..)
+
+Motivators for acceptable implementation design + complexity +
+applicable/required formal methods
+- time management: Accepted worst case execution time
+- permission and access management: Accepted degree of security configurations (static,
+  kernel-dynamic, user-dynamic, etc) and thread levels
+- available hardware
+- accepted performance loss (work per time)
+- user-configurability of aforementioned points
+
+List of fundamental and (in practice) unfixable design flaws
+- Unix io management: tty underspecified [TODO describe] + error prone, file system [not
+  representative of hardware, unsecure for overall tty+shell usage]
+- Unix signaling: racy unless from/with parent process or pid 1
+  * (pid, gid, uuid) could be used as unique identification
+  * (non)cooperative scheduling could use suspension points + Kernel watchdog
+    with suspension points being necessary async events and watchdog being
+    updated on every scheduler iteration
+    + leaks (hardware) time informations or requires configurable timesteps over it
+- Unix? file permission system stores information within each file instead of file group
+  * nested overlayfs has limit 6 blocking usage to make nix on Linux less path hacky
+- Linux/Unix clone forces copy of whole memory, file descriptors etc (needed on
+  partial usage), which is a footgun leading to resource leakage,
+  synchronization problems and security problems
+  * feasibility of full process control of caller unclear
+  * how Kernel versioning could work very unclear, because Linux keeps the call
+    ABI stable
+
+TODO citations for everything

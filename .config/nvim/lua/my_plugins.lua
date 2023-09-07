@@ -218,7 +218,10 @@ return {
   --{ "neomake/neomake" } -- get useful comments for code semantics
   -- { 'LnL7/vim-nix' }, -- flakes highlighting: wait until nix converts their stuff to flakes
   { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
-  ---- Organization
+  --==Organization
+  -- ideas
+  -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
+  -- * inline text spacing adjustments
   { 'jbyuki/venn.nvim' }, --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
   -- TODO { 'simnalamburt/vim-mundo' }
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
@@ -302,6 +305,11 @@ return {
   -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
 
+  -- idea https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
+  -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab
+  -- try https://github.com/cipharius/kakoune-arcan
+  -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
+  -- idea keybindings for sending to terminal to gdb
 
   -- telescope-dap.nvim
   -- telescope-symbols.nvim

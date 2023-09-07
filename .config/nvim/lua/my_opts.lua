@@ -96,6 +96,10 @@ local function load_options()
   vim.wo.spell = false
   vim.wo.wrap = false
 
+  -- TODO :set formatoptions-=cro
+  -- to fix //-comments being annoying
+  -- https://superuser.com/questions/271023/can-i-disable-continuation-of-comments-to-the-next-line-in-vim
+
   -- print current filetype for nvim, treesitter
   -- :lua print(vim.bo.filetype)
   -- :lua print(require("nvim-treesitter.parsers").filetype_to_parsername[vim.bo.filetype])

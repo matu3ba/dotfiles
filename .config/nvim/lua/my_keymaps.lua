@@ -59,8 +59,6 @@ local map = vim.api.nvim_set_keymap
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
 
 map('', '<Space>', '<Nop>', opts) -- fix annoying space movements
-map('n', 'ZD', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
-map('n', 'ZE', '<cmd>bdel<CR>', opts) -- :bdel but faster
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
@@ -102,9 +100,12 @@ map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 --nnoremap <leader>e :exe getline(line('.'))<cr> -- Run the current line as if it were a command
 -- idea come up with something to select whole word under cursor, ie this.is.a.word(thisnot)
 
-map('n', '<leader>qq', ':q<CR>', opts) -- faster, but no accidental quit
-map('n', '<leader>q!', ':q!<CR>', opts) -- faster, but no accidental quit
-map('n', '<leader>qb', ':bd<CR>', opts) -- faster, but no accidental quit
+map('n', '<leader>qq', '<cmd>q<CR>', opts) -- faster, but no accidental quit
+map('n', '<leader>q!', '<cmd>q!<CR>', opts) -- faster, but no accidental quit
+map('n', '<leader>qb', '<cmd>bd<CR>', opts) -- faster delete buffer
+map('n', '<leader>qw', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
+-- map('n', '<leader>qc', '<cmd>bn<Bar>bdel#<CR>', opts) -- close terminal command
+
 --map('n', '<leader>y', '"+y', opts) -- used default
 --map('v', '<leader>y', '"+y', opts) -- used default
 map('v', '<leader>d', '"_d', opts) -- delete into blackhole register
