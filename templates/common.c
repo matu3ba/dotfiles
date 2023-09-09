@@ -216,3 +216,6 @@ void convert_string_to_int_simple(const char *buff) {
 typedef struct structname {
     int some_var;
 } structname_s;
+
+// SHENNANIGAN
+// clang and gcc do not support relative paths for object file output

@@ -79,3 +79,8 @@ motivation.
   * communication efficiency
   * tooling understanding, design and development
   * motivation techniques and options
+
+more widely usable benefits of (optimal) incremental compilation
+- linker library
+- debugger abstractions (ptrace)
+- strategy/tooling to detect reproducible race conditions?

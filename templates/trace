@@ -1,0 +1,31 @@
+Mostly taken from https://klarasystems.com/articles/freebsd-vs-linux-tracing-and-troubleshooting/
+From portable and widely used to non-portable
+
+==dtrace
+idea: document, if necessary
+
+==strace in a nutshell
+strace<--2.ptrace  traced process
+   |     \------+          |1.open(file.txt)   user
+---|------------|----------|-------
+    \3.ptrace   \2.ptrace  |                   kernel
+     \           --------->|
+      ---------------------|
+                           |
+                     disk<-+
+
+=> slow due to many context switches, but standard tool due to decoding huge
+number syscalls and platform support
+
+==bpftrace
+https://github.com/iovisor/bpftrace
+- inspired by awk, C and predecessors dtrace and systemtrap
+- for eBPF on Linux, uses LLVM to compile into BPF-bytecode,
+- uses BCC to interact with BPF system, kprobes, uprobes and tracepoints
+
+
+==FAQ
+Linux strace ./callstuff
+Darwin/Mac sudo ktrace trace -S -f C3 -c find .
+sudo dtrace -ln 'syscall:::entry'
+Windows TODO

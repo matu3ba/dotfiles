@@ -8,12 +8,18 @@ gdb -p PID
   * dump program state
 generate-core-file
 - 2. dump program state without interrupting process
-gcore (needs ptrace, see PERMISSIONS)
+gcore
 - 3. automatically dump program state
 coredumpctl
 TODO
 https://wiki.archlinux.org/title/Core_dump
 https://www.baeldung.com/linux/managing-core-dumps
+
+https://stackoverflow.com/questions/70798468/gdb-debug-two-instances-of-the-same-application-simultaneous
+https://stackoverflow.com/questions/64662738/run-file-with-gdbserver-multi
+https://www.makeuseof.com/getting-started-with-gnu-debugger-on-linux/
+https://www.thegeekstuff.com/2014/04/gdbserver-example/
+attaching without lowering security is error prone in most graphical frontend
 
 redirect output of gdb
 1. gdb core.3599 -ex bt -ex quit |& tee backtrace.log

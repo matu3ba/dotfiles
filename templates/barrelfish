@@ -1,0 +1,8 @@
+Review of barrelfish docs
+
+Unclear essential things
+- hardware timers, system time
+- capability model looks like it may have flaws
+  * uses AIC instead of ACID (durability assumed?)
+
+TODO

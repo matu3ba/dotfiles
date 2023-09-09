@@ -1,0 +1,8 @@
+==Processes
+Linux: /proc
+FreeBSD: procstat
+==Files
+procstat -f, fstat
+==Network
+FreeBSD: sockstat
+Linux: ss

@@ -1,9 +1,23 @@
 --! Optional dependencies: nvim-osc52
 --! Note: C+non-alphabetaic, C+letter, C+Shift+letter can not be distinguished
 --! without termcap, so vim + neovim do not support them.
+--! Debugging: :verbose map KEY_S
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+-- SHENNANIGAN
+-- Binding Control or shift + function keys is cumbersome/terminal emulator specific, see
+-- https://neovim.discourse.group/t/how-can-i-map-ctrl-shift-f5-ctrl-shift-b-ctrl-and-alt-enter/2133/2
+-- Example(ghostty aiming for strict conformance):
+-- map('n', '<sc-f5>', [[<cmd>lua print('ctrl+shift+f5')<cr>]], {noremap = true})-- does not work
+-- map('n', '<c-f5>', [[<cmd>lua print('ctrl+f5')<cr>]], {noremap = true})-- does not work
+-- map('n', '<s-f5>', [[<cmd>lua print('shift+f5')<cr>]], {noremap = true})-- does not work
+-- map('n', '<a-f5>', [[<cmd>lua print('alt+f5')<cr>]], {noremap = true})-- does not work
+-- map('n', '<cs-B>', [[<cmd>lua print('ctrl+shift+b')<cr>]], {noremap = true})-- works
+-- map('n', '<c-+>', [[<cmd>lua print('ctrl+shift+=')<cr>]], {noremap = true}) -- Ctrl+Shift+= -- does not work
+-- map('n', '<c-=>', [[<cmd>lua print('ctrl+=')<cr>]], {noremap = true}) -- Ctrl+= -- internally used to set default font size
+-- map('n', '<c-.>', [[<cmd>lua print('ctrl+.')<cr>]], {noremap = true}) -- Ctrl+. -- works
+-- map('n', '<a-cr>', [[<cmd>lua print('alt+enter')<cr>]], {noremap = true}) -- Alt+Enter -- works
 -- non-api mappings
 local ok_osc52, osc52 = pcall(require, 'osc52')
 if ok_osc52 then
@@ -344,9 +358,23 @@ map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], o
 
 map('n', '<leader>dt', [[<cmd>lua require("dapui").toggle()<CR>]], opts)
 map('n', '<leader>db', [[<cmd>DapToggleBreakpoint<CR>]], opts)
-map('n', '<leader>dc', [[<cmd>DapContinue<CR>]], opts)
-map('n', '<leader>dr', [[<cmd>require("dapui").open({reset = true})<CR>]], opts)
---map('n', '<A-k>', [[<cmd>lua require'dap'.step_out()<CR>]], opts)
+map('n', '<leader>dr', [[<cmd>lua require("dapui").open({reset = true})<CR>]], opts)
+map('n', '<leader>dk', [[<cmd>lua require("dap").terminate()<CR>]], opts) -- kill it
+map('n', '<leader>dR', [[<cmd>lua require("dap").run_last()()<CR>]], opts) -- Run last
+
+--VSCODE debugger mappings
+map('n', '<F4>', [[<cmd>lua require'dap'.reverse_continue()<CR>]], opts)
+map('n', '<F5>', [[<cmd>DapContinue<CR>]], opts)
+map('n', '<F6>', [[<cmd>lua require'dap'.pause()<CR>]], opts)
+-- Shift+<F9> inline breakpoints not supported by dap
+map('n', '<F9>', [[<cmd>DapToggleBreakpoint<CR>]], opts)
+map('n', '<F10>', [[<cmd>DapStepOver<CR>]], opts)
+map('n', '<F11>', [[<cmd>DapStepInto<CR>]], opts)
+map('n', '<F12>', [[<cmd>DapStepOut<CR>]], opts) -- s-f12 not used to prevent escape code setup
+-- map('n', '<F11>', [[<cmd>DapStepInto<CR>]], opts)
+
+-- map('n', '<F6>', [[<cmd>DapPause<CR>]], opts)
+--map('n', '<A-k>', [[<cmd>DapStepInto<CR>]], opts)
 --map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
 --map('n', '<A-j>', [[<cmd>lua require'dap'.step_over()<CR>]], opts)
 
