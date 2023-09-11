@@ -15,11 +15,20 @@ ping command examples
 list all ip addresses connected to your server
 netstat -tn 2>/dev/null | grep :80 | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -nr | head
 
+Process is not shown in netstat on Linux
+sudo ss -lptn 'sport = :80'
+sudo netstat -nlp | grep :80
+sudo lsof -n -i :80 | grep LISTEN
+
 To show the gateways (routers):
 ip route
 To show the default gateway[s]:
 ip -4 route show default
 ip -6 route show default
+
+Trace network route:
+traceroute IP
+tracepath -b IP
 
 tcpdump options
 -D list of devices
@@ -103,3 +112,7 @@ To get all routes
 ip r
 
 iwconfig wlan0 | grep -i --color quality
+
+Proc net docs: https://www.kernel.org/doc/Documentation/networking/proc_net_tcp.txt
+bashonly: TCP_PORT_STATUS=`(echo > /dev/tcp/x.x.x.x/yyyy) >/dev/null 2>&1 && echo "UP" || echo "DOWN"`; echo $TCP_PORT_STATUS
+nc -vz IP_Address Port

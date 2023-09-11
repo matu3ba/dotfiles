@@ -36,13 +36,30 @@ local map = vim.api.nvim_set_keymap
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
 -- Principle:
---  look for better prefix than , for window navigation, tab nvagiation mappings (splits, tabs, switching, file drawer etc)
 --  <Space> general mapleader for fast operations
+--    * 1-9 goto window 1-9
+--    * b buffercmds
+--    * c copy (C unused)
+--    * d debugging, diffput(2,3)
+--    * g git (G unused)
+--    * p|P paste (fast)
+--    * r reorganize (t tabs, w windows) TODO
+--    * t tags, telescope, TODO remap rg
+--    * q quit (fast), query into quick and loclist
+--    * w lsp workspace
+--    * - for leap jump
+--    * ; special send command?
+--    * \ special replace?
+--  mapleader exceptions:
+--    * harpoon nav_file
+--    * harpoon set_current_at file
+--    * harpoon gotoTerminal
 --  idea figure out where to put fuzzy finding mappings (e.g. files, buffers, helptags etc)
---  ;       runnig tests and shell commands
---  \       find and replace helpers ?
+--  ;       runnig things: jkluio register content, 1-6?, r renew,
+--    * enter, repeat, lineUnderCursorLogAndSendToShell, C-c, jump to bottom, prev|next prompt
+--  \       find and replace helpers TODO
 --  _       backwards jump
---  -       forwards jump
+--  -       forwards jump (multiple)
 --  note conflicting keybinding: YSurround yS, ys
 --  note conflicting keybinding: comment_toggle_blocks/linewise gb,gc
 --  <C-s>   shell stuff
@@ -155,14 +172,14 @@ map('n', '<leader>6', [[<cmd>6wincmd w<CR>]], opts)
 map('n', '<leader>7', [[<cmd>7wincmd w<CR>]], opts)
 map('n', '<leader>8', [[<cmd>8wincmd w<CR>]], opts)
 -- open tab by number for direct access
-map('n', '<leader>w1', [[1gt]], opts)
-map('n', '<leader>w2', [[2gt]], opts)
-map('n', '<leader>w3', [[3gt]], opts)
-map('n', '<leader>w4', [[4gt]], opts)
-map('n', '<leader>w5', [[5gt]], opts)
-map('n', '<leader>w6', [[6gt]], opts)
-map('n', '<leader>w7', [[7gt]], opts)
-map('n', '<leader>w8', [[8gt]], opts)
+map('n', '<C-1>', [[1gt]], opts) -- requires kitty protocol (not supported by tmux, zellij)
+map('n', '<C-2>', [[2gt]], opts)
+map('n', '<C-3>', [[3gt]], opts)
+map('n', '<C-4>', [[4gt]], opts)
+map('n', '<C-5>', [[5gt]], opts)
+map('n', '<C-6>', [[6gt]], opts)
+map('n', '<C-7>', [[7gt]], opts)
+map('n', '<C-8>', [[8gt]], opts)
 -- <cmd>let @/=expand("<cword>")<Bar>wincmd w<Bar>normal n<CR>
 -- search word in other window
 -- map('n', '<leader>*', [[<cmd>let @/='\<'.expand("<cword>").'\>'<Bar>wincmd w<Bar>normal n<CR>]], opts)
@@ -504,8 +521,8 @@ map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across t
 map('n', '<leader>gs', '<cmd>Git<CR>', opts)
 map('n', '<leader>g2', '<cmd>diffget //2<CR>', opts)
 map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)
-map('n', '<leader>p2', '<cmd>diffput //2<CR>', opts)
-map('n', '<leader>p3', '<cmd>diffput //3<CR>', opts)
+map('n', '<leader>d2', '<cmd>diffput //2<CR>', opts)
+map('n', '<leader>d3', '<cmd>diffput //3<CR>', opts)
 
 --==harpoon buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140

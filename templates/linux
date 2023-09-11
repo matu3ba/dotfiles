@@ -232,6 +232,9 @@ To make oom killer less likely to kill a relevant process, use
 Ideally, disable overcommit alltogether, but the fork-model with virtual memory
 copies makes this for many cases unfeasible.
 
+Get Process spawn path
+readlink -f /proc/PID/exe
+
 ptrace basics, see PERMISSIONS in templates/gdb
   PTRACE_ATTACH - connect to the process.
   PTRACE_PEEKTEXT - look at the attached process' code memory (for example to disassemble the code)
@@ -245,3 +248,14 @@ https://www.wireguard.com/quickstart/
 wg
 wg-quick
 https://rair.dev/wireguard-ssh/
+
+Performance monitoring
+vmstat
+iotop
+iostat
+
+IO and network tuning
+ionice
+tc
+ionice
+https://www.linuxtoday.com/blog/blocking-and-non-blocking-i-0/

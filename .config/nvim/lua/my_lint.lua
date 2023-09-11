@@ -52,6 +52,14 @@ ruff.args = {
   '-',
 }
 
+-- clang-tidy -checks='bugprone-*,cert-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*' file.c -- [clang[++]|gcc|g++]-flags
+-- -hicpp occasionally must be disabled.
+-- misc-* opinionated
+-- modernize-* bad for C interop (use 0 instead of nullptr to interop with C)
+-- performance-* depends
+-- portability-* depends
+-- readability-* opinionated
+
 -- # Checks
 -- CHECKS="clang-*,cppcoreguidelines-*,modernize-*,performance-*,-clang-diagnostic-old-style-cast,-clang-diagnostic-sign-conversion,\
 -- -modernize-use-auto,-cppcoreguidelines-special-member-functions,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-constant-array-index,\
@@ -66,8 +74,8 @@ ruff.args = {
 -- clang-tidy \
 --     -checks="$CHECKS" \
 
--- local clang_tidy = lint.linters.clang_tidy
--- clang_tidy.args = {
+-- local clangtidy = lint.linters.clangtidy
+-- clangtidy.args = {
 --   '--quiet',
 -- }
 

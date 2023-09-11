@@ -3,8 +3,16 @@ TODO
 FIXME
 
 c/c++
-cpplint, flawfinder
+cpplint, flawfinder, clang-tidy
 hefty dependency: oclint
+
+clang-tidy -checks='bugprone-*,cert-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*' file.c -- [clang[++]|gcc|g++]-flags
+hicpp-* occasionally must be disabled.
+misc-* opinionated
+modernize-* bad for C interop (use 0 instead of nullptr to interop with C)
+performance-* depends
+portability-* depends
+readability-* opinionated
 
 isOverlapping( for [start,end) intervals]:
 assume: intervals

@@ -22,10 +22,13 @@ else
   -- TODO windowing
   -- * 1. :tabm shortcuts        hydra tab mode
   -- * 2. combine commands to replace terminal buffer
-  -- * 3. think of a sane way to share cmds between overseer and shell (via registers?)
+  -- * 3. implement sharing cmds between overseer and shell (via registers?)
   -- * 4. luasnips setup to create snippets for common stuff with
   -- * 5. vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
+  -- TODO entity component system (ECS)
+  -- TODO ECS design idea:
+  -- composable testing lib to build + test + spawn suite with optional debugging vs simulation
 
   -- TODO https://github.com/birth-software/birth
   -- TODO advanced gdb to test signaling + reliable attaching of gdb to a process
@@ -112,7 +115,7 @@ end
 
 -- https://alpha2phi.medium.com/learn-neovim-the-practical-way-8818fcf4830f
 -- idea: simple diff that respects gitignore https://github.com/ziglibs/diffz
--- TODO project: testing lib to build + test + spawn suite with optional debugging vs simulation
+--
 -- idea project: reduze with getting AST<->source locations
 
 -- working with macros

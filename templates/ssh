@@ -138,6 +138,14 @@ Config Options
 To use explicitly the given config key for the host, set
 *IdentitiesOnly* yes
 
+Ignore config file (ie to setup root user ssh key in script)
+ssh -F none -o PubkeyAuthentication=no example.com
+
+SHENNANIGAN
+ssh-copy-id can not be called with modified ssh config
+TODO make own helper script
+TODO separated ssh configs
+
 ____FAQ____
 Problem https://superuser.com/questions/1631020/gpg-agent-ssh-support-throwing-sign-and-send-pubkey-signing-failed-for-rsa-no
 sign_and_send_pubkey: signing failed for ED25519 PRIVATE_KEY_PATH from agent: agent refused operation
