@@ -50,7 +50,20 @@ Many people poked https://www.cyberark.com/resources/threat-research-blog/dont-t
 https://unix.stackexchange.com/questions/15101/how-to-avoid-escape-sequence-attacks-in-terminals
 
 zutty
-https://tomscii.sig7.se/2020/11/How-Zutty-works
+Incomplete implementation https://tomscii.sig7.se/2020/11/How-Zutty-works
 
 List of terminal escape codes
 https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797.
+
+SHENNANIGAN
+mosh can drop data and has no history, ssh is not designed for performance
+
+SHENNANIGAN
+1. C-[0-9], C-[F1-F12] etc are not mappable without kitty keymap protocol
+2. kitty does not support remote session persistence and maintainer is hostile
+to terminal multiplexers.
+Following solutions are possible to support all keys being mappable and remote
+session persistence:
+- 1. define a new public protocol ("extended kitty")
+- 2. use a private one to other ghostty sessions like wezterm
+- 3. use a separate communication channel other than shell (https://goteleport.com/blog/ssh-restricted-shells/)

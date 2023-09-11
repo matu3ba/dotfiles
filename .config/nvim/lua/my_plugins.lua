@@ -53,7 +53,7 @@ return {
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
-  -- { "tamton-aquib/keys.nvim", config = function() require("keys").setup({}) end, }, -- :KeysToggle
+  { "tamton-aquib/keys.nvim", config = function() require("keys").setup({}) end, }, -- :KeysToggle
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99

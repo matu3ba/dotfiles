@@ -24,19 +24,30 @@ endif
 set directory=$XDG_CACHE_HOME/vim/swap,~/,/tmp
 set backupdir=$XDG_CACHE_HOME/vim/backup,~/,/tmp
 set undodir=$XDG_CACHE_HOME/vim/undo,~/,/tmp
-set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+"  " set viminfo+=$XDG_CACHE_HOME/vim/viminfo
 set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
-let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
-
-"   Clipboard
-set clipboard=unnamedplus " make all yanking/deleting automatically copy to system cliboard
-" :echo has('clipboard') = 0 " no clipboard set
+"  let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
+"
+"  "   Clipboard
+"  set clipboard=unnamedplus " make all yanking/deleting automatically copy to system cliboard
+"  " :echo has('clipboard') = 0 " no clipboard set
+"
+" Testing (no kitty protocol support to bind C,S,A,fn keys in combinations)
+"noremap <silent> <s-c-f5> :echo 'ctrl+shift+f5'
+"noremap <silent> <c-f5> :echo 'ctrl+f5'
+"noremap <silent> <s-f5> :echo 'shift+f5'
+"noremap <silent> <a-f5> :echo 'alt+f5'
+"noremap <silent> <c-s-B> :echo 'ctrl+shift+b'
+"noremap <silent> <c-+> :echo 'ctrl+shift+='
+"noremap <silent> <c-=> :echo 'ctrl+='
+"noremap <silent> <c-.> :echo 'ctrl+.'
+"noremap <silent> <a-cr> :echo 'alt+enter'
 
 "   Highlighting
 " Setup:
 " mkdir -p $HOME/.config/vim
 " git clone https://github.com/ziglang/zig.vim $HOME/.config/vim/zig.vim
 " :source $MYVIMRC
-if isdirectory($HOME/.config/vim/zig.vim)
-  set runtimepath^=$HOME/.config/vim/zig.vim
-endif
+" if isdirectory($HOME/.config/vim/zig.vim)
+"   set runtimepath^=$HOME/.config/vim/zig.vim
+" endif

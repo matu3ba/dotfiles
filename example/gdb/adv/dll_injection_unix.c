@@ -17,6 +17,7 @@
 // https://www.codeproject.com/Articles/33340/Code-Injection-into-Running-Linux-Application
 
 // https://stackoverflow.com/a/24356162/9306292
+// TODO: missing library usage/payload insertion, ie process_vm_writev memory to execute
 #define  _GNU_SOURCE
 #include <sys/ptrace.h>
 #include <sys/user.h>

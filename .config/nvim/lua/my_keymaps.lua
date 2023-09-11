@@ -6,18 +6,20 @@
 -- luacheck: no max line length
 
 -- SHENNANIGAN
--- Binding Control or shift + function keys is cumbersome/terminal emulator specific, see
--- https://neovim.discourse.group/t/how-can-i-map-ctrl-shift-f5-ctrl-shift-b-ctrl-and-alt-enter/2133/2
--- Example(ghostty aiming for strict conformance):
--- map('n', '<sc-f5>', [[<cmd>lua print('ctrl+shift+f5')<cr>]], {noremap = true})-- does not work
+-- Keymaps like C-[0-9] can not be binded without kitty protocol (outside kitty or ghostty)
+-- kitty protocol only supported by kitty (neither zellij, nor fully on ghostty)
+-- Example(ghostty):
+-- map('n', '<s-c-f5>', [[<cmd>lua print('ctrl+shift+f5')<cr>]], {noremap = true})-- does not work
 -- map('n', '<c-f5>', [[<cmd>lua print('ctrl+f5')<cr>]], {noremap = true})-- does not work
 -- map('n', '<s-f5>', [[<cmd>lua print('shift+f5')<cr>]], {noremap = true})-- does not work
 -- map('n', '<a-f5>', [[<cmd>lua print('alt+f5')<cr>]], {noremap = true})-- does not work
--- map('n', '<cs-B>', [[<cmd>lua print('ctrl+shift+b')<cr>]], {noremap = true})-- works
+-- map('n', '<c-s-B>', [[<cmd>lua print('ctrl+shift+b')<cr>]], {noremap = true})-- works
 -- map('n', '<c-+>', [[<cmd>lua print('ctrl+shift+=')<cr>]], {noremap = true}) -- Ctrl+Shift+= -- does not work
 -- map('n', '<c-=>', [[<cmd>lua print('ctrl+=')<cr>]], {noremap = true}) -- Ctrl+= -- internally used to set default font size
 -- map('n', '<c-.>', [[<cmd>lua print('ctrl+.')<cr>]], {noremap = true}) -- Ctrl+. -- works
 -- map('n', '<a-cr>', [[<cmd>lua print('alt+enter')<cr>]], {noremap = true}) -- Alt+Enter -- works
+-- Workaround: https://neovim.discourse.group/t/how-can-i-map-ctrl-shift-f5-ctrl-shift-b-ctrl-and-alt-enter/2133/2
+
 -- non-api mappings
 local ok_osc52, osc52 = pcall(require, 'osc52')
 if ok_osc52 then
