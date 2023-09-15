@@ -312,6 +312,10 @@ callback = function()
 -- :%s//\r/g
 -- convert tabs to spaces:
 -- :retab
+-- Convert '\n's to newline characters
+-- %s/\\n/\r/g
+-- Convert newline characters to '\n's:
+-- %s/\n/\\n/g
 -- convert command with space to newline with \
 -- / / \\\r/g
 -- convert back cmd separated by \ to space separated commands

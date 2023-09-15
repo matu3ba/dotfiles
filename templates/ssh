@@ -147,11 +147,17 @@ TODO make own helper script
 TODO separated ssh configs
 
 ____FAQ____
-Problem https://superuser.com/questions/1631020/gpg-agent-ssh-support-throwing-sign-and-send-pubkey-signing-failed-for-rsa-no
-sign_and_send_pubkey: signing failed for ED25519 PRIVATE_KEY_PATH from agent: agent refused operation
-Solution
-1. create new empty tab in tmux/zellij or ideally new terminal emulator to
-   force handling of tty in that window
-2. gpg-connect-agent updatestartuptty /bye >/dev/null
-3. scp does not work, ie creates files with weird names.
-   ALWAYS append : or scp has cp behavior.
+Problems with solutions
+1. https://superuser.com/questions/1631020/gpg-agent-ssh-support-throwing-sign-and-send-pubkey-signing-failed-for-rsa-no
+   sign_and_send_pubkey: signing failed for ED25519 PRIVATE_KEY_PATH from agent: agent refused operation
+   * separate terminal emulator to force handling of tty in that window
+   * gpg-connect-agent updatestartuptty /bye >/dev/null
+2. scp does not work, ie creates files with weird names.
+   * ALWAYS append : or scp has cp behavior.
+3. How to suppress key usage?
+   * ssh -i /dev/null user@domain@ip
+   * ssh -o PubkeyAuthentication=no -o PreferredAuthentications=password user@domain@ip
+   * ssh user:@domain@ip
+4. How to fix "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!" (assuming
+   nothing got compromised)?
+   * delete known_hosts entry, ie via ssh-keygen -R user@domain@ip

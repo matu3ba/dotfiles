@@ -537,3 +537,11 @@ def run_cleanupfn(cleanup_args: list) -> None:
     fn = cleanup_args[0]
     args = cleanup_args[1:]
     fn[i][0](*args)
+
+def isLocalHost(arg: str) -> bool:
+  """
+  Quick and dirty check for localhost. Note that the network prefix is missing
+  """
+  if arg == "localhost" or arg == "127.0.0.1" or arg == "::1" or arg == "0:0:0:0:0:0:0:1" \
+      or arg == "0000:0000:0000:0000:0000:0000:0000:0001": return True
+  else: return False

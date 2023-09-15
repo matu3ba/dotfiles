@@ -230,6 +230,10 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # sed: SED_PATTERN FILE
 # in-place replace verbatim: sed -i 's|literal_pattern|replacement_string|g'
 # in-place replace regex: sed -i -e 's/literal_pattern/replacement_string/g'
+# tr can only handle single byte replacements (following does not work): tr '\n' '\\n' <file >tmpfile && mv tmpfile file
+# sed does not include line endings unless told so, which is not POSIX conform
+# sed -i -z 's|\n|\\\n|g' file.txt
+# sed -i -z 's|\\\n|\n|g' file.txt
 
 # find
 # find ./ -maxdepth 1 -type f -exec SED_PATTERN {} \;

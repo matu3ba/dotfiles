@@ -130,6 +130,10 @@ int add3 (int a, int b, int c) { return a + b + c; }
 // figure out default symbols of host
 // echo | gcc -dM -E -
 
+// TODO
+// tldr; https://airbus-seclab.github.io/c-compiler-security/
+// in-depth https://github.com/airbus-seclab/c-compiler-security
+
 // Survival flags
 // -Wno-shadow -Wno-switch-enum -Wno-missing-prototypes
 // -Wno-unknown-pragmas -Wno-unused-parameter

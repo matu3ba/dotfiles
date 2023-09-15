@@ -610,9 +610,8 @@ map('n', ';nu', [[<cmd>lua require("harpoon.term").sendCommand(4, require("my_ut
 map('n', ';ni', [[<cmd>lua require("harpoon.term").sendCommand(5, require("my_utils").getCurrLinePlNL())<CR>]], opts)
 map('n', ';no', [[<cmd>lua require("harpoon.term").sendCommand(6, require("my_utils").getCurrLinePlNL())<CR>]], opts)
 
--- log the command and then execute it
+-- s shell content exec and log(log the command and then execute it)
 -- doesnt detect cli failures, because there is no standard to encode them
--- s means shell content exec and log
 map('n', ';sj', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(1)<CR>]], opts)
 map('n', ';sk', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(2)<CR>]], opts)
 map('n', ';sl', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(3)<CR>]], opts)
@@ -620,8 +619,7 @@ map('n', ';su', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(4)<CR>]], opt
 map('n', ';si', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(5)<CR>]], opts)
 map('n', ';so', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(6)<CR>]], opts)
 
--- repeat last command
--- r means repeat last command
+-- r repeat last command
 map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
 map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "!!\n")<CR>]], opts)
 map('n', ';rl', [[<cmd>lua require("harpoon.term").sendCommand(3, "!!\n")<CR>]], opts)
@@ -629,8 +627,7 @@ map('n', ';ru', [[<cmd>lua require("harpoon.term").sendCommand(4, "!!\n")<CR>]],
 map('n', ';ri', [[<cmd>lua require("harpoon.term").sendCommand(5, "!!\n")<CR>]], opts)
 map('n', ';ro', [[<cmd>lua require("harpoon.term").sendCommand(6, "!!\n")<CR>]], opts)
 
--- send strings from register as command + execute it
--- C-s means cmd from string X
+-- C-s means cmd from string X (send strings from register as command + execute it)
 map('n', '<C-s>j', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('j') .. "\n")<CR>]], opts) -- C-s for control send to
 map('n', '<C-s>k', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('k') .. "\n")<CR>]], opts)
 map('n', '<C-s>l', [[<cmd>lua require("harpoon.term").sendCommand(1, vim.fn.getreg('l') .. "\n")<CR>]], opts)

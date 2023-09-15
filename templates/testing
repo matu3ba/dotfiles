@@ -52,6 +52,20 @@ Known bad designs:
 - 8. Unit test or component test frameworks are complex, have no single known concise documentation page for usage (google mocks)
      inclusive or have no good keywords for searching the use case
 
+Related (https://12factor.net/) for web and service appliations (without high performance or latency constrains):
+- 1. Codebase One codebase tracked in revision control, many deploys
+- 2. Dependencies Explicitly declare and isolate dependencies
+- 3. Config Store config in the environment
+- 4. Backing services Treat backing services as attached resources
+- 5. Build, release, run Strictly separate build and run stages
+- 6. Processes Execute the app as one or more stateless processes
+- 7. Port binding Export services via port binding
+- 8. Concurrency Scale out via the process model
+- 9. Disposability Maximize robustness with fast startup and graceful shutdown
+- 10. Dev/prod parity Keep development, staging, and production as similar as possible
+- 11. Logs Treat logs as event streams
+- 12. Admin processes Run admin/management tasks as one-off processes
+
 Unit tests
 - must never depend on timing (deadlines or waiting times)
 - must be as independent as possible from external factors excluding the tested ones
