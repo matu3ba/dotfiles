@@ -336,3 +336,33 @@ add %8, %rsp
 
 Stack frame layout
 TODO https://eli.thegreenplace.net/2011/09/06/stack-frame-layout-on-x86-64
+
+https://stackoverflow.com/questions/261419/what-registers-to-save-in-the-arm-c-calling-convention
+====32-bit ARM [AAPCS]
+r0-r12: general purpose data registers
+r13 (sp): stack pointer
+r14 (lr): link register (subroutine's return address)
+r15 (pc): program counter
+apsr: application processor status register (conditional code flags, processor
+      mode, status and ctrl info)
+cpsr: current processor status register (same as apsr with access to more bits)
+spsr: saved processor status register (info of processor state before system
+      changed into this mode (ie processor status before exception etc)
+* r0-r3 are the argument and scratch registers; r0-r1 are also the result registers
+* r4-r8 are callee-save registers
+* r9 might be a callee-save register or not (on some variants of AAPCS it is a special register)
+* r10-r11 are callee-save registers
+* r12-r15 are special registers
+VFP register usage conventions:
+* s16–s31 (d8–d15, q4–q7) must be preserved
+* s0–s15 (d0–d7, q0–q3) and d16–d31 (q8–q15) do not need to be preserved
+====64-bit ARM [AAPCS64]
+* r0-r7 are parameter/result registers; r0-r1 are also the result registers
+* r8 is indirect result register (xr)
+* r9-r15 are caller saved register = temporary registers = corruptible registers
+* r16-r17 are intra-procedure-call (scratch) registers [might be temporary]
+* r18 is platform (specific) register [might be temporary]
+* r19-r28 are callee-saved registers.
+* r29
+* All others (r8, r16-r18, r29, r30, SP)
+  have special meaning and some might be treated as temporary registers.

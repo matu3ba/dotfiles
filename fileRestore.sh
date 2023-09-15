@@ -12,7 +12,7 @@ IFS="`printf '\n\t'`" # change IFS to just newline and tab
 
 FAIL="TRUE"            # will be filled with defaults
 cd "${HOME}/dotfiles"
-dotfilePaths="$(fd -uu --type f --ignore-file "${HOME}/dotfiles/ignorefiles")"
+dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
 if test -z "$1"; then
   echo "no path to restore folder"

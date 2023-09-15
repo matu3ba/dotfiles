@@ -11,7 +11,7 @@ IFS="`printf '\n\t'`" # change IFS to just newline and tab
 
 FAIL="TRUE"
 cd "${HOME}/dotfiles"
-dotfilePaths="$(fd -uu --type f --ignore-file "${HOME}/dotfiles/ignorefiles")"
+dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
 DATETIME=`date +"%Y%m%d_%H%M%S"`
 BACK_FOLDER="${HOME}/back/${DATETIME}_backconfig/"

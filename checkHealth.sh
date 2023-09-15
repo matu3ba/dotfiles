@@ -16,7 +16,7 @@ dotfilePaths=""
 
 cd "${HOME}/dotfiles"
 symlinksExist=""
-symlinksExist="$(fd -uu --type l --ignore-file "${HOME}/dotfiles/ignorefiles")"
+symlinksExist="$(fd -uu --type l --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 if test "$symlinksExist" != ""; then
   echo "incorrect content inside dotfiles"
   exit 1

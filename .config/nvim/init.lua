@@ -263,6 +263,7 @@ callback = function()
 -- :redir @a
 -- :fancy command
 -- :redir END
+-- :messages
 -- visual mode: "ap
 
 -- Debugging Python types

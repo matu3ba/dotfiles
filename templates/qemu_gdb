@@ -1,0 +1,20 @@
+https://interrupt.memfault.com/blog/installing-gdb#build-from-source
+gdb-multiarch often not included
+git clone https://sourceware.org/git/binutils-gdb.git
+git tag | grep release
+git check gdb-13.2-release
+./configure --target="arm-elf-linux" --enable-targets=all --with-python
+make -j $(nproc)
+
+TODO get more complete --target command
+
+https://spivey.oriel.ox.ac.uk/compilers/Single-stepping_with_QEMU_and_GDB
+qemu-arm -g 1234 ./b.out
+gdb-multiarch ./b.out
+target remote localhost:4242
+tui reg general
+advance pmain
+
+TODO: How to get multi-arch for
+
+https://mariokartwii.com/showthread.php?tid=1998

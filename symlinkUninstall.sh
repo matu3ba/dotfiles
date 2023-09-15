@@ -11,8 +11,7 @@ IFS="`printf '\n\t'`" # change IFS to just newline and tab
 
 FAIL="FALSE"            # will be filled with defaults
 cd "${HOME}/dotfiles"
-# can not retrieve values from subscript
-dotfilePaths="$(fd -uu --type f --ignore-file "${HOME}/dotfiles/ignorefiles")"
+dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
 while IFS= read -r dfPath; do
   printf '%-40s' "${dfPath}"

@@ -190,6 +190,16 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test valgrind.zig -lc --test-cmd valgrind --test-cmd '-s' --test-cmd-bin
 // Run tests within qemu:
 // zig test qemu.zig -target aarch64-linux-none --test-cmd qemu-aarch64 --test-cmd-bin
+// Run tests within qemu + debugger:
+// zig test lib/compiler_rt/udivmoddi4_test.zig -target arm-linux --test-cmd qemu-arm --test-cmd -g --test-cmd 4242 --test-cmd-bin
+
+// TODO:
+// qemu-arm -g 1234 ./b.out
+// gdb-multiarch ./b.out
+// target remote localhost:1234
+// tui reg general
+// advance pmain
+
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
 // Emit assembly or llvm ir
 // zig build-exe -OReleaseSmall -femit-asm=min.s min.zig
