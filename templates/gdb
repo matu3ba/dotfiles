@@ -10,8 +10,17 @@ generate-core-file
 - 2. dump program state without interrupting process
 gcore
 - 3. automatically dump program state
-coredumpctl
-TODO
+  * ulimit -c must return unlimited
+  * manually causing coredump via C-\
+  * /var/lib/systemd/coredump/ coredump location
+    (systemd-coredump must be installed)
+  * coredumpctl list
+  * coredumpctl dump 2919576 --output ~/ghostty_2919576.core
+  * gdb -c ghostty_2919576.core $(which ghostty)
+  * gdb ~/.local/bin/ghostty ~/ghostty_2919576.core
+
+https://debugging.works/blog/analyzing-linux-coredump/
+
 https://wiki.archlinux.org/title/Core_dump
 https://www.baeldung.com/linux/managing-core-dumps
 

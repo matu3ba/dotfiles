@@ -66,3 +66,19 @@ bad:
 - 1. own programming language, complicated and annoying to understand
 - 2. no real isolation (only path hackery), but overlayfs on Linux itself has many limitations (paths and stacking)
   * related to core design issue of Linux (Unix file permission system), which stores permission of user and group in each file
+
+More interesting projects
+embedded OS https://github.com/cleverca22/not-os
+
+Features, which can be considered as missing from nix:
+- namespace control tools :
+  * why can't you do different hierarchies (see: GoboLinux, djb's /package, or even a completely custom one)
+  * why mixing different alternatives: service managers, libc's, or even compile flags is still so difficult)
+- package categories (missing metadata)
+  * play market/app store figured this out 10, 15 years ago, why do we still resort to external search engines
+- a non-DSL programming language (guix seems to do just that, but it's hopelessly corrupted by GNU-no-firmware philosophy)
+- portability
+  * no systemd,
+  * no Linux-only features
+  * option to put packages in ISO's, qcow2's, plain old tarballs (see root tarballs, or OpenBSD's site*.tgz)
+    + winetricks doesn't need it's own dxvk's, directx's, and faudio's etc

@@ -2,3 +2,32 @@ CASR: Crash Analysis and Severity Report
 AFL: Fuzzing crashes
 
 Pile of monitoring tools
+
+basics https://phoenixnap.com/kb/server-security-tips
+
+1. wireguard + ssh (on another port)
+  * (dynamic) port forwarding and all those things
+  * TODO
+2. sandboxed environment (jails, zones, containers)
+  * whitelist of Kernel calls
+  * file system overlay
+  * ulimit or cgroups pendant
+  * apparmor
+  * landlock
+  * network access removed
+  * cpu, io, memory limits
+  * max. execution time
+  * no clipboard etc
+  * no login manager entry
+3. unprivileged user
+4. coredump + stack trace obtainable,
+5. reaper pid to kill child processes
+6. restricting ptrace to only 1 process required selinux policy
+https://serverfault.com/questions/933205/selinux-policy-for-cap-sys-ptrace-by-invoking-process-name,
+but should work now in landlock:
+https://docs.kernel.org/userspace-api/landlock.html#ptrace-restrictions
+"To be allowed to use ptrace(2) and related syscalls on a target
+process, a sandboxed process should have a subset of the target process rules,
+which means the tracee must be in a sub-domain of the tracer."
+Unfortunately it does not say "must have".
+7. TODO

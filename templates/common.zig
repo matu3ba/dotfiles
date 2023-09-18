@@ -289,3 +289,6 @@ fn totalAll(structs: []const BigStruct) u128 {
 // RLS (Result location semantics) is implicit, but copies are eliminated
 // This leads to surprising and potentially unwanted behavior.
 // TODO example
+
+// SHENNANIGAN
+// Test runner allows no signaling to qemu -g 4242 (debugger mode)

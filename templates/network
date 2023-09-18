@@ -118,3 +118,6 @@ bashonly: TCP_PORT_STATUS=`(echo > /dev/tcp/x.x.x.x/yyyy) >/dev/null 2>&1 && ech
 nc -vz IP_Address Port
 
 Ports < 1024 are privileged by default. Anything above can be freely used.
+
+fast reconfiguration of dns (due to lags)
+TODO

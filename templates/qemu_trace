@@ -16,3 +16,21 @@ qemu-x86_64 -plugin libexeclog.so -d plugin ./stage3/bin/zig test test/behavior.
 | awk -F'[, ]' '$1 == "0" {print $3}'
 | llvm-addr2line -e ./stage3/bin/zig -f -p -C
 | grep Sema | uniq | tee trace.log
+
+https://www.qemu.org/docs/master/system/replay.html
+
+qemu-system-x86_64 \
+-icount shift=auto,rr=record,rrfile=replay.bin \
+-drive file=disk.qcow2,if=none,snapshot,id=img-direct \
+-drive driver=blkreplay,if=none,image=img-direct,id=img-blkreplay \
+-device ide-hd,drive=img-blkreplay \
+-netdev user,id=net1 -device rtl8139,netdev=net1 \
+-object filter-replay,id=replay,netdev=net1
+
+qemu-system-x86_64 \
+-icount shift=auto,rr=replay,rrfile=replay.bin \
+-drive file=disk.qcow2,if=none,snapshot,id=img-direct \
+-drive driver=blkreplay,if=none,image=img-direct,id=img-blkreplay \
+-device ide-hd,drive=img-blkreplay \
+-netdev user,id=net1 -device rtl8139,netdev=net1 \
+-object filter-replay,id=replay,netdev=net1

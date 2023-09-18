@@ -19,6 +19,11 @@ if not has_lazy then
 else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
+  -- Portable CI, focus on Linux (mostly ssh + load balancing setup)
+  -- Windows unsolved (beyond wine)
+  -- 1. coredumps + 2. debug symbols + 3. live attach etc
+  -- qemu setup has bad incentives
+
   -- TODO windowing
   -- * 1. :tabm shortcuts        hydra tab mode
   -- * 2. combine commands to replace terminal buffer

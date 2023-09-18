@@ -7,3 +7,18 @@ Potential Long paths >32KB can make stack usage unfeasible and introduce lots
 of complexity via allocator.
 This makes all libraries slow, which dont provide user-decision on the allocator
 and can hoist pointer access and alike.
+
+Portability, Filesystem layout
+https://cr.yp.to/unix.html#:~:text=Holes%2C%20Fall%202004-,Filesystem%20layout,-UNIX%20account%20names
+TODO gdb bits in https://cr.yp.to/2004-494/1008-gdb.txt
+
+read() returns 0 instead of -1 on error leading to security flooding problems ( if other process dies )
+always do explicit "I'm done messages" when one process is sending data to another
+file access always only via file descriptors (is at odds with spawning new files without leaking descriptors on Unixoids)
+
+incorrect transformation of user inputs opens door for security vulnerabilities (merge + parse is not enough)
+
+https://cr.yp.to/docs/unixport.html
+https://cr.yp.to/unix/asyncdisk.html
+https://cr.yp.to/docs/selfpipe.html
+https://cr.yp.to/2004-494/1209.pdf

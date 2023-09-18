@@ -11,14 +11,56 @@ The ideal solution:
 - prevents writes outside the current working directory (on default)
 - config changes to file require admin ok
 - default logging of common paths to fast debug problems
-- remote gdb
-- remote ssh
+- remote debugger (gdbserver, unclear what protocols windows supports, windbg)
+- remote ssh (ideally via wireguard)
 - Mutual exclusive locks on pipelines (for sharing ressouces via network)
 - Atomiticity of artifact cache access (per node)
 - Process limitation of harware usage
 
 => build DSL from source + DSL has automatic sandboxing checked via Linter, such
 that one only needs to review non-sandboxed parts (authentication cache etc).
+
+blockers:
+- simulated: qemu incentives are to not make things simple to configure (support interests)
+  * automatize install via scripted setups for all major OSes (MacOS, Linux, Windows)
+  * setup external tty in a portable way
+  * setup ssh in a portable way
+  * setup clipboard in a portable way
+  * setup to disable external communication (to setup Kernel as copy-pastable
+    local runner) in a portable way
+- native
+  * Windows security insufficient for untrusted input
+- each platform class has its own debugger primitives (ptrace, Windows things)
+
+1. CI is unsolvable without painless setup and tty/ssh access
+2. OS virtualization is unsolvable by interests/design
+3. Use case trusted input (ok to run on Windows) vs untrusted input (Windows
+   must be in VM or runs and other access must be accepted)
+4. Cluster configurations like Kubernetes are often for superfluous configurations
+   and make deployment unnecessary complex
+5. Resource exhaustion attacks (port, memory, cpu, io, network, usage)
+   * https://www.baeldung.com/linux/tcp-ip-connections-limit
+6. More sophisticated attacks
+
+=> ignore unsolvable parts or let community figure them out and document it
+   * native system setup are accepted cost
+   * virtualization of systems are custom solutions for custom problems, do not
+     specialize for them
+   * native code allowed to do everything, so unfiltered unusable on Windows
+=> solvable
+   * on non-Windows (lower market share)
+   * idea: cleanup build scripts via self-restriction (like landlock)
+   * idea: own setup for ssh by given configuration
+   * idea: reproduce Kernel via config and automatize network install
+     * unfeasible due to latency + costs etc
+   * idea: https://www.qemu.org/docs/master/system/replay.html
+
+Conclusion: Generally CI is unsolvable and it is simpler to roll your own runner.
+idea: "Roll your own runner" framework library as entity component system?
+  * very unclear, which development team sizes would have maintenance
+    capability and usage reason for bare runner.
+  * gh actions uses kubernetes for https://docs.github.com/en/actions/hosting-your-own-runners
+    + minikube has antifeature CLA
 
 jenkins
 - custom DSL requires still clicking around things
@@ -34,3 +76,15 @@ jenkins
 dir('subDir') {
     checkout scm
 }
+
+Linux setup
+TODO from bare to CI:
+* base system
+* ssh via wireguard + toggle to ssh without wireguard
+* control server
+* empty user setup
+
+TODO web part of CI:
+* container? isolation? seccomp?
+* ip/ports, nftables, dns
+* advanced isolation (seccomp etc)
