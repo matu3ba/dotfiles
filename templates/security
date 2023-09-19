@@ -1,9 +1,30 @@
 CASR: Crash Analysis and Severity Report
 AFL: Fuzzing crashes
 
-Pile of monitoring tools
+====basics
+
+Micro-Kernel: Nothing enabled on default with user needing to setup things.
+Mono/Uni-Kernel: Most things enabled on default with user needing to disable things.
+Design of Uni-Kernel alone makes less unsecure due to less isolation of components.
+
+Note: Linux is becoming more Micro-Kernel-like with io_uring as 0-copy messaging,
+bpf as VM running statically compiled code inside Linux etc.
+
+Proof code effort is quadratic to code size:
+* Bug hidden for any non-trivial or verified implementation.
+* Use the simplest approach possible, isolate components
+* If unfeasible to rule out intruders, you must monitor and mitigate including
+  all related costs.
+* Plan for the worst case
+
+=> seL4 would be ideal to use, but maybe there is a tradeoff to allow some
+more monitoring or control on the host system ie to debug the VM?
+
+====applied_basics
 
 basics https://phoenixnap.com/kb/server-security-tips
+
+====jail
 
 1. wireguard + ssh (on another port)
   * (dynamic) port forwarding and all those things
@@ -12,13 +33,15 @@ basics https://phoenixnap.com/kb/server-security-tips
   * whitelist of Kernel calls
   * file system overlay
   * ulimit or cgroups pendant
-  * apparmor
   * landlock
-  * network access removed
+  * network access removed (routing, connection interfaces etc)
   * cpu, io, memory limits
   * max. execution time
-  * no clipboard etc
+  * no clipboard access etc
   * no login manager entry
+  * paging (disable Kernel Samepage Merging)
+  * cgroups, apparmor, selinux needed?
+  * paging (disable Kernel Samepage Merging)
 3. unprivileged user
 4. coredump + stack trace obtainable,
 5. reaper pid to kill child processes
@@ -30,4 +53,10 @@ https://docs.kernel.org/userspace-api/landlock.html#ptrace-restrictions
 process, a sandboxed process should have a subset of the target process rules,
 which means the tracee must be in a sub-domain of the tracer."
 Unfortunately it does not say "must have".
-7. TODO
+7. disable hyperthreading (in bios)
+8. hardened kernel?
+
+====virtualization
+
+Note: Without kvm qemu is very slow and with kvm qemu has a huge attack surface
+from the guest OS.

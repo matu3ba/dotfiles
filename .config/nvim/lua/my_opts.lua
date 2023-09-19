@@ -14,7 +14,7 @@ local function load_options()
     material_style = 'palenight', -- default, darker, lighter, oceanic, deep ocean, palenight
     -- nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
     -- nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
-    python3_host_prog = '/usr/bin/python3',
+    python3_host_prog = vim.fn.exepath('python'), -- for virtualenv use linux-cultist/venv-selector.nvim
     rg_derive_root = true,
     rustfmt_autosave = true,
     -- libbuf_log_level = "trace",
@@ -23,6 +23,7 @@ local function load_options()
     vim.api.nvim_set_var(k, v)
   end
   --vim.g['gtest#gtest_command'] = 'build/runTests' -- test binary location
+  -- vim.o.backupdir = utils.pathJoin(vim.fn.stdpath 'state', 'backup') -- not useful, cant be turned off in cli
   vim.o.backup = false
   -- window size is written by terminal and given as
   -- vim.o.columns/vim.o.lines
@@ -78,13 +79,17 @@ local function load_options()
   vim.o.smartindent = true
   vim.o.termguicolors = true
   -- neovim core has to this date no path functions + separator in core and neither stdpath
-  vim.o.undodir = utils.pathJoin(vim.fn.stdpath 'config', 'undodir') --undotree
+  vim.o.undodir = utils.pathJoin(vim.fn.stdpath 'state', 'undodir') --undodir
   vim.o.undofile = true
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
   vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
   vim.o.shell = 'fish'
-  vim.o.swapfile = false
+  -- https://vi.stackexchange.com/questions/3484/disable-swap-file-for-large-files
+  -- https://vim.fandom.com/wiki/Faster_loading_of_large_files
+  -- disable with -n or :set noswapfile
+  vim.o.directory = utils.pathJoin(vim.fn.stdpath 'state', 'swap') --swap directory
+  vim.o.swapfile = true
   vim.o.spelllang = 'en,de'
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
   vim.wo.colorcolumn = '80,120,150'
