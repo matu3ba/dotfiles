@@ -1,6 +1,6 @@
 # import sys
 # import threading
-import _thread
+# import _thread
 import copy # control copy behavior of python
 import datetime as dt
 import http.client as http_client
@@ -545,3 +545,16 @@ def isLocalHost(arg: str) -> bool:
   if arg == "localhost" or arg == "127.0.0.1" or arg == "::1" or arg == "0:0:0:0:0:0:0:1" \
       or arg == "0000:0000:0000:0000:0000:0000:0000:0001": return True
   else: return False
+
+# SHENNANIGAN
+# Generic module annotation is not allowed in mypy without explicit docs for
+# possible error messages + solution patterns. The following does not work:
+#   from typing import ModuleType
+#   def check_fn(module: ModuleType) -> int:
+#     if str(type(module)) != "<class 'module'>": return 1
+#     return 0
+# 'module: object' is the closest we can get as simple annotation
+
+def check_fn(fn: list) -> int:
+  if not callable(fn[0]): return 1
+  return 0

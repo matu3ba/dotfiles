@@ -49,7 +49,7 @@ return {
   { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
 
   --==macros
-  -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- TODO setup
+  -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- TODO
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
@@ -65,7 +65,7 @@ return {
 
   -- :lua vim.print(require('nvim-navic').is_available(0))
   -- :lua vim.print(require('nvim-navic').get_data())
-  { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" }, -- TODO context in statusline
+  { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" },
 
   -- TODO: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11

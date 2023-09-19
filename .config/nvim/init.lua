@@ -35,6 +35,8 @@ else
   -- TODO ECS design idea:
   -- composable testing lib to build + test + spawn suite with optional debugging vs simulation
 
+  -- TODO config: setup NeoComposer
+
   -- TODO https://github.com/birth-software/birth
   -- TODO advanced gdb to test signaling + reliable attaching of gdb to a process
 
