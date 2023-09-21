@@ -1,10 +1,37 @@
-based on "NixOS Installation Guide" by Wil T
-iso installation on system
+based on "NixOS Installation Guide" by Wil T with additions from
+https://davidak.de/nixos-installation/ for keyboard_layout (loadkeys)
+https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for wpa_supplicant
+https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for installing_software
+https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for rollbacks TODO
+https://jdisaacs.com/blog/nixos-config/ see chapter flakes_installation
+https://lantian.pub/en/article/modify-computer/nixos-impermanence.lantian/ see chapter stateless_installation
 
-sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fdatasync
-sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fsync
+====base_installation
+iso installation
 
-sudo fdisk /dev/sdX
+>sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fdatasync
+>sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fsync
+
+>loadkeys de [neo]
+
+>vim /etc/wpa_supplicant.conf
+network={
+  ssid="mynetwork"
+  psk="mysecretpassphrase"
+}
+>systemctl restart wpa_supplicant.service
+TODO did not work, check again
+
+
+>systemctl start sshd
+
+Note, that live-cd has english keyboard layout.
+>passwd
+>ip a
+>ssh root@IP
+
+
+>sudo fdisk /dev/sdX
 p print
 n new
 w write
@@ -39,25 +66,25 @@ default (fill up partition)
 w (write)
 
 
-lsblk
-sudo mkfs.fat -F 32 /dev/sdX1
-sudo fatlabel /dev/sdX1 NIXBOOT
-sudo mkfs.ext4 /dev/sdX2 -L NIXROOT
-sudo mount /dev/disk/by-label/NIXROOT /mnt
-sudo mkdir -p /mnt/boot
-sudo mount /dev/disk/by-label/NIXBOOT /mnt/boot
+>lsblk
+>sudo mkfs.fat -F 32 /dev/sdX1
+>sudo fatlabel /dev/sdX1 NIXBOOT
+>sudo mkfs.ext4 /dev/sdX2 -L NIXROOT
+>sudo mount /dev/disk/by-label/NIXROOT /mnt
+>sudo mkdir -p /mnt/boot
+>sudo mount /dev/disk/by-label/NIXBOOT /mnt/boot
 
-swap file (only simple on uefi4)
-sudo dd if=/dev/zero of=/mnt/.swapfile bs=1024 count=2097152 (2GB size)
-sudo chmod 600 /mnt/.swapfile
-sudo mkswap /mnt/.swapfile
-sudo swapon /mnt/.swapfile
+>swap file (only simple on uefi4)
+>sudo dd if=/dev/zero of=/mnt/.swapfile bs=1024 count=2097152 (2GB size)
+>sudo chmod 600 /mnt/.swapfile
+>sudo mkswap /mnt/.swapfile
+>sudo swapon /mnt/.swapfile
 
 nixos config
-sudo nixos-generate-config --root /mnt
-cd /mnt/etc/nixos/
+>sudo nixos-generate-config --root /mnt
+>cd /mnt/etc/nixos/
 
-sudo vim configuration.nix
+>sudo vim configuration.nix
 1. keyboard
 services.xserver.layout = "de";
 2. user account
@@ -78,13 +105,10 @@ environment.systemPackages = with pkgs; [
 
 
 after finishing configuration:
-cd /mnt
-sudo nixos-install
+>cd /mnt
+>sudo nixos-install
 if necessary, add:
 boot.loader.grub.device = "/dev/sda"; #or "nodev" for efi only
-
-after startup:
-passwd
 
 internet:
 use
@@ -96,22 +120,110 @@ network.networkmanager.enabled = true;
 
 on breakage:
 boot with your startup medium and mount your partition
-sudo mount /dev/disk/by-label/NIXROOT /mnt
-cd /mnt/etc/nixos
-sudo vim configuration.nix
-#fix your config (outside of of the installer menu)
-sudo nixos-install
+>sudo mount /dev/disk/by-label/NIXROOT /mnt
+>cd /mnt/etc/nixos
+>sudo vim configuration.nix
+fix your config (outside of of the installer menu)
+>sudo nixos-install
 # should print in the first line that it used the config from
 # /mnt/etc/nixos/configuration.nix
-nixos-rebuild switch -I nixos-config=pathto/configuration.nix.
+>nixos-rebuild switch -I nixos-config=pathto/configuration.nix.
 
 after installation (without boot medium) use
-nixos-rebuild switch
+>nixos-rebuild switch
 for offline installation without new packages use
-nixos-rebuild switch --option substitute false
+>nixos-rebuild switch --option substitute false
 
-idea rollback links
+====installing_software
+* Do not use nix-env -i package_name
+>nix-shell -p git
+  - https://nixos.wiki/wiki/Git
+>nix search nixpkgs neovim --exclude 'python|gui'
+  - slowish due to excessive caching and problematic formatting
+* https://search.nixos.org/packages
+  - faster
+>nix repl '<nixpkgs>'
+  - non-top-level packages
+* idea better cli search for grepping
+* use home_manager if possible
 
-home_manager:
-idea figure out,
-if using flakes or profiles instead would be better
+>nix-store --gc
+>nix-store --optimize
+>sudo nixos-rebuild switch
+>home-manager switch
+
+====noflakes_installation
+
+* instead of channels, use fetchGit with pinned revisions or fetchTarball
+* instead of nix-env, use buildEnv to collect everything in a single derivation
+  - on NixOS: systemPackages, others: nix-env to only install that one package
+* disadvantage: not allowing access to files not tracked in the git repo?
+
+TODO
+
+====flakes_installation
+* SHENNANIGAN DESIGN https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsyss-perspective-on-nix-flakes/32703
+  - dependency explosion problem
+  - system deps not inheritable
+  - slow for big repos
+  - no integration into nix ecosystem
+* user-configurable versioning with pinning and rollback
+* NixOS package repositories are managed with another command, nix-channel and
+  change over time
+  >nix-channel --list
+  >nix-channel --update
+* https://nixos.wiki/wiki/Flakes
+* unstaged files to git are ignored
+* SHENNANIGAN: no way to add dependencies from outside git repo without git repo
+* Updating
+>nix flake update
+* Checking
+>nix flake check
+>nix flake show
+* System flakes
+>nixos-install --flake /mnt/flake#somehost
+>nixos-install --impure --flake /mnt/flake#somehost
+>sudo nixos-rebuild --flake '.#'
+* User flakes
+>nix build --impure .#homeManagerConfigurations.$USER.activationPackage
+>./result/activate
+
+TODO clean this up
+
+====rollbacks
+* System rollback
+>sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+>sudo nix-env --switch-generation 12345 -p /nix/var/nix/profiles/system
+>sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+
+* Channels
+>nix-channel --update
+>nix-channel --rollback
+
+* Home Manager(HM), see home_manager
+>home-manager generations
+>/nix/store/GENERATIONHASH-home-manager-generation/activate
+
+====stateless_installation
+requirements:
+* NixOS installation with flakes for managing configuration
+* liveCD/USB of NixOS to fixup broken things
+* Backup of all data
+
+TODO
+
+====home_manager
+* NixOS is not tailored to manage anything in your home directory
+* only for user-specific things
+* 2 approaches: module (requires sudo) and cli commands
+* only module: not 2 interacting ones
+* should be possible, but no experience https://discourse.nixos.org/t/reusing-custom-nixos-module-options-in-home-manager/27981
+* in case its needed https://nix-community.github.io/home-manager/index.html#sec-flakes-nixos-module
+* SHENNANIGAN docs: How to reuse the generated program configurations on Windows (copy over)?
+
+>nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager
+>nix-channel --update
+>nix-shell '<home-manager>' -A install
+>man home-configuration.nix
+>home-manager switch
+>home-manager build

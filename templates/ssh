@@ -146,6 +146,9 @@ ssh-copy-id can not be called with modified ssh config
 TODO make own helper script
 TODO separated ssh configs
 
+SHENNANIGAN SECURITY
+ssh has known unmitigated timing channels. See templates/security.
+
 ____FAQ____
 Problems with solutions
 1. https://superuser.com/questions/1631020/gpg-agent-ssh-support-throwing-sign-and-send-pubkey-signing-failed-for-rsa-no
@@ -161,3 +164,5 @@ Problems with solutions
 4. How to fix "WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!" (assuming
    nothing got compromised)?
    * delete known_hosts entry, ie via ssh-keygen -R user@domain@ip
+5. How can I get out of a hanging session, ie the other end is rebooting etc?
+   * <CR>~.

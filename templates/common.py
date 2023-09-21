@@ -546,8 +546,8 @@ def isLocalHost(arg: str) -> bool:
       or arg == "0000:0000:0000:0000:0000:0000:0000:0001": return True
   else: return False
 
-# SHENNANIGAN
-# Generic module annotation is not allowed in mypy without explicit docs for
+# SHENNANIGAN Generic module annotation not allowed
+# Also, mypy has no explicit docs for this.
 # possible error messages + solution patterns. The following does not work:
 #   from typing import ModuleType
 #   def check_fn(module: ModuleType) -> int:
@@ -558,3 +558,7 @@ def isLocalHost(arg: str) -> bool:
 def check_fn(fn: list) -> int:
   if not callable(fn[0]): return 1
   return 0
+
+# SHENNANIGAN
+# No explicit scheduling methods + watchdogs. Unlucky schedules may cause fatal
+# delay for shuffling data between daemon thread and main thread.

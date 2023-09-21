@@ -20,6 +20,15 @@ Proof code effort is quadratic to code size:
 => seL4 would be ideal to use, but maybe there is a tradeoff to allow some
 more monitoring or control on the host system ie to debug the VM?
 
+Timing channels in protocols are a huge problem
+* using wireguard instead of openVPN to run ssh over it does not eliminate the
+  timing channel
+* must analyze frequencies, meaning plot a few dimensions against time, like
+  packet size, length on router level for whatever tool you are suspicious off.
+* Interact and try to identify differences (patterns etc).
+
+idea examples or tools to for time analysis (io, network etc)
+
 ====applied_basics
 
 basics https://phoenixnap.com/kb/server-security-tips
@@ -60,3 +69,6 @@ Unfortunately it does not say "must have".
 
 Note: Without kvm qemu is very slow and with kvm qemu has a huge attack surface
 from the guest OS.
+
+* qemu qmp (or use qemus gdb stub) to read the vm's memory
+* attach serial channel to qemu machine and write stuff to that (treat the read bytes as plain and potentially malicious data)

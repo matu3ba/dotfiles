@@ -51,3 +51,16 @@ https://git.zx2c4.com/wireguard-windows/about/docs/netquirk.md
 https://github.com/WireGuard/wireguard-windows
 
 ssh server https://learn.microsoft.com/de-de/windows/terminal/tutorials/ssh
+
+Nix on Windows
+win10 https://nathan.gs/2019/04/12/nix-on-windows/
+win11 https://www.reddit.com/r/NixOS/comments/151pm14/script_for_bootstrapping_nix_on_wsl/
+iso does not work,
+WSL instructions assume systemd etc https://nixos.org/download.html#nix-install-windows
+https://github.com/nix-community/NixOS-WSL hangs
+win11 https://github.com/scottstephens/nix-wsl-bootstrap
+https://github.com/NixOS/nix/issues/5874
+
+CLI Installation and Fixup
+https://christitus.com/install-windows-the-arch-linux-way/
+https://christitus.com/fix-corrupt-windows-install/
