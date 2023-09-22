@@ -1,6 +1,6 @@
 --! Overseer setup and configuration
 --==Commands
--- :OverseerOpen|Close|Toggle,
+-- :OverseerOpen|OverseerClose|OverseerToggle
 -- :OverseerSaveBundle, :OverseerLoadBundle, :OverseerDeleteBundle
 -- Run a raw shell command: :OverseerRunCmd
 -- Run a task from a template: :OverseerRun

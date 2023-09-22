@@ -2,7 +2,7 @@ based on "NixOS Installation Guide" by Wil T with additions from
 https://davidak.de/nixos-installation/ for keyboard_layout (loadkeys)
 https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for wpa_supplicant
 https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for installing_software
-https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for rollbacks TODO
+https://determinate.systems/posts/nix-direnv for direnv
 https://jdisaacs.com/blog/nixos-config/ see chapter flakes_installation
 https://lantian.pub/en/article/modify-computer/nixos-impermanence.lantian/ see chapter stateless_installation
 
@@ -138,6 +138,7 @@ for offline installation without new packages use
 * Do not use nix-env -i package_name
 >nix-shell -p git
   - https://nixos.wiki/wiki/Git
+  - adding .direnv prevents garbage collecting the packages
 >nix search nixpkgs neovim --exclude 'python|gui'
   - slowish due to excessive caching and problematic formatting
 * https://search.nixos.org/packages
@@ -227,3 +228,21 @@ TODO
 >man home-configuration.nix
 >home-manager switch
 >home-manager build
+
+====direnv
+* https://determinate.systems/posts/nix-direnv
+* https://direnv.net/
+* use it only for "setup and forget" of "your own stuff" (environment variables)
+* using it for dynamic or upstream things is a severe security risk due to no sandboxing etc
+environment.systemPackages = [
+  pkgs.direnv
+];
+eval "$(direnv hook bash)"
+direnv hook fish | source
+set -g direnv_fish_mode eval_on_arrow    # trigger direnv at prompt, and on every arrow-based directory change (default)
+set -g direnv_fish_mode eval_after_arrow # trigger direnv at prompt, and only after arrow-based directory changes before executing command
+set -g direnv_fish_mode disable_arrow    # trigger direnv at prompt only, this is similar functionality to the original behavior
+>echo export FOO=foo > .envrc
+>direnv allow .
+>echo ${FOO-nope}
+>cd ..
