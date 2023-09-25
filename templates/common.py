@@ -562,3 +562,6 @@ def check_fn(fn: list) -> int:
 # SHENNANIGAN
 # No explicit scheduling methods + watchdogs. Unlucky schedules may cause fatal
 # delay for shuffling data between daemon thread and main thread.
+# As example: 1 main thread, 2 deamon threads may cause the relevant deamon thread
+# not being scheduled for 2 seconds. Empirically 3 seconds work.
+# In other words: Python thread scheduling is extremely unreliable.

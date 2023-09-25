@@ -1,8 +1,11 @@
+--! Commands not part of hydra or closely related derived ones
 ---- Dependencies ----
-local has_plenary, plenary = pcall(require, 'plenary')
-if not has_plenary then print 'Please install plenary for all features.' end
+
 -- luacheck: globals vim
 -- luacheck: no max line length
+
+local has_plenary, plenary = pcall(require, 'plenary')
+if not has_plenary then vim.print 'Please install plenary for all features.' end
 
 local api = vim.api
 local utils = require 'my_utils'

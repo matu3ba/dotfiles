@@ -48,6 +48,7 @@ else
   -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
   -- * \ prefix for find and replace helpers
   --   + also do them
+  -- ; as prefix for runners
   -- * wrapping breakindent
   -- * substitute visual block
   -- * goto other end of visual selection with o
