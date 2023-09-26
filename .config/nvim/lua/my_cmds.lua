@@ -491,6 +491,21 @@ add_cmd('PrintCliArgs', function()
   print(args)
 end, {})
 
+--add_cmd('RunAsTask', function(params)
+--  local bufname = vim.api.nvim_buf_get_name(0)
+--  local cmd = params.args
+--  -- If no args, use the last yanked text as the command
+--  if cmd == "" then
+--    cmd = vim.fn.getreg("")
+--  end
+--  -- If we're in a terminal, use the cwd of the terminal
+--  local cwd
+--  if vim.startswith(bufname, "term://") then
+--    cwd = vim.fn.expand(vim.split(bufname, "//", { plain = true })[2])
+--  end
+--  require("overseer").run_template({ name = "shell", params = { cmd = cmd }, cwd = cwd })
+--end, { args = "*" })
+
 -- source code for session creation with internal data representation is very convoluted
 -- add_cmd('MksessTabView', function()
 --   -- TODO ensure 1 arg and use it as filepath

@@ -28,4 +28,9 @@ https://github.com/iovisor/bpftrace
 Linux strace ./callstuff
 Darwin/Mac sudo ktrace trace -S -f C3 -c find .
 sudo dtrace -ln 'syscall:::entry'
-Windows TODO
+Windows
+
+Excellent dtrace introduction example:
+https://zinascii.com/2023/debugging-a-zig-test-failure.html
+
+TODO

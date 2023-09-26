@@ -5,6 +5,9 @@ https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for installin
 https://determinate.systems/posts/nix-direnv for direnv
 https://jdisaacs.com/blog/nixos-config/ see chapter flakes_installation
 https://lantian.pub/en/article/modify-computer/nixos-impermanence.lantian/ see chapter stateless_installation
+Do not use the wiki, because *it explains barely anything* on when to use what
+and neither how to debug problems. Compare it to ChatGPT, which keeps the
+information sources secret so you do not become better.
 
 ====base_installation
 iso installation
@@ -246,3 +249,94 @@ set -g direnv_fish_mode disable_arrow    # trigger direnv at prompt only, this i
 >direnv allow .
 >echo ${FOO-nope}
 >cd ..
+
+====patching
+
+overlay: final=self, prev=super [official terminology is confusing]
+Understanding https://nixos.org/manual/nixpkgs/stable/#sec-overlays-definition
+v
+final: prev: {
+  boost = prev.boost.override {
+    python = final.python3;
+  };
+  rr = prev.callPackage ./pkgs/rr {
+    stdenv = final.stdenv_32bit;
+  };
+}
+^
+1. final should be used for the dependencies of all packages in the overlay
+2. prev should be packages one wishes to override or access fns in nixpkgs
+3. packageOverrides acts as an overlay with only the final argument
+
+======global_adjustments (Global Adjustments)
+v
+final: prev: {
+  openssl = prev.libressl;
+}
+^
+
+======package_set_adjustments (Package Set Adjustments)
+v
+pythonWithOverrides = nixpkgs.python3.overrideScope' (final: prev: {
+  requests = prev.requests.overrideAttrs (oldAttrs: { doCheck = false; });
+});
+^
+4. overrideScope: adjust all packages within a package set
+
+======individual_adjustments (Individual Package Adjustments)
+
+v
+nixpkgs.hello.override { version = "2.10"; }
+^
+5. override: modify function args
+
+TODO: is finalAttrs optional or mandatory?
+v
+nixpkgs.hello.overrideAttrs (oldAttrs: {
+  meta.description = "New description";
+})
+^
+6. overrideAttrs: adjust attributes of package derivation
+
+v
+nixpkgs.python3Packages.requests.overridePythonAttrs (oldAttrs: {
+  doCheck = false;
+})
+^
+7. overridePythonAttrs: custom override fn for pkgs, which provide them
+
+v
+nixpkgs.callPackage ./mypackage.nix {
+  someDependency = nixpkgs.someAlternative;
+}
+^
+8. mypackage.nix: override dependencies of args during pkg import
+
+v
+nixpkgs.hello.overrideDerivation (old: {
+  name = "my-hello";
+})
+^
+9. overrideDerivation: modify underlying package derivation
+
+======example
+v
+final: prev: {
+  __dontExport = true;
+
+  arcanPackages = prev.arcanPackages.overrideScope' (finalScope: prevScope: {
+    arcan = prevScope.arcan.overrideAttrs (finalAttrs: prevAttrs: {
+      version = "581df5665a18432197662c569ed9a1bc60308461";
+
+      src = final.fetchFromGitHub {
+        owner = "letoram";
+        repo = "arcan";
+        rev = "581df5665a18432197662c569ed9a1bc60308461";
+        hash = "sha256-XlJcp7H/8rnDxXzrf1m/hyYdpaz+nTqy/R6YHj7PGdQ=";
+      };
+
+      patches = [];
+    });
+  });
+}
+^

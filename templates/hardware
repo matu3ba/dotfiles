@@ -1,0 +1,4 @@
+- protect data transmission of unshielded cables
+  * use at least CRC
+  * certificate authorities will test for correct error behavior
+  * check the regulatory standards and laws

@@ -20,15 +20,16 @@ else
   vim.opt.runtimepath:prepend(lazypath)
   require('lazy').setup('my_plugins', {})
   -- Portable CI, focus on Linux (mostly ssh + load balancing setup)
+  -- idea: https://github.com/stevearc/overseer.nvim/issues/203#issuecomment-1734841561
   -- Windows unsolved (beyond wine)
   -- 1. coredumps + 2. debug symbols + 3. live attach etc
-  -- qemu setup has bad incentives
+  -- qemu user documentation is created for support contracts, not user friendly-ness
 
   -- TODO windowing
   -- * 1. :tabm shortcuts        hydra tab mode
   -- * 2. combine commands to replace terminal buffer
   -- * 3. implement sharing cmds between overseer and shell (via registers?)
-  -- * 4. luasnips setup to create snippets for common stuff with
+  -- * 4. luasnips setup to create snippets for common stuff
   -- * 5. vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
   -- TODO entity component system (ECS)
@@ -40,15 +41,16 @@ else
   -- TODO https://github.com/birth-software/birth
   -- TODO advanced gdb to test signaling + reliable attaching of gdb to a process
 
-  -- TODO NixOS configs https://github.com/sebastiant/dotfiles,
+  -- TODO NixOS configs https://github.com/sebastiant/dotfiles
   -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
   -- TODO web search via shell from https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
+  -- * which api end point?
   -- TODO walk through https://www.youtube.com/@devopstoolbox/videos
   -- TODO walk through https://github.com/bregman-arie/devops-exercises
   -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
   -- * \ prefix for find and replace helpers
   --   + also do them
-  -- ; as prefix for runners
+  -- * ; as prefix for runners
   -- * wrapping breakindent
   -- * substitute visual block
   -- * goto other end of visual selection with o
