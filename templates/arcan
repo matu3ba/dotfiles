@@ -1,0 +1,35 @@
+https://durden.arcan-fe.com/setup.html for reset_configuration, running
+reset_configuration, running, FAQ
+
+====reset_configuration
+arcan_db drop_appl durden
+
+====running
+>./arcan ../../durden
+* NixOS home-manager
+>./.nix-profile/bin/arcan ./nix-profile/share/arcan/appl/durden
+
+
+SHENNANIGAN
+Keyboard setup can be very annoying. Especially so, if browser + clipboard does
+not work yet.
+
+SHENNANIGAN
+Reading and writing config via arcan
+TODO complete this
+
+SHENNANIGAN
+No "it just works" feeling, so
+
+====FAQ
+P: keyboard does not work
+S: add user to input group
+P: keyboard layout is wrong
+S: add share/arcan/appl/durden/devmaps/keyboard/default.lua according to README.md
+P: adding share/arcan/appl/durden/devmaps/keyboard/default.lua does not work, I'm on Nix.
+S: Add an overlay with the files patched:
+```nix
+
+```
+P:
+TODO finish this

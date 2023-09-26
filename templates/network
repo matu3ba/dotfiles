@@ -111,6 +111,12 @@ ind /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf "%P: " -execdir ca
 To get all routes
 ip r
 
+Get SSIDs via iw:
+sudo iw wlan0 scan > /tmp/wifis
+wpa_supplicant:
+wpa_passphrase ESSID | sudo tee /etc/wpa_supplicant.conf
+systemctl restart wpa_supplicant
+
 iwconfig wlan0 | grep -i --color quality
 
 Proc net docs: https://www.kernel.org/doc/Documentation/networking/proc_net_tcp.txt

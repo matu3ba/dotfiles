@@ -293,3 +293,6 @@ if status is-interactive
   #end
 end
 
+# SHENNANIGAN
+# putting shell scripts (stopped) into background, which ask for tty may break
+# cpu usage thinking those jobs utilize 100% core usage.

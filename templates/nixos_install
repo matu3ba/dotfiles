@@ -15,6 +15,7 @@ iso installation
 >sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fdatasync
 >sudo dd if=nixos.iso of=/dev/sdX bs=4M status=progress conv=fsync
 
+====keyboard_layout
 >loadkeys de [neo]
 
 >vim /etc/wpa_supplicant.conf
@@ -97,13 +98,19 @@ users.users.jan = {
   extraGroups = [ "wheel" ]; # consider "networkmanager"
 };
 
+====keyboard_layout
+find "$(nix eval --raw 'nixpkgs#kbd')/share/keymaps" -name '*.map.gz' | grep "neo"
+console = {
+  font = "Lat2-Terminus16"
+  keyMap = "de-latin1-nodeadkeys";
+};
+
 useful:
 networking.hostName = "testNix";
 
 environment.systemPackages = with pkgs; [
     vim
     wget
-    firefox
 ];
 
 
@@ -162,8 +169,7 @@ for offline installation without new packages use
 * instead of nix-env, use buildEnv to collect everything in a single derivation
   - on NixOS: systemPackages, others: nix-env to only install that one package
 * disadvantage: not allowing access to files not tracked in the git repo?
-
-TODO
+* install everything else via home_manager
 
 ====flakes_installation
 * SHENNANIGAN DESIGN https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsyss-perspective-on-nix-flakes/32703
@@ -191,8 +197,6 @@ TODO
 * User flakes
 >nix build --impure .#homeManagerConfigurations.$USER.activationPackage
 >./result/activate
-
-TODO clean this up
 
 ====rollbacks
 * System rollback
@@ -340,3 +344,16 @@ final: prev: {
   });
 }
 ^
+
+SHENNANIGAN gnupg wrong permission
+>chmod 700 ~/.gnupg
+
+SHENNANIGAN
+Example snippets are not complete to try for fast learning (repeat + adjust for
+local use case). Only 11 stars: https://github.com/mimoo/nixbyexample
+
+SHENNANIGAN
+Very hard to debug overlays. Only to be used, if absolutely needed.
+
+SHENNANIGAN
+Might miss either evaluation or file it was executed on without --debug --show-trace

@@ -1,0 +1,58 @@
+https://askubuntu.com/questions/19558/what-are-the-meta-super-and-hyper-keys for keys
+https://en.wikipedia.org/wiki/Keyboard_layout for keys
+https://en.wikipedia.org/wiki/Magic_SysRq_key
+https://en.wikipedia.org/wiki/German_keyboard_layout German_Keyboard_layout
+
+TODO more structured key explanation
+
+====keys
+
+Origin in space-cadet keyboard (found on MIT LISP machines)
+7 modifier keys:
+* 4 control keys: 1. Ctrl, 2. Meta, 3. Hyper, and 4. Super
+* 3 shift keys: 5. Shift, 6. Top, and 7. Front
+
+Symbols
+- ⎈ Control
+- ◆ Meta
+- ❖ Super
+- ✦ Hyper
+- ⇧ Shift
+
+Meta
+* not found on "modern keyboards"
+* sometimes emulated with AltGr (on international keybords) or right Alt on others
+* Emacs calls Esc the Meta key
+
+Super
+* equivalent to the Windows logo key or the ⌘
+
+Hyper
+* usually not to be found
+* might be the fourth key right of space
+
+Compose
+* "dead key"
+* also called "Multi"
+* often mapped to "Menu" key or right windows key
+
+Personal Observation
+* Multiple key occurences of Meta called Meta1, Meta2 from left to right
+
+====ANSI_Keyboard_layout
+esc   f1 ...                                                            omitted   omitted
+-/'  1  2  ..                                               backspace   omitted
+tab                                                             enter             number
+capsl  <----  ..           .. omitted ..             ..  ----->                   pad
+shift                                                           shift      ^
+ctrl   super   alt   space                  alt   super   meta   ctlr     <v>
+
+====German_Keyboard_layout
+https://kbdlayout.info/KBDGR/
+* DIN 2137-1:2012-06
+* T1, T2, T3
+* T1 most common one
+
+====Magic_SysRq_key
+
+idea if needed
