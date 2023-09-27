@@ -5,6 +5,7 @@ https://gist.github.com/Vincibean/baf1b76ca5147449a1a479b5fcc9a222 for installin
 https://determinate.systems/posts/nix-direnv for direnv
 https://jdisaacs.com/blog/nixos-config/ see chapter flakes_installation
 https://lantian.pub/en/article/modify-computer/nixos-impermanence.lantian/ see chapter stateless_installation
+https://bobvanderlinden.me/customizing-packages-in-nix/ adjusting packages aka patching
 Do not use the wiki, because *it explains barely anything* on when to use what
 and neither how to debug problems. Compare it to ChatGPT, which keeps the
 information sources secret so you do not become better.
