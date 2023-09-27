@@ -1,4 +1,5 @@
 ## shell-independent aliases ##
+# \time to use gnu time might be bash only
 
 alias pxcl='pwd | xclip -sel clip -i'
 alias pwlc='pwd | wl-copy'
@@ -137,16 +138,16 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 # Zig
 # Major "--debug-log" targets are: compilation, module, sema, codegen, and link
 # requires debug mode or to set -Dlog=true on compiling Zig
-#alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
-alias  zbcmdeb='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
-alias  zbcmrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
-# cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && /usr/bin/time -v ninja install
-#alias   zbcmrs='mkdir -p buildrs/ && cd buildrs/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+#alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && \time -v ninja install && cd ..'
+alias  zbcmdeb='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install  && cd ..'
+alias  zbcmrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install && cd ..'
+# cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && \time -v ninja install
+#alias   zbcmrs='mkdir -p buildrs/ && cd buildrs/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install && cd ..'
 alias    zwtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
 
 # the zig-bootstrap version is usually too old to build current master
-# alias  zbdebb='/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-# alias  zbrelb='/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 -Dreleaase --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+# alias  zbdebb='\time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+# alias  zbrelb='\time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p stage3 -Dreleaase --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias  zbdeb='${HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias  zbrel='${HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias   zdeb='{$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
@@ -157,12 +158,12 @@ alias  zdoc='cd ${HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
 alias  zref='cd ${HOME}/tmpf/sfox'
 #alias   zbrs='${HOME}/dev/git/zi/zig/master/buildrs/stage3/bin/zig build -p rs -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias   zup1='./build/stage3/bin/zig build update-zig1'
-#alias  zbsel='mkdir -p buildsel/ && cd buildsel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+#alias  zbsel='mkdir -p buildsel/ && cd buildsel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 # NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
-#mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
-#mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
-# alias  zblocrel='mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
-# alias  zblocdeb='mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && /usr/bin/time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+#mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
+#mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
+# alias  zblocrel='mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+# alias  zblocdeb='mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
 alias      zd='$HOME/dev/git/zi/zig/master/build/stage3/bin/zig'
 # alias      zd='./deb/stage3/bin/zig'
 # alias      zr='./rel/stage3/bin/zig'

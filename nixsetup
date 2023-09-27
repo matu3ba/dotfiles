@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# if symlink or if regular file, stop
+
+# if empty
+ln -s $HOME/dotfiles/nixos/configuration.nix /etc/nixos/configuration.nix
+ln -s $HOME/dotfiles/nixos/hardware-configuration.nix /etc/nixos/hardware-configuration.nix
+
+ln -s $HOME/dotfiles/home-manager/home.nix $HOME/.config/home-manager/home.nix
+
+# fix permissions, user and group (not possible for symlink or automatically applied)
+#sudo chmod 644 /etc/nixos/configuration.nix
+#sudo chmod 644 /etc/nixos/hardware-configuration.nix
+#sudo chown root.root /etc/nixos/configuration.nix
+#sudo chown root.root /etc/nixos/hardware-configuration.nix
+

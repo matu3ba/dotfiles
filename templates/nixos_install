@@ -325,6 +325,7 @@ nixpkgs.hello.overrideDerivation (old: {
 
 ======example
 v
+nixpkgs.overlays = [( overlay1 ) ( overlay2 ) ]
 final: prev: {
   __dontExport = true;
 

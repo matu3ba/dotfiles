@@ -1,0 +1,29 @@
+diff --git a/durden/devmaps/keyboard/default.lua b/durden/devmaps/keyboard/default.lua
+new file mode 100644
+index 0000000..ef2f017
+--- /dev/null
++++ b/durden/devmaps/keyboard/default.lua
+@@ -0,0 +1,23 @@
++return {
++    name = "mymap",
++    map = {
++        --[plain]  = {[25] = "a"},,
++        ["lalt"] = {[25] = "!"},
++        ["ralt"] = {[21] = "@"},
++        ["rctrl"] = {},
++        ["lctrl"] = {},
++        ["lmeta"] = {},
++        ["rmeta"] = {},
++        ["num"] = {}
++    },
++    symmap =
++    {
++        [58] = "ESCAPE"
++    },
++    dctbl =
++    {
++        [25] = {25, 49, "!"}
++    },
++    meta_1_sym = "COLON",
++    meta_2_sym = "GREATER"
++ }

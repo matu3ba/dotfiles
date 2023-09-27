@@ -1,5 +1,6 @@
-/LICENSE
+/.gitignore
 /Filenamesunsafe
+/LICENSE
 /POSIXunsafe
 /README.md
 /checkHealth.sh
@@ -10,7 +11,13 @@
 /symlinkInstall.sh
 /symlinkUninstall.sh
 
-/.git
-/.gitignore
-/templates
-/patches
+/.git/
+/crosscompiling/
+/example/
+/home-manager/
+/nixos/
+/overlays/
+/patches/
+/sample_scr/
+/scr/
+/templates/

@@ -38,9 +38,9 @@ bind '"\e[B":history-search-forward'
 ################################################################################
 
 ##==aliases_and_commontools
-source "${HOME}/dotfiles/.config/shells/bash_aliases"
-source "${HOME}/dotfiles/.config/shells/aliases"
-source "${HOME}/dotfiles/.config/shells/aliases_git"
+source "$HOME/dotfiles/.config/shells/bash_aliases"
+source "$HOME/dotfiles/.config/shells/aliases"
+source "$HOME/dotfiles/.config/shells/aliases_git"
 
 ##==wayland_exports
 if test "$XDG_SESSION_TYPE" = 'wayland'
@@ -51,21 +51,21 @@ then
 fi
 
 ##==PATH
-PATH=${PATH}:"${HOME}/.cargo/bin"
-PATH=${PATH}:"${HOME}/.local/bin"
-PATH=${PATH}:"${HOME}/.local/appimages"
-# PATH=${PATH}:"${HOME}/dev/git/cpp/kakoune/libexec/kak"
-# PATH=${PATH}:"${HOME}/dev/git/zi/zig/master/build" # zig stages 1,2
-# PATH=${PATH}:"${HOME}/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
-# PATH=${PATH}:"${HOME}/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
-PATH=${PATH}:"${HOME}/dev/git/zi/zig/master/rel/bin" # zig stages 4
-PATH=${PATH}:"${HOME}/.luarocks/bin"
-PATH=${PATH}:"${HOME}/.local/nvim/bin" # neovim testing
-PATH=${PATH}:"${HOME}/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
+PATH=${PATH}:"$HOME/.cargo/bin"
+PATH=${PATH}:"$HOME/.local/bin"
+PATH=${PATH}:"$HOME/.local/appimages"
+# PATH=${PATH}:"$HOME/dev/git/cpp/kakoune/libexec/kak"
+# PATH=${PATH}:"$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
+# PATH=${PATH}:"$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
+# PATH=${PATH}:"$HOME/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
+PATH=${PATH}:"$HOME/dev/git/zi/zig/master/rel/bin" # zig stages 4
+PATH=${PATH}:"$HOME/.luarocks/bin"
+PATH=${PATH}:"$HOME/.local/nvim/bin" # neovim testing
+PATH=${PATH}:"$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
 
 #testing www.ziglang.org
-#PATH=${PATH}:"${HOME}/src/zig-doctest/zig-cache/bin"
-#PATH=${PATH}:"${HOME}/src/hugo"
+#PATH=${PATH}:"$HOME/src/zig-doctest/zig-cache/bin"
+#PATH=${PATH}:"$HOME/src/hugo"
 
 ##==ssh
 # there is no very reliable and simple other way to have ssh agent running
@@ -125,6 +125,8 @@ export -f stopwatch
 
 ##==quickjumper
 eval "$(zoxide init bash)"
+##==autoenv
+eval "$(direnv hook bash)"
 
 ##==kitty
 if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi

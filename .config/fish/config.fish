@@ -100,7 +100,10 @@ if status is-interactive
   # set -gx SSH_AGENT_PID $SSH_AGENT_PID
   # trap "ssh-agent -k" exit
 
+  ##==quickjumper
   zoxide init fish | source
+  ##==autoenv
+  direnv hook fish | source
 
   alias l ' ls --color=auto --hyperlink=auto --group-directories-first -h'
   abbr --add -g sus ' systemctl suspend'
@@ -140,15 +143,15 @@ if status is-interactive
 
   abbr --add -g      nbasan ' CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 
-  abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd ..'
+  abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install  && cd ..'
   abbr --add -g  zbdeb ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zdeb ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 
-  abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+  abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install && cd ..'
   abbr --add -g  zbrel ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zrel ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 
-  # abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && /usr/bin/time -v ninja install && cd ..'
+  # abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && time ninja install && cd ..'
 
   abbr --add -g        zd ' ./deb/stage3/bin/zig'
   abbr --add -g        zr ' ./rel/stage3/bin/zig'
@@ -276,6 +279,9 @@ if status is-interactive
     set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
     # idea modify prompt, process name and title
   end
+  function registerTty -d "register GPG_TTY"
+    set -gx GPG_TTY "$(tty)"
+  end
   function reconnectGpg -d "reconnect to gpg client to workaround pinentry-tty bugs"
     gpg-connect-agent updatestartuptty /bye >/dev/null
   end
@@ -296,3 +302,6 @@ end
 # SHENNANIGAN
 # putting shell scripts (stopped) into background, which ask for tty may break
 # cpu usage thinking those jobs utilize 100% core usage.
+
+# SHENNANIGAN
+# there is no simple way to call gnu time to get resource usage and time

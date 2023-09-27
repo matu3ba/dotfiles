@@ -319,3 +319,6 @@ alias gsu='git submodule update'
 #          git show {1}:$1 | nvim -c set\ bt=nowrite || git show {1} | nvim -c set\ bt=nowrite -
 #      )"
 #fi
+
+# SHENNAGANIN setting reliably to branch is tedious
+#git worktree add --track -b crt_arm_fixes crt_arm_fixes downstream/crt_arm_fixes
