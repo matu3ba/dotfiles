@@ -322,3 +322,28 @@ alias gsu='git submodule update'
 
 # SHENNAGANIN setting reliably to branch is tedious
 #git worktree add --track -b crt_arm_fixes crt_arm_fixes downstream/crt_arm_fixes
+
+#====commit_hygiene_tldr
+# every commit must build
+# every commit must make sense as some atomic piece of work
+# 1. merge    git merge --ff-only|--no-ff
+#             --no-commit|--commit
+#             -e
+#             --squash|--no--quash
+# 2. squash   git merge --squash|--no--quash
+# https://stackoverflow.com/questions/5189560/how-do-i-squash-my-last-n-commits-together
+# 3. rebase   git rebase [-i])
+#
+# * merge: prefer, because it represents true history (merge points, WIP commits)
+#   + can revert whole merge easily via >git revert -mN MERGECOMMITSHA
+#   + more commits make git bisect better
+#   + better 20*+50/-50 than +2k/-50 changes, always
+# * problems:
+#   + big fundamental changes
+#   + merge conflict churn of big changes
+#   + high turnaround or waiting times
+# * squash: WIP commits with one goal and relative small diff
+# * rebase (interactively): big diff and alot WIP to selectively
+#   squash and reorder commits where making sense
+#
+# Expected unless OSS and you (can) take the time.

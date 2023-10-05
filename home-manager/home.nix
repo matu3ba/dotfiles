@@ -2,6 +2,31 @@
 # Not sure how to print in dev shell path of ${pkgs.pinentry.tty}
 # nix-instantiate --eval '<nixpkgs>' -A lib.version
 
+# Installation
+# nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager
+# nix-channel --update
+# nix-shell '<home-manager>' -A install
+# (outside of nixos the trusted-users = $USER must be in /etc/nix/nix.conf or ~/.config/nix/nix.conf)
+# (sudo systemctl restart nix-daemon.service)
+# (gpasswd -a $USER nix-users)
+# (see manual https://nixos.org/manual/nix/stable/installation/multi-user)
+# [installation might still have weird substitutor error messages or no trusted user]
+
+# Uninstalliation
+# https://github.com/NixOS/nix/blob/master/doc/manual/src/installation/uninstall.md
+
+# Updating
+# home-manager switch
+# (nix-channel --update)
+
+# TODO flakes
+# https://nix-community.github.io/home-manager/index.html#ch-nix-flakes
+
+# Rollback
+# home-manager generations
+# /nix/store/mv960kl9chn2lal5q8lnqdp1ygxngcd1-home-manager-generation/activate
+
+
 { config, pkgs, ... }:
 
 {
