@@ -116,7 +116,7 @@ int f(int* a) {
 }
 
 // SHENNANIGAN
-void seuqence_points_ub() {
+void sequence_points_ub() {
     int a = 0;
     // a = a++ + b++; // Multiple unsequenced modifications to a
     // Same problem without warnings:

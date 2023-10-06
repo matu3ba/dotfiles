@@ -67,3 +67,6 @@ session persistence:
 - 1. define a new public protocol ("extended kitty")
 - 2. use a private one to other ghostty sessions like wezterm
 - 3. use a separate communication channel other than shell (https://goteleport.com/blog/ssh-restricted-shells/)
+
+SHENNANGIAN
+Terminfo data base: infocmp

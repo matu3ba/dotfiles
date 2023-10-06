@@ -271,7 +271,8 @@ alias gma='git merge --abort'
 
 alias gp='git push'
 alias gpdry='git push --dry-run'
-alias gpf='git push --force'
+#alias gpf='git push --force'
+alias gpf='git push --force-if-includes --force-with-lease'
 
 # To show the content of a stash run
 # git stash show -p STASH/STASHNUMBER
