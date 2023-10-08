@@ -1,8 +1,166 @@
-TODO rewrite this, because it contains alot useless and uncontextualized info.
+Taken from nix.dev. Nix pills is another good source. Unfortunately flakes have
+no good docs yet and I found nothing good for debugging (overlays).
+
+Reproducible ad-hoc environment
+nix-shell -p git --run "git --version" --pure -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/2a601aafdc5605a5133a2ca506a34a3a73377247.tar.gz
+
+Reproducible interpreter scripts
+v nixpkgs-releases.sh
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash --pure
+#! nix-shell -p bash cacert curl jq python3Packages.xmljson
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/2a601aafdc5605a5133a2ca506a34a3a73377247.tar.gz
+curl https://github.com/NixOS/nixpkgs/releases.atom | xml2json | jq .
+^
+
+Nix language basics
+nix repl
+:p { a.b.c = 1; }
+nix-instantiate --eval --strict file.nix
+let x=1;y=2;in x+y
+attributes dont need quotes, list sep is whitespace
+access attributes from within set:
+rec { one = 1; two = one + 1; three = two + 1; }
+assign names to values for repeated usage:
+let a = 1;
+in a + a
+attributeset access (nested works identical):
+let attrset = { x = 1; };
+in attrset.x
+instead of writing out [a.x a.y] use with:
+let a = { x = 1; y = 2; };
+in with a; [ x y ]
+inherit values, ie `x = a.x; y = a.y;`:
+let a = { x = 1; y = 2; };
+in { inherit (a) x y; }
+string interpolation works like python f-strings:
+let name = "Nix";
+in "hello ${name}"
+beware of $var being a shell variable.
+search paths (to be avoided for predictable outcomes):
+<nixpkgs/lib>
+multiline strings:
+''
+s1
+s2
+''
+fns have no names and are lambdas:
+x: x + 1
+x: y: x + y
+{ a, b }: a + b
+{ a, b ? 0 }: a + b
+{ a, b, ...}: a + b
+named set attribute:
+args@{ a, b, ... }: a + b + args.c
+assign fn to a name:
+let f = x: x + 1; in f
+calling fn:
+let f = x: x + 1; in f 1
+let f = x: x.a; in f { a = 1; }
+let
+  f = x: x.a;
+  v = { a = 1; };
+in f v
+(x: x + 1) 1
+beware the difference:
+let
+ f = x: x + 1;
+ a = 1;
+in [ (f a) ]
+in [ f a ]
+multi args (curried fns):
+x: y: x + y
+x: (y: x + y)
+return fn y: x+y with x set to 1:
+let f = x: y: x + y; in f 1
+return 3 from fully evaluating fn:
+let f = x: y: x + y; in f 1 2
+constrain allowed args structure (adding c=3 not allowed):
+let f = {a, b}: a + b;
+in f { a = 1; b = 2; }
+default values:
+let f = {a, b ? 0}: a + b;
+in f { a = 1; }
+additional attributes:
+let f = {a, b, ...}: a + b;
+in f { a = 1; b = 2; c = 3; }
+named attribute set arg:
+let f = {a, b, ...}@args: a + b + args.c;
+in f { a = 1; b = 2; c = 3; }
+fn libraries (besides built-in operators) in C++:
+* builtins (Built-in fns)
+import (alterntive default.nix) with result 3:
+$echo 1 + 2 > file.nix
+import ./file.nix
+$echo "x: x + 2" > file.nix
+import ./file.nix 1
+pkgs.lib in nix:
+let pkgs = import <nixpkgs> {};
+in pkgs.lib.strings.toUpper "search paths considered harmful"
+impurities to observe outside world:
+* build inputs available via 1. file system paths, 2. dedicated fns
+* are refered to by their content hash
+paths:
+echo 123 > data
+"${./data}"
+"/nix/store/h1qj5h5n05b5dl5q4nldrqq8mdg7dhqk-data"
+fetchers:
+* builtins.fetchurl|fetchTarball|fetchGit|fetchClosure
+* evaluate to file system path in nix store
+builtins.fetchurl "https://github.com/NixOS/nix/archive/7c3ab5751568a0bc63430b33a5169c5e4784a0ff.tar.gz"
+"/nix/store/7dhgs330clj36384akg86140fqkgh8zf-7c3ab5751568a0bc63430b33a5169c5e4784a0ff.tar.gz"
+derivations:
+* nix is used to describes derivations
+* nix derivations to produce build results
+* build results can be used as inputs to other derivations
+let pkgs = import <nixpkgs> {};
+in "${pkgs.nix}"
+
+Pinning nixpkgs
+pick commit from status.nixos.org
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/06278c77b5d162e62df170fec307e83f1812d94b.tar.gz") {}
+}:
+..
+
+Using niv (to track nix unstable):
+nix-shell -p niv --run "niv init"
+niv show
+niv modify nixpkgs --branch nixos-21.05
+{ sources ? import ./nix/sources.nix, pkgs ? import sources.nixpkgs {}
+}:
+..
+nix-shell -p niv --run "niv update"
+
+Declarative and reproducible developer environments
+* set shell env vars
+* exec bash cmds during activation
+* share exact environment with other devs
+Minimal shell.nix:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/06278c77b5d162e62df170fec307e83f1812d94b.tar.gz") {} }:
+pkgs.mkShell {
+  buildInputs = [ pkgs.which pkgs.htop pkgs.zlib ];
+  shellHook = "echo hello";
+  MY_ENVIRONMENT_VARIABLE = "world";
+}
+More useful shell.nix:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/eabc38219184cc3e04a974fe31857d8e0eac098d.tar.gz") {} }:
+pkgs.mkShell {
+  packages = [
+    (pkgs.python3.withPackages (ps: [
+      ps.flask
+    ])) pkgs.curl pkgs.jq
+  ];
+}
+direnv:
+echo "use nix" > .envrc && direnv allow
+
+Sharing dependencies between default.nix and shell.nix
+TODO
+
+TODO remove the useless crap
 
 effortless dev environment changes
 https://cbailey.co.uk/posts/my_usage_of_nix_and_lorri__direnv
-
 
 non-nix system:
 something broke
@@ -10,16 +168,16 @@ DONT USE THIS AS THIS PINS YOUR DEPENDENCIES ON SPECIFIC VERSION
 nix-env -f '<nixpkgs>' -iA nixUnstable
 nix-channel --udpate
 
-__ home-manager __
+====home-manager
 manages ${HOME}
 should be used as standalone to work everywhere, where nix works
 without this impurities may creep in
 temporary usage: nix-shell -p gnumake -p python27
 
-__ flakes __
+====flakes
 project-specific setups, overlays etc
 
-__ profiles __
+====profiles
 not platform-independent and do not work anywhere you have nix
 
 nix shell 'github:nixos/nixpkgs/nixpkgs-unstable#hello'

@@ -72,3 +72,13 @@ from the guest OS.
 
 * qemu qmp (or use qemus gdb stub) to read the vm's memory
 * attach serial channel to qemu machine and write stuff to that (treat the read bytes as plain and potentially malicious data)
+
+====allocators
+
+Preventing Use-After-Free Attacks with Fast Forward Allocation
+* overhead in runtime perf vs glibc
+  + allegedly ~2.3% for one-time allocations
+  + up to 35% due to mmap-sem lock in Linux kernel
+  + ~60% memory overhead
+  + nginx testing with comparable throughput
+* lesson: One-time-allocation effective + simple to implement
