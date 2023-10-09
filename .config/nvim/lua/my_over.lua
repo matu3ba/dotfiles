@@ -24,6 +24,8 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+-- Show config with :=require("overseer.config")
+
 local has_overseer, overseer = pcall(require, "overseer")
 local has_overseer_util, overseer_util = pcall(require, "overseer.util")
 

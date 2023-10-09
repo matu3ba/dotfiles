@@ -239,3 +239,14 @@ cmp.setup.cmdline(':', {
     { name = 'cmdline' },
   },
 })
+
+-- incomplete workaround C-y for confirmation in cmd-cmpline not working
+-- https://github.com/hrsh7th/nvim-cmp/issues/692
+-- missing: accept should trigger the next completion
+--vim.api.nvim_set_keymap('c', '<C-y>', '', {
+--    callback = function()
+--        cmp.confirm({ select = true })
+--        -- neither working (not even adding space to complete incorrectly):
+--        -- cmp.mapping.complete()
+--    end,
+--})

@@ -10,14 +10,21 @@ Motivators for acceptable implementation design + complexity +
 applicable/required formal methods
 - time management: Accepted worst case execution time
 - permission and access management: Accepted degree of security configurations (static,
-  kernel-dynamic, user-dynamic, etc) and thread levels
+  kernel-dynamic, user-dynamic, etc) and threat levels
 - available hardware
 - accepted performance loss (work per time)
 - user-configurability of aforementioned points
 
 List of fundamental and (in practice) unfixable design flaws
-- Unix io management: tty underspecified [TODO describe] + error prone, file system [not
-  representative of hardware, unsecure for overall tty+shell usage]
+- tty underspecified + error prone plus a huge attack vector
+  * why: multi-purpose stateful, (on unix) in-band, high-perf control + data transmission
+    without single formal specification (as state automaton)
+  * https://www.gresearch.com/blog/article/g-research-the-terminal-escapes/
+  * https://vt100.net/emu/dec_ansi_parser
+  * https://arcan-fe.com/2022/04/02/the-day-of-a-new-command-line-interface-shell/
+  * "A tempest in a tty pot" https://lwn.net/Articles/343828/
+- Unix io management: TODO
+- file system [not representative of hardware, unsecure for overall tty+shell usage]
 - Unix signaling: racy unless from/with parent process or pid 1
   * (pid, gid, uuid) could be used as unique identification
   * (non)cooperative scheduling could use suspension points + Kernel watchdog
