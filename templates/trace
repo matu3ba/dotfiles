@@ -23,6 +23,16 @@ https://github.com/iovisor/bpftrace
 - for eBPF on Linux, uses LLVM to compile into BPF-bytecode,
 - uses BCC to interact with BPF system, kprobes, uprobes and tracepoints
 
+==Performance analysis profiler
+
+"Coz: Causal Profiling"
+https://github.com/plasma-umass/coz
+* TODO explain advantage
+
+"Dthreads: efficient deterministic multithreading"
+https://github.com/emeryberger/dthreads
+* usage of processes with ipc instead of threads to enforece determinism
+* TODO explain tradeoffs
 
 ==FAQ
 Linux strace ./callstuff
@@ -33,4 +43,15 @@ Windows
 Excellent dtrace introduction example:
 https://zinascii.com/2023/debugging-a-zig-test-failure.html
 
-TODO
+Checkpoint/Restore In Userspace (CRIU) https://criu.org/Main_Page meaning serialization+deserialization
+of complete program states (to/from memory or fs)
+https://unix.stackexchange.com/questions/721525/is-it-possible-to-serialize-a-running-programs-memory-image-to-disk-instead-of
+requiring clients to submit their state when requested and giving the state
+back on restore clients can serialise and deserialise state, supervisor
+provides events to respond
+requires external state being the same or loss of state at least being recoverable
+* files opened by the program being "frozen" or not having changed
+* sockets being there
+* rules out X11
+* makes things hard for curses/graphical tty
+* common in conzainerized workloads (fs private, network commonly lost)

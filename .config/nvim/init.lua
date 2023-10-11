@@ -36,6 +36,7 @@ else
   -- TODO ECS design idea:
   -- composable testing lib to build + test + spawn suite with optional debugging vs simulation
 
+  -- TODO https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
   -- TODO config: setup NeoComposer
 
   -- TODO https://github.com/birth-software/birth

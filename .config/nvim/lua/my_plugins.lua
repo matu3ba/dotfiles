@@ -2,6 +2,7 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 return {
+  -- lazy local dev: ~/projects
   -- clean cache:
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
@@ -192,6 +193,7 @@ return {
   -- buffer manipulation + project search
   --==bufferactions
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
+  -- { 'ThePrimeagen/harpoon' }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- use instead track.nvim?
   { 'matu3ba/libbuf.nvim', dev = true },
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?

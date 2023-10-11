@@ -95,3 +95,12 @@ Candidates for an optimal language (independen of domain) working on at least 3 
   to prove correctness or to reduce bug count to 0)
 - Zig's strategy is currently to working on 1-3 for version1_0, 4 is missing PRO and RVO)
 ```
+
+The claim of memory safe software is that the checker helps you and that the
+base safety abstraction is reusable enough justifying the additional
+compilation time. This argument falls apart on big scale, specific performance
++ lifetime or enforcement of weak coupling, ie during runtime.
+
+the alternative is to use sel4/micro kernel approach of capabilities, but even
+those assume you can not access all memory and/or code is trusted.
+https://en.wikipedia.org/wiki/Object-capability_model

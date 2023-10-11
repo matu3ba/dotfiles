@@ -82,3 +82,19 @@ Preventing Use-After-Free Attacks with Fast Forward Allocation
   + ~60% memory overhead
   + nginx testing with comparable throughput
 * lesson: One-time-allocation effective + simple to implement
+
+====html
+* could use HTTP/1.1, mandate pipelining and TLS 1.2 to get most advantages without the drawbacks
+* multiplexing bad idea unless server has logic for fair scheduling (usually has not) and opens door for denial of service
+* too complex, useless freedom of choice
+
+====virtual_machine
+vmm as virtual machine monitor
+qemu alternate and simpler implementations with the same feature matrix support?
+see https://www.youtube.com/watch?v=O_NI61ADxjk and
+https://cloud.google.com/blog/products/gcp/7-ways-we-harden-our-kvm-hypervisor-at-google-cloud-security-in-plaintext
+https://superuser.com/questions/1490188/what-is-the-difference-and-relationship-between-kvm-virt-manager-qemu-and-libv
+
+https://bellard.org/tinyemu/
+vmm is very openbsd-specific, uses a serial port, single core, and x86-only
+https://www.openbsd.org/faq/faq16.html

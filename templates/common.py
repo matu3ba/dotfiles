@@ -290,8 +290,12 @@ def has_fieldsvals(small: dict, big: dict) -> bool:
             if isinstance(small[key], dict):
                 if not has_fieldsvals(small[key], big[key]):
                     return False
+                else:
+                    return True
             elif value != big[key]:
                 return False
+            else:
+                return True
         else:
             return False
     return True
@@ -565,3 +569,7 @@ def check_fn(fn: list) -> int:
 # As example: 1 main thread, 2 deamon threads may cause the relevant deamon thread
 # not being scheduled for 2 seconds. Empirically 3 seconds work.
 # In other words: Python thread scheduling is extremely unreliable.
+
+def redirect_stderr() -> None:
+  # access stdout via sys.__stdout__
+  sys.stderr = sys.stdout
