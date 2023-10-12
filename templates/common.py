@@ -199,21 +199,50 @@ response = requests.request("POST", upload_url,
              files=files)
 
 ## Get if port is used without psutils (doing reliably requires Kernel module)
-netstat_out = subprocess.run(["netstat", "-tupln", "-W"], check=True, capture_output=True)
-port_table = netstat_out.stdout.decode("utf-8").split("\n")
-header_split = port_table[1].split(' ')
-assert header_split[3] == "Local", "3rd split in header is not 'Local'"
-assert header_split[4] == "Address", "4rd split in header is not 'Address'"
-for line in range(2,len(port_table)):
-  if port_table[line] == '':
-    continue
-  data_split = port_table[line].split()
-  addr_split = data_split[3].split(':')
-  assert len(addr_split) > 0, "splitting broken, port detection failed"
-  #assert len(addr_split) > 1, print(addr_split)
-  port = addr_split[len(addr_split)-1]
-  print(port)
+def getPorts() -> set:
+  set_ports = set()
+  netstat_out = subprocess.run(["netstat", "-tupln", "-W"], check=True, capture_output=True)
+  port_table = netstat_out.stdout.decode("utf-8").split("\n")
+  header_split = port_table[1].split(' ')
+  assert header_split[3] == "Local", "3rd split in header is not 'Local'"
+  assert header_split[4] == "Address", "4rd split in header is not 'Address'"
+  for line in range(2,len(port_table)):
+    if port_table[line] == '':
+      continue
+    data_split = port_table[line].split()
+    addr_split = data_split[3].split(':')
+    assert len(addr_split) > 0, "splitting broken, port detection failed"
+    #assert len(addr_split) > 1, print(addr_split)
+    port = addr_split[len(addr_split)-1]
+    set_ports.add(port) # assume netstat doesnt create duplicates
+  return set_ports
 
+def getInterfaces() -> List[str]:
+  """
+  Returns parsed output of 'ip -br a'
+    lo               UNKNOWN        127.0.0.1/8 ::1/128
+    enp1s0           UP             ABC.DEF.GHI.JKL/24 IPV6_ADDRESS/64
+  so
+    [lo, enp1s0]
+  """
+  interfaces = list()
+  ip_bra_out = subprocess.run(['ip','-br','a'], check=True, \
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  lines = ip_bra_out.stdout.decode("utf-8").split("\n")
+  for i in range(0,len(lines)):
+    cols = lines[i].split(' ')
+    if len(cols[0]) > 0: interfaces.append(cols[0])
+  return interfaces
+
+def hasInterfaceDHCP(interface: str) -> bool:
+  """
+  Runs 'ip -f inet addr show interface' and searches for matching 'dynamic' as DHCP being used.
+  """
+  ip_show_int = subprocess.run(['ip','-f','inet', 'addr', 'show', interface], check=True, \
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  text: str = ip_show_int.stdout.decode("utf-8")
+  st = text.find("dynamic")
+  return st != -1
 
 ## Naive way to open next free file to write logs
 def openLogHandle(log_dir: str, proc_name: str) -> IO[str]:
