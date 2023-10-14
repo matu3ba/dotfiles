@@ -195,7 +195,7 @@ nix flake lock
 nix flake lock –override-input input_name
 nix flake lock –update-input input_name
 
-# Flakes allow you to specify your code’s dependencies
+# Flakes allow you to specify your codes dependencies
 # (e.g. remote Git repositories) in a declarative way,
 # simply by listing them inside a flake.nix file
 nix flake lock --update-input home-manager
@@ -246,21 +246,3 @@ Features, which can be considered as missing from nix:
   * no Linux-only features
   * option to put packages in ISO's, qcow2's, plain old tarballs (see root tarballs, or OpenBSD's site*.tgz)
     + winetricks doesn't need it's own dxvk's, directx's, and faudio's etc
-
-mkShell equivalent without having gcc polluting gcc, ie to prevent cmake doing
-the wrong thing
-v
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/65c9cc79f1d179713c227bf447fb0dac384cdcda.tar.gz") {} }:
-
-pkgs.stdenvNoCC.mkDerivation {
-  name = "shell";
-  nativeBuildInputs = with pkgs; [
-      cmake
-      gdb
-      ninja
-      qemu
-      time
-      wasmtime
-  ];
-}
-^

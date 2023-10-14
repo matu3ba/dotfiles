@@ -1,8 +1,9 @@
 ## shell-independent aliases ##
 # \time to use gnu time might be bash only
 
+alias rp=' realpath'
 alias pxcl='pwd | xclip -sel clip -i'
-alias pwlc='pwd | wl-copy'
+alias pwcl='pwd | wl-copy'
 #alias ls='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
 alias count_occurenceschar='echo "grep -o \"{\" FILE | wc -l"'
 alias rmmkdbuild='rm -fr build/; mkdir build'

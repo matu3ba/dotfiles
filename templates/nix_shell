@@ -1,0 +1,53 @@
+For shell.nix or default.nix and run with nix-shell
+find_version
+niv
+release
+unstable
+
+====find_nixpkgs_version
+not from cli: https://status.nixos.org
+neither works: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
+neither cli: https://github.com/lazamar/nix-package-versions
+git clone https://github.com/NixOS/nixpkgs
+git fetch
+SHA256SUM=$(git rev-parse origin/nixpkgs-unstable)
+echo "https://github.com/NixOS/nixpkgs/archive/$SHA256SUM.tar.gz"
+
+====niv
+nix-shell -p niv --run "niv init"
+nix-shell -p niv --run "niv update"
+niv show
+niv modify nixpkgs --branch nixos-21.05
+
+#{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/65c9cc79f1d179713c227bf447fb0dac384cdcda.tar.gz") {} }:
+#with import <nixpkgs> {};
+{ sources ? import ./nix/sources.nix, pkgs ? import sources.nixpkgs {} }:
+
+pkgs.mkShell {
+#pkgs.stdenvNoCC.mkDerivation {
+  name = "shell";
+  nativeBuildInputs = with pkgs; [
+      cmake
+      gdb
+      #libxml2
+      ninja
+      qemu
+      #time
+      wasmtime
+      #zlib
+      python3
+
+      # llvm 7 is default
+      # llvm
+      # lld
+      # clang
+  ];
+  # ] ++ (with llvmPackages_16; [
+  #   clang
+  #   clang-unwrapped
+  #   lld
+  #   llvm
+  # ]);
+
+  #hardeningDisable = [ "all" ];
+}

@@ -107,6 +107,7 @@ if status is-interactive
 
   alias l ' ls --color=auto --hyperlink=auto --group-directories-first -h'
   abbr --add -g sus ' systemctl suspend'
+  abbr --add -g rp ' realpath'
 
   abbr --add -g           via ' {$HOME}/.local/appimages/nvim.appimage'
   abbr --add -g          jvia ' firejail $HOME/.local/appimages/nvim.appimage'
@@ -143,15 +144,31 @@ if status is-interactive
 
   abbr --add -g      nbasan ' CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 
-  abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install  && cd ..'
-  abbr --add -g  zbdeb ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-  abbr --add -g  zdeb ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  # abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install  && cd ..'
+  # abbr --add -g  zbdeb ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  # abbr --add -g  zdeb ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  # abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install && cd ..'
+  # abbr --add -g  zbrel ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  # abbr --add -g  zrel ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 
-  abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install && cd ..'
-  abbr --add -g  zbrel ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
-  abbr --add -g  zrel ' {$HOME}/dev/git/zi/zig/master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  # Commands assume:
+  # * directory structure: zdev/zig/master zdev/zig-bootstrap/master
+  # * zdev/zig-bootstrap/master: CMAKE_GENERATOR=Ninja ./build x86_64-linux-musl native
+  #   + enabling checks: -DLLVM_ENABLE_ASSERTIONS=ON \
+  #   + preventing oom: -DLLVM_PARALLEL_LINK_JOBS=1 \
+  # abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install  && cd ..'
+  abbr --add -g  zbdeb ' ./buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  abbr --add -g  zdeb ' ../master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  abbr --add -g  zbllvm ' CMAKE_GENERATOR=Ninja ./build x86_64-linux-musl native'
+  abbr --add -g  zbsrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out/host/" -GNinja && time ninja install && cd ..'
+  abbr --add -g  zbrel ' ./buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  abbr --add -g  zrel ' ../master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
+  # Without zig-bootrap stage4 fails due to c++ abi failures and making sure it works boils down to same logic
 
-  # abbr --add -g  zbcmrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && time ninja install && cd ..'
+  # Using out of tree llvm builds from ~/.local/llvmdeb and ~/.local/llvmrel
+  abbr --add -g  zbsdebllvmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmdeb" -GNinja && time ninja install  && cd ..'
+  abbr --add -g  zbsdebllvmrel ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmrel" -GNinja && time ninja install  && cd ..'
+  # Patching zig-bootstrap necessary to get stage4 working
 
   abbr --add -g        zd ' ./deb/stage3/bin/zig'
   abbr --add -g        zr ' ./rel/stage3/bin/zig'

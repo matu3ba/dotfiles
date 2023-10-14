@@ -1,3 +1,31 @@
+====source_deps
+sqlite3, openal-soft, sdl2, opengl, luajit, gbm, kms, freetype, harfbuzz, libxkbcommon
+libvlc-core, ffmpeg suite, leptonica, tesseract (ocr), libvncserver libusb1, v4l2-loopback, mupdf
+
+TODO shell file
+
+git clone https://github.com/letoram/arcan.git
+cd arcan/external/git
+./clone.sh
+cd ../../
+
+====source_build
+mkdir -p build && cd build
+cmake -DBUILD_PRESET="everything" ../src
+cmake -DBUILD_PRESET="everything" -DCMAKE_BUILD=Debug ../src
+make -j$(nproc)
+sudo make install
+
+====source_run
+without installation: ./arcan -T ../data/scripts -p ../data/resources .../data/appl/welcome
+with installation: arcan welcome
+arcan console
+arcan /pathtoarcan/tests/interactive/eventtests
+arcan -d mydb.sqlite
+arcan -H hook/external_input.lua myappl
+ARCAN_VIDEO_ENCODE=protocol=vnc arcan_headless console
+
+
 https://durden.arcan-fe.com/setup.html for reset_configuration, running
 reset_configuration, running, FAQ
 

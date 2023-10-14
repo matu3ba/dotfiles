@@ -2,12 +2,17 @@ https://reproducible-builds.org/tools/
 diffoscope - https://diffoscope.org/
 rebuilderd - https://github.com/kpcyrd/rebuilderd
 rr - https://github.com/rr-debugger/rr
-ripgrep from BurntSushi (https://github.com/BurntSushi/ripgrep).
-fd-find from sharkdp (https://github.com/sharkdp/fd)
-fz from natecraddock (https://github.com/natecraddock/zf)
-jfind from jake-stewart (https://github.com/jake-stewart/jfind)
-znvim from LordMZTE (https://mzte.de/git/LordMZTE/znvim) (glpv3)
+ripgrep from BurntSushi https://github.com/BurntSushi/ripgrep
+fd-find from sharkdp https://github.com/sharkdp/fd
+fz from natecraddock https://github.com/natecraddock/zf
+jfind from jake-stewart https://github.com/jake-stewart/jfind
+znvim from LordMZTE https://mzte.de/git/LordMZTE/znvim
+glpv3
 zellij: s-e (scrollback-edit, does not work?)
+
+shell: fish, crush-shell
+terminal: contour, ghostty
+editors: neovim[more plugins], vim[stable+no surprises], helix[lazy setup, few plugins], kakoune
 
 fdupes or fork jdupes - finding duplicates
 fdupes -qdN -r /ops/backup/
@@ -17,9 +22,9 @@ rizin - reverse debugging
 grafana - visualization
 windirstat for directory overview - https://windirstat.net/
 
-xml parser: yxml (https://code.blicky.net/yorhel/yxml)
-disk usage explorer: ncdu (https://code.blicky.net/yorhel/ncdu) or KDE filelight
-simple header testing framework: utest.h (https://github.com/sheredom/utest.h)
+xml parser: yxml https://code.blicky.net/yorhel/yxml
+disk usage explorer: ncdu https://code.blicky.net/yorhel/ncdu or KDE filelight
+simple header testing framework: utest.h https://github.com/sheredom/utest.h
 
 proprietary
 whitebox - program execution tracer and visualizer

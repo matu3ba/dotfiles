@@ -60,14 +60,14 @@ add_cmd('EZ', df_sample_scr_edit .. sep .. 'sh.zig', {})
 
 if utils.is_windows == false then
   -- we cant or dont want to unify all bashrcs
-  local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.bashrc'
-  local fishrc_edit = 'edit ' .. os.getenv 'HOME' .. '/.config/fish/config.fish'
+  local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. sep .. 'dotfiles' .. sep .. '.bashrc'
+  local fishrc_edit = 'edit ' .. os.getenv 'HOME' .. sep .. 'dotfiles' .. sep .. '.config' .. sep .. 'fish' .. sep .. 'config.fish'
   add_cmd('Bashrc', bashrc_edit, {})
   add_cmd('Fishrc', fishrc_edit, {})
 end
 
-add_cmd('EB', 'edit ./b.sh', {}) -- fast script hacking
-add_cmd('ET', 'edit ./t.sh', {})
+-- add_cmd('EB', 'edit ./b.sh', {}) -- fast script hacking
+-- add_cmd('ET', 'edit ./t.sh', {})
 
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd
@@ -159,7 +159,7 @@ _G.Pid_okular = nil
 add_cmd('Pmsta', function()
   local this_tex_file = vim.fn.expand '%:p'
   local line_number = vim.fn.line '.'
-  local okularcmd = 'okular --noraise "' .. 'build/main.pdf' .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
+  local okularcmd = 'okular --noraise "' .. 'build' .. sep .. 'main.pdf' .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
   _G.Pid_okular = vim.fn.jobstart(okularcmd)
   if _G.Pid_okular <= 0 then print '_G.Pid_okular: could not launch okular' end
 end, {})
@@ -169,7 +169,7 @@ add_cmd('Pmsto', function()
     _G.Pid_okular = nil
   end
 end, {})
-add_cmd('Pdffigure', function() vim.fn.jobstart('okular figures/' .. vim.fn.expand '%:t:r' .. '.pdf') end, {})
+add_cmd('Pdffigure', function() vim.fn.jobstart('okular figures' .. sep .. vim.fn.expand '%:t:r' .. '.pdf') end, {})
 
 -- prints either nt or n
 -- add_cmd('Printmode', function() print(api.nvim_get_mode().mode) end, {})
@@ -370,14 +370,14 @@ add_cmd('ShDate', function() print(os.date()) end, {})
 add_cmd('RetagZigComp', function()
   -- if vim.bo.filetype == 'zig' then
   -- FILES=$(fd -e zig . 'src/' 'lib/std/') && ztags -a -r $FILES
-  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src/', 'lib/std/' } }):sync()
+  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src', 'lib' .. sep .. 'std' } }):sync()
   -- print("fd_exec", vim.print(fd_exec))
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
-  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src/' } }):sync()
+  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
