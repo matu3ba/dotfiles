@@ -43,9 +43,8 @@ if not has_cmp or not has_lspconfig then
 end
 
 local has_cmpnvimlsp, cmpnvimlsp = pcall(require, 'cmp_nvim_lsp')
-local has_luasnip, luasnip = pcall(require, 'luasnip')
-if not has_cmpnvimlsp or not has_luasnip then
-  print 'Please install saadparwaiz1/cmp_luasnip and L3MON4D3/LuaSnip'
+if not has_cmpnvimlsp then
+  print 'Please install hrsh7th/cmp-nvim-lsp'
   return
 end
 
@@ -56,6 +55,13 @@ if not has_navic then
   print 'Please install SmiteshP/nvim-navic'
   return
 end
+
+-- local has_luasnip, luasnip = pcall(require, 'luasnip')
+-- if not has_luasnip then
+--   print 'Please install saadparwaiz1/cmp_luasnip and L3MON4D3/LuaSnip'
+--   return
+-- end
+
 
 --==LspConfigurations
 
@@ -211,16 +217,16 @@ cmp.setup {
     --},
   },
 
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
+  -- snippet = {
+  --   expand = function(args)
+  --     luasnip.lsp_expand(args.body)
+  --   end,
+  -- },
   sources = {
     { name = 'path' },
     { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp',               keyword_length = 3 },
-    { name = 'luasnip',                keyword_length = 2 },
+    -- { name = 'luasnip',                keyword_length = 2 },
     {
       name = 'buffer',
       keyword_length = 5,

@@ -35,8 +35,8 @@ return {
     -- Autocompletion
     { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
     { 'hrsh7th/cmp-nvim-lsp' }, -- LSP source for nvim-cmp
-    { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
-    { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
+    -- { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
+    -- { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
     -- Optional
     { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end },
     -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
@@ -140,7 +140,7 @@ return {
     config = function() require('gitsigns').setup() end,
   },
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory (does not work with worktrees)
-  { 'sindrets/diffview.nvim' },
+  -- { 'sindrets/diffview.nvim' },
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
   --requires = { "tpope/vim-repeat" },
   -- leap: s|S char1 char2 (<space>|<tab>)* label?

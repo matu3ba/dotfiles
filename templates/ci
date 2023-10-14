@@ -88,3 +88,5 @@ TODO web part of CI:
 * container? isolation? seccomp?
 * ip/ports, nftables, dns
 * advanced isolation (seccomp etc)
+
+TODO evaluate hydra design

@@ -21,11 +21,5 @@ cd "${DIR}"
 # --mode Gray
 # --resolution 300
 scanimage -b --format tiff -d 'OUTHELP_DEVICE' --source 'OUTHELP_SOURCE' --resolution 150 -x 210 -y 297
-
-FILES=$(find ./ | cut -sd / -f 2-)
-for scans in * ; do
-  tiff2pdf -j "${scans}" -o "${scans%%.*}.pdf"
-done
-
-PDFFILES=$(find ./ -regex ".*\.\(pdf\)" | cut -sd / -f 2-)
-pdfunite ${PDFFILES} "$CUR/$1"
+FILES=$(find ./  -type f | cut -sd / -f 2-)
+convert "${FILES}" -quality 10 -compress jpeg "$CUR/$1"

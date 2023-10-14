@@ -1,3 +1,8 @@
+basics
+applied_basics
+bubblewrap for sandboxing
+
+
 CASR: Crash Analysis and Severity Report
 AFL: Fuzzing crashes
 
@@ -64,6 +69,21 @@ which means the tracee must be in a sub-domain of the tracer."
 Unfortunately it does not say "must have".
 7. disable hyperthreading (in bios)
 8. hardened kernel?
+
+====bubblewrap
+bwrap --unshare-user --uid $(id -u) --gid $(id -g) --proc /proc --dev /dev --tmpfs /tmp \
+        --ro-bind /bin/ /bin/ \
+        --ro-bind /etc/ /etc/ \
+        --ro-bind /lib/ /lib/ \
+        --ro-bind /lib64/ /lib64/ \
+        --ro-bind /run/ /run/ \
+        --ro-bind /usr/ /usr/ \
+        --ro-bind /var /var \
+        --bind $(pwd) $(pwd) \
+        --bind ~/.config/nix ~/.config/nix \
+        --bind ./mynixroot /nix \
+        ./nix build 'nixpkgs#'
+https://sandstorm.io/
 
 ====virtualization
 

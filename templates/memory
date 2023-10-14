@@ -73,6 +73,9 @@ https://pzurita.wordpress.com/2015/06/29/memory-stomp-allocator-for-unreal-engin
 Pointer semantics+preovenance, 3 cases:
 1. known and reused (no ambiguity on usage)
 2. can be derived ie from pointer casts (pick one and check, if it works)
+* pointer p is end address of storage instance A and start address of storage instance B
+* both storage instances A, B are exposed via ptr->int conversion with 2 ptrs a == b,
+  a has provenance A, b has provenance B
 3. unknown (external code and no encoding of IR etc)
 potentially ambiguous cases
 1. ptr->int->ptr cast + usage
@@ -80,6 +83,22 @@ potentially ambiguous cases
 3. ptr->int union cast usage
 4. int->ptr union cast usage
 see https://github.com/ziglang/zig/issues/6396#issuecomment-1097287569
+
+"Reconciling high-level optimizations and low-level code in LLVM"
+"Exploring C Semantics and Pointer Provenance"
+"VIP: verifying real-world C idioms with integer-pointer casts"
+
+"PNVI-ae-udi tracks (1) ambiguities in provenance and (2) provenance exposure
+whereas VIP does not. On the other hand, (3) VIP tracks provenance in integers
+(in a limited way, for round-trip casts) whereas PNVI-ae-udi does not, and (4)
+VIP relies on the copy_alloc_id primitive, which is not available in
+PNVI-ae-udi.". https://iris-project.org/pdfs/2022-popl-vip.pdf
+
+Afaiu, temporal (undereferenced) out of bounds pointers are also not forced to
+be UB in contrast to C. From a brief glimpse at things it looks like the one
+past the end thing originates from casted integers not remaining to have their
+provenance. This model looks much simpler, but I have no clue what LLVM is or
+will be doing.
 
 3. simpler things?
 

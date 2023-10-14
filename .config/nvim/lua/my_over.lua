@@ -79,10 +79,15 @@ overseer.setup({
 -- ~/.config/nvim/lua/overseer/template/user/run_script.lua
 
 -- SHENNANIGAN
--- Closing a tab or buffer of a finished task might drop the data.
+-- :q! or ZQ on window drops data.
 
 -- SHENNANIGAN
 -- no harpoon-like speed to run things
+
+-- Unclaer if bug or old version
+-- im/lazy/overseer.nvim/lua/overseer/strategy/jobstart.lua:100: in function 'on_stdout'
+-- im/lazy/overseer.nvim/lua/overseer/strategy/jobstart.lua:139: in function <...im/lazy/overseer.nvim/lua/overseer/strategy/jobstart.lua:135> function:
+-- builtin#18 ...im/lazy/overseeer.nvim/lua/overseer/strategy/jobstart.lua:110: 'replacement string' item contains newlines
 
 -- https://github.com/abdulmelikbekmez/nvim-config/blob/master/lua/plugins/overseer.lua
 -- https://github.com/abdulmelikbekmez/nvim-config/blob/master/lua/plugins/overseer.lua
