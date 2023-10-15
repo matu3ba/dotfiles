@@ -6,6 +6,16 @@ return {
   -- clean cache:
   -- rm -fr $HOME/.cache/nvim/lazy
   -- rm -fr $HOME/.local/share/nvim/lazy
+  --==Revert a plugin
+  --:Lazy log pluginname
+  --cursor on top of commit hash, then press r
+  --See init.lua for snapshot generation: :BrowseSnapshots
+  --Copy lazy-lock from snapshots and restore
+  --  :e vim.fn.stdpath('config') .. '/lazy-lock.json'
+  --  :e vim.fn.stdpath('data') .. '/lazy_snapshot'
+  --  cp "$HOME/.local/share/nvim/FILE" "$HOME/.config/nvim/lazy-lock.json"
+  --  :Lazy restore lazy-lock.json
+  --Or for only 1 plugin from the lazy-lock: :Lazy restore pluginname
   -- { 'https://mzte.de/git/LordMZTE/znvim' },
   { 'nvim-lua/plenary.nvim' },
   { 'marko-cerovac/material.nvim' }, --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
@@ -50,7 +60,7 @@ return {
   { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
 
   --==macros
-  -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- TODO
+  -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- idea for macros
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
@@ -68,7 +78,7 @@ return {
   -- :lua vim.print(require('nvim-navic').get_data())
   { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" },
 
-  -- TODO: lazy loads + mini config
+  -- idea, if annoying: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L232-L260
   -- ga no preview, gA preview
@@ -177,9 +187,9 @@ return {
   },
   --==taskrunner
   { 'stevearc/overseer.nvim', opts = {}, },
-  -- { 'text-case.nvim' }, --TODO
-  -- { 'monaqa/dial.nvim' }, --TODO
-  -- { 'andymass/vim-matchup' }, --TODO
+  -- { 'text-case.nvim' }, --idea
+  -- { 'monaqa/dial.nvim' }, --idea
+  -- { 'andymass/vim-matchup' }, --idea
   -- gm, M to mark word/region, M delete word
   -- g!M matches only full word
   -- do stuff, r, e etc
@@ -203,7 +213,7 @@ return {
 
   --==finder
   { 'jake-stewart/jfind.nvim', branch = '2.0' },
-  -- TODO resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
+  -- think about design to resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
   {
     'nvim-telescope/telescope.nvim',
     dependencies = { { 'nvim-lua/popup.nvim', lazy = false } },
@@ -225,14 +235,14 @@ return {
   -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
   -- * inline text spacing adjustments
   { 'jbyuki/venn.nvim' }, --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
-  -- TODO { 'simnalamburt/vim-mundo' }
+  -- idea { 'simnalamburt/vim-mundo' } to search undotree
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
   {
     'folke/which-key.nvim',
     config = function() require('which-key').setup() end,
   }, -- :Telescope builtin.keymaps
 
-  -- jupyter and markdown live preview, TODO
+  -- jupyter and markdown live preview, idea
   -- https://github.com/kiyoon/jupynium.nvim
   -- https://github.com/tamton-aquib/neorg-jupyter
 

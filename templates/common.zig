@@ -176,8 +176,9 @@ const VarT = if (!builtin.is_test) u32 else void;
 threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 
 // in build.zig use -D (as desribed in zig build -h)
+// Typical flags: -fwasmtime -fqemu -freference-trace -lc
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
-// zig build test-std -Dtest-filter="getDefaultPageSize smoke test" -fqemu
+// zig build test-std -Dtest-filter="getDefaultPageSize smoke test" -fqemu --zig-lib-dir lib
 // Otherwise for libstd tests, use
 // zig test lib/std/fmt.zig --zig-lib-dir lib --main-pkg-path lib/std
 // zig test C:\cygwin64\home\kcbanner\kit\zig\lib\std\std.zig -target x86_64-windows-gnu -mcpu x86_64 -I C:\cygwin64\home\kcbanner\kit\zig\test --zig-lib-dir C:\cygwin64\home\kcbanner\kit\zig\lib --test-filter "DWARF expressions"
@@ -192,6 +193,29 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test qemu.zig -target aarch64-linux-none --test-cmd qemu-aarch64 --test-cmd-bin
 // Run tests within qemu + debugger:
 // zig test lib/compiler_rt/udivmoddi4_test.zig -target arm-linux --test-cmd qemu-arm --test-cmd -g --test-cmd 4242 --test-cmd-bin
+
+// Testing with wasm+wasmtime:
+// WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
+
+// Common targets:
+// native-native-musl
+// aarch64-linux-gnu
+// aarch64-linux-musl
+// aarch64-linux-none
+// x86_64-linux-gnu
+// x86_64-linux-musl
+// x86_64-linux-none
+// aarch64-macos
+// aarch64-macos-none
+// x86_64-macos
+// x86_64-macos-none
+// aarch64-windows
+// aarch64-windows-gnu
+// aarch64-windows-none
+// x86_64-windows
+// x86_64-windows-gnu
+// x86_64-windows-none
+// wasm32-wasi
 
 // TODO:
 // qemu-arm -g 1234 ./b.out

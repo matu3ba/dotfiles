@@ -1,40 +1,13 @@
 --! Commands not part of hydra or closely related derived ones
----- Dependencies ----
-
 -- luacheck: globals vim
 -- luacheck: no max line length
-
+--==Dependencies
 local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then vim.print 'Please install plenary for all features.' end
 
+--==Globals
 local api = vim.api
 local utils = require 'my_utils'
-
----- Configuration files editing ----
-local add_cmd = api.nvim_create_user_command -- NOTE: lua does not follow symlinks
-local nvim_edit = 'edit ' .. vim.fn.stdpath 'config'
-local sep = utils.path_separator
-add_cmd('CBuf', nvim_edit .. sep .. 'lua' .. sep .. 'my_buf.lua', {})
-add_cmd('CCmd', nvim_edit .. sep .. 'lua' .. sep .. 'my_cmds.lua', {})
-add_cmd('CDap', nvim_edit .. sep .. 'lua' .. sep .. 'my_dap.lua', {})
-add_cmd('CGdb', nvim_edit .. sep .. 'lua' .. sep .. 'my_gdb.lua', {})
-add_cmd('CGs', nvim_edit .. sep .. 'lua' .. sep .. 'my_gitsign.lua', {})
-add_cmd('CHa', nvim_edit .. sep .. 'lua' .. sep .. 'my_harpoon.lua', {})
-add_cmd('CHydra', nvim_edit .. sep .. 'lua' .. sep .. 'my_hydra.lua', {})
-add_cmd('CInit', nvim_edit .. sep .. 'init.lua', {})
-add_cmd('CKey', nvim_edit .. sep .. 'lua' .. sep .. 'my_keymaps.lua', {})
-add_cmd('CLi', nvim_edit .. sep .. 'lua' .. sep .. 'my_lint.lua', {})
-add_cmd('CLsp', nvim_edit .. sep .. 'lua' .. sep .. 'my_lsp.lua', {})
-add_cmd('COpts', nvim_edit .. sep .. 'lua' .. sep .. 'my_opts.lua', {})
-add_cmd('COver', nvim_edit .. sep .. 'lua' .. sep .. 'my_over.lua', {})
-add_cmd('CPl', nvim_edit .. sep .. 'lua' .. sep .. 'my_plugins.lua', {})
-add_cmd('CSt', nvim_edit .. sep .. 'lua' .. sep .. 'my_statusline.lua', {})
-add_cmd('CJfi', nvim_edit .. sep .. 'lua' .. sep .. 'my_jfind.lua', {})
-add_cmd('CTel', nvim_edit .. sep .. 'lua' .. sep .. 'my_telesc.lua', {})
-add_cmd('CTre', nvim_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
-add_cmd('CUtil', nvim_edit .. sep .. 'lua' .. sep .. 'my_utils.lua', {})
-add_cmd('OPa', nvim_edit .. sep .. 'lua' .. sep .. 'my_packer.lua', {})
-
 local home = nil
 if utils.is_windows == true then
   home = os.getenv 'HOMEPATH'
@@ -43,6 +16,32 @@ else
   home = os.getenv 'HOME'
   assert(home ~= nil)
 end
+local sep = utils.path_separator
+
+--==edit_config
+local add_cmd = api.nvim_create_user_command -- NOTE: lua does not follow symlinks
+local config_edit = 'edit ' .. home .. sep .. 'dotfiles' .. sep .. '.config' .. sep .. 'nvim'
+-- local config_edit = vim.fn.stdpath 'config' -- does not work on nix
+add_cmd('CBuf', config_edit .. sep .. 'lua' .. sep .. 'my_buf.lua', {})
+add_cmd('CCmd', config_edit .. sep .. 'lua' .. sep .. 'my_cmds.lua', {})
+add_cmd('CDap', config_edit .. sep .. 'lua' .. sep .. 'my_dap.lua', {})
+add_cmd('CGdb', config_edit .. sep .. 'lua' .. sep .. 'my_gdb.lua', {})
+add_cmd('CGs', config_edit .. sep .. 'lua' .. sep .. 'my_gitsign.lua', {})
+add_cmd('CHa', config_edit .. sep .. 'lua' .. sep .. 'my_harpoon.lua', {})
+add_cmd('CHydra', config_edit .. sep .. 'lua' .. sep .. 'my_hydra.lua', {})
+add_cmd('CInit', config_edit .. sep .. 'init.lua', {})
+add_cmd('CKey', config_edit .. sep .. 'lua' .. sep .. 'my_keymaps.lua', {})
+add_cmd('CLi', config_edit .. sep .. 'lua' .. sep .. 'my_lint.lua', {})
+add_cmd('CLsp', config_edit .. sep .. 'lua' .. sep .. 'my_lsp.lua', {})
+add_cmd('COpts', config_edit .. sep .. 'lua' .. sep .. 'my_opts.lua', {})
+add_cmd('COver', config_edit .. sep .. 'lua' .. sep .. 'my_over.lua', {})
+add_cmd('CPl', config_edit .. sep .. 'lua' .. sep .. 'my_plugins.lua', {})
+add_cmd('CSt', config_edit .. sep .. 'lua' .. sep .. 'my_statusline.lua', {})
+add_cmd('CJfi', config_edit .. sep .. 'lua' .. sep .. 'my_jfind.lua', {})
+add_cmd('CTel', config_edit .. sep .. 'lua' .. sep .. 'my_telesc.lua', {})
+add_cmd('CTre', config_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
+add_cmd('CUtil', config_edit .. sep .. 'lua' .. sep .. 'my_utils.lua', {})
+add_cmd('OPa', config_edit .. sep .. 'lua' .. sep .. 'my_packer.lua', {})
 
 local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
 local df_configs_edit = df_edit .. sep .. '.config'
@@ -66,48 +65,13 @@ if utils.is_windows == false then
   add_cmd('Fishrc', fishrc_edit, {})
 end
 
--- add_cmd('EB', 'edit ./b.sh', {}) -- fast script hacking
--- add_cmd('ET', 'edit ./t.sh', {})
-
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd
-
--- Reload init.lua
--- Reloading your config is not supported with lazy.nvim, use :so instead
--- add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
-add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
---plenary is broken with both
--- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", true) end, {})
--- add_cmd('Reloadconfig', function() plenary.reload.reload_module("my_.*", false) end, {})
 
 add_cmd('Style', function(opts) require('material.functions').change_style(opts.args) end, {
   nargs = 1,
   complete = function(_, _, _) return { 'darker', 'lighter', 'palenight', 'oceanic', 'deep ocean' } end,
 })
-_G.beforeTogWrap_colorcolumn = '0'
-add_cmd('TogWrap', function()
-  local tmpcolcol = _G.beforeTogWrap_colorcolumn
-  _G.beforeTogWrap_colorcolumn = vim.wo.colorcolumn
-  vim.wo.colorcolumn = tmpcolcol
-  if vim.wo.wrap == true then
-    vim.wo.wrap = false
-  else
-    vim.wo.wrap = true
-  end
-end, {})
-
--- vim.keymap.set("n", "<leader>sv", "", {
---   silent = true,
---   desc = "reload init.lua",
---   callback = function()
---     vim.cmd([[
---       update $MYVIMRC
---       source $MYVIMRC
---     ]])
---     vim.notify("Nvim config successfully reloaded!", vim.log.levels.INFO, { title = "nvim-config" })
---   end,
--- })
-
 --map('v', '<leader>b', '"+y', opts)
 --buf_cwd = getcwd(0)
 --=> zig build, if build.zig exists in current folder
@@ -155,6 +119,8 @@ end, {})
 --  do i need to start the timer?
 --end
 --  only 1 instance is annoying --unique
+
+--==nvim_latex
 _G.Pid_okular = nil
 add_cmd('Pmsta', function()
   local this_tex_file = vim.fn.expand '%:p'
@@ -232,6 +198,7 @@ add_cmd('Pdffigure', function() vim.fn.jobstart('okular figures' .. sep .. vim.f
 --   vim.cmd(cmd)
 -- end, {})
 
+--==nvim_spacetab
 add_cmd('Spacelen2', function()
   vim.bo.expandtab = true --expand tabs to spaces
   vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
@@ -263,7 +230,7 @@ add_cmd('Tablen8', function()
   vim.bo.tabstop = 8 --Tab key: number of spaces for indendation
 end, {})
 
----- Macros ----
+--==macros ----
 -- stylua: ignore start
 -- move "string" left of text in (text == "string")
 -- use case: :ISwap is broken
@@ -275,16 +242,16 @@ end, {})
 --f(f(xxhr,a üC$hhx^j
 -- stylua: ignore end
 
----- Regex ----
+--==regex
 -- non-greedy search of \"..\" fields
 add_cmd('SelLazyEscStr', [[/\\".\{-}\\"]], {}) -- non-greedy search of \"..\" fields
 add_cmd('SelLazyStr', [[/".\{-}"]], {}) -- non-greedy search of \"..\" fields
 
----- Debug ----
+--==debug
 add_cmd('CoutDebug', [[execute 'normal! i' . 'std::cout << DEBUG << "\n";    // DEBUG' . '<Esc>']], {})
 add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of \"..\" fields
 
----- Harpoon ----
+--==harpoon
 -- send all quickfixlist files to harpoon
 add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 
@@ -303,6 +270,7 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- TODO setup copy file + dir path for oil with harpoon
 -- https://github.com/stevearc/oil.nvim/issues/50
 
+--==nvim_path
 --- Sets + register with path [[:line]:column]
 ---@param path string Path to set.
 ---@param line integer|nil Optional line to append
@@ -339,6 +307,7 @@ add_cmd('ShAbsPath', function() print(vim.fn.expand '%:p') end, {})
 add_cmd('ShDate', function() print(os.date()) end, {})
 -- stylua: ignore end
 
+--==zig
 -- Retag only local files with https://github.com/gpanders/ztags
 -- Use zls for the rest. To index everything, ramfs (/tmp) would
 -- be probably best with
@@ -382,6 +351,7 @@ add_cmd('RetagZig', function()
   -- end
 end, {})
 
+--==luafmt
 -- https://github.com/nvim-lua/plenary.nvim/issues/474 prevents us from
 -- using plenary for spawning another neovim instance like this:
 -- add_cmd('CheckTests', function()
@@ -407,6 +377,24 @@ add_cmd('FmtThis', function()
   local stylua_run = plenary.job:new { command = 'stylua', args = { '--color', 'Never', '.' } }
   stylua_run:sync()
   if stylua_run.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']] end
+end, {})
+
+--==nvim_util
+-- Reload init.lua
+-- Reloading your config is not supported with lazy.nvim, use :so instead
+-- add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
+add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
+
+_G.beforeTogWrap_colorcolumn = '0'
+add_cmd('TogWrap', function()
+  local tmpcolcol = _G.beforeTogWrap_colorcolumn
+  _G.beforeTogWrap_colorcolumn = vim.wo.colorcolumn
+  vim.wo.colorcolumn = tmpcolcol
+  if vim.wo.wrap == true then
+    vim.wo.wrap = false
+  else
+    vim.wo.wrap = true
+  end
 end, {})
 
 add_cmd('PrintAllWinOptions', function()
