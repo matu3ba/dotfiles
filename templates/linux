@@ -153,6 +153,10 @@ sudo setcap 'cap_net_bind_service=ep' binary
 Note: 'sudo cp binary /usr/bin/binary' removes capabilities (non-copyable) and adjusts owner and permissions.
 To restore behavior, consider deleting the file from the overlayfs (ie 'rm /mnt/overlay/root/bin/binary').
 
+List groups and add user to groups
+getent groups|passwd
+sudo usermod -a -G input video gdm
+
 Windows fileserver (samba) mounting
 UID=$(id -u)
 sudo mount -t cifs -o 'user=USER,domain=DOMAIN,uid=$UID,gid=domain users@domain.local' //fileserver/dirpath /mnt/mntdir

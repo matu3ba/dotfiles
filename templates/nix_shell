@@ -51,3 +51,24 @@ pkgs.mkShell {
 
   #hardeningDisable = [ "all" ];
 }
+
+====PATH
+Using relative paths:
+~/dev/zi/
+~/dev/zdev/zig/master/rel/bin/zig
+
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/01441e14af5e29c9d27ace398e6dd0b293e25a54.tar.gz") {} }:
+pkgs.stdenvNoCC.mkDerivation {
+  name = "shell";
+  nativeBuildInputs = with pkgs; [
+      gdb
+      qemu
+      valgrind
+      wasmtime
+  ];
+  PROJECT_ROOT = builtins.toString ./.;
+  shellHook = ''
+    PATH=$PATH:$PROJECT_ROOT/../zdev/zig/master/rel/bin/
+  '';
+  #hardeningDisable = [ "all" ];
+}

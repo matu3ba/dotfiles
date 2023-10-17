@@ -122,16 +122,17 @@ if status is-interactive
   abbr --add -g   aliases_nix ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
   abbr --add -g     templates ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 
-  abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
-  abbr --add -g           jvi ' firejail $HOME/.local/nvim/bin/nvim'
-  abbr --add -g           cvi ' {$HOME}/.local/nvim/bin/nvim -u NONE'
-  abbr --add -g           dvi ' {$HOME}/.local/nvim/bin/nvim -u DEFAULT'
-  abbr --add -g      histupvi ' {$HOME}/.local/nvim/bin/nvim "/var/log/"' # pacman.log or apt/
-  abbr --add -g     aliasesvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases"'
-  abbr --add -g      fishrcvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/fish/config.fish"'
-  abbr --add -g aliases_gitvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_git"'
-  abbr --add -g aliases_nixvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
-  abbr --add -g   templatesvi ' {$HOME}/.local/nvim/bin/nvim "$HOME/dotfiles/templates"'
+  #abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
+  abbr --add -g            vi ' nvim'
+  abbr --add -g           jvi ' firejail nvim'
+  abbr --add -g           cvi ' nvim -u NONE'
+  abbr --add -g           dvi ' nvim -u DEFAULT'
+  abbr --add -g      histupvi ' nvim "/var/log/"' # pacman.log or apt/
+  abbr --add -g     aliasesvi ' nvim "$HOME/dotfiles/.config/shells/aliases"'
+  abbr --add -g      fishrcvi ' nvim "$HOME/dotfiles/.config/fish/config.fish"'
+  abbr --add -g aliases_gitvi ' nvim "$HOME/dotfiles/.config/shells/aliases_git"'
+  abbr --add -g aliases_nixvi ' nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
+  abbr --add -g   templatesvi ' nvim "$HOME/dotfiles/templates"'
 
   # neovim installation needs manual fixups to remove additional installed parsers, because c and c++ parsers are very broken:
   # rm ~/.local/nvim/lib/nvim/parser/c.so
@@ -284,6 +285,18 @@ if status is-interactive
       # make sure git knows where the gitdir is
       echo "gitdir: ./.bare" > .git
       git worktree add master
+    else
+      echo "invalid argument number"
+    end
+  end
+  function worktreeAddRemote -d "add remote branch to worktree"
+    set --local CWD $(pwd)
+    if test -f "$CWD/.git"
+      echo "not in worktree"
+      return
+    end
+    if test (count $argv) -eq 1
+      git worktree add --track -b "$argv[2]" "$argv[2]" "$argv[1]/$argv[2]"
     else
       echo "invalid argument number"
     end

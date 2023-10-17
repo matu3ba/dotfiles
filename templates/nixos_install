@@ -173,11 +173,6 @@ for offline installation without new packages use
 * install everything else via home_manager
 
 ====flakes_installation
-* SHENNANIGAN DESIGN https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsyss-perspective-on-nix-flakes/32703
-  - dependency explosion problem
-  - system deps not inheritable
-  - slow for big repos
-  - no integration into nix ecosystem
 * user-configurable versioning with pinning and rollback
 * NixOS package repositories are managed with another command, nix-channel and
   change over time

@@ -46,16 +46,13 @@ add_cmd('OPa', config_edit .. sep .. 'lua' .. sep .. 'my_packer.lua', {})
 local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
 local df_configs_edit = df_edit .. sep .. '.config'
 local df_config_shells_edit = df_configs_edit .. sep .. 'shells'
-local df_sample_scr_edit = df_edit .. sep .. 'sample_scr'
+local df_scr_edit = df_edit .. sep .. 'scr'
 add_cmd('Dotfiles', df_edit, {})
+add_cmd('Scripts', df_scr_edit, {})
 add_cmd('Config', df_configs_edit, {})
 add_cmd('Aliases', df_config_shells_edit .. sep .. 'aliases', {})
 add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
 add_cmd('Templates', df_edit .. sep .. 'templates', {})
-
-add_cmd('Epos', df_sample_scr_edit .. sep .. 'posix.sh', {}) -- fast script hacking
-add_cmd('Ebash', df_sample_scr_edit .. sep .. 'bash.sh', {})
-add_cmd('EZ', df_sample_scr_edit .. sep .. 'sh.zig', {})
 
 if utils.is_windows == false then
   -- we cant or dont want to unify all bashrcs

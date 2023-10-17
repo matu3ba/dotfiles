@@ -54,6 +54,7 @@
     pkgs.direnv
     pkgs.fish
     pkgs.neovim
+    pkgs.htop
 
     #====rust
     pkgs.difftastic

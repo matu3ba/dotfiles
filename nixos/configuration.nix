@@ -19,11 +19,11 @@
     };
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_latest;
-    #kernelModules = [ "v4l2loopback" ];
-    #extraModulePackages = [ config.boot.kernelPackages.v5l2loopback.out ];
-    #extraModprobeConfig = ''
-    # options vl2loopback exclusive_caps=1 card
-    #'';
+    kernelModules = [ "v4l2loopback" ];
+    extraModulePackages = [ config.boot.kernelPackages.v4l2loopback.out ];
+    extraModprobeConfig = ''
+     options vl2loopback exclusive_caps=1 card
+    '';
   };
 
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
@@ -112,7 +112,7 @@
   # Enable the OpenSSH daemon.
   # TODO: fix keyboard for arcan
   services.openssh = {
-    enable = false;
+    enable = true;
     settings.PasswordAuthentication = false;
   };
 

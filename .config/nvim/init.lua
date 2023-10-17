@@ -360,6 +360,7 @@ callback = function()
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$
 -- delete with :g/.*DEBUG$/del
+-- delete empty lines with :g/^$/del
 
 -- ./runTests --gtest_filter='minimalz3.*'
 -- gdb --ex run --args ./test_pde --gtest_filter='Nestout.*' --gtest_break_on_failure

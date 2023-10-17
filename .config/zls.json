@@ -1,0 +1,10 @@
+{
+    "$schema": "https://raw.githubusercontent.com/zigtools/zls/master/schema.json",
+    "enable_snippets": true,
+    "enable_ast_check_diagnostics": true,
+    "enable_build_on_save": false,
+    "enable_autofix": true,
+    "enable_semantic_tokens": true,
+    "enable_inlay_hints": true,
+    "warn_style": false
+}

@@ -202,7 +202,7 @@ nix flake lock –update-input input_name
 # simply by listing them inside a flake.nix file
 nix flake lock --update-input home-manager
 
-For installation andd the basic introduction, read "practical nix flakes".
+For installation and the basic introduction, read "practical nix flakes".
 https://ghedam.at/a-tour-of-nix-flakes is the best flakes introduction so far, which
 also does not use "legacyPackages".
 As of 20220620,
@@ -236,15 +236,25 @@ bad:
 More interesting projects
 embedded OS https://github.com/cleverca22/not-os
 
-Features, which can be considered as missing from nix:
-- namespace control tools :
-  * why can't you do different hierarchies (see: GoboLinux, djb's /package, or even a completely custom one)
-  * why mixing different alternatives: service managers, libc's, or even compile flags is still so difficult)
-- package categories (missing metadata)
-  * play market/app store figured this out 10, 15 years ago, why do we still resort to external search engines
-- a non-DSL programming language (guix seems to do just that, but it's hopelessly corrupted by GNU-no-firmware philosophy)
-- portability
+SHENNANIGAN and tradeoffs
+
+nix limitations:
+- moving files into immutable nix store instead of creation of overlayfs due to posix performance and nesting limits
+- namespace control tools (different hierarchies, fs sandbox with bubblewrap) => a chroot is no sandbox and can be (easily) escaped
+  * different hierarchies, see GoboLinux, djb's /package, or even a completely custom one
+- package categories (missing metadata like play market/app store)
+- portability (see https://github.com/NixOS/nixpkgs/issues/26850)
   * no systemd,
   * no Linux-only features
   * option to put packages in ISO's, qcow2's, plain old tarballs (see root tarballs, or OpenBSD's site*.tgz)
     + winetricks doesn't need it's own dxvk's, directx's, and faudio's etc
+- debugging experience (tooling, documentation, best practice)
+see also https://blog.wesleyac.com/posts/the-curse-of-nixos
+- DSL programming language
+
+flakes limitations:
+- dependency explosion problem (like crates in Rust)
+- system deps not inheritable
+- slow for big repos (big artifacts are copied into nix store)
+- no way to add dependencies from outside git repo without git repo (fs with hashing and/or internal hashing system could be used if user space can be sufficiently trusted not to mess with output artifacts)
+see also https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsyss-perspective-on-nix-flakes/32703
