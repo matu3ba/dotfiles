@@ -1,3 +1,7 @@
+// nice overviews
+// https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
+// https://reqbin.com/req/c-d2nzjn3z/curl-post-body
+
 // fetching single files from github
 curl https://raw.githubusercontent.com/orlp/pdqsort/master/pdqsort.h > pdqsort.h
 curl -JLO URL
@@ -8,3 +12,9 @@ curl -LO ZIPFILE
 
 curl -SsO https://ziglang.org/builds/zig-0.8.0-dev.2047+bf67a3fdc.tar.xz
 tar -xvf TARFILE
+
+curl -X POST -u username:password someip
+curl http://example.com -d {}
+
+GET: curl -X GET 'http://IP:PORT/get-status'
+POST: curl http://IP:PORT/set-state?key1=val1;key2=val2

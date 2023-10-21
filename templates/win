@@ -36,6 +36,9 @@ Memory profiling
 https://thatonegamedev.com/cpp/memory-profiling-on-windows-for-c/
 https://stackoverflow.com/questions/4322678/how-to-do-memory-profiling-on-windows
 https://stackoverflow.com/questions/413477/is-there-a-good-valgrind-substitute-for-windows
+https://github.com/DynamoRIO/drmemory
+https://github.com/RudjiGames/MTuner
+AppVerifier https://learn.microsoft.com/en-us/windows/win32/win7appqual/application-verifier?redirectedfrom=MSDN
 
 Large and huge pages on Windows (2MB, 1GB)
 https://mahdytech.com/large-pages-how-when/

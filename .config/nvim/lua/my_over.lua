@@ -91,7 +91,14 @@ for i = 1, 9 do
   vim.keymap.set("n", ";" .. i, get_task_callback(i, 'restart'), { desc = string.format("Restart task #%d", i) })
 end
 
---
+-- vim.keymap.set("n", "<leader>bs", function()
+--   local bundle_name = vim.fs.basename(vim.fn.getcwd())
+--   require("overseer").save_task_bundle(bundle_name, nil, { on_conflict = "overwrite" })
+-- end)
+-- vim.keymap.set("n", "<leader>bl", function()
+--   local bundle_name = vim.fs.basename(vim.fn.getcwd())
+--   require("overseer").load_task_bundle(bundle_name)
+-- end)
 
 -- :echo stdpath('config')
 -- ~/.config/nvim/lua/overseer/template/user/cpp_build.lua

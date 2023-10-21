@@ -238,6 +238,16 @@ embedded OS https://github.com/cleverca22/not-os
 
 SHENNANIGAN and tradeoffs
 
+Overall tradeoff:
+- CPU baseline architecture
+- system time/date
+- fs used for building (RAM must be big enough to hold TMPDIR etc)
+- Kernel parameters (ipv6, binfmt interpreters)
+- Other global system state (GPU graphic card drivers) also not modelled
+- seed usage
+- environment variables (as global state introduced by nix versions)
+https://nix.dev/concepts/faq#are-there-any-impurities-left-in-sandboxed-builds
+
 nix limitations:
 - moving files into immutable nix store instead of creation of overlayfs due to posix performance and nesting limits
 - namespace control tools (different hierarchies, fs sandbox with bubblewrap) => a chroot is no sandbox and can be (easily) escaped

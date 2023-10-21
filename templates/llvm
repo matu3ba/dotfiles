@@ -1,3 +1,6 @@
+Online correctness validation of transformations:
+https://alive2.llvm.org/ce/
+
 Instructions to bring up cmake and llvm on very old systems with cmake.
 Note: Using `-DLLVM_ENABLE_PROJECTS="all" \` might break, so use minimal necessary output.
 libc and compiler-rt are other common options, but also not necessary.

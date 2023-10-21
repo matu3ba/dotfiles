@@ -59,55 +59,88 @@ test1_json_utf8b = json.dumps(test1_json, separators=(',', ':'), indent=None).en
 # pretty print json
 print(json.dumps(json_newconf, separators=(',', ':'), indent=4, sort_keys=True))
 
+def html_requests_are_bytes_encoded() -> None:
+  headers = {"authorization" : "Bearer {authorization_token}"}
+  data_encoded = json.dumps(headers).encode("utf-8")
+  someurl = "<someurl>"
+  # more of an antipattern:
+  # response = urllib.request.urlopen(someurl, data=data_encoded)
+  # assert(response.geturl() == someurl)
+  # assert(response.getcode() == 200)
+  # resp = response.read().decode()
+  # resp  = response.read().decode("utf-8")
+  # print(f"dec_resp: {resp}")
+
+  token = "sometoken"
+  req_POST = urllib.request.Request(someurl, data=data_encoded,
+                               headers={'content-type': 'application/json',
+                                        'Authorization': ('Bearer ' + token)})
+  response = urllib.request.urlopen(req_POST)
+  assert(response.geturl() == someurl)
+  assert(response.getcode() == 200)
+  resp  = response.read().decode("utf-8")
+  print(f"dec_resp: {resp}")
+
+  req_GET = urllib.request.Request(someurl,
+                                headers={'content-type': 'application/json',
+                                         'Authorization': ('Bearer ' + token)})
+  response = urllib.request.urlopen(req_GET)
+  assert(response.geturl() == someurl)
+  assert(response.getcode() == 200)
+  resp  = response.read().decode("utf-8")
+  print(f"dec_resp: {resp}")
+
+
+
 # returns first difference index of sorted flat json
 def compareJson(jsonb1: bytes, jsonb2: bytes) -> int:
-    json1 = json.loads(jsonb1)
-    json2 = json.loads(jsonb2)
-    sorted_json_str1 = json.dumps(json1, separators=(',', ':'), indent=None, sort_keys=True)
-    sorted_json_str2 = json.dumps(json2, separators=(',', ':'), indent=None, sort_keys=True)
-    sort_json1 = json.loads(sorted_json_str1)
-    sort_json2 = json.loads(sorted_json_str2)
-    for i in range(0,len(sort_json1)):
-        if (sort_json1[i] != sort_json2[i]):
-            return i
-    if len(sort_json2) > len(sort_json1):
-        return len(sort_json1)
-    return -1
+  json1 = json.loads(jsonb1)
+  json2 = json.loads(jsonb2)
+  sorted_json_str1 = json.dumps(json1, separators=(',', ':'), indent=None, sort_keys=True)
+  sorted_json_str2 = json.dumps(json2, separators=(',', ':'), indent=None, sort_keys=True)
+  sort_json1 = json.loads(sorted_json_str1)
+  sort_json2 = json.loads(sorted_json_str2)
+  for i in range(0,len(sort_json1)):
+      if (sort_json1[i] != sort_json2[i]):
+          return i
+  if len(sort_json2) > len(sort_json1):
+      return len(sort_json1)
+  return -1
 
 # returns dictionary of semantic version
 # asserts that at most one separating `-` exists.
 def parseSemanticVersion(semver_str: str) -> dict:
-    if __debug__:
-        print("parseSemanticVersion")
-    res_dict = {}
-    bigsplit = semver_str.split('-')
-    assert(len(bigsplit) < 3)
-    devversion = None
-    if (len(bigsplit) > 1):
-        devversion = int(bigsplit[1])
-    if (devversion is not None):
-        res_dict["devversion"] = devversion
-    len_bigsplit0 = len(bigsplit[0])
-    skip_v_index = 0
-    if (bigsplit[0][0] == 'v'):
-        skip_v_index = 1
-    smallsplit = bigsplit[0][skip_v_index:len_bigsplit0].split('.')
-    major = smallsplit[0]
-    minor = smallsplit[1]
-    bugfix = smallsplit[2]
-    res_dict["major"] = int(major)
-    res_dict["minor"] = int(minor)
-    res_dict["bugfix"] = int(bugfix)
-    return res_dict
+  if __debug__:
+      print("parseSemanticVersion")
+  res_dict = {}
+  bigsplit = semver_str.split('-')
+  assert(len(bigsplit) < 3)
+  devversion = None
+  if (len(bigsplit) > 1):
+      devversion = int(bigsplit[1])
+  if (devversion is not None):
+      res_dict["devversion"] = devversion
+  len_bigsplit0 = len(bigsplit[0])
+  skip_v_index = 0
+  if (bigsplit[0][0] == 'v'):
+      skip_v_index = 1
+  smallsplit = bigsplit[0][skip_v_index:len_bigsplit0].split('.')
+  major = smallsplit[0]
+  minor = smallsplit[1]
+  bugfix = smallsplit[2]
+  res_dict["major"] = int(major)
+  res_dict["minor"] = int(minor)
+  res_dict["bugfix"] = int(bugfix)
+  return res_dict
 
 # taken from https://stackoverflow.com/a/3229493/9306292
 def prettyDict(d, indent=0):
-   for key, value in d.items():
-      print('  ' * indent + str(key))
-      if isinstance(value, dict):
-         prettyDict(value, indent+1)
-      else:
-         print('  ' * (indent+1) + str(value))
+  for key, value in d.items():
+    print('  ' * indent + str(key))
+    if isinstance(value, dict):
+       prettyDict(value, indent+1)
+    else:
+      print('  ' * (indent+1) + str(value))
 
 # SHENNANIGAN do not use xml.dom.minidom, it breaks space and newlines:
 # https://bugs.python.org/issue5752
@@ -117,37 +150,37 @@ def prettyDict(d, indent=0):
 ##   W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures
 ##   most relevant fields: tag, attrib, text, tail
 def getPort() -> int:
-    tree = ET.parse('test.xml')
-    root = tree.getroot()
-    xml_port = None
-    try:
-        # To ensure occurence of exactly 1 element, use
-        #   children = findAll(parent)
-        #   assert(len(children)) == 1
-        #   idea: figure out how to do function chaining in Python
-        xml_port = root.find("opt1").find("opt2") # type: ignore
-    except (ET.ParseError, AttributeError):
-        return -1
-    if (__debug__):
-        print("xml_port: ", xml_port)
+  tree = ET.parse('test.xml')
+  root = tree.getroot()
+  xml_port = None
+  try:
+    # To ensure occurence of exactly 1 element, use
+    #   children = findAll(parent)
+    #   assert(len(children)) == 1
+    #   idea: figure out how to do function chaining in Python
+    xml_port = root.find("opt1").find("opt2") # type: ignore
+  except (ET.ParseError, AttributeError):
+    return -1
+  if (__debug__):
+    print("xml_port: ", xml_port)
 
-    port = 0
-    try:
-        port = int(xml_port.text) # type: ignore
-    except ValueError:
-        print("ValueError")
-        return -1
-    if (__debug__):
-        print("port: ", port)
-    return port
+  port = 0
+  try:
+    port = int(xml_port.text) # type: ignore
+  except ValueError:
+    print("ValueError")
+    return -1
+  if (__debug__):
+    print("port: ", port)
+  return port
 
 def queryXmlField(xml_path: str):
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
-    version_query = root.findall("./field1/field2/version")
-    assert(len(version_query) == 1)
-    curr_version = int(version_query[0].text[4:]) # type: ignore
-    _ = curr_version
+  tree = ET.parse(xml_path)
+  root = tree.getroot()
+  version_query = root.findall("./field1/field2/version")
+  assert(len(version_query) == 1)
+  curr_version = int(version_query[0].text[4:]) # type: ignore
+  _ = curr_version
 
 # To add new nodes to ElementTree, use (beware that they dont have pretty print):
 #newxml_s1 = ET.SubElement(newxml_s2, "slave")
@@ -159,10 +192,10 @@ def queryXmlField(xml_path: str):
 # (xml.dom.ext).
 
 def writeFile(tree: object, filepath: str, use_bom: bool):
-    with open(filepath, 'wb') as file:
-        if (True is use_bom):
-            file.write('<?xml version="1.0" encoding="UTF-8"?>\n\n'.encode('utf-8'))
-        tree.write(file, encoding='utf-8') # type: ignore
+  with open(filepath, 'wb') as file:
+    if (True is use_bom):
+      file.write('<?xml version="1.0" encoding="UTF-8"?>\n\n'.encode('utf-8'))
+    tree.write(file, encoding='utf-8') # type: ignore
 
 ## Html GET or POST gives me always Access denied and jenkins has no proper
 # description how to access their api or files with bare Python (bruh).
@@ -307,77 +340,77 @@ def is_subdict(small: dict, big: dict) -> bool:
 
 # SHENNANIGAN Dictionary is missing this common method
 def has_fieldsvals(small: dict, big: dict) -> bool:
-    """
-    Test, if 'small' has all values of of 'big'
-    Example: big = {'pl' : 'key1': {'key2': 'value2'}}
-    Then small = {'pl' : 'key1': {'key2': 'value2'}, 'otherkey'..} matches,
-    small = {'pl' : 'key1': {'key2': 'value2', 'otherkey'..}} matches,
-    and small = {'pl' : 'key1': {'key2': {'value2', 'otherkey'..}}} matches.
-    """
-    for key, value in small.items():
-        if key in big:
-            if isinstance(small[key], dict):
-                if not has_fieldsvals(small[key], big[key]):
-                    return False
-                else:
-                    return True
-            elif value != big[key]:
-                return False
-            else:
-                return True
+  """
+  Test, if 'small' has all values of of 'big'
+  Example: big = {'pl' : 'key1': {'key2': 'value2'}}
+  Then small = {'pl' : 'key1': {'key2': 'value2'}, 'otherkey'..} matches,
+  small = {'pl' : 'key1': {'key2': 'value2', 'otherkey'..}} matches,
+  and small = {'pl' : 'key1': {'key2': {'value2', 'otherkey'..}}} matches.
+  """
+  for key, value in small.items():
+    if key in big:
+      if isinstance(small[key], dict):
+        if not has_fieldsvals(small[key], big[key]):
+          return False
         else:
-            return False
-    return True
+          return True
+      elif value != big[key]:
+        return False
+      else:
+        return True
+    else:
+      return False
+  return True
 
 def merge_1lvldicts(alpha: dict = {}, beta: dict = {}) -> dict:
-    return dict(list(alpha.items()) + list(beta.items()))
+  return dict(list(alpha.items()) + list(beta.items()))
 
 # SHENNANIGAN Dictionary is missing this common method
 def merge_dicts(alpha: dict = {}, beta: dict = {}) -> dict:
-    """
-    Recursive merge dicts. Not multi-threading safe.
-    """
-    return _merge_dicts_aux(alpha, beta, copy.copy(alpha))
+  """
+  Recursive merge dicts. Not multi-threading safe.
+  """
+  return _merge_dicts_aux(alpha, beta, copy.copy(alpha))
 def _merge_dicts_aux(alpha: dict = {}, beta: dict = {}, result: dict = {}, path: Optional[List[str]] = None) -> dict:
-    if path is None:
-        path = []
-    for key in beta:
-        if key not in alpha:
-            result[key] = beta[key]
-        else:
-            if isinstance(alpha[key], dict) and isinstance(beta[key], dict):
-                # key value is dict in A and B => merge the dicts
-                _merge_dicts_aux(alpha[key], beta[key], result[key], path + [str(key)])
-            elif alpha[key] == beta[key]:
-                # key value is same in A and B => ignore
-                pass
-            else:
-                # key value differs in A and B => raise error
-                err: str = f"Conflict at {'.'.join(path + [str(key)])}"
-                raise Exception(err)
-    return result
+  if path is None:
+    path = []
+  for key in beta:
+    if key not in alpha:
+      result[key] = beta[key]
+    else:
+      if isinstance(alpha[key], dict) and isinstance(beta[key], dict):
+        # key value is dict in A and B => merge the dicts
+        _merge_dicts_aux(alpha[key], beta[key], result[key], path + [str(key)])
+      elif alpha[key] == beta[key]:
+        # key value is same in A and B => ignore
+        pass
+      else:
+        # key value differs in A and B => raise error
+        err: str = f"Conflict at {'.'.join(path + [str(key)])}"
+        raise Exception(err)
+  return result
 
 ### SHENNANIGAN tuples and dicts are annoying to differentiate
 # dictionary
 dict1 = {
-    "m1": "cp",
-    "m2": "cp"
+  "m1": "cp",
+  "m2": "cp"
 }
 # tuple
 tup1 = {
-    "m1": "cp",
-    "m2": "cp"
+  "m1": "cp",
+  "m2": "cp"
 },
 
 # at least getting the intention correct, but python is still unhelpful with error message
 dict2 = dict({
-    "m1": "cp",
-    "m2": "cp"
+  "m1": "cp",
+  "m2": "cp"
 })
 # tuple
 tup2 = tuple({
-    "m1": "cp",
-    "m2": "cp"
+  "m1": "cp",
+  "m2": "cp"
 }),
 
 def getLastListOptindex(timeline_msg: list) -> Optional[int]:
@@ -386,7 +419,7 @@ def getLastListOptindex(timeline_msg: list) -> Optional[int]:
 # SHENNANIGAN stack trace formatting is inefficient and one can not use g[f|F] to jump to location
 # function to write status + trace to variable
 def getStackTrace() -> str:
-    return repr(traceback.format_stack())
+  return repr(traceback.format_stack())
 
 def strlen(s: Optional[str]) -> Optional[int]:
   if s is None:
@@ -602,3 +635,7 @@ def check_fn(fn: list) -> int:
 def redirect_stderr() -> None:
   # access stdout via sys.__stdout__
   sys.stderr = sys.stdout
+
+# SHENNANIGAN
+# Must not use trailing comma in dictionary or json.dumps generated string has
+# silent failures, for example on parsing the output as json via php.
