@@ -267,38 +267,45 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- TODO setup copy file + dir path for oil with harpoon
 -- https://github.com/stevearc/oil.nvim/issues/50
 
+local setPlusAnd0Register = function(content)
+  vim.fn.setreg('0', content)
+  -- if vim.fn.hasclip
+  vim.fn.setreg('+', content)
+end
+
 --==nvim_path
 --- Sets + register with path [[:line]:column]
 ---@param path string Path to set.
 ---@param line integer|nil Optional line to append
 ---@param column integer|nil Optional column to append
-local setPlusCursorInfo = function(path, line, column)
+local setCursorInfo = function(path, line, column)
   local str = path
   if line ~= nil then str = str .. ':' .. tostring(line) end
   if column ~= nil then str = str .. ':' .. tostring(column) end
-  vim.fn.setreg('+', str)
+  setPlusAnd0Register(str)
 end
+
 -- stylua: ignore start
--- TODO: copy cwd into copy register
-add_cmd('Frel', function() vim.fn.setreg('+', plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
-add_cmd('FrelDir', function() vim.fn.setreg('+', vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
-add_cmd('FrelLine', function() setPlusCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})
+-- copy cwd into register 0 and '+' register
+add_cmd('Frel', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
+add_cmd('FrelDir', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
+add_cmd('FrelLine', function() setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})
 add_cmd('FrelCol', function()
   local line_col_pair = api.nvim_win_get_cursor(0)
-  setPlusCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), line_col_pair[1], line_col_pair[2])
+  setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), line_col_pair[1], line_col_pair[2])
 end, {})
-add_cmd('Fabs', function() vim.fn.setreg('+', api.nvim_buf_get_name(0)) end, {})
-add_cmd('FabsDir', function() vim.fn.setreg('+', vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
-add_cmd('FabsLine', function() setPlusCursorInfo(api.nvim_buf_get_name(0), api.nvim_win_get_cursor(0)[1], nil) end, {})
+add_cmd('Fabs', function() setPlusAnd0Register(api.nvim_buf_get_name(0)) end, {})
+add_cmd('FabsDir', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+add_cmd('FabsLine', function() setCursorInfo(api.nvim_buf_get_name(0), api.nvim_win_get_cursor(0)[1], nil) end, {})
 add_cmd('FabsCol', function()
   local line_col_pair = api.nvim_win_get_cursor(0)
-  setPlusCursorInfo(api.nvim_buf_get_name(0), line_col_pair[1], line_col_pair[2])
+  setCursorInfo(api.nvim_buf_get_name(0), line_col_pair[1], line_col_pair[2])
 end, {})
-add_cmd('Fonly', function() vim.fn.setreg('+', vim.fs.basename(api.nvim_buf_get_name(0))) end, {})
-add_cmd('FLine', function() setPlusCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), api.nvim_win_get_cursor(0)[1], nil) end, {})
+add_cmd('Fonly', function() setPlusAnd0Register(vim.fs.basename(api.nvim_buf_get_name(0))) end, {})
+add_cmd('FLine', function() setCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), api.nvim_win_get_cursor(0)[1], nil) end, {})
 add_cmd('FCol', function()
   local line_col_pair = api.nvim_win_get_cursor(0)
-  setPlusCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), line_col_pair[1], line_col_pair[2])
+  setCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), line_col_pair[1], line_col_pair[2])
 end, {})
 add_cmd('ShAbsPath', function() print(vim.fn.expand '%:p') end, {})
 add_cmd('ShDate', function() print(os.date()) end, {})

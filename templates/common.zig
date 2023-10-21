@@ -316,3 +316,7 @@ fn totalAll(structs: []const BigStruct) u128 {
 
 // SHENNANIGAN
 // Test runner allows no signaling to qemu -g 4242 (debugger mode)
+
+// SHENNANIGAN
+// NaN can not be conveniently tested against with standard methods and
+// isNan must be used which is based on 'x != x'.

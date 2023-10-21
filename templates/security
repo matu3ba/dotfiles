@@ -24,6 +24,18 @@ Proof code effort is quadratic to code size:
 
 => seL4 would be ideal to use, but maybe there is a tradeoff to allow some
 more monitoring or control on the host system ie to debug the VM?
+=> Push-Button (SMT) technique:
+   * specify correctness condition
+   * state exploration tool
+   * only proves simple properties
+=> Model checking
+   * simple model of system for exhaustively search state space,
+   * more limited than SMT
+=> Framework Microkit for minimal abstractions => Lions OS (optimized for 1 specific use case)
+=> Pancake used in seL4, which is the imperative part of CakeML.
+   * C-like but safer
+   * written in CakeML
+Unclear: Verification of linker + linker speak (object format)?
 
 Timing channels in protocols are a huge problem
 * using wireguard instead of openVPN to run ssh over it does not eliminate the
@@ -93,6 +105,11 @@ from the guest OS.
 * qemu qmp (or use qemus gdb stub) to read the vm's memory
 * attach serial channel to qemu machine and write stuff to that (treat the read bytes as plain and potentially malicious data)
 
+TODO talk on youtube on VMs
+Advancements for seL4 Virtualization Support
+CAmkES and seL4cp Microkit
+IOMMU Solutions for seL4
+
 ====allocators
 
 Preventing Use-After-Free Attacks with Fast Forward Allocation
@@ -118,3 +135,16 @@ https://superuser.com/questions/1490188/what-is-the-difference-and-relationship-
 https://bellard.org/tinyemu/
 vmm is very openbsd-specific, uses a serial port, single core, and x86-only
 https://www.openbsd.org/faq/faq16.html
+
+====state_stateless_splitting
+* handling non-software state
+  - hardware (for drivers etc)
+* stateful components
+  - reset communication channels
+  - restarting component
+* stateless components
+* No crash if, 1. no need, failure not caused 2. by component state (hw) or 3.
+  erroneous state (correct states causes fault), 4. critical state, 5.
+  erroneous state persistent
+* persistent failures (heuristics): restart count, increase restart domain, sanitise
+  persistent state, reinstall, revert, update component code, give up

@@ -7,6 +7,8 @@ Common debugging use cases, for practical usage see ../example/gdb/ starting wit
 gdb -p PID
   * dump program state
 generate-core-file
+ptrace(GETSIGINFO)
+siginto_t struct
 - 2. dump program state without interrupting process
 gcore
 - 3. automatically dump program state

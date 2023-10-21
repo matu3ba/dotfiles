@@ -186,7 +186,7 @@ return {
     config = function() require('nvim-surround').setup() end,
   },
   --==taskrunner
-  { 'stevearc/overseer.nvim', opts = {}, },
+  { 'stevearc/overseer.nvim', opts = {}, dev = false },
   -- { 'text-case.nvim' }, --idea
   -- { 'monaqa/dial.nvim' }, --idea
   -- { 'andymass/vim-matchup' }, --idea

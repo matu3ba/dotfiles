@@ -53,8 +53,9 @@
     #====dev
     pkgs.direnv
     pkgs.fish
-    pkgs.neovim
     pkgs.htop
+    pkgs.jq
+    pkgs.neovim
 
     #====rust
     pkgs.difftastic
@@ -71,7 +72,7 @@
     pkgs.zoxide
 
     #====dev_lua
-    #stylua
+    pkgs.stylua
     pkgs.lua-language-server
 
     # pkgs.findutils

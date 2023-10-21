@@ -110,29 +110,30 @@ if status is-interactive
   abbr --add -g rp ' realpath'
 
   abbr --add -g           via ' {$HOME}/.local/appimages/nvim.appimage'
-  abbr --add -g          jvia ' firejail $HOME/.local/appimages/nvim.appimage'
+  abbr --add -g          jvia ' firejail {$HOME}/.local/appimages/nvim.appimage'
   abbr --add -g          cvia ' {$HOME}/.local/appimages/nvim.appimage -u NONE'
   abbr --add -g          dvia ' {$HOME}/.local/appimages/nvim.appimage -u DEFAULT'
-  abbr --add -g        histup ' {$HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
-  abbr --add -g       aliases ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
-  abbr --add -g        bashrc ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
-  abbr --add -g        fishrc ' {$HOME}/.local/appimages/nvim.appimage "$HOME/.config/fish/config.fish"'
-  abbr --add -g           dfs ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
-  abbr --add -g   aliases_git ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
-  abbr --add -g   aliases_nix ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
-  abbr --add -g     templates ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
+  abbr --add -g       histupa ' {$HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
+  abbr --add -g      aliasesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
+  abbr --add -g       bashrca ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
+  abbr --add -g       fishrca ' {$HOME}/.local/appimages/nvim.appimage "$HOME/.config/fish/config.fish"'
+  abbr --add -g          dfsa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
+  abbr --add -g  aliases_gita ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
+  abbr --add -g  aliases_nixa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
+  abbr --add -g    templatesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 
   #abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
   abbr --add -g            vi ' nvim'
   abbr --add -g           jvi ' firejail nvim'
   abbr --add -g           cvi ' nvim -u NONE'
   abbr --add -g           dvi ' nvim -u DEFAULT'
-  abbr --add -g      histupvi ' nvim "/var/log/"' # pacman.log or apt/
-  abbr --add -g     aliasesvi ' nvim "$HOME/dotfiles/.config/shells/aliases"'
-  abbr --add -g      fishrcvi ' nvim "$HOME/dotfiles/.config/fish/config.fish"'
-  abbr --add -g aliases_gitvi ' nvim "$HOME/dotfiles/.config/shells/aliases_git"'
-  abbr --add -g aliases_nixvi ' nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
-  abbr --add -g   templatesvi ' nvim "$HOME/dotfiles/templates"'
+  abbr --add -g        histup ' nvim "/var/log/"' # pacman.log or apt/
+  abbr --add -g       aliases ' nvim "$HOME/dotfiles/.config/shells/aliases"'
+  abbr --add -g        fishrc ' nvim "$HOME/dotfiles/.config/fish/config.fish"'
+  abbr --add -g           dfs ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
+  abbr --add -g   aliases_git ' nvim "$HOME/dotfiles/.config/shells/aliases_git"'
+  abbr --add -g   aliases_nix ' nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
+  abbr --add -g     templates ' nvim "$HOME/dotfiles/templates"'
 
   # neovim installation needs manual fixups to remove additional installed parsers, because c and c++ parsers are very broken:
   # rm ~/.local/nvim/lib/nvim/parser/c.so

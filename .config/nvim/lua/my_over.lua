@@ -39,22 +39,22 @@ if not has_overseer_util then
 end
 
 overseer.setup({
-  actions = {
-    ["open tab"] = {
-      desc = "Open this task in a new tab",
-      run = function(task)
-        local bufnr = task:get_bufnr()
-        if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-          -- naming tabs requires involved statusline-like setup
-          -- https://www.reddit.com/r/neovim/comments/pcpxwq/permanent_name_for_tab/
-          vim.cmd.tabnew()
-          overseer_util.set_term_window_opts()
-          vim.api.nvim_win_set_buf(0, task:get_bufnr())
-          overseer_util.scroll_to_end(0)
-        end
-      end,
-    },
-  },
+  -- actions = {
+  --   ["open tab"] = {
+  --     desc = "Open this task in a new tab",
+  --     run = function(task)
+  --       local bufnr = task:get_bufnr()
+  --       if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+  --         -- naming tabs requires involved statusline-like setup
+  --         -- https://www.reddit.com/r/neovim/comments/pcpxwq/permanent_name_for_tab/
+  --         vim.cmd.tabnew()
+  --         overseer_util.set_term_window_opts()
+  --         vim.api.nvim_win_set_buf(0, task:get_bufnr())
+  --         overseer_util.scroll_to_end(0)
+  --       end
+  --     end,
+  --   },
+  -- },
   component_aliases = {
     default = {
     { "display_duration", detail_level = 2 },
@@ -73,6 +73,25 @@ overseer.setup({
   strategy = { "jobstart", use_terminal = false },
   templates = { "builtin", "user.cpp_build", "user.run_script" },
 })
+
+local function get_task_callback(i, action)
+  return function()
+    local tasks = require("overseer").list_tasks({ recent_first = true })
+    local task = tasks[i]
+    if task then
+      require("overseer").run_action(task, action)
+    end
+  end
+end
+
+for i = 1, 9 do
+  vim.keymap.set("n", ";o" .. i, get_task_callback(i, 'open'), { desc = string.format("Open output here task #%d", i) })
+  vim.keymap.set("n", ";t" .. i, get_task_callback(i, 'open tab'), { desc = string.format("Open output tab task #%d", i) })
+  vim.keymap.set("n", ";e" .. i, get_task_callback(i, 'edit'), { desc = string.format("Edit task #%d", i) })
+  vim.keymap.set("n", ";" .. i, get_task_callback(i, 'restart'), { desc = string.format("Restart task #%d", i) })
+end
+
+--
 
 -- :echo stdpath('config')
 -- ~/.config/nvim/lua/overseer/template/user/cpp_build.lua

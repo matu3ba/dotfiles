@@ -1,3 +1,24 @@
+ideal solution:
+- configurable
+  * editor|shell|monitor integration for runner systems (local|bare|VM)
+  * perf vs security tradeoffs
+- showstoppers mutable system ressources create nonreproducible global state
+  * for building the objects, libraries and executables
+    => allow global ressources access is a security risk
+    => set of build time dependencies required to know how to reproduce things
+       * either by 1. rebuilding the dependency or 2. getting a system with that lib/kernel/etc version
+  * for runnning the executables which are loading the objects, libraries and executables
+    => global ressources access is security risk
+    => set of runtime dependencies required to know how to reproduce things
+- sandboxing control unviable for proprietary systems
+- cross-compiling limited for proprietary systems
+- qemu has huge attack surface due to hugely untested and complex code
+
+Solutions:
+- qemu unfixable
+- can we contain qemu ie via rise?
+
+Below part should be rewritten more densely.
 
 The ideal solution:
 - text based configuration, no graphical interface
@@ -90,3 +111,14 @@ TODO web part of CI:
 * advanced isolation (seccomp etc)
 
 TODO evaluate hydra design
+
+experimental idea:
+- pure vs impure compilation
+  * pure relies on nothing from system to enable full build isolation
+  * impure requires system interaction => bad for security
+- zig config via ECS
+- zig provides the runner except for
+  * conflict annotation
+  * yet capablities/jailing/isolation
+  *
+- caching interface?

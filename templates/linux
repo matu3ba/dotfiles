@@ -29,6 +29,14 @@ auditd (access monitoring framework)
 bpftrace (general tracing solution to create + run ebpf programs)
 idea: usage with monitoring, is bcc necessary?
 
+cd /sys/kernel/debug/tracing
+echo 'sig==9' > events/signal/signal_generate/filter
+echo 1 > events/signal/signal_generate/enable
+: > trace
+echo 1 > tracing_on
+tail -f trace
+cat trace
+
 Trace systemcalls: strace ./binary
 Common options
     -c – Rough estimation of what time is spend and where (use -S for sorting)
