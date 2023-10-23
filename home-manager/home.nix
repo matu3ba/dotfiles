@@ -55,7 +55,8 @@
     pkgs.fish
     pkgs.htop
     pkgs.jq
-    pkgs.neovim
+    pkgs.neovim # defaults to luajit
+    pkgs.luajitPackages.luacheck
 
     #====rust
     pkgs.difftastic
