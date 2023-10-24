@@ -70,7 +70,7 @@ if status is-interactive
   # fish_add_path "$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
   # fish_add_path "$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig
   # fish_add_path "$HOME/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
-  fish_add_path "$HOME/dev/git/zi/zig/master/rel/bin" # zig stages 3
+  fish_add_path "$HOME/dev/zdev/zig/master/rel/bin" # zig stages 3
   fish_add_path "$HOME/.luarocks/bin"
   fish_add_path "$HOME/.local/nvim/bin" # neovim testing
   fish_add_path "$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary

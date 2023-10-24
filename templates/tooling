@@ -45,8 +45,16 @@ clang-fmt
 clang-tidy
 flags compile-time: -Wthread-safety
 
+https://developers.redhat.com/blog/2021/05/05/memory-error-checking-in-c-and-c-comparing-sanitizers-and-valgrind
 clang -g -fsanitize=address foo.c
 gcc -g -fsanitize=address -static-libasan foo.c
+>slowdown by 2x-4x ASAN vs 20x-50x valgrind 10.000x gdb
+>different types of errors
+>TSAN 9x sanitizer - 404x valgrind slowdown
+>slowdown with rr is <=1.2x but only runnable on single core
+>"Vidi: Record Replay for Reconfigurable Hardware" looks ok,
+>but there is nothing easily [re]usable yet.
+
 (false positives with fortification)
 __attribute__((no_sanitize_address))
 

@@ -218,6 +218,7 @@ alias rsync_move='rsync -avz --progress -h --remove-source-files'
 alias rsync_update='rsync -avzu --progress -h'
 alias rsync_synchronize='rsync -avzu --delete --progress -h'
 alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
+#rsync -av --dry-run --delete -P --stats src target
 # TODO rsync without permissions
 
 # program aliases

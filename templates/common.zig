@@ -176,7 +176,7 @@ const VarT = if (!builtin.is_test) u32 else void;
 threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 
 // in build.zig use -D (as desribed in zig build -h)
-// Typical flags: -fwasmtime -fqemu -freference-trace -lc
+// Typical flags: -fwasmtime -fqemu -freference-trace -lc -Dtarget=x86_64-windows-gnu
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
 // zig build test-std -Dtest-filter="getDefaultPageSize smoke test" -fqemu --zig-lib-dir lib
 // Otherwise for libstd tests, use

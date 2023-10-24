@@ -24,10 +24,15 @@ $grep -o "\[\-W.*\].*" compilation_results.txt | sort -u
 -Wsuggest-override \
 -ftrapv \
 -Wcast-align \ // *char -> *u32 can be fine=>annoying
+-fno-strict-aliasing \
 // optimizations
 -Wunsafe-loop-optimizations \
 -Wvector-operation-performance
-
+-fstrict-aliasing
+// Profiling report:
+// $ gcc -g -pg -o t t.c
+// $ ./t 100 200
+// $ gprof ./t | less
 // less frequently used
 -Wuninitialized -Winit-self
 -D_FORTIFY_SOURCE=2
