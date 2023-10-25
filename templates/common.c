@@ -9,16 +9,23 @@
 
 // In short: Pointers are a huge footgun in C standard.
 //
-// The proper fix for access a pointer with increased alignment is to use a temporary with memcopy
+// The proper fix for access a pointer with increased alignment is to use a
+// temporary with memcopy
 // https://stackoverflow.com/questions/7059299/how-to-properly-convert-an-unsigned-char-array-into-an-uint32-t.
 // To only compare pointers decrease alignment with char* pointer.
 // To prune type info for generics use void* pointer. HOWEVER, you are
 // responsible to call a function that provides or provide yourself
 // 1. proper alignment, 2. sufficient storage and 3. if nececssary
-// sufficient padding (ie within structs).
+// sufficient padding (ie within structs), 4. correct aliasing.
+// "Strict Aliasing Rule"
+// > Dereferencing a pointer that aliases an object that is not of a
+// > compatible type or one of the other types allowed by
+// > C 2011 6.5 paragraph 71 is undefined behavior.
 //
 // Except, by posix extension: casting pointers to functions (and back), because
 // that must be valid for dynamic linking etc.
+
+// macro NULL = 0 or mingw null
 
 // TODO code example
 

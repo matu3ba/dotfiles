@@ -8,6 +8,10 @@
 #include <string>
 #include <vector>
 
+// posix only
+#include <sys/mman.h> // mmap flags
+#include <unistd.h> // execve in libc
+
 #include <cstring> // C++ has no string split method, so use strok() or strsep()
 /// logging (better would be test based and scoped macros)
 #define DEBUG_FN_ENTER(message)                                                                                   \
@@ -685,3 +689,53 @@ static_assert(!is_string_class<std::vector<char>>);
 // Problem auto does verbatim replacement of the return type, which can hide a stack-local copy
 // Solution: Only use 'auto' for well-known iterators and status tuples, **never**
 // for objects.
+
+// IPC over shared process memory
+enum ProcState { IDLE, STOPPING, RUNNING };
+static void * some_memregion = nullptr; // c++ only
+static bool app_stopped = false;
+void some_ipc() {
+  some_memregion = mmap(nullptr, sizeof(ProcState), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+  if (some_memregion == MAP_FAILED) {
+      perror("mmap failed");
+      exit(1);
+  }
+  ProcState proc_state = ProcState::IDLE;
+  memcpy(some_memregion, &proc_state, sizeof(proc_state));
+
+  // process/thread creation
+
+  // write to process/thread
+  proc_state = ProcState::RUNNING;
+  memcpy(some_memregion, &proc_state, sizeof(proc_state));
+  msync(some_memregion, sizeof(proc_state), MS_SYNC | MS_INVALIDATE);
+  printf("starting proc_state...");
+}
+
+void ipc_read() {
+  while(!app_stopped) {
+    ProcState proc_state; // undefined
+    // get old state
+    memcpy(some_memregion, &proc_state, sizeof(proc_state));
+    switch (proc_state) {
+      case ProcState::STOPPING: {
+        proc_state = ProcState::IDLE;
+        // write back new state
+        memcpy(some_memregion, &proc_state, sizeof(proc_state));
+        msync(some_memregion, sizeof(proc_state), MS_ASYNC);
+        break;
+      }
+      case ProcState::IDLE: [[fallthrough]];
+      case ProcState::RUNNING: break;
+    }
+  }
+}
+
+// SHENNANIGAN
+// interoperating type safe with c strings is very cumbersome
+void cstring_interop_annoying() {
+  const char * cmd = "ls";
+  char const * buffer[] = {"ls", "-l", NULL};
+  char * const * argv = const_cast<char * const *>(buffer);
+  int execed = execve(cmd, argv, NULL);
+}

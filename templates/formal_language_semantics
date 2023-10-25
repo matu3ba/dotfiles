@@ -104,3 +104,6 @@ compilation time. This argument falls apart on big scale, specific performance
 the alternative is to use sel4/micro kernel approach of capabilities, but even
 those assume you can not access all memory and/or code is trusted.
 https://en.wikipedia.org/wiki/Object-capability_model
+
+idea:
+does alpha, beta, eta reduction also work for type checking in semantic analysis?

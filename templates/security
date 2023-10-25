@@ -124,6 +124,11 @@ Preventing Use-After-Free Attacks with Fast Forward Allocation
 * could use HTTP/1.1, mandate pipelining and TLS 1.2 to get most advantages without the drawbacks
 * multiplexing bad idea unless server has logic for fair scheduling (usually has not) and opens door for denial of service
 * too complex, useless freedom of choice
+* HTTP/1.1 drawbacks from https://sookocheff.com/post/networking/how-does-http-2-work/
+  - head of line blocking, solution: server implements pipelining, bad: rely on time behavior (better protocols exist)
+  - congestion window adjusting for handling many domains, solution: do scheduling yourself, bad: externalize as attack vector
+  - header data duplication due to being stateless, solution: better defaults, bad: save more state for compression
+  - there is no formal model (state automaton) of HTTP2.0, not even from the client
 
 ====virtual_machine
 vmm as virtual machine monitor

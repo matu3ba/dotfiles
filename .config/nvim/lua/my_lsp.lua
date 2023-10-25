@@ -97,6 +97,13 @@ lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = 
 lspconfig.tsserver.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- lspconfig.typst_lsp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+-- https://sookocheff.com/post/vim/neovim-java-ide/
+-- https://javadev.org/devtools/ide/neovim/lsp/
+-- https://github.com/neovim/nvim-lspconfig/issues/2386
+-- https://stackoverflow.com/questions/74844019/neovim-setting-up-jdtls-with-lsp-zero-mason
+-- https://github.com/mfussenegger/nvim-jdtls
+-- https://www.reddit.com/r/neovim/comments/12ki16d/java_lsp_for_jdk_11/
+-- https://langserver.org/, only support one https://github.com/eclipse-jdtls/eclipse.jdt.ls
 -- stylua: ignore end
 
 lspconfig.texlab.setup {

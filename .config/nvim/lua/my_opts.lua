@@ -18,6 +18,11 @@ local function load_options()
     rg_derive_root = true,
     rustfmt_autosave = true,
     -- libbuf_log_level = "trace",
+    loaded_perl_provider = 0, -- no checkhealth errors
+    loaded_ruby_provider = 0,
+    loaded_node_provider = 0,
+    loaded_python_provider = 0,
+    loaded_python3_provider = 0,
   }
   for k, v in pairs(setvars) do
     vim.api.nvim_set_var(k, v)

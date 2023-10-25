@@ -16,7 +16,7 @@ ideal solution:
 
 Solutions:
 - qemu unfixable
-- can we contain qemu ie via rise?
+- can we contain qemu ie via rise or sel4?
 
 Below part should be rewritten more densely.
 

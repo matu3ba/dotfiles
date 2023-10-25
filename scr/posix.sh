@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 set -e
 CWD=$(pwd)
-trap "cd ${CWD}" EXIT HUP INT QUIT SIGSEGV TERM
+trap "cd ${CWD}" EXIT HUP INT QUIT TERM
+# if SIGSEGV is included, then at least bash complains with 'trap: SIGSEGV: bad trap'
 
 # unless commands return non-zero status, use
 set -e
