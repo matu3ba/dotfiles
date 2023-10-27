@@ -45,8 +45,8 @@ return {
     -- Autocompletion
     { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
     { 'hrsh7th/cmp-nvim-lsp' }, -- LSP source for nvim-cmp
-    -- { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
-    -- { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
+    { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
+    { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
     -- Optional
     { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end },
     -- {'williamboman/mason-lspconfig.nvim'}, -- Optional

@@ -317,6 +317,13 @@ fn totalAll(structs: []const BigStruct) u128 {
 // SHENNANIGAN
 // Test runner allows no signaling to qemu -g 4242 (debugger mode)
 
-// SHENNANIGAN
+// SHENNANIGAN floats
 // NaN can not be conveniently tested against with standard methods and
 // isNan must be used which is based on 'x != x'.
+
+pub const SafetyLock = struct {
+    state: State = .unlocked,
+    // An enum with only 1 tag is a 0-bit type just like void
+    pub const State = if (runtime_safety) enum { unlocked, locked } else enum { unlocked };
+    // ..
+};

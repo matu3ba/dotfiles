@@ -17,6 +17,7 @@ import traceback
 import urllib.parse
 import urllib.request
 import functools
+import socket
 
 from typing import Optional, Tuple, List, IO
 import xml.etree.ElementTree as ET
@@ -639,3 +640,27 @@ def redirect_stderr() -> None:
 # SHENNANIGAN
 # Must not use trailing comma in dictionary or json.dumps generated string has
 # silent failures, for example on parsing the output as json via php.
+
+def sendHtml(self, ip: str, port: int, msg: str) -> int:
+    url = f"http://{ip}:{port}/{msg}"
+    try:
+        response = urllib.request.urlopen(url, timeout=10)
+    except urllib.error.HTTPError as error:
+        print(f"HTTP Error: Data not retrieved because {error}\nURL: {url}")
+        return 1
+    except urllib.error.URLError as error:
+        if isinstance(error.reason, socket.timeout):
+            print(f"Timeout Error: Data not retrieved because {error}, url {url}")
+        else:
+            print(f"URL Error: Data not retrieved because {error}, url: {url}")
+        return 1
+    try:
+        resp = response.read().decode('utf-8')
+        print(f"resp: {resp}")
+    except UnicodeDecodeError:
+        print("urlopen decode: Invalid Unicode")
+        return 1
+    except OSError:
+        print(f"No connection to ip {ip} on port {port}")
+        return 1
+    return 0

@@ -125,7 +125,7 @@ Proc net docs: https://www.kernel.org/doc/Documentation/networking/proc_net_tcp.
 bashonly: TCP_PORT_STATUS=`(echo > /dev/tcp/x.x.x.x/yyyy) >/dev/null 2>&1 && echo "UP" || echo "DOWN"`; echo $TCP_PORT_STATUS
 nc -vz IP_Address Port
 netcat may or may not exit the sending tcp connection and may hang forever in scripts
-Quit immediately after receiving EOF with nc IP_Address Port -q 0
+Quit immediately after receiving EOF: nc -N IP_Address Port
 
 Ports < 1024 are privileged by default. Anything above can be freely used.
 
