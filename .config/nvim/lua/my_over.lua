@@ -27,34 +27,52 @@
 -- Show config with :=require("overseer.config")
 
 local has_overseer, overseer = pcall(require, "overseer")
-local has_overseer_util, overseer_util = pcall(require, "overseer.util")
-
 if not has_overseer then
   vim.print("no overseer")
   return
 end
-if not has_overseer_util then
-  vim.print("no overseer.util")
-  return
-end
+local constants = require("overseer.constants")
+local STATUS = constants.STATUS
+
+-- if not has_overseer_util then
+--   vim.print("no overseer.util")
+--   return
+-- end
+-- local bufnr = task:get_bufnr()
+-- if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+--   -- naming tabs requires involved statusline-like setup
+--   -- https://www.reddit.com/r/neovim/comments/pcpxwq/permanent_name_for_tab/
+--   vim.cmd.tabnew()
+--   overseer_util.set_term_window_opts()
+--   vim.api.nvim_win_set_buf(0, task:get_bufnr())
+--   overseer_util.scroll_to_end(0)
+-- end
 
 overseer.setup({
-  -- actions = {
-  --   ["open tab"] = {
-  --     desc = "Open this task in a new tab",
-  --     run = function(task)
-  --       local bufnr = task:get_bufnr()
-  --       if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-  --         -- naming tabs requires involved statusline-like setup
-  --         -- https://www.reddit.com/r/neovim/comments/pcpxwq/permanent_name_for_tab/
-  --         vim.cmd.tabnew()
-  --         overseer_util.set_term_window_opts()
-  --         vim.api.nvim_win_set_buf(0, task:get_bufnr())
-  --         overseer_util.scroll_to_end(0)
-  --       end
-  --     end,
-  --   },
-  -- },
+  actions = {
+    ["validate"] = {
+      desc = "Create and execute derived task to validate result",
+      condition = function(task)
+        return not task:has_component("validate") -- dont validate validation
+          and (task.status == STATUS.SUCCESS or task.status == STATUS.FAILURE)
+      end,
+      run = function(task)
+        -- print(task:has_component("validate")) -- DEBUG
+        local newtask = overseer.new_task({
+            cmd = task.cmd;
+            cwd = task.cwd;
+            env = task.env;
+            name = "val_" .. task.name;
+            components = {
+                "validate",
+                "on_complete_notify",
+                "default"
+            }
+        })
+        newtask:start()
+      end,
+    },
+  },
   component_aliases = {
     default = {
     { "display_duration", detail_level = 2 },
@@ -74,31 +92,69 @@ overseer.setup({
   templates = { "builtin", "user.cpp_build", "user.run_script" },
 })
 
-local function get_task_callback(i, action)
+local function get_task_callback(task_i, action)
   return function()
-    local tasks = require("overseer").list_tasks({ recent_first = true })
-    local task = tasks[i]
+    -- local tasks = require("overseer").list_tasks({ recent_first = true })
+    local tasks = require("overseer").list_tasks()
+    local task = tasks[task_i]
     if task then
       require("overseer").run_action(task, action)
     end
   end
 end
 
+-- local function get_task_callback_byid(task_id, action)
+--   return function()
+--     local tasks = require("overseer").list_tasks()
+--     for i = 1, #tasks do
+--       local task = tasks[i]
+--       if task and task.id == task_id then
+--         if action == "print_info" then
+--           print(task.id, task.name, task.status)
+--         else
+--           require("overseer").run_action(task, action)
+--         end
+--       end
+--     end
+--   end
+-- end
+
+-- ;1..9 ;e1..9 ;o1..9 ;p1..9 ;t1..9
 for i = 1, 9 do
   vim.keymap.set("n", ";o" .. i, get_task_callback(i, 'open'), { desc = string.format("Open output here task #%d", i) })
   vim.keymap.set("n", ";t" .. i, get_task_callback(i, 'open tab'), { desc = string.format("Open output tab task #%d", i) })
   vim.keymap.set("n", ";e" .. i, get_task_callback(i, 'edit'), { desc = string.format("Edit task #%d", i) })
   vim.keymap.set("n", ";" .. i, get_task_callback(i, 'restart'), { desc = string.format("Restart task #%d", i) })
+  vim.keymap.set("n", ";p" .. i, get_task_callback(i, 'print_info'), { desc = string.format("Print id of task #%d", i) })
 end
 
--- vim.keymap.set("n", "<leader>bs", function()
---   local bundle_name = vim.fs.basename(vim.fn.getcwd())
---   require("overseer").save_task_bundle(bundle_name, nil, { on_conflict = "overwrite" })
--- end)
--- vim.keymap.set("n", "<leader>bl", function()
---   local bundle_name = vim.fs.basename(vim.fn.getcwd())
---   require("overseer").load_task_bundle(bundle_name)
--- end)
+vim.keymap.set("n", ";bs", function()
+  local bundle_name = vim.fs.basename(vim.fn.getcwd())
+  require("overseer").save_task_bundle(bundle_name, nil, { on_conflict = "overwrite" })
+end)
+vim.keymap.set("n", ";bl", function()
+  local bundle_name = vim.fs.basename(vim.fn.getcwd())
+  require("overseer").load_task_bundle(bundle_name)
+end)
+
+-- local function validate_callback(task_id, exact)
+--   return function()
+--     local tasks = require("overseer").list_tasks()
+--     for i = 1, #tasks do
+--       local task = tasks[i]
+--       if task and task.id == task_id then
+--         local tst = task.status
+--         if tst == "PENDING" or tst == "RUNNING" or tst == "CANCELED" or tst == "DISPOSED" then
+--           print("can not validate, operation " .. tst)
+--         else
+--           require("overseer").run_action(task, 'restart')
+--           -- TODO wait for finishing in background to compare
+--           -- => schedule comparison, which schedules itself back
+--         end
+--       end
+--     end
+--   end
+-- end
 
 -- :echo stdpath('config')
 -- ~/.config/nvim/lua/overseer/template/user/cpp_build.lua

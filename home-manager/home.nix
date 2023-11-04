@@ -59,6 +59,7 @@
     pkgs.luajitPackages.luacheck
 
     #====rust
+    pkgs.bat
     pkgs.difftastic
     pkgs.du-dust
     pkgs.fd

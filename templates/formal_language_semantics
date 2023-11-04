@@ -107,3 +107,8 @@ https://en.wikipedia.org/wiki/Object-capability_model
 
 idea:
 does alpha, beta, eta reduction also work for type checking in semantic analysis?
+
+compiler backends important optimizations
+- inline, unroll (& vectorize), CSE, DCE, code motion, folding, peepholes
+- arithmetic optimizations for all math stuff
+- eliminate redundant checks (specially null checks and bounds checks)
