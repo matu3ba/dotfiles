@@ -1,0 +1,35 @@
+echo $profile shows powershell configuration
+C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+
+overwrite recursively files
+cp -Recurse $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
+# not quite: Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false
+# overwrite with changing content, if changed at origin:
+# Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false -Force
+# recursively overwriting in powershell is painfully complex
+# TODO above things are wrong annoying
+# TODO https://learn.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_aliases?view=powershell-7.3
+
+cargo install fd-find ripgrep zoxide
+
+print PATH (in contrast to echo %PATH% in cmd):
+Get-Item Env:PATH
+$env:path
+Get-ChildItem env:
+or Get-Variable
+or visually more pleasing with: $env:path.Split(";")
+or even nicer: (Get-ChildItem Env:PATH).Value.Split(';') | Sort
+
+Tweak setting:
+Get-ExecutionPolicy -List
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine
+
+shortcuts:
+delete line: (full delete) ESC or C+home|end
+delete word: C-backspace|delete
+https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/ise/keyboard-shortcuts-for-the-windows-powershell-ise?view=powershell-7.3
+
+copy line, paste line?
+
+'C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe' /help
+'C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe' MyApp.sln /t:Rebuild /p:Configuration=Release
