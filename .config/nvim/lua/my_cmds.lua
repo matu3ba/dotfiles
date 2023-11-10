@@ -50,6 +50,7 @@ local df_scr_edit = df_edit .. sep .. 'scr'
 add_cmd('Dotfiles', df_edit, {})
 add_cmd('Scripts', df_scr_edit, {})
 add_cmd('Config', df_configs_edit, {})
+add_cmd('Ghostty', df_configs_edit .. sep .. 'ghostty' .. sep .. 'config', {})
 add_cmd('Aliases', df_config_shells_edit .. sep .. 'aliases', {})
 add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
 add_cmd('Templates', df_edit .. sep .. 'templates', {})

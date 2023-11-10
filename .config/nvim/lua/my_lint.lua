@@ -6,6 +6,7 @@ if not ok_lint then return end
 -- python3 -m pip install --user --upgrade pip
 -- pip3 install -U --user ruff
 -- pip3 install -U --user mypy
+-- distropkg install python[3[x]-[pexpect|ruff|mypy]
 
 -- updating pip
 -- pip list --outdated
