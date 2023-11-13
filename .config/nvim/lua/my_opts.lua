@@ -32,21 +32,36 @@ local function load_options()
   vim.o.backup = false
   -- window size is written by terminal and given as
   -- vim.o.columns/vim.o.lines
-  -- windows:
-  -- based on github.com/neovim/neovim/12092 and wiki
-  -- 33a747a92da60fb65e668edbf7661d3d902411a2d545fe9dc08623cecd142a20  win32yank.zip
-  -- curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
-  -- unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
-  -- chmod +x /tmp/win32yank.exe
-  -- sudo mv /tmp/win32yank.exe /usr/local/bin/
-  -- win HACK: vnoremap <silent> <C-v> :!powershell.exe -command "Get-Clipboard" 2> /dev/null<CR>
-  -- JUST WORKS: use <C-V> to paste, holding shift + selecting with mouse and press <C-v> (also deselect) or <C-V> to only copy
-  -- putty (configuration in menu "selection"), wsl shell and zellij affect usable clipboard:
-  -- only putty => x clipboard available: only shift selection works (ssh target system copy)
-  -- only wsl => error invoking win32yank: only shift selection works (also no local copy)
-  -- putty + zellij => x clipboard available: only shift selection works (ssh target system copy)
-  -- wsl + zellij => win32yank available: mouse selection + y works, yy does not
-  vim.o.clipboard = 'unnamedplus' -- use system clipboard (broken in firefox)
+  -- clipboard :h clipboard-osc52, :h clipboard-wsl, :h
+  -- use Windows Terminal, a terminal supporting osc52 or add logic below
+  if vim.version()["minor"] >= 10 and utils.isRemoteSession() then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.clipboard.osc52').copy,
+        ['*'] = require('vim.clipboard.osc52').copy,
+      },
+      paste = {
+        ['+'] = require('vim.clipboard.osc52').paste,
+        ['*'] = require('vim.clipboard.osc52').paste,
+      },
+    }
+  elseif utils.isWSL() then
+    vim.g.clipboard = {
+      name = 'WslClipboard',
+      copy = {
+        ['+'] = 'clip.exe',
+        ['*'] = 'clip.exe',
+      },
+      paste = {
+        ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+        ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      },
+      cache_enabled = 0,
+    }
+  else
+    vim.o.clipboard = 'unnamedplus' -- system clipboard (broken in firefox)
+  end
   vim.o.cmdheight = 0 -- shortcut vim.o.ch
   vim.o.completeopt = 'menuone,noselect' -- also used with coq_nvim
   --vim.o.completeopt = 'menu,menuone,noselect' --nvim-cmp

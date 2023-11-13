@@ -2,23 +2,15 @@
 -- luacheck: globals vim
 local M = {}
 
--- M.IsWSL = function()
---   -- assert breaks on Windows
---   local fp = io.open('/proc/version', 'rb')
---   if fp == nil then return end
---   local content = fp:read '*all'
---   fp:close()
---   local found_wsl = string.find(content, 'microsoft')
---   return found_wsl ~= nil
---parsing this should work:
---let uname = substitute(system('uname'),'\n','','')
---if uname == 'Linux'
---    let lines = readfile("/proc/version")
---    if lines[0] =~ "Microsoft"
---        return 1
---    endif
---endif
--- end
+M.isRemoteSession = function()
+  local sty = vim.env.STY
+  return sty ~= nil and sty == '' -- fork expensive in cygwin
+end
+-- let g:remoteSession = ($STY == "")
+
+M.isWSL = function()
+  return vim.fn.has 'wsl' == 1
+end
 
 -- Taken from stolen from cseickel on reddit.
 ---The file system path separator for the current platform.

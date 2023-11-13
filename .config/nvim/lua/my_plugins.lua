@@ -24,6 +24,7 @@ return {
     config = function() require('mason').setup() end,
   },
   {
+    -- deprecated since nvim 0.10
     'ojroques/nvim-osc52',
     config = function() require('osc52').setup() end,
   },

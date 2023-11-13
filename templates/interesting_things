@@ -84,3 +84,27 @@ more widely usable benefits of (optimal) incremental compilation
 - linker library
 - debugger abstractions (ptrace)
 - strategy/tooling to detect reproducible race conditions?
+
+State of WASM in 5 years.
+Why? Plugins to software, cheap sandboxing. Build once, run everywhere VM
+without bloat.
+
+https://www.forcepoint.com/fr/blog/x-labs/webassembly-potentials-and-pitfalls
+1. So far there have not been major attacks against wasm VMs, so I guess we are
+not yet at the major adoption state.
+2. Integrity checks of bytecode are unsolved from what I understand.
+3. Cross-compiling broken logic has not been identified as potential major
+problem.
+4. web assembly abi is too unspecified for reusable components, aka many  java
+use cases: as example, exit codes are a boolean and provide too few conventions
+how to communicate exit information with the platform (one option would be to
+read from annotated memory segments), see https://github.com/WebAssembly/wasi-cli/issues/11
+5. reverse execution and other debugging techniques are not exploited yet from
+deterministic execution, although it is extremely powerful, see rr/time travel
+debugging, see https://github.com/WebAssembly/design/blob/main/Nondeterminism.md
+
+Main thing is that you cant scale wasm arbitrarily, because at some point you
+are getting bugs and replaying them in a distributed system can be extremely
+challenging, so you want all the tools available, which you have for native
+applications. So once 4 and 5 are more solved, you will see major adoption, but
+for 5 probably somebody needs to step up with (reverse) debugging support.
