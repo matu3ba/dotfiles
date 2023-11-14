@@ -18,16 +18,25 @@ return {
   --Or for only 1 plugin from the lazy-lock: :Lazy restore pluginname
   -- { 'https://mzte.de/git/LordMZTE/znvim' },
   { 'nvim-lua/plenary.nvim' },
-  { 'marko-cerovac/material.nvim' }, --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
+  --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
+  { 'marko-cerovac/material.nvim', priority = 1000,
+    config = function()
+      require('material').setup({
+          -- workaround https://github.com/marko-cerovac/material.nvim/issues/181
+          disable = { colored_cursor = true },
+      })
+      vim.cmd.colorscheme("material")
+    end,
+  },
   {
     'williamboman/mason.nvim',
     config = function() require('mason').setup() end,
-  },
+  }, ---=none
   {
     -- deprecated since nvim 0.10
     'ojroques/nvim-osc52',
     config = function() require('osc52').setup() end,
-  },
+  }, ---=key
   --==completions
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus

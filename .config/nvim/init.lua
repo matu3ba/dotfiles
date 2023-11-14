@@ -91,7 +91,6 @@ else
   -- workaronud lazy caching init.lua loading, but the module might be absent.
   local has_libbuf, _ = pcall(require, 'libbuf')
   if has_libbuf then require 'my_buf' end
-  vim.cmd [[colorscheme material]]
 
   --==lazy fast restore state from https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
   local lazy_cmds = vim.api.nvim_create_augroup('lazy_cmds', {clear = true})

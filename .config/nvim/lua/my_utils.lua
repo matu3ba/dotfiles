@@ -1,5 +1,6 @@
 --! Dependency free functions
 -- luacheck: globals vim
+-- see minimal_config
 local M = {}
 
 M.isRemoteSession = function()
@@ -361,3 +362,29 @@ M.swap_camel_and_snake_case = function(name)
 end
 
 return M
+
+--==minimal_config
+--== -- nvim --clean -u repro_init.lua
+--== local root = vim.fn.fnamemodify("./.repro", ":p")
+--== -- set stdpaths to use .repro
+--== for _, name in ipairs({ "config", "data", "state", "cache" }) do
+--==   vim.env[("XDG_%s_HOME"):format(name:upper())] = root .. "/" .. name
+--== end
+--== -- bootstrap lazy
+--== local lazypath = root .. "/plugins/lazy.nvim"
+--== if not vim.loop.fs_stat(lazypath) then
+--==   vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", lazypath, })
+--== end
+--== vim.opt.runtimepath:prepend(lazypath)
+--== -- install plugins
+--== local plugins = {
+--==   "marko-cerovac/material.nvim",
+--==   -- ^ Adjust here ^
+--==      v             v
+--== }
+--== require("lazy").setup(plugins, {
+--==   root = root .. "/plugins",
+--== })
+--== vim.cmd.colorscheme("material")
+--== -- ^ Adjust here ^
+--==    v             v
