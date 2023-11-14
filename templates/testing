@@ -169,3 +169,6 @@ function has to be replaced, 2 provides fns to setup replacements.
 SUBSTITUTE(D::foo, D_fake_foo); is implemented via __function_id, but only in
 gcc.
 'Post-compile-time FCI seam' is not contextualized.
+
+Injection combines the complexity/flexibility of callbacks with
+configurable/additional state.

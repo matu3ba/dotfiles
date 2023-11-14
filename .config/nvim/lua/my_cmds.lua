@@ -96,7 +96,7 @@ add_cmd('Style', function(opts) require('material.functions').change_style(opts.
 --)
 
 -- :enew | .!ls (only useful, if cleaning up buffers is faste)
---add_cmd('Bda', [[:bufdo :bdelete]], {}) -- deleting all buffers except current one
+add_cmd('Bda', [[:bufdo :bdelete]], {}) -- deleting all buffers except current one
 
 -- REPLs for latex, clippy and cpp with linker mold
 --_G.Pdfmain = function()

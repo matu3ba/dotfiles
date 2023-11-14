@@ -479,6 +479,7 @@ map('n', '-', '<Plug>(leap-forward)', {}) -- -> forward
 map('n', '_', '<Plug>(leap-backward)', {}) -- _> inverse forward
 map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
 
+-- TODO describe :vs otherfile
 --==diff
 ---1. manually (ie python code with too many conflicts)
 ---:e filetoshowthediffs

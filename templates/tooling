@@ -10,7 +10,8 @@ reverse engineering: https://rada.re/n/
 ripgrep from BurntSushi https://github.com/BurntSushi/ripgrep
 rr - https://github.com/rr-debugger/rr
 znvim from LordMZTE https://mzte.de/git/LordMZTE/znvim (glpv3)
-zellij: s-e (scrollback-edit, does not work?)
+zellij: s-e (scrollback-edit)
+yazi as file manager (https://github.com/sxyazi/yazi)
 
 build system respecting unused files and detect parallel-unsafe build description (db can become huge): tup
 shell: fish, crush-shell

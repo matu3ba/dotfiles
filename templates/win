@@ -1,5 +1,44 @@
-Perf traces
-https://github.com/google/UIforETW
+Get installation location of msvc c, c++ compiler and linker with batch file:
+cd %ProgramFiles(x86)%\Microsoft Visual Studio\Installer\
+.\vswhere.exe
+installationPath 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
+fd cl.exe 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
+fd link.exe 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
+'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\cl.exe'
+'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\link.exe'
+VS2015 x64 Native Tools Command Prompt
+x64 Native Tools Command Prompt for VS2019
+
+====build_system
+.sln file contains 1. build modes (Debug/Release;x64 etc), 2. dependencies and
+3. actively tracked dependencies (*must* be marked as actively tracked or they are
+ignored, even though the dependency marks them as needed and there is a change)
+Adjusting
+1. graphically or via msbuild
+2. via Right click on project => Build dependencies => Project dependencies
+3. via below build modes "configuration manager" => Configuration Platform Build and Deploy
+
+The build format is a hash like EAEE7988-385C-4CEF-AF76-20513D802A97 for each
+project reference (with the hash being generated in an unspecified way), so
+Visual Studio is needed to generate the hash for the project.
+
+Clean rebuild and incremental for Debug and Release profiles
+msbuild project.sln /t:Clean;Rebuild /p:Configuration=Debug /p:Platform=x64 -nologo
+msbuild project.sln /t:Build /p:Configuration=Debug /p:Platform=x64 -nologo
+msbuild project.sln /t:Clean;Rebuild /p:Configuration=Release /p:Platform=x64 -nologo
+msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v:diag
+Debug problems via -v:Lvl Lvl is q,m,n,d,diag
+msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v:d
+
+====build_problems
+Build problems, ie incremental build problems:
+Tools -> Options -> Proj & Sol. -> Build & Run -> build log verbosity -> diagnostic
+Search for "Project not up to date because" or "missing".
+Compare with msbuild output.
+
+Generate compile_commands.json from Visual Studio with "Clang Power Tools VS extension".
+This mandates Visual Studio >= 2017. Alternative of bear likely does not work.
+https://clangpowertools.com/blog/generate-json-compilation-database.html
 
 workaround admin privileges for installer files (.exe):
 insert into run.bat with :set encoding=ansi
@@ -31,6 +70,10 @@ Performance profiling
 http://euccas.github.io/blog/20180213/performance-profiling-tools-on-windows.html
 (including memory usage)
 https://learn.microsoft.com/en-us/visualstudio/profiling/memory-usage-without-debugging2?view=vs-2022
+Windows Performance Analyzer
+
+Perf traces
+https://github.com/google/UIforETW
 
 Memory profiling
 https://thatonegamedev.com/cpp/memory-profiling-on-windows-for-c/
@@ -67,3 +110,23 @@ https://github.com/NixOS/nix/issues/5874
 CLI Installation and Fixup
 https://christitus.com/install-windows-the-arch-linux-way/
 https://christitus.com/fix-corrupt-windows-install/
+
+shorcuts:
+VS2015
+only compile current file  Ctrl-F7
+search                     Ctrl-,
+snippet expanding          Ctrl-k-s
+rename                     Ctrl-r,Ctrl-r
+go back                    Ctrl-'-'
+find                       Ctrl-f
+replace                    Ctrl-h
+  within
+  focus find entry         Alt-n
+  focus replace field      Alt-p
+  toggle match case        Alt-c
+  toggle word              Alt-w
+  toggle regex             Alt-e
+  open loook in dropdown   Alt-l
+  replace next             Alt-r
+  replace all              Alt-a
+  exit dialog              Esc
