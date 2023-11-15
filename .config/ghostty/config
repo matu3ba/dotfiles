@@ -2,6 +2,34 @@
 background = 282c34
 foreground= ffffff
 
+
+##==default_keybindings (Darwin has Super instead of C):
+# reset font              C-0
+# smaller/bigger font     C-'-/+'
+# write_scrollback_file   C-j
+# new_window/close_surface/quit/close_window   C-S-n/w/q/ A-f4
+# new_tab                 C-S-t
+# split_right/down        C-S-o/e
+# gotosplit left/right    S-Sup-</>
+# goto split left/down/up/right <-..
+# scroll top/bottom       S-home/end
+# scroll up/down          S-pageup/pagedown
+# semantic prompts?       S-C-pageup/pagedown
+# inspector               S-C-i
+# toggle fullscreen       C-Enter
+# goto tab [1-9]          C-[1-9]
+
+#keybind = ctrl+z=close_surface
+# keybind = ctrl+d=new_split:left
+# keybind = ctrl+d=new_split:down
+# keybind = ctrl+d=new_split:top
+# keybind = ctrl+d=new_split:right
+# keybind = ctrl++=increase_font_size
+# keybind = ctrl+-=decrease_font_size
+
+##==default_commands
+# reset terminal state    reset
+
 # black
 palette = 0=#1d2021
 palette = 8=#7c6f64
