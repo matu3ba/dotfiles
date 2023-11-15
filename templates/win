@@ -65,15 +65,32 @@ Kernel mode debugging session http://www.vallejo.cc/2015/04/debugging-programs-w
 Timetravel debugging
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview
 https://github.com/microsoft/WinDbg-Samples/blob/master/TTDQueries/tutorial-instructions.md
+WinDbg:
+1. File -> start debugging -> launch executable (advanced)
+2. File -> Start debugging -> Attach to process.
+Step Back Forwards     p-  p
+Trace Back Forwards    t-  t
+Go Back Forwards       g-  g
+https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg
+Alternatively, use TTD.exe
+Grapihcal usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
 
 Performance profiling
 http://euccas.github.io/blog/20180213/performance-profiling-tools-on-windows.html
+Tools:
+Windows Performance Analyzer (WPA)
+PerfView
 (including memory usage)
 https://learn.microsoft.com/en-us/visualstudio/profiling/memory-usage-without-debugging2?view=vs-2022
-Windows Performance Analyzer
 
 Perf traces
 https://github.com/google/UIforETW
+Motivation https://randomascii.wordpress.com/2015/04/14/uiforetw-windows-performance-made-easier/
+====central explanation page: https://randomascii.wordpress.com/2015/09/24/etw-central/
+Getting traces https://randomascii.wordpress.com/2015/09/01/xperf-basics-recording-a-trace-the-ultimate-easy-way/
+Getting traces as shortlink https://tinyurl.com/etwtracing
+> not sure, try installing Intel Performance Counter Monitor
+Analysis of traces: https://randomascii.wordpress.com/2014/08/19/etw-training-videos-available-now/
 
 Memory profiling
 https://thatonegamedev.com/cpp/memory-profiling-on-windows-for-c/
