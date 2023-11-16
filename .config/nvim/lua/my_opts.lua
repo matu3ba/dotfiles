@@ -104,7 +104,11 @@ local function load_options()
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
   vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
-  vim.o.shell = 'fish'
+  if vim.fn.has 'win32' == 1 then
+    vim.o.shell = 'powershell'
+  else
+    vim.o.shell = 'fish'
+  end
   -- https://vi.stackexchange.com/questions/3484/disable-swap-file-for-large-files
   -- https://vim.fandom.com/wiki/Faster_loading_of_large_files
   -- disable with -n or :set noswapfile

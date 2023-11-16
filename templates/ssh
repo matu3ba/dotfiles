@@ -16,7 +16,7 @@ With
 COMMENT="$(date +'%Y%m%d')${USER}@${HOSTNAME}"
 ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
 and with passphrase dialog
-ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -f ~/.ssh/PRIVATEKEYNAME
+ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -f $HOME/.ssh/PRIVATEKEYNAME
 Note: ssh keys have no concept like expiry date, so the server needs to
 accept or reject the key.
 

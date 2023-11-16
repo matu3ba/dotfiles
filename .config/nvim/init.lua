@@ -4,7 +4,10 @@
 require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
--- cp -r $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
+-- cp -rf $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
+-- cp -Recurse -force $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
+-- Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false -Force
+-- TODO: figure out for windows: cp -fr soruce/ destination/
 -- :lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 -- vim.opt.runtimepath:get(), :h vim.opt
 -- vim.opt.rtp:append()
@@ -78,8 +81,12 @@ else
   -- idea https://super-cress-98d.notion.site/Run-zig-test-in-neovim-cde72b0634b449bc815211c6ca1032a4
   -- idea keybindings for sending to terminal to gdb
 
+  require 'my_utils'
+
   require 'my_telesc' -- more flexible
-  require 'my_jfind' -- faster than telescope
+  if vim.fn.has 'win32' ~= 1 then
+    require 'my_jfind' -- faster than telescope
+  end
   require 'my_gitsign'
   require 'my_hydra'
   require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
