@@ -2,3 +2,70 @@ cd without args shows pwd
 dir shows ls
 variables are used with %VAR%
 batch files have .bat as extension, but .cmd and .btm also exists
+
+Comments:
+::   comment
+REM  comment
+your commands here      & ::  commenttttttttttt
+:: may also fail within setlocal ENABLEDELAYEDEXPANSION
+
+SOME CODE
+GOTO LABEL  ::REM out this line to exeucute code between this GOTO and :LABEL
+some_code ...
+:LABEL
+other_code
+
+split veeeeeeeeeeeeeeeeeeeeery ^
+long commands via carret
+To prevent broken behavior, make sure to always end with blank linke after ^
+
+Just do it.
+
+There is no global history. Must use powershell for this. Only current history
+can be searched through via F7.
+Use http://mridgers.github.io/clink/ to fix broken Windows behavior.
+
+set bat_path=%~dp0
+set call_path=%cd%
+cd %bat_path%
+ECHO CMD^> %cd%
+set /A count=0
+set /p count=0
+
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 goto EXIT
+
+:EXIT
+  exit /b %ERRORLEVEL%
+
+TODO fixup this part
+REM loop example with path comparison
+REM /d indicates that %%i is a directory loop variable
+for /d %%i in (%bat_path%*) do (
+  set path=%%i
+  echo StartupPath %%i
+  REM %%~nxi is current folder
+  set Folder=%%~nxi
+  if !Folder!==%SrcPath% (
+     echo Skip Special Folder !Folder!
+  ) else (
+    REM extract first character from path Folder
+    REM !variable! means delayed expansion, see help set
+    set L=!Folder:~0,1!
+    if !L!==_ (
+      echo Skip Folder !Folder!
+    ) else (
+      REM TODO function call
+      if DoUpdate GTR 0 (
+        copy %AbsSrcPath%\*.exe %%i
+        copy %AbsSrcPath%\*.dll %%i
+        copy %AbsSrcPath%\Files\*.* %%i\Files\
+      )
+      if exist %%i\%Process% (
+        start "" /D %%i %%i\%Process%
+      ) else (
+        echo %%i\%Process% does not exist.
+      )
+    )
+  )
+)

@@ -1,7 +1,8 @@
 echo $profile shows powershell configuration
 C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+realpath pendant: Resolve-Path Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 
-overwrite recursively files
+overwrite recursively files:
 cp -Recurse $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
 # not quite: Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false
 # overwrite with changing content, if changed at origin:
@@ -10,11 +11,17 @@ cp -Recurse $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
 # TODO above things are wrong annoying
 # TODO https://learn.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_aliases?view=powershell-7.3
 
+delete recursively files:
+rm -r -fo somedir
+
 cargo install fd-find ripgrep zoxide
 
 print PATH (in contrast to echo %PATH% in cmd):
 Get-Item Env:PATH
 $env:path
+$env:Path
+$env:Path = 'C:\foo;' + $env:Path
+$env:Path += ";$($env:USERPROFILE)\bin"
 Get-ChildItem env:
 or Get-Variable
 or visually more pleasing with: $env:path.Split(";")
@@ -26,10 +33,92 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine
 
 shortcuts:
 delete line: (full delete) ESC or C+home|end
-delete word: C-backspace|delete
+delete word: C-backspace|delete [not functional in neovim due to missing escape sequences]
 https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/ise/keyboard-shortcuts-for-the-windows-powershell-ise?view=powershell-7.3
 
 copy line, paste line?
 
 'C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe' /help
 'C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe' MyApp.sln /t:Rebuild /p:Configuration=Release
+
+Kill process, if running or not:
+Get-Process "ssh-agent" -ea SilentlyContinue | Stop-Process -PassThru
+
+Start ssh as admin in background:
+Get-Service -Name ssh-agent | Set-Service -StartupType Manual
+Start-Service ssh-agent
+Start ssh automatically
+Get-Service ssh-agent | Set-Service -StartupType Automatic -PassThru | Start-Service
+
+Adding to powershell PATH, ie the ssh-agent.exe:
+$env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
+
+Diagnostics of processes:
+ps|gm
+System info:
+ps powershell|fl *
+
+https://www.whatsupgold.com/blog/how-to-find-all-processes-running-under-administrative-privileges-with-powershell
+https://stackoverflow.com/questions/7690994/running-a-command-as-administrator-using-powershell
+
+TODO
+https://interworks.com/blog/2021/09/15/setting-up-ssh-agent-in-windows-for-passwordless-git-authentication/
+more basics:
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-service?view=powershell-7.3
+
+
+find:
+dir -recurse -file -filter *.jpg
+GetChildItem –Include *.txt –Recurse -Path C:\”Program files” -Name -Force -Depth 2
+GetChildItem –Filter *.txt –Recurse -Attributes !Directory+ Hidden,!Directory+Hidden
+> Attributes Archive Compressed Device Directory (or D) Encrypted Hidden (or H) IntegrityStream Normal NoScrubData
+  NotContentIndexed Offline ReadOnly (or R) ReparsePoint SparseFile System (or S) Temporary
+GetChildItem | WhereObject { $_.Name match '^KB[09]+\.log$' }
+GetChildItem $env:WINDIR\* Include *.log
+> Use -Filter, if possible, for efficiency.
+> -Directory
+Common registry attributes:
+Get-ChildItem -Path Registry::HKEY_LOCAL_MACHINE
+Get-ChildItem -Path Registry::HKEY_CLASSES_ROOT
+Get-ChildItem -Path Registry::HKEY_CURRENT_CONFIG
+Get-ChildItem -Path Registry::HKEY_CURRENT_USER
+Get-ChildItem -Path Registry::HKEY_USERS
+Get-ChildItem -Path Registry::HKEY_PERFORMANCE_DATA
+
+Get-ChildItem -Path Cert:\* -Recurse -CodeSigningCert
+
+Run batch script from powershell:
+ & .\my-app\my-fle.bat
+
+ File hashing:
+https://adamtheautomator.com/get-filehash/
+
+$HashString = (Get-ChildItem C:\Temp -Recurse | Get-FileHash -Algorithm MD5).Hash | Out-String
+Get-FileHash -InputStream ([IO.MemoryStream]::new([char[]]$HashString))
+Get-ChildItem C:\Temp -Recurse | Get-FileHash -Algorithm MD5
+
+SHENNANIGAN fd-find/find is broken(at least in neovim), try fd -x echo {}
+Get-ChildItem .\SDK\ -Recurse | Get-FileHash -Algorithm MD5
+
+SHENNANIGAN
+UTF16 encoding on default, which tools like diff can not handle and powershell has no inbuild diff
+
+Search forwards/backwards interactively with C-s|r.
+Search for current line via (Shift+)-F8.
+See also Get-PSReadlineKeyHandler | ? {$_.function -like '*hist*'}
+get-history
+Insert line break via '`'
+Display editing shortcut menu via A-Space-e (mark k, copy y, paste p, selall s, scroll l,
+search text f, copy screen buffer to clipboard A-Space-e-s, A-Space-e-y
+
+clear command history A-F7
+delete all chars in line after cursor C-end
+pause/resume display output C-s
+clear current line Esc
+move command line by copying last cmdline up to char you type F1
+create new command line by copying last cmdline up to char you type F2
+Complete command line with content from prev cmdline F3
+Delete chars from current cmdline up to char you type F4
+Scan backward thorugh cmd history F5
+Display popup with cmd history to select command F7
+Runs specific numbered command from command history F9
