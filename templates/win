@@ -113,12 +113,15 @@ https://christitus.com/fix-corrupt-windows-install/
 
 shorcuts:
 VS2015
-only compile current file  Ctrl-F7
+next/prev tab              Ctrl-f6/Ctrl-Shift-f6
+only compile current file  Ctrl-f7
 search                     Ctrl-,
 snippet expanding          Ctrl-k-s
 rename                     Ctrl-r,Ctrl-r
-go back                    Ctrl-'-'
+go back/forward            Ctrl-'-'/TODO
 find                       Ctrl-f
+  find next/prev           f3/Shift-f3
+comment/uncomment          Ctrl-k Ctrl-c/Ctrl-k Ctrl-u
 replace                    Ctrl-h
   within
   focus find entry         Alt-n
@@ -130,3 +133,32 @@ replace                    Ctrl-h
   replace next             Alt-r
   replace all              Alt-a
   exit dialog              Esc
+debugging+continue         f5
+  stop debugging           Shift-f5
+  toggle breakpoint        f9
+  step over                f10
+  step into/out            f11/Shift-f11
+  delete all breakpoints   Ctrl-Shift-f9
+  break at fn              Ctrl-b
+  break all                Ctrl-Alt-break
+  run to cursor            Ctrl-f10
+  set next statement       Ctrl-Shift-f10
+  breakpoint window        Ctrl-Alt-b
+
+toggle menu                Shift-f10
+goto
+  solution explorer        TODO
+  out window               TODO
+  shell                    TODO
+  code editor              TODO
+  error list               TODO
+  find symbol results      TODO
+  tab finder               TODO
+  mark12..                 TODO
+  matching brace           Ctrl-'`'
+fold
+  toggle fold region       Ctrl-m Ctrl-m
+  TODO
+
+custom shortcuts (Tools -> Options -> Environment -> Keyboard -> inserttext -> Assign
+SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t

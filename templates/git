@@ -1,0 +1,11 @@
+====Diffing binary files with git
+1. Installling a tool to read binary files and output text files
+  * pandoc, pdftotext, pdftostdout
+2. Add conversion handlers to git
+git config --global diff.docx.textconv pandoc --to=rst
+git config --global diff.odt.textconv pandoc --to=rst
+git config --global diff.pdf.textconv pdftostdout
+3. Tell git to use the correct handlers
+echo "*.docx diff=docx" >> ~/.config/git/attributes
+echo "*.odt diff=odt" >> ~/.config/git/attributes
+echo "*.pdf diff=pdf" >> ~/.config/git/attributes

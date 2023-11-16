@@ -218,6 +218,8 @@ alias gs='git status'
 alias gsp='git status --porcelain'
 alias gcl='git clone'
 
+# git rebase range to fixup author
+#git rebase -r LASTGOODCOMMIT --exec 'git commit --amend --no-edit --reset-author'
 alias grbe='git rebase --exec' # rebuild_cmd
 alias grbm='git rebase master'
 alias grbM='git rebase main'

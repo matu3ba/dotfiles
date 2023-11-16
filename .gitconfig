@@ -31,3 +31,10 @@
 # handled via cli option
 # [commit]
 #  gpgsign = true
+
+# git config --list --system
+# git config --list --global
+# git config --list --local
+# git config --list --show-origin
+# git config --get user.name
+# git config --get user.email
