@@ -6,3 +6,16 @@ procstat -f, fstat
 ==Network
 FreeBSD: sockstat
 Linux: ss
+
+best practice long-running system design
+https://arcan-fe.com/2020/02/10/leveraging-the-display-server-to-improve-debugging/
+TODO: make it cross-platform
+
+* source requests debug session
+* target checks permissions and sets capabilities via prctl
+* forwards the request to src process
+
+TODO some code
+
+see also "Systemic Software Debugging"
+tldr;
