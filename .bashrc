@@ -37,6 +37,13 @@ bind '"\e[B":history-search-forward'
 # alias ef='_open_files_for_editing'     # 'ef' opens given file(s) for editing
 ################################################################################
 
+# workaround https://github.com/NixOS/nix/issues/1056
+if test -n "$IN_NIX_SHELL"; then
+  export TERMINFO=/run/current-system/sw/share/terminfo
+  # Reload terminfo
+  real_TERM=$TERM; TERM=xterm; TERM=$real_TERM; unset real_TERM
+fi
+
 ##==aliases_and_commontools
 source "$HOME/dotfiles/.config/shells/bash_aliases"
 source "$HOME/dotfiles/.config/shells/aliases"
