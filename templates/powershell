@@ -1,5 +1,9 @@
 echo $profile shows powershell configuration
 C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+~\AppData\Local\Mozilla\Firefox\
+
+
 realpath pendant: Resolve-Path Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 
 overwrite recursively files:

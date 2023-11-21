@@ -264,12 +264,14 @@ alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 #merge with merge message no rebase
 #merge without merge message no rebase
 alias gm='git merge --ff-only'
-#alias gmf='git merge --ff-only'
+alias gmn='git merge --no-ff --no-commit'
+alias gmc='git merge --no-ff --commit'
 alias gmom='git merge downstream/master'
 alias gmt='git mergetool --no-prompt'
 alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
-alias gmum='git merge upstream/master'
-alias gma='git merge --abort'
+alias gmum='git merge --ff-only upstream/master'
+# The following may lose data due to unability to reconstruct pre-merge state:
+# alias gma='git merge --abort'
 
 alias gp='git push'
 alias gpdry='git push --dry-run'

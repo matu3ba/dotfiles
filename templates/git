@@ -9,3 +9,17 @@ git config --global diff.pdf.textconv pdftostdout
 echo "*.docx diff=docx" >> ~/.config/git/attributes
 echo "*.odt diff=odt" >> ~/.config/git/attributes
 echo "*.pdf diff=pdf" >> ~/.config/git/attributes
+
+echo "* text=auto" > .gitattributes
+git add --renormalize .
+git status                  # Show files that will be normalized
+git commit -m "Introduce end-of-line normalization"
+
+Typical .gitattributes setting:
+*.zig text eol=lf
+*.h text eol=lf
+*.c text eol=lf
+*.cpp text eol=lf
+*.txt text eol=lf
+data/binary_data/** binary
+lib/include/** linguist-vendored

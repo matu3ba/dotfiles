@@ -73,7 +73,7 @@ Trace Back Forwards    t-  t
 Go Back Forwards       g-  g
 https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg
 Alternatively, use TTD.exe
-Grapihcal usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
+Graphical usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
 
 Performance profiling
 http://euccas.github.io/blog/20180213/performance-profiling-tools-on-windows.html
@@ -128,17 +128,24 @@ CLI Installation and Fixup
 https://christitus.com/install-windows-the-arch-linux-way/
 https://christitus.com/fix-corrupt-windows-install/
 
+overview of basic ones https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf
+https://learn.microsoft.com/en-us/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
+
 shorcuts:
 VS2015
 next/prev tab              Ctrl-f6/Ctrl-Shift-f6
 only compile current file  Ctrl-f7
 search                     Ctrl-,
+close document window      Ctrl-f4
 snippet expanding          Ctrl-k-s
 rename                     Ctrl-r,Ctrl-r
 go back/forward            Ctrl-'-'/TODO
 find                       Ctrl-f
   find next/prev           f3/Shift-f3
 comment/uncomment          Ctrl-k Ctrl-c/Ctrl-k Ctrl-u
+format
+  file                     Ctrl-k Ctrl-d
+  selection                Ctrl-k Ctrl-f
 replace                    Ctrl-h
   within
   focus find entry         Alt-n
@@ -163,19 +170,60 @@ debugging+continue         f5
   breakpoint window        Ctrl-Alt-b
 
 toggle menu                Shift-f10
+toggle dropdown menu       Alt-prefix
+select
+  word                     Ctrl-w
+  line                     not in VS2015
+select in component view   Ctrl-f2
+  navigate                 tab
 goto
-  solution explorer        TODO
-  out window               TODO
-  shell                    TODO
-  code editor              TODO
-  error list               TODO
-  find symbol results      TODO
-  tab finder               TODO
-  mark12..                 TODO
-  matching brace           Ctrl-'`'
+  solution explorer           Ctrl-Alt-l
+  out window                  TODO
+  shell                       TODO
+  code editor                 TODO
+  error list                  TODO
+  find symbol results         TODO
+  tab finder                  TODO
+  mark12..                    TODO
+  before(/)after matching brace Ctrl-'`'
+  between matching braces     Ctrl-}  (VS2019+)
+    smart selection?
+  next variable instance      Ctrl-Shift-Arrow
+  next error                  Ctrl-Shift-f12
+  previous error              unmapped
+  next/prev local error       unmapped
+  next/prev issue             Alt-PgUp/PgDn (VS2019+)
+  next/prev window            Ctrl-Tab/Ctrl-Shift-Tab
 fold
-  toggle fold region       Ctrl-m Ctrl-m
-  TODO
+  toggle region                 Ctrl-m Ctrl-m
+  collapse all but classes      Ctrl-m-o
+  collapse all                  Ctrl-m-a
+  expand all                    Ctrl-m-l
+  expand all disable outlines   Ctrl-m-p
+  collapse/uncollapse region    Ctrl-m-h/Ctrl-m-u
+view
+  split                       Alt-w-p-Enter
+    jump between              f6
+  normal                      Alt-w-p-p-Enter
+
+file operations
+  add new file                Ctrl-Shift-a
+
+bookmarks
+  toggle                          Ctrl-k Ctrl-k
+  create new folder               Ctrl-k Ctrl-f
+  prev/next                       Ctrl-k Ctrl-p/n
+  prev/next in folder             Ctrl-Shift-k Ctrl-Shift-p/n
+  jump to named one               not possible
+
+multicursor
+  selection                  Alt-mouse
+  keyboard selection         Alt-Shift-Arrow
+  VS2019+:
+  multi-carets selection     Ctrl-Alt
+  caret pattern selection    Alt-Shift-';'
+  select next pattern match  Alt-Shift-'.'
 
 custom shortcuts (Tools -> Options -> Environment -> Keyboard -> inserttext -> Assign
 SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t
+TODO: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim

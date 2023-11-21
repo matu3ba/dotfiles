@@ -1,2 +1,40 @@
+about:support
+C:\Program Files\Mozilla Firefox\
+~\AppData\Local\Mozilla\Firefox\
+
+firefox --ProfileManager
+
 ctrl+shift+del - clear cache
 ctrl+shit+i    - developer tools
+
+shortcuts
+https://support.mozilla.org/en-US/kb/keyboard-shortcuts-perform-firefox-tasks-quickly
+navigate between pages           Alt Arrow-lr
+reload overriding cache          Ctrl-f5, Ctrl-Shift-r
+find again                       f3, Ctrl-g
+switch search engine             Alt-Arrow-du
+address bar to search            Ctrl-k, Ctrl-e
+open address in background tab   Alt-Shift-Enter
+show all tabs                    Ctrl-Shift-Tab
+reopen last closed tab or window Ctrl-Shift-t
+reopen last closed window        Ctrl-Shift-n
+move URL left or right           Ctrl-Shift-x
+history sidebar                  Ctrl-h
+clear history                    Ctrl-Shift-Del
+
+bookmark
+  all tabs                       Ctrl-Shift
+  this page                      Ctrl-d
+  sidebar                        Ctrl-b
+  show/hide toolbar              Ctrl-Shift-b
+
+
+downloads                        Ctrl-j
+addons                           Ctrl-Shift-a
+developer tools                  F12
+web console
+inspector
+screenshot
+task manager
+
+firefox All keyboard shortcuts
