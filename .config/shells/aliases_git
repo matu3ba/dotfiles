@@ -159,6 +159,7 @@ alias gfap='git fetch --all --prune'
 alias gpod='git push downstream --delete'
 alias grpo='git remote prune downstream'
 alias grv='git remote -v'
+alias gsr='git remote show origin'
 
 # See instructions for bisecting via script in scr/bisect.sh
 #alias gbs='git bisect'

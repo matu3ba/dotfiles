@@ -1,4 +1,42 @@
-====Diffing binary files with git
+Typical .gitattributes setting:
+*.zig text eol=lf
+*.h text eol=lf
+*.c text eol=lf
+*.cpp text eol=lf
+*.txt text eol=lf
+data/binary_data/** binary
+lib/include/** linguist-vendored
+
+https://git-scm.com/docs/gitattributes/2.21.0
+* git stores data internally (reencodes on checkout into desired format) as
+  - utf8 without bom
+  - LF
+* explicit setting eol forces normalization and converts or prevents conversion
+* defaulting to crlf for new files without forcing changes on existing files:
+[core]
+  autocrlf = true
+* remove bom + reformat via: iconv -f UTF-16 -t UTF-8 utf16lebom.cpp > utf8.cpp
+
+https://git-scm.com/docs/gitfaq
+"What’s the recommended way to store files in Git?"
+    "While Git can store and handle any file of any type, there are some
+    settings that work better than others. In general, we recommend that text
+    files be stored in UTF-8 without a byte-order mark (BOM) with LF
+    (Unix-style) endings. We also recommend the use of UTF-8 (again, without
+    BOM) in commit messages. These are the settings that work best across
+    platforms and with tools such as git diff and git merge."
+
+Iterate through all files and print files without utf8 encoding:
+git ls-files '*.[h|c]' '*.cpp' | xargs -n1 file > formats
+
+====eol
+Renormalize (existing) files
+echo "* text=auto" > .gitattributes
+git add --renormalize .
+git status                  # Show files that will be normalized
+git commit -m "Introduce end-of-line normalization"
+
+====diff
 1. Installling a tool to read binary files and output text files
   * pandoc, pdftotext, pdftostdout
 2. Add conversion handlers to git
@@ -10,16 +48,10 @@ echo "*.docx diff=docx" >> ~/.config/git/attributes
 echo "*.odt diff=odt" >> ~/.config/git/attributes
 echo "*.pdf diff=pdf" >> ~/.config/git/attributes
 
-echo "* text=auto" > .gitattributes
-git add --renormalize .
-git status                  # Show files that will be normalized
-git commit -m "Introduce end-of-line normalization"
+Command-line feature, explain binary diff (if needed)
+*.doc   diff=astextplain
 
-Typical .gitattributes setting:
-*.zig text eol=lf
-*.h text eol=lf
-*.c text eol=lf
-*.cpp text eol=lf
-*.txt text eol=lf
-data/binary_data/** binary
-lib/include/** linguist-vendored
+====merge
+Diff marker behavior
+TODO
+#*.sln       merge=binary

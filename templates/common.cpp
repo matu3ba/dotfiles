@@ -12,7 +12,7 @@
 #include <sys/mman.h> // mmap flags
 #include <unistd.h> // execve in libc
 
-#include <cstring> // C++ has no string split method, so use strok() or strsep()
+#include <cstring> // C++ has no string split method, so use strtok() or strsep()
 /// logging (better would be test based and scoped macros)
 #define DEBUG_FN_ENTER(message)                                                                                   \
     if (debug)                                                                                                    \
@@ -238,6 +238,7 @@ ACTIONEXIT:
     long i = strtol(p_component_name, &end, 10);
     i = i;
     // This requires usage of errno, so pick your poison.
+    // alternative: use find with substring
 }
 
 class ClassWithMutex { // class with mutex
@@ -738,4 +739,57 @@ void cstring_interop_annoying() {
   char const * buffer[] = {"ls", "-l", NULL};
   char * const * argv = const_cast<char * const *>(buffer);
   int execed = execve(cmd, argv, NULL);
+}
+
+// unique_ptr pattern to handle file handles and cleanup via RAII
+void raii_filehandles() {
+char csFile[MAX_PATH] = "";
+  memcpy(csFile, sFile.c_str(), sFile.GetLength());
+  std::unique_ptr<void, decltype (&CloseHandle)> hFile(nullptr, CloseHandle);
+  // GENERIC_WRITE, FILE_SHARE_WRITE for setting anything on the file
+  HANDLE tmphFile = CreateFile(csFile,
+    GENERIC_READ,
+    FILE_SHARE_READ,
+    NULL,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    NULL
+  );
+  if (tmphFile == INVALID_HANDLE_VALUE) TEST_FAILED("could not open file handle");
+  hFile.reset(tmphFile);
+
+  // do some work
+  // < unique_ptr deleter is run
+}
+
+void systemtime_filetime() {
+  SYSTEMTIME st_base = { 0 }; // looks like compiler does not support C initialization list (since C11/C++11)
+  st_base.wYear = 2000;
+  FILETIME ft_base;
+  FILETIME ft_wanted;
+
+  bool bSt = false;
+  bSt = SystemTimeToFileTime(&st_base, &ft_base);
+  if (bSt == false) exit(1);
+
+  st_base.wMonth = 12;
+  st_base.wDayOfWeek = 12;
+  st_base.wDay = 12;
+  st_base.wHour = 12;
+  st_base.wMinute = 12;
+  st_base.wSecond = 12;
+  st_base.wMilliseconds = 12;
+  bSt = SystemTimeToFileTime(&st_base, &ft_wanted);
+  if (bSt == false) exit(2);
+}
+
+// https://stackoverflow.com/questions/70715882/modify-file-create-time-in-windows-using-only-c
+
+// windows GetLastError
+//
+//#include <system_error>
+void printGetLastError() {
+    DWORD error = ::GetLastError();
+    std::string message = std::system_category().message(error);
+    std::cout << "ERROR: " << message << std::newline;
 }

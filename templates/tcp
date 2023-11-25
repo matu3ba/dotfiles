@@ -1,0 +1,50 @@
+https://stackoverflow.com/questions/58506815/how-to-apply-linger-option-with-winsock2
+https://tangentsoft.com/wskfaq/articles/debugging-tcp.html
+====tcp_connection_state
+       ------------->CLOSED<-----------------------------
+       |               |   \                            |
+       |               v    \                           |
+       |             LISTEN  ---\                       |
+       |          >^/      \     \                      |
+       |          --        --    \                     |
+       |       v</            \>v  v                    |
+       |<--SYN_RCVD<---------SYN_SENT------------------>|
+           |   \                 /                      |
+           |    \               /                       |
+           |     \             /                        |
+           |      \           /                         |
+           |       v         v                          |
+           |       ESTABLISHED---------->CLOSE_WAIT     |
+           |      /           \              |          |
+           |    --             --            v          |
+           v   /                 \        LAST_ACK----->|
+    FIN_WAIT_1                 CLOSING                  |
+         |     \                  |                     |
+         |      \                 |                     |
+         |       ------           |                     |
+         |             \          |                     |
+         v              \         v                     |
+    FIN_WAIT_2----------->---->TIME_WAIT--------------->|
+
+missing:
+- transitions
+- explanations
+- tests
+
+in comparison udp "stateless":
+- open, bind, close
+- recvfrom, sendto
+
+====tcp_behavior_matrix
+               | Linux | Darwin  | Windows  | Wasi
+-------------- | ------| ------- | -------- | ----
+connect        |   ?   |    ?    |    ?     |  ?
+keepalive      |   ?   |    ?    |    ?     |  ?
+flush max      |   ?   |    ?    |    ?     |  ?
+flush          |   ?   |    ?    |    ?     |  ?
+shutdown rd    |   ?   |    ?    |    ?     |  ?
+shutdown wr    |   ?   |    ?    |    ?     |  ?
+shutdown both  |   ?   |    ?    |    ?     |  ?
+close          |   ?   |    ?    |    ?     |  ?
+
+TODO

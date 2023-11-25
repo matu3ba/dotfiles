@@ -1,22 +1,25 @@
 # EditorConfig: https://EditorConfig.org
+# git stores version tracked information as utf-8 and with lf
+# tools, languages and compilers may or may not be able to convert or use other
+# formats.
 root = true
+
+[*]
 charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = false
 trim_trailing_whitespace = true
 
 [*.{c,cpp,h,zig}]
-indent_size = 4
-indent_style = space
-
-# [*.{c,cpp,h}]
-# indent_style = tab
-# indent_size = tab
-# tab_width = 2
-
-[*.{bashrc,cmake,json,lua,py,sh}]
-indent_size = 2
-indent_style = space
+insert_final_newline = true
 
 [*.md]
-indent_size = 2
-indent_style = space
 trim_trailing_whitespace = false
+
+# [*.{c,cpp,h}]
+# indent_size = tab
+# indent_style = tab
+# tab_width = 2
+# tab_width defaults to indent_size
