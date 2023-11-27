@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 ## search sub-folder paths and create symlinks of un-ignored files
 ## example: ln -s $HOME/dotfiles/.bashrc $HOME/.bashrc
 

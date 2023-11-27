@@ -1,0 +1,5 @@
+src $HOME\dotfiles\.config\nvim
+dest $HOME\AppData\Local
+
+src $HOME\dotfiles\windows\Documents
+dest $HOME

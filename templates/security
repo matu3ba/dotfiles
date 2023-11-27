@@ -153,3 +153,9 @@ https://www.openbsd.org/faq/faq16.html
   erroneous state persistent
 * persistent failures (heuristics): restart count, increase restart domain, sanitise
   persistent state, reinstall, revert, update component code, give up
+
+====pentesting
+hacktricks.xyz https://book.hacktricks.xyz
+https://github.com/carlospolop/hacktricks
+https://github.com/carlospolop/hacktricks-cloud
+phrack magazine

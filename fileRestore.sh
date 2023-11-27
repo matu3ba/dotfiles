@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 ## delete regular files only depending on structure of dotfiles
 ## example: if $1 is a path leading to $HOME/back/FOLDER, we restore
 ## restoring only works, if there is currently no file

@@ -47,7 +47,7 @@ local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
 local df_configs_edit = df_edit .. sep .. '.config'
 local df_config_shells_edit = df_configs_edit .. sep .. 'shells'
 local df_scr_edit = df_edit .. sep .. 'scr'
-add_cmd('Dotfiles', df_edit, {})
+add_cmd('Dotf', df_edit, {})
 add_cmd('Scripts', df_scr_edit, {})
 add_cmd('Config', df_configs_edit, {})
 add_cmd('Ghostty', df_configs_edit .. sep .. 'ghostty' .. sep .. 'config', {})
@@ -57,11 +57,17 @@ add_cmd('Templates', df_edit .. sep .. 'templates', {})
 
 if utils.is_windows == false then
   -- we cant or dont want to unify all bashrcs
-  local bashrc_edit = 'edit ' .. os.getenv 'HOME' .. sep .. 'dotfiles' .. sep .. '.bashrc'
-  local fishrc_edit = 'edit ' .. os.getenv 'HOME' .. sep .. 'dotfiles' .. sep .. '.config' .. sep .. 'fish' .. sep .. 'config.fish'
+  local bashrc_edit = 'edit ' .. home .. sep .. 'dotfiles' .. sep .. '.bashrc'
+  local fishrc_edit = 'edit ' .. home .. sep .. 'dotfiles' .. sep .. '.config' .. sep .. 'fish' .. sep .. 'config.fish'
   add_cmd('Bashrc', bashrc_edit, {})
   add_cmd('Fishrc', fishrc_edit, {})
+else
+  local ps_config_edit = 'edit ' .. home .. '\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1'
+  add_cmd('PsConf', ps_config_edit, {})
+  local df_write = '! ' .. home .. '\\dotfiles\\fileOverwrite.ps1'
+  add_cmd('DotfWrite', df_write, {})
 end
+
 
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd

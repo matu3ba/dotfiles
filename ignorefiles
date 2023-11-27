@@ -1,15 +1,26 @@
+/.editorconfig
+/.gitattributes
+/.gitconfig
+/.gitconfig-personal
+/.gitconfig-work
 /.gitignore
 /Filenamesunsafe
 /LICENSE
 /POSIXunsafe
 /README.md
 /checkHealth.sh
+/fileBackup.ps1
 /fileBackup.sh
+/fileOverwrite.ps1
+/fileRemove.ps1
 /fileRemove.sh
+/fileRestore.ps1
 /fileRestore.sh
 /ignorefiles
+/nixsetup
 /symlinkInstall.sh
 /symlinkUninstall.sh
+/win_src_dest
 
 /.git/
 /crosscompiling/
@@ -21,3 +32,4 @@
 /sample_scr/
 /scr/
 /templates/
+/windows/

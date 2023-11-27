@@ -5,8 +5,8 @@ require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
 -- cp -rf $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
--- cp -Recurse -force $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
--- Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false -Force
+-- cp -r -fo $HOME\dotfiles\.config\nvim $HOME\AppData\Local
+-- Copy-Item -Recurse -Force -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local
 -- TODO: figure out for windows: cp -fr soruce/ destination/
 -- :lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 -- vim.opt.runtimepath:get(), :h vim.opt

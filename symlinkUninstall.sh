@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 ## search sub-folder paths and remove symlinks of un-ignored files
 ## example: if .bashrc is symlink -> rm $HOME/.bashrc
 

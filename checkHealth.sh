@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 ## check if this script is in $HOME/dotfiles for correct system configuration as per XDGBDS
 ## search sub-folder paths and test symlinks of un-ignored files
 ## requires fd (Rust program), because find does not support an ignore list

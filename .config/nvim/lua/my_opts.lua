@@ -3,6 +3,10 @@
 -- luacheck: no max line length
 local utils = require 'my_utils'
 
+-- Most often used toggle options
+-- :set binary nobinary
+-- :setlocal display=uhex
+
 --vim.o.guicursor         = '';
 local function load_options()
   local setvars = {
@@ -106,6 +110,11 @@ local function load_options()
   vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
   if vim.fn.has 'win32' == 1 then
     vim.o.shell = 'powershell'
+    vim.o.shellxquote = ''
+    vim.o.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
+    vim.o.shellquote = ''
+    vim.o.shellpipe = '| Out-File -Encoding UTF8 %s'
+    vim.o.shellredir = '| Out-File -Encoding UTF8 %s'
   else
     vim.o.shell = 'fish'
   end

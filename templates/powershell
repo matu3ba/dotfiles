@@ -1,23 +1,34 @@
+====common_paths
 echo $profile shows powershell configuration
-C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-~\AppData\Local\Mozilla\Firefox\
+$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+$HOME/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+$HOME\AppData\Local\Mozilla\Firefox\
+$HOME/AppData/Local/Mozilla/Firefox/
 
+no gf completion:
+C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+C:\Users\$($env:username)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+
+====common_cmds
+dry-run: -WhatIf
 
 realpath pendant: Resolve-Path Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 
-overwrite recursively files:
-cp -Recurse $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
-# not quite: Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false
-# overwrite with changing content, if changed at origin:
-# Copy-Item -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local/nvim -Recurse -Container:$false -Force
-# recursively overwriting in powershell is painfully complex
-# TODO above things are wrong annoying
-# TODO https://learn.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_aliases?view=powershell-7.3
+copy recursively (much slower than rsync)
+cp -r -fo $HOME\dotfiles\.config\nvim $HOME\AppData\Local
+Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Recurse -Force
+Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Recurse -Force
+Pull all elements into top level destination scope via '-Container:$false'
+
+SHENNANIGAN
+- incorrect paths (/ instead of \) are gobbled together somehow by powershell
+leading to the same result as -Container:$false
+- '-r' and '-fo' options are not mentioned in the powershell reference
 
 delete recursively files:
 rm -r -fo somedir
 
+New-item -Path ".\target\dir2" -ItemType Directory -Force
 cargo install fd-find ripgrep zoxide
 
 print PATH (in contrast to echo %PATH% in cmd):
@@ -126,3 +137,95 @@ Delete chars from current cmdline up to char you type F4
 Scan backward thorugh cmd history F5
 Display popup with cmd history to select command F7
 Runs specific numbered command from command history F9
+
+====language
+https://powershellexplained.com/2017-03-18-Powershell-reading-and-saving-data-to-files/#test-path
+# comments
+if ( Test-Path -Path $Path )
+{
+  Split-Path -Path 'c:\users\user\documents'
+  echo $HOME
+  Join-Path -Path $env:temp -ChildPath testing
+  Resolve-Path -Path 'c:\users\*\documents'
+
+}
+
+# Do not use Out-File to not run into width problems. Use I
+'This is some text' | Out-File -FilePath tmpfile
+$data | Add-Content -Path $Path
+$data | Set-Content -Path $Path
+$content = Get-Content -Path $ConfigPath
+$content.GetType()
+for ($i=0; $i -le $content.Length; $i+=1)
+{
+  if (-Not $content[$i].StartsWith("src:")) {
+    Write-Output "'$ConfigPath:$i': no prefix 'src:', exiting.. "; exit 1;
+  }
+  $SrcPath = $content[$i]
+  $i+=1
+  if (-Not $content[$i].StartsWith("src:")) {
+    Write-Output "'$ConfigPath:$i': no prefix 'src:', exiting.. "; exit 1;
+  }
+  $content[$i].StartsWith("dest:")
+}
+
+$data | Export-CSV -Path $Path
+Import-CSV -Path $Path
+
+$Data = @{
+    Address = @{
+        Street = '123 Elm'
+        State  = 'California'
+    }
+}
+
+$Data | ConvertTo-Json | Add-Content  -Path $Path
+$NewData = Get-Content -Path $Path -Raw | ConvertFrom-Json
+$NewData.Address.State
+
+if ( 5 -ne $value )
+{
+  # alternatives to -ne: -eq, -ieq, -ceq
+  # alternatives to -ne: -ine, -cne
+  # -gt, -igt, -cgt
+  # -ge, -ige, -cge
+  # -lt, -ilt, -clt
+  # -le, -ile, -cle
+}
+$value = 'S-ATX-SQL01'
+# -ilike, -clike
+# -notlike, -inotlike, -cnotlike
+if ( $value -like 'S-*-SQL??')
+{
+  # do something
+}
+# same for match as regex: \d digit, \w alphanumeric, \s whitespace, . any except newline
+#   () subexpression, \ escape next character
+# $value -is/-isnot [string]
+
+====access_control
+Permissions:
+  Full access (F)
+  Modify access (M) (includes ‘delete’)
+  Read and execute access (RX)
+  Read-only access (R)
+  Write-only access (W)
+icacls .\fileBackup.ps1
+icacls .\fileBackup.ps1 /grant group\user:RX /t /c
+/t for tree (recursive), /c to continue on error
+
+exceptional cases only: icacls Download /deny group\user:(OI)(CI)F /t /c
+reset: icacls Download /reset /t /c
+icacls Download /save Download_ACL_backup /t
+icacls Download /restore Download_ACL_backup /t
+icacls AdminOnly /setintegritylevel high
+icacls DisabledInheritanceDir /inheritance:d /t /c
+
+Get integrity level: whoami /groups
+A Process must have (at least) the integrity of the binary/process/file it tries
+to access or gets 'permission denied'.
+
+====wsl_usage
+https://www.winfriedhyronimus.de/de/journal-beitraege/2021/05/16/rsync-unter-windows/
+https://www.winfriedhyronimus.de/de/journal-beitraege/2020/01/27/einrichtung-eines-ad-hoc-netzwerks-unter-windows-10/
+https://arunkrsoam.medium.com/how-to-use-rsync-on-windows-using-ssh-connection-835190e72ae0

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 ## delete regular files only depending on structure of dotfiles
 ## example: if .bashrc is regular file -> rm $HOME/.bashrc
 

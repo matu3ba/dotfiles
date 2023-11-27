@@ -227,12 +227,6 @@ https://github.com/tweag/nickel, successor to nix, but very early mvp 0.1
 Probably nicest book yet for flakes but not complete and structured:
 https://nixos-and-flakes.thiscute.world/
 
-https://blog.wesleyac.com/posts/the-curse-of-nixos
-bad:
-- 1. own programming language, complicated and annoying to understand
-- 2. no real isolation (only path hackery), but overlayfs on Linux itself has many limitations (paths and stacking)
-  * related to core design issue of Linux (Unix file permission system), which stores permission of user and group in each file
-
 More interesting projects
 embedded OS https://github.com/cleverca22/not-os
 
@@ -243,13 +237,14 @@ Overall tradeoff:
 - system time/date
 - fs used for building (RAM must be big enough to hold TMPDIR etc)
 - Kernel parameters (ipv6, binfmt interpreters)
-- Other global system state (GPU graphic card drivers) also not modelled
+- Other global system state (GPU graphic card drivers) also not modeled
 - seed usage
 - environment variables (as global state introduced by nix versions)
 https://nix.dev/concepts/faq#are-there-any-impurities-left-in-sandboxed-builds
 
 nix limitations:
 - moving files into immutable nix store instead of creation of overlayfs due to posix performance and nesting limits
+  * core design issue of Linux (Unix file permission system, which stores permission of user and group in each file) [1]
 - namespace control tools (different hierarchies, fs sandbox with bubblewrap) => a chroot is no sandbox and can be (easily) escaped
   * different hierarchies, see GoboLinux, djb's /package, or even a completely custom one
 - package categories (missing metadata like play market/app store)
@@ -259,8 +254,7 @@ nix limitations:
   * option to put packages in ISO's, qcow2's, plain old tarballs (see root tarballs, or OpenBSD's site*.tgz)
     + winetricks doesn't need it's own dxvk's, directx's, and faudio's etc
 - debugging experience (tooling, documentation, best practice)
-see also https://blog.wesleyac.com/posts/the-curse-of-nixos
-- DSL programming language
+- DSL programming language [1]
 
 flakes limitations:
 - dependency explosion problem (like crates in Rust)
@@ -268,3 +262,6 @@ flakes limitations:
 - slow for big repos (big artifacts are copied into nix store)
 - no way to add dependencies from outside git repo without git repo (fs with hashing and/or internal hashing system could be used if user space can be sufficiently trusted not to mess with output artifacts)
 see also https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsyss-perspective-on-nix-flakes/32703
+
+
+[1] https://blog.wesleyac.com/posts/the-curse-of-nixos
