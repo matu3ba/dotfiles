@@ -109,12 +109,18 @@ local function load_options()
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
   vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
   if vim.fn.has 'win32' == 1 then
-    vim.o.shell = 'powershell'
-    vim.o.shellxquote = ''
-    vim.o.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
-    vim.o.shellquote = ''
-    vim.o.shellpipe = '| Out-File -Encoding UTF8 %s'
-    vim.o.shellredir = '| Out-File -Encoding UTF8 %s'
+    -- PowerShellEditorServices https://github.com/PowerShell/PowerShellEditorServices
+    if vim.fn.executable("pwsh") == 1 then
+      vim.o.shell =  "pwsh"
+      vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned"
+    else
+      vim.opt.shell =  "powershell"
+      vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+    end
+    vim.o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+    vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+    vim.o.shellquote = ""
+    vim.o.shellxquote = ""
   else
     vim.o.shell = 'fish'
   end

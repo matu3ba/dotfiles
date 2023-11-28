@@ -62,8 +62,10 @@ if utils.is_windows == false then
   add_cmd('Bashrc', bashrc_edit, {})
   add_cmd('Fishrc', fishrc_edit, {})
 else
-  local ps_config_edit = 'edit ' .. home .. '\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1'
-  add_cmd('PsConf', ps_config_edit, {})
+  local ps_config_edit = 'edit ' .. home .. '\\dotfiles\\windows\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1'
+  add_cmd('PSConf', ps_config_edit, {})
+  local pws_config_edit = 'edit ' .. home .. '\\dotfiles\\windows\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1'
+  add_cmd('PWConf', pws_config_edit, {})
   local df_write = '! ' .. home .. '\\dotfiles\\fileOverwrite.ps1'
   add_cmd('DotfWrite', df_write, {})
 end

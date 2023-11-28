@@ -793,3 +793,119 @@ void printGetLastError() {
     std::string message = std::system_category().message(error);
     std::cout << "ERROR: " << message << std::newline;
 }
+
+/// Prefer 'if constexpr' over 'enable_if' over SFINAE to keep things readable.
+/// Prefer template type specialization, if possible ('template <int T>').
+template <typename _Integral>
+void BestPracticeTemplateUsage(std::unique_ptr<Class<_Integral>> & ClassRef, const _Integral expected)
+{
+  // prefer in class definition:
+  static_assert( std::is_same<_Integral, int64_t>::value || std::is_same<_Integral, double>::value );
+  if constexpr (std::is_same<_Integral, int64_t>)
+  {
+    std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
+    TEST_EQUAL(out_data->ToInt64(), expected);
+  }
+  else if constexpr (std::is_same<_Integral, double>)
+  {
+    std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
+    TEST_EQUAL(out_data->ToDouble(), expected);
+  } else {
+    static_assert(!std::is_same<_Integral, _Integral>::value); // template error
+  }
+}
+
+// substitution failure is not an error (SFINAE) to conditionally include
+// function best via https://en.cppreference.com/w/cpp/types/enable_if
+// using enable_if_int64 = std::enable_if_t<true, int64_t>::value>;
+// using enable_if_double = std::enable_if_t<std::is_base_of<Foo, T>::value>;
+// template <typename T, typename = std::enable_if_t< std::is_base_of<Foo, T>::value>
+
+// more simple std::is_same<T, int64_t>:
+template <typename _Integral, std::is_same<_Integral, int64_t>::value>
+
+// Forward declaration must specify one template per class and variable name
+// in order of first occurence.
+// template<typename T>
+// template <int N>
+// class Outer<T>::Inner {};
+// or Class1<T>::Fn1(const Class2<N> arg) { .. }
+
+// https://stackoverflow.com/questions/2351148/explicit-template-instantiation-when-is-it-used
+// Best practice to prevent hidden code bloat is "template interface":
+// interfacefile.xyz = [template_interface.hpp|template.h]
+// interfacefile.xyz
+//   no includes of template.[hpp|cpp]
+//   template fn + class declarations
+//   extern template class Class<int>;
+//   typedef Class<int> ClassInt;
+// template.hpp
+//   include of interfacefile.xyz
+//   template fn + classes implementations
+// template.cpp
+//   include of interfacefile.xyz and template.hpp
+//   include of _def files for the static bits, see IWYU and clang tooling
+//   template class Class<int>;
+// usage.cpp
+//   include interfacefile.xyz
+//   ClassInt classIntInstance;
+
+// With injection template.hpp also forces tests to be written inside, because
+// underlying types must be resolved.
+// Pure templates are ideal, since their testing can be contextual.
+
+// templace specialization
+//   template <typename T, bool AorB>
+//   struct dummy;
+//   template <typename T, true>
+//   struct dummy {
+//     static void MyFunc() {  FunctionA<T>(); }
+//   }
+//   template <typename T, false>
+//   struct dummy {
+//     static void MyFunc() {  FunctionB<T>(); }
+//   }
+//   template <typename T>
+//   void Facade() {
+//     dummy<T, MeetsConditions<T>::value>::MyFunc();
+//   }
+// enable_if
+//   template<typename _Integral, std::enable_if_t<true, int64_t>::value>
+//   MyFunc() {
+//     FunctionA<T>();
+//   }
+//   template<typename _Integral, std::enable_if_t<true, double>::value>
+//   MyFunc() {
+//      FunctionB<T>();
+//   }
+// specialization of member class
+//   template<>
+//   static void MyFunc<true>() {}
+// specialization of member fn inside class
+//   private:
+//     template <int I>
+//     void foo();
+
+// void msvcExampleFunction()
+// {
+// printf("Function name: %s\n", __FUNCTION__);
+// printf("Decorated function name: %s\n", __FUNCDNAME__);
+// printf("Function signature: %s\n", __FUNCSIG__);
+// // Sample Output
+// // -------------------------------------------------
+// // Function name: exampleFunction
+// // Decorated function name: ?exampleFunction@@YAXXZ
+// // Function signature: void __cdecl exampleFunction(void)
+// }
+
+// SHENNANIGAN
+// C++ standard forbids specializations of a templatized function inside a class
+// (via SFINAE).
+// This might work with enable_if if constexpr + static_cast.
+
+// https://learn.microsoft.com/en-us/cpp/cpp/explicit-instantiation?view=msvc-170
+// "The extern keyword in the specialization only applies to member functions
+// defined outside of the body of the class. Functions defined inside the
+// class declaration are considered inline functions and are always
+// instantiated." => Always move template fn implementations outside of
+// classes.

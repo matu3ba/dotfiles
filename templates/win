@@ -30,6 +30,18 @@ msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v
 Debug problems via -v:Lvl Lvl is q,m,n,d,diag
 msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v:d
 
+This should probably run analysis manually
+msbuild MySolution.sln /p:RunCodeAnalysis=true
+
+Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
+https://github.com/include-what-you-use/include-what-you-use
+https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/#_incremental
+https://learn.microsoft.com/en-us/visualstudio/ide/walkthrough-building-an-application?view=vs-2022
+https://stackoverflow.com/questions/37785991/where-to-add-the-directory-for-def-file-in-visual-studio
+
+editorconfig
+https://learn.microsoft.com/en-us/visualstudio/ide/cpp-editorconfig-properties?view=vs-2019&viewFallbackFrom=vs-2022
+
 ====build_problems
 Build problems, ie incremental build problems:
 Tools -> Options -> Proj & Sol. -> Build & Run -> build log verbosity -> diagnostic
@@ -78,6 +90,7 @@ Graphical usage available from VS2019 on and in VS Code (Time Travel Debug for C
 Performance profiling
 http://euccas.github.io/blog/20180213/performance-profiling-tools-on-windows.html
 Tools:
+Windows Performance Recorder (WPR)
 Windows Performance Analyzer (WPA)
 PerfView
 (including memory usage)

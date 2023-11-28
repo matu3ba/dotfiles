@@ -42,6 +42,8 @@ or Get-Variable
 or visually more pleasing with: $env:path.Split(";")
 or even nicer: (Get-ChildItem Env:PATH).Value.Split(';') | Sort
 
+where pendant: Get-Command
+
 Tweak setting:
 Get-ExecutionPolicy -List
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine
