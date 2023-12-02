@@ -1,6 +1,6 @@
 Get installation location of msvc c, c++ compiler and linker with batch file:
 cd %ProgramFiles(x86)%\Microsoft Visual Studio\Installer\
-.\vswhere.exe
+vswhere
 installationPath 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
 fd cl.exe 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
 fd link.exe 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'

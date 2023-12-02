@@ -226,3 +226,23 @@ typedef struct structname {
 
 // SHENNANIGAN
 // clang and gcc do not support relative paths for object file output
+
+// MSVC SHENNANIGAN
+// https://developercommunity.visualstudio.com/t/please-implement-integer-overflow-detection/409051
+// Visual Studio 2022 version 17.7 has some non-optimal way of checking
+// https://developercommunity.visualstudio.com/t/10326281
+// Still much slower code due to missing intrinsics for overflow checks
+// https://developercommunity.microsoft.com/t/Support-for-128-bit-integer-type/879048
+// 128-bit types are neither supported
+// https://stackoverflow.com/questions/69565333/are-there-overflow-check-math-functions-for-msvc
+// Hope that undefined behavior from overflow does not break the code and use the intrinsics for reading output
+// https://wiki.sei.cmu.edu/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
+// slow standard approaches, because microsoft neither supports inline assembly
+
+int testEq(int a, int b) {
+  if (a != b) {
+    // Prefer __FILE_NAME__ to prevent absolute paths making builds non-reproducible
+    fprintf(stderr, "%s:%d got '%d' expected '%d'\n", __FILE__, __LINE__, a, b);
+    return 1;
+  }
+}

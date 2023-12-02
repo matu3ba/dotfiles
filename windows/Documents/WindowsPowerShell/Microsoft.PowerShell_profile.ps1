@@ -1,4 +1,5 @@
 $env:Path += ";$($env:USERPROFILE)\bin"
+$env:Path += ";$HOME\.local\bin"
 $env:Path += ";C:\Program Files\Mozilla Firefox"
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 # PowerShell v6+ has BOM-less UTF-8 as default. Versions below break for

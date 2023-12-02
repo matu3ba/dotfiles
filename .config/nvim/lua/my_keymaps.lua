@@ -546,7 +546,7 @@ map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]
 map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
 map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opts) -- mc means fast puking away files
 --map('nt', '<leader>ex', '<cmd>e .<CR>', opts) -- open dir of current buffer instead of cwd
-map('t', '<leader>ex', '<cmd>e .<CR>', opts) -- open dir of current buffer instead of cwd
+-- map('t', '<leader>ex', '<cmd>e .<CR>', opts) -- open dir of current buffer instead of cwd
 
 -- buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140
@@ -571,20 +571,20 @@ map('n', '<leader>co', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]],
 
 -- send G to shell window/buffer to jump to bottom
 -- idea: persistent shell buffer rollback
-map('n', ';Gj', [[<cmd>lua require("my_harpoon").setCursorToBottom(1)<CR>]], opts)
-map('n', ';Gk', [[<cmd>lua require("my_harpoon").setCursorToBottom(2)<CR>]], opts)
-map('n', ';Gl', [[<cmd>lua require("my_harpoon").setCursorToBottom(3)<CR>]], opts)
-map('n', ';Gu', [[<cmd>lua require("my_harpoon").setCursorToBottom(4)<CR>]], opts)
-map('n', ';Gi', [[<cmd>lua require("my_harpoon").setCursorToBottom(5)<CR>]], opts)
-map('n', ';Go', [[<cmd>lua require("my_harpoon").setCursorToBottom(6)<CR>]], opts)
+-- map('n', ';Gj', [[<cmd>lua require("my_harpoon").setCursorToBottom(1)<CR>]], opts)
+-- map('n', ';Gk', [[<cmd>lua require("my_harpoon").setCursorToBottom(2)<CR>]], opts)
+-- map('n', ';Gl', [[<cmd>lua require("my_harpoon").setCursorToBottom(3)<CR>]], opts)
+-- map('n', ';Gu', [[<cmd>lua require("my_harpoon").setCursorToBottom(4)<CR>]], opts)
+-- map('n', ';Gi', [[<cmd>lua require("my_harpoon").setCursorToBottom(5)<CR>]], opts)
+-- map('n', ';Go', [[<cmd>lua require("my_harpoon").setCursorToBottom(6)<CR>]], opts)
 
 -- send keyboard interrupt (SIGTERM) to process run in shell (C-c == ETX == \003)
-map('n', ';cj', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
-map('n', ';ck', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
-map('n', ';cl', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
-map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
-map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
-map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';cj', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';ck', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';cl', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';cu', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';ci', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
+-- map('n', ';co', [[<cmd>lua require("harpoon.term").sendCommand(1, "\003")<CR>]], opts)
 
 -- exec + log under cursor
 -- s shell content exec and log(log the command and then execute it)

@@ -212,6 +212,8 @@ return {
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
   --==bufferactions
+  -- blockers of harpoon2 mentioned in my_harpoon.lua
+  -- { 'ThePrimeagen/harpoon', branch = 'harpoon2', config = function() require('nvim-surround').setup() end, },
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- { 'ThePrimeagen/harpoon' }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- use instead track.nvim?

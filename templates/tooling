@@ -140,3 +140,6 @@ source: https://wiki.st.com/stm32mpu/wiki/Linux_tracing,_monitoring_and_debuggin
 
 Embedded (mutli-partition swapping)
 https://sbabic.github.io/swupdate/swupdate.html
+
+Non-programming tools:
+naps2 as graphical scanner app

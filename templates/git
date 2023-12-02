@@ -17,6 +17,9 @@ https://git-scm.com/docs/gitattributes/2.21.0
   autocrlf = true
 * remove bom + reformat via: iconv -f UTF-16 -t UTF-8 utf16lebom.cpp > utf8.cpp
 
+Best practice:
+Annotate all deviating files from norm and use for norm 1. encoding and 2. eol.
+
 https://git-scm.com/docs/gitfaq
 "What’s the recommended way to store files in Git?"
     "While Git can store and handle any file of any type, there are some

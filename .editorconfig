@@ -23,3 +23,14 @@ trim_trailing_whitespace = false
 # indent_style = tab
 # tab_width = 2
 # tab_width defaults to indent_size
+
+# to unset settings, ie due to unrepresentable utf-16-le-bom, use
+# charset = unset
+
+# [/some/explicit/path]
+#   charset = utf-16
+#   end_of_line = crlf
+
+# SHENNANIGAN
+# EditorConfig can not represent utf16-le-bom
+# https://github.com/editorconfig/editorconfig/issues/467

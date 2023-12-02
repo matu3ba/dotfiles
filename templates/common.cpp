@@ -796,6 +796,8 @@ void printGetLastError() {
 
 /// Prefer 'if constexpr' over 'enable_if' over SFINAE to keep things readable.
 /// Prefer template type specialization, if possible ('template <int T>').
+/// enable_if, enable_if_t etc available since C++14 (implementable via SFINAE)
+/// if constexpr since C++17 (not implementable via SFINAE)
 template <typename _Integral>
 void BestPracticeTemplateUsage(std::unique_ptr<Class<_Integral>> & ClassRef, const _Integral expected)
 {
@@ -909,3 +911,53 @@ template <typename _Integral, std::is_same<_Integral, int64_t>::value>
 // class declaration are considered inline functions and are always
 // instantiated." => Always move template fn implementations outside of
 // classes.
+
+// SHENNANIGAN
+// msvc has no reliable relative paths as macro yet (see experimental:deterministic mode)
+// workaround get filename by Andry https://stackoverflow.com/a/54335644
+template <typename T, size_t S>
+inline constexpr size_t fname_offs(const T(&str)[S], size_t i = S - 1) {
+	return (str[i] == '/' || str[i] == '\\') ? i + 1 : (i > 0 ? fname_offs(str, i - 1) : 0);
+}
+template <typename T>
+inline constexpr size_t fname_offs(T(&str)[1]) {
+	return 0;
+}
+namespace util_force_const_eval {
+	template <typename T, T v>
+	struct const_expr_value
+	{
+		static constexpr const T value = v;
+	};
+}
+#define FORCE_CONST_EVAL(exp) ::util_force_const_eval::const_expr_value<decltype(exp), exp>::value
+#define LEAF(FN) (&FN[FORCE_CONST_EVAL(fname_offs(FN))])
+
+int testEq(int a, int b) {
+  if (a != b) {
+    // Prefer __FILE_NAME__, which also works in C. Ideally, the compiler
+    // can be told to provide relative file paths.
+    fprintf(stderr,"%s:%d got '%d' expected '%d'\n", LEAF(__FILE__), __LINE__, a, b);
+    return 1;
+  }
+}
+
+// forward declaration in interface the Test function, if TV convertible to
+// double. Usage should be not inlined and use explicit instantiation,
+// especially in big code bases to save compilation time.
+template <class TVAL, class TEXP, class TEPS>
+static typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps);
+
+
+// check that value NaN if value convertible to double via parameter
+template <class TVAL>
+static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val);
+
+template <class TVAL>
+static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val)
+{
+  return (Val != Val); // NaN => (Val != Val)
+}
+// Explanation: return value of std::is_convertible is true/false, enable_if
+// first param is boolean, second is enabled type result is either empty struct
+// or struct with type, value and we want the type from that
