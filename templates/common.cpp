@@ -954,10 +954,22 @@ template <class TVAL>
 static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val);
 
 template <class TVAL>
-static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val)
-{
-  return (Val != Val); // NaN => (Val != Val)
-}
-// Explanation: return value of std::is_convertible is true/false, enable_if
+static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val) {
+    return (Val != Val); // NaN => (Val != Val)
+  }
+  // Explanation: return value of std::is_convertible is true/false, enable_if
 // first param is boolean, second is enabled type result is either empty struct
 // or struct with type, value and we want the type from that
+
+void someLambda(bool bVal1, const std::string & sName) {
+  auto DrawOp = [&](bool bVal1, const std::string & sName) {
+    if (bVal1)
+      std::cout << sName << "\n";
+  };
+}
+
+/// Windows Performance counter API's
+// WINBASEAPI BOOL WINAPI
+// QueryPerformanceCounter(__out LARGE_INTEGER *lpPerformanceCount);
+// WINBASEAPI BOOL WINAPI
+// QueryPerformanceFrequency(__out LARGE_INTEGER *lpFrequency);

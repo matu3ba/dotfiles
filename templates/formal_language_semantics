@@ -36,6 +36,13 @@ Interesting formal things of programming languages:
    * token may get lost (S->P->C with C dying and P not providing info to S)
      and algorithm has no time bound to detect this
    * supervision (library) necessary
+   * problem/design space (limitation to globally coordinate (using a local TCP/UNIX socket or something))
+     https://stackoverflow.com/questions/20076916/waiting-for-grandchild-after-child-process-has-died
+     + Linux prctl with PR_SET_CHILD_SUBREAPER
+     + pipe to original process with descendants inheriting write end of pipe:
+       closed => read-end readable for EOF
+     + ptrace
+     + use pid 1 or implement pid 1 functionality
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified

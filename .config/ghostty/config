@@ -55,6 +55,8 @@ palette = 14=#8ec07c
 palette = 7=#a89984
 palette = 15=#fbf1c7
 
+command = pwsh.exe
+
 #====commands
 # reset - reset terminal (ie on applications breaking stateful kitty protocol)
 

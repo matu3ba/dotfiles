@@ -231,3 +231,25 @@ to access or gets 'permission denied'.
 https://www.winfriedhyronimus.de/de/journal-beitraege/2021/05/16/rsync-unter-windows/
 https://www.winfriedhyronimus.de/de/journal-beitraege/2020/01/27/einrichtung-eines-ad-hoc-netzwerks-unter-windows-10/
 https://arunkrsoam.medium.com/how-to-use-rsync-on-windows-using-ssh-connection-835190e72ae0
+
+TODO clock in powershell
+
+====advanced
+
+https://stackoverflow.com/questions/74147128/how-do-i-send-keys-to-an-active-window-in-powershell
+$ps = Start-Process -PassThru -FilePath "C:\Program Files\VMware\VMware Horizon View Client\vmware-view.exe" -WindowStyle Normal
+$wshell = New-Object -ComObject wscript.shell
+
+# Wait until activating the target process succeeds.
+# Note: You may want to implement a timeout here.
+while (-not $wshell.AppActivate($ps.Id)) {
+  Start-Sleep -MilliSeconds 200
+}
+$wshell.SendKeys('~')
+Sleep 3
+$wshell.SendKeys('username')
+Sleep 2
+$wshell.SendKeys('{TAB}')
+Sleep 1
+$wshell.SendKeys('password')
+Stop-Process -Id $ps.Id

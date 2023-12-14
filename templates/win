@@ -172,7 +172,7 @@ replace                    Ctrl-h
   exit dialog              Esc
 debugging+continue         f5
   stop debugging           Shift-f5
-  toggle breakpoint        f9
+  toggle (enable) breakpt  (Ctrl-)f9
   step over                f10
   step into/out            f11/Shift-f11
   delete all breakpoints   Ctrl-Shift-f9
