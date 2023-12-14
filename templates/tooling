@@ -17,6 +17,7 @@ build system respecting unused files and detect parallel-unsafe build descriptio
 shell: fish, crush-shell
 terminal: contour, ghostty
 editors: neovim[more plugins], vim[stable+no surprises], helix[lazy setup, few plugins], kakoune
+tracy -- frame tracer and visualizer
 
 fdupes or fork jdupes - finding duplicates
 fdupes -qdN -r /ops/backup/
@@ -31,8 +32,11 @@ disk usage explorer: ncdu https://code.blicky.net/yorhel/ncdu or KDE filelight
 simple header testing framework: utest.h https://github.com/sheredom/utest.h
 
 proprietary
-whitebox - program execution tracer and visualizer
-tracy -- frame tracer and visualizer
+- whitebox - program execution tracer and visualizer
+  * known to handle project sizes up to doom, excellent to prototype algorithms
+- https://www.lauterbach.com/ trace32 tools + hardware for reversible execution
+  on embedded devices looks like longest running 'not academic exercise'
+  omniscient debugger
 
 - valgrind
 * cachegrind: cache profiler

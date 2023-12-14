@@ -30,6 +30,12 @@ Interesting formal things of programming languages:
    * instead of "update the value", "update the value for all associated
      aliases"
    * unsettled in LLVM blocking CHERI usage (mixed tagged pointer capabilities)
+- 8. build system parallelization relies on "Jobserver Implementation" protocol
+   * https://make.mad-scientist.net/papers/jobserver-implementation/
+   * token write to child and read after finishing, if incoming data exists
+   * token may get lost (S->P->C with C dying and P not providing info to S)
+     and algorithm has no time bound to detect this
+   * supervision (library) necessary
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified
