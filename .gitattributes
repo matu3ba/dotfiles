@@ -20,6 +20,8 @@
 # /some/explicit/path text working-tree-encoding=UTF-16 eol=CRLF
 
 # binary files
+# data/binary_data/** binary
+# lib/include/** linguist-vendored
 
 # SHENNANIGAN
 # Legacy encodings like utf-16le-bom may get wrongly renormalized and/or

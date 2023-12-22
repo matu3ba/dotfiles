@@ -45,7 +45,9 @@ New-Alias -Name gmn -Value GitMergeCommit -Force -Option AllScope
 New-Alias -Name gmn -Value GitMergeNoCommit -Force -Option AllScope
 New-Alias -Name gp -Value GitPush -Force -Option AllScope
 New-Alias -Name gpf -Value GitPushForce -Force -Option AllScope
-New-Alias -Name gpsu -Value GitPushSetUpstreamOrigin -Force -Option AllScope
+New-Alias -Name gpsuo -Value GitPushSetUpstreamOrigin -Force -Option AllScope
+New-Alias -Name gpsu -Value GitPushSetUpstreamDownstream -Force -Option AllScope
+New-Alias -Name gpsuu -Value GitPushSetUpstreamUpstream -Force -Option AllScope
 New-Alias -Name grv -Value GitRemoteVerbose -Force -Option AllScope
 New-Alias -Name gs -Value GitStatus -Force -Option AllScope
 New-Alias -Name gsh -Value GitShow -Force -Option AllScope
@@ -80,6 +82,8 @@ function GitPullNoRebaseFfonly { & git pull --no-rebase --ff-only $args }
 function GitPush { & git push $args }
 function GitPushForce { & git push --force-if-includes --force-with-lease $args }
 function GitPushSetUpstreamOrigin { & git push --set-upstream origin $(git branch --show-current) $args }
+function GitPushSetUpstreamDownstream { & git push --set-upstream downstream $(git branch --show-current) $args }
+function GitPushSetUpstreamUpstream { & git push --set-upstream upstream $(git branch --show-current) $args }
 function GitRemoteVerbose { & git remote -v }
 function GitShow { & git show $args }
 function GitShowRemote { & git remote show roigin $args }

@@ -131,3 +131,17 @@ Ports < 1024 are privileged by default. Anything above can be freely used.
 
 fast reconfiguration of dns (due to lags)
 TODO
+
+https://man.archlinux.org/man/wireshark-filter.4.en
+https://www.wireshark.org/docs/man-pages/wireshark-filter.html
+https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html
+https://blog.packet-foo.com/2013/05/the-notorious-wireshark-out-of-memory-problem/
+cd "C:\Program Files\Wireshark"
+-b means before, -a means after filesize in kb
+dumpcap
+dumpcap -D
+dumpcap -i X -b filesize:65535 -w "D:\wireshark_networktrace\trace.pcapng"
+dumpcap -i 2 -w "D:\wireshark_networktrace\20231221.pcapng"
+
+https://isc.sans.edu/diary/No+Wireshark+No+TCPDump+No+Problem/19409
+alternative without wireshark to capture packages

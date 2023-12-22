@@ -43,6 +43,32 @@ Interesting formal things of programming languages:
        closed => read-end readable for EOF
      + ptrace
      + use pid 1 or implement pid 1 functionality
+ - 9. debug system
+    * rr simulates threading and multiple processes in one process to get
+    accurate performance counter timings for accurate reproducibility.
+    This also rules out searching for tricky race conditions between threads.
+    * What's your imagination to what time-travel debugging can be?
+    * Egg-laying wull milk pig with mind-blowing complexity and scope.
+    A from my viewpoint optimal system would be a graphical + text editor with
+    shortcuts to serialize and deserialize 1. program control flow state by
+    relative conditions to another (in what source file area which thread or
+    process is), and 2. program state state conditions (relative or absolute
+    program conditions) and ideally would generalize both to 3. arbitrary
+    programs [in which for example kernel information like memory usage could
+    be queried] for all introspection use cases (debugging,
+    memcheck/validators, race condition checkers, tracers) to have seperate
+    overlays for debugging to reproduce the state of one program state
+    condition within the other tool even under stochastic events.
+    * As far as I understand, currently language semantics leak into debuggers
+    besides debuggers/systems with repls can not be designed well for third
+    party interactivity, which is why gdb and lldb do not expose pretty printer
+    as c api or formatting library etc.
+    * More ideally, the semantics of the program itself could be reasoned
+    about, but this would require compiler support with complete enough
+    memory models + simulator with debug api etc on top of that (say Miri) to
+    initialize the simulator from arbitrary program state.
+    * As of now, we neither have a cross-usable snapshotformat for programs (on
+    the same platform) nor tooling to compare program states or traces.
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified

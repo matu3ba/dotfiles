@@ -803,13 +803,11 @@ void BestPracticeTemplateUsage(std::unique_ptr<Class<_Integral>> & ClassRef, con
 {
   // prefer in class definition:
   static_assert( std::is_same<_Integral, int64_t>::value || std::is_same<_Integral, double>::value );
-  if constexpr (std::is_same<_Integral, int64_t>)
-  {
+  if constexpr (std::is_same<_Integral, int64_t>) {
     std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
     TEST_EQUAL(out_data->ToInt64(), expected);
   }
-  else if constexpr (std::is_same<_Integral, double>)
-  {
+  else if constexpr (std::is_same<_Integral, double>) {
     std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
     TEST_EQUAL(out_data->ToDouble(), expected);
   } else {
@@ -955,8 +953,9 @@ static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double
 
 template <class TVAL>
 static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val) {
-    return (Val != Val); // NaN => (Val != Val)
-  }
+  return (Val != Val); // NaN => (Val != Val)
+  static_assert(std::is_copy_constructible<_Type>::value, "Type must be copy-constructible!");
+}
   // Explanation: return value of std::is_convertible is true/false, enable_if
 // first param is boolean, second is enabled type result is either empty struct
 // or struct with type, value and we want the type from that
@@ -973,3 +972,32 @@ void someLambda(bool bVal1, const std::string & sName) {
 // QueryPerformanceCounter(__out LARGE_INTEGER *lpPerformanceCount);
 // WINBASEAPI BOOL WINAPI
 // QueryPerformanceFrequency(__out LARGE_INTEGER *lpFrequency);
+
+void ape_printing() {
+  std::fstream fs;
+  fs.open("filename.txt", std::fstream::app | std::fstream::out);
+  fs << "somestuff\n";
+  fs.close();
+}
+
+void ape_throw() {
+  throw std::runtime_error("error");
+}
+
+// Cast iterator to pointer
+void ape_itertoptr() {
+  string my_str= "hello world";
+  string::iterator it(my_str.begin());
+  char* pointer_inside_buffer=&(*it);
+}
+
+// SHENNANIGAN
+// destructors of virtual classes should ALWAYS have lifetime annotation
+// Otherwise: hell to debug, because ambiguous object lifetimes
+
+// SHENNANIGAN
+// synchronization of virtual classes should ALWAYS be annotated
+// Otherwise: hell to debug, because ambiguous synchronization
+
+// SHENNANIGAN clang-format annoyingly verbose to setup and configure
+// clang-format -style=llvm -dump-config > .clang-format
