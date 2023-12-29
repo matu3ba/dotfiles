@@ -31,6 +31,7 @@ Interesting formal things of programming languages:
      aliases"
    * unsettled in LLVM blocking CHERI usage (mixed tagged pointer capabilities)
 - 8. build system parallelization relies on "Jobserver Implementation" protocol
+   * https://gittup.org/tup/build_system_rules_and_algorithms.pdf "Build System Rules and Algorithms" by Mike Shal
    * https://make.mad-scientist.net/papers/jobserver-implementation/
    * token write to child and read after finishing, if incoming data exists
    * token may get lost (S->P->C with C dying and P not providing info to S)

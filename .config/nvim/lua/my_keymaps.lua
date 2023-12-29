@@ -630,12 +630,23 @@ map('n', '<leader>co', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]],
 -- map('nt', '<C-x>j', [[<cmd> lua print("not broken!")<CR>]], opts)
 
 -- r repeat last command
---map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
---map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "!!\n")<CR>]], opts)
---map('n', ';rl', [[<cmd>lua require("harpoon.term").sendCommand(3, "!!\n")<CR>]], opts)
---map('n', ';ru', [[<cmd>lua require("harpoon.term").sendCommand(4, "!!\n")<CR>]], opts)
---map('n', ';ri', [[<cmd>lua require("harpoon.term").sendCommand(5, "!!\n")<CR>]], opts)
---map('n', ';ro', [[<cmd>lua require("harpoon.term").sendCommand(6, "!!\n")<CR>]], opts)
+if vim.fn.has 'win32' == 1 then
+  map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "r\r")<CR>]], opts) -- r for repeat
+  map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "r\r")<CR>]], opts) -- alias for Invoke-History
+  map('n', ';rl', [[<cmd>lua require("harpoon.term").sendCommand(3, "r\r")<CR>]], opts)
+  map('n', ';ru', [[<cmd>lua require("harpoon.term").sendCommand(4, "r\r")<CR>]], opts)
+  map('n', ';ri', [[<cmd>lua require("harpoon.term").sendCommand(5, "r\r")<CR>]], opts)
+  map('n', ';ro', [[<cmd>lua require("harpoon.term").sendCommand(6, "r\r")<CR>]], opts)
+  -- SHENNANIGAN: keys != characters and platforms use different key encodings, so \<Up> might not work
+  -- "Up key may produce different sequences based on your $TERM value, shell, and system-global key remappings."
+else
+  map('n', ';rj', [[<cmd>lua require("harpoon.term").sendCommand(1, "!!\n")<CR>]], opts) -- r for repeat
+  map('n', ';rk', [[<cmd>lua require("harpoon.term").sendCommand(2, "!!\n")<CR>]], opts)
+  map('n', ';rl', [[<cmd>lua require("harpoon.term").sendCommand(3, "!!\n")<CR>]], opts)
+  map('n', ';ru', [[<cmd>lua require("harpoon.term").sendCommand(4, "!!\n")<CR>]], opts)
+  map('n', ';ri', [[<cmd>lua require("harpoon.term").sendCommand(5, "!!\n")<CR>]], opts)
+  map('n', ';ro', [[<cmd>lua require("harpoon.term").sendCommand(6, "!!\n")<CR>]], opts)
+end
 
 -- send line under cursor as command to harpoon terminal
 -- n means no log cursor content exec it

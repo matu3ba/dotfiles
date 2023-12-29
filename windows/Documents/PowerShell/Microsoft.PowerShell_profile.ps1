@@ -1,6 +1,7 @@
 $env:Path += ";$($env:USERPROFILE)\bin"
 $env:Path += ";$HOME\.local\bin"
 $env:Path += ";C:\Program Files\Mozilla Firefox"
+$env:Path += ";C:\Program Files\Python312\Scripts\pip.exe"
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"
@@ -9,7 +10,8 @@ $env:Editor = "nvim"
 
 # git completion https://github.com/dahlbyk/posh-git
 # PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
-
+# Install-Module VSSetup -Scope CurrentUser
+# confirm trust
 # inspiration for fuzzy finding in https://news.ycombinator.com/item?id=38471822
 
 #====shortcuts
@@ -57,6 +59,14 @@ New-Alias -Name gstu -Value GitStashPush -Force -Option AllScope
 New-Alias -Name gu -Value GitPullNoRebaseFfonly -Force -Option AllScope
 New-Alias -Name l -Value ListDense -Force -Option AllScope
 New-Alias -Name v -Value NvimCmd -Force -Option AllScope
+New-Alias -Name zbdeb -Value NvimCmd -Force -Option AllScope
+New-Alias -Name zdeb -Value ZigBuildDebug -Force -Option AllScope
+New-Alias -Name zbllvm -Value ZigDebug -Force -Option AllScope
+# New-Alias -Name zbsrel -Value ZigBootstrapRelease -Force -Option AllScope
+New-Alias -Name zbrel -Value ZigBuildRelease -Force -Option AllScope
+New-Alias -Name zrel -Value ZigRelease -Force -Option AllScope
+
+# function CreateChangeDirectory { & md -ea 0 buildrel\ && cd buildrel\ }
 function CdUp { & cd .. }
 function CdUp2 { & cd ..\.. }
 function CdUp3 { & cd ..\..\.. }
@@ -91,10 +101,86 @@ function GitStashPop { & git stash pop $args }
 function GitStashPush { & git stash push $args }
 function GitStatus { & git status $args }
 function ListDense { & Get-ChildItem $args -Force | Format-Wide Name -AutoSize }
-function NvimCmd { & nvim $args }
+function MakeWorkTree {
+  # https://powershell.one/powershell-internals/attributes/parameters
+  # param (
+  #     [switch] $IsValueNameRegularExpression = $True
+  # )
+  # $PSBoundParameters.ContainsKey('IsValueNameRegularExpression')
+  # $IsValueNameRegularExpression.IsPresent
+  param (
+    # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters
+    [Parameter(Mandatory, Position=0)] [string] $GitPath
+  )
+  $worktreesfolder = Split-Path -Path $GitPath -LeafBase
+  mkdir $worktreesfolder
+  pushd
+  cd $worktreesfolder
+  git clone --bare "$GitPath" .bare
+  # make sure git knows where the gitdir is
+  echo "gitdir: ./.bare" > .git
+  git worktree add master
+  popd
+}
 
 
 #====setup
 
 Import-Module posh-git
 Invoke-Expression (& { (zoxide init powershell | Out-String) })
+
+#====problem_bootstrap_zig
+# cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows"
+# cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows" -DZIG_TARGET_MCPU=baseline
+# cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows-gnu"
+# cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows-gnu" -DZIG_TARGET_MCPU=baseline
+# cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows-msvc"
+# cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows-msvc" -DZIG_TARGET_MCPU=baseline
+# cmake --build . --target install
+
+# ABI problems for msvc
+# function ZigBuildDebug { & .\buildrel\stage3\bin\zig build -p deb -Doptimize=Debug --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-native" --zig-lib-dir lib -Dstatic-llvm }
+# function ZigDebug { & ..\master\rel\bin\zig build -p deb -Doptimize=Debug --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-native" --zig-lib-dir lib -Dstatic-llvm }
+# function ZigBuildRelease { &  .\buildrel\stage3\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-native" --zig-lib-dir lib -Dstatic-llvm }
+# function ZigRelease { &  ..\master\rel\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-native" --zig-lib-dir lib -Dstatic-llvm }
+# In "x64 Native Tools Command Prompt for VS 2019":
+# Run in repo zig-bootstrap: .\build.bat
+# Run in repo zig: cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows-gnu"
+#                  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -GNinja
+#                  cmake --build . --target install
+# => zig build-exe zig ReleaseFast x86_64-windows-gnu 1 errors
+#      error: lld-link: duplicate symbol: atexit
+# function ZigBuildDebug { & .\buildrel\stage3\bin\zig build -p deb -Doptimize=Debug --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
+# function ZigDebug { & ..\master\rel\bin\zig build -p deb -Doptimize=Debug --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
+# function ZigBuildRelease { &  .\buildrel\stage3\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
+# function ZigRelease { &  ..\master\rel\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
+
+#====problem_msvc_usage
+# Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+# SHENNANIGAN vswhere more reliable than dedicated api https://gitlab.kitware.com/cmake/cmake/-/issues/19241
+# function ZigBootstrapRelease { & { md -ea 0 buildrel\ } && & { cd buildrel\ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -GNinja } && & { cd buildrel\ && Measure-Command ninja install } }
+# cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -G "Visual Studio 16 2019"
+# Getting correct msvc paths is annoying https://devblogs.microsoft.com/cppblog/finding-the-visual-c-compiler-tools-in-visual-studio-2017/
+# idea
+# https://cmake.org/cmake/help/latest/variable/MSVC.html
+# https://github.com/microsoft/vswhere/wiki/Find-VC
+# function ZigBootstrapRelease {
+#   & md -ea 0 buildrel\
+#   && cd buildrel\
+#   && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -GNinja
+#   && Measure-Command ninja install && cd ..
+# }
+# Known to work is
+# 1. usage within "Visual Studio Command Prompt":
+# cmake -help
+# cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -GNinja
+# 2. setting up environment flags in cmd
+# "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x64
+# cmake.exe -G "Ninja" ..
+# 3. https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
+# SHENNANIGAN varying setup depending on compiler version
+# SHENNANIGAN might or might not need -DMSVC_TOOLSET_VERSION=140
+# idea:
+# * query paths with vswhere in cmd: "c:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
+#   + how does this work within powershell?
+# * build things

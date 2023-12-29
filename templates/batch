@@ -25,6 +25,10 @@ There is no global history. Must use powershell for this. Only current history
 can be searched through via F7.
 Use http://mridgers.github.io/clink/ to fix broken Windows behavior.
 
+%cd% is current working dir (variable)
+%~dp0 is full path to batch file's dir (static)
+%~dpnx0 and %~f0 are full path to batch dir and file name (static).
+
 set bat_path=%~dp0
 set call_path=%cd%
 cd %bat_path%

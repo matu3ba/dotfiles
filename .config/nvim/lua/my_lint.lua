@@ -22,6 +22,7 @@ lint.linters_by_ft = {
   -- # ignore mypy lints with at end eof line:
   -- # type: ignore
   -- older systems and installing libs: pip install pipx
+  -- To adjust system PATH, use python -m pipx ensurepath
   -- pipx install mypy
   -- pipx install ruff
   -- Converting to pipx might require to rm ~/.local/bin/deps

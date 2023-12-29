@@ -206,6 +206,7 @@ if ( $value -like 'S-*-SQL??')
 # $value -is/-isnot [string]
 
 ====access_control
+icacls is chmod and chown together.
 Permissions:
   Full access (F)
   Modify access (M) (includes ‘delete’)
@@ -253,3 +254,12 @@ $wshell.SendKeys('{TAB}')
 Sleep 1
 $wshell.SendKeys('password')
 Stop-Process -Id $ps.Id
+
+function Switch-Item {
+  param ([switch]$on)
+  if ($on) { "Switch on" }
+  else { "Switch off" }
+}
+
+systeminfo |find "Available Physical Memory"
+Measure time (without memory): Measure-Command

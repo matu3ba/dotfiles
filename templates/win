@@ -263,3 +263,9 @@ https://rafaelhart.com/2014/12/nmap-wireshark/
 Visual Studio Commandline Prompt
 dumpbin -linkermember .\wpcap.lib
 dumpbin /archivemembers|exports|symbols /OUT:filename .\wpcap.lib
+
+SHENNANIGAN LoadLibray (temporary) uses up virtual memory in error cases, which can lead
+to out of virtual memory situations (error 8). See https://github.com/matu3ba/win32k-mitigation
+
+tracing ntdll calls
+https://www.x86matthew.com/view_post?id=lognt32
