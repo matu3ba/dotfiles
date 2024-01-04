@@ -260,7 +260,7 @@ class ClassWithMutex { // class with mutex
 //      handling of move and copy constructor, use `(const) char*` as provided
 //      argument for `(const) std::string &`.
 
-// SHENNANIGAN Reinterpreting bytes requires reinterpret_cast instead of static_cast.
+// Note: Reinterpreting bytes requires reinterpret_cast instead of static_cast.
 
 // SHENNANIGAN https://en.cppreference.com/w/cpp/container/map/find
 // "Compiler decides whether to return iterator of (non) const type by way of
@@ -743,15 +743,15 @@ void cstring_interop_annoying() {
 
 // unique_ptr pattern to handle file handles and cleanup via RAII
 void raii_filehandles() {
-char csFile[MAX_PATH] = "";
+  char csFile[MAX_PATH] = "";
   memcpy(csFile, sFile.c_str(), sFile.GetLength());
   std::unique_ptr<void, decltype (&CloseHandle)> hFile(nullptr, CloseHandle);
   // GENERIC_WRITE, FILE_SHARE_WRITE for setting anything on the file
   HANDLE tmphFile = CreateFile(csFile,
-    GENERIC_READ,
-    FILE_SHARE_READ,
+    GENERIC_READ, // SYNCHRONIZED, GENERIC_WRITE
+    FILE_SHARE_READ, // FILE_SHARE_WRITE
     NULL,
-    OPEN_EXISTING,
+    OPEN_EXISTING, //  CREATE_ALWAYS to overwrite if exists
     FILE_ATTRIBUTE_NORMAL,
     NULL
   );

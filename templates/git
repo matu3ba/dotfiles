@@ -58,3 +58,7 @@ Command-line feature, explain binary diff (if needed)
 Diff marker behavior
 TODO
 #*.sln       merge=binary
+
+====sparse checkout
+https://stackoverflow.com/questions/74072901/how-to-make-git-ignore-files-during-clone/74077699#74077699
+TODO

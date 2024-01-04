@@ -276,3 +276,6 @@ ionice
 tc
 ionice
 https://www.linuxtoday.com/blog/blocking-and-non-blocking-i-0/
+
+Injection techniques
+https://joev.dev/posts/unprivileged-process-injection-techniques-in-linux

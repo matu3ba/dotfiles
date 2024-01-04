@@ -81,6 +81,7 @@ https://stackoverflow.com/questions/25032832/way-to-configure-vs-remote-debugger
 Kernel mode debugging session http://www.vallejo.cc/2015/04/debugging-programs-with-multiple.html
 
 Timetravel debugging
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/getting-started-with-windbg
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview
 https://github.com/microsoft/WinDbg-Samples/blob/master/TTDQueries/tutorial-instructions.md
 WinDbg:
@@ -90,7 +91,24 @@ Step Back Forwards     p-  p
 Trace Back Forwards    t-  t
 Go Back Forwards       g-  g
 https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg
-Alternatively, use TTD.exe
+Alternatively, use TTD.exe:
+ttd.exe ping.exe msn.com
+ttd.exe -out d:\traces\ -children cmd.exe /C ping.exe msn.com
+ttd.exe -out d:\traces\ -monitor notepad.exe
+TaskList
+ttd.exe -out d:\traces\trace1 -attach 21440
+ttd.exe -out d:\traces\ -monitor notepad.exe -monitor ping.exe
+ttd.exe -stop all
+ttd.exe -cleanup
+max files size in MB: -maxfile 4096
+max recording perf: -replaycpusupport mostaggressive
+no noise: -noui -accepteula
+
+TODO:
+Analysis of a time travel debugging trace
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-replay
+Memory dumping etc
+
 Graphical usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
 
 Performance profiling
@@ -269,3 +287,17 @@ to out of virtual memory situations (error 8). See https://github.com/matu3ba/wi
 
 tracing ntdll calls
 https://www.x86matthew.com/view_post?id=lognt32
+
+SHENNANIGAN InitializeProcThreadAttributeList gives INVALID_PARAMETER (87) on
+missing inheritance of a parameter without the docs describing any errors, even
+in more complex Kernel APIs usage cases. The parameter must also never be NULL
+or an invalid handle.
+
+SHENNANIGAN TerminateThread and TerminateProcess() have severe semantic problems
+https://wiki.sei.cmu.edu/confluence/display/c/WIN01-C.+Do+not+forcibly+terminate+execution
+Replace thread with process.
+* If target thread owns critical section, critical section will not be released.
+* If target thread is allocating memory from heap, heap lock will not be released.
+* If target thread is executing certain kernel32 calls when terminated, kernel32 state for the thread's process could be inconsistent.
+* If target thread is manipulating global state of a shared DLL, state of the DLL could be destroyed, affecting other users of the DLL.
+* On some platforms (such as Microsoft Windows XP and Microsoft Windows Server 2003), the thread's initial stack is not freed, causing resource leaks.

@@ -122,7 +122,12 @@ function MakeWorkTree {
   git worktree add master
   popd
 }
-
+function MakePath {
+  param (
+    [Parameter(Mandatory, Position=0)] [string] $Path
+  )
+  New-Item -Path "$Path" -Force
+}
 
 #====setup
 

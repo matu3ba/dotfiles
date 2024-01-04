@@ -3,6 +3,7 @@
 #include <stdio.h>  // fprintf
 #include <errno.h>  // errno
 #include <limits.h> // limit
+#include <string.h> // memcpy
 
 // Standards
 // http://port70.net/~nsz/c/
@@ -218,6 +219,19 @@ void convert_string_to_int_simple(const char *buff) {
 // __attribute__((malloc)) static inline T * allocate(size_t count) {
 //     return reinterpret_cast<T*>(malloc(count * sizeof(T)));
 // }
+
+// SHENNANIGAN reinterpret_cast does not exist making different pointer type access UB
+// > Dereferencing a pointer that aliases an object that is not of a
+// > compatible type or one of the other types allowed by
+// > C 2011 6.5 paragraph 71 is undefined behavior.
+// => The proper fix for access a pointer with increased alignment is to use a
+// temporary with memcopy
+void workaround_no_reinterpret_cast() {
+  char arr[4] = {0,0,0,1};
+  int32_t i32_arr = 0;
+  memcpy(&i32_arr, &arr[0], 4);
+  int32_t * i32_arr_ptr = &i32_arr;
+}
 
 // typedef struct convention
 typedef struct structname {

@@ -95,3 +95,4 @@ pipeworld?
 
 markdown editor: retext
 extracting music: yt-dlp -x
+extracting video+sound: yt-dlp --max-filesize 1000m
