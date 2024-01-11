@@ -14,6 +14,14 @@ $env:Editor = "nvim"
 # confirm trust
 # inspiration for fuzzy finding in https://news.ycombinator.com/item?id=38471822
 
+# SHENNANIGAN unix line endings need
+# gdNo > some.diff
+# git apply --ignore-whitespace some.diff
+
+# DevShell to be used from Powershell
+# https://intellitect.com/blog/enter-vsdevshell-powershell/
+# https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022
+
 #====shortcuts
 # within shell: Get-PSReadLineKeyHandler
 # https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/ise/keyboard-shortcuts-for-the-windows-powershell-ise?view=powershell-7.4
@@ -60,18 +68,20 @@ New-Alias -Name gu -Value GitPullNoRebaseFfonly -Force -Option AllScope
 New-Alias -Name l -Value ListDense -Force -Option AllScope
 New-Alias -Name v -Value NvimCmd -Force -Option AllScope
 New-Alias -Name zbdeb -Value NvimCmd -Force -Option AllScope
-New-Alias -Name zdeb -Value ZigBuildDebug -Force -Option AllScope
-New-Alias -Name zbllvm -Value ZigDebug -Force -Option AllScope
+New-Alias -Name zcbrel -Value ZigCrossBuildRelease -Force -Option AllScope
+New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
+# New-Alias -Name zdeb -Value ZigBuildDebug -Force -Option AllScope
+# New-Alias -Name zbllvm -Value ZigDebug -Force -Option AllScope
 # New-Alias -Name zbsrel -Value ZigBootstrapRelease -Force -Option AllScope
-New-Alias -Name zbrel -Value ZigBuildRelease -Force -Option AllScope
-New-Alias -Name zrel -Value ZigRelease -Force -Option AllScope
+# New-Alias -Name zbrel -Value ZigBuildRelease -Force -Option AllScope
+# New-Alias -Name zrel -Value ZigRelease -Force -Option AllScope
 
 # function CreateChangeDirectory { & md -ea 0 buildrel\ && cd buildrel\ }
 function CdUp { & cd .. }
 function CdUp2 { & cd ..\.. }
 function CdUp3 { & cd ..\..\.. }
 function GitAdd { & git add $args }
-function GitApply { & git apply $args }
+function GitApply { & git apply --ignore-whitespace $args }
 function GitBranch { & git branch $args }
 function GitBranchAll { & git branch -avv $args }
 function GitBranchRemote { & git branch --remote $args }
@@ -128,6 +138,11 @@ function MakePath {
   )
   New-Item -Path "$Path" -Force
 }
+function ZigCrossBuildRelease { & ..\..\zig-bootstrap\master\out-win\host\bin\zig.exe build -p rel --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=ReleaseSafe --zig-lib-dir lib }
+function ZigCrossRelease { & ..\master\rel\zig.exe build -p rel --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=ReleaseSafe --zig-lib-dir lib }
+
+# New-Alias -Name zcbrel -Value ZigCrossBuildRelease -Force -Option AllScope
+# New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
 
 #====setup
 

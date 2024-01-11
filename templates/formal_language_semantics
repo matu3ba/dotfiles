@@ -70,6 +70,10 @@ Interesting formal things of programming languages:
     initialize the simulator from arbitrary program state.
     * As of now, we neither have a cross-usable snapshotformat for programs (on
     the same platform) nor tooling to compare program states or traces.
+    * As of now, debug system scripting experience is very bad
+      + non-portable
+      + natvis (must create bindings), python/javascript (no underlying type info)
+    * Kernel mode debug traces are not supported (unfeasible to support in general)
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified

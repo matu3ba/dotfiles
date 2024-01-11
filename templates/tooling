@@ -18,6 +18,7 @@ shell: fish, crush-shell
 terminal: contour, ghostty
 editors: neovim[more plugins], vim[stable+no surprises], helix[lazy setup, few plugins], kakoune
 tracy -- frame tracer and visualizer
+hex and reverse engineering editor: imhex https://github.com/WerWolv/ImHex
 
 fdupes or fork jdupes - finding duplicates
 fdupes -qdN -r /ops/backup/

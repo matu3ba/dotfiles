@@ -19,3 +19,19 @@ TODO some code
 
 see also "Systemic Software Debugging"
 tldr;
+
+Debug Tooling
+IDA Pro
+- Hex-Rays decompilers
+
+WinDbg and gdb with
+- enhancement plugins such as peda pwndbg
+- peda https://github.com/longld/peda
+- pwndbg https://github.com/pwndbg/pwndbg
+
+MSan, TSan
+- bug discovery, crash deduplication, root cause analysis
+
+Bochs x86 emulator
+- very convenient instrumentation API, compatibility with the latest CPU
+  features and ability to instrument entire operating systems

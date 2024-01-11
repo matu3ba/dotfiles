@@ -24,3 +24,6 @@ done
 5. Build systems with license annotations can not detect conflicting license information
 6. Legal risks can only be mitigated via human labor ior if there are reliable
 to use legal ways to detect license texts in a machine readable way.
+
+https://wiki.spdx.org/view/Technical_Team/Best_Practices
+https://spdx.github.io/spdx-spec/v2.3/file-tags/

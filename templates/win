@@ -81,33 +81,104 @@ https://stackoverflow.com/questions/25032832/way-to-configure-vs-remote-debugger
 Kernel mode debugging session http://www.vallejo.cc/2015/04/debugging-programs-with-multiple.html
 
 Timetravel debugging
+> 10x-20x performance hit in typical recording scenarios
+> Tracing a kernel mode process is not possible, only user mode can be traced.
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/getting-started-with-windbg
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview
 https://github.com/microsoft/WinDbg-Samples/blob/master/TTDQueries/tutorial-instructions.md
-WinDbg:
-1. File -> start debugging -> launch executable (advanced)
-2. File -> Start debugging -> Attach to process.
-Step Back Forwards     p-  p
-Trace Back Forwards    t-  t
-Go Back Forwards       g-  g
-https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg
-Alternatively, use TTD.exe:
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-ttd-exe-command-line-util
+=> use preferred method to also get the ttd.exe into system PATH
+Double check in Powershell:
+Import-Module -Name Appx -UseWindowsPowerShell
+(Get-AppxPackage | where Name -eq 'Microsoft.TimeTravelDebugging').InstallLocation
+
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-walkthrough
+
+Alternatively, use TTD.exe (very much not great is that programs are run as admin):
 ttd.exe ping.exe msn.com
-ttd.exe -out d:\traces\ -children cmd.exe /C ping.exe msn.com
-ttd.exe -out d:\traces\ -monitor notepad.exe
+ttd.exe -out "$HOME\traces\" cmd.exe
+Looks like this can only follow the child processes (no output from parent process):
+SHENNANIGAN The docs are wrong. /C leads to File not found error, omit it.
+~~ttd.exe -out "$HOME\traces\" -children cmd.exe /C ping.exe msn.com~~
+ttd.exe -out "$HOME\traces\" -children cmd.exe ping.exe
+ttd.exe -out "$HOME\traces\" -monitor notepad.exe
 TaskList
-ttd.exe -out d:\traces\trace1 -attach 21440
-ttd.exe -out d:\traces\ -monitor notepad.exe -monitor ping.exe
+ttd.exe -out "$HOME\traces\" -attach 21440
+ttd.exe -out "$HOME\traces\" -monitor notepad.exe -monitor ping.exe
 ttd.exe -stop all
 ttd.exe -cleanup
 max files size in MB: -maxfile 4096
 max recording perf: -replaycpusupport mostaggressive
 no noise: -noui -accepteula
 
-TODO:
 Analysis of a time travel debugging trace
-https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-replay
-Memory dumping etc
+WinDbg
+1. https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg
+    UWP app, so its binaries span in multiple locations
+    $HOME\AppData\Local\Microsoft\WindowsApps
+      WinDbgX.exe
+    C:\Program Files (x86)\Windows Kits\10\Debuggers\x64
+    C:\Program Files (x86)\Windows Kits\10\Debuggers\x86
+2. https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-replay
+2. File -> start debugging -> launch executable (advanced)
+3. File -> Start debugging -> Attach to process.
+> WinDbg Command-Line Options
+
+Step Back Forwards     p-  p
+Trace Back Forwards    t-  t
+Go Back Forwards       g-  g
+windbg -srcpath SourcePath
+====windbg_intro
+.sympath srv*
+.reload
+x notepad!*
+x notepad!wWin*
+bu notepad!wWinMain
+bl
+g
+lm
+k
+bu ntdll!ZwWriteFile
+bl
+~
+~0s
+k
+
+Analyze a problem:
+!analyze -v
+
+Show fixed symbol paths:
+.symfix
+.sympath+ path
+Only needed, if symbols have not fully qualified paths
+.srcpath+ path
+.reload
+bu MyApp!main
+g
+bp main
+g
+Controls
+.lines        enable source line information
+bp main       set initial breakpoint
+l+t           stepping will be done by source line
+l+s           source lines will be displayed at prompt
+g             run program until "main" is entered
+pr            execute one source line, and toggle register display off
+p             execute one source line
+
+Assembly:
+switch mode: l+t (source) and l-t (assembly)
+p,t,g for step, trace, go (semantics?)
+p-,t-,g-
+step out, into, over, go
+datatype dt
+sizeof sizeof()
+.writemem FileName Range
+SHENNANIGAN writemem does not detect hex length, so 0x30 would be 30 bytes
+.writemem C:\Users\hafer\Stack.bin 0x00000165e21c46f0 L48
+.writemem C:\Users\hafer\Stack.bin 0x00000165e21c46f0 0x30
+Larger chunks needs L?: .writemem C:\Users\hafer\Stack.bin 0x00000165e21c46f0 L?0x30
+.readmem myfile 1000 10
 
 Graphical usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
 
@@ -301,3 +372,9 @@ Replace thread with process.
 * If target thread is executing certain kernel32 calls when terminated, kernel32 state for the thread's process could be inconsistent.
 * If target thread is manipulating global state of a shared DLL, state of the DLL could be destroyed, affecting other users of the DLL.
 * On some platforms (such as Microsoft Windows XP and Microsoft Windows Server 2003), the thread's initial stack is not freed, causing resource leaks.
+
+System libraries: Kernel mode debugging
+C:\Windows\SysWOW64
+
+https://www.elastic.co/security-labs/deep-dive-into-the-ttd-ecosystem
+ttd  Tracing a kernel mode process is not possible

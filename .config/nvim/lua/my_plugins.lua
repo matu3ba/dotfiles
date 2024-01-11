@@ -254,6 +254,8 @@ return {
     config = function() require('which-key').setup() end,
   }, -- :Telescope builtin.keymaps
 
+  -- markdown live preview via :Glow[!] [path]
+  { 'ellisonleao/glow.nvim', config = function() require("glow").setup() end, },
   -- jupyter and markdown live preview, idea
   -- https://github.com/kiyoon/jupynium.nvim
   -- https://github.com/tamton-aquib/neorg-jupyter

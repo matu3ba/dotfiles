@@ -389,3 +389,18 @@ VFP register usage conventions:
 - Arm® Instruction Set Version 1.0 Reference Guide
 - Run-time ABI for the Arm Architecture 2023Q1
 - ARM® Instruction Set Quick Reference Card
+
+x86_64 Windows calling convention
+https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention?view=msvc-170
+Call Variables
+1. arguments 1-4 passed in fixed registers
+2. For int and ptr these are rcx, rdx, r8, r9
+3. For floats these are xmm0-xmm3 (older x87 registers not used to pass floats in 64 bit mode)
+4. Arguments without 8, 16 32 or 64-bits in size are to be passed by reference/pointer
+   * must also be on 16 byte aligned address
+Return Variables
+1. Int/Ptr up to 64 bit use rax, floats xmm0
+2. Other values constructed in memory by address specified by caller
+   * ptr to this memory constructed by caller as hidden first arg to fn
+     or hidden escond arg following the this ptr
+   * return value again in rax

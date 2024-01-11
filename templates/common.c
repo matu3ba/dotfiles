@@ -260,3 +260,12 @@ int testEq(int a, int b) {
     return 1;
   }
 }
+
+// Non-trivial C
+// https://zackoverflow.dev/writing/how-to-actually-write-c
+// https://zackoverflow.dev/writing/premature-abstraction
+
+void printf_align() {
+  // pad the input right in a field 10 characters long
+  printf("|%-10s|", "Hello");
+}

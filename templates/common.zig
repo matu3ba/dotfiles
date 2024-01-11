@@ -110,7 +110,7 @@ pub fn buildCommon(b: *std.build.Builder) void {
 
 // combine file paths into buffer
 fn usageCombinePaths() !void {
-    var path_buffer: [1000]u8 = undefined;
+    const path_buffer: [1000]u8 = undefined;
     const input1 = "/tmp";
     const number: usize = 15;
     const input2 = "file.zig";
@@ -257,8 +257,8 @@ fn simpleCAS() !void {
 
 // SHENNANIGAN performance: array assignments work with =
 test {
-    var x: u8 = 100;
-    var a: [1_000_000]u8 = .{x} ** 1_000_000;
+    const x: u8 = 100;
+    const a: [1_000_000]u8 = .{x} ** 1_000_000;
     var b: [1_000_000]u8 = undefined;
 
     // a pile of code
@@ -331,8 +331,15 @@ fn totalAll(structs: []const BigStruct) u128 {
 // isNan must be used which is based on 'x != x'.
 
 pub const SafetyLock = struct {
+    pub const State = if (builtin.is_test) enum { unlocked, locked } else enum { unlocked };
     state: State = .unlocked,
     // An enum with only 1 tag is a 0-bit type just like void
-    pub const State = if (runtime_safety) enum { unlocked, locked } else enum { unlocked };
     // ..
 };
+
+fn print_align() void {
+    const some_num: u8 = 20;
+    const some_num2: u8 = 120;
+    std.debug.print("{d:4} ", .{some_num});
+    std.debug.print("{d:4} ", .{some_num2});
+}
