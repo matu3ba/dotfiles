@@ -279,3 +279,9 @@ https://www.linuxtoday.com/blog/blocking-and-non-blocking-i-0/
 
 Injection techniques
 https://joev.dev/posts/unprivileged-process-injection-techniques-in-linux
+
+Endeavour or Arch broken key update procedure:
+idea delection command of keyring
+sudo pacman-key --populate arch
+sudo pacman-key --populate endeavouros
+sudo pacman -Suy

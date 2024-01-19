@@ -10,7 +10,7 @@ List of dedicated formally proved languages
 Proof effort is quadratic to code size.
 TODO paper as source
 
-Interesting formal things of programming languages:
+Interesting formal things of programming languages, stuff below and UI:
 - 1.implicit proof-carrying code
 - 2.explicit proof-carrying code
 - 3. verifying compilers with its cost
@@ -74,6 +74,29 @@ Interesting formal things of programming languages:
       + non-portable
       + natvis (must create bindings), python/javascript (no underlying type info)
     * Kernel mode debug traces are not supported (unfeasible to support in general)
+- 10. Very good high level reasoning on ISAs ("How to Design an ISA")
+  https://news.ycombinator.com/item?id=39031555
+    * Nobody bothers documenting ISA including time information ?except Agner Fog?
+    * Outside of embedded/security domains, there won't be a close-to-optimal
+      ISA for high perf (1. big core) in the near future 2. unless completely
+      new market creates demand
+      + Investment costs are too high
+      + No sane way to lower without efficient emulation compatibility
+      inheriting the very same design flaws.
+      + Formal models with explicit time information help, but few economic
+      incentive and a lot incentives against beyond simulations
+      + smaller ones like RISC5 may be feasible, see sel4 project
+    * Learning an optimal ISA from given ones: fixing 2 out of those 3
+      (1. time, 2. instruction semantics, 3. source code)
+      should work, because one can learn the distribution.
+      + requires something like "Multiobjective optimization under uncertainty"
+      with big complexity/amount of variables (numbers missing).
+- 11. arcan desktop engine semantics
+    * UI toolkit
+    * provided by OS / DE
+    * provided via IPC ABI rather than C/C++ dynamic linking API?
+    * security for isolation of graphical components
+    * time semantics for the render loop via Xorg compatible protocol?
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified

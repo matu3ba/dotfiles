@@ -1,6 +1,11 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
+// Tooling
+// - kcov https://github.com/liyu1981/kcov
+// - tracy
+// - cooler stuff?
+
 // typesafe version of (u16*)codepoint with codepoint type u8*
 // codepoint created from Utf8View which is [_]u8
 // const char = std.mem.bytesAsValue(u16, codepoint[0..2]); // U+0080...U+07FF

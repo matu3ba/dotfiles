@@ -74,3 +74,8 @@ Currently used storage paths: infocmp -D
 Copy terminfo to remote:
 infocmp -a xterm-kitty | ssh myserver tic -x -o \~/.terminfo /dev/stdin
 infocmp -a xterm-ghostty | ssh myserver tic -x -o \~/.terminfo /dev/stdin
+
+List process infos from spawned processes in shell:
+ps -o pid,ppid,cmd,pgid
+List all processes with pgid:
+ps ax -O pgid
