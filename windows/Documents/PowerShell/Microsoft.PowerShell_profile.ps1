@@ -2,6 +2,7 @@ $env:Path += ";$($env:USERPROFILE)\bin"
 $env:Path += ";$HOME\.local\bin"
 $env:Path += ";C:\Program Files\Mozilla Firefox"
 $env:Path += ";C:\Program Files\Python312\Scripts\pip.exe"
+$env:Path += ";C:\Program Files\Wireshark"
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"
@@ -21,6 +22,10 @@ $env:Editor = "nvim"
 # DevShell to be used from Powershell
 # https://intellitect.com/blog/enter-vsdevshell-powershell/
 # https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022
+
+#====common
+# copy to clipboard including newline: pwd | clip
+# copy to clipboard no newline: pwd | Set-Clipboard
 
 #====shortcuts
 # within shell: Get-PSReadLineKeyHandler

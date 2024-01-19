@@ -177,7 +177,8 @@ return {
     'stevearc/oil.nvim',
     config = function() require('oil').setup { view_options = { show_hidden = true } } end,
   },
-  { 'anuvyklack/hydra.nvim' }, -- my_hydra.lua
+  { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
+  -- { 'anuvyklack/hydra.nvim' },
   -- note visual mode gc,gb clash
   -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
   {

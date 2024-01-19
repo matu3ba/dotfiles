@@ -91,9 +91,6 @@ M.venn_hydra = Hydra {
   config = {
     color = 'pink',
     invoke_on_body = true,
-    hint = {
-      border = 'rounded',
-    },
     on_enter = function() vim.wo.virtualedit = 'all' end,
   },
   mode = 'n',
@@ -140,9 +137,6 @@ M.ascii_hydra = Hydra {
   config = {
     color = 'pink',
     invoke_on_body = true,
-    hint = {
-      border = 'rounded',
-    },
     on_enter = function() vim.wo.virtualedit = 'all' end,
   },
   mode = 'n',
@@ -204,9 +198,6 @@ if ok_minimove == true then
     config = {
       color = 'pink',
       invoke_on_body = true,
-      hint = {
-        border = 'rounded',
-      },
     },
     mode = 'v',
     body = '<leader>vb',
@@ -236,9 +227,6 @@ if ok_minimove == true then
     config = {
       color = 'pink',
       invoke_on_body = true,
-      hint = {
-        border = 'rounded',
-      },
     },
     mode = 'n',
     body = '<leader>vl',
@@ -326,7 +314,6 @@ end
 --     color = "amaranth",
 --     invoke_on_body = true,
 --     hint = {
---       border = "rounded",
 --       position = "middle",
 --     },
 --   },

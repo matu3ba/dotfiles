@@ -97,9 +97,9 @@ https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-tra
 Alternatively, use TTD.exe (very much not great is that programs are run as admin):
 ttd.exe ping.exe msn.com
 ttd.exe -out "$HOME\traces\" cmd.exe
+ttd.exe -out C:\traces -children cmd.exe /C ping.exe msn.com
 Looks like this can only follow the child processes (no output from parent process):
-SHENNANIGAN The docs are wrong. /C leads to File not found error, omit it.
-~~ttd.exe -out "$HOME\traces\" -children cmd.exe /C ping.exe msn.com~~
+ttd.exe -out "$HOME\traces\" -children cmd.exe /C ping.exe msn.com
 ttd.exe -out "$HOME\traces\" -children cmd.exe ping.exe
 ttd.exe -out "$HOME\traces\" -monitor notepad.exe
 TaskList
@@ -190,6 +190,9 @@ Windows Performance Analyzer (WPA)
 PerfView
 (including memory usage)
 https://learn.microsoft.com/en-us/visualstudio/profiling/memory-usage-without-debugging2?view=vs-2022
+https://github.com/matu3ba/win32k-mitigation/issues/1
+reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\child_ntdll_only.exe" /v TracingFlags /t REG_DWORD /d 1 /f
+reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\child_ntdll_only.exe"
 
 Perf traces
 https://github.com/google/UIforETW
@@ -378,3 +381,6 @@ C:\Windows\SysWOW64
 
 https://www.elastic.co/security-labs/deep-dive-into-the-ttd-ecosystem
 ttd  Tracing a kernel mode process is not possible
+
+Windows <= 10 services can run processes as user SYSTEM != user Adminstrator.
+SHENNANIGAN Windows >= 11 require hacks to run processes as SYSTEM.

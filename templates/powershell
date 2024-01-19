@@ -20,6 +20,16 @@ Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Re
 Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Recurse -Force
 Pull all elements into top level destination scope via '-Container:$false'
 
+mount directory as drive
+net use R: /delete
+subst R: $HOME\somedir
+
+reliably copy over network with retries
+#   0          1     2      3      4   5          6           7          8     9
+# cmd         src  dest   what  time? exclusive nojobheader nosummary reapeat wait_until_repeat
+robocopy.exe $src $dest filename /eta /xx       /njh        /njs       /R:0   /W:5
+robocopy $src $dest PxApprovalTests.exe /eta /xx /njh /njs /R:0 /W:5
+
 SHENNANIGAN
 - incorrect paths (/ instead of \) are gobbled together somehow by powershell
 leading to the same result as -Container:$false
@@ -60,6 +70,10 @@ copy line, paste line?
 
 Kill process, if running or not:
 Get-Process "ssh-agent" -ea SilentlyContinue | Stop-Process -PassThru
+List processes as tree
+pslist64.exe -t
+List processes (not as tree)
+tasklist /v
 
 Start ssh as admin in background:
 Get-Service -Name ssh-agent | Set-Service -StartupType Manual

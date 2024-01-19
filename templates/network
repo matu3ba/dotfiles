@@ -49,12 +49,20 @@ To get the ip visually, use `ip a` and look for dynamic (typically DHCP)
 IP=THEIP
 PORT=80
 sudo tcpdump -n -i eth0 -w file.tcpdump "(src port PORT or dst port PORT) and not (src net YOURIP or dst net YOURIP)"
+-C 10 to split file after 10 million bytes
 To get interfaces and ips, use: ip -br a
 To get interface information, ie to search for dynamic (DHCP): ip -f inet addr show interface
 
 Alternatives to tcpdump on Windows(tcpdump does not work in WSL): winpcap, wireshark, netsh trace
 netsh trace start capture=yes IPv4.Address=192.168.122.2
 Reading trace on Windows with "Message Analyzer".
+
+Split network trace into multiple files:
+editcap.exe -A '2023-12-22 01:00:00' -B '2023-12-22 04:00:00' input.pcap output.pcap
+editcap -c 1000 input.pcap output.pcap
+-i seconds_per_file
+-A YYYY-MM-DD HH:MM:SS -B YYYY-MM-DD HH:MM:SS with A start time, B stop time [format 2023-12-22 01:00:00 ]
+-A 2023-12-22 01:00:00 -B 22-12-2023 04:00:00
 
 Adding static ip address to connect to same subsystem
 sudo ip a a 192.168.XX.XX/24 dev interface
@@ -133,6 +141,8 @@ fast reconfiguration of dns (due to lags)
 TODO
 
 https://man.archlinux.org/man/wireshark-filter.4.en
+frame.time >= "Oct 15, 2012 16:00:00"
+frame.time > "2023-12-22 03:27:00" && frame.time < "2023-12-22 03:38:00"
 https://www.wireshark.org/docs/man-pages/wireshark-filter.html
 https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html
 https://blog.packet-foo.com/2013/05/the-notorious-wireshark-out-of-memory-problem/
@@ -145,3 +155,8 @@ dumpcap -i 2 -w "D:\wireshark_networktrace\20231221.pcapng"
 
 https://isc.sans.edu/diary/No+Wireshark+No+TCPDump+No+Problem/19409
 alternative without wireshark to capture packages
+
+nat
+https://tailscale.com/blog/how-nat-traversal-works
+poke holes through nat via icmp messages (using traceroute)
+https://github.com/samyk/pwnat

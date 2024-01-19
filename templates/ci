@@ -122,3 +122,25 @@ experimental idea:
   * yet capablities/jailing/isolation
   *
 - caching interface?
+
+jenkins syntax
+script execution
+sh '''
+
+'''
+// somecomment
+
+run process as SYSTEM on Windows 11.
+https://www.gabsoftware.com/tips/run-cmd-or-any-process-as-system-account-on-windows/
+https://www.winhelponline.com/blog/run-program-as-system-localsystem-account-windows/
+psexec64 -i -s cmd.exe
+
+unclear how to run process as SYSTEM on Windows 11:
+https://serverfault.com/questions/1110848/how-to-run-cmd-exe-using-the-system-account-on-windows-11
+Most likely requires to hack things.
+
+Backup: copy JENKINS_HOME directory without cache/ Backup/.
+
+Should not use SYSTEM user on < win11, but Administrator. Ideally Jenkins would
+allow do allow checkout with dedicated user account and only (re)move files and
+set permissions in another user account for running jobs.

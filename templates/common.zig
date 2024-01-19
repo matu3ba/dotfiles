@@ -1,10 +1,17 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
-// Tooling
-// - kcov https://github.com/liyu1981/kcov
-// - tracy
-// - cooler stuff?
+// Tools (common vs special)
+// kcov - https://github.com/liyu1981/kcov
+// tracy - https://github.com/wolfpld/tracy
+// cova(cli args) - https://github.com/00JCIV00/cova
+// rizin(reverse engineering) - https://github.com/rizinorg/rizin
+
+// Tools windows
+// raddebugger - https://github.com/EpicGames/raddebugger
+// system analysis tool - https://github.com/winsiderss/systeminformer
+// Library dependencies - https://github.com/lucasg/Dependencies
+// ntrace - https://github.com/rogerorr/NtTrace
 
 // typesafe version of (u16*)codepoint with codepoint type u8*
 // codepoint created from Utf8View which is [_]u8
@@ -348,3 +355,7 @@ fn print_align() void {
     std.debug.print("{d:4} ", .{some_num});
     std.debug.print("{d:4} ", .{some_num2});
 }
+
+const windows_utf16_string_literal = struct {
+  const L = std.unicode.utf8ToUtf16LeStringLiteral;
+};

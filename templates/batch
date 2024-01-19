@@ -81,3 +81,7 @@ Silence all output:
 Change partition:
 cd /d D:
 D:
+
+check if file exists
+if exist "C:\myprogram\sync\data.handler" echo Now Exiting && Exit
+if not exist "C:\myprogram\html\data.sql" Exit
