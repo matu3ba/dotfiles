@@ -23,6 +23,7 @@ Pull all elements into top level destination scope via '-Container:$false'
 mount directory as drive
 net use R: /delete
 subst R: $HOME\somedir
+subst R: /d
 
 reliably copy over network with retries
 #   0          1     2      3      4   5          6           7          8     9

@@ -268,7 +268,7 @@ fn simpleCAS() !void {
 }
 
 // SHENNANIGAN performance: array assignments work with =
-test {
+test "perf array assignment" {
     const x: u8 = 100;
     const a: [1_000_000]u8 = .{x} ** 1_000_000;
     var b: [1_000_000]u8 = undefined;
@@ -359,3 +359,28 @@ fn print_align() void {
 const windows_utf16_string_literal = struct {
   const L = std.unicode.utf8ToUtf16LeStringLiteral;
 };
+
+// SHENNANIGAN/PERFORMANCE APIs with optional slices to multi-pointer are unflexible,
+// because the pointer can not be null for the field to be unset and to be set
+// in the called fn.
+// This can introduce semantic problems and has a superfluos load into register
+// instead of on most archs register-less 0-load.
+// Example infered from Windows LookupAccountSidW which has parameter
+//    Name: ?win.LPWSTR,
+fn some_opt_multi_ptr_api(val: ?[*:0]u8) void {
+    _ = val;
+}
+fn unflexible_opt_multi_ptr_api() void {
+    // const acc_name: ?[*:0]u8 = undefined;
+    // var raw_acc_name = @as([*:0]u8, @ptrCast(acc_name));
+    // templates\common.zig:373:46: error: use of undefined value here causes undefined behavior
+
+    // var raw_acc_name = @as([*:0]u8, @ptrCast(acc_name));
+    // templates\common.zig:377:46: error: null pointer casted to type '[*:0]u8'
+
+    var acc_name: [*:0]u8 = @as([*:0]u8, @constCast(""));
+    some_opt_multi_ptr_api(acc_name[0..]);
+}
+test "unflexible_opt_multi_ptr_api" {
+    unflexible_opt_multi_ptr_api();
+}

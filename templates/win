@@ -129,10 +129,15 @@ Trace Back Forwards    t-  t
 Go Back Forwards       g-  g
 windbg -srcpath SourcePath
 ====windbg_intro
+https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg--kernel-mode-
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/k--kb--kc--kd--kp--kp--kv--display-stack-backtrace-
+https://gist.github.com/nickfloyd/a332462f85ac32372c74
 .sympath srv*
 .reload
 x notepad!*
 x notepad!wWin*
+.frame - stack frame
+dv or dt - value of variable.
 bu notepad!wWinMain
 bl
 g
