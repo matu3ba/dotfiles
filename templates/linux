@@ -285,3 +285,5 @@ idea delection command of keyring
 sudo pacman-key --populate arch
 sudo pacman-key --populate endeavouros
 sudo pacman -Suy
+
+clone barebone https://nullprogram.com/blog/2023/03/23/

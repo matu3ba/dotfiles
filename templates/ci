@@ -1,4 +1,18 @@
-ideal solution:
+High level
+  https://gregoryszorc.com/blog/2021/04/07/modern-ci-is-too-complex-and-misdirected/
+  * single remote code execution as service platform
+    + built for servicing both near real time and batch/delayed execution
+  * uploading your DAG to an execution service
+  * single DAG dictating all build, testing, and release tasks
+    + zig build to rule them all
+  * make it a lib
+  * configuration + debugging customer responsibility
+    + why should companies externalize their setup/configuration costs?
+    + declarative code simpler to debug, no dedicate yaml code
+    + example: debugging nix problems without system knowledge
+    + boils down to how to expose descendant processes for debugging
+    and tracing them with what static/dynamic granularity
+Low level:
 - configurable
   * editor|shell|monitor integration for runner systems (local|bare|VM)
   * perf vs security tradeoffs
