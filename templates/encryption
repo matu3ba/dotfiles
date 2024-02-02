@@ -1,0 +1,7 @@
+Talking To People - messengers
+Encrypting Email - email is insecure, gnugpg better than nothing
+Sending Files - Magic Wormhole
+Encrypting Backups - tarsnap or full disk encryption
+Signing Packages - minisign
+Encrypting Application Data - libsodium
+Encrypting Files - age like https://github.com/str4d/rage
