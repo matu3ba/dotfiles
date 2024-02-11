@@ -2,3 +2,16 @@
   * use at least CRC
   * certificate authorities will test for correct error behavior
   * check the regulatory standards and laws
+
+- parallel IO Ports, parallel input ports, parallel output ports
+  * does not specify "how parallel data is received or send"
+  * board/CPU vendor specified
+  * often very limited and the fundamental bottleneck
+  * may be blocking and thus insufficient for time-deterministic use cases
+  * see also "Parallel Input/Output", "ARM Cortex M7 parallel io ports"
+  * fully parallel IO usually means "uses a PIC"
+
+- debugging capabilities of host and target system often not exemplified
+  * tooling takes effort to produce and maintain
+  * custom logic often IP, so vendors may prefer to not give out information
+    unless via sold debugging tooling

@@ -269,3 +269,40 @@ void printf_align() {
   // pad the input right in a field 10 characters long
   printf("|%-10s|", "Hello");
 }
+
+// function pointer example from https://stackoverflow.com/questions/252748/how-can-i-use-an-array-of-function-pointers
+int sum(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
+int mul(int a, int b) { return a * b; }
+int div_noconflict(int a, int b) { return (b != 0) ? a / b : 0; }
+
+int main() {
+    // Array of function pointers initialization
+    int (*callbacks[4]) (int, int) = {sum, sub, mul, div_noconflict};
+
+    // Using the function pointers
+    int result;
+    int i = 20, j = 5, op;
+
+    for (op = 0; op < 4; op++) {
+        result = callbacks[op](i, j);
+        printf("Result: %d\n", result);
+    }
+
+    return 0;
+}
+
+// SHENNANIGAN const char* to void* cast has unhelpful error messages
+void fn_voidptr(void * raw_ptr, uint16_t len) {
+  memset(raw_ptr, 0, len);
+}
+void use_voidptr() {
+	const char *sVars[] = {
+		"MAIN.bIn_Overflow",
+		"MAIN.bIn_Counter",
+  };
+  fn_voidptr((void*)sVars[0], strlen(sVars[0]));
+}
+
+// standard flag to exclude rarely used things on Windows
+#define WIN32_LEAN_AND_MEAN

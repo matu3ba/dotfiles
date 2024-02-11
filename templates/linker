@@ -171,3 +171,6 @@ TODO summarize https://www.qualys.com/2023/06/06/renderdoc/renderdoc.txt
 by functionality
 
 TODO explain https://en.wikipedia.org/wiki/DLL_injection
+
+Things to remember when linking C/C++ code.
+https://gist.github.com/gubatron/32f82053596c24b6bec6?permalink_comment_id=2575013

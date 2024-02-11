@@ -361,6 +361,9 @@ Visual Studio Commandline Prompt
 dumpbin -linkermember .\wpcap.lib
 dumpbin /archivemembers|exports|symbols /OUT:filename .\wpcap.lib
 
+start visual studio from terminal cli
+TODO
+
 SHENNANIGAN LoadLibray (temporary) uses up virtual memory in error cases, which can lead
 to out of virtual memory situations (error 8). See https://github.com/matu3ba/win32k-mitigation
 
@@ -389,3 +392,9 @@ ttd  Tracing a kernel mode process is not possible
 
 Windows <= 10 services can run processes as user SYSTEM != user Adminstrator.
 SHENNANIGAN Windows >= 11 require hacks to run processes as SYSTEM.
+
+====fast_admin_shell
+Windows key + X
+A
+
+disable HyperV: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Hypervisor

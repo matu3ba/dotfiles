@@ -10,7 +10,7 @@ const builtin = @import("builtin");
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger
 // system analysis tool - https://github.com/winsiderss/systeminformer
-// Library dependencies - https://github.com/lucasg/Dependencies
+// dll dependencies - https://github.com/lucasg/Dependencies
 // ntrace - https://github.com/rogerorr/NtTrace
 
 // typesafe version of (u16*)codepoint with codepoint type u8*

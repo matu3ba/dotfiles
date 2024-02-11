@@ -155,6 +155,8 @@ pkgs.mkShell {
 }
 direnv:
 echo "use nix" > .envrc && direnv allow
+alternative:
+https://github.com/Cloudef/nix-autoenv
 
 Sharing dependencies between default.nix and shell.nix
 TODO
