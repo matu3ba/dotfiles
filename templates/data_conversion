@@ -1,2 +1,15 @@
 JSON, TOML, YAML, XML, CSV
 https://github.com/tomwright/dasel
+
+good data format
+* simple
+* crypto standard
+* navigation standard
+* patch standard
+
+- XML, XML Security, XPath, XML patch
+- JSON, JWT, JSON Path, JSON Patch
+- YAML, signed-yaml/YAML-crypt, YAML Path, YAML Patch
+Including additions bloated and complex to implement.
+
+Is there a better format?
