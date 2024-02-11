@@ -266,6 +266,15 @@ see also https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsy
 
 [1] https://blog.wesleyac.com/posts/the-curse-of-nixos
 
-
 nix resources
 https://github.com/figsoda/ekalf/tree/main
+
+SHENNANIGAN
+Newer mesa headers will not work together with older ones, so opengl with mesa
+can not be pure, since is a global runtime property of the hardware.
+Workarounds
+- 1. (remain on unstable), create overlay and/or flake to pin it
+- 2. https://discourse.nixos.org/t/design-discussion-about-nixgl-opengl-cuda-opencl-wrapper-for-nix/2453
+  * https://github.com/NixOS/nixpkgs/issues/9415
+  * https://ryantm.github.io/nixpkgs/builders/packages/opengl/
+- 3. integrate it as part of the package for the system build
