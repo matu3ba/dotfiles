@@ -49,7 +49,7 @@ BEGIN_ENUM(OsType)
     DECL_ENUM_ELEMENT(HACKINTOSH),
 } END_ENUM(OsType)
 // usage
-getStringOsType(WINBLOWS);
+// getStringOsType(WINBLOWS);
 
 
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
@@ -259,6 +259,7 @@ int testEq(int a, int b) {
     fprintf(stderr, "%s:%d got '%d' expected '%d'\n", __FILE__, __LINE__, a, b);
     return 1;
   }
+  return 0;
 }
 
 // Non-trivial C

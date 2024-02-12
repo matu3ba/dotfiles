@@ -4,11 +4,12 @@
 #include <stdlib.h> // assert: exit
 #include <stdio.h>  // assert: fprintf
 
+#ifdef SANECATMACRO
 // Maro expansion once for validity yields in slightly more ugly code and unused
 // value warning, so omit it. See link for discussion.
 #define STRINGIFY(A) ((A),STRINGIFY_INTERN(A))
 #define PPCAT(A) ((A),(B),PPCAT_INTERN(A,B))
-// and do instead
+#else // and do instead
 #define STRINGIFY_INTERN(A) (#A)
 #define STRINGIFY(A) STRINGIFY_INTERN(A)
 #define PPCAT_INTERN(A,B) A ## B
@@ -19,6 +20,7 @@
 #define RESULT COMBINE(test0, test1)
 #define emptystr ""
 #define test2 testme2
+#endif
 
 void printbanana(const char* str) {
     printf("t2: %s\n", str);
@@ -118,6 +120,7 @@ int add_typesafe_generic_selection_c11 (void) {
   printf("%d\n", add(1, 2));
   printf("%d\n", add(1, 2, 3));
   //printf("%d\n", add(1, 2, 3, 4)); Compiler error for this.
+  return 0;
 }
 int add2 (int a, int b) { return a + b; }
 int add3 (int a, int b, int c) { return a + b + c; }
@@ -156,3 +159,6 @@ int add3 (int a, int b, int c) { return a + b + c; }
 // 1. Add -Wstring-conversion and either 1. handle char* in callee fns or 2. always pass std::string family
 // 2. Use std::string or memory-managing containers in callee fns or document lifetime explicitly.
 // 3. Always initialize within managed containers xor delete default constructors
+
+// Pre-defined Compiler Macros Wiki
+// _WIN32, _WIN64, __linux__, __APPLE__, __MACH__

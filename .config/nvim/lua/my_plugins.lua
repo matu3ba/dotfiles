@@ -18,8 +18,7 @@ return {
   --Or for only 1 plugin from the lazy-lock: :Lazy restore pluginname
   -- { 'https://mzte.de/git/LordMZTE/znvim' },
   { 'nvim-lua/plenary.nvim' },
-  --<l>ma (, dependencies = { 'matu3ba/plenary.nvim', lazy = false })
-  { 'marko-cerovac/material.nvim', priority = 1000,
+  { 'marko-cerovac/material.nvim', priority = 1000, --<l>ma
     config = function()
       require('material').setup({
           -- workaround https://github.com/marko-cerovac/material.nvim/issues/181

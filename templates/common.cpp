@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <map>
 #include <mutex>
+#include <stdexcept> // std::runtime_error
 #include <string>
 #include <vector>
 
@@ -117,9 +118,11 @@ void iter() {
     for (auto iter = std::begin(mapexample); iter != std::end(mapexample); ++iter) {
         printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
         ptr_str = &iter->second;
+        ptr_str = ptr_str; // read the value
     }
     auto search = mapexample.find(1);
     if (search != mapexample.end()) ptr_str = &search->second;;
+    ptr_str = ptr_str; // read the value
 }
 
 void sortarray() {
@@ -739,8 +742,10 @@ void cstring_interop_annoying() {
   char const * buffer[] = {"ls", "-l", NULL};
   char * const * argv = const_cast<char * const *>(buffer);
   int execed = execve(cmd, argv, NULL);
+  execed = execed;
 }
 
+#ifdef _WIN32
 // unique_ptr pattern to handle file handles and cleanup via RAII
 void raii_filehandles() {
   char csFile[MAX_PATH] = "";
@@ -793,27 +798,28 @@ void printGetLastError() {
     std::string message = std::system_category().message(error);
     std::cout << "ERROR: " << message << std::newline;
 }
+#endif
 
 /// Prefer 'if constexpr' over 'enable_if' over SFINAE to keep things readable.
 /// Prefer template type specialization, if possible ('template <int T>').
 /// enable_if, enable_if_t etc available since C++14 (implementable via SFINAE)
 /// if constexpr since C++17 (not implementable via SFINAE)
-template <typename _Integral>
-void BestPracticeTemplateUsage(std::unique_ptr<Class<_Integral>> & ClassRef, const _Integral expected)
-{
-  // prefer in class definition:
-  static_assert( std::is_same<_Integral, int64_t>::value || std::is_same<_Integral, double>::value );
-  if constexpr (std::is_same<_Integral, int64_t>) {
-    std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
-    TEST_EQUAL(out_data->ToInt64(), expected);
-  }
-  else if constexpr (std::is_same<_Integral, double>) {
-    std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
-    TEST_EQUAL(out_data->ToDouble(), expected);
-  } else {
-    static_assert(!std::is_same<_Integral, _Integral>::value); // template error
-  }
-}
+// template <typename _Integral>
+// void BestPracticeTemplateUsage(std::unique_ptr<Class<_Integral>> & ClassRef, const _Integral expected)
+// {
+//   // prefer in class definition:
+//   static_assert( std::is_same<_Integral, int64_t>::value || std::is_same<_Integral, double>::value );
+//   if constexpr (std::is_same<_Integral, int64_t>::type_id) {
+//     std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
+//     TEST_EQUAL(out_data->ToInt64(), expected);
+//   }
+//   else if constexpr (std::is_same<_Integral, double>) {
+//     std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
+//     TEST_EQUAL(out_data->ToDouble(), expected);
+//   } else {
+//     static_assert(!std::is_same<_Integral, _Integral>::value); // template error
+//   }
+// }
 
 // substitution failure is not an error (SFINAE) to conditionally include
 // function best via https://en.cppreference.com/w/cpp/types/enable_if
@@ -822,7 +828,8 @@ void BestPracticeTemplateUsage(std::unique_ptr<Class<_Integral>> & ClassRef, con
 // template <typename T, typename = std::enable_if_t< std::is_base_of<Foo, T>::value>
 
 // more simple std::is_same<T, int64_t>:
-template <typename _Integral, std::is_same<_Integral, int64_t>::value>
+template <typename _Integral, typename std::is_same<_Integral, int64_t>::type_value>
+void fun_placeholder1();
 
 // Forward declaration must specify one template per class and variable name
 // in order of first occurence.
@@ -938,6 +945,7 @@ int testEq(int a, int b) {
     fprintf(stderr,"%s:%d got '%d' expected '%d'\n", LEAF(__FILE__), __LINE__, a, b);
     return 1;
   }
+  return 0;
 }
 
 // forward declaration in interface the Test function, if TV convertible to
@@ -954,7 +962,7 @@ static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double
 template <class TVAL>
 static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val) {
   return (Val != Val); // NaN => (Val != Val)
-  static_assert(std::is_copy_constructible<_Type>::value, "Type must be copy-constructible!");
+  static_assert(std::is_copy_constructible<TVAL>::value, "Type must be copy-constructible!");
 }
   // Explanation: return value of std::is_convertible is true/false, enable_if
 // first param is boolean, second is enabled type result is either empty struct
@@ -963,7 +971,7 @@ static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double
 void someLambda(bool bVal1, const std::string & sName) {
   auto DrawOp = [&](bool bVal1, const std::string & sName) {
     if (bVal1)
-      std::cout << sName << "\n";
+      fprintf(stdout, "%s\n", sName.c_str());
   };
 }
 
@@ -973,12 +981,14 @@ void someLambda(bool bVal1, const std::string & sName) {
 // WINBASEAPI BOOL WINAPI
 // QueryPerformanceFrequency(__out LARGE_INTEGER *lpFrequency);
 
+#ifdef _WIN32
 void ape_printing() {
   std::fstream fs;
   fs.open("filename.txt", std::fstream::app | std::fstream::out);
   fs << "somestuff\n";
   fs.close();
 }
+#endif
 
 void ape_throw() {
   throw std::runtime_error("error");
@@ -986,9 +996,10 @@ void ape_throw() {
 
 // Cast iterator to pointer
 void ape_itertoptr() {
-  string my_str= "hello world";
-  string::iterator it(my_str.begin());
+  std::string my_str= "hello world";
+  std::string::iterator it(my_str.begin());
   char* pointer_inside_buffer=&(*it);
+  fprintf(stdout, "%s\n", pointer_inside_buffer);
 }
 
 // SHENNANIGAN
