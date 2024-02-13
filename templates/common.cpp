@@ -10,8 +10,10 @@
 #include <vector>
 
 // posix only
+#ifndef _WIN32
 #include <sys/mman.h> // mmap flags
 #include <unistd.h> // execve in libc
+#endif
 
 #include <cstring> // C++ has no string split method, so use strtok() or strsep()
 /// logging (better would be test based and scoped macros)
@@ -80,7 +82,6 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
 // defer-like behavior in C++
 #include <openssl/err.h>
 #include <openssl/evp.h>
-#include <memory>
 using EVP_CIPHER_CTX_free_ptr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&::EVP_CIPHER_CTX_free)>;
 
 unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned char key[16], unsigned char iv[16]) {

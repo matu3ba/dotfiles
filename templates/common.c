@@ -30,6 +30,30 @@
 
 // TODO code example
 
+void standard_namespacing() {
+  // Standard enum, struct etc
+  struct Namespace1 {
+    // unscoped enum place fields into outest file scope
+    enum Mode {
+      Undefined,
+      Mode1,
+      Mode2,
+    } eMode;
+    union Repr {
+      uint64_t u64;
+      struct Splu64 {
+        uint32_t higher;
+        uint32_t lower;
+      } sSplu64;
+    } uRepr;
+  } sNamespace1;
+  // struct Namespace1 sNamespace1;
+  union Repr U64;
+  U64.u64 = 12;
+  sNamespace1.eMode = Undefined;
+  sNamespace1.uRepr.u64 = 12;
+}
+
 // Might get superfluous with new C standard (C2x).
 #ifndef GENERATE_ENUM_STRINGS
     #define DECL_ENUM_ELEMENT( element ) element
@@ -305,5 +329,5 @@ void use_voidptr() {
   fn_voidptr((void*)sVars[0], strlen(sVars[0]));
 }
 
-// standard flag to exclude rarely used things on Windows
+// standard flag for Windows
 #define WIN32_LEAN_AND_MEAN
