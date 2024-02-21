@@ -294,13 +294,13 @@ select in component view   Ctrl-f2
   navigate                 tab
 goto
   solution explorer           Ctrl-Alt-l
-  out window                  TODO
-  shell                       TODO
-  code editor                 TODO
-  error list                  TODO
-  find symbol results         TODO
-  tab finder                  TODO
-  mark12..                    TODO
+  out window                  idea
+  shell                       idea
+  code editor                 idea
+  error list                  idea
+  find symbol results         idea
+  tab finder                  idea
+  mark12..                    idea
   before(/)after matching brace Ctrl-'`'
   between matching braces     Ctrl-}  (VS2019+)
     smart selection?
@@ -362,7 +362,7 @@ dumpbin -linkermember .\wpcap.lib
 dumpbin /archivemembers|exports|symbols /OUT:filename .\wpcap.lib
 
 start visual studio from terminal cli
-TODO
+code
 
 SHENNANIGAN LoadLibray (temporary) uses up virtual memory in error cases, which can lead
 to out of virtual memory situations (error 8). See https://github.com/matu3ba/win32k-mitigation

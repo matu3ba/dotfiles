@@ -385,3 +385,38 @@ fn unflexible_opt_multi_ptr_api() void {
 test "unflexible_opt_multi_ptr_api" {
     unflexible_opt_multi_ptr_api();
 }
+
+test "append slice" {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+
+    var argv = std.ArrayList([]const u8).init(allocator);
+    defer argv.deinit();
+    try argv.append("/usr/bin/sleep");
+    try argv.appendSlice(&[_][]const u8{ "--help", "'not read anymore'" });
+
+    const res0 = std.ChildProcess.run(.{
+        .allocator = allocator,
+        .argv = argv.items,
+    }) catch {
+        return error.CouldNotRunClang;
+    };
+    _ = res0;
+
+    const res1 = std.ChildProcess.run(.{
+        .allocator = allocator,
+        .argv = &[_][]const u8{ "/usr/bin/sleep", "1" },
+    }) catch {
+        return error.CouldNotRunSleep;
+    };
+    _ = res1;
+
+    const res2 = std.ChildProcess.run(.{
+        .allocator = allocator,
+        .argv = &[_][]const u8{ "/usr/bin/bash", "-c", "'sleep 1'" },
+    }) catch {
+        return error.CouldNotRunShellExplicit;
+    };
+    _ = res2;
+}

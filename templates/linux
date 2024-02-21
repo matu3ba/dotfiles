@@ -154,6 +154,21 @@ sudo chmod -R 777 /dev/sdX
 > if error: sudo chown -hR $(whoami) /dev/sdX
 sudo mount -orw,remount /dev/sdX
 
+User accounting
+/etc/passwd
+Do not use --system, since any user can use them (also removes expiry date).
+/etc/login.defs
+[UID_MIN, UID_MAX]
+[GID_MIN, GID_MAX]
+/etc/group
+getent group bob0
+/nonexistent is mandated by Policy
+sudo groupadd bob0 -g 10000
+sudo useradd -c 'build user 0' --no-create-home -d /nonexistent -K MAIL_DIR=/dev/null -g 10000 --shell=/usr/bin/nologin bob0
+
+Change age (of user account): chage
+Change password (of user account): passwd
+
 Fixup user, group, permissions and capabilities:
 sudo chown user.group binary
 sudo chmod 366 binary
@@ -164,6 +179,9 @@ To restore behavior, consider deleting the file from the overlayfs (ie 'rm /mnt/
 List groups and add user to groups
 getent groups|passwd
 sudo usermod -a -G input video gdm
+
+https://en.wikipedia.org/wiki/Setgid
+TODO brief access explanations
 
 Windows fileserver (samba) mounting
 UID=$(id -u)

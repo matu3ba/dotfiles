@@ -15,3 +15,8 @@
   * tooling takes effort to produce and maintain
   * custom logic often IP, so vendors may prefer to not give out information
     unless via sold debugging tooling
+
+- practical Safety Integrity Level 4 (SIL4) systems
+  * Azure RTOS
+  * Does SeL4 have any widely used OS components to become SIL4?
+  * Is SIL4 even a goal for SeL4?

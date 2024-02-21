@@ -17,6 +17,7 @@ Interesting formal things of programming languages, stuff below and UI:
   * 2 general usable and fully verified optimizing compiler implementations
       + compcert
       + cakeml
+      + TODO imperative cakeml name
 - 4. lowering languages to Isabelle or other interesting proof systems as
   compiler backends (or using codegen for source code and proof like what
   cogent does).
@@ -25,6 +26,9 @@ Interesting formal things of programming languages, stuff below and UI:
     code instead of eliminating the problem at the root
 - 6. atomic memory reordering semantics
   * out of thin air problem in C11 as most known example, see ./templates/memory
+  * (nondeterministic) timed automata with symbolic steps possible model
+      + unclear how to model fairness
+      + expanding to probabilistic model sounds unfeasible for compiler
 - 7. pointer semantics is based on Separation logic (extension of Hoare Type
   Theory with associated aliases)
    * instead of "update the value", "update the value for all associated
@@ -97,6 +101,20 @@ Interesting formal things of programming languages, stuff below and UI:
     * provided via IPC ABI rather than C/C++ dynamic linking API?
     * security for isolation of graphical components
     * time semantics for the render loop via Xorg compatible protocol?
+- 12. formal model for OS security and scheduling
+    * Assuming a process Pa with schedule A with deadline a and security level 2.
+    * Is affecting the scheduler a security problem, because security incidents must be
+      processed imminently or with what deadlines?
+    * What happens, if two processes affect dynamically any security boundaries?
+    * Any form of async exceptions or signal handling (ie in Linux) kills hard deadlines.
+    * At least in sel4 all properties are static with statically predefined boundaries only allowed
+      for scheduling and all bets are off for abstractions on hard deadline (from what the talks suggested).
+    * Indications:
+      + security is a static system property
+      + only allowed via delegating sufficient conditioned process groups
+      + caller must handle (stacking) signals (if its not a simple mask) of
+      child processes (or delegated higher security process), if it would be
+      allowed at all up to runtime limit.
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified
@@ -155,8 +173,9 @@ System implementation details towards correctness:
      * Accepted tradeoff: Hardware failures are not under control of compiler,
        so the user is responsible to take them into account.
 
-Candidates for an optimal language (independen of domain) working on at least 3 points:
+Candidates for an optimal language (independent of domain) working on at least 3 points:
 - Compcert C is working on frontend verification and semantics of linker speak (3+4+7 solved, 3+5 unclear)
+  * requires manual modeling with costly (manual) existential variables solving
 - Rust satisfies 3, 4 for safe Rust and is kinda working on 6 (no completion
   model), but it is not simple, so it can not be optimal (no realistic chance
   to prove correctness or to reduce bug count to 0)
