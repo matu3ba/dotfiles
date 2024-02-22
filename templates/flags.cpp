@@ -29,3 +29,5 @@
 -MT out/elf/arch-ar
 m32.o -MMD -MP -MF out/elf/arch-arm32.d
 -O2 -c -o out/elf/arch-arm32.o elf/arch-arm32.cc
+
+-Wnon-virtual-dtor

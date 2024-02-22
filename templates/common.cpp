@@ -1006,6 +1006,17 @@ void ape_itertoptr() {
 // SHENNANIGAN
 // destructors of virtual classes should ALWAYS have lifetime annotation
 // Otherwise: hell to debug, because ambiguous object lifetimes
+// (unless final class)
+// Use clang -Wnon-virtual-dtor or recent msvc (~ year 2020)
+
+// SHENNANIGAN
+// Classes must be annotated as final, if they are not supposed to be inherited from.
+
+// SHENNANIGAN
+// Delete copy + move constructors for non-final classes with no pure-virtual methods.
+
+// Consider marking copy constructr as explicit and deleting copy assignment, if
+// copying class is expensive. Consider providing a "clone fn" as syntactic sugar.
 
 // SHENNANIGAN
 // synchronization of virtual classes should ALWAYS be annotated
@@ -1013,3 +1024,20 @@ void ape_itertoptr() {
 
 // SHENNANIGAN clang-format annoyingly verbose to setup and configure
 // clang-format -style=llvm -dump-config > .clang-format
+
+// https://learn.microsoft.com/de-de/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4251?view=msvc-170
+// SHENNANIGAN poor phrasing of "use virtual classes or c abi for dll exports"
+// class __declspec(dllexport) X
+// {
+// public:
+//     X();
+//     ~X();
+//     void do_something();
+// private:
+//     void do_something_else();
+//     std::vector<int> data; // warning c4251
+// };
+// SHENNANIGAN no explanation how dllexports can be omitted (private classes)
+
+// SHENNANIGAN Error C2681 invalid expression type for dynamic_cast
+// is confusing. The type may simply not known instead of "invalid".

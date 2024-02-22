@@ -33,6 +33,8 @@ msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v
 This should probably run analysis manually
 msbuild MySolution.sln /p:RunCodeAnalysis=true
 
+SHENNANIGAN VS2015 Disabling stdafx.h may or may not work.
+
 Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
 https://github.com/include-what-you-use/include-what-you-use
 https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/#_incremental

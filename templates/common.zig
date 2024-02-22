@@ -12,6 +12,7 @@ const builtin = @import("builtin");
 // raddebugger - https://github.com/EpicGames/raddebugger
 // system analysis tool - https://github.com/winsiderss/systeminformer
 // dll dependencies - https://github.com/lucasg/Dependencies
+// dumpbin - Developer Command Prompt for VS2015
 // ntrace - https://github.com/rogerorr/NtTrace
 
 // typesafe version of (u16*)codepoint with codepoint type u8*

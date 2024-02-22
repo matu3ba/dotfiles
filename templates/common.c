@@ -331,3 +331,14 @@ void use_voidptr() {
 
 // standard flag for Windows
 #define WIN32_LEAN_AND_MEAN
+
+// SHENNANIGAN
+// WIN32_LEAN_AND_MEAN
+// silently removes deprecated code
+
+// Very aweful, if used withing stdafx.h:
+//   #pragma once
+//   #include "targetver.h"
+//   #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+//   // Windows Header Files:
+//   #include <windows.h>

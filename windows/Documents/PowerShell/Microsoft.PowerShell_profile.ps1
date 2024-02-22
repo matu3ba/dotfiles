@@ -9,6 +9,12 @@ $env:Editor = "nvim"
 # SHENNANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
 
+# Windows Terminal Installation
+# https://github.com/microsoft/terminal/releases
+# Add-AppxPackage -Path C:\Path\App-Package.msixbundle
+# [Environment]::Is64BitOperatingSystem
+# [System.Environment]::OSVersion.Version
+
 # git completion https://github.com/dahlbyk/posh-git
 # PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
 # Install-Module VSSetup -Scope CurrentUser

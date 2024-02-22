@@ -58,6 +58,10 @@ objdump -dl binary | less
 To disassemble headers + line numbers (address is outside text segment):
 objdump -xl binary | less
 
+alternative:
+Developer Command Prompt for VS2015
+dumpbin /exports .\file.dll
+
 extern only, demangle
 nm -g -C build/stage3/bin/zig
 
@@ -174,3 +178,4 @@ TODO explain https://en.wikipedia.org/wiki/DLL_injection
 
 Things to remember when linking C/C++ code.
 https://gist.github.com/gubatron/32f82053596c24b6bec6?permalink_comment_id=2575013
+

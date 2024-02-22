@@ -13,6 +13,7 @@ $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 # function GitDiff { & git diff --no-color $args }
 # winget search Microsoft.PowerShell
 # winget install --id Microsoft.Powershell --source winget
+# https://learn.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4#msi
 
 # SHENNANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/

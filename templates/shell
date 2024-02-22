@@ -38,6 +38,22 @@ find . -exec printf "%q\n" {} \;
 find . -path RELPATH -exec printf "%q\n" {} \;
 Note: This is very slow.
 
+Move file names by pattern from https://stackoverflow.com/a/40029320/9306292:
+- '-n' to suppress echoing of sed
+- use '& ' to interpolate the entire matching string, followed by a space character
+  and '\1service' to interpolate before the first matching
+- 'p' to print input and output
+find . -type f |
+sed -n "s/\(.*\)factory.*$/& \1service\.py/p" |
+xargs -p -n 2 mv
+Example:
+foo_factory.py foo_service.py
+bar_factory.py bar_service.py
+Other example:
+find . -type f |
+sed -n "s/\(.*\)Ether.*$/& \1Twin\.py/p" |
+xargs -p -n 2 mv
+
 SHENNANIGAN find
 only supports '-path RELATIVEPATH' forcing more typing
 
