@@ -346,9 +346,9 @@ fn totalAll(structs: []const BigStruct) u128 {
 
 pub const SafetyLock = struct {
     pub const State = if (builtin.is_test) enum { unlocked, locked } else enum { unlocked };
+    // pub const State = if (builtin.mode == .Debug or builtin.mode == .ReleaseSafe) enum { unlocked, locked } else enum { unlocked };
     state: State = .unlocked,
     // An enum with only 1 tag is a 0-bit type just like void
-    // ..
 };
 
 fn print_align() void {
@@ -420,4 +420,22 @@ test "append slice" {
         return error.CouldNotRunShellExplicit;
     };
     _ = res2;
+}
+
+test "100 clients connect to server" {
+    if (builtin.os.tag == .wasi) return error.SkipZigTest;
+    const localhost = try std.net.Address.parseIp("127.0.0.1", 0);
+    var sserver = std.net.StreamServer.init(.{ .force_nonblocking = true });
+    defer sserver.deinit();
+    try sserver.listen(localhost);
+
+    const accept_err = sserver.accept();
+    try std.testing.expectError(error.WouldBlock, accept_err);
+
+    var client_streams: [100]std.net.Stream = undefined;
+    for (client_streams, 0..) |_, i| {
+        errdefer for (client_streams[0..i]) |cleanup_stream| cleanup_stream.close();
+        client_streams[i] = try std.net.tcpConnectToAddress(sserver.listen_address);
+    }
+    defer for (client_streams) |cleanup_stream| cleanup_stream.close();
 }

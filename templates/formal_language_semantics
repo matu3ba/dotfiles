@@ -48,6 +48,9 @@ Interesting formal things of programming languages, stuff below and UI:
        closed => read-end readable for EOF
      + ptrace
      + use pid 1 or implement pid 1 functionality
+     + 'pid_t pid = waitpid(-1, &status, WNOHANG)' just works on non-evil children,
+       but might just hang
+   * can not track processes killed via SIGKILL
  - 9. debug system
     * rr simulates threading and multiple processes in one process to get
     accurate performance counter timings for accurate reproducibility.
@@ -115,6 +118,30 @@ Interesting formal things of programming languages, stuff below and UI:
       + caller must handle (stacking) signals (if its not a simple mask) of
       child processes (or delegated higher security process), if it would be
       allowed at all up to runtime limit.
+- 13. Continuous Integration semantics (running untrusted/less trusted processes)
+   * 1. process tracking
+     + Brief and short: "The Unix process API is unreliable and unsafe"
+       https://catern.com/process.html
+     + non-cooperating
+       o must remove 'setpgid', 'setsid' permissions from child processes to
+       keep all child processes in same process group to be signaled ie with
+       SIGKILL
+       o requires Kernel support (pledge, seccomp bpf, cgroups, namespaces ..)
+       o cgroups designed for exactly this use case, ie freeze process group,
+       kill it (atomically) and unfreeze it
+       https://security.stackexchange.com/questions/168452/how-is-sandboxing-implemented
+       o best behavior with {SET,GET}_CHILD_SUBREAPER
+     + cooperating
+       o signals (SIGCHLD) may get merged
+       o 'waitpid(-1, &status, WNOHANG)'
+       o https://cboard.cprogramming.com/linux-programming/155448-sigchld-handler-not-executing-dependably.html
+       o https://www.gnu.org/software/libc/manual/html_node/Merged-Signals.html
+   * 2. filesystem restrictions
+       o TODO
+
+Interesting ideas
+* https://catern.com/ideas.html file-descriptor API for processes
+* Summary: Non-portable mess.
 
 To me unclear if solved:
 - check, if cakeml and compcert have linker speak verified

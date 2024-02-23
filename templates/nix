@@ -2,6 +2,8 @@ Taken from nix.dev. Nix pills is another good source. Unfortunately flakes have
 no good docs yet and I found nothing good for debugging (overlays).
 https://discourse.nixos.org/t/nix-shells-tips-tricks-and-best-practices/22332
 
+https://github.com/RGBCube/NixOSConfiguration
+
 Reproducible ad-hoc environment
 nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
 nix-shell -p git --run "git --version" --pure -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/2a601aafdc5605a5133a2ca506a34a3a73377247.tar.gz
