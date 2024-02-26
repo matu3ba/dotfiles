@@ -3,6 +3,7 @@
 # nix-instantiate --eval '<nixpkgs>' -A lib.version
 
 # Installation
+# nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 # nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager
 # nix-channel --update
 # nix-shell '<home-manager>' -A install
@@ -42,10 +43,10 @@
     pkgs.pinentry
 
     #====desktop_env
-    pkgs.arcanPackages.arcan
-    pkgs.arcanPackages.cat9
-    pkgs.arcanPackages.durden
-    pkgs.arcanPackages.xarcan
+    # pkgs.arcanPackages.arcan
+    # pkgs.arcanPackages.cat9
+    # pkgs.arcanPackages.durden
+    # pkgs.arcanPackages.xarcan
 
     #====browser
     pkgs.lynx
@@ -98,26 +99,26 @@
     # '')
   ];
 
-  nixpkgs.overlays = [
-    #~/dotfiles/overlays/arcan.nix
-    (final: prev: {
-      __dontExport = true;
-      arcanPackages = prev.arcanPackages.overrideScope' (finalScope: prevScope: {
-        arcan = prevScope.arcan.overrideAttrs (finalAttrs: prevAttrs: {
-          version = "581df5665a18432197662c569ed9a1bc60308461";
-          src = final.fetchFromGitHub {
-            owner = "letoram";
-            repo = "arcan";
-            rev = "581df5665a18432197662c569ed9a1bc60308461";
-            hash = "sha256-XlJcp7H/8rnDxXzrf1m/hyYdpaz+nTqy/R6YHj7PGdQ=";
-          };
-          patches = [
-            ~/dotfiles/patches/arcan-keyboard.patch
-          ];
-        });
-      });
-    })
-  ];
+  # nixpkgs.overlays = [
+  #   #~/dotfiles/overlays/arcan.nix
+  #   (final: prev: {
+  #     __dontExport = true;
+  #     arcanPackages = prev.arcanPackages.overrideScope' (finalScope: prevScope: {
+  #       arcan = prevScope.arcan.overrideAttrs (finalAttrs: prevAttrs: {
+  #         version = "581df5665a18432197662c569ed9a1bc60308461";
+  #         src = final.fetchFromGitHub {
+  #           owner = "letoram";
+  #           repo = "arcan";
+  #           rev = "581df5665a18432197662c569ed9a1bc60308461";
+  #           hash = "sha256-XlJcp7H/8rnDxXzrf1m/hyYdpaz+nTqy/R6YHj7PGdQ=";
+  #         };
+  #         patches = [
+  #           ~/dotfiles/patches/arcan-keyboard.patch
+  #         ];
+  #       });
+  #     });
+  #   })
+  # ];
   #nixpkgs.overlays = [
   #  (final: prev:
   #  {
