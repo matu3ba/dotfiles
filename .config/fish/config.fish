@@ -322,6 +322,17 @@ if status is-interactive
     # idea modify prompt, process name and title
     gpgconf --kill gpg-agent
   end
+
+  function fixGpg -d "fix gpg tty via stopping, starting and updating startup tty"
+    set -e GPG_TTY
+    set -e SSH_AUTH_SOCK
+    gpgconf --kill gpg-agent
+    gpgconf --launch "gpg-agent"
+    set -gx GPG_TTY "$(tty)"
+    set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+    gpg-connect-agent updatestartuptty /bye >/dev/null
+  end
+
   #function countdown -d "TODO countdown in seconds shown as H:M:S"
   #  sleep(0.1)
   #end

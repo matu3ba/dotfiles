@@ -51,6 +51,7 @@ Interesting formal things of programming languages, stuff below and UI:
      + 'pid_t pid = waitpid(-1, &status, WNOHANG)' just works on non-evil children,
        but might just hang
    * can not track processes killed via SIGKILL
+   * Solution space https://monorepo.tools
  - 9. debug system
     * rr simulates threading and multiple processes in one process to get
     accurate performance counter timings for accurate reproducibility.
@@ -138,6 +139,14 @@ Interesting formal things of programming languages, stuff below and UI:
        o https://www.gnu.org/software/libc/manual/html_node/Merged-Signals.html
    * 2. filesystem restrictions
        o TODO
+- 14. general formal model for graphics unfeasible
+  * timing in graphics best effort: "lest things go kaboom almost immediately"
+  * display server do to render jobs what the printer spooler did to print jobs
+  * Problem statement: Multiple programs try to send documents to the printer
+    at the same time. How do stop them from messing up the contents of the pages or things coming
+    out interleaved or in the wrong order?
+  * problematic timing input for deadlines: exceptions/signal handlers,
+    rescheduling of processes and security context changes
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

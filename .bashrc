@@ -91,18 +91,32 @@ export EDITOR="nvim"
 # gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # Note: Other shells do not know what gpg server is currently attached to.
+
+# start gpg with ssh to workaround pinentry-tty bugs
 startGpg() {
   gpgconf --launch 'gpg-agent'
   export GPG_TTY="$(tty)"
   export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 }
+# reconnect to gpg client to workaround pinentry-tty bugs
 reconnectGpg() {
   gpg-connect-agent updatestartuptty /bye >/dev/null
 }
+# stop gpg with ssh to workaround pinentry-tty bugs
 stopGpg() {
   gpgconf --kill gpg-agent
   unset -v GPG_TTY
   unset -v SSH_AUTH_SOCK
+}
+# fix gpg tty via stopping, starting and updating startup tty
+fixGpg() {
+  gpgconf --kill gpg-agent
+  unset -v GPG_TTY
+  unset -v SSH_AUTH_SOCK
+  gpgconf --launch 'gpg-agent'
+  export GPG_TTY="$(tty)"
+  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+  gpg-connect-agent updatestartuptty /bye >/dev/null
 }
 
 countdown() {

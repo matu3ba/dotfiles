@@ -439,3 +439,123 @@ test "100 clients connect to server" {
     }
     defer for (client_streams) |cleanup_stream| cleanup_stream.close();
 }
+
+test "coercion to return type example" {
+    var gpa_state = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
+    defer if (gpa_state.deinit() != .ok) {
+        @panic("found memory leaks");
+    };
+    const gpa = gpa_state.allocator();
+    var child = std.ChildProcess.init(&.{ "/usr/bin/sleep", "60" }, gpa);
+    child.stdin_behavior = .Close;
+    child.stdout_behavior = .Pipe;
+    child.stderr_behavior = .Pipe;
+    child.uid = 10_000;
+    try child.spawn();
+
+    var test_error = false;
+    const stderr = std.io.getStdErr().writer();
+
+    const wait_res = child.wait() catch |err| {
+        try stderr.print("child failure with error during waiting: {};\n", .{err});
+        test_error = true;
+        // << forgetting this yields in error: incompatible types
+        return error.TestError;
+    };
+    switch (wait_res) {
+        .Exited => |code| {
+            if (code != 0) {
+                try stderr.print("child exit code: {d}; want 0\n", .{code});
+                test_error = true;
+            }
+        },
+        else => |term| {
+            try stderr.print("child abnormal term: {}; want 0\n", .{term});
+            test_error = true;
+        },
+    }
+    return if (test_error) error.TestError else {};
+}
+
+// Zig Package System Usage:
+// * 1. Option
+//   * Add url and below hash with correct length, but incorrect content
+//   * Run zig build --fetch
+// * 2. Option
+//   * Run zig fetch --save URL
+
+// build.zig.zon (myapp)
+//   .{
+//       .name = "myapp",
+//       .version = "0.1.0",
+//       .dependencies = .{
+//           .mylib = .{
+//               .url = "https://github.com/username/mylib/archive/[tag/commit-hash].tar.gz",
+//               // "[multihash - sha256-2]",
+//               .hash = "12345678911234567892123456789312345678941234567895123456789612345678",
+//           },
+//       },
+//   }
+// build.zig.zon (mylib)
+//   .{
+//       .name = "mylib",
+//       .version = "0.0.1",
+//       .dependencies = .{},
+//       .paths = .{
+//           "LICENSE",
+//           "build.zig",
+//           "build.zig.zon",
+//           "src/"
+//       },
+//   }
+// build.zig (mapp)
+//   pub fn build(b: *b.Build) void {
+//       const target = b.standardTargetOptions(.{});
+//       const optimize = b.standardOptimizeOption(.{});
+//
+//       const exe = b.addExecutable(.{
+//           .name = "myapp",
+//           .root_source_file = .{ .path = "src/main.zig" },
+//           .optimize = optimize,
+//           .target = target,
+//       });
+//       const mylib_dep = b.dependency("mylib", .{ .target = target, .optimize = optimize });
+//       exe.root_module.addImport("testlib", mylib_dep.module("mylib"));
+//   }
+//
+// build.zig (mylib adds public package "mylib" via build.zig)
+//   pub fn build(b: *b.Build) void {
+//       _ = b.addModule("mylib", .{
+//           .root_source_file = .{ .path = "src/main.zig" },
+//       });
+//   }
+
+// Options to install headers (untested)
+//   exe.installLibraryHeaders(mylib); // <== C/C++ projects/
+//   mylib.installHeader("foo.h", "foo.h"); // copy single-header file to zig-out/include (rename is optional)
+//   mylib.installHeadersDirectory("include", ""); // <== copy all headers (inc. subdir) to zig-out/include
+//   // or
+//   mylib.installHeadersDirectoryOptions(.{
+//       .source_dir = "src",
+//       .install_dir = .header,
+//       .install_subdir = "",
+//       .exclude_extensions = &.{
+//           "am",
+//           "gitignore",
+//       },
+//   });
+
+// Private and internal module not usable outside of build.zig
+//   const mylib_module = b.createModule(.{
+//       .source_file = .{
+//           .path = "src/mylib.zig",
+//       },
+//       // optional
+//       .dependencies = &.{
+//           .{ .name = "foo", .module = foo.module(b) },
+//           .{ .name = "bar", .module = bar.module(b) },
+//           .{ .name = "baz", .module = baz.module(b) },
+//       },
+//   });
+//   mylib.addModule("mylib", mylib_module);
+//   exe.addModule("mylib", mylib.module("mylib")); // <== for zig project only
