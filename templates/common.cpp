@@ -266,6 +266,29 @@ class ClassWithMutex { // class with mutex
 
 // Note: Reinterpreting bytes requires reinterpret_cast instead of static_cast.
 
+int reinterpret_cast_usage() {
+  // see also common.c no_reinterpret_cast
+  // clang-format: off
+  const char some_vals[8] = { 0
+                              1, 0, 0, 0
+                            , 0, 0, 0 ,0 };
+  // clang-format: on
+	int64_t val = *reinterpret_cast<int64_t*>(&some_vals[1]);
+	// SHENNANIGAN less type safe than C variant
+  // WRONG int64_t val = *reinterpret_cast<int64_t*>(some_vals[1]);
+  if (val != INT64_MIN) return 1;
+  return 0;
+}
+
+int ptr_no_reinterpret_cast() {
+  char arr[5] = {0, 0,0,0,1};
+	// SHENNANIGAN less type safe than C variant
+  // WRONG int32_t val = reinterpret_cast<int32_t*>(some_vals[1]);
+  int32_t * i32_arr_ptr = reinterpret_cast<int32_t*>(&some_vals[1]);
+  // dont return stack local variable here
+  return 0;
+}
+
 // SHENNANIGAN https://en.cppreference.com/w/cpp/container/map/find
 // "Compiler decides whether to return iterator of (non) const type by way of
 // accessing map. Not the standard???
@@ -1041,3 +1064,17 @@ void ape_itertoptr() {
 
 // SHENNANIGAN Error C2681 invalid expression type for dynamic_cast
 // is confusing. The type may simply not known instead of "invalid".
+
+void chrono_usage() {
+  // auto timeFromDb = std::chrono::system_clock::from_time_t(std::mktime(&dbTime));
+  auto t_start = std::chrono::high_resolution_clock::now();
+  // the work...
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+	uint64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
+
+  double elapsed_time_ms = std::chrono::duration<double, std::milli>(
+      std::chrono::high_resolution_clock::now() - t_start
+  ).count();
+  // fprintf ..
+}

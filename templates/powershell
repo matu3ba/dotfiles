@@ -24,6 +24,36 @@ mount directory as drive
 net use R: /delete
 subst R: $HOME\somedir
 subst R: /d
+check logical disks of system
+wmic logicaldisk get name
+net use D: /delete /yes
+subst D: /d
+subst D: $HOME\somedir
+
+SHENNANIGAN confusing and wrong error message for mounting device
+$ subst d: /d
+Invalid Parameter - D:
+$ subst
+$ wmic logicaldisk get name
+Name
+C:
+D:
+..
+File explorer neither shows D:
+This may happen, if some device was shown as drive, since D appears to be
+reserved for drive. Even though the device was removed, we can not reuse D.
+
+Powershell unmounting CD ROM drive does not work:
+Where-Object DriveType -eq 'CD-ROM' |
+ForEach-Object {
+Get-DiskImage -DevicePath  $_.Path.trimend('\') -EA SilentlyContinue
+} |
+Dismount-DiskImage
+Ejecting might still does not work
+$driveEject = New-Object -comObject Shell.Application
+$driveEject.Namespace(17).ParseName("E:").InvokeVerb("Eject")
+
+Alternative: diskmgmt.msc
 
 reliably copy over network with retries
 #   0          1     2      3      4   5          6           7          8     9

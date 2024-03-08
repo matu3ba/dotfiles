@@ -296,6 +296,7 @@ end
 
 -- stylua: ignore start
 -- copy cwd into register 0 and '+' register
+-- TODO FWrel to provide in git readable format
 add_cmd('Frel', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
 add_cmd('FrelDir', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
 add_cmd('FrelLine', function() setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})

@@ -342,6 +342,15 @@ multicursor
   caret pattern selection    Alt-Shift-';'
   select next pattern match  Alt-Shift-'.'
 
+remote desktop (rdp)
+https://learn.microsoft.com/en-us/windows/win32/termserv/terminal-services-shortcut-keys
+  start button press         windows + pos1 (home)   old?
+                             alt+pos1 (home)         new?
+  prev/next program          alt+page up/down
+                             unclear: looks like tab is not reachable, alt broken with on-screen keyboard
+  overview programs          ctrl+alt+tab
+                             unclear
+
 custom shortcuts (Tools -> Options -> Environment -> Keyboard -> inserttext -> Assign
 SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t
 TODO: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim
@@ -400,3 +409,9 @@ Windows key + X
 A
 
 disable HyperV: Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Hypervisor
+
+====scheduling
+https://randomascii.wordpress.com/2020/10/04/windows-timer-resolution-the-great-rule-change/
+Scheduler sleep time between 0.5 and 16.656ms (typically 1ms).
+clockres && Temp
+Realtime threads not affected. Must be measured, for example with chrono.

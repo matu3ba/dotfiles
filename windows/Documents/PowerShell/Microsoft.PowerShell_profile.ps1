@@ -3,6 +3,7 @@ $env:Path += ";$HOME\.local\bin"
 $env:Path += ";C:\Program Files\Mozilla Firefox"
 $env:Path += ";C:\Program Files\Python312\Scripts\pip.exe"
 $env:Path += ";C:\Program Files\Wireshark"
+$env:Path += ";C:\Program Files\7-Zip"
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"

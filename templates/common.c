@@ -250,11 +250,28 @@ void convert_string_to_int_simple(const char *buff) {
 // > C 2011 6.5 paragraph 71 is undefined behavior.
 // => The proper fix for access a pointer with increased alignment is to use a
 // temporary with memcopy
-void workaround_no_reinterpret_cast() {
+int no_reinterpret_cast() {
+  //impl_reinterpret_cast_usage
+  // clang-format: off
+  const char some_vals[9] = { 0
+                            , 1, 0, 0, 0
+                            , 0, 0, 0 ,0 };
+  // clang-format: on
+  // WRONG: int64_t val = *((uint64_t*)&some_vals[1]);
+	int64_t val;
+  // more type safe than reinterpret_cast, because some_vals[1] is a type error
+  memcpy(&val, &some_vals[1], 8);
+  if (val != INT64_MIN) return 1;
+  return 0;
+}
+
+int ptr_no_reinterpret_cast() {
   char arr[4] = {0,0,0,1};
-  int32_t i32_arr = 0;
+  int32_t i32_arr = 0;            // unnecessary variable hopefully elided
   memcpy(&i32_arr, &arr[0], 4);
   int32_t * i32_arr_ptr = &i32_arr;
+  // SHENNANIGAN dont return stack local variable here!
+  return 0;
 }
 
 // typedef struct convention
@@ -329,10 +346,7 @@ void use_voidptr() {
   fn_voidptr((void*)sVars[0], strlen(sVars[0]));
 }
 
-// standard flag for Windows
-#define WIN32_LEAN_AND_MEAN
-
-// SHENNANIGAN
+// SHENNANIGAN standard flag for Windows
 // WIN32_LEAN_AND_MEAN
 // silently removes deprecated code
 
@@ -342,3 +356,49 @@ void use_voidptr() {
 //   #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 //   // Windows Header Files:
 //   #include <windows.h>
+
+// different semantics of "secure fns" and not portable
+void ape_win_incompat_fileprint() {
+  FILE * f1;
+  const char * f1_name = "file1";
+  char err_buf[100];
+  errno_t err = fopen_s(&f1, f1_name, "a+");
+  if (err != 0) {
+    /* err = */ strerror_s(err_buf, 100, err);
+    fprintf(stderr, "cannot open file '%s': %s\n", f1_name, err_buf);
+  } else {
+    fprintf(f1, "some_print_text\n");
+    fclose(f1);
+  }
+}
+
+// silence clangd warnings
+#ifndef _WIN32
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
+void ape_fileprint() {
+  const char * f1_name = "file1";
+  FILE * f1 = fopen(f1_name, "a+");
+  if (f1 == NULL) {
+    fprintf(stderr, "cannot open file '%s': %s\n", f1_name, strerror(errno));
+  } else {
+    fprintf(f1, "some_print_text\n");
+    fclose(f1);
+  }
+}
+#endif
+
+void ape_win_print() {
+  FILE * f1;
+  fopen_s(&f1, "file1", "a+");
+  fprintf(f1, "sometext\n");
+  fclose(f1);
+}
+
+#ifndef _WIN32
+void ape_print() {
+  FILE * f1 = fopen("file1", "a+");
+  fprintf(f1, "sometext\n");
+  fclose(f1);
+}
+#endif

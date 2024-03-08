@@ -4,3 +4,23 @@ excel newline:
 - Named formula [CHAR(10)]
 
 idea VBA stuff I did
+
+SHENNANIGAN
+language settings affect formula, ie IF may not exist, but WENN
+
+SHENNANIGAN
+fill down without dragging with mouse
+https://superuser.com/questions/270018/excel-auto-fill-a-series-without-mouse-keyboard-only
+* select series
+* Alt + H F I S (english language)
+* alt + f
+* enter
+* C-d down, C-r right (not working)
+
+SHENNANIGAN
+hide empty rows (does not work):
+select, press f5 special blanks (does not work with "" cells)
+Ctrl+9
+
+SHENNANIGAN
+plot values with gaps (does not work)

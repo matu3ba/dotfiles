@@ -23,6 +23,9 @@ Hex editor
 git clone https://github.com/WerWolv/ImHex
 ./dist/compiling
 
+Editors
+https://github.com/neurocyte/flow unclear hackability
+
 Install CMake from source to workaround to old versions:
 cd ~/dev/git/cpp
 git clone https://github.com/Kitware/CMake
