@@ -33,6 +33,9 @@ xor edi,[rbp-0x57]    xor edi,[rbp-0x57]
 
 Practical assembly usage https://wiki.gentoo.org/wiki/Hardened/Textrels_Guide
 
+nice linux x64 assembly showing concurrency
+https://davidad.github.io/blog/2014/03/23/concurrency-primitives-in-intel-64-assembly/
+
 'ForwardCom: An open-standard instruction set for high-performance microprocessors'
 by Agner Fog el al. for non-embedded systems with some interesting ideas:
 https://lock.cmpxchg8b.com/zenbleed.html
@@ -64,3 +67,45 @@ It even has an instruction for flushing the complete cache + clear internal stat
 Interesting ideas
 'Efficient virtual cache coherency for multicore systems and accelerators' by Xuan Guo
 * TODO
+
+'Branch prediction' by Dan Luu https://danluu.com/branch-prediction/
+with hints on state of art speculative branch predictors
+
+'Whats new in new CPUs (microprocessors) since the 80s(microcontrollers) ?'
+https://danluu.com/new-cpu-features/
+* cache
+* tlb
+* out of order execution, serialize execution (rdtsc)
+* memory/concurrency: use locking or CAS routines, barriers are footguns
+  * lock ... to lock memory
+* write-back memory as eventually consistent uncachable (UC) memory
+  * can be buffered internally and has weaker ordering guarantees than UC
+* NUMA with latency differences of thread accessing different sockets
+  * chip uses directory for lookup of information
+  * up to 128 cores use ring bus for inter chip talk, more must pay for directory
+* context switches/syscalls (syscall, sysenter) are expensive
+  * >14_000 cycles, 40+ TLB evictions (of 64-entry TLB)
+  * use io buffers + batching (io_uring etc or kernel mapped memory (vDSO))
+* SIMD for executing instruction on 128,256,512 bit data at once
+* power management as race to idle, but microoptimizations often dont generalize
+* GPU
+  * no branch prediction and no large caches, lower clock speed
+  * global (throughput 300-400GB/s), shared (on streaming multiprocessor (SM)) and
+    register memory (per thread)
+  * single instruction multiple thread on each SM
+  * PCIe bus bottleneck due to data moving between CPU and GPU
+* Virtualization
+* SMT/Hyper-Threading speedup around 25%, less predictable perf, thread gets 60% of perf
+* branches unpredictable bad, Haswell mispredict penalty 14 cycles,
+  * if branch unpredictable (rare), cmov can be good for perf
+* alignment padding of structs not relevant on Haswell
+  * dont make things page aligned or otherwise aligned to large boundaries or
+    cache perf gets destroyed
+* self-modifying code not relevant for perf, because running code requires expensive
+  communication between chips l1 instruction caches.
+* Trends
+  * Partitioning for machine multiplexing of tasks without affecting latency, see ci
+  * Transactional Memory and hardware Lock elision begin, xend, xabort
+  * Fast IO to bypass CPU completely
+  * Hardware accelerators
+  * Dark silicon for dedicated tasks

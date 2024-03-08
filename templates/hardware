@@ -4,12 +4,14 @@
   * check the regulatory standards and laws
 
 - parallel IO Ports, parallel input ports, parallel output ports
-  * does not specify "how parallel data is received or send"
-  * board/CPU vendor specified
-  * often very limited and the fundamental bottleneck
-  * may be blocking and thus insufficient for time-deterministic use cases
+  * architecture vendor does not specify "how parallel data is received or send",
+    but may limit it via cache misses, interrupts etc
+  * board/peripherals vendor specifies
+  * can be very limiting and fundamental bottleneck
+  * writes may be blocking and thus insufficient for time-deterministic use cases
   * see also "Parallel Input/Output", "ARM Cortex M7 parallel io ports"
-  * fully parallel IO usually means "uses a PIC"
+  * fully parallel and deterministic IO throughput usually means "uses a PIC"
+    - PIC known to have best peripherals support from microcontrollers
 
 - debugging capabilities of host and target system often not exemplified
   * tooling takes effort to produce and maintain

@@ -124,11 +124,11 @@ pub fn buildCommon(b: *std.build.Builder) void {
 
 // combine file paths into buffer
 fn usageCombinePaths() !void {
-    const path_buffer: [1000]u8 = undefined;
+    var path_buffer: [1000]u8 = undefined;
     const input1 = "/tmp";
     const number: usize = 15;
     const input2 = "file.zig";
-    _ = try std.fmt.bufPrint(path_buffer, "{s}{d}{s}", .{ input1, number, input2 });
+    _ = try std.fmt.bufPrint(&path_buffer, "{s}{d}{s}", .{ input1, number, input2 });
 }
 
 // sort items with context
@@ -425,19 +425,40 @@ test "append slice" {
 test "100 clients connect to server" {
     if (builtin.os.tag == .wasi) return error.SkipZigTest;
     const localhost = try std.net.Address.parseIp("127.0.0.1", 0);
-    var sserver = std.net.StreamServer.init(.{ .force_nonblocking = true });
-    defer sserver.deinit();
-    try sserver.listen(localhost);
+    var server = try localhost.listen(.{ .force_nonblocking = true });
+    defer server.deinit();
 
-    const accept_err = sserver.accept();
+    const accept_err = server.accept();
     try std.testing.expectError(error.WouldBlock, accept_err);
 
     var client_streams: [100]std.net.Stream = undefined;
     for (client_streams, 0..) |_, i| {
         errdefer for (client_streams[0..i]) |cleanup_stream| cleanup_stream.close();
-        client_streams[i] = try std.net.tcpConnectToAddress(sserver.listen_address);
+        client_streams[i] = try std.net.tcpConnectToAddress(server.listen_address);
     }
     defer for (client_streams) |cleanup_stream| cleanup_stream.close();
+}
+
+test "print optional and error union" {
+    var buf: [100]u8 = undefined;
+    const opt_num: ?u32 = null;
+    const err = error.Some;
+    _ = try std.fmt.bufPrint(&buf, "opt_num: {?d}\n", .{opt_num});
+    _ = try std.fmt.bufPrint(&buf, "err: {!}\n", .{err});
+
+    // SHENNANIGAN
+    // Error origins can be hard to decipher in catch block, for example
+    // if an error union was forgotten and multiple are used:
+    // const stderr = std.io.getStdErr().writer();
+    // stderr.print("{!}\n", .{err}) catch |errinner| {
+    //     try stderr.print("{!}\n", .{errinner});
+    //     return error.CouldNotPrint;
+    // };
+    // const err_printed = std.fmt.bufPrint(&buf, "err: {!}\n", .{err}) catch |errinner| {
+    //     try stderr.print("{!}\n", .{errinner});
+    //     return error.CouldNotPrint;
+    // };
+    // std.debug.print("err_printed: {s}\n", .{err_printed});
 }
 
 test "coercion to return type example" {
@@ -446,11 +467,11 @@ test "coercion to return type example" {
         @panic("found memory leaks");
     };
     const gpa = gpa_state.allocator();
-    var child = std.ChildProcess.init(&.{ "/usr/bin/sleep", "60" }, gpa);
+    var child = std.ChildProcess.init(&.{ "/usr/bin/sleep", "1" }, gpa);
     child.stdin_behavior = .Close;
     child.stdout_behavior = .Pipe;
     child.stderr_behavior = .Pipe;
-    child.uid = 10_000;
+    // child.uid = 10_000;
     try child.spawn();
 
     var test_error = false;
@@ -459,7 +480,7 @@ test "coercion to return type example" {
     const wait_res = child.wait() catch |err| {
         try stderr.print("child failure with error during waiting: {};\n", .{err});
         test_error = true;
-        // << forgetting this yields in error: incompatible types
+        // forgetting this yields in error: incompatible types
         return error.TestError;
     };
     switch (wait_res) {
@@ -559,3 +580,12 @@ test "coercion to return type example" {
 //   });
 //   mylib.addModule("mylib", mylib_module);
 //   exe.addModule("mylib", mylib.module("mylib")); // <== for zig project only
+
+// get slice from multi pointer => std.mem.span
+
+// SHENNANIGAN
+// source locations of missing tuple for printing dont work properly
+
+// SHENNANIGAN
+// for loops don't want to give pointers to elements of an array
+// https://github.com/ziglang/zig/issues/14734

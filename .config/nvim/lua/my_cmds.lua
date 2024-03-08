@@ -54,6 +54,8 @@ add_cmd('Ghostty', df_configs_edit .. sep .. 'ghostty' .. sep .. 'config', {})
 add_cmd('Aliases', df_config_shells_edit .. sep .. 'aliases', {})
 add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
 add_cmd('Templates', df_edit .. sep .. 'templates', {})
+add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep
+  .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
 
 if utils.is_windows == false then
   -- we cant or dont want to unify all bashrcs

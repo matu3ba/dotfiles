@@ -158,3 +158,6 @@ Backup: copy JENKINS_HOME directory without cache/ Backup/.
 Should not use SYSTEM user on < win11, but Administrator. Ideally Jenkins would
 allow do allow checkout with dedicated user account and only (re)move files and
 set permissions in another user account for running jobs.
+
+Motivation + Performance, latency and other tuning via cpuset, cgroups etc
+https://danluu.com/intel-cat/

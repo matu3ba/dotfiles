@@ -77,3 +77,51 @@ thread apply all backtrace full |& tee backtrace.log
 ```
 
 </details>
+
+  max_step
+   |   |
+|  m1  m2      |
+0              MAX
+wraparound counter with limited step length assumption of
+assume: correct + continuous connection + value retrieval
+6 cases:
+* m1 = m2 => 1. no change
+* m1 < m2
+  * m2 - m1 < max_step => 2. plus
+  * MAX-m2+m1 < max_step => 3. wraparound_minus
+* m2 < m1
+  * m1 - m2 < max_step => 4. minus
+  * MAX-m1+m2 < max_step => 5. wraparound_plus
+* otherwise => 6. unclear
+
+0. extended_counter = extended_counter;
+1. extended_counter += (m2 - m1)
+2. extended_counter = extended_counter & 0xffffffff - (2<<32) + m2
+3. extended_counter -= (m1 - m2)
+4. extended_counter = extended_counter & 0xffffffff + (2<<32) + m2
+
+Explanation case 2:
+   2         7
+|  m1        m2      |
+0                   MAX
+before = 2 (22)
+cnt = 7 (17)
+MAX=9
+cnt = log_MAX(cnt) - (MAX+1) + m2
+cnt = 22 - (10) + 7
+    = 20 - (10) + 7
+    = 17
+=>    u32mask(cnt) - U32MAX + m2
+
+Explanation case 4:
+   2         7
+|  m2        m1      |
+0                   MAX
+m1 = 7 (17)
+m2 = 2 (22)
+MAX=9
+cnt = log_MAX+1(cnt) + (MAX+1) + m2
+cnt = log_MAX+1(17) + (10) + 7
+    = 10 + (10) + 7
+    = 17
+=>    u32mask(cnt) + U32MAX + m2

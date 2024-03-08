@@ -147,6 +147,10 @@ Interesting formal things of programming languages, stuff below and UI:
     out interleaved or in the wrong order?
   * problematic timing input for deadlines: exceptions/signal handlers,
     rescheduling of processes and security context changes
+- 15. filesystem semantics
+  * There appears to be no good one handling all errors correctly
+    https://danluu.com/file-consistency/, https://danluu.com/filesystem-errors/
+  *
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes
