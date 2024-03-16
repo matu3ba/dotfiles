@@ -1,1 +1,29 @@
 sysconf - get configuration information at run time (or compiletime)
+stat - get file information
+
+type, owner, group, other
+drwxr-xr-x
+dir,  7,     5,     5,
+
+remove access to /home/user0,
+(/home must be rwx --x --x at minimum for user's $HOME to remain accessible)
+chmod go-r /home/user0
+
+chroot jail for hardening non-root user (/proc unprotected)
+
+if (setuid(0) == -1) {
+  /* Handle error */
+}
+if (chroot("chroot/jail") == -1) {
+  /* Handle error */
+}
+if (chdir("/") == -1) {
+  /* Handle error */
+}
+/* Drop privileges permanently */
+if (setgid(getgid()) == -1) {
+  /* Handle error */
+}
+if (setuid(getuid()) == -1) {
+  /* Handle error */
+}

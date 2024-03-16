@@ -106,6 +106,8 @@ perf script > out.perf
 ./stackcollapse-perf.pl out.perf > out.folded
 ./flamegraph.pl out.folded > flamegraph.svg
 
+"Data-type profiling for perf" based on DWARF info: https://lwn.net/Articles/955709/
+
 Hardware locality info extraction and experimenting:
 https://github.com/open-mpi/hwloc
 
@@ -165,6 +167,8 @@ getent group bob0
 /nonexistent is mandated by Policy
 sudo groupadd bob0 -g 10000
 sudo useradd -c 'build user 0' --no-create-home -d /nonexistent -K MAIL_DIR=/dev/null -g 10000 --shell=/usr/bin/nologin bob0
+sudo usermod -s /bin/bash bob0
+sudo usermod -s /usr/bin/nologin bob0
 
 Change age (of user account): chage
 Change password (of user account): passwd
@@ -310,3 +314,20 @@ Remove password from pdf document
 pdftk secured.pdf input_pw password output unsecured.pdf
 qpdf --decrypt --password=verysecret input.pdf output.pdf
 evince print to document
+
+====sandboxing
+naive and incomplete
+* chroot
+* /proc hiding via hidepid=1 or 2
+
+proper one works via clone flags
+* new pid namespace CLONE_NEWPID
+* child termination signal can be specified, ie SIGCHLD
+* new network namespace CLONE_NEWNET
+  * must setup virtual network interfaces and route packets to use network
+* new mount namespace to clone fs info and hide sys info via CLONE_NEWNS
+* other namespace: user, IPC (CLONE_NEWIPC), UTS (CLONE_NEWUTS)
+* undo clone things sharing execution context via 'unshare'
+
+Quite some setup work simplified via managing tools like
+https://github.com/lxc/lxc or https://github.com/lxc/incus

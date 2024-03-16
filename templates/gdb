@@ -314,8 +314,19 @@ awatch *$1
 record full
 continue
 
-tracing function calls
+==tracing
+all function calls
 https://gist.github.com/quark-zju/a20ae638601d2fac476e
+
+specific function calls
+https://sourceware.org/gdb/current/onlinedocs/gdb.html/Frame-Info.html#index-info-locals-435
+https://stackoverflow.com/questions/53173854/watching-local-variables-in-gdb-without-stopping-execution
+watch -l x if $_caller_is("func", 0)
+  commands
+  info locals
+  continue
+  end
+end
 
 https://gist.github.com/shekkbuilder/8b52e2cf4142c35ba6de
 for dbx, gdb, windbg, ntsd, edebug etc but not lldb

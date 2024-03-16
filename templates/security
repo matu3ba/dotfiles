@@ -56,18 +56,18 @@ basics https://phoenixnap.com/kb/server-security-tips
   * (dynamic) port forwarding and all those things
   * TODO
 2. sandboxed environment (jails, zones, containers)
-  * whitelist of Kernel calls
+  * seccomp (whitelist of Kernel calls)
   * file system overlay
   * ulimit or cgroups pendant
-  * landlock
+  * landlock (Kernel object access)
   * network access removed (routing, connection interfaces etc)
   * cpu, io, memory limits
   * max. execution time
   * no clipboard access etc
   * no login manager entry
-  * paging (disable Kernel Samepage Merging)
   * cgroups, apparmor, selinux needed?
   * paging (disable Kernel Samepage Merging)
+  * Kernel config https://www.timesys.com/security/securing-your-linux-configuration-kernel-hardening/
 3. unprivileged user
 4. coredump + stack trace obtainable,
 5. reaper pid to kill child processes
@@ -159,3 +159,19 @@ hacktricks.xyz https://book.hacktricks.xyz
 https://github.com/carlospolop/hacktricks
 https://github.com/carlospolop/hacktricks-cloud
 phrack magazine
+
+====general
+Incomplete list of intrusion prevention and detection:
+* login policy
+* least privilege (network services non-privileged)
+* chroot jails or containers for network services
+* secured web content, encrypted authentication etc
+* fast patching
+* SELinux or Apparmor in enforcing mode
+* Tripwire or other intrusion detection software and schemes to detect changes to critical files.
+* rootkit detection scanners periodically
+* strict firewall rules, port forwarding etc
+* correct file permissions
+* secure backup copies of system software and data
+* sys bootstrapping from local storage until hardening applied
+* write down attack vectors and plan etc

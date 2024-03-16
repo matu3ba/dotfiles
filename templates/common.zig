@@ -207,6 +207,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test qemu.zig -target aarch64-linux-none --test-cmd qemu-aarch64 --test-cmd-bin
 // Run tests within qemu + debugger:
 // zig test lib/compiler_rt/udivmoddi4_test.zig -target arm-linux --test-cmd qemu-arm --test-cmd -g --test-cmd 4242 --test-cmd-bin
+// time zig test lib/std/std.zig -fno-lld -fno-llvm --zig-lib-dir lib --test-filter "tls client and server handshake"
 
 // Testing with wasm+wasmtime:
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
