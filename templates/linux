@@ -331,3 +331,6 @@ proper one works via clone flags
 
 Quite some setup work simplified via managing tools like
 https://github.com/lxc/lxc or https://github.com/lxc/incus
+
+show line numbers
+less -N FILE

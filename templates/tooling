@@ -54,6 +54,8 @@ clang-fmt
 clang-tidy
 flags compile-time: -Wthread-safety
 
+====sanitizer
+
 https://developers.redhat.com/blog/2021/05/05/memory-error-checking-in-c-and-c-comparing-sanitizers-and-valgrind
 clang -g -fsanitize=address foo.c
 gcc -g -fsanitize=address -static-libasan foo.c
@@ -63,6 +65,10 @@ gcc -g -fsanitize=address -static-libasan foo.c
 >slowdown with rr is <=1.2x but only runnable on single core
 >"Vidi: Record Replay for Reconfigurable Hardware" looks ok,
 >but there is nothing easily [re]usable yet.
+
+https://stackoverflow.com/questions/7410160/alternative-to-valgrind-memcheck-for-finding-leaks-on-linux.
+Perf tools and bcc have samplers, which might be what you are looking for, if
+you work solely on Linux.
 
 (false positives with fortification)
 __attribute__((no_sanitize_address))

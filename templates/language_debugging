@@ -8,7 +8,7 @@ Batch processing
   + starts from blank state, runs to termination
   + program is input output transformer
   + no runtime introspection
-  + fialures halt the program
+  + failures halt the program
 
 PL Theory
 - program as static artifact

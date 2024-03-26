@@ -113,7 +113,10 @@ Interesting formal things of programming languages, stuff below and UI:
     * Any form of async exceptions or signal handling (ie in Linux) kills hard deadlines.
     * At least in sel4 all properties are static with statically predefined boundaries only allowed
       for scheduling and all bets are off for abstractions on hard deadline (from what the talks suggested).
+      See "Verified Protection Model of the seL4 Microkernel" by Elkaduwe et al.
+      * how managing the security manager should work?
     * Indications:
+      + must keep CIA (confidentialy, integrity, availability)
       + security is a static system property
       + only allowed via delegating sufficient conditioned process groups
       + caller must handle (stacking) signals (if its not a simple mask) of
@@ -150,7 +153,8 @@ Interesting formal things of programming languages, stuff below and UI:
 - 15. filesystem semantics
   * There appears to be no good one handling all errors correctly
     https://danluu.com/file-consistency/, https://danluu.com/filesystem-errors/
-  *
+- 16. secure speculative execution
+  * "A Formal Approach to Secure Speculation" by Cheang et al.
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

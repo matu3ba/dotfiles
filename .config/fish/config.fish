@@ -347,3 +347,11 @@ end
 
 # SHENNANIGAN
 # there is no simple way to call gnu time to get resource usage and time
+
+# SHENNANIGAN
+# globbing behavior is unintuitive: Neither
+# rm -fr test[1-3]
+# rm -fr test[1-3]+
+# rm -fr test[1-3]*
+# works on dirs test/ test1/ test2/ test3/.
+# One has to use for regex match with xargs or use find/fd.

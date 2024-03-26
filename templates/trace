@@ -34,6 +34,13 @@ https://github.com/emeryberger/dthreads
 * usage of processes with ipc instead of threads to enforece determinism
 * TODO explain tradeoffs
 
+https://www.brendangregg.com/blog/2024-03-17/the-return-of-the-frame-pointers.html
+TODO summary on what to use
+* keep frame pointers and pay <1% perf penalty to have proper stack traces for
+  performance analysis
+* LBR?
+* TODO
+
 ==FAQ
 Linux strace ./callstuff
 Darwin/Mac sudo ktrace trace -S -f C3 -c find .
