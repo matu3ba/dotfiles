@@ -72,6 +72,10 @@ rm -r -fo somedir
 New-item -Path ".\target\dir2" -ItemType Directory -Force
 cargo install fd-find ripgrep zoxide
 
+grep in powershell:
+https://adamtheautomator.com/powershell-grep/
+findstr /?
+
 print PATH (in contrast to echo %PATH% in cmd):
 Get-Item Env:PATH
 $env:path

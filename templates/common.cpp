@@ -1078,3 +1078,7 @@ void chrono_usage() {
   ).count();
   // fprintf ..
 }
+
+// UB: OOB access very evil and may lead to eventual crashes.
+// ape_debug via tracing amount of expected loops vs actual loops, which may
+// prevent crash.

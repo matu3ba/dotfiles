@@ -33,6 +33,10 @@ $env:Editor = "nvim"
 #====common
 # copy to clipboard including newline: pwd | clip
 # copy to clipboard no newline: pwd | Set-Clipboard
+# copy to mounted network shares does not work, must use UNC paths
+# \\IP\share
+# SHENNANIGAN robocopy necessary for network paths/UNC paths
+# TODO robocopy example
 
 #====shortcuts
 # within shell: Get-PSReadLineKeyHandler

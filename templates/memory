@@ -404,3 +404,25 @@ Return Variables
    * ptr to this memory constructed by caller as hidden first arg to fn
      or hidden escond arg following the this ptr
    * return value again in rax
+
+See https://tbrindus.ca/sometimes-the-kernel-lies-about-process-memory-usage/
+appendum 2 at bottom. For more Linux-specific details, take a look at
+https://github.com/gsauthof/cgmemtime.
+Assuming process A after fork/clone execs into B:
+* Linux may optimize and show less memory in case pages are not accessed in procfs
+* procfs memory is reset on exec in contrast to getrusage
+* Posix getrusage resets counter during fork, which is even less accurate
+  because spawned process A exec into B results in max(A,B,..) if more children exist
+* Hence Posix mandates usage of small stub programs to measure memory somewhat
+  reasonably accurate
+* Results from wait4() not relevant to the callee, but parent process of callee
+* Piping through processes including exit status etc would be necessary
+
+Example:
+A: mmap N bytes
+A: fork()
+B: N bytes are still memory mapped. maxrss=N
+B: exec()
+B: 0 (ish) bytes are memory mapped. maxrss is still N
+B: fork()
+C: 0 (ish) bytes are still memory mapped. maxrss=0 (ish)

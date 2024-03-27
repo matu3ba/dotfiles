@@ -35,6 +35,13 @@ msbuild MySolution.sln /p:RunCodeAnalysis=true
 
 SHENNANIGAN VS2015 Disabling stdafx.h may or may not work.
 
+https://learn.microsoft.com/en-us/visualstudio/ide/msbuild-logs?view=vs-2022
+On incremental build slowdown search in verbose build output:
+- missing
+- Project is
+- Project not
+- Tools-Version not available: https://learn.microsoft.com/de-de/visualstudio/msbuild/msbuild-toolset-toolsversion?view=vs-2022
+
 Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
 https://github.com/include-what-you-use/include-what-you-use
 https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/#_incremental
@@ -49,6 +56,10 @@ https://learn.microsoft.com/en-us/visualstudio/ide/cpp-editorconfig-properties?v
   * may randomly fail https://github.com/laurentkempe/GitDiffMargin/issues/460
 - vsvim has many conflicting keybindings
 - Solution Color needed, because VisualStudio has no trivial way to view the path to the workdir
+
+SHENNANIGAN Piping output of graphical applications does not work on default.
+Doing it without effort (use own stdout handle) requires arcane settings to use both console and standard handles:
+gcc -mconsole test_gdi.c -lgdi32
 
 ====build_problems
 Build problems, ie incremental build problems:
@@ -76,9 +87,28 @@ https://www.x86matthew.com/view_post?id=lognt32
 http://jacquelin.potier.free.fr/winapioverride32/
 
 Debugging methods
+msvs monitor (remote debugger server): msvsmon.exe
+Remote Debugger Port Assignments from Remote Debugger Port Assignments - Visual Studio (Windows)
+* Visual Studio 2022: 4026
+* Visual Studio 2019: 4024
+* Visual Studio 2017: 4022
+* Visual Studio 2015: 4020
+TEST-PC:4200
+Name also shown in console log of msvsmon.exe
+* requires local network or extensively accessible ports
+* unfeasible over remote, so one has to run debugger locally
+* copying to UNC paths unnecessary complex due to powershell shortcomings (requires robocopy)
+  * net use \\IP\drive_without_colon\more_path
+  * cp C:\some_path \\IP\drive_without_colon\more_path
+    Copy-Item  -LiteralPath Z:\$name  -Destination I:\Dat\SomePath\ss/ -Force
+    results in "Access to the path [..] is denied"
+  https://serverfault.com/questions/666192/writing-unc-path-names-to-a-different-drive
+
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/choosing-the-best-remote-debugging-method
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/remote-debugging-through-the-debugger
 https://stackoverflow.com/questions/25032832/way-to-configure-vs-remote-debugger-via-cmd
+
+https://exceptionnotfound.net/debugger-windows-in-visual-studio-2015-quick-guide/
 
 Kernel mode debugging session http://www.vallejo.cc/2015/04/debugging-programs-with-multiple.html
 
@@ -93,6 +123,16 @@ https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-tra
 Double check in Powershell:
 Import-Module -Name Appx -UseWindowsPowerShell
 (Get-AppxPackage | where Name -eq 'Microsoft.TimeTravelDebugging').InstallLocation
+(Get-AppxPackage | where Name -eq 'Microsoft.WinDbg').InstallLocation
+
+Installation of package to install .appinstaller packages:
+* Open in editor and download underlying .msixbundle
+* Add-AppxPackage -Path C:\Path\App-Package.msixbundle
+   Add-AppxPackage: Deployment failed with HRESULT: 0x80073CFF, To install this
+   application you need either a Windows developer license or a
+   sideloading-enabled system.
+* https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19
+  * SHENNANIGAN msxixbundle and msix are both zip files
 
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-walkthrough
 
@@ -415,3 +455,22 @@ https://randomascii.wordpress.com/2020/10/04/windows-timer-resolution-the-great-
 Scheduler sleep time between 0.5 and 16.656ms (typically 1ms).
 clockres && Temp
 Realtime threads not affected. Must be measured, for example with chrono.
+
+====SMB_file_sharing
+3 standard steps if the features is activated:
+* 1. network adapter must have "file and printer sharing for Microsoft Networks" enabled
+* 2. shared directory/folder must be set in
+     Properties -> Sharing Avanced Sharing -> Share this folder, share name
+* 3. Control Panel -> Network and Internet -> Network and Sharing Center  -> Advanced sharing setting
+Test-NetConnection -ComputerName 192.168.1.55 -CommonTCPPort SMB
+Get-SmbServerConfiguration | Select *protocol*
+get-smbserverconfiguration
+Check local port
+Get-NetTCPConnection -LocalPort 139,445 -ea 0 | select Local*, Remote*, State, @{n="ProcessName";e={(Get-Process -Id $_.OwningProcess).ProcessName}} | ft -Auto
+https://serverfault.com/questions/1011395/access-smb-over-a-custom-port
+double check properties of adapter
+
+net use DRIVE: \\IP\drive_without_colon\more_path
+
+====firewall
+netsh firewall show state

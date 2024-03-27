@@ -1,3 +1,10 @@
+Core data structures of nix
+Nix structure simplified are a bunch of build runner storing artifacts into for
+user read-only storage with a hash in filepath and dynamically adjusting PATH.
+The system (admin owned paths) then runs via dynamic links to the store except
+in certain configurable places. Finally, the nix store has some ways to mark
+"globally active packages" to prevent cleanups from removing them.
+
 Taken from nix.dev. Nix pills is another good source. Unfortunately flakes have
 no good docs yet and I found nothing good for debugging (overlays).
 https://discourse.nixos.org/t/nix-shells-tips-tricks-and-best-practices/22332

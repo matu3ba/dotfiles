@@ -52,6 +52,7 @@ basics https://phoenixnap.com/kb/server-security-tips
 
 ====jail
 
+Linux
 1. wireguard + ssh (on another port)
   * (dynamic) port forwarding and all those things
   * TODO
@@ -81,6 +82,12 @@ which means the tracee must be in a sub-domain of the tracer."
 Unfortunately it does not say "must have".
 7. disable hyperthreading (in bios)
 8. hardened kernel?
+
+Windows "Win32 app isolation"
+TODO list capabilities
+
+Microkernel/no OS: Single security boundary
+sel4 : specific individual capabilities
 
 ====bubblewrap
 bwrap --unshare-user --uid $(id -u) --gid $(id -g) --proc /proc --dev /dev --tmpfs /tmp \

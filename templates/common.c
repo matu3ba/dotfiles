@@ -5,6 +5,9 @@
 #include <limits.h> // limit
 #include <string.h> // memcpy
 
+// https://ahgamut.github.io/2022/10/23/debugging-c-with-cosmo/
+// Debugging with cosmopolitcan libc
+
 // Standards
 // http://port70.net/~nsz/c/
 
@@ -27,8 +30,6 @@
 // that must be valid for dynamic linking etc.
 
 // macro NULL = 0 or mingw null
-
-// TODO code example
 
 void standard_namespacing() {
   // Standard enum, struct etc
@@ -53,6 +54,37 @@ void standard_namespacing() {
   sNamespace1.eMode = Undefined;
   sNamespace1.uRepr.u64 = 12;
 }
+
+void c_enum_in_struct_weirdness() {
+  const uint32_t device_type = 1;
+  struct BeckhoffDeviceType {
+    enum Ty {
+      Undefined = 0,
+      EK1100,
+      EL1008,
+      EL2008,
+      EL5151,
+      Max,
+    } ty;
+  };
+  struct BeckhoffDeviceType devty;
+  devty.ty = device_type;
+}
+
+// void cpp_enum_in_struct_weirdness() {
+//   struct BeckhoffDeviceType {
+//     enum Ty {
+//       Undefined = 0,
+//       EK1100,
+//       EL1008,
+//       EL2008,
+//       EL5151,
+//       Max,
+//     } ty;
+//   };
+// 	struct BeckhoffDeviceType devty;
+// 	devty.ty = (BeckhoffDeviceType.Ty)device_type;
+// }
 
 // Might get superfluous with new C standard (C2x).
 #ifndef GENERATE_ENUM_STRINGS

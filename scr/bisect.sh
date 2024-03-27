@@ -6,6 +6,10 @@
 # git bisect reset
 # inserting git bisect bad/git bisect good
 
+# git bisect skip       choose nearby commit instead of current unusable one
+# git bisect visualize
+# git bisect log
+
 # -- scripted --
 # git bisect run ./script.sh
 #   (errorcode != 0 indicates failure and errorcode = 0 indicates success)

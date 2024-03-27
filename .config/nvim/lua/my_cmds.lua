@@ -264,11 +264,16 @@ add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of 
 add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 
 ---- Quickfixlist ----
+-- nvim -q
+-- :cexpr getline(1, '$')
+-- TODO parsing bare paths of buffer and use in qflist with :h setqflist()
 -- Press <C-q> to add telescope results to quickfixlist
 -- :copen opens, :ccl closes quickfixlist, C-w K moves qf list to top.
 -- See :h :cdo for more help
 -- :cfdo :badd %
 -- add to harpoon
+-- Review changes with diff before writing file
+-- :w !diff % -
 
 ---- Scripting ----
 -- copy path under cursor: yiW
