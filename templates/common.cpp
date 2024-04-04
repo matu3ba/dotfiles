@@ -326,6 +326,13 @@ std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, 
     }
     return res;
 }
+
+void mutex_usage() {
+    std::mutex m1; // incorrect for simplification
+    std::lock_guard<std::mutex> guard(m1);
+    // critical section
+}
+
 // Naive DOD-based intrusive structure would use
 // 1. std::vector for value_storage
 // 2. std::map<std::string, int> for the index into value_storage
@@ -1082,3 +1089,48 @@ void chrono_usage() {
 // UB: OOB access very evil and may lead to eventual crashes.
 // ape_debug via tracing amount of expected loops vs actual loops, which may
 // prevent crash.
+
+// SHENNANIGAN C2259 'class' : cannot instantiate abstract class
+// if virtual function overload is missing from class provides no correct source
+// locations (may point to useless template classes instead)
+
+// Bounded quantification
+// universal or existential quantifier which are restricted to range only over subtypes
+// of a particular type (parametric polymorphism <-> subtyping)
+
+// F-bounded quantification
+// * purpose: allow polymorphic fns to depend on specific behavior of objects
+//   instead of type inheritance
+// * assume: record-based model for object classes (each class member is record element and class members are named fns)
+// * application of bounded quantification on recursive types
+
+// The Curiously Recurring Template Pattern (CRTP) = F-bounded polymorphism (subform of F-bounded quantification)
+// * Data, context and interaction (DCI)
+// * no runtime overhead in contrast to dynamic
+// * simplified with C++23
+template <class T>
+class Base
+{
+    // methods within Base can use template to access members of Derived
+};
+class Derived : public Base<Derived>
+{
+    // ..
+};
+// Use case Static Polymorphism
+template <class T>
+struct Base
+{
+    void interface() {
+        static_cast<T*>(this)->implementation();
+    }
+    static void static_func() {
+        T::static_sub_func();
+    }
+};
+struct Derived : Base<Derived>
+{
+    void implementation();
+    static void static_sub_func();
+};
+// other use cases include object counter, polymorphic chaining|copy construct

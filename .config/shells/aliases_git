@@ -151,6 +151,13 @@ alias gau='git add -u' # add modified files
 alias gap='git apply'
 alias gapr='git apply -R'
 
+# git blame
+# git blame FILEPATH --since=7.days
+# git blame FILEPATH -L 3,5 -e -l
+# -e for mail, -l for commit hash
+# git blame BRANCH -- FILEPATH
+# git gui blame FILEPATH
+
 alias gb='git branch'
 alias gba='git branch -avv'
 alias gbd='git branch -d'
@@ -173,11 +180,15 @@ alias gsr='git remote show origin'
 
 # git checkout commit filepath
 alias gco='git checkout'
+alias gcp='git cherry-pick'
 alias gcch='git config --global credential.helper "cache --timeout=3600"'
 alias gc='git commit -v -S' # sign is faster
 alias gcn='git commit -v' # nosign
 alias gcmsg='git commit -m'
 alias gca='git commit --amend'
+alias gcf='git commit --fixup'
+alias gcs='git rebase -i --autosquash'
+
 # To ignore indentation changes in git diff, add -w
 alias gd='git diff'
 alias gdn='git diff --name-only'
@@ -232,7 +243,6 @@ alias grbe='git rebase --exec' # rebuild_cmd
 alias grbm='git rebase master'
 alias grbM='git rebase main'
 alias grbi='git rebase -i'
-alias grbisq='git rebase -i --autosquash'
 
 #alias gsw='git switch'
 alias gsafe='test -n "$(git status --porcelain)" || echo safe'
@@ -318,6 +328,10 @@ alias gsu='git submodule update'
 # SHENNANIGAN
 # git itself doesn't track along renames. So it ends with a rename and you
 # gotta pick up the track with the new name.
+
+# SHENNANIGAN
+# fixup has no option to check, if the fixup can be cleanly applied via autosquash
+
 # TODO adjust for renames
 ##!/usr/bin/env zsh
 #
@@ -344,7 +358,7 @@ alias gsu='git submodule update'
 #      )"
 #fi
 
-# SHENNAGANIN setting reliably to branch is tedious
+# SHENNANIGAN setting reliably to branch is tedious
 #git worktree add --track -b crt_arm_fixes crt_arm_fixes downstream/crt_arm_fixes
 
 #====commit_hygiene_tldr

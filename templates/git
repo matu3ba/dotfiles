@@ -66,3 +66,7 @@ TODO
 
 based on so you think you know git by gitbutler founder
 TODO
+
+Show credential helper via
+git config credential.helper
+manager-core

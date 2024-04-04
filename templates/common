@@ -1,3 +1,6 @@
+Any coding standard which insists on syntactic clarity at the expense of
+algorithmic clarity should be rewritten.
+
 HACK
 TODO
 FIXME

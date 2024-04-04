@@ -1,3 +1,61 @@
+Purpose of Continous Integration [CI]: Remote execution service of configurable
+runtime environments[1] with the option to do problem debugging[2] and access
+control to prevent, restrict and/or detect hostile takeover (attempts) of
+infrastructure through malicious actors[3].
+Based on access control and detection and/or design, recovery or system
+reproducibility from an as minimal as secure and safe trusted immutable
+(bootstrapping) system may be implemented[4].
+Concrete CI implementations may then choose different tradeoffs for these
+purposes, for example what user interactions the control server allows, if and
+how runners are added, what they consist of physically, how and what work is
+assigned and synchronized, how data (permissions, configuration, files, source
+code) are stored, cached, archived.
+
+1:
+reasonable simple/minimal CI
+     ┌────────────────────┐
+     │    Application   |-│-------------|  CI can cover everything from integratin
+   ┌─┘   Minimal system | └─┐    CI     |  to test the hardware up to integration
+ ┌─┘     Kernel Setup   |   └─┐         |  with the application (fuzzing,
+ │         Hardware     |-----│---------|  symbolic execution etc).
+ └────────────────────────────┘
+The ideal CI provides reproducible behavior on all developer machines with all
+debug tooling being used and accessible to developer on top.
+In practice several error classes are not reproducible without target barebone
+or more virtualization or more runtime instrumentation being used and
+the same reasoning can be applied to hardware testing.
+
+Thus in practice, hardware or code logic of components is tested in isolation,
+possibly via simulating I/O and time steps, and the API between components is
+tested by testing internal state changes of upper and lower layer.
+Full system tests then typically focus on regressions or do state exploration
+like fuzzing approaches, because the system context of execution is usually
+unreasonable to (en)code, let alone derive.
+
+2:
+* retrieval of inputs + outputs to reason about internal state
+* log, print, step through or trace via runtime environment (JTAG, GPU, Kernel
+  debug interface, etc [ideally time travel debugging])
+* reduction (bisecting software versions/commit range, hardware influence,
+  software configuration etc)
+* compiletime and/or runtime validation
+
+3:
+* used source code available on system
+* sandboxing to prevent external code/program usage
+* assume: trustable system
+* assume: full build process understandable
+* assume: inputs artifacts trustable
+
+4:
+* would ideally check for binary identical state in all offline storage
+  * is there no formal protocol/model to enumerate software/hardware memory
+    region changes for grub/uefi or at hypervisor level? to poweroff-stateful
+    memory, let alone enumerate all stateful memory with devices
+  * in practice memory marked as read-only
+* requires strong isolation and/or partial/full system reset
+* may be part of routine on completely untrusted external input
+
 High level
   https://gregoryszorc.com/blog/2021/04/07/modern-ci-is-too-complex-and-misdirected/
   * single remote code execution as service platform

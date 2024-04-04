@@ -434,3 +434,174 @@ void ape_print() {
   fclose(f1);
 }
 #endif
+
+// Less known C to cursed C based on https://jorenar.com/blog/less-known-c
+// -Wvla-larger-than=0
+// -Wvla
+void array_pointers() {
+
+  int arr[10];
+  int *ap0 = arr;
+  ap0[0] = 5;
+  int (*ap1)[10] = &arr;
+  (*ap1)[1] = 10;
+
+  // multi-dimensional array on heap
+  int (*ap3)[9000][9000] = malloc(sizeof *ap3);
+  if (ap3) free(ap3);
+
+  // Variable Length Array (on stack)
+  int (*ap4)[1000][1000] = malloc(sizeof *ap4);
+  if (ap4) {
+    // (*arr)[i][j]
+    free(ap4);
+  }
+
+  // alternative (worse to use): 1d array with offsets, piecewise allocation or big fixed array
+  int* arr_1D = malloc(1000 * 1000 * (sizeof *arr));
+  if (arr_1D) {
+    // arr_1D[1000*i + j] = 10;
+    // ..
+    free(arr_1D);
+  }
+}
+
+// comma separator
+// only rightmost expressions is considered
+// b = (a=1, a+5);
+// <=> a=1; b=1+5=6;
+
+// digraphs, triggraphs, alternative tokens (ASCII)
+
+struct Des1 {
+  int x,y;
+  const char * s1;
+};
+
+// Designated initializer allow very ugly code, but also reasonable
+// array initialization since C99
+void designated_initializer() {
+  int arr0[] = { 1, 2, [10] = 8, [17] = 9 };
+  struct Des1 d1 = { .y = 1, .s1 = "blubb", .x = -1 };
+  struct M1 {
+    int x;
+    int y;
+    int z;
+  };
+  struct M1 arr1[] = {
+    [0] = { 0, 1, 9 },
+    [1] = { 3, 4, 5 },
+    [2] = { 6, 7, 8 },
+  };
+  struct {
+    int sec, min, hour, day, mon, year;
+  } dt1 = {
+    .day = 1, 1, 2001,
+    .sec = 1, 1, 1
+  };
+}
+
+// Compound literals looks like brace-enclosed initializer list
+struct ComLit1 {
+  int x, y;
+};
+void compound_literal(struct ComLit1 cl1) {
+  fprintf(stdout, "%d, %d\n", cl1.x, cl1.y);
+}
+void compound_literal_by_addr(struct ComLit1 * cl1) {
+  fprintf(stdout, "%d, %d\n", cl1->x, cl1->y);
+}
+void compound_literal_usage() {
+  // fun fact: red brackets by clangd show that this is cursed
+  compound_literal((struct ComLit1){1, 2});
+  compound_literal_by_addr(&(struct ComLit1){1, 2});
+}
+
+// SHENNANIGAN one can escape shadowing
+int x_global_cursed = 13;
+void escaping_shadowing() {
+  int x = 1;
+  {
+    extern int x;
+    fprintf(stdout, "%d\n", x);
+  }
+}
+
+// SHENNANIGAN implementation dependent, so best to avoid them
+void multi_character_constants() {
+  enum State1 {
+    Wait = 'WAIT',
+    run = 'RUN!',
+    stop = 'STOP',
+  };
+}
+
+// SHENNANIGAN impementation defined behavior for nesting due to being underspecified
+void bitfields() {
+  struct Bitfield1 {
+    unsigned int b0: 3;
+    unsigned int b1: 4;
+  };
+}
+
+// SHENNANIGAN 0 bit field
+void zero_bitfield() {
+  struct ZeroBitField1 {
+    unsigned char x : 5;
+    unsigned short : 0;
+    unsigned char y : 7;
+  };
+  // in memory:
+  // char pad          short  b►undary
+  // v    v            v
+  // xxxxx000 00000000 yyyyyyy0
+  // zero-length field causes position to move to next short boundary
+}
+
+// Introduced with C99, few usage example
+void flexible_array_member() {
+  struct FlexibleArrayMember {
+    short len; // at least one other data member
+    double arr[]; // flexible array member must be last
+    // potential padding
+  };
+  struct FlexibleArrayMember * flex_arr_mem = malloc(5 * sizeof(struct FlexibleArrayMember));
+  flex_arr_mem->len = 5;
+  for (uint32_t i = 0; i < flex_arr_mem->len; i += 1)
+    flex_arr_mem->arr[i] = 20;
+}
+
+void imaginary_cursor_position_in_printf() {
+  int pos1, pos2;
+  const char * str_unknown_len = "some_string_here";
+  fprintf(stdout, "write %n(%s)%n here\n", &pos1, str_unknown_len, &pos2);
+  fprintf(stdout, "%*s\\%*s/\n", pos1, " ", pos2-pos1-2, " ");
+  fprintf(stdout, "%*s", pos1+1, " ");
+}
+
+// TODO finish up https://jorenar.com/blog/less-known-c
+
+#ifdef _linux
+void safe_debugging_on_unix() {
+  // To see prints, run strace
+  write(-1, "writes to non-existing file descriptors are still visible in strace");
+}
+#endif
+
+// based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
+// TODO motivation
+// Duffs device inspired (case statement is legel within a sub-block
+// of its matching switch statement
+// TODO
+
+// https://cdacamar.github.io/data%20structures/algorithms/benchmarking/text%20editors/c++/editor-data-structures/
+// * gpa buffer
+// * rope
+// * piece table
+// * piece tree
+// Research data structure tradeoffs upfront
+// Create debug utilities for data structures very early on
+// Immutable RB deletion is hard
+//
+// TODO https://bitbashing.io/gc-for-systems-programmers.html
+// basic RCU implementation?

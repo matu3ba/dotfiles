@@ -58,6 +58,8 @@ New-Alias -Name gba -Value GitBranchAll -Force -Option AllScope
 New-Alias -Name gbr -Value GitBranchRemote -Force -Option AllScope
 New-Alias -Name gbrt -Value GitBranchRemoteTracking -Force -Option AllScope
 New-Alias -Name gc -Value GitCommitSign -Force -Option AllScope
+New-Alias -Name gcf -Value GitCommitFixup -Force -Option AllScope
+New-Alias -Name gcs -Value GitCommitSquash -Force -Option AllScope
 New-Alias -Name gca -Value GitCommitAmend -Force -Option AllScope
 New-Alias -Name gcn -Value GitCommitNoSign -Force -Option AllScope
 New-Alias -Name gd -Value GitDiff -Force -Option AllScope
@@ -77,6 +79,7 @@ New-Alias -Name gpsuu -Value GitPushSetUpstreamUpstream -Force -Option AllScope
 New-Alias -Name grv -Value GitRemoteVerbose -Force -Option AllScope
 New-Alias -Name gs -Value GitStatus -Force -Option AllScope
 New-Alias -Name gsh -Value GitShow -Force -Option AllScope
+New-Alias -Name gshn -Value GitShowNameOnly -Force -Option AllScope
 New-Alias -Name gsr -Value GitShowRemote -Force -Option AllScope
 New-Alias -Name gsto -Value GitStashPop -Force -Option AllScope
 New-Alias -Name gstu -Value GitStashPush -Force -Option AllScope
@@ -105,6 +108,8 @@ function GitBranchRemoteTracking { & git rev-parse --abbrev-ref --symbolic-full-
 function GitCommitAmend { & git commit --amend $args }
 function GitCommitNoSign { & git commit -v $args }
 function GitCommitSign { & git commit -v -S $args }
+function GitCommitFixup { & git commit --fixup $args }
+function GitCommitSquash { & git rebase -i --autosquash $args }
 function GitDiff { & git diff --color $args }
 function GitDiffCache { & git diff --cached $args }
 function GitDiffNameOnly { & git diff --name-only $args }
@@ -122,6 +127,7 @@ function GitPushSetUpstreamDownstream { & git push --set-upstream downstream $(g
 function GitPushSetUpstreamUpstream { & git push --set-upstream upstream $(git branch --show-current) $args }
 function GitRemoteVerbose { & git remote -v }
 function GitShow { & git show $args }
+function GitShowNameOnly { & git show --name-only $args }
 function GitShowRemote { & git remote show roigin $args }
 function GitStashPop { & git stash pop $args }
 function GitStashPush { & git stash push $args }
@@ -159,6 +165,11 @@ function ZigCrossRelease { & ..\master\rel\zig.exe build -p rel --search-prefix 
 
 # New-Alias -Name zcbrel -Value ZigCrossBuildRelease -Force -Option AllScope
 # New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
+
+#====filter
+filter fgrep($keyword) { if ( ($_ | Out-String) -like “*$keyword*”) { $_ } }
+filter fsed($before,$after) { %{$_ -replace $before,$after} }
+filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 
 #====setup
 

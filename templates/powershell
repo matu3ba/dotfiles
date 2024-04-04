@@ -72,10 +72,6 @@ rm -r -fo somedir
 New-item -Path ".\target\dir2" -ItemType Directory -Force
 cargo install fd-find ripgrep zoxide
 
-grep in powershell:
-https://adamtheautomator.com/powershell-grep/
-findstr /?
-
 print PATH (in contrast to echo %PATH% in cmd):
 Get-Item Env:PATH
 $env:path
@@ -132,7 +128,6 @@ https://interworks.com/blog/2021/09/15/setting-up-ssh-agent-in-windows-for-passw
 more basics:
 https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-service?view=powershell-7.3
 
-
 find:
 dir -recurse -file -filter *.jpg
 GetChildItem –Include *.txt –Recurse -Path C:\”Program files” -Name -Force -Depth 2
@@ -152,6 +147,24 @@ Get-ChildItem -Path Registry::HKEY_USERS
 Get-ChildItem -Path Registry::HKEY_PERFORMANCE_DATA
 
 Get-ChildItem -Path Cert:\* -Recurse -CodeSigningCert
+
+grep:
+https://adamtheautomator.com/powershell-grep/
+findstr /?
+filter fgrep($keyword) { if ( ($_ | Out-String) -like “*$keyword*”) { $_ } }
+
+sed:
+https://stackoverflow.com/questions/71148862/how-can-i-convert-a-sed-command-to-its-powershell-equivalent
+https://quisitive.com/using-sed-and-grep-in-powershell/
+filter fsed($before,$after) { %{$_ -replace $before,$after} }
+
+xargs:
+https://stackoverflow.com/questions/36428949/whats-the-equivalent-of-xargs-in-powershell
+SHENNANIGAN for bare usage
+,@(Get-ChildItem -Recurse -Filter *.jpg | Another-Step) | %{&"myapp.exe" $_}
+https://codepyre.com/2012/08/creating-xargs-for-powershell/
+filter xargs { & $args[0] ($args[1..$args.length] + $_) }
+rg -l -F WeirdFnName | xargs sd WeirdFnName BetterFnName
 
 Run batch script from powershell:
  & .\my-app\my-fle.bat
