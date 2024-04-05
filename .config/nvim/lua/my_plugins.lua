@@ -176,6 +176,7 @@ return {
     'stevearc/oil.nvim',
     config = function() require('oil').setup { view_options = { show_hidden = true } } end,
   },
+  -- TODO fn overview window, jumps etc https://github.com/stevearc/aerial.nvim
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
   -- { 'anuvyklack/hydra.nvim' },
   -- note visual mode gc,gb clash

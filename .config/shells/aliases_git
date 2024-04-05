@@ -16,6 +16,8 @@
 #git restore -s=COMMITHASH filename
 #root directory of current git repo
 #git rev-parse --show-toplevel
+#git restore --source HEAD@{10.minutes.ago} file.txt
+#git restore -p file.txt
 
 #overwrite current branch with other branch without losing content
 #git tag old-email-branch
@@ -34,6 +36,7 @@
 # git diff --patch > diff.patch,
 # git apply [-R] diff.patch to [reverse] apply it on a codebase
 # git diff COMMIT~[NR] COMMIT
+# git diff --word-diff
 
 #show specific file on revision/commit
 #git show REVISION:path/to/file
@@ -101,6 +104,12 @@ alias gshn='git --no-pager show --name-only'
 #delete untracked files (dry run and real one)
 #git clean -d -n
 #git clean -d -f
+# simpler:
+# git maintenance start
+# adds:
+# [maintenance]
+#   auto = false
+#   strategy = incremental
 
 #get the raw files of current commit as tar archive
 #git archive -o archive.tar
@@ -141,6 +150,28 @@ alias gshn='git --no-pager show --name-only'
 #   remote = origin
 #   merge = refs/heads/master
 
+# aliases (like shell, but for git)
+# git config --global alias.bb !better-branch.sh
+# https://gist.github.com/schacon/e9e743dee2e92db9a464619b99e94eff
+# REuse REcorded REsolution: keep merge conflict to reapply
+# git config --global rerere.enabled true
+
+# folks not able to configure gpg due to pin-entry reasons
+# git config gpg.format ssh
+# git config user.signingkey ~/.ssh/key.pub
+# git cat-file -p HEAD
+
+# speed up slow search with
+# git config --global fetch.writeCommitGraph true
+# git status slow
+# git config --global core.untrackedcache true
+# git config --global core.fsmonitor true
+
+# git config rebase.updateRefs true
+
+# fetch branches
+# git config remote.origin.fetch '+refs/pull/*:refs/remotes/origin/pull/*'
+
 alias gwt='git worktree'
 alias grst='git restore'
 alias g='git'
@@ -163,6 +194,8 @@ alias gba='git branch -avv'
 alias gbd='git branch -d'
 alias gbD='git branch -D'
 alias gbr='git branch --remote'
+# git config --global column.ui auto
+# git config --global branch.sort -commiterdate
 
 alias gfap='git fetch --all --prune'
 # git push REMOTENAME --delete deletedBranch
@@ -236,6 +269,19 @@ alias gss='git status -s'
 alias gs='git status'
 alias gsp='git status --porcelain'
 alias gcl='git clone'
+# git clone --filter=blob:none
+# git clone --filter=tree:0
+
+# more big repo stuff
+# multipack indexes
+# reachability bitmaps
+# geometric repacking
+
+# setup all defaults with huge repos
+# prefetching, commit-graph, fs monitor, partial cloning, sparse checkout
+#  git scalar
+
+# git sparse-checkout set build base
 
 # git rebase range to fixup author
 #git rebase -r LASTGOODCOMMIT --exec 'git commit --amend --no-edit --reset-author'
@@ -243,6 +289,9 @@ alias grbe='git rebase --exec' # rebuild_cmd
 alias grbm='git rebase master'
 alias grbM='git rebase main'
 alias grbi='git rebase -i'
+alias grbaq='git rebase --autosquash'
+# stacked commits to workaround github behavior with branches instead of commits
+# git rebase --update-refs
 
 #alias gsw='git switch'
 alias gsafe='test -n "$(git status --porcelain)" || echo safe'
@@ -273,6 +322,7 @@ alias glo='git log --oneline --decorate'
 alias gloga='git log --oneline --decorate --graph --all'
 alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias glp='_git_log_prettily'
+# git log --oneline --graph
 
 # show only branch relation
 # alias glbr0='git log --graph --all --decorate --simplify-by-decoration'
@@ -280,10 +330,13 @@ alias glp='_git_log_prettily'
 # alias glbr2='git log --graph --oneline --branches'
 # alias glbr3='git log --graph --oneline --branches --not --remotes=*'
 # alias glbr4='git log --graph --oneline --decorate-refs=refs/heads'
+# git log --graph --oneline -10 > /dev/null
 
+# git log -S files_watcher -p
 alias glsm='git ls-files -m' # modified
 alias glss='git ls-files -s' # staged
 alias glsa='git ls-files -mo --exclude-standard' # all non ignored
+# git ls-remote
 
 #TODO
 #merge with merge message no rebase
@@ -302,6 +355,7 @@ alias gp='git push'
 alias gpdry='git push --dry-run'
 #alias gpf='git push --force'
 alias gpf='git push --force-if-includes --force-with-lease'
+# git push --signed
 
 # To show the content of a stash run
 # git stash show -p STASH/STASHNUMBER
@@ -331,6 +385,29 @@ alias gsu='git submodule update'
 
 # SHENNANIGAN
 # fixup has no option to check, if the fixup can be cleanly applied via autosquash
+
+# git blame -L 2,5:pathtofile
+# git log -L 2,5:pathtofile
+# git log -L :File:pathtofile
+# ignore whitespace via -w
+# detect lines moved or copied in -C
+# or the commit that created the file -C
+# or any commit at all -C
+# realistic blame:
+# git blame -w -C -C -C -L 2,5 pathtofile
+
+#====hooks
+# use cases
+#  commit message formatting
+#  package install
+#  update ctags
+#  pre-commit
+#  husky
+#  * pre-commit install
+
+#====LFS
+# brew install git-lfs
+# git cat-file -p HEAD:"bigfile.wav"
 
 # TODO adjust for renames
 ##!/usr/bin/env zsh

@@ -4,4 +4,16 @@ inspect > network > click play > .m3u8 > Content-Length: exists?
 extra > browser tools (ctr+shift+i) > > click play > .m3u8 > Content-Length: exists?
 ffmpeg -i "url_path_to_file.m3u8" -bsf:a aac_adtstoasc -vcodec copy -c copy -crf 50 file.mp4
 
-#idea cutting, downsampling etc
+# simple conversion
+ffmpeg -i inputFile.ogg outputFile.mp3
+for f in *.wma; do ffmpeg -i "$f" "${f%.*}.mp3"; done
+
+# converting to mp3 including sampling etc
+ffmpeg -i input.wav -vn -ar 44100 -ac 2 -b:a 192k output.mp3
+-vn disable video, no album cover (for video files)
+-ar audio sampling frequency (for raw streams)
+-ac number of audio channels (for raw streams)
+--b:a bitrate, alternative: -q:a 2 for variable bitrate (average 192KB/s)
+for f in *.wma; do ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "${f%.*}.mp3"; done
+
+#idea cutting

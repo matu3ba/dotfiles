@@ -8,6 +8,7 @@
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <vector>
+#include <memory> // unique_ptr
 
 // posix only
 #ifndef _WIN32
@@ -269,22 +270,23 @@ class ClassWithMutex { // class with mutex
 int reinterpret_cast_usage() {
   // see also common.c no_reinterpret_cast
   // clang-format: off
-  const char some_vals[8] = { 0
+  uint8_t some_vals[9] = { 0,
                               1, 0, 0, 0
                             , 0, 0, 0 ,0 };
   // clang-format: on
 	int64_t val = *reinterpret_cast<int64_t*>(&some_vals[1]);
-	// SHENNANIGAN less type safe than C variant
+	// SHENNANIGAN less type safe than C variant (memcpy)
   // WRONG int64_t val = *reinterpret_cast<int64_t*>(some_vals[1]);
   if (val != INT64_MIN) return 1;
   return 0;
 }
 
 int ptr_no_reinterpret_cast() {
-  char arr[5] = {0, 0,0,0,1};
+  char some_vals[5] = {0, 0,0,0,1};
 	// SHENNANIGAN less type safe than C variant
   // WRONG int32_t val = reinterpret_cast<int32_t*>(some_vals[1]);
   int32_t * i32_arr_ptr = reinterpret_cast<int32_t*>(&some_vals[1]);
+  (void)i32_arr_ptr;
   // dont return stack local variable here
   return 0;
 }
@@ -454,7 +456,7 @@ class FriendOfVariable2 {
 // object one, because comptime-code execution should not hide control flow
 // okayish solution "Explicit dependencies on objects/strong coupling"
 
-// SHENNANIGAN
+// Note
 // << operator uses as few digits as possible to print, also omitting '.0' digits.
 
 // SHENNANIGAN
@@ -1077,12 +1079,15 @@ void chrono_usage() {
   auto t_start = std::chrono::high_resolution_clock::now();
   // the work...
   auto t_end = std::chrono::high_resolution_clock::now();
-  double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+  double elapsed_time = std::chrono::duration<double, std::milli>(t_end - t_start).count();
 	uint64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
 
   double elapsed_time_ms = std::chrono::duration<double, std::milli>(
       std::chrono::high_resolution_clock::now() - t_start
   ).count();
+  (void)elapsed_time;
+  (void)elapsed_time_ms_cast;
+  (void)elapsed_time_ms;
   // fprintf ..
 }
 
@@ -1109,17 +1114,17 @@ void chrono_usage() {
 // * no runtime overhead in contrast to dynamic
 // * simplified with C++23
 template <class T>
-class Base
+class Base1
 {
-    // methods within Base can use template to access members of Derived
+    // methods within Base1 can use template to access members of Derived
 };
-class Derived : public Base<Derived>
+class Derived1 : public Base1<Derived>
 {
     // ..
 };
 // Use case Static Polymorphism
 template <class T>
-struct Base
+struct Base2
 {
     void interface() {
         static_cast<T*>(this)->implementation();
@@ -1128,7 +1133,7 @@ struct Base
         T::static_sub_func();
     }
 };
-struct Derived : Base<Derived>
+struct Derived2 : Base2<Derived>
 {
     void implementation();
     static void static_sub_func();

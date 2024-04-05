@@ -109,3 +109,8 @@ https://danluu.com/new-cpu-features/
   * Fast IO to bypass CPU completely
   * Hardware accelerators
   * Dark silicon for dedicated tasks
+
+100pm = 1Anstrom, Silicon van der Vaals radius is 200pm. So 2nm are something
+in between 10-20 atoms thick depending on configuration etc. Are there data
+points that can be extrapolated on knowledge/problem solving of quantum
+effects?

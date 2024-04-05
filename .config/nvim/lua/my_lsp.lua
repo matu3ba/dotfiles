@@ -89,6 +89,9 @@ end
 -- end
 
 -- stylua: ignore start
+-- TODO https://www.reddit.com/r/neovim/comments/17j0p58/clangd_lsp_for_header_files_as_well_as_source_code/
+-- SHENNANIGAN clang-fmt header reordering enabled by default in the LLVM and Chromium styles
+-- clang-tidy background index clang-fmt? cross file rename
 lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 --require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
 lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }

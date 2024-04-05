@@ -271,7 +271,7 @@ fn simpleCAS() !void {
     }
 }
 
-// SHENNANIGAN performance: array assignments work with =
+// SHENNANIGAN PERF: array assignments work with =
 test "perf array assignment" {
     const x: u8 = 100;
     const a: [1_000_000]u8 = .{x} ** 1_000_000;
@@ -342,9 +342,7 @@ fn totalAll(structs: []const BigStruct) u128 {
 // SHENNANIGAN
 // Test runner allows no signaling to qemu -g 4242 (debugger mode)
 
-// SHENNANIGAN floats
-// NaN can not be conveniently tested against with standard methods and
-// isNan must be used which is based on 'x != x'.
+// NaN means 'x != x', usable via isNan
 
 pub const SafetyLock = struct {
     pub const State = if (builtin.is_test) enum { unlocked, locked } else enum { unlocked };
@@ -364,7 +362,7 @@ const windows_utf16_string_literal = struct {
     const L = std.unicode.utf8ToUtf16LeStringLiteral;
 };
 
-// SHENNANIGAN/PERFORMANCE APIs with optional slices to multi-pointer are unflexible,
+// SHENNANIGAN PERF: APIs with optional slices to multi-pointer are unflexible,
 // because the pointer can not be null for the field to be unset and to be set
 // in the called fn.
 // This can introduce semantic problems and has a superfluos load into register

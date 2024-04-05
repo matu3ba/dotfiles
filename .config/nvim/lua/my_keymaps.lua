@@ -146,6 +146,8 @@ map('v', '<leader>d', '"_d', opts) -- delete into blackhole register
 map('n', '<leader>D', '"_D', opts) -- delete into blackhole register
 --map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
 -- overwrite line at cursor start with text from register
+
+-- TODO if register contains newlines, strip last newline
 map('n', '<leader>p', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)
 map('n', '<leader>P', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', false)<CR>]], opts)
 map('n', '<C-p>', 'p`[', opts) -- ] paste without cursor movement

@@ -426,3 +426,6 @@ B: exec()
 B: 0 (ish) bytes are memory mapped. maxrss is still N
 B: fork()
 C: 0 (ish) bytes are still memory mapped. maxrss=0 (ish)
+
+* ghostty latency estimated around (derived from iphone measurements)
+20-30ms

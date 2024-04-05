@@ -11,6 +11,7 @@
 // Standards
 // http://port70.net/~nsz/c/
 
+// SHENNANIGAN
 // In short: Pointers are a huge footgun in C standard.
 //
 // The proper fix for access a pointer with increased alignment is to use a
@@ -28,6 +29,9 @@
 //
 // Except, by posix extension: casting pointers to functions (and back), because
 // that must be valid for dynamic linking etc.
+
+// TODO quote standard to show that its UB to let pointer point into undefined
+// provenance regions (ptr < &array[0], ptr > &array[len+1], ptr != 0).
 
 // macro NULL = 0 or mingw null
 
@@ -86,7 +90,7 @@ void c_enum_in_struct_weirdness() {
 // 	devty.ty = (BeckhoffDeviceType.Ty)device_type;
 // }
 
-// Might get superfluous with new C standard (C2x).
+// Superfluous with C23.
 #ifndef GENERATE_ENUM_STRINGS
     #define DECL_ENUM_ELEMENT( element ) element
     #define BEGIN_ENUM( ENUM_NAME ) typedef enum tag##ENUM_NAME
@@ -389,6 +393,7 @@ void use_voidptr() {
 //   // Windows Header Files:
 //   #include <windows.h>
 
+#ifdef _WIN32
 // different semantics of "secure fns" and not portable
 void ape_win_incompat_fileprint() {
   FILE * f1;
@@ -403,6 +408,7 @@ void ape_win_incompat_fileprint() {
     fclose(f1);
   }
 }
+#endif
 
 // silence clangd warnings
 #ifndef _WIN32
@@ -420,12 +426,14 @@ void ape_fileprint() {
 }
 #endif
 
+#ifdef _WIN32
 void ape_win_print() {
   FILE * f1;
   fopen_s(&f1, "file1", "a+");
   fprintf(f1, "sometext\n");
   fclose(f1);
 }
+#endif
 
 #ifndef _WIN32
 void ape_print() {
@@ -435,11 +443,10 @@ void ape_print() {
 }
 #endif
 
-// Less known C to cursed C based on https://jorenar.com/blog/less-known-c
+// Less known/arcane/cursed C based on https://jorenar.com/blog/less-known-c
 // -Wvla-larger-than=0
 // -Wvla
 void array_pointers() {
-
   int arr[10];
   int *ap0 = arr;
   ap0[0] = 5;

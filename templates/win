@@ -474,3 +474,10 @@ net use DRIVE: \\IP\drive_without_colon\more_path
 
 ====firewall
 netsh firewall show state
+
+====sandboxing
+* Reduce Windows Kernel API surface
+https://github.com/matu3ba/win32k-mitigation/blob/master/test/standalone/child_process_win32k_mitigation_z/child.zig
+gdi32.dll and gdi32full.dll. Most of those should be mapped to a wow path
+Not too sure, but suspecting GUI applications require some of the libs being used, see
+https://stackoverflow.com/questions/63398081/windows-kernel32-dll-only-assembly-draw-pixel
