@@ -269,6 +269,36 @@ M.CopyMatchingChar = function(backwards, register)
   vim.fn.setreg(register, copytext)
 end
 
+-- Keep cursor and join next line without empty space, if existing
+M.joinRemoveBlank = function()
+  -- SHENNANIGAN: '<', '>' still advertised as cursor positions, but its only extmarks
+  -- cursor positions are 'v' for first and '.' for last selectio positions
+  local vstart = vim.fn.getpos("v") -- bufnum, lnum, col, off
+  local vend = vim.fn.getpos(".")
+  if vstart[2] == vend[2] then
+    local line_content = vim.api.nvim_get_current_line()
+    local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
+    local crow = tup_rowcol[1] -- 1 indexed
+    local nextline = vim.api.nvim_buf_get_lines(0, crow, crow + 1, true)
+    vim.api.nvim_buf_set_lines(0, crow, crow + 1, true, {})
+    local nextline_noprepostfix_space = vim.fn.trim(nextline[1], " ", 0)
+    local nextline_noprepostfix_spacetab = vim.fn.trim(nextline_noprepostfix_space, '\t', 0)
+    vim.api.nvim_set_current_line(line_content .. nextline_noprepostfix_spacetab)
+  else
+    local line_content = vim.api.nvim_buf_get_lines(0, vstart[2] - 1, vstart[2], true)
+    local nextlines = vim.api.nvim_buf_get_lines(0, vstart[2], vend[2], true)
+    vim.api.nvim_buf_set_lines(0, vstart[2], vend[2], true, {})
+    for i = 1, #nextlines, 1 do
+      nextlines[i] = vim.fn.trim(nextlines[i], ' ', 0)
+      nextlines[i] = vim.fn.trim(nextlines[i], '\t', 0)
+      line_content[1] = line_content[1] .. nextlines[i]
+    end
+    vim.api.nvim_buf_set_lines(0, vstart[2] - 1, vstart[2], true, { line_content[1] })
+    vim.api.nvim_win_set_cursor(vstart[1], {vstart[2], vstart[3]})
+  end
+end
+
+
 -- starting at cursor: overwrite text to right with register content
 -- keep_suffix defines, if remaining line suffix should be kept
 M.pasteOverwriteFromRegister = function(register, keep_suffix)

@@ -71,6 +71,7 @@ local map = vim.api.nvim_set_keymap
 -- C-i, C-o next previous cursor position list
 -- C-d|u|y|e down|up|small up|small down| -> 20C-d sets to 20 lines, max height/2
 --https://www.hillelwayne.com/post/intermediate-vim/
+-- commenting: visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
 
 -- enable the following once which-key fixes
 --map('n', ' ', '', opts)
@@ -123,8 +124,9 @@ map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected r
 -- '<-2<CR>gv=gv'  move text selection down with correct indent
 
 map('n', 'J', 'mzJ`z', opts) -- J(join) with cursor remaining at same place
--- TODO
---map('n', '<leader>J', 'mzJ`z', opts) -- special J(join) with removing space after joined line
+-- special J(join) with removing space after joined line
+map('n', '<leader>J', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
+map('v', '<leader>J', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
 map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor to next line
 map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 -- idea parse current line until no ending \ inside register instead of blindly executing
@@ -553,7 +555,7 @@ map('n', '<leader>mc', [[<cmd>lua require("harpoon.mark").clear_all()<CR>]], opt
 -- buffer navigation
 -- NOTE: terminal used as nav_file breaks after quit and navigating to it: https://github.com/ThePrimeagen/harpoon/issues/140
 map('n', '<leader>j', [[<cmd>lua require("harpoon.ui").nav_file(1)<CR>]], opts) -- bare means fast navigate
-map('n', '<leader>k', [[<cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
+-- map('n', '<leader>k', [[<cmd>lua require("harpoon.ui").nav_file(2)<CR>]], opts)
 map('n', '<leader>l', [[<cmd>lua require("harpoon.ui").nav_file(3)<CR>]], opts)
 map('n', '<leader>u', [[<cmd>lua require("harpoon.ui").nav_file(4)<CR>]], opts)
 map('n', '<leader>i', [[<cmd>lua require("harpoon.ui").nav_file(5)<CR>]], opts)

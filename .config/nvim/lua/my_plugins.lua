@@ -179,19 +179,43 @@ return {
   -- TODO fn overview window, jumps etc https://github.com/stevearc/aerial.nvim
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
   -- { 'anuvyklack/hydra.nvim' },
-  -- note visual mode gc,gb clash
-  -- visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
+  -- needed before 0.10 release
   {
     'numToStr/Comment.nvim',
     config = function() require('Comment').setup() end,
   },
   -- { "nicwest/vim-camelsnek" } -- idea setup
-  -- selection S" to put " around selected text
-  -- ysiw" for inner word with "
-  -- ? support for ysiwf ?
-  -- word -> ysiw" -> "word"
-  -- *word_another bla -> ysit<space>" -> "word_another"* bla
-  -- (da da) ->(  ysa") -> ("da da")
+
+  --     Old text                    Command         New text
+  -- --------------------------------------------------------------------------------
+  --====text
+  --     surr*ound_words             ysiw)           (surround_words)
+  --     *make strings               ys$"            "make strings"
+  --     [delete ar*ound me!]        ds]             delete around me!
+  --     'change quot*es'            cs'"            "change quotes"
+  --====html
+  --     *                           <C-g>stcode<CR> <code>*</code>
+  --     *                           <C-g>Stcode<CR> <code>
+  --                                                   x
+  --                                                 </code>
+  --     <b>HTML t*ags</b>           cstab<CR>      <ab>HTML t*ags</ab>
+  --     remove <b>HTML t*ags</b>    dst             remove HTML tags
+  --     change <b>inside t*ags</b>  cit             change <b></b>
+  --     remove <b>inside t*ags</b>  dit             remove <b></b>
+  --====coding
+  --     *                           <C-g>sfname<CR> name(*)
+  --     *                           <C-g>Sfname<CR> name(
+  --                                                   x
+  --                                                 )
+  --     delete(functi*on calls)     dsf             function calls
+  --     change(functi*on calls)     csfc2<CR>       *c2(function calls
+  --     test123                     ysiwfname<CR>   name(test123)
+  --     *word_another bla           ysit<space>"    "word_another"* bla
+  --     TODO explain ysa
+  --     TODO selection actions
+  --      selection S" to put " around selected text
+  --      (da da) ->(  ysa") -> ("da da")
+  -- see also https://github.com/kylechui/nvim-surround/blob/84a26afce16cffa7e3322cfa80a42cddf60616eb/lua/nvim-surround/config.lua
   {
     'kylechui/nvim-surround',
     config = function() require('nvim-surround').setup() end,
