@@ -295,6 +295,7 @@ M.joinRemoveBlank = function()
     end
     vim.api.nvim_buf_set_lines(0, vstart[2] - 1, vstart[2], true, { line_content[1] })
     vim.api.nvim_win_set_cursor(vstart[1], {vstart[2], vstart[3]})
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), 'x', false)
   end
 end
 
