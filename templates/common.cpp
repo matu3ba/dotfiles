@@ -997,7 +997,7 @@ static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double
   return (Val != Val); // NaN => (Val != Val)
   static_assert(std::is_copy_constructible<TVAL>::value, "Type must be copy-constructible!");
 }
-  // Explanation: return value of std::is_convertible is true/false, enable_if
+// Explanation: return value of std::is_convertible is true/false, enable_if
 // first param is boolean, second is enabled type result is either empty struct
 // or struct with type, value and we want the type from that
 

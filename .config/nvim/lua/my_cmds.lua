@@ -37,6 +37,7 @@ add_cmd('COpts', config_edit .. sep .. 'lua' .. sep .. 'my_opts.lua', {})
 add_cmd('COver', config_edit .. sep .. 'lua' .. sep .. 'my_over.lua', {})
 add_cmd('CPl', config_edit .. sep .. 'lua' .. sep .. 'my_plugins.lua', {})
 add_cmd('CSt', config_edit .. sep .. 'lua' .. sep .. 'my_statusline.lua', {})
+add_cmd('CSu', config_edit .. sep .. 'lua' .. sep .. 'my_surround.lua', {})
 add_cmd('CJfi', config_edit .. sep .. 'lua' .. sep .. 'my_jfind.lua', {})
 add_cmd('CTel', config_edit .. sep .. 'lua' .. sep .. 'my_telesc.lua', {})
 add_cmd('CTre', config_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
@@ -84,6 +85,8 @@ add_cmd('Style', function(opts) require('material.functions').change_style(opts.
 --buf_cwd = getcwd(0)
 --=> zig build, if build.zig exists in current folder
 --=> better use proper harpoon functions
+
+-- lualatex --file-line-error --synctex=1 --output-directory=build
 
 --add_cmd(
 --    'Build',

@@ -43,7 +43,6 @@ fn range(len: usize) []const void {
 // usage (i will increment from 0->9):
 //for (range(10)) |_, i| { ... }
 
-// Zig will get multi-object for loop: https://github.com/ziglang/zig/issues/7257
 //const nums = [3]usize {42, 42, 42};
 //const chars = [3]u8 {'a', 'b', 'c'};
 // easy "zip" iteration (all arguments must have the same length)

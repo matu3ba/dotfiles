@@ -4,3 +4,6 @@
 build/
 zig-cache/
 zig-out/
+
+.luarc.json
+.mypy_cache

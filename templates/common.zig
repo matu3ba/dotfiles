@@ -589,3 +589,26 @@ test "coercion to return type example" {
 // SHENNANIGAN
 // for loops don't want to give pointers to elements of an array
 // https://github.com/ziglang/zig/issues/14734
+
+fn run_test_fn(t1: u8) !void {
+    if (t1 < 20) {
+        return error.Small;
+    } else if (t1 < 200) {
+        return error.Medium;
+    } else {
+        return error.Big;
+    }
+}
+const FnError = @typeInfo(@typeInfo(@TypeOf(run_test_fn)).Fn.return_type.?).ErrorUnion.error_set;
+const FnAndOtherFnError = error{Other} || FnError;
+fn other_fn(t2: u8) FnAndOtherFnError!void {
+    if (t2 == 555) {
+        return error.Other;
+    } else {
+        return run_test_fn(t2);
+    }
+}
+
+test "comptime infer error set" {
+    try other_fn(42);
+}

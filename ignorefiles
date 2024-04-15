@@ -33,3 +33,6 @@
 /scr/
 /templates/
 /windows/
+
+.luarc.json
+.mypy_cache
