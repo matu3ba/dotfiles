@@ -22,6 +22,7 @@ local sep = utils.path_separator
 local add_cmd = api.nvim_create_user_command -- NOTE: lua does not follow symlinks
 local config_edit = 'edit ' .. home .. sep .. 'dotfiles' .. sep .. '.config' .. sep .. 'nvim'
 -- local config_edit = vim.fn.stdpath 'config' -- does not work on nix
+add_cmd('CAer', config_edit .. sep .. 'lua' .. sep .. 'my_aerial.lua', {})
 add_cmd('CBuf', config_edit .. sep .. 'lua' .. sep .. 'my_buf.lua', {})
 add_cmd('CCmd', config_edit .. sep .. 'lua' .. sep .. 'my_cmds.lua', {})
 add_cmd('CDap', config_edit .. sep .. 'lua' .. sep .. 'my_dap.lua', {})

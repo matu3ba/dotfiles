@@ -96,6 +96,7 @@ else
   require 'my_statusline'
   require 'my_over'
   require 'my_surround'
+  require 'my_aerial' -- fn_overview_window
 
   -- workaronud lazy caching init.lua loading, but the module might be absent.
   local has_libbuf, _ = pcall(require, 'libbuf')
