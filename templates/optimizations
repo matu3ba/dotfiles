@@ -1,2 +1,5 @@
 Misc noteworthy global optimization ideas
 * "Reducing Code Size with Function Merging" by Rodrigo Caeteano de Oliveira Rocha
+  * 11-15% compile time overhead? need to check again if correct
+  * messes up debug locations
+  * no fixup algorithm for debug locations mentioned

@@ -30,3 +30,56 @@
 //   }
 //   return false;
 // }
+
+// https://learn.microsoft.com/de-de/dotnet/framework/interop/how-to-implement-callback-functions
+
+// SHENNANIGAN
+// NET is C# with some different syntax to make stack and garbage collected
+// heap explicit, which does not include memory managed by C and C++.
+
+namespace IdleDetection {
+    internal struct sLastInputInfo
+    {
+        public uint cbSize;
+        public uint dwTime;
+    }
+
+    [System::Runtime::InteropServices::DllImport("User32.dll")]
+    private static extern bool GetLastInputInfo(ref sLastInputInfo lastInputInfo);
+    [System::Runtime::InteropServices::DllImport("Kernel32.dll")]
+    private static extern uint GetLastError();
+
+    public static uint GetIdleTime()
+    {
+        sLastInputInfo lastUserAction = new sLastInputInfo();
+        // sLastInputInfo lastUserAction;
+        lastUserAction.cbSize = (uint)Marshal.SizeOf(lastUserAction);
+        GetLastInputInfo(ref lastUserAction);
+        // GetLastInputInfo(&lastUserAction);
+        return ((uint)System::Environment.TickCount - lastUserAction.dwTime);
+    }
+
+    public static long GetLastInputTime()
+    {
+        sLastInputInfo lastUserAction = new sLastInputInfo();
+        lastUserAction.cbSize = (uint)Marshal.SizeOf(lastUserAction);
+        if (!GetLastInputInfo(ref lastUserAction))
+        {
+            throw new System::Exception(GetLastError().ToString());
+            // throw gnew System::Exception(GetLastError().ToString());
+        }
+
+        return lastUserAction.dwTime;
+    }
+}
+
+namespace WindowsForms_TimerCallback {
+
+	  System::Windows::Forms::Timer^ m_Timer;
+	  int m_Interval = 20; // 20ms
+    m_Timer = gcnew System::Windows::Forms::Timer();
+    m_Timer->Tick += gcnew System::EventHandler(this, &ClassName::OnTimer);
+    m_Timer->Interval = m_Interval;
+    m_Timer->Enabled = true;
+	  m_Timer->Start();
+}

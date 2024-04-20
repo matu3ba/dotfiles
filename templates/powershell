@@ -55,11 +55,15 @@ $driveEject.Namespace(17).ParseName("E:").InvokeVerb("Eject")
 
 Alternative: diskmgmt.msc
 
+SHENNANIGAN robocopy syntax for file transfer
+SHENNANIGAN Windows might return Access Denied, if running out of space
+Username and password is handles via directory letter (net use D: ..)
 reliably copy over network with retries
 #   0          1     2      3      4   5          6           7          8     9
 # cmd         src  dest   what  time? exclusive nojobheader nosummary reapeat wait_until_repeat
 robocopy.exe $src $dest filename /eta /xx       /njh        /njs       /R:0   /W:5
-robocopy $src $dest PxApprovalTests.exe /eta /xx /njh /njs /R:0 /W:5
+robocopy $src $dest *.exe /eta /xx /njh /njs /R:0 /W:5
+robocopy $src $dest *.dll /eta /xx /njh /njs /R:0 /W:5
 
 SHENNANIGAN
 - incorrect paths (/ instead of \) are gobbled together somehow by powershell

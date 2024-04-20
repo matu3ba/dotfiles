@@ -56,6 +56,12 @@ if status is-interactive
     abbr -g !! $argv[1]
   end
 
+  # TODO
+  # make completions for word, wordlist and complete line
+  # https://fishshell.com/docs/current/cmds/complete.html
+  # https://stackoverflow.com/questions/45439939/getting-part-of-autocomplete
+  # bind \cf accept-autosuggestion backward-kill-bigword
+
   #### ported sources ####
   # source "$HOME/dotfiles/.config/shells/aliases"
   # source "$HOME/dotfiles/.config/shells/aliases_git"

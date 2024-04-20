@@ -7,14 +7,25 @@ $env:Path += ";C:\Program Files\7-Zip"
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"
+
+# SHENNANIGAN slow startup speed of pwsh.exe, faster startup with -nologo and with virus scanner exception
+
 # SHENNANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
 
-# Windows Terminal Installation
+# Installing Windows Terminal
 # https://github.com/microsoft/terminal/releases
 # Add-AppxPackage -Path C:\Path\App-Package.msixbundle
 # [Environment]::Is64BitOperatingSystem
 # [System.Environment]::OSVersion.Version
+# SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
+# https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
+
+# Installing new version of powershell called pwsh.exe to fix utf8:
+# function GitDiff { & git diff --no-color $args }
+# winget search Microsoft.PowerShell
+# winget install --id Microsoft.Powershell --source winget
+# https://learn.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4#msi
 
 # git completion https://github.com/dahlbyk/posh-git
 # PowerShellGet\Install-Module posh-git -Scope CurrentUser -Force
@@ -36,7 +47,8 @@ $env:Editor = "nvim"
 # copy to mounted network shares does not work, must use UNC paths
 # \\IP\share
 # SHENNANIGAN robocopy necessary for network paths/UNC paths
-# TODO robocopy example
+# robocopy $src $dest filename
+# robocopy $src $dest *.exe
 
 #====shortcuts
 # within shell: Get-PSReadLineKeyHandler
@@ -170,6 +182,10 @@ function ZigCrossRelease { & ..\master\rel\zig.exe build -p rel --search-prefix 
 filter fgrep($keyword) { if ( ($_ | Out-String) -like “*$keyword*”) { $_ } }
 filter fsed($before,$after) { %{$_ -replace $before,$after} }
 filter xargs { & $args[0] ($args[1..$args.length] + $_) }
+
+#====whereis
+# gcm pwsh.exe
+# where pwsh.exe
 
 #====setup
 

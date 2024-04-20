@@ -313,6 +313,8 @@ alias glgr='git log --grep=' # git log grep (grep the log)
 #git grep 'regexp' $(git rev-list --all)
 
 #--stat --shortstat --numstat --graph --oneline
+# git rev-list HEAD --count
+# git rev-list release..HEAD --count
 alias glg='git log --stat'
 alias glgp='git log --stat -p'
 alias glgg='git log --graph'

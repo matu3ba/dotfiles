@@ -12,6 +12,7 @@
 -- 'lemminx', -- 'lemminx'
 -- 'typst_lsp' -- 'typst-lsp'
 -- 'tsserver'  -- 'typescript-language-server'
+-- 'omnisharp' --  'omnisharp'
 
 -- pip3 install -U --user jedi-language-server
 -- pipx install jedi-language-server
@@ -24,6 +25,8 @@
 --   -- 'lua_ls', --lua-language-server, lua_ls
 --   -- 'neocmake', -- neocmakelsp
 -- }
+
+-- omnisharp needs also TODO
 
 --==PluginChecks
 
@@ -98,6 +101,7 @@ lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_at
 lspconfig.julials.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.tsserver.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- lspconfig.typst_lsp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- https://sookocheff.com/post/vim/neovim-java-ide/
@@ -191,7 +195,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<leader>wf', function() vim.lsp.buf.open_float() end, opts) -- view dis
     vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
     vim.keymap.set({'n','v'}, '<space>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', 'gR', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<leader>ql', function() vim.diagnostic.setloclist() end, opts) -- buffer diagnostics to location list
     vim.keymap.set('n', '<leader>qf', function() vim.diagnostic.setqflist() end, opts) -- all diagnostics to quickfix list
     -- vim.keymap.set('n', '<leader>fo', function() vim.lsp.buf.formatting() end, opts) -- formatting

@@ -159,6 +159,8 @@ return {
     config = function() require('gitsigns').setup() end,
   },
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory (does not work with worktrees)
+  -- np, nextprev file tab,s-tab cycle
+  -- TODO: looks broken with git worktrees, minimal reproducible
   -- { 'sindrets/diffview.nvim' },
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
   --requires = { "tpope/vim-repeat" },

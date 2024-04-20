@@ -333,7 +333,46 @@ void mutex_usage() {
     std::mutex m1; // incorrect for simplification
     std::lock_guard<std::mutex> guard(m1);
     // critical section
+    // Prefer immutable object, see SimplifiedImmutable for time critical code
+    // or possible changes to use atomic swap ie via ImmutableObject, which is
+    // automatically handled ptr with atomic cnt.
+    // Consider using adaptions of SimplifiedImmutable for special cases, like
+    // to forbid copy constructor, handle different types of callbacks, data etc.
 }
+
+// ImmutableObject as template for shared_ptr with constructors and operators on
+// top. It usually has fancy templates to check and inline properties of a
+// method externally provided often called 'update' via delegator/callback
+// instead of fn ptrs for additional type and runtime safety.
+// static_assert(std::is_copy_constructible<Type>::value, "not default constructible!");
+// static_assert(std::is_default_constructible<Type>::value, "not copy constructible!");
+template <typename _Ty>
+class SimplifiedImmutable {
+  SimplifiedImmutable();
+
+	std::shared_ptr<const _Ty> Get() const;
+	void Set(const _Ty& Val);
+	void Set(_Ty&& Val);
+	void Update(const Callback<void, _Ty&>& CallsLater);
+	void Reset();
+	_Ty Type() const;
+
+private:
+	void Set(std::shared_ptr<const _Ty> Val);
+	std::shared_ptr<const _Ty> m_Obj;
+};
+template<typename _Ty>
+inline void SimplifiedImmutable<_Ty>::Set(const _Ty & Val) {
+	Set(std::make_shared<const _Ty>(Val));
+}
+template<typename _Ty>
+inline void SimplifiedImmutable<_Ty>::Set(std::shared_ptr<const _Ty> Val) {
+	std::atomic_store(&m_Obj, Val);
+}
+// ..
+
+// TODO: criteria-based (name) selection of operator implementation of class to
+// reduce template boilerplate (concepts) should be possible in C++23 or something
 
 // Naive DOD-based intrusive structure would use
 // 1. std::vector for value_storage
@@ -1014,14 +1053,23 @@ void someLambda(bool bVal1, const std::string & sName) {
 // WINBASEAPI BOOL WINAPI
 // QueryPerformanceFrequency(__out LARGE_INTEGER *lpFrequency);
 
+// SHENNANIGAN
+// C++ does not capture C type problems, especially memcpy, memset etc
+// Prefer ape_printing, not ape_printing_bad
 #ifdef _WIN32
-void ape_printing() {
+void ape_printing_bad() {
   std::fstream fs;
   fs.open("filename.txt", std::fstream::app | std::fstream::out);
   fs << "somestuff\n";
   fs.close();
 }
 #endif
+
+void ape_print() {
+  FILE * f1 = fopen("file1", "a+");
+  fprintf(f1, "sometext\n");
+  fclose(f1);
+}
 
 void ape_throw() {
   throw std::runtime_error("error");
@@ -1139,3 +1187,20 @@ struct Derived2 : Base2<Derived>
     static void static_sub_func();
 };
 // other use cases include object counter, polymorphic chaining|copy construct
+
+// SHENNANIGAN streams do not enforce C abi and are overly complex for printing memory
+// This may hide serious bugs like memcpy to std::vector<bool>.
+void stream_flags() {
+  // https://codereview.stackexchange.com/questions/165120/printing-hex-dumps-for-diagnostics
+  std::vector<uint8_t> array {1, 0, 0, 0};
+
+  std::fstream fstream;
+  fstream.open("somestream.txt", std::fstream::app | std::fstream::out);
+  auto flags = fstream.flags();
+  fstream << std::hex;
+  for (uint32_t i = 0; i < array.size(); i+=1)
+    fstream << hex << array[i];
+  fstream.flags(flags)
+  fstream << "\n";
+  fstream.close();
+}

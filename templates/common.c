@@ -595,6 +595,38 @@ void safe_debugging_on_unix() {
 }
 #endif
 
+#ifdef _WIN32
+#include <stdatomic.h>
+#endif
+
+// C provides no nice way to get generics (besides C11 non C++ usable generic
+// selection), so (usually) it makes no sense to have a method 'update' being
+// usable as callback with additional type and runtime safety checks.
+// Typical C++ concepts based heavily on operators, constructors and inlined
+// templates with non-atomic operations are not automatically applicable.
+// Upside: Performance explicit, Downside: more verbose to write get/set
+// methods, no good way to use struct generically by filling fn ptr/callback for
+// additional method 'update'.
+// Omit shared_ptr methods here for brevity.
+struct _No_Immutable_in_C_i64 {
+  _Atomic int64_t * p1;
+  _Atomic int64_t cnt;
+};
+int32_t immut_set(struct _No_Immutable_in_C_i64 * obj, int64_t val) {
+  if (obj != NULL) {
+    atomic_store(obj->p1, val);
+    return 0;
+  }
+  return 1;
+}
+int32_t immut_get(struct _No_Immutable_in_C_i64 * obj, int64_t * val) {
+  if (obj != NULL) {
+    *val = atomic_load(obj->p1);
+    return 0;
+  }
+  return 1;
+}
+
 // based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
 // TODO motivation
 // Duffs device inspired (case statement is legel within a sub-block
@@ -611,4 +643,4 @@ void safe_debugging_on_unix() {
 // Immutable RB deletion is hard
 //
 // TODO https://bitbashing.io/gc-for-systems-programmers.html
-// basic RCU implementation?
+// basic RCU implementation

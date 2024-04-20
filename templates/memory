@@ -427,5 +427,9 @@ B: 0 (ish) bytes are memory mapped. maxrss is still N
 B: fork()
 C: 0 (ish) bytes are still memory mapped. maxrss=0 (ish)
 
+====human
+* recognized 5-10ms latency
+* xterm within that bound, see https://beuke.org/terminal-latency/
+* alacritty and kitty with higher throughput and next best average latency
 * ghostty latency estimated around (derived from iphone measurements)
-20-30ms
+  20-30ms

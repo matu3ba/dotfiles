@@ -9,7 +9,7 @@ fd link.exe 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
 VS2015 x64 Native Tools Command Prompt
 x64 Native Tools Command Prompt for VS2019
 
-====build_system
+====MSVC_build_system
 .sln file contains 1. build modes (Debug/Release;x64 etc), 2. dependencies and
 3. actively tracked dependencies (*must* be marked as actively tracked or they are
 ignored, even though the dependency marks them as needed and there is a change)
@@ -22,6 +22,31 @@ The build format is a hash like EAEE7988-385C-4CEF-AF76-20513D802A97 for each
 project reference (with the hash being generated in an unspecified way), so
 Visual Studio is needed to generate the hash for the project.
 
+====MSVC_msbuild
+uses - in later version and / in earlier one
+
+function Resolve-MsBuild {
+	$msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
+	if($msb2017) {
+		Write-Host "Found MSBuild 2017 (or later)."
+		Write-Host $msb2017
+		return $msb2017
+	}
+	$msBuild2015 = "${env:ProgramFiles(x86)}\MSBuild\14.0\bin\msbuild.exe"
+	if(-not (Test-Path $msBuild2015)) {
+		throw 'Could not find MSBuild 2015 or later.'
+	}
+
+	Write-Host "Found MSBuild 2015."
+	Write-Host $msBuild2015
+
+	return $msBuild2015
+}
+$msBuild = Resolve-MsBuild
+# e.g. & $msBuild .\Foo.sln
+
+One important note: if your project has a '.' in the name, you'll need to replace it with a '_' when specifying it with /t
+
 Clean rebuild and incremental for Debug and Release profiles
 msbuild project.sln /t:Clean;Rebuild /p:Configuration=Debug /p:Platform=x64 -nologo
 msbuild project.sln /t:Build /p:Configuration=Debug /p:Platform=x64 -nologo
@@ -29,6 +54,11 @@ msbuild project.sln /t:Clean;Rebuild /p:Configuration=Release /p:Platform=x64 -n
 msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v:diag
 Debug problems via -v:Lvl Lvl is q,m,n,d,diag
 msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v:d
+
+Syntax for target:
+/t:SlnFolder\My_Project_name:Rebuild;SlnFolder\My_Project_name2:Clean
+Verbosity
+-v:level
 
 This should probably run analysis manually
 msbuild MySolution.sln /p:RunCodeAnalysis=true
@@ -41,6 +71,8 @@ On incremental build slowdown search in verbose build output:
 - Project is
 - Project not
 - Tools-Version not available: https://learn.microsoft.com/de-de/visualstudio/msbuild/msbuild-toolset-toolsversion?view=vs-2022
+- no usable IPDB/IOBJ from previous compilation was found.
+  fix:
 
 Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
 https://github.com/include-what-you-use/include-what-you-use
@@ -68,8 +100,10 @@ Search for "Project not up to date because" or "missing".
 Compare with msbuild output.
 
 Generate compile_commands.json from Visual Studio with "Clang Power Tools VS extension".
-This mandates Visual Studio >= 2017. Alternative of bear likely does not work.
+This mandates Visual Studio >= 2017, for example Microsoft Visual Studio Community 2019.
+Alternative of bear likely does not work.
 https://clangpowertools.com/blog/generate-json-compilation-database.html
+Solution Rightclick -> Clang Power Tools -> Export Compilation Database
 
 workaround admin privileges for installer files (.exe):
 insert into run.bat with :set encoding=ansi
@@ -481,3 +515,86 @@ https://github.com/matu3ba/win32k-mitigation/blob/master/test/standalone/child_p
 gdi32.dll and gdi32full.dll. Most of those should be mapped to a wow path
 Not too sure, but suspecting GUI applications require some of the libs being used, see
 https://stackoverflow.com/questions/63398081/windows-kernel32-dll-only-assembly-draw-pixel
+
+====background
+http://vikku.info/programming/win32api/prevent-windows-system-entering-idle-state-using-windowless-timers-getlastinputinfo.htm
+
+====process
+https://captmeelo.com/redteam/maldev/2022/05/10/ntcreateuserprocess.html
+NtCreateProcess
+
+====path
+case sensivity
+https://www.osnews.com/story/30417/how-to-enable-case-sensitivity-for-ntfs-support-for-folders/
+https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity
+
+====network
+nmap -sn 192.168.1.0/24
+nslookup IP
+nbtstat -a IP
+arp -a
+net view
+
+====ssh_windows_impl
+winrm
+https://security.stackexchange.com/questions/11613/checklist-for-configuring-winrm-security-settings-on-servers
+TODO
+https://theitbros.com/run-powershell-script-on-remote-computer/
+https://www.comparitech.com/net-admin/winrm-guide/
+  enable winrm
+Enable-PSRemoting
+Get-Service WinRM
+Get-NetFirewallRule -Name "WINRM-HTTP-In-TCP-NoScope" | select name, Enabled
+  enable inbound winrm for workgroup computers
+Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP-PUBLIC" -RemoteAddress Any -Enabled true
+  test connection
+Test-WSMan wks11
+
+====ssh_logon_exec
+* can be painfully slow
+psexec
+https://theitbros.com/using-psexec-to-run-commands-remotely/
+Set-NetFirewallRule -DisplayGroup “File And Printer Sharing” -Enabled True -Profile Private,Domain
+get-service LanmanServer,LanmanWorkstation
+net view \\REMOTE_PC /all
+  In a workgroup environment, you should also disable Remote UAC, which blocks remote access under local administrator accounts.
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "LocalAccountTokenFilterPolicy" /t REG_DWORD /d 1 /f
+psexec /accepteula
+psexec \\Remote -u USER -p PW command
+psexec \\Remote -u USER -p PW ipconfig /flushdns
+  bypass UAC restrictions
+add flag -h
+
+  restart pc
+psexec \\Remote "cmd.exe" "/c shutdown /f /r /t 60"
+  multiple cmds
+psexec \\Remote CMD "cmd1 & cmd2 & cmd 3"
+  interactive cmd[s]
+psexec \\Remote CMD
+
+  copy and run on remove computer
+psexec \\Remote "c:\\Program Files (x86)\app\app.exe"
+  use win32 api to show gui
+psexec -i \\Remote notepad
+  run cmd as SYSTEM user (like not possible in win11)
+psexec -s cmd
+  run cmd on multiple pcs
+psexec \\PC1,PC2,PC3,PC33 "ipconfig /all"
+
+psexec @c:\Users\$USER\pclist.txt ipconfig
+PsExec @c:\Users\$USER\pclist.txt CMD /C "hostname & ipconfig" >> @c:\Users\$USER\remote_ips.txt
+
+  Access Denied: check SMB connections are enabled
+Test-NetConnection -ComputerName MYPC -Port 445
+  Logon Failure: User has not be granted such rights
+add -h
+  error code 1
+exit => exit / b 0
+
+  list processes
+Tasklist /fo table
+pwsh Get-Process
+  kill process
+Taskkill /IM "process name" /F
+pwsh Stop-Process -Name "ProcessName" -Force
+pwsh Stop-Process -ID PID -Force
