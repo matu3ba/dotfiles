@@ -2,6 +2,7 @@
 -- luacheck: no max line length
 local has_sur, sur = pcall(require, 'nvim-surround')
 if not has_sur then return end
+local sur_config = require "nvim-surround.config"
 
 --     Old text                    Command         New text
 -- --------------------------------------------------------------------------------
@@ -45,6 +46,17 @@ if not has_sur then return end
 --      (da da) ->(  ysa") -> ("da da")
 -- see also https://github.com/kylechui/nvim-surround/blob/84a26afce16cffa7e3322cfa80a42cddf60616eb/lua/nvim-surround/config.lua
 
+-- insert = "<C-g>s",
+-- insert_line = "<C-g>S",
+-- normal = "ys",
+-- normal_cur = "yss",
+-- normal_line = "yS",
+-- normal_cur_line = "ySS",
+-- visual = "S",
+-- visual_line = "gS",
+-- delete = "ds",
+-- change = "cs",
+-- change_line = "cS",
 
 -- local blabla = function()
 --   error("blabla", 1)
@@ -56,33 +68,16 @@ sur.setup {
     -- sPan, because its pasted so often
     ["p"] = {
         add = function()
-          local input = sur.config.get_input("Enter HTML tag: ")
+          local input = sur_config.get_input "Enter span class: "
           if input then
-            -- validate HTML
-            -- local open, close = get_expanded_surrounds(input)
-            -- return { open, close }
-            return {}
+            return { {'<span class="' .. input .. '">'}, {'</span>'} }
           end
         end,
         find = function()
-          return require('nvim-surround.config').get_selection({ motion = "at" })
+          return sur_config.get_selection({ motion = "at" })
         end,
         delete = "^(%b<>)().-(%b<>)()$",
-        change = {
-          target = "^<([^%s<>]*)().-([^/]*)()>$",
-          replacement = function()
-            local input = require('nvim-surround.config').get_input("Enter the HTML tag: ")
-            if input then
-              local element = input:match("^<?([^%s>]*)")
-              local attributes = input:match("^<?[^%s>]*%s+(.-)>?$")
-
-              local open = attributes and element .. " " .. attributes or element
-              local close = element
-
-              return { { open }, { close } }
-            end
-          end,
-        },
+        change = false,
     },
   }
 }

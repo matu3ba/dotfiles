@@ -1,0 +1,194 @@
+### Ideas towards standardization and speed up of shell completion
+
+tldr; completion + validation of arguments/input requires either
+1. code duplication,
+2. highly performant metaprogramming,
+3. or a transpiler for the completion + validation parts of the program.
+TODO "Completion has the same drawbacks." Is this true?
+
+#### Prior assumptions
+1. Shells are overly complex and should be bypassed by specialized programs, if possible.
+ * Shell keep track of a huge chunk of state in a hacky manner
+   + TODO explanation
+   + TODO link1
+   + TODO link2
+ * Less state means less memory and less complexity
+2. Shells are just repls, but hyper flexible tailored to state manipulation
+   for process+job control and manipulating output (piping)
+
+So completion should be just another extension for the shell to use.
+
+#### Command line interfaces (CLI)
+
+Shell completion can have many use cases, which can be abbreviated into the
+following cases:
+1. Completion (+validation) of arguments
+2. Completion (+validation) of attached input (files/configurations etc)
+3. Providing an output of how the internal state would change (a `--dry` run)
+
+TODO: improve this
+An encoding of all potential CLI configuration options would be an arbitrary,
+potentially cyclic directed graph.
+Often, programs may overwrite the existence of a certain flag, which leads to
+a graph, where each command line option can follow each other.
+
+Validating arguments as ensuring absence of flag incompatibilities can
+therefore only be done via logic checks, which means to replicate the internal
+program logic.
+Therefore, in general, validation is only feasible by running a program that
+provides a "validate arguments"  or "validate inputs" mode.
+
+With the same argument, a `--dry` option must be provided by a program for the
+completion to use.
+
+#### Where should the completion be?
+
+As of now, all logic is written as external (and slower) shell scripts,
+since there is no standard for shell agnostic completion justifying the
+complexity of an optimized solution.
+
+The most user-efficient solution is to move the completion and validation
+logic into the shell as native (dynamically on-demand loaded) libraries/binaries,
+which means to duplicate the validation logic of the program.
+
+On the other hand, making the case for only the completion sounds very limiting.
+
+Therefore, at least from the authors' point of view, CLI applications should
+provide completion functions, either behind a CLI flag or with help of bundled
+completion binaries or libraries.
+This way, the application can do its own trade-off, like doing the validation
+during completion or as separate step.
+The trade-off between performance optimized completion or keeping the code
+simpler sounds like it belongs into the hands of the user interface designer.
+
+#### How does the user control what is allowed to take some time and what not?
+
+Analyzing complex or big data will take longer. For example, `git status` on huge
+git repos takes a while.
+The user should be always able to know visually on the command prompt:
+
+1. completed argument,
+2. validated argument,
+3. completed input,
+4. validated input,
+5. how long the last completion/validation action took
+
+User-specified Keybindings to restrict a completion/validation to the
+user-specified amount of time sounds like the most feasible option.
+Further, there should be a keybindings to quit any currently running completion
+spawned by the shell instance.
+Obviously, there should be only 1 completion instance per shell instance.
+
+#### Enough words. Show me some code!
+
+Assume the following code:
+```zig
+const std = @import("std");
+const process = std.process;
+const fs = std.fs;
+const stdout = std.io.getStdOut();
+const stderr = std.io.getStdErr();
+pub const Mode = enum {
+    /// only check with status code
+    CheckOnly,
+    /// ascii only check with status code
+    CheckOnlyAscii,
+    /// check with limited output
+    ShellOutput,
+    /// ascii check with limited output
+    ShellOutputAscii,
+    /// check with output to file
+    FileOutput,
+    /// ascii check with output to file
+    FileOutputAscii,
+};
+// never returns Mode, but an error to bubble up to main
+fn cleanup(write_file: *?fs.File) !Mode {
+    if (write_file.* != null) {
+        write_file.*.?.close();
+    }
+    return error.TestUnexpectedResult;
+}
+pub fn main() !u8 {
+    var write_file: ?fs.File = null;
+    var mode: Mode = Mode.ShellOutput; // default execution mode
+    // 1. read path names from cli args
+    var arena_instance = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena_instance.deinit();
+    const arena = arena_instance.allocator();
+    const args: [][:0]u8 = try process.argsAlloc(arena);
+    defer process.argsFree(arena, args);
+
+    if (args.len <= 1) {
+        try stdout.writer().print("Usage: {s} (cropped) \n", .{args[0]});
+        process.exit(1);
+    }
+    if (args.len >= 255) {
+        try stdout.writer().writeAll("At maximum 255 arguments are supported\n");
+        process.exit(1);
+    }
+
+    var i: u64 = 1; // skip program name
+    while (i < args.len) : (i += 1) {
+        if (std.mem.eql(u8, args[i], "-outfile")) {
+            mode = switch (mode) {
+                Mode.ShellOutput => Mode.FileOutput,
+                Mode.ShellOutputAscii => Mode.FileOutputAscii,
+                else => try cleanup(&write_file), // hack around stage1
+            };
+            if (i + 1 >= args.len) {
+                return error.InvalidArgument;
+            }
+            i += 1;
+            write_file = try fs.cwd().createFile(args[i], .{});
+        }
+        if (std.mem.eql(u8, args[i], "-c")) {
+            mode = switch (mode) {
+                Mode.ShellOutput => Mode.CheckOnly,
+                Mode.ShellOutputAscii => Mode.CheckOnlyAscii,
+                else => try cleanup(&write_file), // hack around stage1
+            };
+        }
+        if (std.mem.eql(u8, args[i], "-a")) {
+            mode = switch (mode) {
+                Mode.ShellOutput => Mode.ShellOutputAscii,
+                Mode.CheckOnly => Mode.CheckOnlyAscii,
+                Mode.FileOutput => Mode.FileOutputAscii,
+                else => try cleanup(&write_file), // hack around stage1
+            };
+        }
+    }
+    defer if (write_file != null)
+        write_file.?.close();
+
+    const ret = switch (mode) {
+        // program logic cropped
+        else => 0,
+    };
+    return ret;
+}
+```
+Relevant implementation questions we are tackling are:
+Can we utilize a library that offers the user 1. completion and 2. validates
+the user input?
+Can we offer completion conditionially 1. behind a cli flag and 2. in another
+binary?
+What is the effect on binary size and can we reduce it by providing a completion
+binary for multiple cli programs?
+
+How hard is it to combine multiple cli program completion functions?
+Can this be automatized and what interface would be needed?
+
+###### Further notes
+
+In a well-written application one can eliminate most branches already during writing.
+I did not get yet into the observation that a cli completion means basically
+all possible runs over the shell validation logic.
+
+The other thing is that folks did not try to build (dynamicly linked)
+libs/executables that can handle the completion logic via LD\_PRELOAD or
+letting the shell dynamically load/complete the completion program/lib.
+
+I also though of a grammar spec, but such a grammar will always be annoying
+to write due to the potential graph structure of completion and complexity
+of validation.

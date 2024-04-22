@@ -1,0 +1,127 @@
+## High level observations of defaulting layout to a formatter
+
+The previous article [link](TODO) introduced what a formatter is and why code
+formatters are used (establishing a common code layout).
+This article will discuss the tradeoffs of using a formatter and storing the
+layout differences to the formatter output.
+
+If the complete language elements are covered by the formatter, then we do not
+need to store additional space or newline information.
+Zig does not fully utilize this and allows some degree of freedom for optional
+brackets, which leaves 3 layout choices: 1. newline, 2. space or 3. {}-brackets
+after the condition.
+
+Let us now look into how to store user-specified formatting efficiently.
+Remind, that we mean everything between `zig fmt: off` and `zig fmt: on` blocks.
+
+There are 3 overall choices, if we want to keep complexity low:
+1. Do not differentiate between layout and content as fallback
+  (like how git or vim undo files work).
+2. store the complete layout with indentation and content without taking zig fmt
+   into consideration.
+3. Store the difference to what the formatter would output with the hopefully
+  few language-specific tweaks (the degree of freedom exemplified above)
+  "as layout between tokens".
+
+To discuss tradeoffs, we will use the following Zig program:
+```zig
+const std = @import("std");
+const process = std.process;
+const fs = std.fs;
+const stdout = std.io.getStdOut();
+const stderr = std.io.getStdErr();
+pub const Mode = enum {
+    /// only check with status code
+    CheckOnly,
+    /// ascii only check with status code
+    CheckOnlyAscii,
+    /// check with limited output
+    ShellOutput,
+    /// ascii check with limited output
+    ShellOutputAscii,
+    /// check with output to file
+    FileOutput,
+    /// ascii check with output to file
+    FileOutputAscii,
+};
+// never returns Mode, but an error to bubble up to main
+fn cleanup(write_file: *?fs.File) !Mode {
+    if (write_file.* != null) {
+        write_file.*.?.close();
+    }
+    return error.TestUnexpectedResult;
+}
+pub fn main() !u8 {
+    var write_file: ?fs.File = null;
+    var mode: Mode = Mode.ShellOutput; // default execution mode
+    // 1. read path names from cli args
+    var arena_instance = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena_instance.deinit();
+    const arena = arena_instance.allocator();
+    const args: [][:0]u8 = try process.argsAlloc(arena);
+    defer process.argsFree(arena, args);
+
+    if (args.len <= 1) {
+        try stdout.writer().print("Usage: {s} (cropped) \n", .{args[0]});
+        process.exit(1);
+    }
+    if (args.len >= 255) {
+        try stdout.writer().writeAll("At maximum 255 arguments are supported\n");
+        process.exit(1);
+    }
+
+    var i: u64 = 1; // skip program name
+    while (i < args.len) : (i += 1) {
+        if (std.mem.eql(u8, args[i], "-outfile")) {
+            mode = switch (mode) {
+                Mode.ShellOutput => Mode.FileOutput,
+                Mode.ShellOutputAscii => Mode.FileOutputAscii,
+                else => try cleanup(&write_file), // hack around stage1
+            };
+            if (i + 1 >= args.len) {
+                return error.InvalidArgument;
+            }
+            i += 1;
+            write_file = try fs.cwd().createFile(args[i], .{});
+        }
+        if (std.mem.eql(u8, args[i], "-c")) {
+            mode = switch (mode) {
+                Mode.ShellOutput => Mode.CheckOnly,
+                Mode.ShellOutputAscii => Mode.CheckOnlyAscii,
+                else => try cleanup(&write_file), // hack around stage1
+            };
+        }
+        if (std.mem.eql(u8, args[i], "-a")) {
+            mode = switch (mode) {
+                Mode.ShellOutput => Mode.ShellOutputAscii,
+                Mode.CheckOnly => Mode.CheckOnlyAscii,
+                Mode.FileOutput => Mode.FileOutputAscii,
+                else => try cleanup(&write_file), // hack around stage1
+            };
+        }
+    }
+    defer if (write_file != null)
+        write_file.?.close();
+
+    const ret = switch (mode) {
+        // program logic cropped
+        else => 0,
+    };
+    return ret;
+}
+```
+
+TODO
+1. indentation level
+2. space and perf implications
+
+Summary
+1. Undo files/Git has the lowest implementation complexity, if custom formatted code
+is moved around.
+2. Storing the complete layout TODO
+3. Storing only the difference to what the formatter would output TODO
+
+The next article will discuss possible data structures for storing the layout.
+This is a prequisite to understand, if patching the layout of the AST
+in-place or using a separate AST representation format is better for your use
+cases.

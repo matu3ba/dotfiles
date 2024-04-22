@@ -57,6 +57,12 @@ then
   #export GDK_BACKEND='wayland' # breaks Electron based apps
 fi
 
+##==rubygems is annoying to setup
+# export GEM_HOME="$HOME/.local/gems"
+# export GEM_PATH="$HOME/.local/share/gem/ruby/3.0.0/bin"
+# PATH=${PATH}:"$HOME/.local/gems"
+# PATH=${PATH}:"$GEM_PATH"
+
 ##==PATH
 PATH=${PATH}:"$HOME/.cargo/bin"
 PATH=${PATH}:"$HOME/.local/bin"
@@ -68,7 +74,7 @@ PATH=${PATH}:"$HOME/.local/appimages"
 PATH=${PATH}:"$HOME/dev/zdev/zig/master/rel/bin/"
 PATH=${PATH}:"$HOME/.luarocks/bin"
 PATH=${PATH}:"$HOME/.local/nvim/bin" # neovim testing
-PATH=${PATH}:"$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
+# PATH=${PATH}:"$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
 
 #testing www.ziglang.org
 #PATH=${PATH}:"$HOME/src/zig-doctest/zig-cache/bin"

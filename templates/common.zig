@@ -362,31 +362,6 @@ const windows_utf16_string_literal = struct {
     const L = std.unicode.utf8ToUtf16LeStringLiteral;
 };
 
-// SHENNANIGAN PERF: APIs with optional slices to multi-pointer are unflexible,
-// because the pointer can not be null for the field to be unset and to be set
-// in the called fn.
-// This can introduce semantic problems and has a superfluos load into register
-// instead of on most archs register-less 0-load.
-// Example infered from Windows LookupAccountSidW which has parameter
-//    Name: ?win.LPWSTR,
-fn some_opt_multi_ptr_api(val: ?[*:0]u8) void {
-    _ = val;
-}
-fn unflexible_opt_multi_ptr_api() void {
-    // const acc_name: ?[*:0]u8 = undefined;
-    // var raw_acc_name = @as([*:0]u8, @ptrCast(acc_name));
-    // templates\common.zig:373:46: error: use of undefined value here causes undefined behavior
-
-    // var raw_acc_name = @as([*:0]u8, @ptrCast(acc_name));
-    // templates\common.zig:377:46: error: null pointer casted to type '[*:0]u8'
-
-    var acc_name: [*:0]u8 = @as([*:0]u8, @constCast(""));
-    some_opt_multi_ptr_api(acc_name[0..]);
-}
-test "unflexible_opt_multi_ptr_api" {
-    unflexible_opt_multi_ptr_api();
-}
-
 test "append slice" {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
@@ -437,28 +412,6 @@ test "100 clients connect to server" {
         client_streams[i] = try std.net.tcpConnectToAddress(server.listen_address);
     }
     defer for (client_streams) |cleanup_stream| cleanup_stream.close();
-}
-
-test "print optional and error union" {
-    var buf: [100]u8 = undefined;
-    const opt_num: ?u32 = null;
-    const err = error.Some;
-    _ = try std.fmt.bufPrint(&buf, "opt_num: {?d}\n", .{opt_num});
-    _ = try std.fmt.bufPrint(&buf, "err: {!}\n", .{err});
-
-    // SHENNANIGAN
-    // Error origins can be hard to decipher in catch block, for example
-    // if an error union was forgotten and multiple are used:
-    // const stderr = std.io.getStdErr().writer();
-    // stderr.print("{!}\n", .{err}) catch |errinner| {
-    //     try stderr.print("{!}\n", .{errinner});
-    //     return error.CouldNotPrint;
-    // };
-    // const err_printed = std.fmt.bufPrint(&buf, "err: {!}\n", .{err}) catch |errinner| {
-    //     try stderr.print("{!}\n", .{errinner});
-    //     return error.CouldNotPrint;
-    // };
-    // std.debug.print("err_printed: {s}\n", .{err_printed});
 }
 
 test "coercion to return type example" {

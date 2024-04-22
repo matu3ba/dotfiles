@@ -1,0 +1,103 @@
+## Why storing accurate editor history requires to separate layout from content.
+
+This is the first article of a series, which analyzes use cases of code
+formatting, which is relevant to store accurately the change history of
+source code editors at word level.
+This has various potential applications like undo files, source code version
+control, source code reduction and generally anything which rewrites AST
+and needs to take into consideration the user formatting of source code.
+
+This series starts with the overall picture, before going into implementation
+aspects of how AST can be efficiently stored, traversed, rendered and converted.
+It assumes basic prior understanding of compilation and tree traversing.
+The code examples are written in Zig, but should be mostly generalizable
+as long as the language formatter can handle the complete syntax and is
+unconfigurable to establish one common code layout.
+
+#### Why code formatters?
+
+Let us understand programming as converting strings to another machine-readable
+or executable output with a program according to a specification (called compiler).
+Now let the sole layout as graphical positioning be defined by additional
+white spaces and newlines.
+
+Source code formatting ensures stylistic consistency to improve readability
+and eases on refactoring and writing code.
+All formatters that enable custom user data come with an escape hatch for
+visualization:
+```
+// zig fmt: off
+const matrix = {{1, 1, 1},
+                {2, 2, 2},
+                {3, 3, 3}};
+// zig fmt: on
+```
+is more readable as matrix than
+```
+const matrix = {{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+```
+
+TODO: improve end of section
+
+#### Code formatting as layout change
+
+However, the user expects an input without `zig fmt: off` and `on` lines to
+convert the input
+```
+const matrix = {{1, 1, 1},
+                {2, 2, 2},
+                {3, 3, 3}};
+```
+on running `zig fmt` to
+```
+const matrix = {{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
+```
+
+There is no semantic reason why an editor should not be able to do the same
+transformation, if it can store the Abstract Syntax Tree of the input with
+the additional offsets of line 2 and 3 different from "where the next tokens
+are expected".
+For example, `const matrix = {{1, 1, 1},`, `{2, 2, 2},` and `{3, 3, 3}};`
+have matching layout.
+In between, are either 1 newline with white spaces or only 1 white space.
+
+More complex is utilizing optional brackets, as they require a lookahead to
+count number of statements between {}-brackets.
+```
+if (condition) runFunction();
+if (condition)
+  runFunction();
+// alternative
+if (condition) {
+  runFunction();
+}
+```
+
+TODO: improve end of section
+
+#### Special in Zig
+Zig specifically has one design aspect, which makes it very nice to use, but
+limits formatting performance (in theory):
+```
+const matrix = {{1, 1, 1}, {2, 2, 2}, {3, 3, 3},};
+```
+is formatted to
+```
+const matrix = {{1, 1, 1},
+                {2, 2, 2},
+                {3, 3, 3},};
+```
+Thus the formatter needs to traverse the full bracket to check existence of a
+comma to identify the correct layout, which can be slow for huge files.
+
+One simple, but unergonomic to code (you can not simply append some code),
+workaround would be to use a comma prefix (`{,{1, 1, 1}...{3, 3, 3}}`)
+instead of postfix (`{{1, 1, 1}...{3, 3, 3},}`).
+
+Summary
+1. Comparison against the "normalized layout" is possible, even for sections
+with disabled formatter.
+2. The difference of tokens in between can be stored and versioned.
+
+The next article will outline consequences, if we try to store the changes
+efficiently.
