@@ -45,6 +45,9 @@ add_cmd('CTre', config_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
 add_cmd('CUtil', config_edit .. sep .. 'lua' .. sep .. 'my_utils.lua', {})
 add_cmd('OPa', config_edit .. sep .. 'lua' .. sep .. 'my_packer.lua', {})
 
+local lazy_packs_dir_edit = 'edit ' .. vim.fn.stdpath("data")
+add_cmd('DLazy', lazy_packs_dir_edit .. sep .. 'lazy/', {})
+
 local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
 local df_configs_edit = df_edit .. sep .. '.config'
 local df_config_shells_edit = df_configs_edit .. sep .. 'shells'
@@ -375,6 +378,64 @@ add_cmd('RetagZig', function()
   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
   -- end
 end, {})
+
+-- TODO proper parsing to distinguish https/http,git@
+-- @return upstream remote else origin remote else empty string
+local git_show_remote_upstream_else_origin = function(cwd)
+  -- git remote show origin
+  -- git config --get remote.origin.url
+  local remote = plenary.job:new({ cwd = cwd, command = 'git', args = { 'config', '--get', 'remote.upstream.url' } }):sync()
+  if (remote and #remote == 1 and remote[1] ~= "") then
+    local col_i = string.find(remote[1], ':')
+    return remote[1]:sub(5, col_i-1) .. '/' .. remote[1]:sub(col_i+1, -5)
+  end
+  remote = plenary.job:new({ cwd = cwd, command = 'git', args = { 'config', '--get', 'remote.origin.url' } }):sync()
+  if (remote and #remote == 1 and remote[1] ~= "") then
+    return remote[1]:sub(5,-1):sub(1,-5)
+  end
+  return ""
+end
+
+-- https://github.com/nvim-lua/plenary.nvim/ /blob/master/ tests/plenary/job_spec.lua
+-- /blob/5129a3693c482fcbc5ab99a7706ffc4360b995a0/
+add_cmd('GHPerma', function()
+  local relpath = plenary.path:new(api.nvim_buf_get_name(0)):make_relative()
+  local relpathdir = vim.fs.dirname(relpath)
+  local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel'} }):sync()
+  if (not git_root or #git_root ~= 1 or git_root[1] == "") then return end
+  local relpath_inrepo = plenary.path:new(relpath):make_relative(git_root[1])
+
+  local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
+  if (not isgit or isgit[1] ~= "true") then return end
+  local remote = git_show_remote_upstream_else_origin(git_root[1])
+  vim.print(remote)
+  if (remote == "") then return end
+  local commitsha = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', 'HEAD' } }):sync()
+  if (not commitsha or #commitsha ~= 1 or commitsha[1] == "") then return end
+  local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
+  vim.print(relpath_inrepo_check)
+  if (not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo) then return end
+  local permalink = remote .. '/blob/' .. commitsha[1] .. '/' .. relpath_inrepo
+  vim.print(permalink)
+  setPlusAnd0Register(permalink)
+end, {})
+-- git branch: git rev-parse --abbrev-ref HEAD
+-- add_cmd('GHLink', function()
+--   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
+--   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+-- end, {})
+-- idea
+-- add_cmd('GHRepo', function()
+--   git remote show origin
+--   git remote show upstream
+--   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
+--   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+-- end, {})
+-- add_cmd('GHDown', function()
+  -- TODO
+--   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
+--   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+-- end, {})
 
 --==luafmt
 -- https://github.com/nvim-lua/plenary.nvim/issues/474 prevents us from

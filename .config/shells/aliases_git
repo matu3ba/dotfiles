@@ -465,4 +465,12 @@ alias gsu='git submodule update'
 #
 # Expected unless OSS and you (can) take the time.
 
+#====checks
+#has git: git rev-parse --is-inside-work-tree
+#git commit sha: git rev-parse HEAD
+#git file version-controlled (0 ok, 1 not): git ls-files --error-unmatch FILEPATH
+#git config --get remote.origin.url
+#git root dir: canonicalize(git rev-parse --show-cdup ABSPATH)
+#git branch: git rev-parse --abbrev-ref HEAD
+
 # TODO https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
