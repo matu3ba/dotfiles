@@ -2,6 +2,7 @@ Different types of Business model and tradeoffs in how to make money.
 * Do It Yourself (DIY)
 * Configuration As A Service (CAAS)
 * Advice From Experience and Contract (AFEAC)
+* TODO catch phrase for hard to prove broken product domains (hardware vendors, etc)
 * TODO
 
 ====AFE
@@ -15,3 +16,5 @@ However, developer experience is not great for REPL = fast debug cycles, which
 may be typical or representative for "configuration as a service" products due
 to incentives to not improve the build system to check validity of hardware
 configurations and alike.
+
+This includes router vendors, camera vendors etc.

@@ -1,0 +1,69 @@
+The (concurrrency/synchronization) memory model is a model of the underlying
+hardware synchronization primitives how the optimizing compiler is allowed to
+interpret source code semantics on the hardware platform (config/family).
+Optimizing compilers and languages build on top want to offer most performance,
+so the weakest one is targeted. Examples for what is considered as strong
+memory model is x86_64, weaker one Aarch64.
+
+tldr;
+Strong memory model works okayish aside of out of thin air problem for C11
+(concurrrency/synchronization) memory model (and some clarifications in C23
+one).
+Weak memory models are not battle tested in practice besides even many hardware
+vendors not having sufficiently complete formal models.
+
+However, besides architecture designers not having complete formal models of
+their own architecture, there is no systematic testing + data and thus no idea
+if and how broken things are in reality and how to unify things besides high
+level concept models with optimizations how to solve out of thing air
+problem. Systematic testing means here in special attacking things in
+practice to see, if they break.
+Architecture designers means hardware vendors or component designers, for
+example in case of ARM. Oh okay that's the subtext I was missing. I've only
+listened to 1.5 of the videos on that playlist, but a lot of it is still fairly
+arcane for my understanding. This talk summarizes state of art besides the
+archtecture designers not having sufficiently complete models
+https://www.youtube.com/watch?v=QmjPN-JAiSI&list=PLyrlk8Xaylp6u1S3R6gH0W9dkxJhH4B9W&index=5
+Memory models are specific to abstract machines as opposed to hardware. C and
+Rust for example have their own memory models which contain certain conditions
+that are unsound there but are technically fine/sound on hardware targets.
+Thanks for the addition. Do you feel like I missed out more relevant details,
+for example on the summary of the talks?
+
+  * out of thin air problem in C11 as most known example, see ./templates/memory
+  * (nondeterministic) timed automata with symbolic steps possible model
+      + unclear how to model fairness
+      + expanding to probabilistic model sounds unfeasible for compiler
+
+I'd be very curious about weird embedded compiler semantics in C89 and C99 due
+to reading paper "Subtleties of the ANSI/ISO C standard"
+https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1637.pdf and how much stuff
+is still missing in C11  as shown here
+https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
+even if assuming intToptr/ptrToInt always loses all provenance.
+
++TODO fixup
++The (concurrrency/synchronization) memory model is a model of the underlying
++hardware synchronization primitives how the optimizing compiler is allowed to
++interpret source code semantics on the hardware platform (config/family).
++Optimizing compilers and languages build on top want to offer most performance,
++so the weakest one is targeted. Examples for what is considered as strong
++memory model is x86_64, weaker one Aarch64.
++
++However, besides architecture designers not having complete formal models of
++their own architecture, there is no systematic testing + data and thus no idea
++if and how broken things are in reality and how to unify things besides high
++level concept models with optimizations how to solve out of thing air
++problem. Systematic testing means here in special attacking things in
++practice to see, if they break.
++Architecture designers means hardware vendors or component designers, for
++example in case of ARM. Oh okay that's the subtext I was missing. I've only
++listened to 1.5 of the videos on that playlist, but a lot of it is still fairly
++arcane for my understanding. This talk summarizes state of art besides the
++archtecture designers not having sufficiently complete models
++https://www.youtube.com/watch?v=QmjPN-JAiSI&list=PLyrlk8Xaylp6u1S3R6gH0W9dkxJhH4B9W&index=5
++Memory models are specific to abstract machines as opposed to hardware. C and
++Rust for example have their own memory models which contain certain conditions
++that are unsound there but are technically fine/sound on hardware targets.
++Thanks for the addition. Do you feel like I missed out more relevant details,
++for example on the summary of the talks?

@@ -119,20 +119,6 @@ return {
   {
     'echasnovski/mini.move',
     version = false,
-    config = function()
-      require('mini.move').setup {
-        mappings = {
-          left = '',
-          right = '',
-          down = '',
-          up = '',
-          line_left = '',
-          line_right = '',
-          line_down = '',
-          line_up = '',
-        },
-      }
-    end,
   },
   -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
@@ -244,9 +230,15 @@ return {
   { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
   --==Organization
   -- ideas
+  -- - ascii boxing
+  -- - dot repitiion
+  -- - mini.move box movements https://github.com/echasnovski/mini.nvim/issues/838
   -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
   -- * inline text spacing adjustments
-  { 'jbyuki/venn.nvim' }, --hydra: <l>v without: set ve=all,:VBox or press f,HJKL,set ve=
+  -- hydra venn extended: <l>ve
+  -- hydra venn ascii: <l>va
+  -- set ve=all,:VBox or press f,HJKL,set ve=
+  { 'jbyuki/venn.nvim', dev = true },
   -- idea { 'simnalamburt/vim-mundo' } to search undotree
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
   {

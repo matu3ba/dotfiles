@@ -9,10 +9,17 @@ export CXX="$ZIG c++ -fno-sanitize=all"
 export CC="$ZIG cc -fno-sanitize=all -s -target TAR -mcpu=MCPU"
 export CXX="$ZIG c++ -fno-sanitize=all -s -target TAR -mcpu=MCPU"
 
-# with the zcc.sh and zcpp.sh in PATH to workaround spaces not being respected
+# 1. With the zcc.sh and zcpp.sh in PATH to workaround spaces not being respected
 CC="zcc.sh" CXX="zcpp.sh" cmake -GNinja ../
-# newer cmake versions support an explicit flag:
-cmake -DCMAKE_C_COMPILER=="zig cc" -DCMAKE_CXX_COMPILER="zig cc" -GNinja ../
+# 2. Using CMake CC compiler flags:
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CC_COMPILER='zcc.sh' -DCMAKE_CXX_COMPILER='zcpp.sh' -GNinja ..
+# 3. newer cmake versions support ; as separator for space
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER='zig;cc' -DCMAKE_CXX_COMPILER='zig;c++' -GNinja ..
+# 4. using cmake build system invocation to work with multiple build systems
+cmake --build . -j $(nproc)
+# 5. even newer cmake supports relative build dir from root dir
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER='zig;cc' -DCMAKE_CXX_COMPILER='zig;c++' -B build
+cmake --build build -j $(nproc)
 
 # often configuration problems for "unknown c compiler"
 

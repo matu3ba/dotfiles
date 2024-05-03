@@ -24,6 +24,8 @@ const builtin = @import("builtin");
 // builder.pathJoin(&[_][]const u8 { "foo", "bar", "baz"})
 // builder.pathJoin(&.{ "foo", "bar", "baz"})
 
+// Crosscompiling: templates/crosscompiling_zig.sh
+
 const factorial_lookup_table = createFactorialLookupTable(u128, 25);
 pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: comptime_int) [num_terms]Int {
     if (@typeInfo(Int) != .Int) {

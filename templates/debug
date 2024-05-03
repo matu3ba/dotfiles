@@ -24,10 +24,21 @@ Debug Tooling
 IDA Pro
 - Hex-Rays decompilers
 
+Core problem of abstraction in gdb:
+- tui without any stability guarantee
+- python scripting
+- MI (machine interface)
+  * requires parsing deeply complex and hostile data across privilege boundaries
+- DAP (debugger adapter protocol)
+  * usable for example in neovim
+
 WinDbg and gdb with
 - enhancement plugins such as peda pwndbg
 - peda https://github.com/longld/peda
 - pwndbg https://github.com/pwndbg/pwndbg
+
+gdb
+- posix gdb frontend https://github.com/nakst/gf
 
 MSan, TSan
 - bug discovery, crash deduplication, root cause analysis

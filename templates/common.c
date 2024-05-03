@@ -294,7 +294,7 @@ int no_reinterpret_cast() {
                             , 0, 0, 0 ,0 };
   // clang-format: on
   // WRONG: int64_t val = *((uint64_t*)&some_vals[1]);
-	int64_t val;
+  int64_t val;
   // more type safe than reinterpret_cast, because some_vals[1] is a type error
   memcpy(&val, &some_vals[1], 8);
   if (val != INT64_MIN) return 1;
@@ -454,18 +454,18 @@ void array_pointers() {
   (*ap1)[1] = 10;
 
   // multi-dimensional array on heap
-  int (*ap3)[9000][9000] = malloc(sizeof *ap3);
+  int (*ap3)[9000][9000] = malloc(sizeof(*ap3));
   if (ap3) free(ap3);
 
   // Variable Length Array (on stack)
-  int (*ap4)[1000][1000] = malloc(sizeof *ap4);
+  int (*ap4)[1000][1000] = malloc(sizeof(*ap4));
   if (ap4) {
     // (*arr)[i][j]
     free(ap4);
   }
 
   // alternative (worse to use): 1d array with offsets, piecewise allocation or big fixed array
-  int* arr_1D = malloc(1000 * 1000 * (sizeof *arr));
+  int* arr_1D = malloc(1000 * 1000 * (sizeof(*arr)));
   if (arr_1D) {
     // arr_1D[1000*i + j] = 10;
     // ..
@@ -595,9 +595,7 @@ void safe_debugging_on_unix() {
 }
 #endif
 
-#ifdef _WIN32
 #include <stdatomic.h>
-#endif
 
 // C provides no nice way to get generics (besides C11 non C++ usable generic
 // selection), so (usually) it makes no sense to have a method 'update' being

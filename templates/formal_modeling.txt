@@ -7,33 +7,53 @@ List of dedicated formally proved languages
   * codegen
     + PLC has codegen from ladder diagrams and other graphical methods
 
-Proof effort is quadratic to code size.
+====verification_costs
+Proof effort is quadratic to code size, if code is not side-effect free.
+Side-effect free means the following holds:
+* 1. same address space
+* 2. no interaction between execution contexts (processes, threads etc)
+* 3. no IO
+* 4. ignoring access time of memory/cache
+More intuitively: Being free of side-effect means relevant constrains can be
+derived from the code, wich allows automatic proof code generation.
+This also means that, in theory, a sufficient powerful model can also explain
+code in a side-effect free manner by capturing all allowed semantics.
 TODO paper as source
 
-Interesting formal things of programming languages, stuff below and UI:
-- 1.implicit proof-carrying code
-- 2.explicit proof-carrying code
+====formal_problems
+- 1. implicit proof-carrying code
+- 2. explicit proof-carrying code
 - 3. verifying compilers with its cost
   * 2 general usable and fully verified optimizing compiler implementations
-      + compcert
-      + cakeml
-      + TODO imperative cakeml name
-- 4. lowering languages to Isabelle or other interesting proof systems as
-  compiler backends (or using codegen for source code and proof like what
-  cogent does).
-- 5. Incremental verification via accurate tracking of code changes in editor
+     + compcert
+     + pancake (successor to cogent)
+       o lowers to Isabelle or other proof systems or binary code as compiler backends
+  * verifying the abstract machine the compiler works on
+     + https://github.com/ziglang/zig-spec/issues/40
+     + Rust
+     + LLVM slow moving target with pointer semantics model very unfinished
+       o CHERI as demanding target still unfinished
+       o unclear what IO and programmer control over optimizations of pointers necessary,
+         so implementors conservative on decisions
+       o see "pointer semantics"
+     + there appears to be no C model due to being underspecified
+     + C++ is probably too convoluted to build a formal model
+- 4. Incremental verification via accurate tracking of code changes in editor
   * research in this area tries to recompute how git commits have changed
     code instead of eliminating the problem at the root
+  * TODO explain
 - 6. atomic memory reordering semantics
-  * out of thin air problem in C11 as most known example, see ./templates/memory
-  * (nondeterministic) timed automata with symbolic steps possible model
-      + unclear how to model fairness
-      + expanding to probabilistic model sounds unfeasible for compiler
+  see templates/formal_modeling/weak_memory
 - 7. pointer semantics is based on Separation logic (extension of Hoare Type
-  Theory with associated aliases)
+     Theory with associated aliases)
    * instead of "update the value", "update the value for all associated
      aliases"
    * unsettled in LLVM blocking CHERI usage (mixed tagged pointer capabilities)
+   * Verification-oriented model for Integer-Pointer cast VIP more powerful
+     and does not mandate creation of unused invalid pointer being Undefined Behavior(UB)
+   * A Provenance-aware Memory Object Model for C (NVI-ae-udi, PNVI-ae,
+     PNVI-plain, and PVI semantics for C) does not cover all the edge cases from pointers
+     https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
 - 8. build system parallelization relies on "Jobserver Implementation" protocol
    * https://gittup.org/tup/build_system_rules_and_algorithms.pdf "Build System Rules and Algorithms" by Mike Shal
    * https://make.mad-scientist.net/papers/jobserver-implementation/
@@ -105,6 +125,7 @@ Interesting formal things of programming languages, stuff below and UI:
     * provided via IPC ABI rather than C/C++ dynamic linking API?
     * security for isolation of graphical components
     * time semantics for the render loop via Xorg compatible protocol?
+    * TODO formal model possible?
 - 12. formal model for OS security and scheduling
     * Assuming a process Pa with schedule A with deadline a and security level 2.
     * Is affecting the scheduler a security problem, because security incidents must be
@@ -155,6 +176,7 @@ Interesting formal things of programming languages, stuff below and UI:
     https://danluu.com/file-consistency/, https://danluu.com/filesystem-errors/
 - 16. secure speculative execution
   * "A Formal Approach to Secure Speculation" by Cheang et al.
+  * TODO hackernews comment
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

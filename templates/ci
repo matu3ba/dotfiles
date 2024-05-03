@@ -39,6 +39,7 @@ unreasonable to (en)code, let alone derive.
 * reduction (bisecting software versions/commit range, hardware influence,
   software configuration etc)
 * compiletime and/or runtime validation
+* crash reports by third users, ie https://bun.sh/blog/bun-report-is-buns-new-crash-reporter
 
 3:
 * used source code available on system
