@@ -1204,3 +1204,19 @@ void stream_flags() {
   fstream << "\n";
   fstream.close();
 }
+
+// SHENNANIGAN Unspecified how the compiler treats references (pointer or copy),
+// so "Strict Aliasing Rule" still applies.
+
+// SHENNANIGAN C++ compilers
+// msvc Compiler Warning (level 2) C4308
+// constexpr int64_t cnt_value = (int64_t)((uint64_t) 1 << 63)
+// leads to weird warnings, even though its clear that we want to construct a number at comptime
+// constexpr int64_t cnt_value = -(((int64_t)1 << 32) + (int64_t)UINT32_MAX);
+
+// SHENNANIGAN
+// incomplete type can not be instantiated in template:
+// * pull in all headers deps of headers
+// * class forward declares may create circular dependencies
+// * build each file individually
+// * might be a circular dependency during template usage

@@ -183,8 +183,7 @@ return {
     'stevearc/aerial.nvim',
   },
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
-  -- { 'anuvyklack/hydra.nvim' },
-  -- needed before 0.10 release
+  -- non-treesitter functionality unnecessary since nvim 0.10
   {
     'numToStr/Comment.nvim',
     config = function() require('Comment').setup() end,

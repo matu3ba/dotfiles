@@ -167,7 +167,9 @@ alias gshn='git --no-pager show --name-only'
 # git config --global core.untrackedcache true
 # git config --global core.fsmonitor true
 
+# TODO configs
 # git config rebase.updateRefs true
+# git config rebase.autosquash true
 
 # fetch branches
 # git config remote.origin.fetch '+refs/pull/*:refs/remotes/origin/pull/*'
@@ -388,6 +390,9 @@ alias gsu='git submodule update'
 # SHENNANIGAN
 # fixup has no option to check, if the fixup can be cleanly applied via autosquash
 
+# To fixup first commit with word 'second'
+# git commit --fixup :/second
+
 # git blame -L 2,5:pathtofile
 # git log -L 2,5:pathtofile
 # git log -L :File:pathtofile
@@ -474,3 +479,4 @@ alias gsu='git submodule update'
 #git branch: git rev-parse --abbrev-ref HEAD
 
 # TODO https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
+# TODO split commits in arbitrary commit range

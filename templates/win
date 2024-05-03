@@ -535,23 +535,15 @@ nbtstat -a IP
 arp -a
 net view
 
+====services
+Stop-Service WinRM -PassThru
+Set-Service WinRM -StartupType Disabled -PassThru
+
 ====ssh_windows_impl
-winrm
-https://security.stackexchange.com/questions/11613/checklist-for-configuring-winrm-security-settings-on-servers
-TODO
-https://theitbros.com/run-powershell-script-on-remote-computer/
-https://www.comparitech.com/net-admin/winrm-guide/
-  enable winrm
-Enable-PSRemoting
-Get-Service WinRM
-Get-NetFirewallRule -Name "WINRM-HTTP-In-TCP-NoScope" | select name, Enabled
-  enable inbound winrm for workgroup computers
-Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP-PUBLIC" -RemoteAddress Any -Enabled true
-  test connection
-Test-WSMan wks11
+templates/winrm
 
 ====ssh_logon_exec
-* can be painfully slow
+* painfully slow
 psexec
 https://theitbros.com/using-psexec-to-run-commands-remotely/
 Set-NetFirewallRule -DisplayGroup “File And Printer Sharing” -Enabled True -Profile Private,Domain

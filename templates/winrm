@@ -1,0 +1,44 @@
+====local_domain
+winrm
+https://security.stackexchange.com/questions/11613/checklist-for-configuring-winrm-security-settings-on-servers
+list config: winrm get winrm/config
+quick config: winrm quickconfig
+validate https: winrm enumerate winrm/config/listener
+get schema: Winrm get http://schemas.microsoft.com/wbem/wsman/1/config
+
+====certificate
+Problem: WinRM firewall exception will not work since one of the network
+connection types on this machine is set to Public and can't be changed to
+Domain or Private.
+Solution: Create certificate and winrm setup
+https://www.reddit.com/r/PowerShell/comments/13wwxsv/question_unable_to_create_https_listener_in_wsman/
+https://docs.ansible.com/ansible/latest/os_guide/windows_winrm.html#certificate
+https://docs.ansible.com/ansible/latest//os_guide/windows_setup.html#winrm-setup
+
+winrs -r:http://server:5985/wsman -u:Username -p:Password ipconfig
+
+https://gist.github.com/gregjhogan/dbe0bfa277d450c049e0bbdac6142eed
+???
+
+OLD
+https://theitbros.com/run-powershell-script-on-remote-computer/
+https://www.comparitech.com/net-admin/winrm-guide/
+  enable winrm
+Enable-PSRemoting
+Get-Service WinRM
+Get-NetFirewallRule -Name "WINRM-HTTP-In-TCP-NoScope" | select name, Enabled
+  enable inbound winrm for workgroup computers
+Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP-PUBLIC" -RemoteAddress Any -Enabled true
+  test connection
+Test-WSMan wks11
+
+winrm with self-signed certificate on windows based on
+https://www.withsecure.com/userguides/product.html?business/radar/4.0/en/task_8772A6A76D994406B4809EB264EB51EE-4.0-en
+Set-Service -Name "WinRM" -StartupType Automatic -Status Running
+$Cert = New-SelfSignedCertificate -CertStoreLocation "cert:\LocalMachine\My" -DnsName "{ipAddress}"
+$cert.Thumbprint
+New-Item -Path WSMan:\LocalHost\Listener -Transport HTTPS -Address * -CertificateThumbPrint $cert.Thumbprint –Force
+
+winrm enumerate winrm/config/listener
+winrm get winrm/config
+winrm quickconfig -transport:https

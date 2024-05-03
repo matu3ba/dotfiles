@@ -92,16 +92,18 @@ assume: correct + continuous connection + value retrieval
 * m1 < m2
   * m2 - m1 < max_step => 2. plus
   * MAX-m2+m1 < max_step => 3. wraparound_minus
+  * otherwise => 6. unclear
 * m2 < m1
   * m1 - m2 < max_step => 4. minus
   * MAX-m1+m2 < max_step => 5. wraparound_plus
-* otherwise => 6. unclear
+  * otherwise => 6. unclear
 
-0. extended_counter = extended_counter;
-1. extended_counter += (m2 - m1)
-2. extended_counter -= (MAX-m2+m1)
-3. extended_counter -= (m1 - m2)
-4. extended_counter += (MAX-m1+m2)
+1. extended_counter = extended_counter;
+2. extended_counter += (m2 - m1)
+5. extended_counter -= (MAX-m2+m1+1)
+4. extended_counter -= (m1 - m2)
+3. extended_counter += (MAX-m1+m2+1)
+6. extended_counter = extended_counter;
 
 Explanation:
   |  m1        m2      |
