@@ -174,8 +174,14 @@ return {
     'numToStr/Comment.nvim',
     config = function() require('Comment').setup() end,
   },
-  -- { "nicwest/vim-camelsnek" } -- idea setup
-
+  -- crs coerce to snake_case
+  -- crm MixedCase = PascalCase
+  -- crc camelCase
+  -- cru UPPER_CASE cru
+  -- cr- dash-case
+  -- cr. dot.case
+  -- missing handling of custom user prefixes for: m_MemberVar, eMember, sStruct
+  { 'tpope/vim-abolish', }, -- { 'text-case.nvim' },
   { 'kylechui/nvim-surround', },
   {
     'NvChad/nvim-colorizer.lua',
@@ -183,7 +189,6 @@ return {
   },
   --==taskrunner
   { 'stevearc/overseer.nvim', opts = {}, dev = false },
-  -- { 'text-case.nvim' }, --idea
   -- { 'monaqa/dial.nvim' }, --idea
   -- { 'andymass/vim-matchup' }, --idea
   -- gm, M to mark word/region, M delete word

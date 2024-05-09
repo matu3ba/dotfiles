@@ -443,6 +443,7 @@ https://blog.improsec.com/tech-blog/win32k-system-call-filtering-deep-dive
 https://rafaelhart.com/2014/12/nmap-wireshark/
 
 Visual Studio Commandline Prompt
+====objdump
 dumpbin -linkermember .\wpcap.lib
 dumpbin /archivemembers|exports|symbols /OUT:filename .\wpcap.lib
 

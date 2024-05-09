@@ -112,7 +112,7 @@ local function load_options()
     -- PowerShellEditorServices https://github.com/PowerShell/PowerShellEditorServices
     if vim.fn.executable("pwsh") == 1 then
       vim.o.shell =  "pwsh"
-      vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned"
+      vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned -Command"
     else
       vim.opt.shell =  "powershell"
       vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"

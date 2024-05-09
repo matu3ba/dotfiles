@@ -61,6 +61,7 @@ add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
 add_cmd('Templates', df_edit .. sep .. 'templates', {})
 add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep
   .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
+add_cmd('ZigFmtAll', '! zig fmt .', {})
 
 if utils.is_windows == false then
   -- we cant or dont want to unify all bashrcs
@@ -75,6 +76,7 @@ else
   add_cmd('PWConf', pws_config_edit, {})
   local df_write = '! ' .. home .. '\\dotfiles\\fileOverwrite.ps1'
   add_cmd('DotfWrite', df_write, {})
+  add_cmd('RmShada', '! rm ' .. vim.fn.stdpath("data") .. '\\shada\\main.shada.tmp.X', {})
 end
 
 

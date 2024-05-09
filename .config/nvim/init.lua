@@ -170,6 +170,9 @@ end
 -- Solution:
 -- select comments + press gq
 -- press = on selection, see :h =
+-- Run macros
+-- * until the end of the file: :.,$norm! @a
+-- * for every line of a paragraph: :g/.+/norm! @a
 
 -- Problem: Macros are slow.something slows down macro execution
 -- Solutions:

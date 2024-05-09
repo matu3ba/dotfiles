@@ -77,6 +77,7 @@ New-Alias -Name gcn -Value GitCommitNoSign -Force -Option AllScope
 New-Alias -Name gd -Value GitDiff -Force -Option AllScope
 New-Alias -Name gdNo -Value GitDiffNoColor -Force -Option AllScope
 New-Alias -Name gdc -Value GitDiffCache -Force -Option AllScope
+New-Alias -Name gdcn -Value GitDiffCacheNoPager -Force -Option AllScope
 New-Alias -Name gdn -Value GitDiffNameOnly -Force -Option AllScope
 New-Alias -Name gf -Value GitFetch -Force -Option AllScope
 New-Alias -Name glg -Value GitLogStat -Force -Option AllScope
@@ -124,8 +125,9 @@ function GitCommitFixup { & git commit --fixup $args }
 function GitCommitSquash { & git rebase -i --autosquash $args }
 function GitDiff { & git diff --color $args }
 function GitDiffCache { & git diff --cached $args }
-function GitDiffNameOnly { & git diff --name-only $args }
-function GitDiffNoColor { & git diff --no-color $args }
+function GitDiffCacheNoPager { & git --no-pager diff --cached $args }
+function GitDiffNameOnly { & git --no-pager diff --name-only $args }
+function GitDiffNoColor { & git --no-pager diff --no-color $args }
 function GitFetch { & git fetch $args }
 function GitLogStat { & git log --stat $args }
 function GitMergeCommit { & git merge --no-ff --commit $args }
