@@ -131,8 +131,10 @@ lspconfig.texlab.setup {
 lspconfig.lua_ls.setup {
   on_attach = common_on_attach,
   on_init = function(client)
+    if client.workspace_folders == nil or client.workspace_folders[1] == nil then
+      return false
+    end
     local path = client.workspace_folders[1].name -- neovim config dir
-
     -- Debug common problems
     -- vim.print(client.config.settings)
     -- :lua local file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(client.config.settings) .. "\n"); file:close()
