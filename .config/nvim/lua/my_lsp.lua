@@ -59,11 +59,11 @@ if not has_navic then
   return
 end
 
-local has_luasnip, luasnip = pcall(require, 'luasnip')
-if not has_luasnip then
-  print 'Please install mandatory for nvim-cmp snippet provider saadparwaiz1/cmp_luasnip and L3MON4D3/LuaSnip'
-  return
-end
+-- local has_luasnip, luasnip = pcall(require, 'luasnip')
+-- if not has_luasnip then
+--   print 'Please install mandatory for nvim-cmp snippet provider saadparwaiz1/cmp_luasnip and L3MON4D3/LuaSnip'
+--   return
+-- end
 
 
 --==LspConfigurations
@@ -232,16 +232,16 @@ cmp.setup {
   },
 
   -- SHENNANIGAN required
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
+  -- snippet = {
+  --   expand = function(args)
+  --     luasnip.lsp_expand(args.body)
+  --   end,
+  -- },
   sources = {
     { name = 'path' },
     { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp',               keyword_length = 3 },
-    { name = 'luasnip',                keyword_length = 2 },
+    -- { name = 'luasnip',                keyword_length = 2 },
     {
       name = 'buffer',
       keyword_length = 5,

@@ -110,15 +110,19 @@ local function load_options()
   vim.o.scrollback = 100000 -- max terminal scrollback without autcommand annoyance
   if vim.fn.has 'win32' == 1 then
     -- PowerShellEditorServices https://github.com/PowerShell/PowerShellEditorServices
-    if vim.fn.executable("pwsh") == 1 then
-      vim.o.shell =  "pwsh"
-      vim.o.shellcmdflag = "-NoLogo -ExecutionPolicy RemoteSigned -Command"
+    -- SHENNANIGAN This setup is not the default behavior for neovim with default actions not working out of the box:
+    -- :'<,'>:w !git<CR>
+    -- :.!git<CR>
+    -- https://stackoverflow.com/questions/2575545/vim-pipe-selected-text-to-shell-cmd-and-receive-output-on-vim-info-command-line
+    if vim.fn.executable("pwsh.exe") == 1 then
+      vim.o.shell =  "pwsh.exe"
+      vim.o.shellcmdflag = "-NonInteractive -NoLogo -ExecutionPolicy RemoteSigned -Command "
     else
-      vim.opt.shell =  "powershell"
-      vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+      vim.opt.shell =  "powershell.exe"
+      vim.o.shellcmdflag = "-NonInteractive -NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8 "
     end
-    vim.o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
-    vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+    vim.o.shellredir = "2>&1 | Out-File -Encoding UTF8 %s"
+    vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s"
     vim.o.shellquote = ""
     vim.o.shellxquote = ""
   else

@@ -17,6 +17,8 @@ return {
   --  :Lazy restore lazy-lock.json
   --Or for only 1 plugin from the lazy-lock: :Lazy restore pluginname
   -- { 'https://mzte.de/git/LordMZTE/znvim' },
+  -- Debug plugins startuptime via: nvim -V1 --startuptime FILE
+  -- To find which plugins to disable, use :verbose au BufEnter
   { 'nvim-lua/plenary.nvim' },
   { 'marko-cerovac/material.nvim', priority = 1000, --<l>ma
     config = function()
@@ -54,8 +56,8 @@ return {
     -- Autocompletion
     { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
     { 'hrsh7th/cmp-nvim-lsp' }, -- LSP source for nvim-cmp
-    { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
-    { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
+    -- { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
+    -- { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
     -- Optional
     { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end },
     -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
@@ -105,16 +107,16 @@ return {
   -- [] mappings for buffer, komment, x conflict, diagnostics, file, indent, jump, location,
   -- location, oldfile, quickfix, treesitter, undo, window, yank
   -- [c,]c, used for diff
-  {
-    'echasnovski/mini.bracketed',
-    version = false,
-    config = function()
-      require('mini.bracketed').setup {
-        comment = { suffix = 'v' }, -- verbose comment
-        -- treesitter = { options = { add_to_jumplist = true } },
-      }
-    end,
-  },
+  -- {
+  --   'echasnovski/mini.bracketed',
+  --   version = false,
+  --   config = function()
+  --     require('mini.bracketed').setup {
+  --       comment = { suffix = 'v' }, -- verbose comment
+  --       -- treesitter = { options = { add_to_jumplist = true } },
+  --     }
+  --   end,
+  -- },
   -- usage in my_hydra.lua
   {
     'echasnovski/mini.move',
