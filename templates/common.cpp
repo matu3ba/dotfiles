@@ -81,6 +81,7 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
     }
 
 // defer-like behavior in C++
+#ifndef _WIN32
 #include <openssl/err.h>
 #include <openssl/evp.h>
 using EVP_CIPHER_CTX_free_ptr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&::EVP_CIPHER_CTX_free)>;
@@ -99,6 +100,7 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
     // other problem: we cant only defer on error to provide ctx to another function
     return NULL;
 }
+#endif
 
 // SHENNANIGAN: default values prevent the class from being an aggregate, so
 // list initialization breaks with a very unhelpful message like:
@@ -217,6 +219,7 @@ public:
 // SHENNANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
 // more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html
 
+#ifndef _WIN32
 // Also does split string.
 void stringRawDataAccess(std::string &comp) {
     std::string component_name = comp.c_str(); // may or may not copy construct (careful)
@@ -225,7 +228,7 @@ void stringRawDataAccess(std::string &comp) {
     // component_X_Y, X,Y in [0-9]+
     // char* component_name = "some_example_t1";
     if (p_component_name == nullptr) return;
-    char* name = strtok(p_component_name, "_");
+    char* name = strtok(p_component_name, "_"); // strok deprecated by windows
     if (name == nullptr) return;
     printf("%s\n", name);
 
@@ -245,6 +248,7 @@ ACTIONEXIT:
     // This requires usage of errno, so pick your poison.
     // alternative: use find with substring
 }
+#endif
 
 class ClassWithMutex { // class with mutex
   std::string s1;
@@ -339,6 +343,11 @@ void mutex_usage() {
     // Consider using adaptions of SimplifiedImmutable for special cases, like
     // to forbid copy constructor, handle different types of callbacks, data etc.
 }
+
+template <typename _RetTy, typename Ty>
+class Callback {
+  // how to update SimplifiedImmutable, typically via loop
+};
 
 // ImmutableObject as template for shared_ptr with constructors and operators on
 // top. It usually has fancy templates to check and inline properties of a
@@ -697,6 +706,7 @@ public:
 
 // SHENNANIGAN
 // Checking, if typename is a string is complex (even with C++17 extension)
+#if __cplusplus > 201402L
 template<typename STR>
 inline constexpr bool is_string_class_decayed = false;
 template<typename... STR>
@@ -712,6 +722,7 @@ static_assert(!is_string_class<int>);
 static_assert(!is_string_class<const double>);
 static_assert(!is_string_class<const char*>);
 static_assert(!is_string_class<std::vector<char>>);
+#endif
 
 // SHENNANIGAN
 // stringstream is simpler to use than template code (DIY is annoying)
@@ -1026,7 +1037,6 @@ int testEq(int a, int b) {
 template <class TVAL, class TEXP, class TEPS>
 static typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps);
 
-
 // check that value NaN if value convertible to double via parameter
 template <class TVAL>
 static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val);
@@ -1065,6 +1075,11 @@ void ape_printing_bad() {
 }
 #endif
 
+#ifdef _WIN32
+// make msvc not complain about fopen
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
+#endif
 void ape_print() {
   FILE * f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
@@ -1220,3 +1235,90 @@ void stream_flags() {
 // * class forward declares may create circular dependencies
 // * build each file individually
 // * might be a circular dependency during template usage
+
+// SHENNANIGAN missing virtual destructor for non-final methods in classes technically UB
+class ISomeInterface {
+  virtual public int SomeMethod() = 0;
+}
+class CSomeClass : ISomeInterface
+{
+  CSomeClass();
+  public int SomeMethod() override {
+    return 1;
+  }
+  virtual ~CSomeClass();
+}
+class CSomeDerivedClass : CSomeClass
+{
+  CSomeDerivedClass();
+  public int SomeMethod() override final {
+    return 2;
+  }
+  virtual ~CSomeDerivedClass();
+}
+//====injection via override implementaion of base class
+// idea: write the private classs of "SomeClass" via replacing the shared_ptr
+// which the class holds to the private class with the struct class instead.
+struct CTestSomeInterface : ISomeInterface {
+  int SomeMethod() override {
+    // do injected functionality
+  }
+}
+
+struct SomeDll {
+  std::string m_filename;
+  void SetupDll(const std::string & config_file) {
+    // do stuff and simplify by comparing to config_file
+    if (config_file == "DriverError")
+      throw std::runtime_error("DriverError: sometext");
+    else if (config_file == "InitError")
+      throw std::runtime_error("InitError: sometext");
+    else if (config_file == "NoDeviceError")
+      throw std::runtime_error("NoDeviceError: sometext");
+    // skip unknown runtime_error and unknown exception here for brevity
+  }
+};
+
+int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t errmsg_len) {
+  // Underlying idea: prefix exception strings with text. Below case handling
+  // shows how error prone this is to make runtime decisions with C abi
+  // compatibililty across dll. And this does not cover compiler mangling and
+  // dependency on runtime etc.
+  // Further more, tooling like clangd is unable to infer all possible strings
+  // to enforce correct error handling of the bubbled up exceptions and not even
+  // all possible derived exception types.
+  struct SomeDll some_dll;
+  try
+  {
+    some_dll.SetupDll("someconfig_file");
+  }
+  catch (std::runtime_error & rt_err)
+  {
+    constexpr char * const_drivermsg = "DriverError: ";
+    constexpr char * const_initmsg = "InitError: ";
+    constexpr char * const_nocamfoundmsg = "NoCameraFound: ";
+    std::string err = rt_err.what();
+    // std::string::StartsWith : err.rfind("DriverError:", 0) == 0)
+    if (err.rfind(const_drivermsg, 0) == 0) {
+      int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_drivermsg)]);
+      if (st <= 0) return 1; // C89 allows less than 1, C99 NULL
+        return 2;
+    }
+    else if (err.rfind(const_initmsg, 0) == 0) {
+      int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_initmsg)]);
+      if (st <= 0) return 1;
+        return 2;
+    }
+    else if (err.rfind(const_nocamfoundmsg, 0) == 0) {
+      int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_nocamfoundmsg)]);
+      if (st <= 0) return 1;
+      return 3;
+  }
+  catch (std::exception & err)
+  {
+    int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_nocamfoundmsg)]);
+    if (st <= 0) return 1;
+    return 100;
+  }
+  return 0;
+}

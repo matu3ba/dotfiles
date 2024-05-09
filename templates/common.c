@@ -32,6 +32,7 @@
 
 // TODO quote standard to show that its UB to let pointer point into undefined
 // provenance regions (ptr < &array[0], ptr > &array[len+1], ptr != 0).
+// C11 or C23, before behavior was unspecified.
 
 // macro NULL = 0 or mingw null
 
@@ -57,6 +58,17 @@ void standard_namespacing() {
   U64.u64 = 12;
   sNamespace1.eMode = Undefined;
   sNamespace1.uRepr.u64 = 12;
+
+  switch (sNamespace1.eMode) {
+  case Undefined:
+      break;
+  case Mode1:
+      break;
+  case Mode2:
+      break;
+  default:
+    break;
+  }
 }
 
 void c_enum_in_struct_weirdness() {
@@ -642,3 +654,87 @@ int32_t immut_get(struct _No_Immutable_in_C_i64 * obj, int64_t * val) {
 //
 // TODO https://bitbashing.io/gc-for-systems-programmers.html
 // basic RCU implementation
+
+// C99 and later, you can have a (one-dimensional) flexible array member (FAM)
+// at the end of a structure which is a Variable Length Array.
+// VLA rules for offsets and padding are complex and while size may be padded
+// without any element, access or pointer past it are still be UB.
+struct Pixel {
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+};
+
+struct ImageSimple {
+  int32_t width;
+  int32_t height;
+  struct Pixel *pixels_simple;
+} s_image_simple;
+
+struct ImageVLA {
+  int32_t width;
+  int32_t height;
+  struct Pixel pixels_vla[];
+} ImageVLA;
+
+// Corresponding zig code:
+// const Pixel = externs truct {
+//     red: u8,
+//     green: u8,
+//     blue: u8,
+// };
+// pub ImageVLA = extern struct {
+//   width: i32,
+//   height: i32,
+//   pixles_vla: [*]Pixel,
+// };
+// if using [255]u8 to cast into ImageVLA, use
+// ptr with alignment 1: *align(1) Pixel
+
+// https://stackoverflow.com/questions/6924195/get-dll-path-at-runtime
+// EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+// TCHAR   DllPath[MAX_PATH] = {0};
+// GetModuleFileName((HINSTANCE)&__ImageBase, DllPath, _countof(DllPath));
+
+// SHENNANIGAN docs on job objects are very bad on runtime behavior
+// TerminateJobObject does not terminate until some IO completion function is
+// executed, which apparently executed pending job object tasks via callback.
+
+// SHENNANIGAN related complex reliable waiting for process tree completion on windows
+// I/O completion port and to listen for notifications JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO
+// but:
+//   Note that, except for limits set with the
+//   JobObjectNotificationLimitInformation information class, messages are
+//   intended only as notifications and their delivery to the completion port is
+//   not guaranteed. The failure of a message to arrive at the completion port
+//   does not necessarily mean that the event did not occur.
+// * use GetQueuedCompletionStatus with upper time limit in a loop for "expected time behavior"
+// * on "unpexpected time behavior/too much resource usage occurs" etc, use TerminateJobObject with another call to WaitForObject, WaitForObjectEx / the multiple object pendant or the GetQueuedCompletionStatus one to ensure pending job object tasks are executed
+// * untested, but strong suggestion: make sure to wait/get status for at least all direct ancestors of your process so that all the dependency tasks are executed
+// * untested, but unsure: make a test for other pending job object tasks and check that the job object tasks can be executed (nothing blocking it)
+// * to be extra sure that nothing got lost in the meantime, use afterwards QueryInformationJobObject JOBOBJECT_BASIC_ACCOUNTING_INFORMATION and the field ActiveProcesses in a loop.
+// link https://github.com/matu3ba/sandboxamples/blob/cd3998945a6e286c6ddc367d75fe8d5b50ca717a/test/win/main_job_api.zig
+
+// Use realtime thread with minimal time period to execute, but keep 1 thread at a time, even if taking longer
+// st = timeSetEvent(1, 0, &fnPtr, reinterpret_cast<DWORD_PTR>(this), TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+
+// SHENNANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
+// unclear, if conditionally setting it is necessary or not
+//   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
+int FG_Init(char * errmsg_ptr, int * errmsg_len) {
+  const char * msg = "balbla";
+  *errmsg_len = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
+  if (*errmsg_len > 0) return 0;
+  return 1;
+}
+
+// TODO pointer alignment in C
+//https://blog.quarkslab.com/unaligned-accesses-in-cc-what-why-and-solutions-to-do-it-properly.html
+//#include <inttypes.h>
+// static inline void * please_align(void * ptr){
+//     char * res __attribute__((aligned(128))) ;
+//     res = (char *)ptr + (128 - (uintptr_t) ptr) % 128;
+//     return res ;
+// }
+// https://stackoverflow.com/questions/3839922/aligned-malloc-in-gcc
+// _mm_alloc, _mm_free
