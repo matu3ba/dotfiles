@@ -185,7 +185,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.rename, opts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    -- vim.keymap.set('n', '<leader>hi', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end, opts)
+    -- defaults with neovim realease 10.0
+    -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
     -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
     vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)

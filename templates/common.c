@@ -401,7 +401,8 @@ void use_voidptr() {
 // Very aweful, if used withing stdafx.h:
 //   #pragma once
 //   #include "targetver.h"
-//   #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+//   // Excludes rarely-used stuff from Windows headers
+//   #define WIN32_LEAN_AND_MEAN
 //   // Windows Header Files:
 //   #include <windows.h>
 
@@ -676,6 +677,7 @@ struct ImageVLA {
   int32_t height;
   struct Pixel pixels_vla[];
 } ImageVLA;
+// TODO align cast in C
 
 // Corresponding zig code:
 // const Pixel = externs truct {
@@ -696,11 +698,13 @@ struct ImageVLA {
 // TCHAR   DllPath[MAX_PATH] = {0};
 // GetModuleFileName((HINSTANCE)&__ImageBase, DllPath, _countof(DllPath));
 
-// SHENNANIGAN docs on job objects are very bad on runtime behavior
+// SHENNANIGAN windows
+// docs on job objects are very bad on runtime behavior
 // TerminateJobObject does not terminate until some IO completion function is
 // executed, which apparently executed pending job object tasks via callback.
 
-// SHENNANIGAN related complex reliable waiting for process tree completion on windows
+// SHENNANIGAN windows
+// related complex reliable waiting for process tree completion on windows
 // I/O completion port and to listen for notifications JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO
 // but:
 //   Note that, except for limits set with the

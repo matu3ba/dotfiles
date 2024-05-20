@@ -140,8 +140,8 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 # Major "--debug-log" targets are: compilation, module, sema, codegen, and link
 # requires debug mode or to set -Dlog=true on compiling Zig
 #alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && \time -v ninja install && cd ..'
-alias  zbcmdeb='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install  && cd ..'
-alias  zbcmrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install && cd ..'
+alias  zbcmdeb='cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time cmake -B build'
+alias  zbcmrel='cmake -B buildrel -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time cmake -B buildrel'
 # cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && \time -v ninja install
 #alias   zbcmrs='mkdir -p buildrs/ && cd buildrs/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install && cd ..'
 alias    zwtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
@@ -159,7 +159,8 @@ alias  zdoc='cd ${HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
 alias  zref='cd ${HOME}/tmpf/sfox'
 #alias   zbrs='${HOME}/dev/git/zi/zig/master/buildrs/stage3/bin/zig build -p rs -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias   zup1='./build/stage3/bin/zig build update-zig1'
-#alias  zbsel='mkdir -p buildsel/ && cd buildsel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+#alias  zbsrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
+#alias  zbsrel='cmake -B buildrel -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="../../zig-bootstrap/musl/out/host/" -GNinja && time cmake -B buildrel -j $(nproc)'
 # NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
 #mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
 #mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
@@ -276,6 +277,9 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # Run command per line
 # cat file... | xargs -n1 command
 # Match against full path via -p or --full-path
+# Can do find and replace also via ripgrep
+# rg -l arrow_chars | xargs -n1 sed -i 's;arrow_chars;arrow_chars_utf;g'
+# rg -l -F 'parse' | xargs -n1 sed -i 's;parse;parse_utf;g'
 
 # busybox grep (very slow)
 # grep -r regex .
@@ -297,6 +301,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # only show to be searched filepaths:
 # rg --files
 # only search for file type: -t, --type TY from --type-list
+
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

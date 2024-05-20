@@ -33,11 +33,8 @@ return {
     'williamboman/mason.nvim',
     config = function() require('mason').setup() end,
   }, ---=none
-  {
-    -- deprecated since nvim 0.10
-    'ojroques/nvim-osc52',
-    config = function() require('osc52').setup() end,
-  }, ---=key
+  -- deprecated since nvim 0.10
+  -- { 'ojroques/nvim-osc52', config = function() require('osc52').setup() end }, ---=key
   --==completions
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
@@ -172,10 +169,7 @@ return {
   },
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
   -- non-treesitter functionality unnecessary since nvim 0.10
-  {
-    'numToStr/Comment.nvim',
-    config = function() require('Comment').setup() end,
-  },
+  -- { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end },
   -- crs coerce to snake_case
   -- crm MixedCase = PascalCase
   -- crc camelCase
@@ -238,13 +232,14 @@ return {
   --==Organization
   -- ideas
   -- - ascii boxing
-  -- - dot repitiion
+  -- - dot repetition
   -- - mini.move box movements https://github.com/echasnovski/mini.nvim/issues/838
   -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
   -- * inline text spacing adjustments
   -- hydra venn extended: <l>ve
   -- hydra venn ascii: <l>va
   -- set ve=all,:VBox or press f,HJKL,set ve=
+  { 'jbyuki/ntangle.nvim' },
   { 'jbyuki/venn.nvim', dev = true },
   -- idea { 'simnalamburt/vim-mundo' } to search undotree
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)

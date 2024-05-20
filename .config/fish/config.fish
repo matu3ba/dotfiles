@@ -164,18 +164,17 @@ if status is-interactive
   # * zdev/zig-bootstrap/master: CMAKE_GENERATOR=Ninja ./build x86_64-linux-musl native
   #   + enabling checks: -DLLVM_ENABLE_ASSERTIONS=ON \
   #   + preventing oom: -DLLVM_PARALLEL_LINK_JOBS=1 \
-  # abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install  && cd ..'
   abbr --add -g  zbdeb ' ./buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zdeb ' ../master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zbllvm ' CMAKE_GENERATOR=Ninja ./build x86_64-linux-musl native'
-  abbr --add -g  zbsrel ' mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out/host/" -GNinja && time ninja install && cd ..'
+  abbr --add -g  zbsrel ' cmake -B buildrel -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out/host/" -GNinja && time cmake -B buildrel -j $(nproc)'
   abbr --add -g  zbrel ' ./buildrel/stage3/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   abbr --add -g  zrel ' ../master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
   # Without zig-bootrap stage4 fails due to c++ abi failures and making sure it works boils down to same logic
 
   # Using out of tree llvm builds from ~/.local/llvmdeb and ~/.local/llvmrel
-  abbr --add -g  zbsdebllvmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmdeb" -GNinja && time ninja install  && cd ..'
-  abbr --add -g  zbsdebllvmrel ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmrel" -GNinja && time ninja install  && cd ..'
+  abbr --add -g  zbsdebllvmdeb ' cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmdeb" -GNinja && time cmake -B build -j $(nproc)'
+  abbr --add -g  zbsdebllvmrel ' cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmrel" -GNinja && time cmake -B build -j $(nproc)'
   # Patching zig-bootstrap necessary to get stage4 working
 
   abbr --add -g        zd ' ./deb/stage3/bin/zig'

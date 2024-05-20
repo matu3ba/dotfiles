@@ -148,6 +148,7 @@ local function get_context()
 end
 
 -- other options
+-- idea vim.diagnostic.is_enabled() with vim.diagnostic.count()
 -- local mode = vim.api.nvim_get_mode().mode
 -- selection range
 function statusline.setup()

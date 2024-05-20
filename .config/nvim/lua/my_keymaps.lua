@@ -73,6 +73,9 @@ local map = vim.api.nvim_set_keymap
 --https://www.hillelwayne.com/post/intermediate-vim/
 -- commenting: visual gc/gb, normal [count]gcc/gbc, gco/gcO/gcA
 
+--====help
+-- g0 to visit toc
+
 -- enable the following once which-key fixes
 --map('n', ' ', '', opts)
 --map('x', ' ', '', opts)

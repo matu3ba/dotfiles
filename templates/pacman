@@ -3,3 +3,6 @@ pacman -Suy
 # installed files by package
 pacman -Fyy && pacman -Fl pkgname
 pacman -Ql pkgname
+
+# package owner of file path
+pacman -Qo FILEPATH
