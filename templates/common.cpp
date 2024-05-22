@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <memory> // unique_ptr
+#include <fstream> // fstream
 
 // posix only
 #ifndef _WIN32
@@ -1209,13 +1210,14 @@ void stream_flags() {
   // https://codereview.stackexchange.com/questions/165120/printing-hex-dumps-for-diagnostics
   std::vector<uint8_t> array {1, 0, 0, 0};
 
-  std::fstream fstream;
-  fstream.open("somestream.txt", std::fstream::app | std::fstream::out);
+  // SHENNANIGAN implicit instantiation is allowed at least in msvc of visual studio 2015
+  std::fstream fstream{"somestream.txt", std::fstream::app | std::fstream::out};
+  /*fstream.open();*/
   auto flags = fstream.flags();
   fstream << std::hex;
   for (uint32_t i = 0; i < array.size(); i+=1)
-    fstream << hex << array[i];
-  fstream.flags(flags)
+    fstream << std::hex << array[i];
+  fstream.flags(flags);
   fstream << "\n";
   fstream.close();
 }
@@ -1238,32 +1240,37 @@ void stream_flags() {
 
 // SHENNANIGAN missing virtual destructor for non-final methods in classes technically UB
 class ISomeInterface {
-  virtual public int SomeMethod() = 0;
-}
+public:
+  virtual int SomeMethod() = 0;
+};
 class CSomeClass : ISomeInterface
 {
   CSomeClass();
-  public int SomeMethod() override {
+  public:
+  int SomeMethod() override {
     return 1;
   }
   virtual ~CSomeClass();
-}
+};
 class CSomeDerivedClass : CSomeClass
 {
   CSomeDerivedClass();
-  public int SomeMethod() override final {
+  public:
+  int SomeMethod() override final {
     return 2;
   }
-  virtual ~CSomeDerivedClass();
-}
+  virtual ~CSomeDerivedClass(); // optional virtual
+};
+
 //====injection via override implementaion of base class
 // idea: write the private classs of "SomeClass" via replacing the shared_ptr
 // which the class holds to the private class with the struct class instead.
 struct CTestSomeInterface : ISomeInterface {
   int SomeMethod() override {
     // do injected functionality
+    return 0;
   }
-}
+};
 
 struct SomeDll {
   std::string m_filename;
@@ -1279,7 +1286,14 @@ struct SomeDll {
   }
 };
 
-int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t errmsg_len) {
+int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
+  // SHENNANIGAN clangd
+  // shows ISO C++11 does not allow conversion from string literal to 'char *const' instead of
+  // recommending the proper fix below
+  // constexpr char * const_drivermsg = "DriverError: ";
+  constexpr char const_drivermsg[] = "DriverError: ";
+  constexpr char const_initmsg[] = "InitError: ";
+  constexpr char const_nocamfoundmsg[] = "NoCameraFound: ";
   // Underlying idea: prefix exception strings with text. Below case handling
   // shows how error prone this is to make runtime decisions with C abi
   // compatibililty across dll. And this does not cover compiler mangling and
@@ -1288,15 +1302,10 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t errmsg_len) {
   // to enforce correct error handling of the bubbled up exceptions and not even
   // all possible derived exception types.
   struct SomeDll some_dll;
-  try
-  {
+  try {
     some_dll.SetupDll("someconfig_file");
   }
-  catch (std::runtime_error & rt_err)
-  {
-    constexpr char * const_drivermsg = "DriverError: ";
-    constexpr char * const_initmsg = "InitError: ";
-    constexpr char * const_nocamfoundmsg = "NoCameraFound: ";
+  catch (std::runtime_error & rt_err) {
     std::string err = rt_err.what();
     // std::string::StartsWith : err.rfind("DriverError:", 0) == 0)
     if (err.rfind(const_drivermsg, 0) == 0) {
@@ -1313,9 +1322,11 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t errmsg_len) {
       int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_nocamfoundmsg)]);
       if (st <= 0) return 1;
       return 3;
+    }
   }
-  catch (std::exception & err)
+  catch (std::exception & exc)
   {
+    std::string err = exc.what();
     int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_nocamfoundmsg)]);
     if (st <= 0) return 1;
     return 100;

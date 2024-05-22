@@ -723,7 +723,7 @@ struct ImageVLA {
 // st = timeSetEvent(1, 0, &fnPtr, reinterpret_cast<DWORD_PTR>(this), TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 
 // SHENNANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
-// unclear, if conditionally setting it is necessary or not
+// In practive implementations unconditionally add 0 sentinel.
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
 int FG_Init(char * errmsg_ptr, int * errmsg_len) {
   const char * msg = "balbla";
