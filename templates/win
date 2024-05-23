@@ -146,6 +146,11 @@ https://exceptionnotfound.net/debugger-windows-in-visual-studio-2015-quick-guide
 
 Kernel mode debugging session http://www.vallejo.cc/2015/04/debugging-programs-with-multiple.html
 
+Windbg server client setup
+https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tutorial
+windbg -server
+TODO
+
 Timetravel debugging
 > 10x-20x performance hit in typical recording scenarios
 > Tracing a kernel mode process is not possible, only user mode can be traced.
@@ -506,6 +511,9 @@ https://serverfault.com/questions/1011395/access-smb-over-a-custom-port
 double check properties of adapter
 
 net use DRIVE: \\IP\drive_without_colon\more_path
+net use \\192.168.1.xx\<some-share> password /USER:username
+copy \*.bak \\networklocation\sharefolder\*.bak
+robocopy .\_ReleaseRevision_x64\bin\ \\192.168.1.24\d\ *.exe
 
 ====firewall
 netsh firewall show state
@@ -591,3 +599,10 @@ pwsh Get-Process
 Taskkill /IM "process name" /F
 pwsh Stop-Process -Name "ProcessName" -Force
 pwsh Stop-Process -ID PID -Force
+
+SHENNANIGAN too many ways to check hard drive status (smart)
+wmic diskdrive get model,name,serialnumber,status
+wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus
+Get-CimInstance -namespace root\wmi -class MSStorageDriver_FailurePredictStatus
+
+https://www.codereversing.com/

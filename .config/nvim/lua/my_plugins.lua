@@ -133,7 +133,7 @@ return {
   -- Once done: C-w,C-o, :GWrite, :Git commit
   -- SHENNANIGAN: ls! still shows hidden buffers
   -- see also https://jeancharles.quillet.org/posts/2022-03-02-Practical-introduction-to-fugitive.html
-  { 'tpope/vim-fugitive' }, -- TODO fugitive mode
+  { 'tpope/vim-fugitive' },
   -- The alternative would be to use https://github.com/git/git/blob/master/Documentation/mergetools/vimdiff.txt
   -- as shown here https://gist.github.com/karenyyng/f19ff75c60f18b4b8149
 

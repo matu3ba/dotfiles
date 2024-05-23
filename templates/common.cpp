@@ -691,6 +691,7 @@ public:
 // From https://gpfault.net/posts/mapping-types-to-values.txt.html
 // SHENNANIGAN
 // std::type_info::hash_code can return different values for different types
+// for all std::type_info objects referring to the same type, their hash code is the same.
 // type_id and dynamic_cast are the other options
 // std::type_index
 
@@ -1333,3 +1334,7 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
   }
   return 0;
 }
+
+// SHENNANIGAN exceptions implementation are complex
+// See https://maskray.me/blog/2020-12-12-c++-exception-handling-abi
+// and compare to setjmp and longjmp (store and retrieve stack)

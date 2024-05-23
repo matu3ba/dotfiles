@@ -194,6 +194,23 @@ filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 Import-Module posh-git
 Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
+# requires TODO
+# net use \\$IP\d $PW /USER:$USER
+# robocopy .\builddir\bin\ \\$IP\$DRIVE\$DIR *.dll
+# robocopy .\builddir\bin\ \\$IP\$DRIVE\$DIR *.pdb
+# robocopy .\builddir\bin\ \\$IP\$DRIVE\$DIR *.exe
+
+# shutdown
+# /r restart, /s shutdown, /a/ abort shutdown, /c "comment"
+# wmic os where Primary='TRUE' reboot
+# remote
+# PsShutdown.exe -u username -p password \\Remotecomputer
+# -t 15:30
+# -r restart
+
+# TODO commands from https://www.windows-commandline.com/
+# ideally winrm
+
 #====problem_bootstrap_zig
 # cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows"
 # cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows" -DZIG_TARGET_MCPU=baseline

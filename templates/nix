@@ -256,6 +256,7 @@ https://nix.dev/concepts/faq#are-there-any-impurities-left-in-sandboxed-builds
 nix limitations:
 - moving files into immutable nix store instead of creation of overlayfs due to posix performance and nesting limits
   * core design issue of Linux (Unix file permission system, which stores permission of user and group in each file) [1]
+    instead of file system semantics for overlayfs
 - namespace control tools (different hierarchies, fs sandbox with bubblewrap) => a chroot is no sandbox and can be (easily) escaped
   * different hierarchies, see GoboLinux, djb's /package, or even a completely custom one
 - package categories (missing metadata like play market/app store)
@@ -276,6 +277,32 @@ see also https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsy
 
 
 [1] https://blog.wesleyac.com/posts/the-curse-of-nixos
+
+overcoming nix and flakes limitations:
+* nice for administrating some stuff, but does not scale due to no sane file system semantics.
+* NIXOS_LUSTRATE is for installing on top of another OS illustrated concept of Nix being something else entirely.
+Problem
+* Nix wont get further along without sane file system semantics for overlayfs.
+* generate FHS environment deriviation with symlinks(maybe hardlinks)
+  like https://ryantm.github.io/nixpkgs/builders/special/fhs-environments/
+  https://jorel.dev/NixOS4Noobs/fhs.html
+  are unstandardized, non-automatized and have no api for operations on them
+Potential solution
+* slax linux
+  * unclear how well unionfs would scale for hundreds of packages
+  * https://www.slax.org/internals.php
+  * similar idea to https://michael.stapelberg.ch/posts/2019-08-17-introducing-distri/
+  * caveat: source code not available (on request?), only available is
+    https://www.linux-live.org/
+* slax but improved for multiple parallel system configurations to be applied
+  * RO rootfs with symlinks/hardlinks merged from individual package artifacts
+    and have overlay fs for RW or allow RW in specific mutable subtrees
+  * multiple rootfs possible and pivot between for atomic upgrades
+  * caveat: have to merge artifacts in one tree, otherwise every file lookup
+    will have to go through too many FS layers
+* easyos?
+  * https://easyos.org/tech/how-easy-works.html
+  * TODO difference on internals, looks very similar
 
 nix resources
 https://github.com/figsoda/ekalf/tree/main

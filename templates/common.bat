@@ -1,34 +1,44 @@
-cd without args shows pwd
-dir shows ls
-variables are used with %VAR%
-batch files have .bat as extension, but .cmd and .btm also exists
+REM http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html
+REM TODO extend by guide
+REM https://www.robvanderwoude.com/battech_fileproperties.php
+REM TODO extend by collection
+REM https://ss64.com/nt/if.html
+REM TODO check out
 
-Comments:
+REM cd without args shows pwd
+REM dir shows ls
+REM variables are used with %VAR%
+REM batch files have .bat as extension, but .cmd and .btm also exists
+
+REM Comments:
 ::   comment
 REM  comment
-your commands here      & ::  commenttttttttttt
+REM your commands here      & ::  commenttttttttttt
 :: may also fail within setlocal ENABLEDELAYEDEXPANSION
 
-SOME CODE
+REM SOME CODE
 GOTO LABEL  ::REM out this line to exeucute code between this GOTO and :LABEL
-some_code ...
+REM some_code ...
 :LABEL
-other_code
+REM other_code
 
-split veeeeeeeeeeeeeeeeeeeeery ^
-long commands via carret
-To prevent broken behavior, make sure to always end with blank linke after ^
+REM split veeeeeeeeeeeeeeeeeeeeery ^
+REM long commands via carret
+REM To prevent broken behavior, make sure to always end with blank linke after ^
 
-Just do it.
+REM There is no global history. Must use powershell for this. Only current history
+REM can be searched through via F7.
+REM Use http://mridgers.github.io/clink/ to fix broken Windows behavior.
 
-There is no global history. Must use powershell for this. Only current history
-can be searched through via F7.
-Use http://mridgers.github.io/clink/ to fix broken Windows behavior.
+REM %cd% is current working dir (variable)
+echo %cd%
+REM %~dp0 is full path to batch file's dir (static)
+echo %~dp0
+REM %~dpnx0 and %~f0 are full path to batch dir and file name (static).
+echo %~dpnx0
+echo %~f0
 
-%cd% is current working dir (variable)
-%~dp0 is full path to batch file's dir (static)
-%~dpnx0 and %~f0 are full path to batch dir and file name (static).
-
+REM setting variables
 set bat_path=%~dp0
 set call_path=%cd%
 cd %bat_path%
@@ -36,13 +46,14 @@ ECHO CMD^> %cd%
 set /A count=0
 set /p count=0
 
+REM checking errors and exiting without quitting cmd altogether
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 if %ERRORLEVEL% neq 0 goto EXIT
 
 :EXIT
   exit /b %ERRORLEVEL%
 
-TODO fixup this part
+REM TODO fixup this part
 REM loop example with path comparison
 REM /d indicates that %%i is a directory loop variable
 for /d %%i in (%bat_path%*) do (

@@ -1,0 +1,13 @@
+error FAQ
+
+git fetch fails with timeout, -v only shows POST data
+standard_procedure_jenkins()
+rerun pipeline
+
+running executable fails with exit code -1073741515
+standard_procedure_jenkins()
+rerun pipeline
+
+standard_procedure_jenkins()
+  mv "C:\Program Files (x86)\Jenkins\workspace\$PIPELINE" "C:\Program Files (x86)\Jenkins\workspace\__$PIPELINE"
+  mv "C:\Users\$USER\Documents\$PIPELINE" "C:\Users\$USER\Documents\__$PIPELINE"

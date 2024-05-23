@@ -567,3 +567,6 @@ fn other_fn(t2: u8) FnAndOtherFnError!void {
 test "comptime infer error set" {
     try other_fn(42);
 }
+
+// buffer partitioner via vtable
+// https://zigbin.io/cc3b39

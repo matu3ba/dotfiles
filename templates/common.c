@@ -742,3 +742,96 @@ int FG_Init(char * errmsg_ptr, int * errmsg_len) {
 // }
 // https://stackoverflow.com/questions/3839922/aligned-malloc-in-gcc
 // _mm_alloc, _mm_free
+
+//====signaling on Windows
+// TODO better writeup than this
+// 3 signal types:
+// * APC like IO completion ports which are just things to communicate
+// * SEH exceptions first handled by debugger, then VEH exceptions, then SEH exceptions, then frame handler
+// * async things which should be only SIGINT and excecuted by passing another thread
+// https://www.osronline.com/article.cfm%5earticle=469.htm
+
+// 1. Are signals executed sequentially or can other threads execute the handler
+// in parallel?
+// * Nothing in SEI guide on blocking signals or how they work
+//   https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence.
+// * Kernel calls things, threads execute signal handlers individually by what
+//   is registered in Kernel, code and debugger etc
+// * unclear if multiple threads calling AddVectoredExceptionHandler and
+//   RemoveVectoredExceptionHandler would be racy, so probably yes
+// 2. Is there a method to prevent default handler being setup on second signal?
+// * blocking signals not possible, only not handling SIGINT
+// 3. What happens with pending signals? Are signals stacked or do we have a bitmask?
+// * queued signals like SIGINT or APC (completion IO) are executed on after another
+// * SEH signals are not
+// * unclear what happens if multiple signals from different threads arrive
+//   or if they can race against another for execution within SEH handlers
+//   invoked by each thread
+//
+// AddVectoredExceptionHandler catches crash handlers (SEH):
+// SIGSEGV, SIGABRT, SIGFPE, SIGILL, SIGTERM
+// Async signals are forwarded to thread to be handled (eventually):
+// SIGINT
+// and completion IO signals are executed on callback once we wait for completion,
+// the dependency chain is satisfied and nothing is blocking completion with signals
+// only being forwarded/executed on again waiting for completion (via callback).
+// Typical example are job objects.
+// https://news.ycombinator.com/item?id=17770704
+// https://stackoverflow.com/questions/26676826/how-do-i-install-a-signal-handler-for-an-access-violation-error-on-windows-in-c
+// https://learn.microsoft.com/en-us/windows/win32/debug/structured-exception-handling
+// https://stackoverflow.com/questions/28544768/vectored-exception-handling-process-wide
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+void deinitTimer() {}
+void resetOutputs() {}
+
+// SHENNANIGAN windows
+// no guide how to minimize headers to optimize compilation time
+// only including below things fails in clangd with "No Target Architecture"
+// #include <windef.h>
+// #include <winnt.h>
+LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo) {
+	// 1. stop realtime thread via synchronously via timeKillEvent option TIME_KILL_SYNCHRONOUS
+  deinitTimer();
+	// 2. write outputs, which is safe due to realtime thread being stopped
+  resetOutputs();
+	return EXCEPTION_EXECUTE_HANDLER;
+
+  // https://learn.microsoft.com/en-us/cpp/cpp/try-except-statement?view=msvc-170
+  // EXCEPTION_CONTINUE_EXECUTION -1
+  //   Exception is dismissed. Continue execution at the point where the exception occurred.
+  // EXCEPTION_CONTINUE_SEARCH 0
+  //   Exception isn't recognized. Continue to search up the stack for a handler, first for containing try-except statements, then for handlers with the next highest precedence.
+  // EXCEPTION_EXECUTE_HANDLER 1
+  //   Exception is recognized. Transfer control to the exception handler by executing the __except compound statement, then continue execution after the __except block.
+
+  // overview of VEH: https://dimitrifourny.github.io/2020/06/11/dumping-veh-win10.html
+  // https://dimitrifourny.github.io/2020/06/11/dumping-veh-win10.html
+  // https://doar-e.github.io/blog/2013/10/12/having-a-look-at-the-windows-userkernel-exceptions-dispatcher/
+  // TODO: when is the exception executed in each thread?
+}
+
+void veh_example() {
+	const ULONG prepend = 1;
+  // global exception handler executed per thread
+	PVOID exception_h = AddVectoredExceptionHandler(prepend, Exception_Reset);
+  // local exception handler executed per thread
+  // TODO
+}
+#endif
+
+// based on https://www.codeproject.com/articles/207464/exception-handling-in-visual-cplusplus
+// without the wrong information:
+// * VEHs are process global installed, but thread local executed
+// AddVectoredExceptionHandler
+// TODO FIXME set exception to reset peripherals
+// Q: What happens, if for example realtime thread timeSetEvent gets timeKillEvent passed via exception from
+// AddVectoredExceptionHandler ?
+//https://stackoverflow.com/questions/28544768/vectored-exception-handling-process-wide
+//https://www.codeproject.com/articles/207464/exception-handling-in-visual-cplusplus
+//https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence
+
+//====signaling on Posix
+// signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
