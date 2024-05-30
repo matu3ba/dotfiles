@@ -140,10 +140,16 @@ fix your config (outside of of the installer menu)
 # /mnt/etc/nixos/configuration.nix
 >nixos-rebuild switch -I nixos-config=pathto/configuration.nix.
 
-after installation (without boot medium) use
+after installation (without boot medium) and after updating channels use
 >nixos-rebuild switch
 for offline installation without new packages use
 >nixos-rebuild switch --option substitute false
+update channel for system software updates
+>sudo nix-channel --update
+upgrade newer version (not applicable if using unstable or master)
+>nixos-rebuild switch --upgrade
+* there might be something broken requiring elevated privileges although
+in general this should not happen
 
 ====installing_software
 * Do not use nix-env -i package_name

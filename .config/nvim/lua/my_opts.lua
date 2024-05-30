@@ -131,6 +131,8 @@ local function load_options()
   -- https://vi.stackexchange.com/questions/3484/disable-swap-file-for-large-files
   -- https://vim.fandom.com/wiki/Faster_loading_of_large_files
   -- disable with -n or :set noswapfile
+  --   nvim -u NONE or use less
+  --   unusing all the plugins etc https://github.com/LunarVim/bigfile.nvim
   vim.o.directory = utils.pathJoin(vim.fn.stdpath 'state', 'swap') --swap directory
   vim.o.swapfile = true
   vim.o.spelllang = 'en,de'

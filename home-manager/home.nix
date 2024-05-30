@@ -200,6 +200,6 @@
     enableScDaemon = false;
     enableSshSupport = true;
     maxCacheTtl = 34560000;
-    pinentryFlavor = "tty";
+    pinentryPackage = pkgs.pinentry;
   };
 }
