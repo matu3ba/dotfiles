@@ -140,8 +140,8 @@ alias juplots='julia -J "$HOME/.local/so/sys_plots.so"'
 # Major "--debug-log" targets are: compilation, module, sema, codegen, and link
 # requires debug mode or to set -Dlog=true on compiling Zig
 #alias  zbcmdebglibc='mkdir -p build/ && cd build/ && cmake .. -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/" -GNinja && \time -v ninja install && cd ..'
-alias  zbcmdeb='cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time cmake -B build'
-alias  zbcmrel='cmake -B buildrel -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time cmake -B buildrel'
+alias  zbcmdeb='cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time cmake --build build'
+alias  zbcmrel='cmake -B buildrel -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time cmake --build buildrel'
 # cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/.local/llvm/" -GNinja && \time -v ninja install
 #alias   zbcmrs='mkdir -p buildrs/ && cd buildrs/ && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ninja install && cd ..'
 alias    zwtmp='mkdir -p zig-cache/tmp && inotifywait -m -r zig-cache/tmp/'
@@ -160,7 +160,7 @@ alias  zref='cd ${HOME}/tmpf/sfox'
 #alias   zbrs='${HOME}/dev/git/zi/zig/master/buildrs/stage3/bin/zig build -p rs -Drelease --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
 alias   zup1='./build/stage3/bin/zig build update-zig1'
 #alias  zbsrel='mkdir -p buildrel/ && cd buildrel/ && cmake .. -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..'
-#alias  zbsrel='cmake -B buildrel -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="../../zig-bootstrap/musl/out/host/" -GNinja && time cmake -B buildrel -j $(nproc)'
+#alias  zbsrel='cmake -B buildrel -CMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="../../zig-bootstrap/musl/out/host/" -GNinja && time cmake --build  buildrel -j $(nproc)'
 # NOTE: crosscompiling zig compiler from glibc to musl requires also crosscompiling LLVM
 #mkdir -p build_rel/ && cd build_rel/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-release" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
 #mkdir -p build_deb/ && cd build_deb/ && cmake .. -DCMAKE_PREFIX_PATH="${HOME}/local/llvm15-debug" -GNinja && \time -v ${HOME}/dev/git/cpp/mold/build/mold -run ninja install && cd ..
@@ -219,6 +219,7 @@ alias rsync_move='rsync -avz --progress -h --remove-source-files'
 alias rsync_update='rsync -avzu --progress -h'
 alias rsync_synchronize='rsync -avzu --delete --progress -h'
 alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
+#rsync -av --delete --progress -h -e 'ssh -i ~/.ssh/priv_key' user@ip:path_in path_out
 #rsync -av --dry-run --delete -P --stats src target
 # TODO rsync without permissions
 

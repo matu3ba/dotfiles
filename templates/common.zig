@@ -570,3 +570,9 @@ test "comptime infer error set" {
 
 // buffer partitioner via vtable
 // https://zigbin.io/cc3b39
+
+// https://maskray.me/blog/2022-08-28-march-mcpu-mtune
+//-mcpu= deprecated since 2003
+//-march= specifies cpu-type as arch name (ie skylake), arch level (x86-64-v2) or baseline, native
+// x86-64, x86-64-v2, x86-64-v3 (before avx512), x86-64-v4 (avx512)
+//-mtune= defines builtin macros ie gcc/config/i386/i386-c.cc:ix86_target_macros_internal

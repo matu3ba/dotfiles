@@ -49,6 +49,25 @@ TODO paper as source
    * instead of "update the value", "update the value for all associated
      aliases"
    * unsettled in LLVM blocking CHERI usage (mixed tagged pointer capabilities)
+     one implementation may choose
+     | perms | padding | ot    | bounds |
+     | 6 bit | 1 bit   | 3 bit | 22 bit |
+     |              address             |
+     |              32 bit              |
+     perms: compressed permissions field
+     ot: object type
+     bounds: compressed base and top bounds
+     with semantics as specified in "Capability Hardware Enhanced RISC
+     Instructions: CHERI Instruction-Set Architecture (Version 9)"
+   * CHERI C model is very incomplete, see https://www.cl.cam.ac.uk/~pes20/asplos24spring-paper110.pdf
+     "The discussion here of the interaction between CHERI hardware architectural guarantees and C compiler optimisations
+     and undefined behaviour makes clear that further work is needed to understand what precise security properties
+     CHERI C implementations could reasonably provide."
+   * Temporal safety for 2% perf cost looks sweet https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/2020oakland-cornucopia.pdf
+     * unfortunately might blur semantics wrt temporal safety and could make them dependent on the platform under
+     3.11 Capabilities and provenance "(3) Checking whether a pointer refers to a live allocation."
+   * CheriBSD has experimental userspace temporal memory safety,
+     see https://www.morello-project.org/cheri-feature-matrix/ and https://ctsrd-cheri.github.io/cheribsd-getting-started/features/temporal.html
    * Verification-oriented model for Integer-Pointer cast VIP more powerful
      and does not mandate creation of unused invalid pointer being Undefined Behavior(UB)
    * A Provenance-aware Memory Object Model for C (NVI-ae-udi, PNVI-ae,

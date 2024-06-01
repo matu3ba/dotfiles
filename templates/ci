@@ -218,5 +218,14 @@ Should not use SYSTEM user on < win11, but Administrator. Ideally Jenkins would
 allow do allow checkout with dedicated user account and only (re)move files and
 set permissions in another user account for running jobs.
 
-Motivation + Performance, latency and other tuning via cpuset, cgroups etc
 https://danluu.com/intel-cat/
+Motivation + Performance, latency and other tuning via cpuset, cgroups etc
+
+Windows: thread crashing leading to kernel stuff never returning/getting
+cleaned up (also known as unkillable process) requires weird stuff like
+kill (and wait for) parent process (group).
+Observed yesterday on 20240524 Windows in neovim terminal.
+MacOs: process becomes orphaned means it never gets cleaned up
+
+https://lewisgaul.co.uk/blog/coding/2022/05/13/cgroups-intro/
+cgroups overview

@@ -835,3 +835,6 @@ void veh_example() {
 
 //====signaling on Posix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
+
+// https://maskray.me/blog/2024-05-12-exploring-gnu-extensions-in-linux-kernel
+// funny kernel macros and flags to workaround standard issues due to type based aliasing analysis
