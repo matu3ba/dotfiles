@@ -104,16 +104,17 @@ return {
   -- [] mappings for buffer, komment, x conflict, diagnostics, file, indent, jump, location,
   -- location, oldfile, quickfix, treesitter, undo, window, yank
   -- [c,]c, used for diff
-  -- {
-  --   'echasnovski/mini.bracketed',
-  --   version = false,
-  --   config = function()
-  --     require('mini.bracketed').setup {
-  --       comment = { suffix = 'v' }, -- verbose comment
-  --       -- treesitter = { options = { add_to_jumplist = true } },
-  --     }
-  --   end,
-  -- },
+  {
+    -- TODO debug problem
+    'echasnovski/mini.bracketed',
+    version = false,
+    -- config = function()
+    --   require('mini.bracketed').setup {
+    --     comment = { suffix = 'v' }, -- verbose comment
+    --     -- treesitter = { options = { add_to_jumplist = true } },
+    --   }
+    -- end,
+  },
   -- usage in my_hydra.lua
   {
     'echasnovski/mini.move',
@@ -141,7 +142,8 @@ return {
   -- :Gitsigns show @~1
   {
     'lewis6991/gitsigns.nvim',
-    config = function() require('gitsigns').setup() end,
+    -- initialized in .config/nvim/lua/my_gitsign.lua
+    -- config = function() require('gitsigns').setup{} end,
   },
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory (does not work with worktrees)
   -- np, nextprev file tab,s-tab cycle

@@ -1,6 +1,7 @@
 local has_gitsigns, gitsigns = pcall(require, 'gitsigns')
 if not has_gitsigns then return end
 
+-- debug_mode = true
 gitsigns.setup {
   -- unchanged default settings
   on_attach = function(bufnr)
