@@ -4,6 +4,9 @@
 ##   src $HOME\dotfiles\.config\nvim
 ##   dest $HOME\AppData\Local
 ## Result: cp -r -fo $HOME\dotfiles\.config\nvim $HOME\AppData\Local
+
+# debugging: .\fileOverwrite -dry
+# or: .\fileOverwrite -dry:$true
 param(
   [switch] $dry = $false,
   [switch] $verbose = $false

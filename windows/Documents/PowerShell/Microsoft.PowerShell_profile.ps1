@@ -8,18 +8,22 @@ $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"
 
-# SHENNANIGAN slow startup speed of pwsh.exe, faster startup with -nologo and with virus scanner exception
+# help Start-Process
 
-# SHENNANIGAN alias does not work in pipe, workaround is involved
-# https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
+#====common
+# copy to clipboard including newline: pwd | clip
+# copy to clipboard no newline: pwd | Set-Clipboard
+# copy to mounted network shares does not work, must use UNC paths
+# \\IP\share
+# SHENNANIGAN robocopy necessary for network paths/UNC paths
+# robocopy $src $dest filename
+# robocopy $src $dest *.exe
 
 # Installing Windows Terminal
 # https://github.com/microsoft/terminal/releases
 # Add-AppxPackage -Path C:\Path\App-Package.msixbundle
 # [Environment]::Is64BitOperatingSystem
 # [System.Environment]::OSVersion.Version
-# SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
-# https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
 
 # Installing new version of powershell called pwsh.exe to fix utf8:
 # function GitDiff { & git diff --no-color $args }
@@ -41,14 +45,6 @@ $env:Editor = "nvim"
 # https://intellitect.com/blog/enter-vsdevshell-powershell/
 # https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022
 
-#====common
-# copy to clipboard including newline: pwd | clip
-# copy to clipboard no newline: pwd | Set-Clipboard
-# copy to mounted network shares does not work, must use UNC paths
-# \\IP\share
-# SHENNANIGAN robocopy necessary for network paths/UNC paths
-# robocopy $src $dest filename
-# robocopy $src $dest *.exe
 
 #====shortcuts
 # within shell: Get-PSReadLineKeyHandler
@@ -237,7 +233,8 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # function ZigBuildRelease { &  .\buildrel\stage3\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
 # function ZigRelease { &  ..\master\rel\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
 
-#====problem_msvc_usage
+#====SHENNANIGAN
+# SHENNANIGAN zig
 # Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require Microsoft.VisualStudio.Component.VC.Tools.x86.x64
 # SHENNANIGAN vswhere more reliable than dedicated api https://gitlab.kitware.com/cmake/cmake/-/issues/19241
 # function ZigBootstrapRelease { & { md -ea 0 buildrel\ } && & { cd buildrel\ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -GNinja } && & { cd buildrel\ && Measure-Command ninja install } }
@@ -266,3 +263,15 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # * query paths with vswhere in cmd: "c:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
 #   + how does this work within powershell?
 # * build things
+
+# SHENNANIGAN slow startup speed of pwsh.exe, faster startup with -nologo and with virus scanner exception
+
+# SHENNANIGAN alias does not work in pipe, workaround is involved
+# https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
+
+# SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
+# https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
+
+# SHENNANIGAN robocopy docs incorrect on error => !$? >= 8, it is error !$? > 8
+# robocopy $SRC $TARGET *.dll
+# if (!$? -gt 8) { Write-Output "error: " !$?; return !$?; }

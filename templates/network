@@ -7,7 +7,7 @@ networkctl list
 nmcli
 nmtui
 avahi-discover
-
+forwarder https://github.com/erluko/socat
 
 ping command examples
 -w TIMEOUT    [to test if there is a connection at all]
@@ -80,6 +80,8 @@ sudo nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }
 sudo nft 'add chain nat prerouting { type nat hook prerouting priority -100; }'
 sudo nft 'add rule nat prerouting ip daddr 192.168.XX.YY tcp dport { 443 } dnat 192.168.XX.YY:22'
 sudo nft 'add rule nat postrouting masquerade'
+
+nftable watchdog https://wiki.nftables.org/wiki-nftables/index.php/Element_timeouts
 
 Get all responding ips:
 arp -[a|e]

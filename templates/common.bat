@@ -1,3 +1,22 @@
+REM https://stackoverflow.com/questions/562038/escaping-double-quotes-in-batch-script
+REM SHEANNANIGAN string quoting rules complex and error prone
+REM - set "str=%~1" removes the enclosing double-quotes
+REM - set "str=%str:""="%" then converts the doubled double-quotes to single ones.
+REM \" usage in cmd.exe is not robust and safe
+REM "" is the only way to get the command interpreter (cmd.exe) to treat the
+REM whole double-quoted string as a single argument (though that won't matter
+REM if you simply pass all arguments through to another program, with %*)
+REM SHEANNANIGAN stupid rule:
+REM - not using quotes much simpler, but does not handle edge cases like escaped quotes etc
+REM - always quote at each callsite and unquote input parameters
+REM   set Logfile=%path%logfile.log
+REM Minor example https://stackoverflow.com/questions/16107246/how-to-add-quotes-to-string-in-a-batch-script
+
+REM ^ is escape character, without it ^%variable^% is early (parsing) expansion
+REM SHENNANIGAN EnableDelayedExpansion exists
+REM additional delayed expansion possible via 'SetLocal EnableDelayedExpansion'
+REM and usage via ^!variable^!
+
 REM http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html
 REM TODO extend by guide
 REM https://www.robvanderwoude.com/battech_fileproperties.php
@@ -96,3 +115,19 @@ D:
 check if file exists
 if exist "C:\myprogram\sync\data.handler" echo Now Exiting && Exit
 if not exist "C:\myprogram\html\data.sql" Exit
+
+REM TODO https://www.tutorialspoint.com/batch_script/batch_script_functions.htm
+
+:Display
+SET /A index=2
+echo The value of index is %index%
+EXIT /B 0
+
+@echo off
+SETLOCAL
+CALL :Display 5 , 10
+EXIT /B %ERRORLEVEL%
+:Display
+echo The value of parameter 1 is %~1
+echo The value of parameter 2 is %~2
+EXIT /B 0

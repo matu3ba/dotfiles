@@ -49,3 +49,22 @@ Bochs x86 emulator
 
 windbg
 https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tutorial
+
+Unfortunately we have a huge pile of calling conventions=protocols in systems
+in the field, which were also never designed with abi versioning in mind. And
+to eliminate requires building competing platforms/protocols to replace
+existing ones while being compatible for the meantime. I've never understood
+why platforms with calling conventions offer no libraries to introspect
+themself for user code debugging. at compiletime, runtime, linktime etc Instead
+each compiler, debugger etc implements the same stuff again and again without a
+reference impl
+> i guess for C ABI, C compiler was the reference implementation. Though
+> doesn't help with the introspection aspect - though to be fair designing
+> first versions of C already had a lot of moving parts to handle, C ABI design
+> probably didn't seem as high priority at first - had to get something working
+> I think what can work though is establishing cycle of hacking together a tool
+> that helps work better, create a better tool with the crufty tool, bootstrap
+> the better tool back to the lower level that made it nescessary to create the
+> hacky tool in the first place. Kind of like lift to higher abstraction, work
+> there, the lower back and improve the base layer so next time you already
+> started at higher, better designed level

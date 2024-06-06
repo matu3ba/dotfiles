@@ -53,6 +53,7 @@ scan-build
 clang-fmt
 clang-tidy
 flags compile-time: -Wthread-safety
+frama-c
 
 ====sanitizer
 

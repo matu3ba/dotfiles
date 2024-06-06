@@ -11,3 +11,32 @@ rerun pipeline
 standard_procedure_jenkins()
   mv "C:\Program Files (x86)\Jenkins\workspace\$PIPELINE" "C:\Program Files (x86)\Jenkins\workspace\__$PIPELINE"
   mv "C:\Users\$USER\Documents\$PIPELINE" "C:\Users\$USER\Documents\__$PIPELINE"
+
+
+string interpolation
+println "The time is ${new Date().getTime()}"
+
+
+String Interpolation
+Within a GString you can use $ without {} to evaluate a property path, e.g.
+def date = new Date()
+println "The time is $date.time"
+If you want to evaluate an expression which is more complex than a property path, you must use ${}, e.g.
+println "The time is ${new Date().getTime()}"
+Dynamic Code Execution
+Dynamically accessing a property
+def prop = "time"
+new Date()."$prop"
+Dynamically invoking a method
+def prop = "toString"
+new Date()."$prop"()
+As pointed out in the comments this is really just a special case of string interpolation, because the following is also valid
+new Date().'toString'()
+
+Spaces in paths of powershell plugin break command execution:
+powershell '& C:\Program Files\Git\bin\git.exe --help'
+powershell 'C:\Program Files\Git\bin\git.exe --help'
+powershell.exe : & : The term 'C:\Program' is not recognized as the name of a cmdlet, function, script file, or operable program.
+[..] + & powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Comm ...
+[..] + & C:\Program Files\Git\bin\git.exe --help
+[..]

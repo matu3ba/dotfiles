@@ -108,12 +108,12 @@ return {
     -- TODO debug problem
     'echasnovski/mini.bracketed',
     version = false,
-    -- config = function()
-    --   require('mini.bracketed').setup {
-    --     comment = { suffix = 'v' }, -- verbose comment
-    --     -- treesitter = { options = { add_to_jumplist = true } },
-    --   }
-    -- end,
+    config = function()
+      require('mini.bracketed').setup {
+        comment = { suffix = 'v' }, -- verbose comment
+        -- treesitter = { options = { add_to_jumplist = true } },
+      }
+    end,
   },
   -- usage in my_hydra.lua
   {

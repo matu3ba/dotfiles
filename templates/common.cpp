@@ -1079,12 +1079,14 @@ void ape_printing_bad() {
 
 #ifdef _WIN32
 // make msvc not complain about fopen
+// to be used in first lines of .cpp file
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_DEPRECATE
 #endif
 void ape_print() {
   FILE * f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
+  fprintf(f1, "f1 ptr: %p\n", f1);
   fclose(f1);
 }
 
@@ -1338,3 +1340,6 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // SHENNANIGAN exceptions implementation are complex
 // See https://maskray.me/blog/2020-12-12-c++-exception-handling-abi
 // and compare to setjmp and longjmp (store and retrieve stack)
+
+// https://en.cppreference.com/w/cpp/atomic/memory_order
+// TODO

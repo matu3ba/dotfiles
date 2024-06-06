@@ -1,3 +1,8 @@
+
+Problem: Dynamic linking can lead to aweful user experience, because arbitrary locations are searched by the linker.
+Solution: Make a linker database with all the symbols used in all the programs to do conflict detection and do loading+unloading via database instead of via fs.
+Problem: There is no build system offering creation of a linker database for all system packages.
+
 Force static linking:
 gcc/g++ -static -static-libstdc++ -static-libgcc
 
@@ -178,4 +183,3 @@ TODO explain https://en.wikipedia.org/wiki/DLL_injection
 
 Things to remember when linking C/C++ code.
 https://gist.github.com/gubatron/32f82053596c24b6bec6?permalink_comment_id=2575013
-

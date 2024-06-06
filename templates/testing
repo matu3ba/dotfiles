@@ -173,6 +173,19 @@ gcc.
 Injection combines the complexity/flexibility of callbacks with
 configurable/additional state.
 
+====mocking
+More of an WIP idea after discussion at work, for which this issue is the closest thing I could find.
+Identified use cases of mocks in C and C++:
+  workarounds due to no error definitions to have at least some test coverage of error conditions
+  count function calls (and sequences of executions) as poor-man minified execution trace to not being forced to enumerate the possible/necessary states for a partial runtime trace (which can be painful for some standards/business logic)
+The first is not needed, because we have explicit error semantics.
+The second requires either to either 1. have some function/runtime tracer lib for counting logic on traces or 2. comptime extension of containers + comptime wrappers for function calls and (if necessary) linker scripts to substitute the functions.
+I know, very hacky. However, it should be (very) useful to test network stuff or anything to eliminate/abstract slow Kernel calls.
+Alternatives ?
+Related use case: Helpers to create test case from object state (ie from gdb) and a fast way to make zig code from it to lazy-create a test case.
+Generating with from gdb snippets and use lsp to generate an objects instance and fill it with values would be leet.
+
+
 ====automation
 vendor specific frameworks, since solutions are for scaling configurations, scheduling of connecting things
 twincat testing - https://tcunit.org/#/

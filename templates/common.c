@@ -5,6 +5,13 @@
 #include <limits.h> // limit
 #include <string.h> // memcpy
 
+// cppcheck
+// clang-tidy
+// frama-c
+// TODO more checks
+
+// https://github.com/Hirrolot metalang99
+
 // https://ahgamut.github.io/2022/10/23/debugging-c-with-cosmo/
 // Debugging with cosmopolitcan libc
 
@@ -718,6 +725,10 @@ struct ImageVLA {
 // * untested, but unsure: make a test for other pending job object tasks and check that the job object tasks can be executed (nothing blocking it)
 // * to be extra sure that nothing got lost in the meantime, use afterwards QueryInformationJobObject JOBOBJECT_BASIC_ACCOUNTING_INFORMATION and the field ActiveProcesses in a loop.
 // link https://github.com/matu3ba/sandboxamples/blob/cd3998945a6e286c6ddc367d75fe8d5b50ca717a/test/win/main_job_api.zig
+// https://superuser.com/questions/136272/how-can-i-kill-an-unkillable-process/295990#295990
+// * see also "unkillable processes", where it depends how/when the kernel frees up resources for the process to be terminated.
+// * one possible workaround is to kill the parent process and wait for it to wait for APC events,
+//   but Kernel events might not be APC based and memory not be freed in that case
 
 // Use realtime thread with minimal time period to execute, but keep 1 thread at a time, even if taking longer
 // st = timeSetEvent(1, 0, &fnPtr, reinterpret_cast<DWORD_PTR>(this), TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
@@ -832,6 +843,36 @@ void veh_example() {
 //https://stackoverflow.com/questions/28544768/vectored-exception-handling-process-wide
 //https://www.codeproject.com/articles/207464/exception-handling-in-visual-cplusplus
 //https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence
+
+#ifdef _WIN32
+// On Windows, Ctrl-C/SIGINT is called from newly spawned thread
+// and handled in ConsoleCtrlHandler.
+// https://stackoverflow.com/questions/16826097/equivalent-to-sigint-posix-signal-for-catching-ctrlc-under-windows-mingw
+BOOL WINAPI ConsoleHandler(DWORD);
+BOOL WINAPI ConsoleHandler(DWORD dwType)
+{
+    switch(dwType) {
+    case CTRL_C_EVENT:
+        printf("ctrl-c\n");
+        break;
+    case CTRL_BREAK_EVENT:
+        printf("break\n");
+        break;
+    default:
+        printf("Some other event\n");
+    }
+    return TRUE;
+}
+
+int setup_SIGINT_handler() {
+  if (!SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler,TRUE)) {
+    fprintf(stderr, "Unable to install handler!\n");
+    return EXIT_FAILURE;
+  }
+
+  return EXIT_SUCCESS;
+}
+#endif
 
 //====signaling on Posix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
