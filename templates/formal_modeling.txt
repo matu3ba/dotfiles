@@ -48,7 +48,29 @@ TODO paper as source
      Theory with associated aliases)
    * instead of "update the value", "update the value for all associated
      aliases"
-   * unsettled in LLVM blocking CHERI usage (mixed tagged pointer capabilities)
+   * pointer provenance semantics for provenance based aliasing analysis and optimizations
+     + Rust
+       o https://rust-lang.github.io/rfcs/3559-rust-has-provenance.html
+       o explicit management of provenance by programemrs
+       o plan how to move forward: experiment, incrementally adjust
+     + C
+       o https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3005.pdf
+       o 1.3.4 Pointer exposure and synthesis okish
+       o terminology around optimizations lacking
+       o terminology: "type-based alias analysis" vs "provenance based alias analysis" etc
+       o very much implementation defined behavior and unspecified things
+       o no definitive plan or path forward
+     + CHERI C
+       o https://www.cl.cam.ac.uk/~pes20/asplos24spring-paper110.pdf
+       o acknowledges to be very incomplete
+       o no definitive plan or path forward
+     + LLVM     nothing
+       o https://rust-lang.github.io/rfcs/3559-rust-has-provenance.html#drawbacks
+       o buggy and no plan how to move forward
+     + gcc      nothing
+       o https://rust-lang.github.io/rfcs/3559-rust-has-provenance.html#drawbacks
+       o buggy and no plan how to move forward
+   * CHERI example usage (mixed tagged pointer capabilities)
      one implementation may choose
      | perms | padding | ot    | bounds |
      | 6 bit | 1 bit   | 3 bit | 22 bit |
@@ -59,7 +81,7 @@ TODO paper as source
      bounds: compressed base and top bounds
      with semantics as specified in "Capability Hardware Enhanced RISC
      Instructions: CHERI Instruction-Set Architecture (Version 9)"
-   * CHERI C model is very incomplete, see https://www.cl.cam.ac.uk/~pes20/asplos24spring-paper110.pdf
+   * CHERI C model is very incomplete
      "The discussion here of the interaction between CHERI hardware architectural guarantees and C compiler optimisations
      and undefined behaviour makes clear that further work is needed to understand what precise security properties
      CHERI C implementations could reasonably provide."
@@ -70,7 +92,7 @@ TODO paper as source
      see https://www.morello-project.org/cheri-feature-matrix/ and https://ctsrd-cheri.github.io/cheribsd-getting-started/features/temporal.html
    * Verification-oriented model for Integer-Pointer cast VIP more powerful
      and does not mandate creation of unused invalid pointer being Undefined Behavior(UB)
-   * A Provenance-aware Memory Object Model for C (NVI-ae-udi, PNVI-ae,
+   * A Provenance-aware Memory Object Model for C (PNVI-ae-udi, PNVI-ae,
      PNVI-plain, and PVI semantics for C) does not cover all the edge cases from pointers
      https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
 - 8. build system parallelization relies on "Jobserver Implementation" protocol

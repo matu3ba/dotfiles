@@ -38,48 +38,83 @@
 // heap explicit, which does not include memory managed by C and C++.
 
 namespace IdleDetection {
-    internal struct sLastInputInfo
+  internal struct sLastInputInfo
+  {
+    public uint cbSize;
+    public uint dwTime;
+  }
+
+  [System::Runtime::InteropServices::DllImport("User32.dll")]
+  private static extern bool GetLastInputInfo(ref sLastInputInfo lastInputInfo);
+  [System::Runtime::InteropServices::DllImport("Kernel32.dll")]
+  private static extern uint GetLastError();
+
+  public static uint GetIdleTime()
+  {
+    sLastInputInfo lastUserAction = new sLastInputInfo();
+    // sLastInputInfo lastUserAction;
+    lastUserAction.cbSize = (uint)Marshal.SizeOf(lastUserAction);
+    GetLastInputInfo(ref lastUserAction);
+    // GetLastInputInfo(&lastUserAction);
+    return ((uint)System::Environment.TickCount - lastUserAction.dwTime);
+  }
+
+  public static long GetLastInputTime()
+  {
+    sLastInputInfo lastUserAction = new sLastInputInfo();
+    lastUserAction.cbSize = (uint)Marshal.SizeOf(lastUserAction);
+    if (!GetLastInputInfo(ref lastUserAction))
     {
-        public uint cbSize;
-        public uint dwTime;
+        throw new System::Exception(GetLastError().ToString());
+        // throw gnew System::Exception(GetLastError().ToString());
     }
 
-    [System::Runtime::InteropServices::DllImport("User32.dll")]
-    private static extern bool GetLastInputInfo(ref sLastInputInfo lastInputInfo);
-    [System::Runtime::InteropServices::DllImport("Kernel32.dll")]
-    private static extern uint GetLastError();
-
-    public static uint GetIdleTime()
-    {
-        sLastInputInfo lastUserAction = new sLastInputInfo();
-        // sLastInputInfo lastUserAction;
-        lastUserAction.cbSize = (uint)Marshal.SizeOf(lastUserAction);
-        GetLastInputInfo(ref lastUserAction);
-        // GetLastInputInfo(&lastUserAction);
-        return ((uint)System::Environment.TickCount - lastUserAction.dwTime);
-    }
-
-    public static long GetLastInputTime()
-    {
-        sLastInputInfo lastUserAction = new sLastInputInfo();
-        lastUserAction.cbSize = (uint)Marshal.SizeOf(lastUserAction);
-        if (!GetLastInputInfo(ref lastUserAction))
-        {
-            throw new System::Exception(GetLastError().ToString());
-            // throw gnew System::Exception(GetLastError().ToString());
-        }
-
-        return lastUserAction.dwTime;
-    }
+    return lastUserAction.dwTime;
+  }
 }
 
 namespace WindowsForms_TimerCallback {
 
-	  System::Windows::Forms::Timer^ m_Timer;
-	  int m_Interval = 20; // 20ms
-    m_Timer = gcnew System::Windows::Forms::Timer();
-    m_Timer->Tick += gcnew System::EventHandler(this, &ClassName::OnTimer);
-    m_Timer->Interval = m_Interval;
-    m_Timer->Enabled = true;
-	  m_Timer->Start();
+  System::Windows::Forms::Timer^ m_Timer;
+  int m_Interval = 20; // 20ms
+  m_Timer = gcnew System::Windows::Forms::Timer();
+  m_Timer->Tick += gcnew System::EventHandler(this, &ClassName::OnTimer);
+  m_Timer->Interval = m_Interval;
+  m_Timer->Enabled = true;
+  m_Timer->Start();
 }
+
+
+//if (sender is OpParamGridView)
+//if (sender->GetType() == typeof(OpParamGridView))
+//if (sender->GetType() == OpParamGridView)
+//works: if (sender->GetType()->ToString() == "System::Windows::Forms::DataGridView")
+
+// SHENNANIGAN .NET has no super or base to call virtual function of base classs
+// This is wrong for .NET, but correct for C#
+namespace WindowsForms_OverrideControl_DataGridView {
+  public ref class CustomDataGridView : public System::Windows::Forms::DataGridView
+  {
+    // override must be placed after, in c# before function names
+    bool ProcessDataGridViewKey(System::Windows::Forms::KeyEventArgs e) override
+    {
+      return super.ProcessDataGridViewKey(e);
+    }
+  };
+}
+
+// SHENNANIGAN Windows Forms
+// Debugging callbacks handled elsewhere very annoying.
+public ref class CustomDataGridView : public System::Windows::Forms::DataGridView
+{
+protected:
+  bool ProcessDataGridViewKey(System::Windows::Forms::KeyEventArgs ^ e) override
+  {
+    if (e->KeyCode == System::Windows::Forms::Keys::Escape)
+    {
+      this->CancelEdit();
+      return true;
+    }
+    return false;
+  }
+};
