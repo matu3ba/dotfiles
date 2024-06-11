@@ -280,7 +280,11 @@ https://github.com/matu3ba/win32k-mitigation/issues/1
 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\child_ntdll_only.exe" /v TracingFlags /t REG_DWORD /d 1 /f
 reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\child_ntdll_only.exe"
 
-Perf traces
+====injection
+Hooking in Windows
+https://github.com/TsudaKageyu/minhook
+
+====perf_trace
 https://github.com/google/UIforETW
 Motivation https://randomascii.wordpress.com/2015/04/14/uiforetw-windows-performance-made-easier/
 ====central explanation page: https://randomascii.wordpress.com/2015/09/24/etw-central/
@@ -289,6 +293,7 @@ Getting traces as shortlink https://tinyurl.com/etwtracing
 > not sure, try installing Intel Performance Counter Monitor
 Analysis of traces: https://randomascii.wordpress.com/2014/08/19/etw-training-videos-available-now/
 
+====profile_memory
 Memory profiling
 https://thatonegamedev.com/cpp/memory-profiling-on-windows-for-c/
 https://stackoverflow.com/questions/4322678/how-to-do-memory-profiling-on-windows
