@@ -310,11 +310,6 @@ sudo pacman-key --populate arch
 sudo pacman-key --populate endeavouros
 sudo pacman -Suy
 
-Remove password from pdf document
-pdftk secured.pdf input_pw password output unsecured.pdf
-qpdf --decrypt --password=verysecret input.pdf output.pdf
-evince print to document
-
 ====sandboxing
 naive and incomplete
 * chroot

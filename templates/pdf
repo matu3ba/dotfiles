@@ -1,0 +1,14 @@
+merging pdf files:
+pdftk *_flatten.pdf cat output merged.pdf
+
+flattening annotated pdfs:
+pdftocairo -pdf input.pdf output.pdf
+
+remove empty spaces
+TODO standalone
+otherwise use neovim substitution
+
+Remove password from pdf document
+pdftk secured.pdf input_pw password output unsecured.pdf
+qpdf --decrypt --password=verysecret input.pdf output.pdf
+evince print to document
