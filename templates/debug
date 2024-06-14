@@ -68,3 +68,6 @@ reference impl
 > hacky tool in the first place. Kind of like lift to higher abstraction, work
 > there, the lower back and improve the base layer so next time you already
 > started at higher, better designed level
+
+====hot_code_reloading
+https://www.danielecarbone.com/hot-code-reloading/

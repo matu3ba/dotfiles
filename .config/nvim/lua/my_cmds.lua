@@ -34,6 +34,7 @@ add_cmd('CInit', config_edit .. sep .. 'init.lua', {})
 add_cmd('CKey', config_edit .. sep .. 'lua' .. sep .. 'my_keymaps.lua', {})
 add_cmd('CLi', config_edit .. sep .. 'lua' .. sep .. 'my_lint.lua', {})
 add_cmd('CLsp', config_edit .. sep .. 'lua' .. sep .. 'my_lsp.lua', {})
+add_cmd('COil', config_edit .. sep .. 'lua' .. sep .. 'my_oil.lua', {})
 add_cmd('COpts', config_edit .. sep .. 'lua' .. sep .. 'my_opts.lua', {})
 add_cmd('COver', config_edit .. sep .. 'lua' .. sep .. 'my_over.lua', {})
 add_cmd('CPl', config_edit .. sep .. 'lua' .. sep .. 'my_plugins.lua', {})
@@ -43,7 +44,6 @@ add_cmd('CJfi', config_edit .. sep .. 'lua' .. sep .. 'my_jfind.lua', {})
 add_cmd('CTel', config_edit .. sep .. 'lua' .. sep .. 'my_telesc.lua', {})
 add_cmd('CTre', config_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
 add_cmd('CUtil', config_edit .. sep .. 'lua' .. sep .. 'my_utils.lua', {})
-add_cmd('OPa', config_edit .. sep .. 'lua' .. sep .. 'my_packer.lua', {})
 
 local lazy_packs_dir_edit = 'edit ' .. vim.fn.stdpath("data")
 add_cmd('DLazy', lazy_packs_dir_edit .. sep .. 'lazy/', {})
@@ -313,6 +313,25 @@ end
 -- stylua: ignore start
 -- copy cwd into register 0 and '+' register
 -- TODO FWrel to provide in git readable format
+local has_oil, oil = pcall(require, 'oil')
+local has_myoil, myoil = pcall(require, 'my_oil')
+if has_oil then
+  assert(has_myoil)
+  add_cmd('Oabs', function() setPlusAnd0Register(oil.get_current_dir()) end, {})
+  add_cmd('Orel', function() setPlusAnd0Register(plenary.path:new(oil.get_current_dir()):make_relative()) end, {})
+  if utils.is_windows then
+    add_cmd('OExec', function() setPlusAnd0Register(myoil.pwshExec()) end, {})
+    add_cmd('OCec', function() setPlusAnd0Register(myoil.pwshCdExec()) end, {})
+  else
+    -- add_cmd('OFExec', function() setPlusAnd0Register(myoil.fishExec) end, {})
+    -- add_cmd('OFCec', function() setPlusAnd0Register(myoil.fishCdExec) end, {})
+    -- add_cmd('OExec', function() setPlusAnd0Register(myoil.posixExec) end, {})
+    -- add_cmd('OCec', function() setPlusAnd0Register(myoil.posixCdExec) end, {})
+  end
+
+
+end
+
 add_cmd('Frel', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
 add_cmd('FrelDir', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
 add_cmd('FrelLine', function() setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})

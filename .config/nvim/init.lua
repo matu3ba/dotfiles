@@ -87,16 +87,17 @@ else
   if vim.fn.has 'win32' ~= 1 then
     require 'my_jfind' -- faster than telescope
   end
-  require 'my_gitsign'
-  require 'my_hydra'
+  require 'my_gitsign' -- git
+  require 'my_hydra' -- multi_mode
   require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   -- neodev setup is in my_dap
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
-  require 'my_statusline'
-  require 'my_over'
-  require 'my_surround'
-  require 'my_aerial' -- fn_overview_window
+  require 'my_statusline' -- statusline
+  require 'my_over' -- runner
+  require 'my_surround' -- text_surround
+  require 'my_aerial' -- overview_window
+  require 'my_oil' -- file_explorer
 
   -- workaronud lazy caching init.lua loading, but the module might be absent.
   local has_libbuf, _ = pcall(require, 'libbuf')

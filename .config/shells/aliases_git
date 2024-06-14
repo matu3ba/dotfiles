@@ -280,9 +280,11 @@ alias gcl='git clone'
 # reachability bitmaps
 # geometric repacking
 
-# setup all defaults with huge repos
+# sparse checkout: setup all defaults with huge repos
 # prefetching, commit-graph, fs monitor, partial cloning, sparse checkout
 #  git scalar
+#https://github.blog/2021-11-10-make-your-monorepo-feel-small-with-gits-sparse-index/
+#https://stackoverflow.com/a/63786181
 
 # git sparse-checkout set build base
 
@@ -324,10 +326,13 @@ alias glgg='git log --graph'
 alias glgga='git log --graph --decorate --all'
 alias glgm='git log --graph --max-count=10'
 alias glo='git log --oneline --decorate'
-alias gloga='git log --oneline --decorate --graph --all'
 alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-alias glp='_git_log_prettily'
-# git log --oneline --graph
+# https://stackoverflow.com/questions/1057564/pretty-git-branch-graphs
+# <leader>gl (short) and <leader>gll
+# gitk, git gui, gitx, gitg
+#git log --graph --abbrev-commit --decorate --date=relative --all
+# alias gloga='git log --all --decorate --oneline --graph --stat'
+alias gladogs='git log --all --decorate  --oneline --graph --simplify-by-decoration'
 
 # show only branch relation
 # alias glbr0='git log --graph --all --decorate --simplify-by-decoration'
@@ -346,8 +351,20 @@ alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 #TODO
 #merge with merge message no rebase
 #merge without merge message no rebase
+
+# TODO how the hell do I get a nice parent with children commit ???
+# --squash, --no-squash
+# unreliable without other options working: -m "commit message"
+#git merge --no-ff --no-commit --squash BRANCH
+# git log --graph --decorate --pretty=oneline --abbrev-commit
+
+# merge without forward (less reliable)
+alias gm='git merge --no-ff'
+# merge with forward
 alias gm='git merge --ff-only'
+# dont forward and dont commit (most reliable)
 alias gmn='git merge --no-ff --no-commit'
+# dont forward, do commit (less reliable)
 alias gmc='git merge --no-ff --commit'
 alias gmom='git merge downstream/master'
 alias gmt='git mergetool --no-prompt'
@@ -451,6 +468,7 @@ alias gsu='git submodule update'
 # every commit must make sense as some atomic piece of work
 # 1. merge    git merge --ff-only|--no-ff
 #             --no-commit|--commit
+# might need  git merge --no-ff --no-commit
 #             -e
 #             --squash|--no--quash
 # 2. squash   git merge --squash|--no--quash
@@ -459,6 +477,8 @@ alias gsu='git submodule update'
 #
 # * merge: prefer, because it represents true history (merge points, WIP commits)
 #   + can revert whole merge easily via >git revert -mN MERGECOMMITSHA
+#     or git revert FIRST^..LAST with ^ being first parent commit of FIRST
+#     or without message git revert -n RANGE
 #   + more commits make git bisect better
 #   + better 20*+50/-50 than +2k/-50 changes, always
 # * problems:
@@ -476,8 +496,17 @@ alias gsu='git submodule update'
 #git commit sha: git rev-parse HEAD
 #git file version-controlled (0 ok, 1 not): git ls-files --error-unmatch FILEPATH
 #git config --get remote.origin.url
-#git root dir: canonicalize(git rev-parse --show-cdup ABSPATH)
+#git root dir: canonicalize(git rev-parse --show-cdup)
 #git branch: git rev-parse --abbrev-ref HEAD
+#git commit count: git rev-list REV.. --count
+#git commit date: git show --no-patch --format=%as HEAD
+#or git show --no-patch --format=%ad --date=format:'%Y-%m-%d' HEAD
+#git commit author name: git show --no-patch --format=%an HEAD
+#git commit author mail: git show --no-patch --format=%ce HEAD
+#or git log -1 --pretty=format:%ce HEAD
+#git commit time: git show --no-patch --format=%ad --date=format:'%H:%M:%S' HEAD
+#git short commit id: git rev-parse --short HEAD
+#git long commit id: git rev-parse HEAD
 
 # TODO https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
 # TODO split commits in arbitrary commit range

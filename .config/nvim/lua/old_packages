@@ -1,0 +1,55 @@
+-- stylua: ignore start
+return require('packer').startup(function()
+
+  -- use { 'smjonas/inc-rename.nvim' } -- idea setup
+  -- use { 'smjonas/live-command.nvim' } -- idea setup
+  -- use { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
+  -- use { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
+  -- use { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
+  -- use { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- idea setup + comapre with harpoon approach
+
+  --use { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon
+  --use { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
+  --use { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
+  --use { '~/dev/git/lua/telescope-project.nvim' } -- idea fixit
+  --use { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
+  --use { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
+  -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
+  --use { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
+
+  -- :DogeGenerate {doc_standard}
+  -- use { 'kkoomen/vim-doge' }
+  -- :Neogen [function/class/type]
+  -- use { 'cshuaimin/ssr.nvim' }
+  --use { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
+  --use { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
+  --use { 'junegunn/gv.vim' } -- alternative?
+  --use { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
+  -- replacement of vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
+  -- look into https://github.com/jonatan-branting/nvim-better-n
+
+  --use { 'tpope/vim-repeat' } -- repeating with ., superseded with https://this-week-in-neovim.org/2022/Aug/15#article-dot-repeat
+  --use { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
+  --use { 'vim-table' }
+  --use { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds, I want to keep annotations dense+minimal
+  --use { 'karb94/neoscroll.nvim', config = function() require('neoscroll').setup() end, }
+  --use { 't-troebst/perfanno.nvim' } -- perf bottleneck visualizations
+  --use { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
+  --use { 'Vhyrro/neorg' } -- no use cases yet
+  --use { 'mfussenegger/nvim-lint' }
+  --use { 'norcalli/nvim-colorizer.lua' } -- use after all colors are setup, only necessary for color work
+  --use { 'theprimeagen/vim-be-good' } --for beginners VimBeGood,1.delete DELETE ME,2.replace contents inside first { or [ with bar, 3.navigate to caret under char ASAP+flip it
+  --use { 'wilder.nvim'} -- auto completion for :e and alike
+  --use { 'junegunn/fzf.vim', requires = { 'junegunn/fzf', run = ':call fzf#install()' } } -- telescope has same algorithm + better performance
+  --use { 'nvim-telescope/telescope-z.nvim' } --tez,<l>z -- would be clutch to have telescope project support
+  --use { 'JuliaEditorSupport/julia-vim' } --cool stuff: latex-to-unicode substitutions, block-wise movements and block text-objects
+  --use { 'nvim-telescope/telescope-snippets.nvim', requires = { 'norcalli/snippets.nvim' } } -- useful for loop stuff
+  --use { 'https://gitlab.com/dbeniamine/cheat.sh-vim/' }
+  --use { 'mhinz/vim-rfc' }--:RFC 1000, :RFC! regex
+  --use { 'bohlender/vim-smt2' }
+  --use { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
+  --use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim', config = function() require('neogit').setup() -- --:Neogit -- very complex
+  --use { 'folke/lsp-trouble.nvim', requires = 'kyazdani42/nvim-web-devicons', config = function() require("trouble").setup() end } --:Trouble,<l>xx/xw/xd/xl/xq/xr
+
+end)
+-- stylua: ignore end

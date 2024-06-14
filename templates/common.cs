@@ -85,6 +85,7 @@ namespace WindowsForms_TimerCallback {
 }
 
 
+//C#/.NET type checking
 //if (sender is OpParamGridView)
 //if (sender->GetType() == typeof(OpParamGridView))
 //if (sender->GetType() == OpParamGridView)
@@ -92,22 +93,32 @@ namespace WindowsForms_TimerCallback {
 
 // SHENNANIGAN .NET has no super or base to call virtual function of base classs
 // This is wrong for .NET, but correct for C#
-namespace WindowsForms_OverrideControl_DataGridView {
-  public ref class CustomDataGridView : public System::Windows::Forms::DataGridView
+
+// .NET has : base() in constructor to inherit base class somehow
+// https://www.devx.com/terms/base-class-net/
+// unclear which version looks like at least it does not work with override
+
+// SHENNANIGAN Windows Forms: There is no user accessible event log.
+// Debugging callbacks handled elsewhere very annoying.
+
+// You can override the Form.ProcessCmdKey method in order to be able to handle every key press of the user.
+protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+{
+  if (keyData == Keys.Down || keyData == Keys.Up)
   {
-    // override must be placed after, in c# before function names
-    bool ProcessDataGridViewKey(System::Windows::Forms::KeyEventArgs e) override
-    {
-      return super.ProcessDataGridViewKey(e);
-    }
-  };
+    // Process keys
+    return true;
+  }
+
+  return base.ProcessCmdKey(ref msg, keyData);
 }
 
-// SHENNANIGAN Windows Forms
-// Debugging callbacks handled elsewhere very annoying.
 public ref class CustomDataGridView : public System::Windows::Forms::DataGridView
 {
 protected:
+  // SHENNANIGAN On default ProcessDataGridViewKey one is never entered on
+  // Escape keypress in contrast to ProcessDialogKey, because the superblock
+  // Windows Forms Escape Handler runs.
   bool ProcessDataGridViewKey(System::Windows::Forms::KeyEventArgs ^ e) override
   {
     if (e->KeyCode == System::Windows::Forms::Keys::Escape)
@@ -116,5 +127,16 @@ protected:
       return true;
     }
     return false;
+  }
+  bool ProcessDialogKey(System::Windows::Forms::Keys keyData) override
+  {
+    // Extract the key code from the key value.
+    System::Windows::Forms::Keys key = (keyData & System::Windows::Forms::Keys::KeyCode);
+    if (key == System::Windows::Forms::Keys::Escape && this->IsCurrentCellInEditMode) {
+      this->CancelEdit();
+      this->EndEdit();
+      return true;
+    }
+    return System::Windows::Forms::DataGridView::ProcessDialogKey(keyData);
   }
 };

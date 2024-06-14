@@ -12,10 +12,8 @@ standard_procedure_jenkins()
   mv "C:\Program Files (x86)\Jenkins\workspace\$PIPELINE" "C:\Program Files (x86)\Jenkins\workspace\__$PIPELINE"
   mv "C:\Users\$USER\Documents\$PIPELINE" "C:\Users\$USER\Documents\__$PIPELINE"
 
-
 string interpolation
 println "The time is ${new Date().getTime()}"
-
 
 String Interpolation
 Within a GString you can use $ without {} to evaluate a property path, e.g.
@@ -33,10 +31,69 @@ new Date()."$prop"()
 As pointed out in the comments this is really just a special case of string interpolation, because the following is also valid
 new Date().'toString'()
 
-Spaces in paths of powershell plugin break command execution:
+SHENNANIGAN
+Missing type causes Jenkins to freak out instead of printing missing type info error.
+For example, "${GitCommitAuthorEmail}" works, but ${GitCommitAuthorEmail} may not.
+Most notably, jenkins may misidentify ${} as a non-existing inbuilt instead of doing the variable lookup.
+
+Problem: Spaces in paths of powershell plugin break command execution:
 powershell '& C:\Program Files\Git\bin\git.exe --help'
 powershell 'C:\Program Files\Git\bin\git.exe --help'
 powershell.exe : & : The term 'C:\Program' is not recognized as the name of a cmdlet, function, script file, or operable program.
 [..] + & powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Comm ...
 [..] + & C:\Program Files\Git\bin\git.exe --help
 [..]
+Solution: Adjust Jenkins or shell %PATH%/$env:Path
+environment{
+    GitPath = "C:\\Program Files\\Git\\bin\\git.exe"
+}
+
+USEDSHELL: sh/powershell/bash/bat
+def output = USEDSHELL(returnStdout: true, script: 'pwd')
+def output = USEDSHELL(returnStdout: true, script: '''pwd
+  echo "hello"
+  '''
+)
+
+SHENNANIGAN
+Invalid Jenkinsfile leads to permanent execution spam and lost execution history.
+
+SHENNANIGAN
+Usage of any shell requires script block without proper parser check indicating error source.
+This may lead to weird escaping problems instead of invalid Jenkinsfile and Java errors.
+
+SHENNANIGAN
+Removing stages causes lost execution history.
+
+SHENNANIGAN
+Reading powershell commands outputs leads to trailing newline, which may not be
+handled by plugins like powershell plugins.
+
+def SendEmail() {
+    script {
+        def CommitAuthorMail = powershell(returnStdout: true, script: '. .\\lib.ps1 -fns; GitCommitAuthorMail')
+        def CommitAuthorMailTrimmed = CommitAuthorEmail.trim()
+        echo "Sending notification mail to ${CommitAuthorMailTrimmed}"
+        emailext(
+          to: "${CommitAuthorEmailTrimmed}",
+          subject: "Build broken. project_name ${env.JOB_NAME}",
+          body: "<b>Build broken.</b><br>project ${env.JOB_NAME} <br>build_nr ${env.BUILD_NUMBER} <br> build_url ${env.BUILD_URL}"
+        )
+    }
+}
+
+SHENNANIGAN empty script blocks not allowed
+script {
+  // something1
+  // something2
+}
+
+SHENNANIGAN Jenkins does not accept empty {}-blocks
+{
+  dir("$HOME") {
+    echo "$HOME"
+  }
+}
+
+TODO
+https://stackoverflow.com/questions/43293334/sparsecheckout-in-jenkinsfile-pipeline

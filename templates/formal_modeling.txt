@@ -143,6 +143,9 @@ TODO paper as source
       + non-portable
       + natvis (must create bindings), python/javascript (no underlying type info)
     * Kernel mode debug traces are not supported (unfeasible to support in general)
+    * https://gu.outerproduct.net/debug.html
+    * Lauterbach?, earlier ericsson context them furthest ahead
+    * TODO technical discussion on debugging techniques
 - 10. Very good high level reasoning on ISAs ("How to Design an ISA")
   https://news.ycombinator.com/item?id=39031555
     * Nobody bothers documenting ISA including time information ?except Agner Fog?

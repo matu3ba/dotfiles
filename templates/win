@@ -73,6 +73,8 @@ On incremental build slowdown search in verbose build output:
 - Tools-Version not available: https://learn.microsoft.com/de-de/visualstudio/msbuild/msbuild-toolset-toolsversion?view=vs-2022
 - no usable IPDB/IOBJ from previous compilation was found.
   fix:
+- Creating "TARGET_DIR\PROJECT\PROJECT.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+  fix: TODO
 
 Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
 https://github.com/include-what-you-use/include-what-you-use
@@ -151,7 +153,7 @@ https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tuto
 windbg -server
 TODO
 
-Timetravel debugging
+====debugging_timetravel
 > 10x-20x performance hit in typical recording scenarios
 > Tracing a kernel mode process is not possible, only user mode can be traced.
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/getting-started-with-windbg
@@ -172,6 +174,11 @@ Installation of package to install .appinstaller packages:
    sideloading-enabled system.
 * https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19
   * SHENNANIGAN msxixbundle and msix are both zip files
+
+Installing .msi files:
+https://powershellexplained.com/2016-10-21-powershell-installing-msi-files/
+Installing Windows software remote:
+https://powershellexplained.com/2017-04-22-Powershell-installing-remote-software/?utm_source=blog&utm_medium=blog&utm_content=installingmsifiles
 
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-walkthrough
 
@@ -301,6 +308,9 @@ https://stackoverflow.com/questions/413477/is-there-a-good-valgrind-substitute-f
 https://github.com/DynamoRIO/drmemory
 https://github.com/RudjiGames/MTuner
 AppVerifier https://learn.microsoft.com/en-us/windows/win32/win7appqual/application-verifier?redirectedfrom=MSDN
+
+====trace_dtrace
+https://learn.microsoft.com/de-de/windows-hardware/drivers/devtest/dtrace
 
 Large and huge pages on Windows (2MB, 1GB)
 https://mahdytech.com/large-pages-how-when/
@@ -452,10 +462,32 @@ https://blog.improsec.com/tech-blog/win32k-system-call-filtering-deep-dive
 
 https://rafaelhart.com/2014/12/nmap-wireshark/
 
+====shell
+https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022
 Visual Studio Commandline Prompt
+Visual Studio Developer Command Prompt, developer command prompt
+Visual Studio Developer PowerShell, developer powershell
+& 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\Launch-VsDevShell.ps1'
+& 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1'
+
 ====objdump
 dumpbin -linkermember .\wpcap.lib
 dumpbin /archivemembers|exports|symbols /OUT:filename .\wpcap.lib
+dumpbin /dependents your_dll_file.dll
+ldd your_dll_file.dll
+Dependencies.exe -chain mydll.dll -depth 1
+https://learn.microsoft.com/en-us/cpp/build/reference/linker-support-for-delay-loaded-dlls?view=msvc-170
+https://stackoverflow.com/questions/495795/how-do-i-use-a-third-party-dll-file-in-visual-studio-c
+https://stackoverflow.com/questions/7845886/linking-dll-in-visual-studio
+https://learn.microsoft.com/en-us/cpp/build/walkthrough-creating-and-using-a-dynamic-link-library-cpp?view=msvc-170
+https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices
+
+====link
+https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices
+https://stackoverflow.com/questions/24836194/windows-dll-dynamic-initialization-ordering
+1. Import/export resolution just needs .dlls.
+2. Static initialization just needs .dlls.
+3. Dynamic initialization requires all imports to be resolved for the .dll.
 
 start visual studio from terminal cli
 code
@@ -500,6 +532,11 @@ https://randomascii.wordpress.com/2020/10/04/windows-timer-resolution-the-great-
 Scheduler sleep time between 0.5 and 16.656ms (typically 1ms).
 clockres && Temp
 Realtime threads not affected. Must be measured, for example with chrono.
+
+====network
+TODO debugging network
+TODO commands to empty dns cache
+
 
 ====SMB_file_sharing
 3 standard steps if the features is activated:
@@ -611,3 +648,6 @@ wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus
 Get-CimInstance -namespace root\wmi -class MSStorageDriver_FailurePredictStatus
 
 https://www.codereversing.com/
+
+Create lib from dll:
+https://stackoverflow.com/questions/9360280/how-to-make-a-lib-file-when-have-a-dll-file-and-a-header-file

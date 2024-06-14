@@ -77,8 +77,9 @@ New-Alias -Name gdcn -Value GitDiffCacheNoPager -Force -Option AllScope
 New-Alias -Name gdn -Value GitDiffNameOnly -Force -Option AllScope
 New-Alias -Name gf -Value GitFetch -Force -Option AllScope
 New-Alias -Name glg -Value GitLogStat -Force -Option AllScope
+New-Alias -Name gladogs -Value GitLogADogs -Force -Option AllScope
 New-Alias -Name gm -Value GitMergeFfonly -Force -Option AllScope
-New-Alias -Name gmn -Value GitMergeCommit -Force -Option AllScope
+New-Alias -Name gmc -Value GitMergeCommit -Force -Option AllScope
 New-Alias -Name gmn -Value GitMergeNoCommit -Force -Option AllScope
 New-Alias -Name gp -Value GitPush -Force -Option AllScope
 New-Alias -Name gpf -Value GitPushForce -Force -Option AllScope
@@ -104,6 +105,23 @@ New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
 # New-Alias -Name zbrel -Value ZigBuildRelease -Force -Option AllScope
 # New-Alias -Name zrel -Value ZigRelease -Force -Option AllScope
 
+#====utils
+function HasGit { & git rev-parse --is-inside-work-tree }
+function GitCommitSha { & git rev-parse HEAD }
+# (0 ok, 1 not)
+function GitVersionControlled { param([string]$path) & git ls-files --error-unmatch $path }
+#git config --get remote.origin.url
+function GitRelPathToRootDir { & git rev-parse --show-cdupgit rev-parse --show-cdup }
+function GitBranch { & git rev-parse --abbrev-ref HEAD }
+function GitCommitCount { & git rev-list REV.. --count }
+function GitCommitDate { return & "git show --no-patch --format=%ad --date=format:'%Y-%m-%d' HEAD" }
+function GitCommitAuthorName { return & "git show --no-patch --format=%an HEAD" }
+function GitCommitAuthorMail { return & "git log -1 --pretty=format:%ce HEAD" }
+# or #return & "git show --no-patch --format=%ce HEAD"
+function GitCommitTime { return & "git show --no-patch --format=%ad --date=format:'%H:%M:%S' HEAD" }
+function GitShortCommitID { return & "git rev-parse --short HEAD" }
+function GitFullCommitID { return & "git rev-parse HEAD" }
+
 # function CreateChangeDirectory { & md -ea 0 buildrel\ && cd buildrel\ }
 function CdUp { & cd .. }
 function CdUp2 { & cd ..\.. }
@@ -126,6 +144,7 @@ function GitDiffNameOnly { & git --no-pager diff --name-only $args }
 function GitDiffNoColor { & git --no-pager diff --no-color $args }
 function GitFetch { & git fetch $args }
 function GitLogStat { & git log --stat $args }
+function GitLogADogs { & git log --all --decorate  --oneline --graph --simplify-by-decoration $args }
 function GitMergeCommit { & git merge --no-ff --commit $args }
 function GitMergeFfonly { & git merge --ff-only $args }
 function GitMergeNoCommit { & git merge --no-ff --no-commit $args }

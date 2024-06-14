@@ -137,6 +137,9 @@ inline void hash_combine(unsigned long *seed, unsigned long const value)
     *seed ^= value + 0x9e3779b9 + (*seed << 6) + (*seed >> 2);
 }
 
+// TODO siphash for better performance
+// https://github.com/rui314/mold/commit/fa8e95a289f911c0c47409d5848c993cb50c8862
+
 /// assume: continuous data pointed to by str is terminated with 0x00
 int32_t Str_Len(const char* str)
 {
@@ -738,8 +741,8 @@ struct ImageVLA {
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
 int FG_Init(char * errmsg_ptr, int * errmsg_len) {
   const char * msg = "balbla";
-  *errmsg_len = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
-  if (*errmsg_len > 0) return 0;
+  int st = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
+  if (st > 0) return 0;
   return 1;
 }
 
@@ -879,3 +882,5 @@ int setup_SIGINT_handler() {
 
 // https://maskray.me/blog/2024-05-12-exploring-gnu-extensions-in-linux-kernel
 // funny kernel macros and flags to workaround standard issues due to type based aliasing analysis
+
+// delayed loaded via explicit calls to LoadLibrary and GetProcAddress

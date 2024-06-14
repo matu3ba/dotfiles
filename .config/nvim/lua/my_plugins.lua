@@ -33,8 +33,6 @@ return {
     'williamboman/mason.nvim',
     config = function() require('mason').setup() end,
   }, ---=none
-  -- deprecated since nvim 0.10
-  -- { 'ojroques/nvim-osc52', config = function() require('osc52').setup() end }, ---=key
   --==completions
   -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
   -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
@@ -161,17 +159,10 @@ return {
   -- nvim oil-ssh://[username@]hostname[:port]/[path]
   -- g? help, <CR>|C-s|C-h select +[vsplit|split, C-p preview, C-c close, C-l refresh,
   -- - parent, _ open cwd, ` cd, ~ tcd, g. toggle hidden
-  {
-    'stevearc/oil.nvim',
-    config = function() require('oil').setup { view_options = { show_hidden = true } } end,
-  },
+  { 'stevearc/oil.nvim', }, -- my_oil.lua
   -- fn overview window with jumps etc
-  {
-    'stevearc/aerial.nvim',
-  },
+  { 'stevearc/aerial.nvim', },
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
-  -- non-treesitter functionality unnecessary since nvim 0.10
-  -- { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end },
   -- crs coerce to snake_case
   -- crm MixedCase = PascalCase
   -- crc camelCase
@@ -266,11 +257,6 @@ return {
 
   -- lua hacking
   -- chrigieser/nvim-genghis convenience file operations in lua
-  -- spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
-
-  -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
-  -- :GdbStart gdb -tui -x SCRIPT exec
-  -- :Gdb command
 
   --'nvim-telescope/telescope-dap.nvim',
   { 'rcarriga/nvim-dap-ui' },
@@ -279,6 +265,9 @@ return {
   -- nvim-dap
   -- nvim-dap-ui
   -- nvim-dap-virtual-text
+  -- :GdbStart gdb -tui exec, :GdbStart gdb -tui --args exec arg1 ..,
+  -- :GdbStart gdb -tui -x SCRIPT exec
+  -- :Gdb command
   -- <f4>   Until                        (`:GdbUntil`)
   -- <f5>   Continue                     (`:GdbContinue`)
   -- <f6>   Reverse-Next                 (`:idea`), idea
@@ -310,6 +299,7 @@ return {
   -- * gdb build/bin/nvim -ex 'remote localhost:666'
   -- more severe issues with stability (editor becomes completely unresponsive) :-( )
   --{ 'sakhnik/nvim-gdb' } -- idea: fix https://github.com/sakhnik/nvim-gdb/issues/177
+
   --{ "glepnir/mutchar.nvim" }, idea setup
   -- doesnt work for me
   -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
@@ -326,6 +316,13 @@ return {
   -- replacement without perf issues for context.vim would be great
   -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
+  -- block-wise movement and file-local replacements
+  -- { 'nvim-treesitter/nvim-treesitter-refactor' },
+
+  -- non-treesitter functionality unnecessary since nvim 0.10
+  -- { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end },
+  -- deprecated since nvim 0.10
+  -- { 'ojroques/nvim-osc52', config = function() require('osc52').setup() end }, ---=key
 
   -- idea https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
   -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab

@@ -135,6 +135,7 @@ local function load_options()
   --   unusing all the plugins etc https://github.com/LunarVim/bigfile.nvim
   vim.o.directory = utils.pathJoin(vim.fn.stdpath 'state', 'swap') --swap directory
   vim.o.swapfile = true
+  -- spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
   vim.o.spelllang = 'en,de'
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
   vim.wo.colorcolumn = '80,120,150'
