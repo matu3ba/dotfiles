@@ -1,0 +1,22 @@
+List of techiques to track down neovim plugin problems.
+
+lua minifier unknown -> manually minification of problem source needed
+
+nvim -V1 and :au WinLeave ExitPre, QuitPre, BufWinLeave
+did not show anything interesting git related.
+[10:03]b0o: check ExitPre, VimLeave, VimLeavePre
+
+extended plugin locations, ie for autocommands
+nvim -V1
+
+check autocommands for errorneous/hanging events
+intersting ones: WinLeave ExitPre, QuitPre, BufWinLeave, VimLeave, VimLeavePre
+:verbose au BufEnter
+
+special quit
+:cquit instead of :quit
+
+delete autogroup to prevent autocommands running
+:lua vim.api.nvim_del_augroup_by_name('gitsigns')
+
+Double check, if setup{} is not called twice.

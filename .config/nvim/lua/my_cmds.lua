@@ -491,6 +491,8 @@ end, {})
 -- Reloading your config is not supported with lazy.nvim, use :so instead
 -- add_cmd('Reloadconfig', function() require('my_utils').reloadconfig() end, {})
 add_cmd('Listpackages', function() require('my_utils').listpackages() end, {})
+add_cmd('ReParse', function() require('my_utils').parseBufferToRegisters() end, {})
+add_cmd('ReDump', function() require('my_utils').dumpRegistersToBuffer() end, {})
 
 _G.beforeTogWrap_colorcolumn = '0'
 add_cmd('TogWrap', function()

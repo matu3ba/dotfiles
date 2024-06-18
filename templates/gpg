@@ -13,6 +13,12 @@ gpg --quick-generate-key \
     ed25519 cert YYYY-MM-DD
 // save keyfingerprint to env var without spaces (it says key-Fingerprint on the output)
 
+
+gpg --list-keys
+gpg --list-secret-keys --keyid-format LONG
+gpg --list-keys --with-subkey-fingerprints --keyid-format LONG
+gpg --list-secret-keys --with-subkey-fingerprints --keyid-format LONG
+
 export KEYFP=keyfingerprint
 // subkeys for sign, encrypt, authenticate
 gpg --quick-add-key $KEYFP ed25519 sign 1y

@@ -1,0 +1,52 @@
+====Processes
+Linux: /proc
+FreeBSD: procstat
+====Files
+procstat -f, fstat
+====Network
+FreeBSD: sockstat
+Linux: ss
+
+best practice long-running system design
+https://arcan-fe.com/2020/02/10/leveraging-the-display-server-to-improve-debugging/
+TODO: make it cross-platform
+
+* source requests debug session
+* target checks permissions and sets capabilities via prctl
+* forwards the request to src process
+
+TODO some code
+
+see also "Systemic Software Debugging"
+tldr;
+
+====Debug Tooling
+IDA Pro
+- Hex-Rays decompilers
+
+====gdb_design problem
+Core problem of abstraction in gdb:
+- tui without any stability guarantee
+- python scripting
+- MI (machine interface)
+  * requires parsing deeply complex and hostile data across privilege boundaries
+- DAP (debugger adapter protocol)
+  * usable for example in neovim
+
+====WinDbg and gdb with
+- enhancement plugins such as peda pwndbg
+- peda https://github.com/longld/peda
+- pwndbg https://github.com/pwndbg/pwndbg
+
+====gdb
+- posix gdb frontend https://github.com/nakst/gf
+
+====MSan, TSan
+- bug discovery, crash deduplication, root cause analysis
+
+====Bochs x86 emulator
+- very convenient instrumentation API, compatibility with the latest CPU
+  features and ability to instrument entire operating systems
+
+====windbg
+https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tutorial

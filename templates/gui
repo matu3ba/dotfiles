@@ -1,0 +1,24 @@
+declarative
+* slint.dev
+perf
+* dear imgui
+* do own rendering loop
+simplicity
+* Windows Forms
+
+Typical requirements
+* (reasonable amount of minimal) functionality
+* simplicity of usage
+* reasonable perf
+* testability
+* bonus: serialization + deserialization (server client architecture,
+  simulate clients in server etc)
+
+=> So far not found any gui toolkit offering all of it,
+usually lacking in either 1. testability or 2. serialization/deserialization.
+
+idea:
+protobuf + c++ toolkit like imgui (test license should be cheap enough)
+render everything in server yourself
+
+Windows Forms easy to use, but C# requires crossing language boundaries

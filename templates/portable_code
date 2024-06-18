@@ -22,3 +22,16 @@ https://cr.yp.to/docs/unixport.html
 https://cr.yp.to/unix/asyncdisk.html
 https://cr.yp.to/docs/selfpipe.html
 https://cr.yp.to/2004-494/1209.pdf
+
+Abi bits of various OSes
+git clone --depth=1 https://github.com/DragonFlyBSD/DragonFlyBSD
+git clone --depth=1 https://git.FreeBSD.org/src.git freebsd
+git clone --depth=1 https://fuchsia.googlesource.com/fuchsia
+git clone --depth=1 https://github.com/haiku/haiku
+git clone --depth=1 https://github.com/Stichting-MINIX-Research-Foundation/minix/
+git clone --depth=1 https://github.com/NetBSD/src netbsd
+git clone --depth=1 https://github.com/openbsd/src openbsd
+git clone --depth=1 https://github.com/kofemann/opensolaris
+git clone --depth=1 https://github.com/apple-open-source-mirror/Libc
+TODO Windows libc, Linux Kernel sources
+rg 'define.*_SC_PAGE_SIZE' -B 1 --vimgrep

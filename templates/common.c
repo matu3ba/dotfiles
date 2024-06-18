@@ -94,20 +94,41 @@ void c_enum_in_struct_weirdness() {
   devty.ty = device_type;
 }
 
-// void cpp_enum_in_struct_weirdness() {
-//   struct BeckhoffDeviceType {
-//     enum Ty {
-//       Undefined = 0,
-//       EK1100,
-//       EL1008,
-//       EL2008,
-//       EL5151,
-//       Max,
-//     } ty;
-//   };
-// 	struct BeckhoffDeviceType devty;
-// 	devty.ty = (BeckhoffDeviceType.Ty)device_type;
-// }
+void cpp_namespaces_enums_in_structs(int32_t device_type) {
+  struct BeckhoffDeviceType {
+    enum Ty {
+      Undefined = 0,
+      EK1100,
+      EL1008,
+      EL2008,
+      EL5151,
+      Max,
+    } ty;
+  };
+  struct BeckhoffDeviceType devty;
+  // c compiler: Use of undeclared identifier 'BeckhoffDeviceType'
+  // cpp compiler: works fine and might be needed
+  // devty.ty = (BeckhoffDeviceType.Ty)device_type;
+}
+
+int32_t c_enum(int32_t in) {
+  const uint32_t device_type = 1;
+  enum Example {
+    EX0 = 0,
+    EX1,
+  };
+  enum Example ex = in;
+  switch (ex) {
+    case EX0: {
+      return 0;
+      break;
+    };
+    case EX1: {
+      return 1;
+      break;
+    }
+  }
+}
 
 // Superfluous with C23.
 #ifndef GENERATE_ENUM_STRINGS

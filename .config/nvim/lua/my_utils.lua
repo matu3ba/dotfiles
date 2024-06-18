@@ -1,5 +1,6 @@
 --! Dependency free functions
 -- luacheck: globals vim
+-- luacheck: no max line length
 -- see minimal_config
 local M = {}
 
@@ -18,6 +19,9 @@ end
 M.path_separator = '/'
 M.is_windows = vim.fn.has 'win32' == 1 or vim.fn.has 'win32unix' == 1
 if M.is_windows == true then M.path_separator = '\\' end
+
+--====utf utf8 utf16
+-- vim.str_utfindex and vim.str_byteindex
 
 ---Split string into a table of strings using a separator.
 ---@param inputString string The string to split.
@@ -319,6 +323,112 @@ M.pasteOverwriteFromRegister = function(register, keep_suffix)
   end
 end
 
+--====macros
+-- In registers for macros, special characters like ESC and ENTER are replaced
+-- with the Vim representation ^[ and ^M respectively.
+local lut_index_to_reg = {
+  [1 ]  = '"', [2 ]  = '0', [3 ]  = '1', [4 ]  = '2', [5 ]  = '3',
+  [6 ]  = '4', [7 ]  = '5', [8 ]  = '6', [9 ]  = '7', [10]  = '8',
+  [11] = '9', [12] = 'a', [13] = 'b', [14] = 'c', [15] = 'd',
+  [16] = 'e', [17] = 'f', [18] = 'g', [19] = 'h', [20] = 'i',
+  [21] = 'j', [22] = 'k', [23] = 'l', [24] = 'm', [25] = 'p',
+  [26] = 'q', [27] = 'r', [28] = 's', [29] = 't', [30] = 'u',
+  [31] = 'v', [32] = 'w', [33] = 'x', [34] = 'y', [35] = 'z',
+  [36] = '-', [37] = '*', [38] = '+', [39] = '.', [40] = ':',
+  [41] = '%', [42] = '#', [43] = '/',
+}
+-- translates index to register, returns nil without match
+M.indexToRegister = function(index)
+  return lut_index_to_reg[index]
+end
+
+local lut_reg_to_index = {
+  ['"'] = 1, ['0'] = 2, ['1'] = 3, ['2'] = 4, ['3'] = 5,
+  ['4'] = 6, ['5'] = 7, ['6'] = 8, ['7'] = 9, ['8'] = 10,
+  ['9'] = 11, ['a'] = 12, ['b'] = 13, ['c'] = 14, ['d'] = 15,
+  ['e'] = 16, ['f'] = 17, ['g'] = 18, ['h'] = 19, ['i'] = 20,
+  ['j'] = 21, ['k'] = 22, ['l'] = 23, ['m'] = 24, ['p'] = 25,
+  ['q'] = 26, ['r'] = 27, ['s'] = 28, ['t'] = 29, ['u'] = 30,
+  ['v'] = 31, ['w'] = 32, ['x'] = 33, ['y'] = 34, ['z'] = 35,
+  ['-'] = 36, ['*'] = 37, ['+'] = 38, ['.'] = 39, [':'] = 40,
+  ['%'] = 41, ['#'] = 42, ['/'] = 43,
+}
+
+-- translates register to index, returns nil without match
+M.registerToIndex = function(register)
+  return lut_reg_to_index[register]
+end
+
+-- SHENNANIGAN no vim/neovim docs on how multple newlines should be serialized and i
+-- deserialized to be visualized on 1 line.
+
+-- Parse buffer to registers, filepath format:
+--   REGISTERNAME REGISTERCONTENT
+--   a registercontent
+--   b registercontent
+-- If filepath is nil, then current buffer is used.
+M.parseBufferToRegisters = function(bufnr)
+  if bufnr == nil then
+    bufnr = 0
+  end
+  for crow = 1, #lut_index_to_reg do
+    local lines = vim.api.nvim_buf_get_lines(bufnr, crow-1, crow, false)
+    if #lines == 0 then
+      return
+    end
+    local first = string.sub(lines[1], 1, 1)
+    local second = string.sub(lines[1], 2, 2)
+    local content = string.sub(lines[1], 3, -1)
+    -- print("first", first)
+    -- print("second", second)
+    if second == " " or content ~= "" then
+      -- %, :, ., " register is not writable
+      if first == '%' or first == ':' or first == '.' or first == '"' then
+        goto continue_lut
+      end
+      local should_parse = lut_reg_to_index[first] ~= nil
+      if (should_parse) then
+        local reg = first
+        local content_eom_subst_by_eol = string.gsub(content, '\025', '\r')
+        -- print("crow", crow)
+        -- print("reg", reg)
+        -- print("content", content_eom_subst_by_eol)
+        vim.fn.setreg(reg, content_eom_subst_by_eol)
+      end
+    end
+    ::continue_lut::
+  end
+end
+
+-- Dump registers to buffer, filepath format:
+--   REGISTERNAME REGISTERCONTENT
+--   a registercontent
+--   b registercontent
+-- If filepath is nil, then current buffer is used.
+M.dumpRegistersToBuffer = function(registers, bufnr)
+  if bufnr == nil then
+    bufnr = 0
+  end
+  if registers == nil then
+    for i = 1, #lut_index_to_reg do
+       local reg_content = vim.fn.getreg(lut_index_to_reg[i])
+       local reg_eol_subst_by_eom = string.gsub(reg_content, '\n', "\025")
+       -- print(reg_eol_subst_by_eom)
+       vim.api.nvim_buf_set_lines(bufnr, i-1, i-1, true, {lut_index_to_reg[i] .. " " .. reg_eol_subst_by_eom})
+    end
+  else
+    for i = 1, #lut_index_to_reg do
+      local should_print = registers[lut_index_to_reg[i]] ~= nil
+      if should_print then
+        local reg_content = vim.fn.getreg(lut_index_to_reg[i])
+        local reg_eol_subst_by_eom = string.gsub(reg_content, '\n', "\025")
+        -- print(reg_eol_subst_by_eom)
+        vim.api.nvim_buf_set_lines(bufnr, i-1, i-1, true, {lut_index_to_reg[i] .. " " .. reg_eol_subst_by_eom})
+      end
+    end
+  end
+end
+
 -- starting at cursor: move cursor into direction until non-space symbol
 -- space symbols are [space|tab], direction can be "up" and "down"
 -- overwrite text to right with register content
@@ -350,6 +460,7 @@ M.moveDirectionUntilNonSpaceSymbol = function(direction)
   vim.api.nvim_win_set_cursor(0, { crow, ccol })
 end
 
+-- better replacement: tpope/vim-abolish
 -- https://github.com/vE5li/cmp-buffer
 -- https://github.com/hrsh7th/cmp-buffer/compare/main...vE5li:cmp-buffer:main
 M.swap_camel_and_snake_case = function(name)

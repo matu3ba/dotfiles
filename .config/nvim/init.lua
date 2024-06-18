@@ -310,6 +310,12 @@ callback = function()
 -- :messages
 -- visual mode: "ap
 
+-- :redir >name_of_registers_file
+-- :registers
+-- :redir END
+-- :r name_of_registers_file
+-- :help redir
+
 -- Debugging Python types
 -- print(type(tokenInfo_json))
 -- print(tokenInfo_obj.__dict__)
@@ -336,13 +342,14 @@ callback = function()
 --        outfile.open(name);
 --    outfile << content;
 --}
---
 
 -- C-r C-o/C-r C-r register: paste text literally
 -- C-r register: pasting from register
 -- set number, set nonumber `set nu!`, likewise `set rnu!`
 -- set all to list all settings
 
+-- normal list to array list
+-- :%s/.*/"&",
 -- verbatim replace (snomagic)
 -- :sno/search/replace/g
 -- remove trailing carriage returns (^M), ie of windows

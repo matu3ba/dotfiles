@@ -1,0 +1,129 @@
+====optimal_repl
+* hot reload https://zig.news/perky/hot-reloading-with-raylib-4bf9
+
+====system_abi
+* STATUS Huge pile of calling conventions=protocols in systems in the field
+  - almost all of them never designed with abi versioning in mind
+  - elimination requires building competing platforms/protocols to replace
+    existing ones while being compatible for the meantime
+* MISSING_PART Platforms with calling conventions offer no libraries to introspect themself
+  for user code debugging at 1. compilation time, runtime, linktime etc
+* RESULT Each compiler, debugger etc implements the same stuff again and again
+  without a reference implementation
+* HISTORY C ABI had C compiler as reference implementation
+  - does not help with introspection
+  - C ABI design was no priority at first
+  - crufty tool to bootstrap was never improved
+* THE_FIX Bootstrap improved tool back to lower level/base layer
+  - make it trivial to bootstrap from and for any platform
+
+====debugging_definition
+From https://gu.outerproduct.net/debug.html
+Assume: developer/user knows correct and incorrect states and the code
+represents a correct model of the intended semantics.
+* program as state machine (often non-deterministic)
+* bug is bad transition rule
+* execution witness as states and state transitions encountered on one specific
+  program run
+* if execution witness shows "bad state", then there must be a bug,
+  - often not obvious when the state became bad like when state is subtly wrong
+* debugger as query engine over states and transitions of a buggy execution witness
+* most programs behave non-deterministic
+* frequent operation is bug source isolation to deterministic component
+  - encapsulation of non-determinism simplifies process like functional programming (isolation of all side effects)
+* concurrent code tricky to debug, because one needs to trace the execution flow
+  to estimate where the origin to the incorrect state is
+  - time-travel debugging/deterministic replay with rr only allows stepping backwards,
+    but simulates multiple processes or threads on 1 CPU core
+* suspecting scalable deterministic replay with relative low time overhead
+  on regular hardware via thread-locality (based on 2002 paper) without further
+  examples
+
+====library_framework
+What's your imagination to what time-travel debugging can be? (Egg-laying wull
+milk pig with mind-blowing complexity and scope).
+* graphical + text editor with shortcuts to serialize and deserialize
+  - 1. program control flow state by relative conditions to another (in what
+    source file area which thread or process is)
+  - 2. program state state conditions (relative or absolute program conditions)
+    and ideally would generalize both to
+  - 3. arbitrary programs [in which for example kernel information like memory
+    usage could be queried] for all introspection use cases (debugging,
+    memcheck/validators, race condition checkers, tracers) to have seperate
+    overlays for debugging to reproduce the state of one program state
+    condition within the other tool even under stochastic events.
+* As far as I understand, currently language semantics leak into debuggers
+  besides debuggers/systems with repls can not be designed well for third party
+  interactivity, which is why gdb and lldb do not expose pretty printer as c
+  api or formatting library etc.
+* More ideally, the semantics of the program itself could be reasoned
+  about, but this would require compiler support with complete enough memory
+  models + simulator with debug api etc on top of that (say Miri or Cerberus)
+  to initialize the simulator from arbitrary program state.
+* As of now, we neither have a cross-usable snapshotformat for programs (on
+  the same platform) nor tooling to compare program states or traces.
+* Further, debug system scripting experience is very bad
+  + non-portable
+  + natvis (must create bindings), python/javascript (no underlying type info)
+* Kernel mode debug traces are not supported (unfeasible to support in general),
+  think of combined user land kernel land trace across processes
+
+====interested_discussion
+* Lauterbach or ericsson context may be most advanced regarding debugging techniques
+* ui missing and classes of problems to debug
+  - TODO problem source classification for debugging
+  - examples: missing session stuff, cerberus/miri/more concrete tooling and user annotation (program invariants, filters and stuff like that)
+  - comparing continuations mandates something like miri/cerberus or an equivalent with more optimizations for threading problems.
+  - not sure if bmc of cerberus does that.
+  - only having queries is not powerful enough to trace down things. in the end you have to write something like implicit CTL formulae
+  to reduce debugger interactions.
+    + capturing or checking state may introduce or prevent detecting errorneous behavior
+* recording traces of multiple runs of same program into queryable database could already open new interesting ways of debugging
+  - see above portable format for comparing tools and reexecute at individual timepoints (known to reproduce a buggy state)
+  - so far only done via coverage analysis and other statistical tools
+  - combine such trace db with fuzzer as state space crawler and you get powerful insights on execution
+  - digging down one trace hard to extrapolate and imagine causality for certain states
+  - uncertain how to combine information from traces, meaning what queries one can make against this info
+  - dynamic trace db would be useful for fuzzer itself, to find unexplored states
+    + probably means that this is already being done by antithesis for example
+  - equivalent state collapse
+    + see above user annotations as runtime checks for beahvior + efficient subset of CTL+ formulae
+    + dependency graph construction, view, annotations over states etc to solve questions like
+      "what state lead to this state"? "what states this state can evolve to?" "what transitions could lead to this state?"
+* 'semantic dependency'/sdep relation
+* dynamic hash-cons. union-find -> eventually coherent
+  - tricky when you have state which is somehow parametric but uniform in structure—have
+    to pick the right representation to be able to compress it properly
+* better framework, better defaults
+  - debugger for avoiding harness and a better starting state
+  - reverse execution for reducing startup costs
+  - coverage guided fuzzing as default
+  - symbolic execution to generate better inputs
+  - arcan appl for simluating interaction
+  - basic triage then into a12+cat9 for interacting with unique triaged source
+  - senseye for comparing more subtle data corruption (packets in packets, string injections, ...)
+* debugging as process to learn memory relations and runtime context relations (t1 does x while t2 does y)
+  - one of the simplest initial steps is to add invariants to the program for synchronization stuff.
+  - very often removing program parts is no option due to weird dependencies and effects on timing behavior etc.
+  - Sampling another method, if the problem is less time and more arithmetic/offset related or stochastic.
+https://github.com/rr-debugger/rr/blob/ca36c98ab63f54f777cac4f962c5c9e059022d41/src/fast_forward.cc
+https://github.com/rr-debugger/rr/blob/ca36c98ab63f54f777cac4f962c5c9e059022d41/src/ExtraRegisters.cc
+* store trace information for any tracing levels
+  - instruction tracing
+  - function tracing
+  - library/service interface level tracing
+  - service to service tracing,
+  - machine to machine tracing
+  - https://www.philipzucker.com/hashing-modulo/ egraphs-style heavy hammer 'represent the big thing in compressed form'
+  - another option is sometimes available 'compress by construction' which is nicer when it works
+* practicality/scalability (aka trace is too big/slow, does not reproduce problem etc)
+  - (semi-) deterministic record+replay, because non-determinism breaks any hashtree for looking up traces
+  - jitted/compiled tracing/sampling or "make things semi-deterministic" depending on use cases
+  - 1. exploration requires storing as is (default/selection of trace profile what to record)
+    vs 2. collecting transitions that lead to the exact same state (chopping of states)
+    vs 3. higher level reasononing or larger collection of accumulated traces implies
+    normalisation or other techniques mentioned in the hasing modulo theories article
+* what should state be and how to model compound states like structs and arrays?
+* how should non-determinism detection work?
+* Debugging, like programming, has fundamental tradeoffs between determinism, performance, memory and synchronization speed/observability.
+* stochastic events like race conditions depending on memory access + speed.
