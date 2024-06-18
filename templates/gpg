@@ -115,3 +115,6 @@ gpg --edit-key KEYID
 addkey
 
 https://unix.stackexchange.com/questions/372879/import-my-ssh-key-as-gpg-sub-key-to-use-for-ssh-authentication
+
+commands taken from https://gock.net/blog/2020/gpg-cheat-sheet
+TODO

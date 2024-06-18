@@ -1,5 +1,8 @@
+#====file_watcher
 # https://superuser.com/questions/226828/how-to-monitor-a-folder-and-trigger-a-command-line-action-when-a-file-is-created
-# TODO
+# https://powershell.one/tricks/filesystem/filesystemwatcher
+# in lua for windows file system via winapi lua bindings https://github.com/stevedonovan/winapi with https://stevedonovan.github.io/winapi/api.html#watch_for_file_changes
+# or via ETW
 
 function GetLastExitCode {
   return !$?
