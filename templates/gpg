@@ -37,6 +37,10 @@ gpg -K
 [commit]
  gpgsign = true
 
+// To delete subkeys, use $KEYFP with exclamation mark (!)
+gpg --list-keys --with-subkey-fingerprints --keyid-format LONG
+gpg --delete-secret-and-public-keys $KEYFP!
+
 // add to .bashrc (and adjust other gpg-agent entries)
 export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
@@ -55,12 +59,24 @@ pid shell?
 strace connection request to gpg server
 
 -- git and remote hoster key signing --
+// must delete pub keys and readd them to make github check commits generated
+// from subkeys again to correctly derive validity of each key.
+// On expiration 'gpg --armor --export keyid' will produce the public keys of:
+//  Your primary key.
+//  Your expired subkey.
+//  Your new subkey.
+// see https://stackoverflow.com/questions/63675549/how-do-i-verify-commits-on-github-after-i-switched-to-using-subkeys
 
 gpg --list-secret-keys --keyid-format LONG
 entry ssb   cv25519/GPG_KEY_ID
 To add gpg key to remote hoster (github, gitlab etc):
 gpg --armor --export GPG_KEY_ID
 git config --global user.signingkey GPG_KEY_ID
+
+// with signing sub key it would be
+gpg --list-keys --with-subkey-fingerprints --keyid-format LONG
+export $SKEYFP="SIGNINGKEY"
+gpg --armor --export $SKEYFP
 
 // errors like secret key not available: git config --global gpg.program gpg2
 

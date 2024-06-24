@@ -20,6 +20,26 @@ This also means that, in theory, a sufficient powerful model can also explain
 code in a side-effect free manner by capturing all allowed semantics.
 TODO paper as source
 
+====weak_memory
+* "Multicore Semantics: Making Sense of Relaxed Memory"
+* C/C++
+  - sequential
+  - concurrent with locks
+  - with seq_cst atomics
+  - with release and acquire
+  - with relaxed, fences and the rest
+  - with all of the above plus consume
+* Thin Air Problem big issue on weak memory to reason about code.
+  - Basic issue: compiler analysis and optimisation passes examine and act on the
+    program text, incorporating information from multiple executions
+* Linux with own model "believed/hoped to be preserved by compilers"
+* Conclusion
+  - HW models just work, but nothing fully integrated with ISA+concurrency in provers
+  - System models (hypervisors, Kernels) ongoing work
+  - PL models with C/C++ not bad, but thin air problem big problem for reasoning
+    about code (in weak memory context) using relaxed atomics in arbitrary ways
+    * no clear path foward wrt tradeoffs
+
 ====formal_problems
 - 1. implicit proof-carrying code
 - 2. explicit proof-carrying code
@@ -113,10 +133,12 @@ TODO paper as source
        but might just hang
    * can not track processes killed via SIGKILL
    * Solution space https://monorepo.tools
+   * Proposed Solution to Job server implementation:
  - 9. debug system
     * rr simulates threading and multiple processes in one process to get
     accurate performance counter timings for accurate reproducibility.
     This also rules out searching for tricky race conditions between threads.
+    * see ./templates/debug_ideal and prefixes with debug_
 - 10. Very good high level reasoning on ISAs ("How to Design an ISA")
   https://news.ycombinator.com/item?id=39031555
     * Nobody bothers documenting ISA including time information ?except Agner Fog?
@@ -142,42 +164,91 @@ TODO paper as source
     * time semantics for the render loop via Xorg compatible protocol?
     * TODO formal model possible?
 - 12. formal model for OS security and scheduling
-    * Assuming a process Pa with schedule A with deadline a and security level 2.
-    * Is affecting the scheduler a security problem, because security incidents must be
-      processed imminently or with what deadlines?
-    * What happens, if two processes affect dynamically any security boundaries?
-    * Any form of async exceptions or signal handling (ie in Linux) kills hard deadlines.
-    * At least in sel4 all properties are static with statically predefined boundaries only allowed
-      for scheduling and all bets are off for abstractions on hard deadline (from what the talks suggested).
-      See "Verified Protection Model of the seL4 Microkernel" by Elkaduwe et al.
-      * how managing the security manager should work?
-    * Indications:
-      + must keep CIA (confidentialy, integrity, availability)
-      + security is a static system property
-      + only allowed via delegating sufficient conditioned process groups
-      + caller must handle (stacking) signals (if its not a simple mask) of
-      child processes (or delegated higher security process), if it would be
-      allowed at all up to runtime limit.
+  * Assuming a process Pa with schedule A with deadline a and security level 2.
+  * Is affecting the scheduler a security problem, because security incidents must be
+    processed imminently or with what deadlines?
+  * What happens, if two processes affect dynamically any security boundaries?
+  * Any form of async exceptions or signal handling (ie in Linux) kills hard deadlines.
+  * At least in sel4 all properties are static with statically predefined boundaries only allowed
+    for scheduling and all bets are off for abstractions on hard deadline (from what the talks suggested).
+    See "Verified Protection Model of the seL4 Microkernel" by Elkaduwe et al.
+    * how managing the security manager should work?
+  * Indications:
+    + must keep CIA (confidentialy, integrity, availability)
+    + security is a static system property
+    + only allowed via delegating sufficient conditioned process groups
+    + caller must handle (stacking) signals (if its not a simple mask) of
+    child processes (or delegated higher security process), if it would be
+    allowed at all up to runtime limit.
+  * Ideas to remain time bounded:
+    + static specified CHERI C delegation server to delegate unforgeable memory regions
+      o would sidestep authorization race condition, if exactly one execution
+      unit process (thread or process) can access relevant resources
+      o unclear signal handling restriction, options
+        - minimal number of global signals essential to ensure program consistency
+        (inspired by Windows)
+          * SIGINT as user input to cancel/interrupt process ASAP
+          * access and memory errors to do debugging things ASAP
+        - infinite signal stacking problem
+          * too weak interrupt semantics do not allow handling when to block and unblock handlers
+            + reasons to interrupt an interrupt? other than debugging?
+              o low cost runtime logging of errors with possible execution trace + environment
+            + reasons to per thread handle of interrupts vs doing everything in main/interrupt thread?
+              o per thread cleanup of resources via refiring of interrupt and
+              ignoring in main thread and/or blocking in mission critical never
+              to be interrupted (verified) thread doing heavy work
+            + reasons to ASAP handle interrupt other than debugging things?
+              o system introspection at time-critical events
+            + options for internal time-critical signal handling
+              o 1.1 automatically block signal -> can not detect signal during signal errors
+              o 1.2 dont automatically block signal -> racy
+              o 1.3 signal during signal error/signal -> signals have payload vs duplicate signal number
+              o 2.1 one thread handles signals -> threads + metadata forced to be
+              globally handled instead of only variable for selection "next
+              thread"
+                * Could this be a problem in practice?
+              o 2.2 all threads handle signals, but can mask it -> unclear cause
+              effect relations, very likely to have signal during signal situations
+        - immediate termination SIGKILL handling for process snapshots?
+          * SIGKILL would be better split into Kernel API with something like
+            "HARDSIGSTOP", "HARDSIGDUMP", "HARDSIGCLEAN" to dump process memory,
+            if sufficient permissions exist
+        - kernel backed buffers + mask with access for high perf demands?
+          * unclear if per thread or not
+          * without combined syscall semantics more latency?
+            + signal range thread registered thread handles signals
+            + current signal handling thread could set other thread to handle signals, but only
+            if thread is signal handling thread
+            + process properties like signaling and resource limitations
+            process global, so it makes sense to have Kernel based access
+            delegation system for process resources
+            + counter arguments
+              o no "thread-private resources"
+              o more complex handling of errors like "capability in thread lost
+                due to thread termination"
+              o faster access to Kernel things?
+              o main thread implicitly needed to keep things simple currently
+              not the case?
 - 13. Continuous Integration semantics (running untrusted/less trusted processes)
-   * 1. process tracking
-     + Brief and short: "The Unix process API is unreliable and unsafe"
-       https://catern.com/process.html
-     + non-cooperating
-       o must remove 'setpgid', 'setsid' permissions from child processes to
-       keep all child processes in same process group to be signaled ie with
-       SIGKILL
-       o requires Kernel support (pledge, seccomp bpf, cgroups, namespaces ..)
-       o cgroups designed for exactly this use case, ie freeze process group,
-       kill it (atomically) and unfreeze it
-       https://security.stackexchange.com/questions/168452/how-is-sandboxing-implemented
-       o best behavior with {SET,GET}_CHILD_SUBREAPER
-     + cooperating
-       o signals (SIGCHLD) may get merged
-       o 'waitpid(-1, &status, WNOHANG)'
-       o https://cboard.cprogramming.com/linux-programming/155448-sigchld-handler-not-executing-dependably.html
-       o https://www.gnu.org/software/libc/manual/html_node/Merged-Signals.html
-   * 2. filesystem restrictions
-       o TODO
+  * 1. process tracking
+    + Brief and short: "The Unix process API is unreliable and unsafe"
+      https://catern.com/process.html
+    + non-cooperating
+      o must remove 'setpgid', 'setsid' permissions from child processes to
+      keep all child processes in same process group to be signaled ie with
+      SIGKILL
+      o requires Kernel support (pledge, seccomp bpf, cgroups, namespaces ..)
+      o cgroups designed for exactly this use case, ie freeze process group,
+      kill it (atomically) and unfreeze it
+      https://security.stackexchange.com/questions/168452/how-is-sandboxing-implemented
+      o best behavior with {SET,GET}_CHILD_SUBREAPER
+    + cooperating
+      o signals (SIGCHLD) may get merged
+      o 'waitpid(-1, &status, WNOHANG)'
+      o https://cboard.cprogramming.com/linux-programming/155448-sigchld-handler-not-executing-dependably.html
+      o https://www.gnu.org/software/libc/manual/html_node/Merged-Signals.html
+  * 2. filesystem restrictions
+     o TODO
 - 14. general formal model for graphics unfeasible
   * timing in graphics best effort: "lest things go kaboom almost immediately"
   * display server do to render jobs what the printer spooler did to print jobs
@@ -189,6 +260,9 @@ TODO paper as source
 - 15. filesystem semantics
   * There appears to be no good one handling all errors correctly
     https://danluu.com/file-consistency/, https://danluu.com/filesystem-errors/
+  * https://michael.orlitzky.com/articles/problems_with_posix_acls_and_common_utilities.xhtml
+    https://michael.orlitzky.com/articles/fix_busted_acls_faster_with_libadacl.xhtml
+    TODO summary
 - 16. secure speculative execution
   * "A Formal Approach to Secure Speculation" by Cheang et al.
   * TODO hackernews comment
@@ -198,9 +272,13 @@ Interesting ideas
 * Summary: Non-portable mess.
 
 To me unclear if solved:
-- check, if cakeml and compcert have linker speak verified
-- check if linker speak has a formal model
-- Model for coroutine cancellation
+* check if linker speak has a formal model
+  - https://www.cl.cam.ac.uk/~pes20/projects-2024.html
+    looks like projects on DWARF debug info tests and linker speak
+    tests (or oracle for corret semantics).
+* check, if cakeml and compcert have linker speak verified
+  - no
+* Model for coroutine cancellation
 
 Austral as language with linear type system without boilerplate (might become decent DSL)
 https://borretti.me/article/introducing-austral

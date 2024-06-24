@@ -506,6 +506,22 @@ add_cmd('TogWrap', function()
   end
 end, {})
 
+-- Workaround: override keybindings for gcc to call :s on current line
+-- add_cmd('TogC89', function()
+--   local is_ft_c = vim.bo.filetype == "c"
+--   if is_ft_c then
+--     if vim.o.commentstring == "// %s" then
+--       vim.o.commentstring = "/* %s */"
+--       vim.bo.commentstring = "/* %s */"
+--     else
+--       vim.o.commentstring = "// %s"
+--       vim.bo.commentstring = "// %s"
+--     end
+--   end
+--   print(vim.o.commentstring)
+--   print(vim.bo.commentstring)
+-- end, {})
+
 add_cmd('PrintAllWinOptions', function()
   local win_number = api.nvim_get_current_win()
   local v = vim.wo[win_number]

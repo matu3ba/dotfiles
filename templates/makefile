@@ -9,3 +9,6 @@ b: Basic
 v: verbose basic
 i: implicit rules
 m: debugging while remaking makefiles
+
+Install to dir for usage
+make install DESTDIR=$HOME/.local/cerberus

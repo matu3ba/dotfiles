@@ -54,7 +54,8 @@ if test "$XDG_SESSION_TYPE" = 'wayland'
 then
   export QT_QPA_PLATFORM='wayland'
   export CLUTTER_BACKEND='wayland'
-  #export GDK_BACKEND='wayland' # breaks Electron based apps
+  # did break Electron based apps
+  export GDK_BACKEND='wayland'
 fi
 
 ##==rubygems is annoying to setup
@@ -67,10 +68,7 @@ fi
 PATH=${PATH}:"$HOME/.cargo/bin"
 PATH=${PATH}:"$HOME/.local/bin"
 PATH=${PATH}:"$HOME/.local/appimages"
-# PATH=${PATH}:"$HOME/dev/git/cpp/kakoune/libexec/kak"
-# PATH=${PATH}:"$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
-# PATH=${PATH}:"$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig stages 3
-# PATH=${PATH}:"$HOME/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
+PATH=${PATH}:"$HOME/.local/cerberus/bin"
 PATH=${PATH}:"$HOME/dev/zdev/zig/master/rel/bin/"
 PATH=${PATH}:"$HOME/.luarocks/bin"
 PATH=${PATH}:"$HOME/.local/nvim/bin" # neovim testing
@@ -151,11 +149,13 @@ export -f stopwatch
 
 
 ##==quickjumper
-eval "$(zoxide init bash)"
+type -P zoxide && eval "$(zoxide init bash)"
 ##==autoenv
-eval "$(direnv hook bash)"
+type -P direnv && eval "$(direnv hook bash)"
 
 ##==kitty
-if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
+if type -P zoxide; then
+  if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
+fi
 ##==cargo
-source "$HOME/.cargo/env"
+type -P cargo && source "$HOME/.cargo/env"

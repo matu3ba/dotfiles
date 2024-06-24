@@ -73,18 +73,17 @@ if status is-interactive
   fish_add_path "$HOME/.cargo/bin"
   fish_add_path "$HOME/.local/bin"
   fish_add_path "$HOME/.local/appimages"
-  # fish_add_path "$HOME/dev/git/zi/zig/master/build" # zig stages 1,2
-  # fish_add_path "$HOME/dev/git/zi/zig/master/build/stage3/bin" # zig
-  # fish_add_path "$HOME/dev/git/zi/zig/master/buildrel/stage3/bin" # zig stages 3
+  fish_add_path "$HOME/.local/cerberus/bin"
   fish_add_path "$HOME/dev/zdev/zig/master/rel/bin" # zig stages 3
   fish_add_path "$HOME/.luarocks/bin"
   fish_add_path "$HOME/.local/nvim/bin" # neovim testing
-  fish_add_path "$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
+  # fish_add_path "$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
   fish_add_path "$HOME/dev/git/cpp/llvm-project/build-release/bin" # llvm tooling
 
   if test "$XDG_SESSION_TYPE" = "wayland"
     set -U QT_QPA_PLATFORM "wayland"
-    #set -U GDK_BACKEND "wayland" # breaks Electron based apps
+    # did break Electron based apps
+    set -U GDK_BACKEND "wayland"
     set -U CLUTTER_BACKEND "wayland"
   end
 
@@ -106,10 +105,18 @@ if status is-interactive
   # set -gx SSH_AGENT_PID $SSH_AGENT_PID
   # trap "ssh-agent -k" exit
 
-  ##==quickjumper
-  zoxide init fish | source
-  ##==autoenv
-  direnv hook fish | source
+  # type -q implies: command -q, builtin -q, functions -q
+
+  if command -q zoxide ##==quickjumper
+    zoxide init fish | source
+  end
+  if command -q direnv ##==autoenv
+    direnv hook fish | source
+  end
+  # if command -q opam ##==opam configuration (ocaml packages)
+  #   eval (opam env)
+  #   source /home/misterspoon/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+  # end
 
   alias l ' ls --color=auto --hyperlink=auto --group-directories-first -h'
   abbr --add -g sus ' systemctl suspend'

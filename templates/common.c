@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h> // uint32_t, uint8_t
 #include <stdlib.h> // exit
 #include <stdio.h>  // fprintf
@@ -5,10 +6,29 @@
 #include <limits.h> // limit
 #include <string.h> // memcpy
 
-// cppcheck
+// cerberus
 // clang-tidy
+// cppcheck
 // frama-c
-// TODO more checks
+
+// setting iso version:
+// clang4  -std=c89
+// clang4  -std=c99
+// clang4  -std=c11
+// clang6  -std=c17
+// clang18 -std=c23
+
+// # Compile and link. Select regular LTO at link time.
+// clang -flto -funified-lto -fuse-ld=lld foo.c
+// # Compile and link. Select ThinLTO at link time.
+// clang -flto=thin -funified-lto -fuse-ld=lld foo.c
+// # Link separately, using ThinLTO.
+// clang -c -flto -funified-lto foo.c  # -flto={full,thin} are identical in
+// terms of compilation actions
+// clang -flto=thin -fuse-ld=lld foo.o  # pass --lto=thin to ld.lld
+// # Link separately, using regular LTO.
+// clang -c -flto -funified-lto foo.c
+// clang -flto -fuse-ld=lld foo.o  # pass --lto=full to ld.lld
 
 // https://github.com/Hirrolot metalang99
 
@@ -17,6 +37,9 @@
 
 // Standards
 // http://port70.net/~nsz/c/
+
+// Design of C: I refuse to believe C had any design other than compiler impl
+// worksforme and which hackfix can be applied.
 
 // SHENNANIGAN
 // In short: Pointers are a huge footgun in C standard.
@@ -42,6 +65,10 @@
 // C11 or C23, before behavior was unspecified.
 
 // macro NULL = 0 or mingw null
+
+void assert_with_text() {
+  assert((1 == 1) && "sometext");
+}
 
 void standard_namespacing() {
   // Standard enum, struct etc
