@@ -27,6 +27,14 @@ const builtin = @import("builtin");
 
 // Crosscompiling: templates/crosscompiling_zig.sh
 
+test "beware_endianess" {
+    // const content_len: [4]u8 = .{ 0, 0, 0, 4 }; // wrong for little endian 4
+    // const content = "\x00\x00\x00\x04"; // also wrong
+    const content_len: [4]u8 = .{ 4, 0, 0, 0 }; // correct little endian 4
+    const ptr_content_len = std.mem.bytesAsValue(u32, content_len[0..content_len.len]);
+    try std.testing.expectEqual(ptr_content_len.*, @as(u32, 4));
+}
+
 const factorial_lookup_table = createFactorialLookupTable(u128, 25);
 pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: comptime_int) [num_terms]Int {
     if (@typeInfo(Int) != .Int) {
@@ -375,7 +383,7 @@ test "append slice" {
     try argv.append("/usr/bin/sleep");
     try argv.appendSlice(&[_][]const u8{ "--help", "'not read anymore'" });
 
-    const res0 = std.ChildProcess.run(.{
+    const res0 = std.process.Child.run(.{
         .allocator = allocator,
         .argv = argv.items,
     }) catch {
@@ -383,7 +391,7 @@ test "append slice" {
     };
     _ = res0;
 
-    const res1 = std.ChildProcess.run(.{
+    const res1 = std.process.Child.run(.{
         .allocator = allocator,
         .argv = &[_][]const u8{ "/usr/bin/sleep", "1" },
     }) catch {
@@ -391,7 +399,7 @@ test "append slice" {
     };
     _ = res1;
 
-    const res2 = std.ChildProcess.run(.{
+    const res2 = std.process.Child.run(.{
         .allocator = allocator,
         .argv = &[_][]const u8{ "/usr/bin/bash", "-c", "'sleep 1'" },
     }) catch {
@@ -423,7 +431,7 @@ test "coercion to return type example" {
         @panic("found memory leaks");
     };
     const gpa = gpa_state.allocator();
-    var child = std.ChildProcess.init(&.{ "/usr/bin/sleep", "1" }, gpa);
+    var child = std.process.Child.init(&.{ "/usr/bin/sleep", "1" }, gpa);
     child.stdin_behavior = .Close;
     child.stdout_behavior = .Pipe;
     child.stderr_behavior = .Pipe;

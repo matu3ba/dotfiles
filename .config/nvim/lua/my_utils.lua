@@ -14,7 +14,7 @@ M.isWSL = function()
   return vim.fn.has 'wsl' == 1
 end
 
--- Taken from stolen from cseickel on reddit.
+-- Taken from cseickel on reddit.
 ---The file system path separator for the current platform.
 M.path_separator = '/'
 M.is_windows = vim.fn.has 'win32' == 1 or vim.fn.has 'win32unix' == 1

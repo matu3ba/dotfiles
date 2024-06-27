@@ -9,6 +9,13 @@ $EDITOR = "nvim"
 $env:Editor = "nvim"
 
 # help Start-Process
+#Start-Process
+# [-FilePath] <string> [[-ArgumentList] <string[]>] [-Credential <pscredential>]
+# [-WorkingDirectory <string>] [-LoadUserProfile] [-NoNewWindow] [-PassThru]
+# [-RedirectStandardError <string>] [-RedirectStandardInput <string>]
+# [-RedirectStandardOutput <string>] [-WindowStyle <ProcessWindowStyle>]
+# [-Wait] [-UseNewEnvironment] [-Environment <hashtable>] [-WhatIf] [-Confirm]
+# [<CommonParameters>]
 
 #====common
 # copy to clipboard including newline: pwd | clip

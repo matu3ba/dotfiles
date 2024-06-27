@@ -8,7 +8,7 @@ if not has_plenary then vim.print 'Please install plenary for all features.' end
 --==Globals
 local api = vim.api
 local utils = require 'my_utils'
-local home = nil
+local home
 if utils.is_windows == true then
   home = os.getenv 'HOMEPATH'
   assert(home ~= nil)
@@ -49,6 +49,7 @@ local lazy_packs_dir_edit = 'edit ' .. vim.fn.stdpath("data")
 add_cmd('DLazy', lazy_packs_dir_edit .. sep .. 'lazy/', {})
 
 local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
+local df_edit_win_docs = df_edit .. sep .. 'windows' .. sep .. 'Documents'
 local df_configs_edit = df_edit .. sep .. '.config'
 local df_config_shells_edit = df_configs_edit .. sep .. 'shells'
 local df_scr_edit = df_edit .. sep .. 'scr'
@@ -63,6 +64,11 @@ add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep
   .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
 add_cmd('ZigFmtAll', '! zig fmt .', {})
 
+local ps_config_edit = df_edit_win_docs .. sep .. 'WindowsPowerShell' .. sep .. 'Microsoft.PowerShell_profile.ps1'
+add_cmd('PSConf', ps_config_edit, {})
+local pws_config_edit = df_edit_win_docs .. sep .. 'PowerShell' .. sep .. 'Microsoft.PowerShell_profile.ps1'
+add_cmd('PWConf', pws_config_edit, {})
+
 if utils.is_windows == false then
   -- we cant or dont want to unify all bashrcs
   local bashrc_edit = 'edit ' .. home .. sep .. 'dotfiles' .. sep .. '.bashrc'
@@ -70,10 +76,6 @@ if utils.is_windows == false then
   add_cmd('Bashrc', bashrc_edit, {})
   add_cmd('Fishrc', fishrc_edit, {})
 else
-  local ps_config_edit = 'edit ' .. home .. '\\dotfiles\\windows\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1'
-  add_cmd('PSConf', ps_config_edit, {})
-  local pws_config_edit = 'edit ' .. home .. '\\dotfiles\\windows\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1'
-  add_cmd('PWConf', pws_config_edit, {})
   local df_write = '! ' .. home .. '\\dotfiles\\fileOverwrite.ps1'
   add_cmd('DotfWrite', df_write, {})
   add_cmd('RmShada', '! rm ' .. vim.fn.stdpath("data") .. '\\shada\\main.shada.tmp.X', {})
@@ -322,7 +324,8 @@ if has_oil then
   if utils.is_windows then
     add_cmd('OExec', function() setPlusAnd0Register(myoil.pwshExec()) end, {})
     add_cmd('OCec', function() setPlusAnd0Register(myoil.pwshCdExec()) end, {})
-  else
+  -- else
+    -- Unimplemented
     -- add_cmd('OFExec', function() setPlusAnd0Register(myoil.fishExec) end, {})
     -- add_cmd('OFCec', function() setPlusAnd0Register(myoil.fishCdExec) end, {})
     -- add_cmd('OExec', function() setPlusAnd0Register(myoil.posixExec) end, {})

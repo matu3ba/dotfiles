@@ -9,6 +9,11 @@ Shell is a convenience cli and arbitrary complex scripting glue for
 There is a complete wiki dedicated to the weird quirks of bash:
 https://wiki.bash-hackers.org/syntax/expansion/brace
 
+simple process executer, queue and history with shell api
+https://github.com/Nukesor/pueue
+more simple one without any config
+https://github.com/leahneukirchen/nq
+
 SHENNANIGAN
 - 1. brace expansion does only work on standalone variables:
   * "{1..3}" does not work, but {1..3} works

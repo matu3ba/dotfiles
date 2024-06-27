@@ -21,6 +21,9 @@ ausearch -k <key>
 auditctl -l
 auditctl -W <path>
 
+Monitor in-kernel events
+https://sourceware.org/systemtap/SystemTap_Beginners_Guide/
+
 sleep 10m && systemctl suspend
 Get the logs
 journalctl -n 200
