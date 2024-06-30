@@ -183,3 +183,11 @@ TODO explain https://en.wikipedia.org/wiki/DLL_injection
 
 Things to remember when linking C/C++ code.
 https://gist.github.com/gubatron/32f82053596c24b6bec6?permalink_comment_id=2575013
+
+Tentative definitions aka common symbols
+* clang -fcommon
+* emitted as undefined symbols with size and alignment set for the linker to resolve
+* linker resolves into either defined value (if found), or whatever the linker decides when it finds one/multiple tentative definitions only
+* Then value implicitly zerofilled
+* Tentative defs are a remnant of fortran
+* probably should be purged

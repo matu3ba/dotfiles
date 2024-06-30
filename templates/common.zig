@@ -35,6 +35,14 @@ test "beware_endianess" {
     try std.testing.expectEqual(ptr_content_len.*, @as(u32, 4));
 }
 
+test "testing.allocator" {
+    // usage like std.heap.GeneralPurposeAllocator, but without gpa.deinit()
+    // because thats automatic on test block end
+    const ally = std.testing.allocator;
+    const mem = try ally.alloc(u8, 20);
+    defer ally.free(mem);
+}
+
 const factorial_lookup_table = createFactorialLookupTable(u128, 25);
 pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: comptime_int) [num_terms]Int {
     if (@typeInfo(Int) != .Int) {

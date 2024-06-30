@@ -21,7 +21,8 @@ if not has_lazy then
   print 'Please install lazy, instructions in init.lua'
 else
   vim.opt.runtimepath:prepend(lazypath)
-  require('lazy').setup('my_plugins', {})
+  -- workaround https://github.com/natecraddock/telescope-zf-native.nvim/issues/21
+  require('lazy').setup('my_plugins', { rocks = { enabled = false } })
   -- Portable CI, focus on Linux (mostly ssh + load balancing setup)
   -- idea: https://github.com/stevearc/overseer.nvim/issues/203#issuecomment-1734841561
   -- Windows unsolved (beyond wine)

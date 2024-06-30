@@ -62,6 +62,37 @@ TODO paper as source
   * research in this area tries to recompute how git commits have changed
     code instead of eliminating the problem at the root
   * TODO explain
+- 5. homotopy type theory as dependent types
+  * unclear practicality outside of proof systems (https://www8.cs.fau.de/teaching/hott/)
+    https://homotopytypetheory.org/book/
+    https://softwareengineering.stackexchange.com/questions/262377/what-are-the-practical-implications-of-homotopy-type-theory-in-programming
+    https://discuss.ocaml.org/t/what-sort-of-mathematical-foundations-are-required-to-contribute-to-the-research-on-modular-implicits-typed-effects-and-the-like/12926/2
+    + unclear relation of koka on website https://koka-lang.github.io/koka/doc/book.html
+    + apparently paper explains some more, but unclear why they are unable to explain in simple words
+      the essense
+    + koka language
+      o 1. effect types sound painful to annotate exceptions are a huge antipattern
+      o 2. "deep safety guarantees backed by well-studied category theory"
+      without quote to explain sounds bogous,
+      o 3. Perceus Optimized Reference Counting "With Perceus, we hope to cross
+      this gap and our goal is to be within 2x of the performance of C/C++.
+      Initial benchmarks are encouraging and show Koka to be close to C
+      performance on various memory intensive benchmarks. " should explain
+      class of supported programs and how bindings work for the unsupported
+      ones (due to reference counting being too slow).
+      o personal: unless they have a equivalence proof for imperative and
+      functional classes of program semantics, I'd not trust them that perf
+      will be identical through "magical optimizations"
+      > you can read through the ACM-pdfs. there is needed info
+      > 2 If you know HoTT or if you would take a look, u'll get a better idea what stands behinds this
+      > 3 you can read about this in ACM-pdfs too, it's a neat thing, and it works, and is fast (not blazingly, but fast enough).
+      when libuv will be inside koka one could solve almost (if not any) class of problems
+    + logical equivalence and deduction is very powerful, but to me only
+    applicable for semantic correctness; not code optimizations.
+      o optimization = equivalence/deduction + cost model
+    + pending response how practical useful type theory is
+    + >theoretical compile perf/scalability
+    structural solution is to ship the schedule / ship the proof
 - 6. atomic memory reordering semantics
   see templates/formal_modeling/weak_memory
 - 7. pointer semantics is based on Separation logic (extension of Hoare Type
