@@ -7,6 +7,7 @@ const builtin = @import("builtin");
 // cova(cli args) - https://github.com/00JCIV00/cova
 // rizin(reverse engineering) - https://github.com/rizinorg/rizin
 // orbit(tracing no annotation) - https://github.com/google/orbit
+// rigorous perf - https://github.com/ccurtsinger/stabilizer
 // libtree(ldd as tree) - https://github.com/haampie/libtree
 
 // Tools windows

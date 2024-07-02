@@ -75,6 +75,25 @@ On incremental build slowdown search in verbose build output:
   fix:
 - Creating "TARGET_DIR\PROJECT\PROJECT.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
   fix: TODO
+- fix custom build step dependency changing in tree files
+  * replicate behavior of PxVersionDefinition.h
+  * fix behavior of PxVersionDefinition.h
+
+unfixable
+- lock on project, if project opened graphically and building
+- changes of used files in project file invalidates solution cache (forces complete build)
+
+====debug
+Debugging macros
+"Project + Properties, C/C++, Preprocessor, Preprocess to a File = Yes.
+/E, /P, /EP
+cl /I C:\Test\ /EP C:\Test\main.cpp > C:\Test\macro.txt
+TODO cl set out dir
+
+specify object file name
+https://learn.microsoft.com/en-us/cpp/build/reference/fo-object-file-name?view=msvc-170
+/Fo"pathname"
+/Fo:[ ]"pathname"
 
 Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
 https://github.com/include-what-you-use/include-what-you-use
@@ -652,4 +671,20 @@ https://www.codereversing.com/
 Create lib from dll:
 https://stackoverflow.com/questions/9360280/how-to-make-a-lib-file-when-have-a-dll-file-and-a-header-file
 
+tiling wm on windows
 https://lgug2z.github.io/komorebi/
+
+https://learn.microsoft.com/de-de/cpp/intrinsics/rdtsc?view=msvc-170
+get processor timestamp
+
+https://stackoverflow.com/questions/19292655/c1189-error-no-target-architecture
+use alignment in macros
+TODO cleanup
+#if defined(_AMD64_) || defined(_X86_)
+#define PROBE_ALIGNMENT( _s ) TYPE_ALIGNMENT( DWORD )
+#elif defined(_IA64_) || defined(_ARM_)
+#define PROBE_ALIGNMENT( _s ) (TYPE_ALIGNMENT( _s ) > TYPE_ALIGNMENT( DWORD ) ? \
+                              TYPE_ALIGNMENT( _s ) : TYPE_ALIGNMENT( DWORD ))
+#elif !defined(RC_INVOKED)
+#error "No Target Architecture"
+#endif

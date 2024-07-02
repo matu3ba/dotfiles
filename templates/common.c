@@ -6,11 +6,20 @@
 #include <limits.h> // limit
 #include <string.h> // memcpy
 
+//====tooling
+//====version
+//====lto
+
+//====tooling
 // cerberus
 // clang-tidy
 // cppcheck
 // frama-c
+// DWARF and ELF verified spec impl + model usable as test oracle https://github.com/rems-project/linksem
+// TODO more checks
+// psyche-e incomplete file completer and compiler https://github.com/ltcmelo/psychec http://cuda.dcc.ufmg.br/psyche-c/
 
+//====version
 // setting iso version:
 // clang4  -std=c89
 // clang4  -std=c99
@@ -18,6 +27,7 @@
 // clang6  -std=c17
 // clang18 -std=c23
 
+//====lto
 // # Compile and link. Select regular LTO at link time.
 // clang -flto -funified-lto -fuse-ld=lld foo.c
 // # Compile and link. Select ThinLTO at link time.
@@ -63,6 +73,11 @@
 // TODO quote standard to show that its UB to let pointer point into undefined
 // provenance regions (ptr < &array[0], ptr > &array[len+1], ptr != 0).
 // C11 or C23, before behavior was unspecified.
+
+// TODO FIXME finish up C article and simplify everything for examples here
+// to copy paste
+// TODO align alloc
+// TODO alignas equivalent in newer C and in old C for array and memory
 
 // macro NULL = 0 or mingw null
 

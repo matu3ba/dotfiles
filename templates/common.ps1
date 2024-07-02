@@ -234,16 +234,14 @@ function parseVersion {
 # $handle = $proc.Handle # cache proc.Handle to fix ExitCode to work correctly
 # $proc.WaitForExit() # prevent msbuild not being terminated due to subprocess
 
-# caller responsible to validate paths
-# $at is filepath to start process at
-# $exe_dir means executable uses current directory
-# $at and $exe_dir are mutually exclusive
+# Start process with arguments with cwd : (current cwd xor cwd $at xor excutable directory).
 function sane_StartProcess {
   param(
     [string] $exe_path,
     [string[]] $exe_args = @(),
-    [string] $at = "."
-    [switch] $exe_dir = $false
+    [string] $at = ".",
+    [switch] $exe_dir = $false,
+    [switch] $dry = $false
   )
   if ($exe_dir -and ($at -ne ".")) { throw '$cd_path and $exe_dir were set' }
 
@@ -253,15 +251,18 @@ function sane_StartProcess {
     $at_pa = Split-Path -parent $exe_path
   }
   if (Test-Path $exe_path) {
-      Write-Verbose "pwd $at_pa, exec $exe_path $exe_args"
-    }
+    Write-Verbose "pwd $at_pa, exec $exe_path $exe_args"
     try {
       if (-Not ($dry)) {
         $proc = Start-Process $exe_path -WorkingDirectory $at_pa -ArgumentList $exe_args -NoNewWindow -PassThru
         $handle = $proc.Handle
         $proc.WaitForExit()
-        $st = $proc.WaitForExit()
+        $st = $proc.ExitCode
       }
+    } catch {
+      $st = 1
+      Write-Verbose "Exception: $_"
+      return $st
     }
     Write-Verbose "st: $st"
     return $st

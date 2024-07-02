@@ -1,4 +1,4 @@
-excel newline:
+SHENNANIGAN excel newline:
 - Alt+Enter
 - “CHAR(10)” formula of Excel
 - Named formula [CHAR(10)]

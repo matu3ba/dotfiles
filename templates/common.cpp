@@ -381,7 +381,7 @@ inline void SimplifiedImmutable<_Ty>::Set(std::shared_ptr<const _Ty> Val) {
 }
 // ..
 
-// TODO: criteria-based (name) selection of operator implementation of class to
+// idea: criteria-based (name) selection of operator implementation of class to
 // reduce template boilerplate (concepts) should be possible in C++23 or something
 
 // Naive DOD-based intrusive structure would use
@@ -602,7 +602,6 @@ class ExampleClass {
         mValue = aCpyVar.mValue;
     } // mutex requires copy constructor
 
-    // TODO check this manually
     // On absence of assignment operators primitive types are assigned, whereas
     // the according default assignment (and on absence simple constructor) is
     // called
@@ -1341,5 +1340,18 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // See https://maskray.me/blog/2020-12-12-c++-exception-handling-abi
 // and compare to setjmp and longjmp (store and retrieve stack)
 
+// TODO how to feed cl.exe args to msbuild
+// TODO get correct and usable clangd settings from msbuild
+// => idea: parsing cl.exe inputs
+// ====caching fixen
+// https://stackoverflow.com/questions/1704907/how-can-i-get-my-c-code-to-automatically-print-out-its-git-version-hash
+// try: specify macro via msvc compiler
+// https://learn.microsoft.com/en-us/cpp/build/reference/d-preprocessor-definitions?view=msvc-170
+// https://learn.microsoft.com/de-de/cpp/build/reference/compiler-options?view=msvc-170
+// https://learn.microsoft.com/en-us/visualstudio/msbuild/cl-task?view=vs-2022
+// adjust graphical msvc compiler invocation
+
 // https://en.cppreference.com/w/cpp/atomic/memory_order
 // TODO
+// * difference to C memory order =>
+// * guide to check for yourself with cerberus

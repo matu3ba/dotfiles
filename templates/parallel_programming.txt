@@ -139,3 +139,40 @@ with lock(mutex)                              | if LOAD() == 0:
   * satiate
   * isolate
   * consolidate
+
+ABA_problem
+- thread A does something, thread B interleaves but cleans up afterwards,
+  thread B never notices that thread B has run
+
+General
+* best class of algorithms is wait free (meaning waiting an as low as possible and bounded time, usually quadratic to number of threads)
+* all recent high performant algorithms use hazard pointers as vector/array of [0,MAX_THREAD_ID]
+* getting the size, if the storage is non-continous, has a perf cost
+* reliably detect, if a pop emptied a data storage, on the same thread after the pop, has a perf cost
+* vice versa detecting that the storage ran full
+* most papers have no reference implementation with tests linked or can have non-permissive licenses, so searching for them can be annoying
+  - reasonable code source https://github.com/pramalhe/ConcurrencyFreaks
+    + no tests, but code looks good
+  - papers usually use raw pointers and user is expected to adjust to used external or internal storage
+    + no overview papers of space vs memory vs works on weak memory tradeoffs
+
+win
+  DWORD GetCurrentThreadId();
+  TODO ntdll call from zig
+posix
+
+State of Art
+* "Wait-Free Linked-Lists" Shahar Timnat, Anastasia Braginsky, Alex Kogan, and Erez Petrank
+* "wCQ: A Fast Wait-Free Queue with Bounded Memory Usage" Ruslan Nikolaev, Binoy Ravindran
+Unclear status
+* https://github.com/erez-strauss/lockfree_mpmc_queue
+  + missing optimizations "relax the strong ordering of the atomic operations"
+* CRTurn Queue - The first MPMC memory-unbounded wait-free queue with memory reclamation
+  https://github.com/pramalhe/ConcurrencyFreaks
+Simple
+* "A Pragmatic Implementation of Non-blockign Linked Lists" Timothy L. Harris
+  https://github.com/hd-zhao-uu/Non-Blocking_Linked-List
+* https://github.com/rigtorp/MPMCQueue bounded multi-producer multi-consumer concurrent queue written in C++11 Erik Rigtorp
+* "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms" by Maged M. Michael and Michael L. Scott.
+  https://github.com/Qarterd/Honeycomb/blob/master/src/common/Honey/Thread/LockFree/Queue.h
+  https://www.cs.rochester.edu/research/synchronization/pseudocode/queues.html

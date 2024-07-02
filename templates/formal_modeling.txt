@@ -20,6 +20,11 @@ This also means that, in theory, a sufficient powerful model can also explain
 code in a side-effect free manner by capturing all allowed semantics.
 TODO paper as source
 
+====idioms
+https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specification
+* nondeterminism TODO
+
+
 ====weak_memory
 * "Multicore Semantics: Making Sense of Relaxed Memory"
 * C/C++
@@ -194,6 +199,9 @@ TODO paper as source
     * security for isolation of graphical components
     * time semantics for the render loop via Xorg compatible protocol?
     * TODO formal model possible?
+    * TODO xorg design
+    * https://news.ycombinator.com/item?id=40767108
+    * https://trace.yshui.dev/2024-06-xorg-bug.html
 - 12. formal model for OS security and scheduling
   * Assuming a process Pa with schedule A with deadline a and security level 2.
   * Is affecting the scheduler a security problem, because security incidents must be
