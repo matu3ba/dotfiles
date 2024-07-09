@@ -12,6 +12,7 @@ const builtin = @import("builtin");
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger
+// windbg - http://windbg.info/doc/1-common-cmds.html
 // system analysis tool - https://github.com/winsiderss/systeminformer
 // dll dependencies - https://github.com/lucasg/Dependencies
 // dumpbin - Developer Command Prompt for VS2015

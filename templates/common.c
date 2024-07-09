@@ -5,10 +5,14 @@
 #include <errno.h>  // errno
 #include <limits.h> // limit
 #include <string.h> // memcpy
+#include <inttypes.h> // PRIXPTR and other portable printf formatter
 
 //====tooling
 //====version
 //====lto
+//====pointers
+//====signaling on Posix
+//====signaling on Windows
 
 //====tooling
 // cerberus
@@ -51,33 +55,61 @@
 // Design of C: I refuse to believe C had any design other than compiler impl
 // worksforme and which hackfix can be applied.
 
+//====pointers
 // SHENNANIGAN
 // In short: Pointers are a huge footgun in C standard.
+// See https://matu3ba.github.io/post/shennanigans_in_c.html
 //
-// The proper fix for access a pointer with increased alignment is to use a
-// temporary with memcopy
-// https://stackoverflow.com/questions/7059299/how-to-properly-convert-an-unsigned-char-array-into-an-uint32-t.
-// To only compare pointers decrease alignment with char* pointer.
-// To prune type info for generics use void* pointer. HOWEVER, you are
-// responsible to call a function that provides or provide yourself
-// 1. proper alignment, 2. sufficient storage and 3. if nececssary
-// sufficient padding (ie within structs), 4. correct aliasing.
+// - The safe to have no miscompilations fix for access a pointer with increased
+// alignment is to use a temporary with memcopy
+// - To only compare pointers decrease alignment with char* pointer.
+// - To prune type info for generics use void* pointer.
+// You are responsible to call a function that provides or provide yourself
+// - 1. proper alignment,
+// - 2. sufficient storage and
+// - 3. if nececssary sufficient padding (ie within structs),
+// - 4. correct aliasing.
 // "Strict Aliasing Rule"
-// > Dereferencing a pointer that aliases an object that is not of a
-// > compatible type or one of the other types allowed by
-// > C 2011 6.5 paragraph 71 is undefined behavior.
-//
-// Except, by posix extension: casting pointers to functions (and back), because
-// that must be valid for dynamic linking etc.
+// C23 6.5 Expressions paragraph 7
+// "An object shall have its stored value accessed only by an lvalue expression
+// that has one of the following types - a type compatible with the effective type of the object,
+// - a qualified version of a type compatible with the effective type of the object,
+// - a type that is the signed or unsigned type corresponding to the effective type of the object,
+// - a type that is the signed or unsigned type corresponding to a qualified version of the effective type of the object,
+// - an aggregate or union type that includes one of the aforementioned types among its members (including, recursively, a member of a subaggregate or contained union), or
+// - a character type."
+// => assume: Access upholds (&array[0] <= ptr && ptr < &array[len+1])
 
-// TODO quote standard to show that its UB to let pointer point into undefined
-// provenance regions (ptr < &array[0], ptr > &array[len+1], ptr != 0).
-// C11 or C23, before behavior was unspecified.
+// Exceptions:
+// - posix extension/Windows: casting pointers to functions (and back) also use for dynamic linking etc
+// - clang and gcc have -fno-strict-aliasing, msvc and tcc do disable type-based aliasing analysis based optimizations
+// - no switch to disable provenance-based alias analysis in compilers (clang, gcc, msvc, tcc)
+// - Usage of restrict can be en/disabled in all compilers via #pragma optimize("", on/off).
+//   It can also be disabled in all compilers via #define restrict, using an according optimization level (typical -O1)
+//   or via separating header and implementation and disabling link time optimziations.
 
-// TODO FIXME finish up C article and simplify everything for examples here
-// to copy paste
-// TODO align alloc
-// TODO alignas equivalent in newer C and in old C for array and memory
+static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment) {
+    assert((size_bytes & (alignment-1)) == 0); // Size aligned
+    assert(((uintptr_t)ptr & (alignment-1)) == 0); // Pointer aligned
+    memset(ptr, byte, size_bytes);
+}
+// 1. Careful with segmented address spaces: lookup uintptr_t semantics
+// 2. Careful with long standing existing optimization compiler bugs pointer to
+// integer and back optimizations in for example clang and gcc
+// 3. Careful with LTO potentially creating problem 2. (clang -flto -funified-lto -fuse-ld=lld ptrtoint_inttoptr.c)
+// 4. Consider C11 aligned_alloc or posix_memalign
+void ptrtointtoptr() {
+  const uint16_t alignment = 16;
+  const uint16_t align_min_1 = alignment - 1;
+  void * mem = malloc(1024+align_min_1);
+  // C89: void *ptr = (void *)(((INT_WITH_PTR_SIZE)mem+align_min_1) & ~(INT_WITH_PTR_SIZE)align_min_1);
+  // ie void *ptr = (void *)(((uint64_t)mem+align_min_1) & ~(uint64_t)align_min_1);
+  // offset ptr to next alignment byte boundary
+  void * ptr = (void *)(((uintptr_t)mem+align_min_1) & ~(uintptr_t)align_min_1);
+  printf("0x%08" PRIXPTR ", 0x%08" PRIXPTR "\n", (uintptr_t)mem, (uintptr_t)ptr);
+  memset_16aligned(ptr, 0, 1024, alignment);
+  free(mem);
+}
 
 // macro NULL = 0 or mingw null
 
@@ -200,7 +232,20 @@ inline void hash_combine(unsigned long *seed, unsigned long const value)
     *seed ^= value + 0x9e3779b9 + (*seed << 6) + (*seed >> 2);
 }
 
+// https://github.com/tidwall/th64
+// looks like it is not includede in smhasher3 and does not look tiny
+static uint64_t th64(const void *data, size_t len, uint64_t seed) {
+    uint8_t*p = (uint8_t*)data, *e = p+len;
+    uint64_t r = 0x14020a57acced8b7, x, h=seed;
+    while(p+8 <= e)
+      memcpy(&x, p, 8), x*=r, p+=8, x=x<<31|x>>33, h=h*r^x, h=h<<31|h>>33;
+    while(p<e)
+      h = h*r^*(p++);
+    return(h = h*r+len, h ^= h>>31, h *= r, h ^= h>>31, h *= r, h ^= h>>31, h *= r, h);
+}
+
 // TODO siphash for better performance
+// https://gitlab.com/fwojcik/smhasher3
 // https://github.com/rui314/mold/commit/fa8e95a289f911c0c47409d5848c993cb50c8862
 
 /// assume: continuous data pointed to by str is terminated with 0x00
@@ -249,6 +294,11 @@ void printBits(int32_t const size, void * const ptr)
     //printf(" ");
     status = puts(""); // write empty string followed by newline
     if (status < 0) abort();
+}
+
+void print_size_t() {
+  size_t val = 0;
+  printf("%zu\n",val); // SHENNANIGAN clangd: no autocorrection of printf formatter string
 }
 
 // easy preventable ub:
@@ -386,6 +436,7 @@ int no_reinterpret_cast() {
   return 0;
 }
 
+// SHENNANIGAN unclear risk from clang/gcc provenance related miscomplations
 int ptr_no_reinterpret_cast() {
   char arr[4] = {0,0,0,1};
   int32_t i32_arr = 0;            // unnecessary variable hopefully elided
@@ -394,6 +445,32 @@ int ptr_no_reinterpret_cast() {
   // SHENNANIGAN dont return stack local variable here!
   return 0;
 }
+
+struct sStruct1 {
+  uint8_t a1;
+  uint8_t a2;
+  uint32_t b1;
+  uint32_t b2;
+};
+// Ensure correct storage and padding size for pointers via sizeof.
+void padding() {
+  struct sStruct1 * str1 = malloc(sizeof(struct sStruct1));
+  str1->a1 = 5;
+  free(str1);
+}
+
+void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim) {
+  for(int i=0; i<len_bytes; i+=1) {
+    if (bytes == lim) break;
+    bytes[i] = 42;
+  }
+}
+// void non_allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint8_t * lim) {
+//   for(int i=0; i<len_bytes; i+=1) {
+//     if (bytes == lim) break;
+//     bytes[i] = 42;
+//   }
+// }
 
 // typedef struct convention
 typedef struct structname {
@@ -939,6 +1016,15 @@ int setup_SIGINT_handler() {
   return EXIT_SUCCESS;
 }
 #endif
+
+
+void getFullPathNameUsage() {
+  const char * argv = "test123";
+  char *fileExt;
+  char szDir[256]; //dummy buffer
+  GetFullPathName(&argv[0], 256, szDir, &fileExt);
+  printf("Full path: %s\nFilename: %s", szDir, fileExt);
+}
 
 //====signaling on Posix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard

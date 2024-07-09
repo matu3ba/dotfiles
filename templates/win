@@ -270,13 +270,13 @@ g
 bp main
 g
 Controls
-.lines        enable source line information
-bp main       set initial breakpoint
-l+t           stepping will be done by source line
-l+s           source lines will be displayed at prompt
-g             run program until "main" is entered
-pr            execute one source line, and toggle register display off
-p             execute one source line
+.lines            enable source line information
+bp binname!main   set initial breakpoint
+l+t               stepping will be done by source line
+l+s               source lines will be displayed at prompt
+g                 run program until "main" is entered
+pr                execute one source line, and toggle register display off
+p                 execute one source line
 
 Assembly:
 switch mode: l+t (source) and l-t (assembly)

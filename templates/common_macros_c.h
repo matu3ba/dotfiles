@@ -36,9 +36,32 @@
 #endif
 
 /* https://sourceforge.net/p/predef/wiki/Compilers/ */
+#ifdef _MSC_VER
+#define VISUAL_STUDIO 1
+#define MIN_VS2015 (VISUAL_STUDIO && (_MSC_VER >= 1900)) // Visual Studio 2013
+#define MIN_VS2013 (VISUAL_STUDIO && (_MSC_VER >= 1800)) // Visual Studio 2013
+#define MIN_VS2012 (VISUAL_STUDIO && (_MSC_VER >= 1700)) // Visual Studio 2012
+#define MIN_VS2010 (VISUAL_STUDIO && (_MSC_VER >= 1600)) // Visual Studio 2010
+#else
+#define VISUAL_STUDIO 0
+#endif
 
-/* https://sourceforge.net/p/predef/wiki/Libraries/ */
-
-/* https://sourceforge.net/p/predef/wiki/OperatingSystems/ */
-
-/* https://sourceforge.net/p/predef/wiki/Architectures/ */
+// msvc compatibility hacks
+#if MIN_VS2015
+#define DEPRECATED(MSG) [[deprecated(MSG)]]
+#define DEPRECATED_CONSTRUCTOR __declspec(deprecated)
+#define DISABLE_DEPRECATED_WARNINGS __pragma(warning(disable:4996))  // disables deprecated warnings in msvc
+#define FINAL sealed
+#define NORETURN [[noreturn]]
+#define NULLPTR nullptr
+#define OVERRIDE override
+#elif MIN_VS2010
+#define DEPRECATED(MSG) __declspec(deprecated(MSG))
+#define DEPRECATED_CONSTRUCTOR __declspec(deprecated)
+#define DISABLE_DEPRECATED_WARNINGS __pragma(warning(disable:4996))
+#define FINAL sealed
+#define NORETURN __declspec(noreturn)
+#define NULLPTR nullptr
+#define OVERRIDE override
+#define constexpr
+#endif

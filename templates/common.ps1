@@ -234,6 +234,31 @@ function parseVersion {
 # $handle = $proc.Handle # cache proc.Handle to fix ExitCode to work correctly
 # $proc.WaitForExit() # prevent msbuild not being terminated due to subprocess
 
+function sane_BinaryDiff {
+  param(
+    [string] $src_file,
+    [string] $dest_file,
+    [switch] $short = $false
+  )
+  $hash1 = (Get-FileHash $src_file).Hash
+  $hash2 = (Get-FileHash $dest_file).Hash
+  if ($hash1 -ne $hash2) {
+    if ($short) { return 1 }
+    Write-Host "delta ${src_file} ${dest_file}"
+    # TODO: getting line number in text diffs
+    # $src_cont = Get-Content "${src_file}"  | %{$i = 1} { new-object psobject -prop @{LineNum=$i;Text=$_}; $i++}
+    # $dest_cont = Get-Content "${dest_file}" | %{$i = 1} { new-object psobject -prop @{LineNum=$i;Text=$_}; $i++}
+    # $cmp = Compare-Object $src_cont $dest_cont -Property Text -PassThru -IncludeEqual
+    $cmp = Compare-Object -ReferenceObject $(Get-Content $src_file) -DifferenceObject $(Get-Content $dest_file)
+    for ($i=0; $i -lt $cmp.Length; $i+=1) {
+      Write-Host "$($cmp[$i].SideIndicator) $($cmp[$i].InputObject)"
+    }
+    return 1
+  } else {
+    return 0
+  }
+}
+
 # Start process with arguments with cwd : (current cwd xor cwd $at xor excutable directory).
 function sane_StartProcess {
   param(
@@ -294,11 +319,20 @@ function sane_StartProcess {
 #            This means that the files already exist in the destination directory
 #    7 (4+1+2) Files were copied, a file mismatch was present, and additional files were present.
 
+# SHENNANIGAN robocopy docs incorrect on error => !$? >= 8, it is error !$? > 8
+# robocopy $SRC $TARGET *.dll
+# if (!$? -gt 8) { Write-Output "error: " !$?; return !$?; }
+
+# SHENNANIGAN robocopy does not support filepath and subdir selection
+# it only supports filepath exclusion
+# robocopy $src $dest *.* /compress /xd $excl_dirs /xf $excl_files /eta /j
+# robocopy $src $dest /s /compress /xd $excl_dirs /xf $excl_files /eta /j
+
 # src dest files expect
 # expect: no_error([0-7]), no_copy (0/4), all_copy(1/5), never_copy(8/16)
 # never_copy tests for things like access denied or no connection to remote
 # returns 0 (ok), 1 (error), 2 (connection,access), 3 (invalid args)
-function sane_robocopy {
+function complete_robocopy {
   param(
     [string] $src,
     [string] $dest,
@@ -308,6 +342,8 @@ function sane_robocopy {
   if (($expect -ne "no_error") -and ($expect -ne "no_copy") -and ($expect -ne "all_copy") -and ($expect -ne "never_copy")) {
     return 3 # invalid args
   }
+  # copy subdirs exclusive empty ones, compress, show expected time, copy unbuffered
+  # [string[]] $flags = @("/s", "/compress", "/eta", "/j")
   [string[]] $tmp = @("$src", "$dest")
   [string[]] $robocopy_args = $tmp + $files
   $proc = Start-Process "robocopy" -ArgumentList $robocopy_args -NoNewWindow -PassThru
@@ -333,6 +369,26 @@ function sane_robocopy {
     if ($proc.ExitCode -ge 8) { return 0 } else { return 1 }
   }
 }
+
+# invoke rcopy, wait for termination and return result handle
+# with -dry returns "DONT_USE_THIS" otherwise Start-Process handle
+function simple_robocopy {
+  param(
+    [string[]] $rcopy_args,
+    [switch] $dry = $false
+  )
+  if ($dry) {
+    Write-Host "robocopy $($rcopy_args -join ' ')"
+    return "DONT_USE_THIS"
+  } else {
+    $proc = Start-Process "robocopy" -ArgumentList $rcopy_args -NoNewWindow -PassThru
+    $handle = $proc.Handle # cache proc.Handle to fix ExitCode to work correctly
+    $proc.WaitForExit() # early terminate on error
+    return $proc
+  }
+}
+
+# icacls.exe .\vs.ps1 /grant NT-AUTORITÄT\SYSTEM:RX
 
 function comparisonOperators {
   #Equality

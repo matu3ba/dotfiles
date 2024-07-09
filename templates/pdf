@@ -12,3 +12,6 @@ Remove password from pdf document
 pdftk secured.pdf input_pw password output unsecured.pdf
 qpdf --decrypt --password=verysecret input.pdf output.pdf
 evince print to document
+
+Visual diff a pdf
+https://github.com/vslavik/diff-pdf

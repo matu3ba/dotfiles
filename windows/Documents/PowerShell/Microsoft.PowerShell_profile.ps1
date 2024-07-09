@@ -216,6 +216,8 @@ filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 Import-Module posh-git
 Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
+# icacls.exe .\vs.ps1 /grant NT-AUTORITÄT\SYSTEM:RX
+
 # requires TODO
 # net use \\$IP\d $PW /USER:$USER
 # robocopy .\builddir\bin\ \\$IP\$DRIVE\$DIR *.dll
@@ -297,7 +299,3 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 # SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
 # https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
-
-# SHENNANIGAN robocopy docs incorrect on error => !$? >= 8, it is error !$? > 8
-# robocopy $SRC $TARGET *.dll
-# if (!$? -gt 8) { Write-Output "error: " !$?; return !$?; }

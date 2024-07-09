@@ -147,6 +147,7 @@ void sortarray_lambda_expression() {
 }
 
 void simpleCAS() {
+    // SHENNANIGAN atomic default initializer of integers is 0, but not well documented/simple to find
     std::atomic<bool> is_initialized(false);
 
     // imagine 2 threads could do stuff with is_initialized
@@ -1342,7 +1343,7 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 
 // TODO how to feed cl.exe args to msbuild
 // TODO get correct and usable clangd settings from msbuild
-// => idea: parsing cl.exe inputs
+// => idea: parsing cl.exe inputs (logs from msbuild ClCompile:)
 // ====caching fixen
 // https://stackoverflow.com/questions/1704907/how-can-i-get-my-c-code-to-automatically-print-out-its-git-version-hash
 // try: specify macro via msvc compiler
