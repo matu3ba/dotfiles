@@ -44,7 +44,8 @@
 // clang -c -flto -funified-lto foo.c
 // clang -flto -fuse-ld=lld foo.o  # pass --lto=full to ld.lld
 
-// https://github.com/Hirrolot metalang99
+// https://github.com/Hirrolot/metalang99, datatype99, interface99
+// https://github.com/Gankra/abi-cafe
 
 // https://ahgamut.github.io/2022/10/23/debugging-c-with-cosmo/
 // Debugging with cosmopolitcan libc

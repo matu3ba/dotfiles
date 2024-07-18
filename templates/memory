@@ -336,6 +336,20 @@ https://wiki.debian.org/Hugepages
 
 Pointer tagging with TBI for AArch64 https://www.linaro.org/blog/top-byte-ignore-for-fun-and-memory-savings/
 
+Take the number 0x0123456789ABCDEF, in little endian.
+
+If represented with the lowest memory address on the *left*:
+(start ----------> end)
+EF CD AB 89 67 45 23 01
+
+But if you conceptualize it with address 0 on the *right*:
+(end <---------- start)
+01 23 45 67 89 AB CD EF
+
+Which has the additional advantage of having the "direction"
+of bit addresses match the "direction" of byte addresses.
+
+
 Process stack
 +-----------+ <- high address
 | foo       | <-- XPS

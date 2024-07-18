@@ -5,6 +5,7 @@ comby - https://github.com/comby-tools/comby
 see https://comby.dev/blog/2021/03/26/comby-reducer
 https://comby.dev/en/projects
 https://comby.dev/blog/
+cal - coreutils, unxutils, or uutils-coreutils
 
 fd-find from sharkdp https://github.com/sharkdp/fd
 fz from natecraddock https://github.com/natecraddock/zf

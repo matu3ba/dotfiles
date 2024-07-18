@@ -7,7 +7,6 @@
 
 // force color codes
 // preload.c
-#include <stdlib.h>
 int isatty(int fd) {
     switch (fd) {
         case 0: // [[fallthrough]]

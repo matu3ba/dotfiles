@@ -54,6 +54,10 @@ value for all associated aliases". I am wondering, why, if Rust can use them
 for a memory model of their borrow checking semantics, it is still unsettled in
 LLVM blocking CHERI upstreaming (mixed tagged pointer capabilities) and full
 restrict support.
+* LLVM unable to formalize frontend/programmer control to workaround performance
+costs.
+* Own assumption: Default fixes with big performance costs xor compilation time costs
+and nothing important broke horribly yet.
 
 7. Motivation for (big) projects
 * can be difficult to stay motivated and complete large technical projects

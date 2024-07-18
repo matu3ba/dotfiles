@@ -14,6 +14,9 @@ if not ok_lint then return end
 -- sed -i 's|==|>=|g' req.txt
 -- pip3 install --user -r req.txt --upgrade
 
+-- idea codespell
+-- https://sean.fish/x/blog/codespell-ignorelists-neovim/
+
 lint.linters_by_ft = {
   -- # ignore ruff lints for whole file (too long line)
   -- # ruff: noqa: E501 E701

@@ -8,6 +8,7 @@ nmcli
 nmtui
 avahi-discover
 forwarder https://github.com/erluko/socat
+termshark https://termshark.io/
 
 ping command examples
 -w TIMEOUT    [to test if there is a connection at all]
