@@ -1,3 +1,6 @@
+// C++ tooling
+// https://github.com/andreasfertig/cppinsights
+
 #include <algorithm>
 #include <array>
 #include <array>
@@ -80,6 +83,15 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
                 return "[Unknown " BOOST_PP_STRINGIZE(name) "]";                                                  \
         }                                                                                                         \
     }
+
+// better enums via enum class
+void enum_class_example() {
+	enum class Loc {
+		Abs,
+		Rel,
+	};
+  Loc loc1 = Loc::Rel;
+}
 
 // defer-like behavior in C++
 #ifndef _WIN32
@@ -779,6 +791,7 @@ static_assert(!is_string_class<std::vector<char>>);
 // Solution: Only use 'auto' for well-known iterators and status tuples, **never**
 // for objects.
 
+#ifdef _POSIX
 // IPC over shared process memory
 enum ProcState { IDLE, STOPPING, RUNNING };
 static void * some_memregion = nullptr; // c++ only
@@ -819,6 +832,7 @@ void ipc_read() {
     }
   }
 }
+#endif
 
 // SHENNANIGAN
 // interoperating type safe with c strings is very cumbersome
@@ -826,15 +840,19 @@ void cstring_interop_annoying() {
   const char * cmd = "ls";
   char const * buffer[] = {"ls", "-l", NULL};
   char * const * argv = const_cast<char * const *>(buffer);
-  int execed = execve(cmd, argv, NULL);
+  // Posix name is deprecated, use _execve
+  int execed = _execve(cmd, argv, NULL);
   execed = execed;
 }
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 // unique_ptr pattern to handle file handles and cleanup via RAII
 void raii_filehandles() {
+  std::string sFile = "blablabla";
   char csFile[MAX_PATH] = "";
-  memcpy(csFile, sFile.c_str(), sFile.GetLength());
+  memcpy(csFile, sFile.c_str(), sFile.size());
   std::unique_ptr<void, decltype (&CloseHandle)> hFile(nullptr, CloseHandle);
   // GENERIC_WRITE, FILE_SHARE_WRITE for setting anything on the file
   HANDLE tmphFile = CreateFile(csFile,
@@ -845,7 +863,7 @@ void raii_filehandles() {
     FILE_ATTRIBUTE_NORMAL,
     NULL
   );
-  if (tmphFile == INVALID_HANDLE_VALUE) TEST_FAILED("could not open file handle");
+  if (tmphFile == INVALID_HANDLE_VALUE) fprintf(stderr, "could not open file handle\n");
   hFile.reset(tmphFile);
 
   // do some work
@@ -881,7 +899,7 @@ void systemtime_filetime() {
 void printGetLastError() {
     DWORD error = ::GetLastError();
     std::string message = std::system_category().message(error);
-    std::cout << "ERROR: " << message << std::newline;
+    fprintf(stdout, "ERROR: %s\n", message.c_str());
 }
 #endif
 
@@ -1341,9 +1359,6 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // See https://maskray.me/blog/2020-12-12-c++-exception-handling-abi
 // and compare to setjmp and longjmp (store and retrieve stack)
 
-// TODO how to feed cl.exe args to msbuild
-// TODO get correct and usable clangd settings from msbuild
-// => idea: parsing cl.exe inputs (logs from msbuild ClCompile:)
 // ====caching fixen
 // https://stackoverflow.com/questions/1704907/how-can-i-get-my-c-code-to-automatically-print-out-its-git-version-hash
 // try: specify macro via msvc compiler
@@ -1351,8 +1366,25 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // https://learn.microsoft.com/de-de/cpp/build/reference/compiler-options?view=msvc-170
 // https://learn.microsoft.com/en-us/visualstudio/msbuild/cl-task?view=vs-2022
 // adjust graphical msvc compiler invocation
+// => must use build system to invoke correct flags, if they are changing to prevent cache misses
+// resulting in unnecessary checks
 
 // https://en.cppreference.com/w/cpp/atomic/memory_order
 // TODO
 // * difference to C memory order =>
 // * guide to check for yourself with cerberus
+
+// SHENNANIGAN
+// templated classes with forwarded declared private class defined in cpp may
+// prevent usage of 'MyClass class = MyClass();' due to unknown type, which
+// needs to replaced by 'MyClass class();'
+
+// SHENNANIGANS implicit coercion via other class possible
+// templated constexpr can coerce implicitly via other class, but it must have the direct includes.
+
+// SHENNANIGAN msvc before VS2022 also uses indirect includes for templates
+// SHENNANIGAN msvc before VS2022 created implicit assignment operators
+
+// SHENNANIGAN msvc
+// private interior class may need inline constructor to propagate type
+// information to header, if forward declared in header

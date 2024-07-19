@@ -319,8 +319,10 @@ local has_oil, oil = pcall(require, 'oil')
 local has_myoil, myoil = pcall(require, 'my_oil')
 if has_oil then
   assert(has_myoil)
-  add_cmd('Oabs', function() setPlusAnd0Register(oil.get_current_dir()) end, {})
-  add_cmd('Orel', function() setPlusAnd0Register(plenary.path:new(oil.get_current_dir()):make_relative()) end, {})
+  add_cmd('ODabs', function() setPlusAnd0Register(oil.get_current_dir()) end, {})
+  add_cmd('ODrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. sep) end, {})
+  add_cmd('OFabs', function() setPlusAnd0Register(oil.get_current_dir() .. oil.get_cursor_entry().parsed_name) end, {})
+  add_cmd('OFrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. oil.get_cursor_entry().parsed_name) end, {})
   if utils.is_windows then
     add_cmd('OExec', function() setPlusAnd0Register(myoil.pwshExec()) end, {})
     add_cmd('OCec', function() setPlusAnd0Register(myoil.pwshCdExec()) end, {})

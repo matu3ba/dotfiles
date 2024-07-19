@@ -51,7 +51,7 @@ $env:Editor = "nvim"
 # DevShell to be used from Powershell
 # https://intellitect.com/blog/enter-vsdevshell-powershell/
 # https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022
-
+# & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1"
 
 #====shortcuts
 # within shell: Get-PSReadLineKeyHandler

@@ -7,3 +7,6 @@ zig-out/
 
 .luarc.json
 .mypy_cache
+
+/*.exe
+/*.obj

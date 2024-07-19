@@ -140,3 +140,5 @@ protected:
     return System::Windows::Forms::DataGridView::ProcessDialogKey(keyData);
   }
 };
+
+// https://stackoverflow.com/questions/16135490/visual-studio-2010-c-cli-in-static-library-mode-could-not-find-assembly-msco

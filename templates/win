@@ -362,7 +362,7 @@ https://christitus.com/fix-corrupt-windows-install/
 overview of basic ones https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf
 https://learn.microsoft.com/en-us/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
 
-shorcuts:
+shortcuts:
 VS2015
 next/prev tab              Ctrl-f6/Ctrl-Shift-f6
 only compile current file  Ctrl-f7

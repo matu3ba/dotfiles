@@ -101,6 +101,15 @@ alias gshn='git --no-pager show --name-only'
 #3.2. add to result string variable
 #3.3 print string variable to stdout
 
+#untrack a file which was tracked possibly added to .gitignore
+# add diff to represent empty file:
+# git rm --cached [-r] file/dir
+# alternative to keep index:
+# git update-index --assume-unchanged <file>
+# better performant alternative:
+# git update-index --skip-worktree <file>
+# git update-index --no-skip-worktree <file>
+
 #delete untracked files (dry run and real one)
 #git clean -d -n
 #git clean -d -f

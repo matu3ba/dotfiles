@@ -25,6 +25,8 @@ editors: neovim[more plugins], vim[stable+no surprises], helix[lazy setup, few p
 tracy -- frame tracer and visualizer
 hex and reverse engineering editor: imhex https://github.com/WerWolv/ImHex
 
+TUI API client - https://github.com/darrenburns/posting
+
 fdupes or fork jdupes - finding duplicates
 fdupes -qdN -r /ops/backup/
 

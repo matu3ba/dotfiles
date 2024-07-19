@@ -206,6 +206,7 @@ function StartProcess_stdout {
 
 # read from file: Get-Content -Path FILEPATH
 # substitute \t with ' ' in string $str = $mixed_str -replace ("`t", " ")
+# subst /d D:
 
 function parseVersion {
   $content = @("#define MAJOR_VERSION 0", "#define MINOR_VERSION 1", "#define MINOR_VERSION 2")
@@ -444,3 +445,11 @@ function stopWatch {
 
 # TODO fix this
 #https://stackoverflow.com/questions/49870753/functions-had-inline-decision-re-evaluated-but-remain-unchanged
+
+function prefix_array() {
+  param (
+    [string[]] arr1,
+    [string] src
+  )
+  return arr1.ForEach({"${src}\$_"})
+}
