@@ -24,7 +24,7 @@ $grep -o "\[\-W.*\].*" compilation_results.txt | sort -u
 -Wsuggest-final-methods -Wsuggest-final-types
 -Wsuggest-override \
 -ftrapv \
--Wcast-align \ // *char -> *u32 can be fine=>annoying
+-Wcast-align=strict \ // *char -> *u32 can be fine=>annoying
 -fno-strict-aliasing \
 // optimizations
 -Wunsafe-loop-optimizations \

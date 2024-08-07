@@ -2,13 +2,14 @@ const std = @import("std");
 const builtin = @import("builtin");
 
 // Tools (common vs special)
-// kcov - https://github.com/liyu1981/kcov
+// kcov [obsolete] - https://github.com/liyu1981/kcov
 // tracy - https://github.com/wolfpld/tracy
 // cova(cli args) - https://github.com/00JCIV00/cova
 // rizin(reverse engineering) - https://github.com/rizinorg/rizin
 // orbit(tracing no annotation) - https://github.com/google/orbit
 // rigorous perf - https://github.com/ccurtsinger/stabilizer
 // libtree(ldd as tree) - https://github.com/haampie/libtree
+// typos-cli - https://github.com/crate-ci/typos
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger
