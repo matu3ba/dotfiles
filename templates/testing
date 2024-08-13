@@ -190,3 +190,9 @@ Generating with from gdb snippets and use lsp to generate an objects instance an
 vendor specific frameworks, since solutions are for scaling configurations, scheduling of connecting things
 twincat testing - https://tcunit.org/#/
 https://alltwincat.com/2020/06/15/the-five-best-and-worst-things-with-twincat/
+
+https://antithesis.com/docs/best_practices/sizing.html
+TODO best practice
+
+https://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html
+fuzzing ideas + process semantics

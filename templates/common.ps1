@@ -448,8 +448,45 @@ function stopWatch {
 
 function prefix_array() {
   param (
-    [string[]] arr1,
-    [string] src
+    [Parameter(Mandatory, Position=0)] [string[]] arr1,
+    [Parameter(Mandatory, Position=1)] [string] src
   )
   return arr1.ForEach({"${src}\$_"})
+}
+
+function extract_numbers() {
+  $my_string = "Start0123456789End"
+  $numbers_only = $my_string -replace "[^0-9]" , ''
+  return $numbers_only
+}
+
+function switch_case() {
+
+  # break statement is optional to ensure only the applied condition is matched,
+  # if multiple conditions are satisfied
+  # when only one conditions is satisfied, break is superfluous
+
+  # switch [-regex|-wildcard|-exact][-casesensitive] (<value>)
+  # {
+  #     "string"|number|variable|{ expression } { statementlist }
+  #     default { statementlist }
+  # }
+  # switch [-regex|-wildcard|-exact][-casesensitive] -file <filename>
+  # {
+  #     "string"|number|variable|{ expression } { statementlist }
+  #     default { statementlist }
+  # }
+
+  $arrayNum = @(1,2)
+  switch ($arrayNum) {
+      1 {"It is one." }
+      2 {"It is two." }
+      default {"Not found"}
+  }
+
+  # also works with replacement arg $_
+  switch -file .\random.txt {
+      {$_ -match 'she'} { $_ }
+  }
+
 }

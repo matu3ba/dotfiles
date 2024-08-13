@@ -59,6 +59,7 @@ add_cmd('Config', df_configs_edit, {})
 add_cmd('Ghostty', df_configs_edit .. sep .. 'ghostty' .. sep .. 'config', {})
 add_cmd('Aliases', df_config_shells_edit .. sep .. 'aliases', {})
 add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
+add_cmd('Examples', df_edit .. sep .. 'example', {})
 add_cmd('Templates', df_edit .. sep .. 'templates', {})
 add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep
   .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
@@ -89,6 +90,13 @@ add_cmd('Style', function(opts) require('material.functions').change_style(opts.
   nargs = 1,
   complete = function(_, _, _) return { 'darker', 'lighter', 'palenight', 'oceanic', 'deep ocean' } end,
 })
+
+
+add_cmd('StVis', function(opts) require('my_statusline').setVisualSetting(opts.args) end, {
+  nargs = 1,
+  complete = function(_, _, _) return { 'cwd', 'nocwd' } end,
+})
+
 --map('v', '<leader>b', '"+y', opts)
 --buf_cwd = getcwd(0)
 --=> zig build, if build.zig exists in current folder
@@ -322,7 +330,7 @@ if has_oil then
   add_cmd('ODabs', function() setPlusAnd0Register(oil.get_current_dir()) end, {})
   add_cmd('ODrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. sep) end, {})
   add_cmd('OFabs', function() setPlusAnd0Register(oil.get_current_dir() .. oil.get_cursor_entry().parsed_name) end, {})
-  add_cmd('OFrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. oil.get_cursor_entry().parsed_name) end, {})
+  add_cmd('OFrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. sep .. oil.get_cursor_entry().parsed_name) end, {})
   if utils.is_windows then
     add_cmd('OExec', function() setPlusAnd0Register(myoil.pwshExec()) end, {})
     add_cmd('OCec', function() setPlusAnd0Register(myoil.pwshCdExec()) end, {})
@@ -333,8 +341,6 @@ if has_oil then
     -- add_cmd('OExec', function() setPlusAnd0Register(myoil.posixExec) end, {})
     -- add_cmd('OCec', function() setPlusAnd0Register(myoil.posixCdExec) end, {})
   end
-
-
 end
 
 add_cmd('Frel', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})

@@ -117,3 +117,7 @@ Explanation:
 
 https://fgiesen.wordpress.com/2021/08/30/entropy-coding-in-oodle-data-huffman-coding/
 TODO processor performance characteristics 20240528
+
+Performance
+System Call Hook for ARM64 for trusted code https://github.com/retrage/svc-hook
+System Call Hook for Linux for trusted code https://github.com/yasukata/zpoline

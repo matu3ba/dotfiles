@@ -19,6 +19,10 @@
 #git restore --source HEAD@{10.minutes.ago} file.txt
 #git restore -p file.txt
 
+# add tag to commit
+#git tag -a v1.2 9fceb02 -m "Message here"
+#git push origin v1.2
+
 #overwrite current branch with other branch without losing content
 #git tag old-email-branch
 #git reset --hard staging
@@ -369,6 +373,8 @@ alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 
 # merge without forward (less reliable)
 alias gm='git merge --no-ff'
+alias gmce='git merge --edit --no-ff --commit'
+alias gmse='git merge --squash -e --comit'
 # merge with forward
 alias gm='git merge --ff-only'
 # dont forward and dont commit (most reliable)
@@ -519,3 +525,6 @@ alias gsu='git submodule update'
 
 # TODO https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
 # TODO split commits in arbitrary commit range
+
+# TODO fast and intuitive git log search?
+# git log -G 'PxProfilControlGui:'

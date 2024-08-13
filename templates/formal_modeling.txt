@@ -305,6 +305,10 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 16. secure speculative execution
   * "A Formal Approach to Secure Speculation" by Cheang et al.
   * TODO hackernews comment
+- 17. stateful machine learning
+  * kv cache etc
+  * idea: spikes are like synaptic connection strengths and represent output of neuron
+  * spikes express a sequence over time
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

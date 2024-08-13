@@ -44,6 +44,7 @@
 // clang -c -flto -funified-lto foo.c
 // clang -flto -fuse-ld=lld foo.o  # pass --lto=full to ld.lld
 
+// meta lang, algebraic data types, interfaces for C99
 // https://github.com/Hirrolot/metalang99, datatype99, interface99
 // https://github.com/Gankra/abi-cafe
 
@@ -1038,3 +1039,34 @@ void getFullPathNameUsage() {
 // #include<windows.h>
 // #include<unistd.h>
 // Sleep/sleep
+
+// TODO
+// https://gustedt.wordpress.com/2021/10/18/type-safe-parametric-polymorphism/
+// C23 attributes
+// TODO likely identical functionality to macro library
+
+
+// https://thephd.dev/c23-is-coming-here-is-what-is-on-the-menu
+// _Generic selection of enum
+// https://thephd.dev/_vendor/future_cxx/papers/C%20-%20Enhanced%20Enumerations.html
+// N3030 - Enhanced Enumerations
+// N3022 - Modern Bit Utilities
+//  Endian macros (__STDC_ENDIAN_BIG__, __STDC_ENDIAN_LITTLE__, __STDC_ENDIAN_NATIVE__)
+//  stdc_popcount
+//  stdc_bit_width
+//  stdc_leading_zeroes/stdc_leading_ones/stdc_trailing_zeros/stdc_trailing_ones
+//  stdc_first_leading_zero/stdc_first_leading_one/stdc_first_trailing_zero/stdc_first_trailing_one
+//  stdc_has_single_bit
+//  stdc_bit_width
+//  stdc_bit_ceil
+//  stdc_bit_floor
+// N2897 - memset_explicit
+
+void tagged_union() {
+  // TODO std::variant equivalent
+  // TODO enum class equivalent
+}
+
+void enum_class() {
+  // TODO enum class equivalent
+}

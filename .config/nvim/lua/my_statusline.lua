@@ -2,54 +2,64 @@
 --! Offers 1 mode: usage
 -- luacheck: globals vim
 -- luacheck: no max line length
--- Lsp progress parts taken from
 local has_plenary, plenary = pcall(require, 'plenary')
 local has_gitsigns, _ = pcall(require, 'gitsigns')
 local has_navic, navic = pcall(require, 'nvim-navic')
 if not has_plenary or not has_gitsigns then return end
 
-
 local statusline = {}
-local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
 vim.o.statusline = '%!v:lua.require("my_statusline").setup()'
 
-local lsp = {
-  message = '',
-  printed_done = false,
+local visual_setting_choices = {
+  [1] = "nocwd",
+  [2] = "cwd",
 }
+local visual_setting = visual_setting_choices[1]
+
+---Set visual setting. Caller responsible to validate input
+---@param setting string Corresponds to entry of visual_setting_choices.
+statusline.setVisualSetting = function(setting)
+  visual_setting = setting
+end
+
 
 -- print_lsp_progress from https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
-local function print_lsp_progress(opts)
-  local progress_item = opts.data.result.value
-  local client = vim.lsp.get_clients({ id = opts.data.client_id })[1]
-
-  if progress_item.kind == 'end' then
-    lsp.message = progress_item.title
-    vim.defer_fn(function()
-      lsp.message = ''
-      lsp.printed_done = true
-      vim.cmd.redrawstatus()
-    end, 1000)
-    return
-  end
-
-  if progress_item.kind == 'begin' or progress_item.kind == 'report' then
-    local percentage = progress_item.percentage or 0
-    local message_text = ''
-    local percentage_text = ''
-    if percentage > 0 then percentage_text = (' - %d%%%%'):format(percentage) end
-    if progress_item.message then message_text = (' (%s)'):format(progress_item.message) end
-    lsp.message = ('%s: %s%s%s'):format(client.name, progress_item.title, message_text, percentage_text)
-    vim.cmd.redrawstatus()
-  end
-end
-if vim.fn.has('nvim-0.10.0') > 0 then
-  vim.api.nvim_create_autocmd({ 'LspProgress' }, {
-    group = statusline_group,
-    pattern = 'LspProgressUpdate',
-    callback = print_lsp_progress,
-  })
-end
+-- local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
+-- local lsp = {
+--   message = '',
+--   printed_done = false,
+-- }
+-- local function print_lsp_progress(opts)
+--   local progress_item = opts.data.result.value
+--   local client = vim.lsp.get_clients({ id = opts.data.client_id })[1]
+--
+--   if progress_item.kind == 'end' then
+--     lsp.message = progress_item.title
+--     vim.defer_fn(function()
+--       lsp.message = ''
+--       lsp.printed_done = true
+--       vim.cmd.redrawstatus()
+--     end, 1000)
+--     return
+--   end
+--
+--   if progress_item.kind == 'begin' or progress_item.kind == 'report' then
+--     local percentage = progress_item.percentage or 0
+--     local message_text = ''
+--     local percentage_text = ''
+--     if percentage > 0 then percentage_text = (' - %d%%%%'):format(percentage) end
+--     if progress_item.message then message_text = (' (%s)'):format(progress_item.message) end
+--     lsp.message = ('%s: %s%s%s'):format(client.name, progress_item.title, message_text, percentage_text)
+--     vim.cmd.redrawstatus()
+--   end
+-- end
+-- if vim.fn.has('nvim-0.10.0') > 0 then
+--   vim.api.nvim_create_autocmd({ 'LspProgress' }, {
+--     group = statusline_group,
+--     pattern = 'LspProgressUpdate',
+--     callback = print_lsp_progress,
+--   })
+-- end
 -- end print_lsp_progress
 
 local function with_icon(value, icon)
@@ -67,6 +77,15 @@ local function git_statusline()
   if vim.b.gitsigns_status then table.insert(result, vim.b.gitsigns_status) end
   if #result == 0 then return '' end
   return with_icon(table.concat(result, ' '), '')
+end
+
+local function get_cwd(_visual_setting)
+  if _visual_setting == "cwd" then
+    local cwd = vim.loop.cwd()
+    if cwd == nil then return "" else return cwd end
+  else
+    return ""
+  end
 end
 
 local function get_path()
@@ -152,14 +171,30 @@ end
 -- local mode = vim.api.nvim_get_mode().mode
 -- selection range
 function statusline.setup()
+  local reserved_rhs = 80
+  local winwidth = vim.fn.winwidth(0)
+  local cwd = get_cwd(visual_setting)
   local path = get_path()
+  local cwd_width = vim.fn.strdisplaywidth(cwd)
+  local path_width = vim.fn.strdisplaywidth(path)
+  if cwd_width + path_width + reserved_rhs > winwidth then
+    path = vim.fn.pathshorten(path)
+    if cwd_width + path_width + reserved_rhs > winwidth then
+      cwd = ""
+    end
+  end
+
   local lincol = get_linecol()
   local perc_lin = get_perc_lin()
   local buf_info = get_bufinfo()
   local search = search_result()
   local git_status = git_statusline()
   local context = get_context()
+
+  local cwd_draw = ""
+  if cwd ~= "" then cwd_draw = cwd .. ' ' end
   local statusline_sections = {
+    cwd_draw,
     path,
     lincol,
     ' ',
@@ -172,8 +207,6 @@ function statusline.setup()
     git_status,
     ' ',
     context,
-    ' ',
-    lsp.message,
   }
   return table.concat(statusline_sections)
 end

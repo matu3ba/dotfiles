@@ -11,8 +11,13 @@
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <vector>
-#include <memory> // unique_ptr
+#include <memory> // unique_ptr, shared_ptr
 #include <fstream> // fstream
+#include <cstdint>
+
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+  #include <variant>
+#endif
 
 // posix only
 #ifndef _WIN32
@@ -92,6 +97,108 @@ void enum_class_example() {
 	};
   Loc loc1 = Loc::Rel;
 }
+
+enum class eType {
+  ty1,
+  ty2,
+};
+
+template <class _eTy>
+class CImageHistory {
+public:
+  CImageHistory(){}
+};
+
+struct sTemplatedTaggedUnion {
+  eType pix_ty;
+  union ImHist {
+    CImageHistory<int64_t> im_hist_ty1;
+    CImageHistory<int8_t> im_hist_ty2;
+    explicit ImHist() {}
+    ~ImHist() {}
+  } im_hist;
+  // ImHist im_hist;
+  explicit sTemplatedTaggedUnion(eType pix_ty) {
+   switch (pix_ty) {
+      case eType::ty1: {
+        pix_ty = pix_ty;
+        im_hist.im_hist_ty1 = CImageHistory<int64_t>();
+      }
+      case eType::ty2: {
+        pix_ty = pix_ty;
+        im_hist.im_hist_ty2 = CImageHistory<int8_t>();
+      }
+    }
+  }
+  ~sTemplatedTaggedUnion() {
+   switch (pix_ty) {
+      case eType::ty1: {
+        im_hist.im_hist_ty1.~CImageHistory<int64_t>();
+      }
+      case eType::ty2: {
+        im_hist.im_hist_ty2.~CImageHistory<int8_t>();
+      }
+    }
+  }
+};
+
+// SHENNANIGAN: only works without constructor and destructor
+// void C_like_aggregrate_construction_() {
+//   sTemplatedTaggedUnion templ_tagged_union = {eType::ty1, CImageHistory<int64_t>()};
+// }
+
+void tagged_union() {
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+  std::variant<int, std::string> v = "abc";
+  fprintf(stdout, "v.index = %zu\n", v.index());
+  v = {};
+  fprintf(stdout, "v.index = %zu\n", v.index());
+#else
+  // accessing union by index in a stable way requires compiler support
+#endif
+}
+
+// SHENNANIGAN: rules out C_like_aggregrate_construction_
+int usage_sTemplatedTaggedUnion() {
+  sTemplatedTaggedUnion ttu0(eType::ty1);
+  sTemplatedTaggedUnion ttu1(eType::ty2);
+  return 0;
+}
+
+// unions in c++ have the concept of "active member" and can not be used for
+// type punning https://dev.to/pauljlucas/unions-stdvariant-in-c-2op1
+
+
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+
+struct sTemplatedVariant {
+  std::variant<
+    std::shared_ptr<const CImageHistory<int64_t>>,
+    std::shared_ptr<const CImageHistory<int8_t>>
+  > im_hist;
+
+  explicit sTemplatedVariant(eType pix_ty) {
+   switch (pix_ty) {
+      case eType::ty1: {
+        im_hist = std::make_shared<const CImageHistory<int64_t>>();
+        // fprintf(stdout, "ty1\n");
+        break;
+      }
+      case eType::ty2: {
+        im_hist = std::make_shared<const CImageHistory<int8_t>>();
+        // fprintf(stdout, "ty2\n");
+        break;
+      }
+    }
+  }
+};
+
+int usage_sTemplatedVariant() {
+  sTemplatedVariant tv0(eType::ty1);
+  sTemplatedVariant tv1(eType::ty2);
+  return 0;
+}
+#endif
 
 // defer-like behavior in C++
 #ifndef _WIN32
@@ -1225,6 +1332,9 @@ struct Derived2 : Base2<Derived>
 };
 // other use cases include object counter, polymorphic chaining|copy construct
 
+// simple template specialization
+
+
 // SHENNANIGAN streams do not enforce C abi and are overly complex for printing memory
 // This may hide serious bugs like memcpy to std::vector<bool>.
 void stream_flags() {
@@ -1388,3 +1498,4 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // SHENNANIGAN msvc
 // private interior class may need inline constructor to propagate type
 // information to header, if forward declared in header
+

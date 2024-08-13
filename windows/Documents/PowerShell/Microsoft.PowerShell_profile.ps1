@@ -32,6 +32,10 @@ $env:Editor = "nvim"
 # [Environment]::Is64BitOperatingSystem
 # [System.Environment]::OSVersion.Version
 
+# Installing Wezterm
+# https://github.com/wez/wezterm/releases
+# winget install wez.wezterm
+
 # Installing new version of powershell called pwsh.exe to fix utf8:
 # function GitDiff { & git diff --no-color $args }
 # winget search Microsoft.PowerShell
