@@ -3,3 +3,6 @@ dest $HOME\AppData\Local\
 
 src $HOME\dotfiles\windows\Documents
 dest $HOME
+
+src $HOME\dotfiles\windows\.config
+dest $HOME

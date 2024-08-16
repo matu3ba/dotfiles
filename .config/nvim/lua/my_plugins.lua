@@ -118,6 +118,10 @@ return {
     'echasnovski/mini.move',
     version = false,
   },
+  {
+    'echasnovski/mini.operators',
+    version = false,
+  },
   -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
   --fugitive <leader> [gs|g2|g3|p2|p3]

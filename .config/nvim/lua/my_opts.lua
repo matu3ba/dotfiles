@@ -7,6 +7,15 @@ local utils = require 'my_utils'
 -- :set binary nobinary
 -- :setlocal display=uhex
 
+-- overwrite showing of fileformat for inspection, see :h ++ff
+-- easier to use
+-- fd --type f . -x dos2unix
+-- fd --type f . -x unix2dos
+-- :e ++ff=unix file.txt
+-- :w ++ff=unix file.txt
+-- :e ++enc=utf-8 file.txt
+-- :w ++enc=latin1 newfile
+
 --vim.o.guicursor         = '';
 local function load_options()
   local setvars = {

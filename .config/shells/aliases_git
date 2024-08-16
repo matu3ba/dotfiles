@@ -339,12 +339,14 @@ alias glgg='git log --graph'
 alias glgga='git log --graph --decorate --all'
 alias glgm='git log --graph --max-count=10'
 alias glo='git log --oneline --decorate'
-alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+# alias glogp="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # https://stackoverflow.com/questions/1057564/pretty-git-branch-graphs
 # <leader>gl (short) and <leader>gll
 # gitk, git gui, gitx, gitg
 #git log --graph --abbrev-commit --decorate --date=relative --all
 # alias gloga='git log --all --decorate --oneline --graph --stat'
+
+# git log adogs
 alias gladogs='git log --all --decorate  --oneline --graph --simplify-by-decoration'
 
 # show only branch relation

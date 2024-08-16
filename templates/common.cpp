@@ -283,6 +283,11 @@ void simpleCAS() {
 
 }
 
+void vector_reserve_capacity() {
+    std::vector<int> someints;
+    someints.reserve(20);
+}
+
 void always_emplace_back() {
     std::vector<int> someints;
     someints.push_back(1); // might make unnecessary copies, which can be seen in the move call.

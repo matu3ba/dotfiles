@@ -3,3 +3,10 @@ Misc noteworthy global optimization ideas
   * 11-15% compile time overhead? need to check again if correct
   * messes up debug locations
   * no fixup algorithm for debug locations mentioned
+
+
+https://github.com/jnordwick/tempus
+benchmarking functions
+clock_gettime should already not perform a syscall for most systems + tempus
+doesnt seem to check for invariant-tsc before assuming rdtsc(p) validity (or
+uses lfence for non p variant)

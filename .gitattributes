@@ -4,14 +4,17 @@
 
 # files to keep native line ending
 
-# files with explicit line ending and utf8 without bom compatible format
-* text eol=lf
 # *.c text eol=crlf
-*.c text eol=lf
 # *.cpp text eol=crlf
-*.cpp text eol=lf
 # *.h text eol=crlf
+
+# general files with explicit line ending and utf8 without bom compatible fmt
+* text eol=lf
+# specific files with explicit line ending and utf8 without bom compatible fmt
+*.c text eol=lf
+*.cpp text eol=lf
 *.h text eol=lf
+*.lua text eol=lf
 *.txt text eol=lf
 *.zig text eol=lf
 
