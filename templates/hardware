@@ -18,7 +18,86 @@
   * custom logic often IP, so vendors may prefer to not give out information
     unless via sold debugging tooling
 
+Security Level (SL)
+Safety Integrity Level (SIL)
+Common Criteria with Evaluation Assurance Levels (EAL)
+
+Risk cube
+* x probability and/or frequence of failure
+* y severity of consequence
+* z probability and/or frequency of dangerous event
+Then one can specify
+* SIL specifies xy relation (failure x severity)
+* EAL specifies yz relation (severity x dangerous event)
+* risk class specifies xz relation (failure x dangerous event)
+to decide tradeoffs.
+
+"What’s Security Level got to do with Safety Integrity Level?" by Jens Braband
+SL expands CIA (data confidentiality, integrity, availability) into
+1. identification and authentication control (IAC)
+2. use control (UC)
+3. system integrity (SI)
+4. data confidentiality (DC)
+5. restricted data flow (RDF)
+6. timely response to events (TRE)
+7. resource availability (RA)
+with integrity being IAC, UC, SI, and TRE; availability being RA and
+confidentiality being DC and RDF with each area getting a value of 1 to 4
+to form a vector.
+SL1 Protection against casual or coincidental violation
+SL2 Protection against intentional violation using simple means with few resources, generic skills and a low degree of motivation
+SL3 Protection against intentional violation using sophisticated means with moderate resources, IACS-specific skills and a moderate degree of motivation
+SL4 Protection against intentional violation using sophisticated means with extended resources, IACS-specific skills and a high degree of motivation
+It is recommended to always have SL1 for safety-related systems.
+
+The Security Assurance Level SAL is specified in a similar way as SIL.
+
 - practical Safety Integrity Level 4 (SIL4) systems
   * Azure RTOS
-  * Does SeL4 have any widely used OS components to become SIL4?
-  * Is SIL4 even a goal for SeL4?
+- practical EAL7 systems
+  * SeL4
+
+Generally, EAL means how correct the code can be relied on to handle faults/hazardous events.
+Similarly, SIL means how reliable the functionality can avert the worst specific consequences.
+The risk class(es) combine(s) different severities of dangerous events.
+
+https://interrupt.memfault.com/blog/schematic-review-checklist
+As software engineer you must ensure the device is sufficiently correct to diagnose
+1. hardware and 2. software problems to reduce risk and costs.
+This requires eliminating fatal device failure classes like
+- 0. flash and reset strategy: ensure you can not hard brick the device by accident
+- 1. brown-out loops: low battery with low voltage cutoff shuts down device
+- 2. reset by power drain: correct watchdog(s) functionality on hardware and software
+- 3. missing I2C reset: resetting individual devices to work around hardware and software issues
+- 4. missing or unreadable GPIO maps/peripherals: unclear peripherals lead to
+  bugs like (old) hardware versions being wrongly connected with superflous oscillosope usage etc
+- 5. missing strategy for debugging in the field: JTAG and alike are nice, but often useless in field
+  and reproducing locally is often very hard without data. No JTAG can be painful, when local performance
+  is essential
+
+Power/Battery
+    * shutdown precedur of batter powered device?
+    * battery powered: firmware knows power level and to what accuracy (needed)?
+    * how does user reset device?
+GPIOs
+    * GPIO map in spreadsheet, main fn after reset, intended fn, additional noes
+    * Microcontroller Unit (MCU) peripherals used only once?
+    * MCU in reset, are peripheral devices held in proper state? (pullup/down etc)
+    * reset line with proper pullup/down
+    * debug GPIO used only for debug purpose?
+Busses
+    * (if necessary) mechanism to reset IC's attached to bus avaiable?
+    * all I2C devices on same bus or different addresses?
+    * MCU reset in middle of I2C read, how does recovering to talk again to other I2C device work?
+    * MCU reset in SPI transfer, how does receiver handle that?
+    * UART devices: Rx/Tx setup correct?
+    * UART devices: RTS/CTS lines needed?
+    * UART devices: RTS/CTS lines setup correctly? (some devices have not RTS -> CTS)
+Memory/Flash Storage
+    * code size estimate? RAM estimate? how much buffer if estimate is low?
+    * sufficient space for more features over lifetime of product?
+    * crash logs storage? (usually need to survive system reset)
+Debug/Test Infra
+    * how firmware engineer attaches debugger to board? soldering usually bad answer
+    * non-essential helpful GPIOs exposed for debugger (ie SWO or ETM)?
+    * existing test points for power rails, analog signals, busses?
