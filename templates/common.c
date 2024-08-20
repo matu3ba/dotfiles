@@ -550,6 +550,14 @@ void use_voidptr() {
 // WIN32_LEAN_AND_MEAN
 // silently removes deprecated code
 
+// standard approach
+// #ifdef _WIN32
+// #define NOMINMAX
+// #define WIN32_LEAN_AND_MEAN
+// #include <Windows.h>
+// #else
+// #endif
+
 // Very aweful, if used withing stdafx.h:
 //   #pragma once
 //   #include "targetver.h"

@@ -120,7 +120,20 @@ local function get_perc_lin()
 end
 
 local function get_bufinfo()
-  if vim.bo.readonly == true then return 'ro ' end
+  local buf_info_prefix = '     ' -- 5 digits 4 for number 1 for unlisted or not
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  local unlisted = "u"
+  if vim.bo.buflisted == nil or vim.bo.buflisted then
+    unlisted = ""
+  end
+
+  if bufnr ~= nil then
+    buf_info_prefix = tostring(bufnr) .. unlisted .. ' '
+  end
+
+  if vim.bo.readonly == true then return buf_info_prefix .. 'ro ' end
+
   local buf_info
   if vim.bo.buftype == '' then
     buf_info = '  '
@@ -136,7 +149,7 @@ local function get_bufinfo()
     buf_info = 'qf'
   elseif vim.bo.buftype == 'terminal' then
     buf_info = 'te'
-  elseif vim.bo.buftype == 'prompt' then
+  elseif vim.tzo.buftype == 'prompt' then
     buf_info = 'pr'
   else
     buf_info = '  '
@@ -146,7 +159,8 @@ local function get_bufinfo()
   else
     buf_info = buf_info .. ' '
   end
-  return buf_info
+
+  return buf_info_prefix .. buf_info
 end
 
 local function get_context()
