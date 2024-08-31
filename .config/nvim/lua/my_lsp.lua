@@ -180,26 +180,26 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
     vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
     -- vim.keymap.set('n', '<leader>hi', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end, opts)
     -- defaults with neovim realease 10.0
     -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
     -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
-    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wl', function()
+    vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<leader>wl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, opts)
     vim.keymap.set('n', '<leader>ws', function() vim.lsp.buf.workspace_symbol() end, opts) -- view workspace symbols
     vim.keymap.set('n', '<leader>wf', function() vim.lsp.buf.open_float() end, opts) -- view dis
-    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-    vim.keymap.set({'n','v'}, '<space>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', 'gR', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set({'n','v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<leader>ql', function() vim.diagnostic.setloclist() end, opts) -- buffer diagnostics to location list
     vim.keymap.set('n', '<leader>qf', function() vim.diagnostic.setqflist() end, opts) -- all diagnostics to quickfix list
     -- vim.keymap.set('n', '<leader>fo', function() vim.lsp.buf.formatting() end, opts) -- formatting
-    -- vim.keymap.set('n', '<space>f', function()
+    -- vim.keymap.set('n', '<leader>f', function()
     --   vim.lsp.buf.format { async = true }
     -- end, opts)
     -- vim.keymap.set('n', '<leader>re', function() vim.cmd#'LspRestart' end', opts) -- restart lsp
@@ -209,7 +209,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --==CompleterSetup
 cmp.setup {
   mapping = {
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-leader>'] = cmp.mapping.complete(),
     ['<C-y>'] = cmp.mapping.confirm { select = true },
     ['<C-e>'] = cmp.mapping.abort(),
     ['<C-u>'] = cmp.mapping.scroll_docs(-4),

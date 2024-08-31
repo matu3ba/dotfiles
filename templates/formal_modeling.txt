@@ -309,6 +309,10 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * kv cache etc
   * idea: spikes are like synaptic connection strengths and represent output of neuron
   * spikes express a sequence over time
+- 18. TLA+ as only feasibe system to formally verifiy non-deterministic
+  parallelism, states and changes over time via temporal logic
+  * https://www.learntla.com/
+  * TODO
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

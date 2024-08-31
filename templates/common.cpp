@@ -1,19 +1,44 @@
 // C++ tooling
 // https://github.com/andreasfertig/cppinsights
+// C++20 overview https://www.scs.stanford.edu/~dm/blog/param-pack.html
+#if (__cplusplus >= 201703L)
+#define HAS_CPP17
+#endif
+#if (__cplusplus >= 202002L)
+#define HAS_CPP20
+#endif
+#if (__cplusplus >= 202302L)
+#define HAS_CPP23
+#endif
+
+#ifdef _WIN32
+#define _CRT_SECURE_NO_WARNINGS
+#endif // _WIN32
+
+#include <cstdint>
+#include <cstdio> // fprintf
 
 #include <algorithm>
 #include <array>
-#include <array>
 #include <atomic>
-#include <cstdio>
+#include <fstream> // fstream
+#include <future> // future
+#include <iostream> // io stream operators
 #include <map>
+#include <memory> // unique_ptr, shared_ptr
 #include <mutex>
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <vector>
-#include <memory> // unique_ptr, shared_ptr
-#include <fstream> // fstream
-#include <cstdint>
+
+#ifdef HAS_CPP20
+// TODO make clangd not showing warnings and analyze concepts
+// #include <concepts> // NOLINT
+#endif
+
+#ifdef HAS_CPP23
+#include <optional>
+#endif
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
   #include <variant>
@@ -1210,8 +1235,8 @@ void ape_printing_bad() {
 #ifdef _WIN32
 // make msvc not complain about fopen
 // to be used in first lines of .cpp file
-#define _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_DEPRECATE
+// #define _CRT_SECURE_NO_WARNINGS
+// #define _CRT_SECURE_NO_DEPRECATE
 #endif
 void ape_print() {
   FILE * f1 = fopen("file1", "a+");
@@ -1470,6 +1495,45 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
   return 0;
 }
 
+// SHENNANIGAN tagged unions before C++17 std::variant unusable without third party solution
+
+// TODO shared_ptr in union in C++
+// https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+// https://stackoverflow.com/questions/68963247/why-are-the-results-of-this-code-different-with-and-without-fsanitize-undefine
+// https://stackoverflow.com/questions/73157920/undefined-behavior-according-to-clang-fsanitize-integer-on-libstdc-stdran
+// https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr
+// https://stackoverflow.com/questions/62959570/making-shared-ptr-from-the-raw-pointer-of-another-shared-ptr
+// https://stackoverflow.com/questions/40302010/shared-ptr-in-union
+// https://stackoverflow.com/questions/22832465/stdshared-ptr-in-a-union
+// https://stackoverflow.com/questions/3521914/why-compiler-doesnt-allow-stdstring-inside-union/3521998#3521998 struct union_tmp
+// https://stackoverflow.com/questions/121162/what-does-the-explicit-keyword-mean
+// https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-unions/
+// https://www.quora.com/How-do-you-initialize-a-std-shared_ptr-in-C
+
+union union_tmp
+{
+  // WRONG
+  // union_tmp() {}
+  union_tmp()
+  : ptr{} // <--
+  {}
+  ~union_tmp()
+  {}
+  union
+  {
+    int a;
+    std::shared_ptr<std::vector<int>> ptr;
+  };
+};
+
+int use_union_tmp()
+{
+    union_tmp b;
+    std::shared_ptr<std::vector<int>> tmp(new std::vector<int>);
+    b.ptr = tmp; //here segmentation fault happens
+    return 0;
+}
+
 // SHENNANIGAN exceptions implementation are complex
 // See https://maskray.me/blog/2020-12-12-c++-exception-handling-abi
 // and compare to setjmp and longjmp (store and retrieve stack)
@@ -1504,3 +1568,228 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // private interior class may need inline constructor to propagate type
 // information to header, if forward declared in header
 
+
+// generic lambda with deduced return type with unpacking the return type
+// using ReturnedType = typename std::result_of<CallableType()>::type;
+// template <typename T = ReturnedType>
+// typename std::enable_if_t<!std::is_same<ReturnedType, void>::value>
+//   __ExecuteTask(T* = nullptr)
+// {}
+//
+// template <typename CallableType>
+// auto DelegateToThread(CallableType Callable)
+// {
+//   auto Task = MakeTask(Callable); // std::make_unique<Task<CallableType>>(Callable); with struct task
+//   auto Result = Task->GetFuture(); // Task: m_Result.get_future();
+//
+//   // execute task
+//   //  if (!m_Thread.IsExecutingThis())
+//   //  AddTask(std::move(Task));
+//   // else
+//   //  Task->ExecuteTask(const_cast<Private&>(*this));
+//
+//   return Result.get();
+// }
+
+// SHENNANIGAN No operator found
+// Define one and look for all conflicting implementations, but this might not catch everything.
+class OperatorExample {
+  OperatorExample() {}
+  ~OperatorExample() {}
+  void operator * (OperatorExample & other) {
+    m_value *= other.m_value;
+  }
+  uint32_t m_value;
+};
+
+// Techniques to debug templates https://stackoverflow.com/questions/7325910/debugging-template-instantiations
+// Tool
+// - https://github.com/mikael-s-persson/templight
+// - better use C++20 concepts to parametrize templates
+// * 1. Specify temporary types
+template<typename T>
+T some_other_calc(const T &val) {
+  return val;
+}
+template<typename T>
+T calc(const T &val) {
+  T temporary_ = some_other_calc(val);
+  return temporary_ / 100.0;
+}
+// * 2. Use typeid
+template<typename T>
+void test() {
+  fprintf("testing type %s\n", typeid(T).name());
+}
+// * 3. Avoid default implementations
+// => Provide implementations or errors for all types without internal state.
+// * 4. Use static_assert where possible
+// * 5. Show intermediate type of computation
+//  template <class T>
+//  struct mp_debug : T::MP_DEBUG_FORCE_COMPILE_FAILURE {}; // Shows: Type 'int' cannot be used prior to '::' because it has no members [nested_name_spec_non_tag]
+//  using Foo = int; // type to be inspected
+//  template struct mp_debug<Foo>;
+//  int template_compileerror_debug() {
+//    mp_debug<Foo>{};
+//  }
+//  Shorter via
+//  template<typename... Args> void whatis();
+//  usage: whatis<T>();
+// * 6. avoid decltype and std::declval if possible
+//   * check whether operator exists for identical types trivial,
+//   for non-identical ones horrible to write without concepts
+//     + https://www.sandordargo.com/blog/2021/02/10/cpp-concepts-motivations
+//     + https://www.sandordargo.com/blog/2021/02/24/cpp-concepts-with-classes
+//     + https://andreasfertig.blog/2024/01/cpp20-concepts-applied/
+//     + https://www.sandordargo.com/blog/2021/05/05/cpp-concepts-and-logical-operators
+//     + https://www.modernescpp.com/index.php/c-20-define-the-concept-equal-and-ordering/
+// code from https://ideone.com/pldMrr by
+// https://stackoverflow.com/questions/6534041/how-to-check-whether-operator-exists/6536204#6536204
+#include<iostream>
+#include<type_traits>
+namespace CHECK
+{
+  struct No {};
+
+  // check whether operator exists for identical types nice up to including C++17
+#ifndef HAS_CPP20
+  template<typename T, typename Arg> No operator== (const T&, const Arg&);
+  template<typename T, typename Arg = T>
+  struct EqualExists
+  {
+    // https://stackoverflow.com/questions/60386792/c20-comparison-warning-about-ambiguous-reversed-operator
+    enum { value = !std::is_same<decltype(*(T*)(nullptr) == *(Arg*)(nullptr)), No>::value };
+  };
+
+  // check whether operator exists for non-identical types has horrible error messages
+  // and is unusable for metaprogramming in C++14 without additional efforts
+  template<typename T1, typename T2> No operator* (const T1&, const T2&);
+  template<typename T1, typename T2>
+  struct MulExists
+  {
+    enum { value = !std::is_same<decltype(*(T1*)(nullptr) * *(T2*)(nullptr)), No>::value };
+  };
+#endif
+
+  template<typename T1, typename T2>
+  concept CanMultiply = requires(T1 & a, T2 & b) {
+    a * b;
+  };
+  template<typename T1, typename T2> requires CanMultiply<T1, T2>
+  void mul(T1 & t1, T2 & t2) {
+      t1.m = t1 * t2;
+  }
+
+  // same_as may use compiler intrinsics to compare types or use something like
+  // _EXPORT_STD template <class, class>
+  // constexpr bool is_same_v = false;
+  // template <class T>
+  // constexpr bool is_same_v<T, T> = true;
+  // _EXPORT_STD template <class T1, class T2>
+  // struct is_same : std::bool_constant<is_same_v<T1, T2>> {};
+
+  template<typename T1, typename T2> requires std::same_as<T1, T2>
+  void mul_sametype(T1 & t1, T2 & t2) {
+      t1.m = t1 * t2;
+  }
+  // if unsure that RHS is a concept, check the libstd implementation
+  template<typename T>
+  // ad-hoc constraint, note keyword used twice
+  requires requires (T x) { x + x; }
+  T add(T a, T b) { return a + b; }
+}
+
+struct A {
+  bool operator == (A const &);
+  int operator * (int factor) {
+    return m * factor;
+  }
+  int m;
+};
+struct B {
+  short operator == (B const &);
+};
+struct C {};
+struct D {
+  short operator == (short);
+};
+
+int test_OperatorExistence()
+{
+  // C++14
+#ifndef HAS_CPP20
+#ifdef HAS_CPP14
+  std::cout<< "A::operator== () exists: " << CHECK::EqualExists<A>::value << std::endl;
+  std::cout<< "B::operator== () exists: " << CHECK::EqualExists<B>::value << std::endl;
+  std::cout<< "C::operator== () exists: " << CHECK::EqualExists<C>::value << std::endl;
+  std::cout<< "D::operator== (short) exists: " << CHECK::EqualExists<D, short>::value << std::endl;
+
+  std::cout<< "A::operator* () exists: " << CHECK::MulExists<A, int>::value << std::endl;
+  // std::cout<< "B::operator* () exists: " << CHECK::MulExists<B, double>::value << std::endl; // fails with bogous errors
+#endif // HAS_CPP14
+#endif // HAS_CPP20
+
+#ifdef HAS_CPP20
+  A a = { 2 };
+  int b = 10;
+  CHECK::mul( a, b );
+  fprintf(stdout, "a: %d\n", a.m);
+#endif // HAS_CPP20
+
+  return 0;
+}
+
+// type punning template works via enum
+// inside template class
+
+// typeAt from https://stackoverflow.com/questions/72643091/how-to-get-an-element-of-type-list-by-index
+#ifdef HAS_CPP20
+template<typename...> struct type_list {};
+template <std::size_t I, typename T>
+struct typeAt;
+template <std::size_t I, typename... Args>
+struct typeAt<I, type_list<Args...>> : std::tuple_element<I, std::tuple<Args...>> {};
+using L = type_list<int, char, float, double>;
+using R = typename typeAt<0, L>::type;
+using T = typename typeAt<2, L>::type;
+static_assert(std::is_same_v<R, int>, "");
+static_assert(std::is_same_v<T, float>, "");
+#endif
+
+// class Functor {
+// public:
+//     R operator()(P1, ..., Pn) {
+//         return R();
+//     }
+// };
+
+struct MultiOperator {
+  // TODO document multi operator selection
+};
+
+
+struct Foo
+{
+  Foo() : data(0) {}
+  void sum(int i) { data +=i;}
+  int data;
+};
+
+int test_future()
+{
+  Foo foo;
+  // & mandatory for member functions, optional for free functions
+  auto f = std::async(&Foo::sum, &foo, 42);
+  f.get();
+  std::cout << foo.data << "\n";
+
+  // TODO how to use lambda from local fn in async fn
+
+  return 0;
+}
+
+// SHENNANIGAN MSVC C++20 freaks out on std::is_pod
+// replace with std::is_standard_layout and/or std::is_trivial
+
+// https://brevzin.github.io/c++/2021/11/21/conditional-members/
+// https://brevzin.github.io/c++/2019/01/15/if-constexpr-isnt-broken/

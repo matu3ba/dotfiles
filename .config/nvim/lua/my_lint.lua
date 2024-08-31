@@ -32,11 +32,13 @@ lint.linters_by_ft = {
   -- fd -e py --max-depth=1 -x ruff check {}
   -- fd -e py --max-depth=1 -x ruff check --fix {}
   python = { 'mypy', 'ruff' },
+  -- TODO clangd ignore lsp msg
   -- clang14 introduced:
   -- // NOLINTBEGIN
   -- // NOLINTEND
   -- // NOLINTBEGIN(errorclass)
   -- somecode // NOLINT
+  c = { 'clangtidy' },
   cpp = { 'clangtidy' },
   -- luacheck: push ignore
   -- luacheck: pop ignore

@@ -73,3 +73,14 @@ manager-core
 
 https://wouterj.nl/2024/08/git-notes
 TODO store discussion with git
+
+SHENNANIGAN
+gitignore file is also matching case insensitive on Windows and there is no
+default to check this stuff.
+
+Git worktree structure as view on code:
+* main - looking at the code history
+* work - looking at current thing
+* review - looking at other's code
+* fuzz - computer look at code
+* scratch - everything else

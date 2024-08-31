@@ -1,2 +1,10 @@
-#CompileFlags:
-#  Add: [-std=c++20]
+# Tagged union below C++17 means repeated footguns.
+# Metaprogramming below C++20 was unreadable.
+# Core reason for C++23 is std constexpr-ification.
+# Core reason for C++26 TODO hazard pointers?
+CompileFlags:
+  # Add: [-std=c++14]
+  # Add: [-std=c++17]
+  Add: [-std=c++20]
+  # Add: [-std=c++23]
+  # Add: [-std=c++26]

@@ -163,3 +163,7 @@ nat
 https://tailscale.com/blog/how-nat-traversal-works
 poke holes through nat via icmp messages (using traceroute)
 https://github.com/samyk/pwnat
+
+https://www.haskellforall.com/2024/08/firewall-rules-not-as-secure-as-you.html
+common firewall workarounds
+TODO

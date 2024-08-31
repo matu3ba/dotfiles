@@ -361,16 +361,22 @@ https://christitus.com/fix-corrupt-windows-install/
 
 overview of basic ones https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf
 https://learn.microsoft.com/en-us/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
+https://learn.microsoft.com/de-de/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
 
 shortcuts:
 VS2015
 next/prev tab              Ctrl-f6/Ctrl-Shift-f6
 only compile current file  Ctrl-f7
-search                     Ctrl-,
+search
+  TODO                     Ctrl-,
+  TODO                     Ctrl-t
+  TODO                     Ctrl-f12
+  symbol results           Shift-f12
+quick action               Ctrl-.
 close document window      Ctrl-f4
 snippet expanding          Ctrl-k-s
 rename                     Ctrl-r,Ctrl-r
-go back/forward            Ctrl-'-'/TODO
+go
 find                       Ctrl-f
   find next/prev           f3/Shift-f3
 comment/uncomment          Ctrl-k Ctrl-c/Ctrl-k Ctrl-u
@@ -399,6 +405,9 @@ debugging+continue         f5
   run to cursor            Ctrl-f10
   set next statement       Ctrl-Shift-f10
   breakpoint window        Ctrl-Alt-b
+git
+  diff(unreliable)         Alt-f8
+  stage                    TODO
 
 toggle menu                Shift-f10
 toggle dropdown menu       Alt-prefix
@@ -408,23 +417,31 @@ select
 select in component view   Ctrl-f2
   navigate                 tab
 goto
+  editing view                Esc
+  cmd window                  Ctrl-Alt-a
   solution explorer           Ctrl-Alt-l
-  out window                  idea
-  shell                       idea
-  code editor                 idea
-  error list                  idea
-  find symbol results         idea
-  tab finder                  idea
-  mark12..                    idea
+  out window                  Ctrl-Alt-o
+  debugger                    Ctrl-Alt-b
+  call hierachy               Ctrl-Alt-k
+  class view                  Ctrl-Alt-c
+  data sources                Shift-Alt-d
+  edit master                 Ctrl-m Ctrl-m
+  code coverage result        Ctrl-e-c
+  shell                       Ctrl-ö
+  code editor                 f7
+  error list                  Ctrl-^-e
+  tab finder                  Alt-f7
+  mark12..                    ma and 'a but only per file not global
   before(/)after matching brace Ctrl-'`'
   between matching braces     Ctrl-}  (VS2019+)
     smart selection?
   next variable instance      Ctrl-Shift-Arrow
-  next error                  Ctrl-Shift-f12
+  next/pre error              Ctrl-Shift-f12/Shift-f8
   previous error              unmapped
   next/prev local error       unmapped
   next/prev issue             Alt-PgUp/PgDn (VS2019+)
   next/prev window            Ctrl-Tab/Ctrl-Shift-Tab
+  back/forward            Ctrl-'-'/Ctrl-Shift-'-'
 fold
   toggle region                 Ctrl-m Ctrl-m
   collapse all but classes      Ctrl-m-o
@@ -436,9 +453,13 @@ view
   split                       Alt-w-p-Enter
     jump between              f6
   normal                      Alt-w-p-p-Enter
+  peek                        Alt-f12
+  bigger/smalelr              Ctrl-Shift-, and .
 
 file operations
   add new file                Ctrl-Shift-a
+  open file                   Ctrl-o
+  close file                  Ctrl-f4
 
 bookmarks
   toggle                          Ctrl-k Ctrl-k

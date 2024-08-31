@@ -60,6 +60,15 @@
 // $(VC_ExecutablePath_x64_x64) looks like correct path on VS2022
 // $(VC_ExecutablePath_x64) can be wrongly expanded path on VS2022
 
+// file Stdafx.h
+// TODO C++26 use WideCharToMultiByte(CP_UTF8 ..), MultiBytetoWideChar
+// and remove following macro to ignore deprecation
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+// TODO C++23 use std::atomic<std::shared_ptr<>> for atomic shared_ptr
+// and remove following macro to ignore deprecation
+#define _SILENCE_CXX20_OLD_SHARED_PTR_ATOMIC_SUPPORT_DEPRECATION_WARNING
+
+// #include "Stdafx.h"
 #include <stdio.h>
 
 int main() {

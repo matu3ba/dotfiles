@@ -1,18 +1,24 @@
 /* https://sourceforge.net/p/predef/wiki/Home/ */
 
-/* https://sourceforge.net/p/predef/wiki/Standards/ */
-/* C89     __STDC__  ANSI X3.159-1989 */
-/* C90     __STDC__  ISO/IEC 9899:1990 */
-/* C94     __STDC_VERSION__ = 199409L  ISO/IEC 9899-1:1994 */
-/* C99     __STDC_VERSION__ = 199901L  ISO/IEC 9899:1999 */
-/* C11     __STDC_VERSION__ = 201112L  ISO/IEC 9899:2011 */
-/* C17/C18 __STDC_VERSION__ = 201710L  ISO/IEC 9899:2018 */
-/* C23     __STDC_VERSION__ = 202311L  ISO/IEC needed */
-/* C++98   __cplusplus = 199711L   ISO/IEC 14882:1998 */
-/* C++11   __cplusplus = 201103L   ISO/IEC 14882:2011 */
-/* C++14   __cplusplus = 201402L   ISO/IEC 14882:2014 */
-/* C++17   __cplusplus = 201703L   ISO/IEC 14882:2017 */
-/* C++/CLI __cplusplus_cli = 200406L   ECMA-372 */
+/* Known C++17 and C17 compatible compilers re reliable to*/
+/* specify the macros.                                    */
+/* C89     __STDC__                    ANSI X3.159-1989   */
+/* C90     __STDC__                    ISO/IEC 9899:1990  */
+/* C94     __STDC_VERSION__ = 199409L  ISO/IEC 9899-1:1994*/
+/* C99     __STDC_VERSION__ = 199901L  ISO/IEC 9899:1999  */
+/* C11     __STDC_VERSION__ = 201112L  ISO/IEC 9899:2011  */
+/* C14     __STDC_VERSION__ = 201112L  ISO/IEC 9899:2011  */
+/* C17/C18 __STDC_VERSION__ = 201710L  ISO/IEC 9899:2018  */
+/* C23     __STDC_VERSION__ = 202311L  ISO/IEC needed     */
+/* C26     __STDC_VERSION__ = UNFIN    ISO/IEC needed     */
+/* C++98   __cplusplus = 199711L       ISO/IEC 14882:1998 */
+/* C++11   __cplusplus = 201103L       ISO/IEC 14882:2011 */
+/* C++14   __cplusplus = 201402L       ISO/IEC 14882:2014 */
+/* C++17   __cplusplus = 201703L       ISO/IEC 14882:2017 */
+/* C++20   __cplusplus = 202002L                          */
+/* C++23   __cplusplus = 202302L                          */
+/* C++26   __cplusplus = UNFIN                            */
+/* C++/CLI __cplusplus_cli = 200406L   ECMA-372           */
 
 #if defined(__STDC__)
 # define IS_C89
