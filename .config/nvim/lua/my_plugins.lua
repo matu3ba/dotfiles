@@ -150,9 +150,14 @@ return {
     -- config = function() require('gitsigns').setup{} end,
   },
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory (does not work with worktrees)
+  -- USAGE
+  -- DiffviewOpen origin/HEAD...HEAD --imply-local
+  --:DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges
+  --:DiffviewFileHistory -g --range=stash
+  -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md
   -- np, nextprev file tab,s-tab cycle
-  -- TODO: looks broken with git worktrees, minimal reproducible
-  -- { 'sindrets/diffview.nvim' },
+  -- cycle through diffs for modified files and git rev
+  { 'sindrets/diffview.nvim' },
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
   --requires = { "tpope/vim-repeat" },
   -- leap: s|S char1 char2 (<space>|<tab>)* label?

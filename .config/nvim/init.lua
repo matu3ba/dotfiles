@@ -89,6 +89,7 @@ else
     require 'my_jfind' -- faster than telescope
   end
   require 'my_gitsign' -- git
+  -- require 'my_diffview' -- cycle through diffs for modified files and git rev
   require 'my_hydra' -- multi_mode
   require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
   -- neodev setup is in my_dap

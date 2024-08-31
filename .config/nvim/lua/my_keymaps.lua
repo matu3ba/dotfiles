@@ -405,9 +405,13 @@ map('n', '<F12>', [[<cmd>DapStepOut<CR>]], opts) -- s-f12 not used to prevent es
 --nnoremap <leader>db :Telescope dap list_breakpoints<CR>
 
 --==lspconfig
+-- defaults
+-- <grn>: vim.lsp.buf.rename()
+-- <gra>: vim.lsp.buf.code_action()
+-- <grr>: vim.lsp.buf.references()
 --vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 --vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
--- see in lua/my_lsp.lua lsp.on_attach
+-- see :CLsp lua/my_lsp.lua LspAttach
 
 --==ctags
 -- switch between source and header with `:e %<.c` with %< representing the current file without the ending
