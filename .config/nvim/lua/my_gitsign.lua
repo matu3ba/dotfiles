@@ -27,19 +27,24 @@ gitsigns.setup {
     end, { expr = true })
 
     -- Actions
-    map({ 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>')
-    map({ 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>')
-    map('n', '<leader>hS', gs.stage_buffer)
-    map('n', '<leader>hu', gs.undo_stage_hunk)
-    map('n', '<leader>hR', gs.reset_buffer)
-    map('n', '<leader>hp', gs.preview_hunk)
-    map('n', '<leader>hb', function() gs.blame_line { full = true } end)
-    map('n', '<leader>ht', gs.toggle_current_line_blame)
-    map('n', '<leader>hd', gs.diffthis)
-    map('n', '<leader>hD', function() gs.diffthis '~' end)
-    map('n', '<leader>htd', gs.toggle_deleted)
+    map({ 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', {desc = "Stage hunk"})
+    map({ 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', {desc = "Reset hunk"})
+    map('n', '<leader>hS', gs.stage_buffer, {desc = "Stage buffer"})
+    map('n', '<leader>hu', gs.undo_stage_hunk, {desc = "Unstage hunk"})
+    map('n', '<leader>hR', gs.reset_buffer, {desc = "Reset buffer"})
+    map('n', '<leader>hp', gs.preview_hunk_inline, {desc = "Preview hunk"})
+    map('n', '<leader>hb', function() gs.blame_line { full = true } end, {desc = "Blame line"})
+    map('n', '<leader>htb', gs.toggle_current_line_blame, {desc = "Toggle cur line blame"})
+    map('n', '<leader>htd', gs.toggle_deleted, {desc = "Toggle deleted"})
+    map('n', '<leader>hte', gs.toggle_linehl, {desc = "Toggle extended"})
+    map('n', '<leader>hts', gs.toggle_signs, {desc = "Toggle signs"})
+    map('n', '<leader>htn', gs.toggle_numhl, {desc = "Toggle numbers"})
+    map('n', '<leader>htw', gs.toggle_word_diff, {desc = "Toggle word diff"})
+    -- TODO diffthis with commit selection
+    map('n', '<leader>hd', gs.diffthis, {desc = "Stage hunk"})
+    map('n', '<leader>hD', function() gs.diffthis '~' end, {desc = "Stage hunk"})
 
     -- Text object
-    map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+    map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', {desc = "Select hunk"})
   end,
 }

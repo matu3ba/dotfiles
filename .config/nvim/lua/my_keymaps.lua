@@ -1,9 +1,12 @@
---! Optional dependencies: nvim-osc52
 --! Note: C+non-alphabetaic, C+letter, C+Shift+letter can not be distinguished
 --! without termcap, so vim + neovim do not support them.
 --! Debugging: :verbose map KEY_S
 -- luacheck: globals vim
 -- luacheck: no max line length
+
+local ut = require 'my_utils'
+local map = ut.keyMap
+local opts = {} -- default opts
 
 -- SHENNANIGAN
 -- Keymaps like C-[0-9] can not be binded without kitty protocol (outside kitty or ghostty)
@@ -20,17 +23,6 @@
 -- map('n', '<a-cr>', [[<cmd>lua print('alt+enter')<cr>]], {noremap = true}) -- Alt+Enter -- works
 -- Workaround: https://neovim.discourse.group/t/how-can-i-map-ctrl-shift-f5-ctrl-shift-b-ctrl-and-alt-enter/2133/2
 
--- non-api mappings
-local ok_osc52, osc52 = pcall(require, 'osc52')
-if ok_osc52 then
-  vim.keymap.set('n', '<leader>c', osc52.copy_operator, { expr = true })
-  vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
-  vim.keymap.set('x', '<leader>c', osc52.copy_visual)
-  -- TODO: show return status in command line without popup
-end
-
-local opts = { noremap = true, silent = true }
-local map = vim.api.nvim_set_keymap
 -- fast save,quit: ZZ, ZQ
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
@@ -95,8 +87,8 @@ local map = vim.api.nvim_set_keymap
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
 
-map('', '<Space>', '<Nop>', opts) -- fix annoying space movements
-map('n', 'ZW', '<cmd>close<CR>', opts) -- fast :close
+map('', '<Space>', '<Nop>', { desc = "fix annoying space movements" })
+map('n', 'ZW', '<cmd>close<CR>', { desc = "fast :close" })
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
@@ -514,7 +506,7 @@ map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across t
 --map('n', '<leader>hD', '<cmd>Gitsigns diffthis "~"<CR>', opts)
 --map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>', opts)
 
--- vim-fugitive
+-- vim-fugitive, other git keybindings have <leader>hX see :CGs .config/nvim/lua/my_gitsign.lua
 map('n', '<leader>gs', '<cmd>Git<CR>', opts)
 map('n', '<leader>g2', '<cmd>diffget //2<CR>', opts)
 map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)

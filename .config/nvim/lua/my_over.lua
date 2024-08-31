@@ -160,12 +160,6 @@ end)
 -- ~/.config/nvim/lua/overseer/template/user/cpp_build.lua
 -- ~/.config/nvim/lua/overseer/template/user/run_script.lua
 
--- SHENNANIGAN
--- :q! or ZQ on window drops data.
-
--- SHENNANIGAN
--- no harpoon-like speed to run things
-
 -- Unclaer if bug or old version
 -- im/lazy/overseer.nvim/lua/overseer/strategy/jobstart.lua:100: in function 'on_stdout'
 -- im/lazy/overseer.nvim/lua/overseer/strategy/jobstart.lua:139: in function <...im/lazy/overseer.nvim/lua/overseer/strategy/jobstart.lua:135> function:

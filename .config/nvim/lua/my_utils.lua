@@ -53,6 +53,33 @@ M.pathJoin = function(...)
   return table.concat(all_parts, M.path_separator)
 end
 
+-- Simpler alternative to vim.keymap.set for more direct usage of
+-- vim.api.nvim_set_keymap
+---@param mode string
+---@param lhs string
+---@param rhs string
+---@param opts vim.api.keyset.keymap overwritten noremap, silent to true
+M.keyMap = function(mode, lhs, rhs, opts)
+  opts = vim.deepcopy(opts or {}, true)
+  opts.noremap = true
+  opts.silent = true
+  vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+end
+
+-- Simpler alternative to vim.keymap.set for more direct usage of
+-- vim.api_nvim_buf_set_keymap, see M.keyMap
+---@param bufnr integer 0 current bufnr
+---@param mode string
+---@param lhs string
+---@param rhs string
+---@param opts vim.api.keyset.keymap overwritten noremap, silent to true
+M.bufKeyMap = function(bufnr, mode, lhs, rhs, opts)
+  opts = vim.deepcopy(opts or {}, true)
+  opts.noremap = true
+  opts.silent = true
+  vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+end
+
 M.appDateLog = function(content)
   local current_date = os.date '%Y%m%d' -- year month day according to strftime
   local fp = assert(io.open((current_date .. '.log'), 'a'))
