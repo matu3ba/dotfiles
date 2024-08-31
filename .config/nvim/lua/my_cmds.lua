@@ -45,7 +45,7 @@ add_cmd('CTel', config_edit .. sep .. 'lua' .. sep .. 'my_telesc.lua', {})
 add_cmd('CTre', config_edit .. sep .. 'lua' .. sep .. 'my_treesitter.lua', {})
 add_cmd('CUtil', config_edit .. sep .. 'lua' .. sep .. 'my_utils.lua', {})
 
-local lazy_packs_dir_edit = 'edit ' .. vim.fn.stdpath("data")
+local lazy_packs_dir_edit = 'edit ' .. vim.fn.stdpath 'data'
 add_cmd('DLazy', lazy_packs_dir_edit .. sep .. 'lazy/', {})
 
 local df_edit = 'edit ' .. home .. sep .. 'dotfiles'
@@ -61,8 +61,7 @@ add_cmd('Aliases', df_config_shells_edit .. sep .. 'aliases', {})
 add_cmd('AliasesGit', df_config_shells_edit .. sep .. 'aliases_git', {})
 add_cmd('Examples', df_edit .. sep .. 'example', {})
 add_cmd('Templates', df_edit .. sep .. 'templates', {})
-add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep
-  .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
+add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
 add_cmd('ZigFmtAll', '! zig fmt .', {})
 
 local ps_config_edit = df_edit_win_docs .. sep .. 'WindowsPowerShell' .. sep .. 'Microsoft.PowerShell_profile.ps1'
@@ -79,9 +78,8 @@ if utils.is_windows == false then
 else
   local df_write = '! ' .. home .. '\\dotfiles\\fileOverwrite.ps1'
   add_cmd('DotfWrite', df_write, {})
-  add_cmd('RmShada', '! rm ' .. vim.fn.stdpath("data") .. '\\shada\\main.shada.tmp.X', {})
+  add_cmd('RmShada', '! rm ' .. vim.fn.stdpath 'data' .. '\\shada\\main.shada.tmp.X', {})
 end
-
 
 -- Visit mappings, commands and autocommands:
 -- :map, :command. :autocmd
@@ -90,7 +88,6 @@ add_cmd('Style', function(opts) require('material.functions').change_style(opts.
   nargs = 1,
   complete = function(_, _, _) return { 'darker', 'lighter', 'palenight', 'oceanic', 'deep ocean' } end,
 })
-
 
 add_cmd('StVis', function(opts) require('my_statusline').setVisualSetting(opts.args) end, {
   nargs = 1,
@@ -417,15 +414,13 @@ local git_show_remote_upstream_else_origin = function(cwd)
   -- git remote show origin
   -- git config --get remote.origin.url
   local remote = plenary.job:new({ cwd = cwd, command = 'git', args = { 'config', '--get', 'remote.upstream.url' } }):sync()
-  if (remote and #remote == 1 and remote[1] ~= "") then
+  if remote and #remote == 1 and remote[1] ~= '' then
     local col_i = string.find(remote[1], ':')
-    return remote[1]:sub(5, col_i-1) .. '/' .. remote[1]:sub(col_i+1, -5)
+    return remote[1]:sub(5, col_i - 1) .. '/' .. remote[1]:sub(col_i + 1, -5)
   end
   remote = plenary.job:new({ cwd = cwd, command = 'git', args = { 'config', '--get', 'remote.origin.url' } }):sync()
-  if (remote and #remote == 1 and remote[1] ~= "") then
-    return remote[1]:sub(5,-1):sub(1,-5)
-  end
-  return ""
+  if remote and #remote == 1 and remote[1] ~= '' then return remote[1]:sub(5, -1):sub(1, -5) end
+  return ''
 end
 
 -- https://github.com/nvim-lua/plenary.nvim/ /blob/master/ tests/plenary/job_spec.lua
@@ -433,20 +428,20 @@ end
 add_cmd('GHPerma', function()
   local relpath = plenary.path:new(api.nvim_buf_get_name(0)):make_relative()
   local relpathdir = vim.fs.dirname(relpath)
-  local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel'} }):sync()
-  if (not git_root or #git_root ~= 1 or git_root[1] == "") then return end
+  local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel' } }):sync()
+  if not git_root or #git_root ~= 1 or git_root[1] == '' then return end
   local relpath_inrepo = plenary.path:new(relpath):make_relative(git_root[1])
 
   local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
-  if (not isgit or isgit[1] ~= "true") then return end
+  if not isgit or isgit[1] ~= 'true' then return end
   local remote = git_show_remote_upstream_else_origin(git_root[1])
   vim.print(remote)
-  if (remote == "") then return end
+  if remote == '' then return end
   local commitsha = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', 'HEAD' } }):sync()
-  if (not commitsha or #commitsha ~= 1 or commitsha[1] == "") then return end
+  if not commitsha or #commitsha ~= 1 or commitsha[1] == '' then return end
   local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
   vim.print(relpath_inrepo_check)
-  if (not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo) then return end
+  if not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo then return end
   local permalink = remote .. '/blob/' .. commitsha[1] .. '/' .. relpath_inrepo
   vim.print(permalink)
   setPlusAnd0Register(permalink)
@@ -464,7 +459,7 @@ end, {})
 --   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
 -- end, {})
 -- add_cmd('GHDown', function()
-  -- TODO
+-- TODO
 --   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
 --   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
 -- end, {})

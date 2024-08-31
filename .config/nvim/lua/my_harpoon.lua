@@ -24,7 +24,6 @@ local has_harpoonterm, harp_term = pcall(require, 'harpoon.term')
 --    vim.keymap.set('n', '<leader>o', function() harpoon:list():select(6) end)
 -- end
 
-
 if not has_harpoon or not has_harpoonterm then
   --error 'Please install matu3ba/harpoon'
   return

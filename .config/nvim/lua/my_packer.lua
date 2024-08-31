@@ -1,49 +1,49 @@
-  --  { 'smjonas/inc-rename.nvim' } -- idea setup
-  --  { 'smjonas/live-command.nvim' } -- idea setup
-  --  { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
-  --  { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
-  --  { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
-  --  { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- idea setup + comapre with harpoon approach
+--  { 'smjonas/inc-rename.nvim' } -- idea setup
+--  { 'smjonas/live-command.nvim' } -- idea setup
+--  { 'otavioschwanck/cool-substitute.nvim', config = function() require'cool-substitute'.setup{ setup_keybindings = true } end, }
+--  { 'ThePrimeagen/git-worktree.nvim' } -- idea project setup
+--  { 'nvim-telescope/telescope-dap.nvim', requires = { 'mfussenegger/nvim-dap' } } -- idea setup
+--  { 'theHamsta/nvim-dap-virtual-text',  'rcarriga/nvim-dap-ui' } -- idea setup + comapre with harpoon approach
 
-  -- { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon
-  -- { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
-  -- { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
-  -- { '~/dev/git/lua/telescope-project.nvim' } -- idea fixit
-  -- { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
-  -- { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
-  -- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
-  -- { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
+-- { 'asbjornhaland/telescope-send-to-harpoon.nvim' } -- required: telescope,harpoon
+-- { 'LinArcX/telescope-command-palette.nvim' } -- necessary?
+-- { 'nvim-telescope/telescope-symbols.nvim' } --:lua require'telescope.builtin'.symbols{ sources = {'emoji', 'kaomoji', 'gitmoji'} }
+-- { '~/dev/git/lua/telescope-project.nvim' } -- idea fixit
+-- { 'nvim-telescope/telescope-project.nvim' } -- create,delete,find,search, w without opening, <l>pr => workspaces, then bare reposwor, then bare repos
+-- { '~/dev/git/nvimproj/telescope-project-scripts.nvim' } -- waiting for feedback from upstream
+-- files of telescope-project inside ~/.local/share/nvim/ telescope-project.nvim file to track workspaces not implemented yet
+-- { 'axkirillov/easypick.nvim' } -- custom telescope pickers from shell commands
 
-  -- :DogeGenerate {doc_standard}
-  -- { 'kkoomen/vim-doge' }
-  -- :Neogen [function/class/type]
-  -- { 'cshuaimin/ssr.nvim' }
-  -- { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
-  -- { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
-  -- { 'junegunn/gv.vim' } -- alternative?
-  -- { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
-  -- replacement of vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
-  -- look into https://github.com/jonatan-branting/nvim-better-n
+-- :DogeGenerate {doc_standard}
+-- { 'kkoomen/vim-doge' }
+-- :Neogen [function/class/type]
+-- { 'cshuaimin/ssr.nvim' }
+-- { 'danymat/neogen', config = function() require('neogen').setup {} end, requires = 'nvim-treesitter/nvim-treesitter', }
+-- { 'alepez/vim-gtest' } -- [t, ]t, <l>tu, <l>tt (careful with conflicts with telescope keybindings)
+-- { 'junegunn/gv.vim' } -- alternative?
+-- { 'bohlender/vim-smt2' } -- grammar for syntax highlighting
+-- replacement of vim-unimpaired, vim-speeddating, vim-repeat by optional lua functions
+-- look into https://github.com/jonatan-branting/nvim-better-n
 
-  -- { 'tpope/vim-repeat' } -- repeating with ., superseded with https://this-week-in-neovim.org/2022/Aug/15#article-dot-repeat
-  -- { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
-  -- { 'vim-table' }
-  -- { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds, I want to keep annotations dense+minimal
-  -- { 'karb94/neoscroll.nvim', config = function() require('neoscroll').setup() end, }
-  -- { 't-troebst/perfanno.nvim' } -- perf bottleneck visualizations
-  -- { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
-  -- { 'Vhyrro/neorg' } -- no use cases yet
-  -- { 'mfussenegger/nvim-lint' }
-  -- { 'norcalli/nvim-colorizer.lua' } -- use after all colors are setup, only necessary for color work
-  -- { 'theprimeagen/vim-be-good' } --for beginners VimBeGood,1.delete DELETE ME,2.replace contents inside first { or [ with bar, 3.navigate to caret under char ASAP+flip it
-  -- { 'wilder.nvim'} -- auto completion for :e and alike
-  -- { 'junegunn/fzf.vim', requires = { 'junegunn/fzf', run = ':call fzf#install()' } } -- telescope has same algorithm + better performance
-  -- { 'nvim-telescope/telescope-z.nvim' } --tez,<l>z -- would be clutch to have telescope project support
-  -- { 'JuliaEditorSupport/julia-vim' } --cool stuff: latex-to-unicode substitutions, block-wise movements and block text-objects
-  -- { 'nvim-telescope/telescope-snippets.nvim', requires = { 'norcalli/snippets.nvim' } } -- useful for loop stuff
-  -- { 'https://gitlab.com/dbeniamine/cheat.sh-vim/' }
-  -- { 'mhinz/vim-rfc' }--:RFC 1000, :RFC! regex
-  -- { 'bohlender/vim-smt2' }
-  -- { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
-  -- { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim', config = function() require('neogit').setup() -- --:Neogit -- very complex
-  -- { 'folke/lsp-trouble.nvim', requires = 'kyazdani42/nvim-web-devicons', config = function() require("trouble").setup() end } --:Trouble,<l>xx/xw/xd/xl/xq/xr
+-- { 'tpope/vim-repeat' } -- repeating with ., superseded with https://this-week-in-neovim.org/2022/Aug/15#article-dot-repeat
+-- { 'phaazon/hop.nvim', config = function() require'hop'.setup() end, }
+-- { 'vim-table' }
+-- { 'mrjones2014/legendary.nvim' } -- legend+search for keymaps, cmds, autocmds, I want to keep annotations dense+minimal
+-- { 'karb94/neoscroll.nvim', config = function() require('neoscroll').setup() end, }
+-- { 't-troebst/perfanno.nvim' } -- perf bottleneck visualizations
+-- { 'chipsenkbeil/distant.nvim' } -- remote ssh code editing and execution without fuse overhead
+-- { 'Vhyrro/neorg' } -- no use cases yet
+-- { 'mfussenegger/nvim-lint' }
+-- { 'norcalli/nvim-colorizer.lua' } -- use after all colors are setup, only necessary for color work
+-- { 'theprimeagen/vim-be-good' } --for beginners VimBeGood,1.delete DELETE ME,2.replace contents inside first { or [ with bar, 3.navigate to caret under char ASAP+flip it
+-- { 'wilder.nvim'} -- auto completion for :e and alike
+-- { 'junegunn/fzf.vim', requires = { 'junegunn/fzf', run = ':call fzf#install()' } } -- telescope has same algorithm + better performance
+-- { 'nvim-telescope/telescope-z.nvim' } --tez,<l>z -- would be clutch to have telescope project support
+-- { 'JuliaEditorSupport/julia-vim' } --cool stuff: latex-to-unicode substitutions, block-wise movements and block text-objects
+-- { 'nvim-telescope/telescope-snippets.nvim', requires = { 'norcalli/snippets.nvim' } } -- useful for loop stuff
+-- { 'https://gitlab.com/dbeniamine/cheat.sh-vim/' }
+-- { 'mhinz/vim-rfc' }--:RFC 1000, :RFC! regex
+-- { 'bohlender/vim-smt2' }
+-- { 'tjdevries/lsp_extensions.nvim' } --Rust,Darts only
+-- { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim', config = function() require('neogit').setup() -- --:Neogit -- very complex
+-- { 'folke/lsp-trouble.nvim', requires = 'kyazdani42/nvim-web-devicons', config = function() require("trouble").setup() end } --:Trouble,<l>xx/xw/xd/xl/xq/xr

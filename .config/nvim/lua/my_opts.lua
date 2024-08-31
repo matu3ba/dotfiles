@@ -27,7 +27,7 @@ local function load_options()
     material_style = 'palenight', -- default, darker, lighter, oceanic, deep ocean, palenight
     -- nvimgdb_use_cmake_to_find_executables = 0, -- nvim-gdb too slow
     -- nvimgdb_use_find_executables = 0, -- nvim-gdb too slow
-    python3_host_prog = vim.fn.exepath('python'), -- for virtualenv use linux-cultist/venv-selector.nvim
+    python3_host_prog = vim.fn.exepath 'python', -- for virtualenv use linux-cultist/venv-selector.nvim
     rg_derive_root = true,
     rustfmt_autosave = true,
     -- libbuf_log_level = "trace",
@@ -47,7 +47,7 @@ local function load_options()
   -- vim.o.columns/vim.o.lines
   -- clipboard :h clipboard-osc52, :h clipboard-wsl, :h
   -- use Windows Terminal, a terminal supporting osc52 or add logic below
-  if vim.version()["minor"] >= 10 and utils.isRemoteSession() then
+  if vim.version()['minor'] >= 10 and utils.isRemoteSession() then
     vim.g.clipboard = {
       name = 'OSC 52',
       copy = {
@@ -123,17 +123,18 @@ local function load_options()
     -- :'<,'>:w !git<CR>
     -- :.!git<CR>
     -- https://stackoverflow.com/questions/2575545/vim-pipe-selected-text-to-shell-cmd-and-receive-output-on-vim-info-command-line
-    if vim.fn.executable("pwsh.exe") == 1 then
-      vim.o.shell =  "pwsh.exe"
-      vim.o.shellcmdflag = "-NonInteractive -NoLogo -ExecutionPolicy RemoteSigned -Command "
+    if vim.fn.executable 'pwsh.exe' == 1 then
+      vim.o.shell = 'pwsh.exe'
+      vim.o.shellcmdflag = '-NonInteractive -NoLogo -ExecutionPolicy RemoteSigned -Command '
     else
-      vim.opt.shell =  "powershell.exe"
-      vim.o.shellcmdflag = "-NonInteractive -NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8 "
+      vim.opt.shell = 'powershell.exe'
+      vim.o.shellcmdflag =
+        '-NonInteractive -NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8 '
     end
-    vim.o.shellredir = "2>&1 | Out-File -Encoding UTF8 %s"
-    vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s"
-    vim.o.shellquote = ""
-    vim.o.shellxquote = ""
+    vim.o.shellredir = '2>&1 | Out-File -Encoding UTF8 %s'
+    vim.o.shellpipe = '2>&1 | Out-File -Encoding UTF8 %s'
+    vim.o.shellquote = ''
+    vim.o.shellxquote = ''
   else
     vim.o.shell = 'fish'
   end

@@ -87,8 +87,8 @@ local opts = {} -- default opts
 -- alternative mapping: 1. * without jumping, 2. cgn (change go next match), 3. n 4. . (repeat action)
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
 
-map('', '<Space>', '<Nop>', { desc = "fix annoying space movements" })
-map('n', 'ZW', '<cmd>close<CR>', { desc = "fast :close" })
+map('', '<Space>', '<Nop>', { desc = 'fix annoying space movements' })
+map('n', 'ZW', '<cmd>close<CR>', { desc = 'fast :close' })
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item

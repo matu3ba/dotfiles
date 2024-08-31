@@ -2,7 +2,7 @@
 -- luacheck: no max line length
 local has_sur, sur = pcall(require, 'nvim-surround')
 if not has_sur then return end
-local sur_config = require "nvim-surround.config"
+local sur_config = require 'nvim-surround.config'
 
 --     Old text                    Command         New text
 -- --------------------------------------------------------------------------------
@@ -66,18 +66,14 @@ local sur_config = require "nvim-surround.config"
 sur.setup {
   surrounds = {
     -- sPan, because its pasted so often
-    ["p"] = {
-        add = function()
-          local input = sur_config.get_input "Enter span class: "
-          if input then
-            return { {'<span class="' .. input .. '">'}, {'</span>'} }
-          end
-        end,
-        find = function()
-          return sur_config.get_selection({ motion = "at" })
-        end,
-        delete = "^(%b<>)().-(%b<>)()$",
-        change = false,
+    ['p'] = {
+      add = function()
+        local input = sur_config.get_input 'Enter span class: '
+        if input then return { { '<span class="' .. input .. '">' }, { '</span>' } } end
+      end,
+      find = function() return sur_config.get_selection { motion = 'at' } end,
+      delete = '^(%b<>)().-(%b<>)()$',
+      change = false,
     },
-  }
+  },
 }

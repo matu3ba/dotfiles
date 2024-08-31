@@ -1,4 +1,4 @@
-local constants = require("overseer.constants")
+local constants = require 'overseer.constants'
 -- local overseer = require "overseer"
 local find_index_task = function(task_list, task_name)
   local j = -1
@@ -12,22 +12,22 @@ local find_index_task = function(task_list, task_name)
 end
 
 return {
-  desc = "Create and execute derived task to validate result",
+  desc = 'Create and execute derived task to validate result',
   params = { -- parameters passed to component
-    type = "string" -- task name as dependency
+    type = 'string', -- task name as dependency
   },
   editable = false, -- editing disallowed
   serializable = true, -- serializing disabled
   constructor = function(params)
     return {
       on_init = function(self, task)
-        local task_list = require("overseer").list_tasks()
+        local task_list = require('overseer').list_tasks()
         local fin_i = find_index_task(task_list, params[1])
         if fin_i == -1 then
           -- idea: add things to result of job
           task:finalize(constants.STATUS.FAILURE)
         else
-          task.name = "validate" .. task.name
+          task.name = 'validate' .. task.name
           task.cmd = task_list[fin_i].cmd
           task.cwd = task_list[fin_i].cwd
           task.env = task_list[fin_i].env
@@ -38,7 +38,7 @@ return {
       ---@return nil|boolean
       on_reset = function(self, task) -- reset => task runs again
         local _ = task
-        local task_list = require("overseer").list_tasks()
+        local task_list = require('overseer').list_tasks()
         local fin_i = find_index_task(task_list, params[1])
         if fin_i == -1 then
           task:finalize(constants.STATUS.FAILURE)
@@ -47,9 +47,7 @@ return {
             -- TODO how to provide reason for exit failure?
             task:finalize(constants.STATUS.FAILURE)
           end
-          if self.expected_exitcode ~= task_list[fin_i].exit_code then
-            task:finalize(constants.STATUS.FAILURE)
-          end
+          if self.expected_exitcode ~= task_list[fin_i].exit_code then task:finalize(constants.STATUS.FAILURE) end
         end
       end,
       ---@param code number The process exit code

@@ -105,21 +105,17 @@ else
   if has_libbuf then require 'my_buf' end
 
   --==lazy fast restore state from https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
-  local lazy_cmds = vim.api.nvim_create_augroup('lazy_cmds', {clear = true})
-  local lazy_snapshot_dir = vim.fn.stdpath('data') .. '/lazy_snapshot'
-  local lockfile = vim.fn.stdpath('config') .. '/lazy-lock.json'
-  vim.api.nvim_create_user_command(
-    'BrowseSnapshots',
-    'edit ' .. lazy_snapshot_dir,
-    {}
-  )
+  local lazy_cmds = vim.api.nvim_create_augroup('lazy_cmds', { clear = true })
+  local lazy_snapshot_dir = vim.fn.stdpath 'data' .. '/lazy_snapshot'
+  local lockfile = vim.fn.stdpath 'config' .. '/lazy-lock.json'
+  vim.api.nvim_create_user_command('BrowseSnapshots', 'edit ' .. lazy_snapshot_dir, {})
   vim.api.nvim_create_autocmd('User', {
     group = lazy_cmds,
     pattern = 'LazyUpdatePre',
     desc = 'Backup lazy.nvim lockfile',
     callback = function(event)
       vim.fn.mkdir(lazy_snapshot_dir, 'p')
-      local snapshot = lazy_snapshot_dir .. os.date('/%Y-%m-%dT%H:%M:%S.json')
+      local snapshot = lazy_snapshot_dir .. os.date '/%Y-%m-%dT%H:%M:%S.json'
       vim.loop.fs_copyfile(lockfile, snapshot)
     end,
   })

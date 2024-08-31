@@ -32,11 +32,9 @@
 
 -- neodev has setup in my_dap.lua
 local has_neodev, neodev = pcall(require, 'neodev')
-if has_neodev then
-  neodev.setup {
-    library = { plugins = { "nvim-dap-ui" }, types = true },
-  }
-end
+if has_neodev then neodev.setup {
+  library = { plugins = { 'nvim-dap-ui' }, types = true },
+} end
 
 local has_cmp, cmp = pcall(require, 'cmp')
 local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
@@ -67,9 +65,7 @@ end
 local common_capabilities = cmpnvimlsp.default_capabilities() -- get the cmp_nvim_lsp ones
 
 local common_on_attach = function(client, bufnr)
-  if client.server_capabilities.documentSymbolProvider then
-    navic.attach(client, bufnr)
-  end
+  if client.server_capabilities.documentSymbolProvider then navic.attach(client, bufnr) end
 end
 
 -- local lsps_with_common_setup = {"clangd", "jedi_language_server", "julials", "rust_analyzer", "tsserver", "zls"}
@@ -127,9 +123,7 @@ lspconfig.texlab.setup {
 lspconfig.lua_ls.setup {
   on_attach = common_on_attach,
   on_init = function(client)
-    if client.workspace_folders == nil or client.workspace_folders[1] == nil then
-      return false
-    end
+    if client.workspace_folders == nil or client.workspace_folders[1] == nil then return false end
     local path = client.workspace_folders[1].name -- neovim config dir
     -- Debug common problems
     -- vim.print(client.config.settings)
@@ -147,20 +141,20 @@ lspconfig.lua_ls.setup {
           globals = { 'vim' }, -- does not work and "$HOME/.cache/lua-language-server/" does not exist
         },
         runtime = {
-          version = 'LuaJIT'
+          version = 'LuaJIT',
         },
         workspace = {
           library = { vim.env.VIMRUNTIME },
           -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
           -- library = vim.api.nvim_get_runtime_file("", true),
           checkThirdParty = false,
-        }
+        },
       })
 
-      client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+      client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
     end
     return true
-  end
+  end,
 }
 
 --==Keybindings
@@ -188,13 +182,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
     vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
     vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<leader>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, opts)
+    vim.keymap.set('n', '<leader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
     vim.keymap.set('n', '<leader>ws', function() vim.lsp.buf.workspace_symbol() end, opts) -- view workspace symbols
     vim.keymap.set('n', '<leader>wf', function() vim.lsp.buf.open_float() end, opts) -- view dis
     vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-    vim.keymap.set({'n','v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<leader>ql', function() vim.diagnostic.setloclist() end, opts) -- buffer diagnostics to location list
     vim.keymap.set('n', '<leader>qf', function() vim.diagnostic.setqflist() end, opts) -- all diagnostics to quickfix list
@@ -232,14 +224,12 @@ cmp.setup {
   },
 
   snippet = {
-    expand = function(args)
-      vim.snippet.expand(args.body)
-    end,
+    expand = function(args) vim.snippet.expand(args.body) end,
   },
   sources = {
     { name = 'path' },
     { name = 'nvim_lsp_signature_help' },
-    { name = 'nvim_lsp',               keyword_length = 3 },
+    { name = 'nvim_lsp', keyword_length = 3 },
     {
       name = 'buffer',
       keyword_length = 5,

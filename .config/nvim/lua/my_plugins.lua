@@ -20,13 +20,15 @@ return {
   -- Debug plugins startuptime via: nvim -V1 --startuptime FILE
   -- To find which plugins to disable, use :verbose au BufEnter
   { 'nvim-lua/plenary.nvim' },
-  { 'marko-cerovac/material.nvim', priority = 1000, --<l>ma
+  {
+    'marko-cerovac/material.nvim',
+    priority = 1000, --<l>ma
     config = function()
-      require('material').setup({
-          -- workaround https://github.com/marko-cerovac/material.nvim/issues/181
-          disable = { colored_cursor = true },
-      })
-      vim.cmd.colorscheme("material")
+      require('material').setup {
+        -- workaround https://github.com/marko-cerovac/material.nvim/issues/181
+        disable = { colored_cursor = true },
+      }
+      vim.cmd.colorscheme 'material'
     end,
   },
   {
@@ -70,7 +72,7 @@ return {
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
-  { "tamton-aquib/keys.nvim", config = function() require("keys").setup({}) end, }, -- :KeysToggle
+  { 'tamton-aquib/keys.nvim', config = function() require('keys').setup {} end }, -- :KeysToggle
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
@@ -82,7 +84,7 @@ return {
 
   -- :lua vim.print(require('nvim-navic').is_available(0))
   -- :lua vim.print(require('nvim-navic').get_data())
-  { "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" },
+  { 'SmiteshP/nvim-navic', requires = 'neovim/nvim-lspconfig' },
 
   -- idea, if annoying: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
@@ -163,9 +165,9 @@ return {
   -- nvim oil-ssh://[username@]hostname[:port]/[path]
   -- g? help, <CR>|C-s|C-h select +[vsplit|split, C-p preview, C-c close, C-l refresh,
   -- - parent, _ open cwd, ` cd, ~ tcd, g. toggle hidden
-  { 'stevearc/oil.nvim', }, -- my_oil.lua
+  { 'stevearc/oil.nvim' }, -- my_oil.lua
   -- fn overview window with jumps etc
-  { 'stevearc/aerial.nvim', },
+  { 'stevearc/aerial.nvim' },
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
   -- crs coerce to snake_case
   -- crm MixedCase = PascalCase
@@ -174,8 +176,8 @@ return {
   -- cr- dash-case
   -- cr. dot.case
   -- missing handling of custom user prefixes for: m_MemberVar, eMember, sStruct
-  { 'tpope/vim-abolish', }, -- { 'text-case.nvim' },
-  { 'kylechui/nvim-surround', },
+  { 'tpope/vim-abolish' }, -- { 'text-case.nvim' },
+  { 'kylechui/nvim-surround' },
   {
     'NvChad/nvim-colorizer.lua',
     config = function() require('colorizer').setup() end,
@@ -246,7 +248,7 @@ return {
   }, -- :Telescope builtin.keymaps
 
   -- markdown live preview via :Glow[!] [path]
-  { 'ellisonleao/glow.nvim', config = function() require("glow").setup() end, },
+  { 'ellisonleao/glow.nvim', config = function() require('glow').setup() end },
   -- jupyter and markdown live preview, idea
   -- https://github.com/kiyoon/jupynium.nvim
   -- https://github.com/tamton-aquib/neorg-jupyter

@@ -2,17 +2,17 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 return {
-  name = "g++ build",
+  name = 'g++ build',
   builder = function()
     -- Full path to current file (see :help expand())
-    local file = vim.fn.expand("%:p")
+    local file = vim.fn.expand '%:p'
     return {
-      cmd = { "g++" },
+      cmd = { 'g++' },
       args = { file },
-      components = { { "on_output_quickfix", open = true }, "default" },
+      components = { { 'on_output_quickfix', open = true }, 'default' },
     }
   end,
   condition = {
-    filetype = { "cpp" },
+    filetype = { 'cpp' },
   },
 }

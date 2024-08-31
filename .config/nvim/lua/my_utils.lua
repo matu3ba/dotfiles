@@ -10,9 +10,7 @@ M.isRemoteSession = function()
 end
 -- let g:remoteSession = ($STY == "")
 
-M.isWSL = function()
-  return vim.fn.has 'wsl' == 1
-end
+M.isWSL = function() return vim.fn.has 'wsl' == 1 end
 
 -- Taken from cseickel on reddit.
 ---The file system path separator for the current platform.
@@ -304,15 +302,15 @@ end
 M.joinRemoveBlank = function()
   -- SHENNANIGAN: '<', '>' still advertised as cursor positions, but its only extmarks
   -- cursor positions are 'v' for first and '.' for last selectio positions
-  local vstart = vim.fn.getpos("v") -- bufnum, lnum, col, off
-  local vend = vim.fn.getpos(".")
+  local vstart = vim.fn.getpos 'v' -- bufnum, lnum, col, off
+  local vend = vim.fn.getpos '.'
   if vstart[2] == vend[2] then
     local line_content = vim.api.nvim_get_current_line()
     local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
     local crow = tup_rowcol[1] -- 1 indexed
     local nextline = vim.api.nvim_buf_get_lines(0, crow, crow + 1, true)
     vim.api.nvim_buf_set_lines(0, crow, crow + 1, true, {})
-    local nextline_noprepostfix_space = vim.fn.trim(nextline[1], " ", 0)
+    local nextline_noprepostfix_space = vim.fn.trim(nextline[1], ' ', 0)
     local nextline_noprepostfix_spacetab = vim.fn.trim(nextline_noprepostfix_space, '\t', 0)
     vim.api.nvim_set_current_line(line_content .. nextline_noprepostfix_spacetab)
   else
@@ -325,11 +323,10 @@ M.joinRemoveBlank = function()
       line_content[1] = line_content[1] .. nextlines[i]
     end
     vim.api.nvim_buf_set_lines(0, vstart[2] - 1, vstart[2], true, { line_content[1] })
-    vim.api.nvim_win_set_cursor(vstart[1], {vstart[2], vstart[3]})
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), 'x', false)
+    vim.api.nvim_win_set_cursor(vstart[1], { vstart[2], vstart[3] })
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<ESC>', true, false, true), 'x', false)
   end
 end
-
 
 -- starting at cursor: overwrite text to right with register content
 -- keep_suffix defines, if remaining line suffix should be kept
@@ -353,6 +350,7 @@ end
 --====macros
 -- In registers for macros, special characters like ESC and ENTER are replaced
 -- with the Vim representation ^[ and ^M respectively.
+-- stylua: ignore start
 local lut_index_to_reg = {
   [1 ]  = '"', [2 ]  = '0', [3 ]  = '1', [4 ]  = '2', [5 ]  = '3',
   [6 ]  = '4', [7 ]  = '5', [8 ]  = '6', [9 ]  = '7', [10]  = '8',
@@ -364,11 +362,10 @@ local lut_index_to_reg = {
   [36] = '-', [37] = '*', [38] = '+', [39] = '.', [40] = ':',
   [41] = '%', [42] = '#', [43] = '/',
 }
+-- stylua: ignore end
 -- translates index to register, returns nil without match
-M.indexToRegister = function(index)
-  return lut_index_to_reg[index]
-end
-
+M.indexToRegister = function(index) return lut_index_to_reg[index] end
+-- stylua: ignore start
 local lut_reg_to_index = {
   ['"'] = 1, ['0'] = 2, ['1'] = 3, ['2'] = 4, ['3'] = 5,
   ['4'] = 6, ['5'] = 7, ['6'] = 8, ['7'] = 9, ['8'] = 10,
@@ -380,11 +377,10 @@ local lut_reg_to_index = {
   ['-'] = 36, ['*'] = 37, ['+'] = 38, ['.'] = 39, [':'] = 40,
   ['%'] = 41, ['#'] = 42, ['/'] = 43,
 }
+-- stylua: ignore end
 
 -- translates register to index, returns nil without match
-M.registerToIndex = function(register)
-  return lut_reg_to_index[register]
-end
+M.registerToIndex = function(register) return lut_reg_to_index[register] end
 
 -- SHENNANIGAN no vim/neovim docs on how multple newlines should be serialized and i
 -- deserialized to be visualized on 1 line.
@@ -395,26 +391,20 @@ end
 --   b registercontent
 -- If filepath is nil, then current buffer is used.
 M.parseBufferToRegisters = function(bufnr)
-  if bufnr == nil then
-    bufnr = 0
-  end
+  if bufnr == nil then bufnr = 0 end
   for crow = 1, #lut_index_to_reg do
-    local lines = vim.api.nvim_buf_get_lines(bufnr, crow-1, crow, false)
-    if #lines == 0 then
-      return
-    end
+    local lines = vim.api.nvim_buf_get_lines(bufnr, crow - 1, crow, false)
+    if #lines == 0 then return end
     local first = string.sub(lines[1], 1, 1)
     local second = string.sub(lines[1], 2, 2)
     local content = string.sub(lines[1], 3, -1)
     -- print("first", first)
     -- print("second", second)
-    if second == " " or content ~= "" then
+    if second == ' ' or content ~= '' then
       -- %, :, ., " register is not writable
-      if first == '%' or first == ':' or first == '.' or first == '"' then
-        goto continue_lut
-      end
+      if first == '%' or first == ':' or first == '.' or first == '"' then goto continue_lut end
       local should_parse = lut_reg_to_index[first] ~= nil
-      if (should_parse) then
+      if should_parse then
         local reg = first
         local content_eom_subst_by_eol = string.gsub(content, '\025', '\r')
         -- print("crow", crow)
@@ -433,24 +423,22 @@ end
 --   b registercontent
 -- If filepath is nil, then current buffer is used.
 M.dumpRegistersToBuffer = function(registers, bufnr)
-  if bufnr == nil then
-    bufnr = 0
-  end
+  if bufnr == nil then bufnr = 0 end
   if registers == nil then
     for i = 1, #lut_index_to_reg do
-       local reg_content = vim.fn.getreg(lut_index_to_reg[i])
-       local reg_eol_subst_by_eom = string.gsub(reg_content, '\n', "\025")
-       -- print(reg_eol_subst_by_eom)
-       vim.api.nvim_buf_set_lines(bufnr, i-1, i-1, true, {lut_index_to_reg[i] .. " " .. reg_eol_subst_by_eom})
+      local reg_content = vim.fn.getreg(lut_index_to_reg[i])
+      local reg_eol_subst_by_eom = string.gsub(reg_content, '\n', '\025')
+      -- print(reg_eol_subst_by_eom)
+      vim.api.nvim_buf_set_lines(bufnr, i - 1, i - 1, true, { lut_index_to_reg[i] .. ' ' .. reg_eol_subst_by_eom })
     end
   else
     for i = 1, #lut_index_to_reg do
       local should_print = registers[lut_index_to_reg[i]] ~= nil
       if should_print then
         local reg_content = vim.fn.getreg(lut_index_to_reg[i])
-        local reg_eol_subst_by_eom = string.gsub(reg_content, '\n', "\025")
+        local reg_eol_subst_by_eom = string.gsub(reg_content, '\n', '\025')
         -- print(reg_eol_subst_by_eom)
-        vim.api.nvim_buf_set_lines(bufnr, i-1, i-1, true, {lut_index_to_reg[i] .. " " .. reg_eol_subst_by_eom})
+        vim.api.nvim_buf_set_lines(bufnr, i - 1, i - 1, true, { lut_index_to_reg[i] .. ' ' .. reg_eol_subst_by_eom })
       end
     end
   end

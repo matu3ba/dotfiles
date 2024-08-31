@@ -1,4 +1,6 @@
 # cargo install stylua --features lua52
+# stylua --color Never .
+# stylua --color Never --check .
 call_parentheses = "None"
 collapse_simple_statement = "Always"
 column_width = 180

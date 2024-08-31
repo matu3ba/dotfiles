@@ -116,7 +116,7 @@ M.venn_hydra = Hydra {
 -- leader clockwise (time running): \/ including movements
 -- leader anti-clockwise (enough time): \/ without movements
 -- leader hjkl: arrow including rectangular movements
-local venn_hint_ascii   = [[
+local venn_hint_ascii = [[
  -| moves: _H_ _J_ _K_ _L_
  <v^> arrow: _<C-h>_ _<C-j>_ _<C-k>_ _<C-l>_
  diagnoal + move: leader + clockwise like ◄ ▲

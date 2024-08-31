@@ -24,26 +24,22 @@ local has_dapui, dapui = pcall(require, 'dapui')
 local has_neodev, neodev = pcall(require, 'neodev')
 local _ = dap
 
-if not has_dap or not has_dapui then
-  return
-end
+if not has_dap or not has_dapui then return end
 
-if has_neodev then
-  neodev.setup {
-    library = { plugins = { "nvim-dap-ui" }, types = true },
-  }
-end
+if has_neodev then neodev.setup {
+  library = { plugins = { 'nvim-dap-ui' }, types = true },
+} end
 
 if not has_dap or not has_dapui then
-  vim.print("no dap or no dapui")
+  vim.print 'no dap or no dapui'
   return
 end
 
 --==adapters
 dap.adapters.lldb = {
-   type = 'executable',
-   command = '/usr/bin/lldb-vscode', -- adjust as needed
-   name = 'lldb',
+  type = 'executable',
+  command = '/usr/bin/lldb-vscode', -- adjust as needed
+  name = 'lldb',
 }
 
 -- ==configurations
@@ -66,7 +62,6 @@ dap.configurations.cpp = {
     runInTerminal = false,
   },
 }
-
 
 -- idea: attach via pgrep instead of this forced static spawning
 -- see SHENNANIGAN

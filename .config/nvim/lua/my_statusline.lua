@@ -11,17 +11,14 @@ local statusline = {}
 vim.o.statusline = '%!v:lua.require("my_statusline").setup()'
 
 local visual_setting_choices = {
-  [1] = "nocwd",
-  [2] = "cwd",
+  [1] = 'nocwd',
+  [2] = 'cwd',
 }
 local visual_setting = visual_setting_choices[1]
 
 ---Set visual setting. Caller responsible to validate input
 ---@param setting string Corresponds to entry of visual_setting_choices.
-statusline.setVisualSetting = function(setting)
-  visual_setting = setting
-end
-
+statusline.setVisualSetting = function(setting) visual_setting = setting end
 
 -- print_lsp_progress from https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
 -- local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
@@ -80,11 +77,15 @@ local function git_statusline()
 end
 
 local function get_cwd(_visual_setting)
-  if _visual_setting == "cwd" then
+  if _visual_setting == 'cwd' then
     local cwd = vim.loop.cwd()
-    if cwd == nil then return "" else return cwd end
+    if cwd == nil then
+      return ''
+    else
+      return cwd
+    end
   else
-    return ""
+    return ''
   end
 end
 
@@ -123,14 +124,10 @@ local function get_bufinfo()
   local buf_info_prefix = '     ' -- 5 digits 4 for number 1 for unlisted or not
   local bufnr = vim.api.nvim_get_current_buf()
 
-  local unlisted = "u"
-  if vim.bo.buflisted == nil or vim.bo.buflisted then
-    unlisted = ""
-  end
+  local unlisted = 'u'
+  if vim.bo.buflisted == nil or vim.bo.buflisted then unlisted = '' end
 
-  if bufnr ~= nil then
-    buf_info_prefix = tostring(bufnr) .. unlisted .. ' '
-  end
+  if bufnr ~= nil then buf_info_prefix = tostring(bufnr) .. unlisted .. ' ' end
 
   if vim.bo.readonly == true then return buf_info_prefix .. 'ro ' end
 
@@ -169,11 +166,11 @@ local function get_context()
   local data = navic.get_data()
   if data == nil or next(data) == nil then return '' end
   local data_1 = data[1]
-  if data_1 ~= nil and data_1["name"] ~= nil then
-    if data_1["icon"] ~= nil then
-      return data_1["icon"] .. data_1["name"]
+  if data_1 ~= nil and data_1['name'] ~= nil then
+    if data_1['icon'] ~= nil then
+      return data_1['icon'] .. data_1['name']
     else
-      return data_1["name"]
+      return data_1['name']
     end
   else
     return ''
@@ -193,9 +190,7 @@ function statusline.setup()
   local path_width = vim.fn.strdisplaywidth(path)
   if cwd_width + path_width + reserved_rhs > winwidth then
     path = vim.fn.pathshorten(path)
-    if cwd_width + path_width + reserved_rhs > winwidth then
-      cwd = ""
-    end
+    if cwd_width + path_width + reserved_rhs > winwidth then cwd = '' end
   end
 
   local lincol = get_linecol()
@@ -205,8 +200,8 @@ function statusline.setup()
   local git_status = git_statusline()
   local context = get_context()
 
-  local cwd_draw = ""
-  if cwd ~= "" then cwd_draw = cwd .. ' ' end
+  local cwd_draw = ''
+  if cwd ~= '' then cwd_draw = cwd .. ' ' end
   local statusline_sections = {
     cwd_draw,
     path,
