@@ -124,6 +124,18 @@ function GitVersionControlled { param([string]$path) & git ls-files --error-unma
 #git config --get remote.origin.url
 function GitRelPathToRootDir { & git rev-parse --show-cdupgit rev-parse --show-cdup }
 function GitBranch { & git rev-parse --abbrev-ref HEAD }
+function GitCommitCheck {
+  [string[]] $diffed_file = [string[]]$(git --no-pager diff --name-only)
+  [string[]] $cached_file = [string[]]$(git --no-pager diff --cached --name-only)
+  if ($diffed_file.Length == 0) { return 0; }
+  if ($cached_file.Length == 0) { Write-Host "no files staged"; return 1; }
+  $cmp = Compare-Object $diffed_file $cached_file -PassThru -IncludeEqual -ExcludeDifferent
+  if ($cmp.Length -eq 0) { return 0; }
+  else {
+    Write-Host "changed and staged files: $cmp"
+    return 1;
+  }
+}
 function GitCommitCount { & git rev-list REV.. --count }
 function GitCommitDate { return & "git show --no-patch --format=%ad --date=format:'%Y-%m-%d' HEAD" }
 function GitCommitAuthorName { return & "git show --no-patch --format=%an HEAD" }

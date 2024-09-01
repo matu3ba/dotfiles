@@ -165,3 +165,6 @@ stopwatch() {
 
 # SHENNANIGAN
 # Posix shell has no utility to remove control of process from host shell
+
+# Get symbol information via
+# type symbol

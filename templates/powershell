@@ -329,3 +329,11 @@ function Switch-Item {
 
 systeminfo |find "Available Physical Memory"
 Measure time (without memory): Measure-Command
+
+# https://stackoverflow.com/questions/8609204/union-and-intersection-in-powershell
+$a = (1,2,3,4)
+$b = (1,3,4,5)
+# union
+Compare-Object $a $b -PassThru -IncludeEqual
+# intersection
+Compare-Object $a $b -PassThru -IncludeEqual -ExcludeDifferent

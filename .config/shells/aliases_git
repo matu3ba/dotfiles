@@ -229,7 +229,34 @@ alias gsr='git remote show origin'
 # git checkout commit filepath
 alias gco='git checkout'
 alias gcp='git cherry-pick'
-alias gcch='git config --global credential.helper "cache --timeout=3600"'
+# credential helper config
+# git config --global credential.helper "cache --timeout=3600"
+
+# git commit check
+# Returns whether staged files != diffed files
+# Shell is hack and so is most shell tooling typically wasting more time
+# than coding it yourself.
+gce () {
+  comm -1 -2 <(git --no-pager diff --name-only) <(git --no-pager diff --cached --name-only)
+  # _gitdiffnames="$(git --no-pager diff --name-only)"
+  # _gitdiffcachednames="$(git --no-pager diff --cached --name-only)"
+  # if test -n "${_gitdiffnames}"; then return 0; fi
+  # if test -n "${_gitdiffcachednames}"; then echo "no files staged"; return 1; fi
+  # workaround comm requiring file input by letting git provide it
+  # Bash/Posix SHENNANIGAN This should just work and not require tmp file hacks
+  # $_diff_gdn_gdcn="$(comm -1 -2 <(git --no-pager diff --name-only) <(git --no-pager diff --cached --name-only))"
+  # https://stackoverflow.com/questions/7427262/how-to-read-a-file-into-a-variable-in-shell
+  # * Trailing newline removal from command expansion makes simple approach
+  #   unusable and anonying to deal with.
+  # * NUL character removal requires encoding and decoding file contents for shell.
+  # comm -1 -2 <(git --no-pager diff --name-only) <(git --no-pager diff --cached --name-only)
+  # correct and fast aside of NULL not encodable solution
+  # read -rd '' content </etc/passwd
+  # read -rd '' content </etc/passwd || :
+  # echo _$
+}
+
+# git commit
 alias gc='git commit -v -S' # sign is faster
 alias gcn='git commit -v' # nosign
 alias gcmsg='git commit -m'
