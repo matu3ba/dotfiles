@@ -127,8 +127,8 @@ function GitBranch { & git rev-parse --abbrev-ref HEAD }
 function GitCommitCheck {
   [string[]] $diffed_file = [string[]]$(git --no-pager diff --name-only)
   [string[]] $cached_file = [string[]]$(git --no-pager diff --cached --name-only)
-  if ($diffed_file.Length == 0) { return 0; }
-  if ($cached_file.Length == 0) { Write-Host "no files staged"; return 1; }
+  if ($diffed_file.Length -eq 0) { return 0; }
+  if ($cached_file.Length -eq 0) { Write-Host "no files staged"; return 1; }
   $cmp = Compare-Object $diffed_file $cached_file -PassThru -IncludeEqual -ExcludeDifferent
   if ($cmp.Length -eq 0) { return 0; }
   else {
@@ -137,13 +137,13 @@ function GitCommitCheck {
   }
 }
 function GitCommitCount { & git rev-list REV.. --count }
-function GitCommitDate { return & "git show --no-patch --format=%ad --date=format:'%Y-%m-%d' HEAD" }
-function GitCommitAuthorName { return & "git show --no-patch --format=%an HEAD" }
-function GitCommitAuthorMail { return & "git log -1 --pretty=format:%ce HEAD" }
+function GitCommitDate { return & git show --no-patch --format=%ad --date=format:'%Y-%m-%d' HEAD }
+function GitCommitAuthorName { return & git show --no-patch --format=%an HEAD }
+function GitCommitAuthorMail { return & git log -1 --pretty=format:%ce HEAD }
 # or #return & "git show --no-patch --format=%ce HEAD"
-function GitCommitTime { return & "git show --no-patch --format=%ad --date=format:'%H:%M:%S' HEAD" }
-function GitShortCommitID { return & "git rev-parse --short HEAD" }
-function GitFullCommitID { return & "git rev-parse HEAD" }
+function GitCommitTime { return & git show --no-patch --format=%ad --date=format:'%H:%M:%S' HEAD }
+function GitShortCommitID { return & git rev-parse --short HEAD }
+function GitFullCommitID { return & git rev-parse HEAD }
 
 # function CreateChangeDirectory { & md -ea 0 buildrel\ && cd buildrel\ }
 function CdUp { & cd .. }

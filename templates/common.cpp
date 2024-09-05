@@ -1793,3 +1793,30 @@ int test_future()
 
 // https://brevzin.github.io/c++/2021/11/21/conditional-members/
 // https://brevzin.github.io/c++/2019/01/15/if-constexpr-isnt-broken/
+
+// core guidelines
+// https://www.sandordargo.com/blog/2021/10/13/cpp-concepts-core-guidelines
+// * T.10: Specify concepts for all template arguments
+// * T.11: Whenever possible use standard concepts
+// * T.12: Prefer concept names over auto for local variables
+// * T.13: Prefer the shorthand notation for simple, single-type argument concepts
+//template<typename T>       // Correct but verbose: "The parameter is
+//     requires sortable<T>   // of type T which is the name of a type
+// void sort(T&);             // that is sortable"
+//
+// template<sortable T>       // Better: "The parameter is of type T
+// void sort(T&);             // which is Sortable"
+//
+// void sort(sortable auto&); // Best: "The parameter is Sortable"
+//
+//
+// The ability to specify meaningful semantics is a defining characteristic of a true concept, as opposed to a syntactic constraint. Example
+// template<typename T>
+// // The operators +, -, *, and / for a number are assumed to follow the usual mathematical rules
+// concept Number = requires(T a, T b) { a + b; a - b; a * b; a / b; };
+// template<Number N>
+// auto algo(const N& a, const N& b)
+// {
+//     return a + b;
+// }
+// * Do not use negation in concepts, but more generalized ones
