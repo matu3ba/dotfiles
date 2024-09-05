@@ -7,6 +7,11 @@ List of dedicated formally proved languages
   * codegen
     + PLC has codegen from ladder diagrams and other graphical methods
 
+====tools
+* https://dagitty.net/
+* venn.nvim
+* Gephi
+
 ====verification_costs
 Proof effort is quadratic to code size, if code is not side-effect free.
 Side-effect free means the following holds:

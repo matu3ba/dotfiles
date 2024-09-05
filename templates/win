@@ -709,3 +709,5 @@ TODO cleanup
 #elif !defined(RC_INVOKED)
 #error "No Target Architecture"
 #endif
+
+SHENNANIGAN Portable include is #include <Windows.h>, but lower case also works on windows

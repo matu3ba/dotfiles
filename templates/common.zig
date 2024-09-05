@@ -596,3 +596,27 @@ test "comptime infer error set" {
 //-march= specifies cpu-type as arch name (ie skylake), arch level (x86-64-v2) or baseline, native
 // x86-64, x86-64-v2, x86-64-v3 (before avx512), x86-64-v4 (avx512)
 //-mtune= defines builtin macros ie gcc/config/i386/i386-c.cc:ix86_target_macros_internal
+
+const AddError = error{BadNumber};
+
+// flexible error payloads
+// opts with optional field err_pl to set a pointer to static memory
+// for the error message
+fn compute_with_error(num: u32, opts: anytype) AddError!u32 {
+    if (num == 42) {
+        if (@hasField(@TypeOf(opts), "err_pl")) {
+            opts.err_pl.* = "input bad number 42!";
+        }
+        return error.BadNumber;
+    }
+    return num + 1;
+}
+
+test compute_with_error {
+    var num: u32 = 41;
+    var err_pl: []const u8 = undefined; // static payload given by callee
+    num = try compute_with_error(num, .{ .err_pl = &err_pl });
+    // num = 42;
+}
+
+// setup https://kristoff.it/blog/improving-your-zls-experience/

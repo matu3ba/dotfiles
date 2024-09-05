@@ -1,6 +1,9 @@
-// C++ tooling
+// C++ tooling mandating C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
 // C++20 overview https://www.scs.stanford.edu/~dm/blog/param-pack.html
+// [-Wunused-variable]
+// [-Wimplicit-fallthrough]
+
 #if (__cplusplus >= 201703L)
 #define HAS_CPP17
 #endif
@@ -115,12 +118,14 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
     }
 
 // better enums via enum class
+void enum_class_example();
 void enum_class_example() {
 	enum class Loc {
 		Abs,
 		Rel,
 	};
   Loc loc1 = Loc::Rel;
+  (void)loc1;
 }
 
 enum class eType {
@@ -134,8 +139,12 @@ public:
   CImageHistory(){}
 };
 
+// .\templates\common.cpp:152:7: warning: unannotated fall-through between switch labels
+//       [-Wimplicit-fallthrough]
+//   152 |       case eType::ty2: {
+//       |       ^
 struct sTemplatedTaggedUnion {
-  eType pix_ty;
+  eType m_pix_ty;
   union ImHist {
     CImageHistory<int64_t> im_hist_ty1;
     CImageHistory<int8_t> im_hist_ty2;
@@ -146,22 +155,26 @@ struct sTemplatedTaggedUnion {
   explicit sTemplatedTaggedUnion(eType pix_ty) {
    switch (pix_ty) {
       case eType::ty1: {
-        pix_ty = pix_ty;
+        m_pix_ty = pix_ty;
         im_hist.im_hist_ty1 = CImageHistory<int64_t>();
+        break;
       }
       case eType::ty2: {
-        pix_ty = pix_ty;
+        m_pix_ty = pix_ty;
         im_hist.im_hist_ty2 = CImageHistory<int8_t>();
+        break;
       }
     }
   }
   ~sTemplatedTaggedUnion() {
-   switch (pix_ty) {
+   switch (m_pix_ty) {
       case eType::ty1: {
         im_hist.im_hist_ty1.~CImageHistory<int64_t>();
+        break;
       }
       case eType::ty2: {
         im_hist.im_hist_ty2.~CImageHistory<int8_t>();
+        break;
       }
     }
   }
@@ -172,6 +185,7 @@ struct sTemplatedTaggedUnion {
 //   sTemplatedTaggedUnion templ_tagged_union = {eType::ty1, CImageHistory<int64_t>()};
 // }
 
+void tagged_union();
 void tagged_union() {
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
   std::variant<int, std::string> v = "abc";
@@ -184,6 +198,7 @@ void tagged_union() {
 }
 
 // SHENNANIGAN: rules out C_like_aggregrate_construction_
+int usage_sTemplatedTaggedUnion();
 int usage_sTemplatedTaggedUnion() {
   sTemplatedTaggedUnion ttu0(eType::ty1);
   sTemplatedTaggedUnion ttu1(eType::ty2);
@@ -218,6 +233,7 @@ struct sTemplatedVariant {
   }
 };
 
+int usage_sTemplatedVariant();
 int usage_sTemplatedVariant() {
   sTemplatedVariant tv0(eType::ty1);
   sTemplatedVariant tv1(eType::ty2);
@@ -256,6 +272,7 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
 
 // map only works with iterators AND SHOULD ONLY BE USED WITH ITERATORS, see below
 // This is extremely easy to miss,
+void iter();
 void iter() {
     std::map<int, std::string> mapexample;
     mapexample[1] = "t1"; // do not use this, reason below
@@ -267,18 +284,20 @@ void iter() {
     for (auto iter = std::begin(mapexample); iter != std::end(mapexample); ++iter) {
         printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
         ptr_str = &iter->second;
-        ptr_str = ptr_str; // read the value
+        (void)ptr_str; // read the value
     }
     auto search = mapexample.find(1);
-    if (search != mapexample.end()) ptr_str = &search->second;;
-    ptr_str = ptr_str; // read the value
+    if (search != mapexample.end()) ptr_str = &search->second;
+    (void)ptr_str; // read the value
 }
 
+void sortarray();
 void sortarray() {
     std::array<int, 5> arr_x {{0,1,2,3,4}};
     std::sort(arr_x.begin(), arr_x.end()); // cbegin, cend
 }
 
+void sortarray_lambda_expression();
 void sortarray_lambda_expression() {
     std::array<int, 5> arr_x {{0,1,2,3,4}};
     std::sort(arr_x.begin(), arr_x.end(), [](int a, int b)
@@ -290,6 +309,7 @@ void sortarray_lambda_expression() {
         });
 }
 
+void simpleCAS();
 void simpleCAS() {
     // SHENNANIGAN atomic default initializer of integers is 0, but not well documented/simple to find
     std::atomic<bool> is_initialized(false);
@@ -308,11 +328,13 @@ void simpleCAS() {
 
 }
 
+void vector_reserve_capacity();
 void vector_reserve_capacity() {
     std::vector<int> someints;
     someints.reserve(20);
 }
 
+void always_emplace_back();
 void always_emplace_back() {
     std::vector<int> someints;
     someints.push_back(1); // might make unnecessary copies, which can be seen in the move call.
@@ -328,6 +350,7 @@ union S
     std::vector<int> vec;
     ~S() {} // whole union occupies max(sizeof(string), sizeof(vector<int>))
 };
+int libmain();
 int libmain() {
     S s = {"Hello, world"};
     // at this point, reading from s.vec is undefined behavior
@@ -336,6 +359,7 @@ int libmain() {
     return 0;
 }
 
+bool contains(std::map<int,int>& container, int search_key);
 bool contains(std::map<int,int>& container, int search_key) {
     // return container.end() != container.find(search_key);
     return 1 == container.count(search_key); // std::map enforces 0 or 1 matches
@@ -352,7 +376,7 @@ bool contains(std::map<int,int>& container, int search_key) {
 class T1 {
 public:
     T1(); // needed to allow convenient random access via [] operator
-    T1(const std::string &t1): mName(t1) {};
+    T1(const std::string &t1): mName(t1) {}
     std::string mName;
     std::string prop1;
 };
@@ -422,6 +446,7 @@ class ClassWithMutex { // class with mutex
 
 // Note: Reinterpreting bytes requires reinterpret_cast instead of static_cast.
 
+int reinterpret_cast_usage();
 int reinterpret_cast_usage() {
   // see also common.c no_reinterpret_cast
   // clang-format: off
@@ -436,6 +461,7 @@ int reinterpret_cast_usage() {
   return 0;
 }
 
+int ptr_no_reinterpret_cast();
 int ptr_no_reinterpret_cast() {
   char some_vals[5] = {0, 0,0,0,1};
 	// SHENNANIGAN less type safe than C variant
@@ -464,6 +490,8 @@ public:
 struct struct_iter {
     std::map<std::string, Variable> map_str_str;
 };
+
+int findReturnsMutIterAssignBoolValue(struct struct_iter* str_iter_ptr, std::string search_key, bool value);
 int findReturnsMutIterAssignBoolValue(struct struct_iter* str_iter_ptr, std::string search_key, bool value) {
     auto var_iter = str_iter_ptr->map_str_str.find(search_key);
     if (var_iter == str_iter_ptr->map_str_str.end()) return 1;
@@ -474,7 +502,11 @@ int findReturnsMutIterAssignBoolValue(struct struct_iter* str_iter_ptr, std::str
     }
     return 0;
 }
+
+std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, std::string search_key, bool value);
 std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, std::string search_key, bool value) {
+    (void)search_key;
+    (void)value;
     std::map<std::string, Variable> res;
     std::map<std::string, Variable>::iterator var_iter;
     for (var_iter = str_iter_ptr->map_str_str.begin(); var_iter != str_iter_ptr->map_str_str.end(); var_iter++) {
@@ -484,6 +516,7 @@ std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, 
     return res;
 }
 
+void mutex_usage();
 void mutex_usage() {
     std::mutex m1; // incorrect for simplification
     std::lock_guard<std::mutex> guard(m1);
@@ -781,6 +814,7 @@ class ExampleClass {
     // ExampleClass ex2(1), ex1(2); ex2 = std::copy(ex1); // or ex2=ex1; if simple assign operator forbidden
     // default: requires opt-in unless other assignment operators forbidden
     ExampleClass& operator=(ExampleClass other) {
+        (void)other;
         return *this;
     };
 };
@@ -788,10 +822,13 @@ class ExampleClass {
 // https://stackoverflow.com/questions/1226634/how-to-use-base-classs-constructors-and-assignment-operator-in-c
 // You can and might need to explicitly call constructors and assignment operators.
 class Base {
+    int32_t m_val;
 public:
-    Base(const Base&) { /*...*/ }
-    Base& operator=(const Base&) { /*...*/ } // simple assign op, NOLINT
-    Base& operator=(const Base&&) { /*...*/ } // move assign op, NOLINT
+    Base(const Base& copyctor) : m_val(copyctor.m_val) {}
+    // Base& operator=(const Base& copy_asgnctor) { this->m_val = copy_asgnctor.m_val; return *this; } // simple assign op, NOLINT
+    Base& operator=(const Base& copy_asgnop) { this->m_val = copy_asgnop.m_val; return *this; } // simple assign op, NOLINT
+    Base& operator=(const Base&& move_asgnop) { this->m_val = move_asgnop.m_val; return *this; } // move assign op, NOLINT
+    // Existence of a destructor prevents implicit move constructor
 };
 
 class Derived : public Base {
@@ -973,6 +1010,7 @@ void ipc_read() {
 
 // SHENNANIGAN
 // interoperating type safe with c strings is very cumbersome
+void cstring_interop_annoying();
 void cstring_interop_annoying() {
   const char * cmd = "ls";
   char const * buffer[] = {"ls", "-l", NULL};
@@ -1007,6 +1045,7 @@ void raii_filehandles() {
   // < unique_ptr deleter is run
 }
 
+void systemtime_filetime();
 void systemtime_filetime() {
   SYSTEMTIME st_base = { 0 }; // looks like compiler does not support C initialization list (since C11/C++11)
   st_base.wYear = 2000;
@@ -1033,6 +1072,7 @@ void systemtime_filetime() {
 // windows GetLastError
 //
 //#include <system_error>
+void printGetLastError();
 void printGetLastError() {
     DWORD error = ::GetLastError();
     std::string message = std::system_category().message(error);
@@ -1178,6 +1218,7 @@ namespace util_force_const_eval {
 #define FORCE_CONST_EVAL(exp) ::util_force_const_eval::const_expr_value<decltype(exp), exp>::value
 #define LEAF(FN) (&FN[FORCE_CONST_EVAL(fname_offs(FN))])
 
+int testEq(int a, int b);
 int testEq(int a, int b) {
   if (a != b) {
     // Prefer __FILE_NAME__, which also works in C. Ideally, the compiler
@@ -1192,7 +1233,8 @@ int testEq(int a, int b) {
 // double. Usage should be not inlined and use explicit instantiation,
 // especially in big code bases to save compilation time.
 template <class TVAL, class TEXP, class TEPS>
-static typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps);
+static typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type
+testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps);
 
 // check that value NaN if value convertible to double via parameter
 template <class TVAL>
@@ -1207,7 +1249,8 @@ static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double
 // first param is boolean, second is enabled type result is either empty struct
 // or struct with type, value and we want the type from that
 
-void someLambda(bool bVal1, const std::string & sName) {
+void someLambda(bool bVal, const std::string & sName);
+void someLambda(bool bVal, const std::string & sName) {
   auto DrawOp = [&](bool bVal1, const std::string & sName) {
     if (bVal1)
       fprintf(stdout, "%s\n", sName.c_str());
@@ -1224,6 +1267,7 @@ void someLambda(bool bVal1, const std::string & sName) {
 // C++ does not capture C type problems, especially memcpy, memset etc
 // Prefer ape_printing, not ape_printing_bad
 #ifdef _WIN32
+void ape_printing_bad();
 void ape_printing_bad() {
   std::fstream fs;
   fs.open("filename.txt", std::fstream::app | std::fstream::out);
@@ -1238,6 +1282,7 @@ void ape_printing_bad() {
 // #define _CRT_SECURE_NO_WARNINGS
 // #define _CRT_SECURE_NO_DEPRECATE
 #endif
+void ape_print();
 void ape_print() {
   FILE * f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
@@ -1245,11 +1290,13 @@ void ape_print() {
   fclose(f1);
 }
 
-void ape_throw() {
+[[noreturn]] void ape_throw();
+[[noreturn]] void ape_throw() {
   throw std::runtime_error("error");
 }
 
 // Cast iterator to pointer
+void ape_itertoptr();
 void ape_itertoptr() {
   std::string my_str= "hello world";
   std::string::iterator it(my_str.begin());
@@ -1296,6 +1343,7 @@ void ape_itertoptr() {
 // SHENNANIGAN Error C2681 invalid expression type for dynamic_cast
 // is confusing. The type may simply not known instead of "invalid".
 
+void chrono_usage();
 void chrono_usage() {
   // auto timeFromDb = std::chrono::system_clock::from_time_t(std::mktime(&dbTime));
   auto t_start = std::chrono::high_resolution_clock::now();
@@ -1367,6 +1415,7 @@ struct Derived2 : Base2<Derived>
 
 // SHENNANIGAN streams do not enforce C abi and are overly complex for printing memory
 // This may hide serious bugs like memcpy to std::vector<bool>.
+void stream_flags();
 void stream_flags() {
   // https://codereview.stackexchange.com/questions/165120/printing-hex-dumps-for-diagnostics
   std::vector<uint8_t> array {1, 0, 0, 0};
@@ -1447,6 +1496,7 @@ struct SomeDll {
   }
 };
 
+int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len);
 int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
   // SHENNANIGAN clangd
   // shows ISO C++11 does not allow conversion from string literal to 'char *const' instead of
@@ -1526,8 +1576,8 @@ union union_tmp
   };
 };
 
-int use_union_tmp()
-{
+int use_union_tmp();
+int use_union_tmp() {
     union_tmp b;
     std::shared_ptr<std::vector<int>> tmp(new std::vector<int>);
     b.ptr = tmp; //here segmentation fault happens
@@ -1714,8 +1764,8 @@ struct D {
   short operator == (short);
 };
 
-int test_OperatorExistence()
-{
+int test_OperatorExistence();
+int test_OperatorExistence() {
   // C++14
 #ifndef HAS_CPP20
 #ifdef HAS_CPP14
@@ -1768,15 +1818,14 @@ struct MultiOperator {
 };
 
 
-struct Foo
-{
+struct Foo {
   Foo() : data(0) {}
   void sum(int i) { data +=i;}
   int data;
 };
 
-int test_future()
-{
+int test_future();
+int test_future() {
   Foo foo;
   // & mandatory for member functions, optional for free functions
   auto f = std::async(&Foo::sum, &foo, 42);
@@ -1787,6 +1836,8 @@ int test_future()
 
   return 0;
 }
+
+int main() { return 0; } // minimal stub
 
 // SHENNANIGAN MSVC C++20 freaks out on std::is_pod
 // replace with std::is_standard_layout and/or std::is_trivial
