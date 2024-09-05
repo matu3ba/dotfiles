@@ -99,7 +99,7 @@ static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t 
 void ptrtointtoptr(void);
 void assert_with_text(void);
 void standard_namespacing(void);
-void c_enum_in_struct_weirdness();
+void c_enum_in_struct_weirdness(void);
 void cpp_namespaces_enums_in_structs(int32_t device_type);
 int32_t c_enum(int32_t in);
 inline void hash_combine(unsigned long *seed, unsigned long const value);
@@ -126,7 +126,7 @@ int sum(int a, int b);
 int sub(int a, int b);
 int mul(int a, int b);
 int div_noconflict(int a, int b);
-void fn_voidptr(void * raw_ptr, uint16_t len);
+void fn_voidptr(void * raw_ptr, uint64_t len);
 void use_voidptr(void);
 #ifdef _WIN32
 void ape_win_incompat_fileprint(void);
@@ -205,12 +205,10 @@ void standard_namespacing(void) {
       break;
   case Mode2:
       break;
-  default:
-    break;
   }
 }
 
-void c_enum_in_struct_weirdness() {
+void c_enum_in_struct_weirdness(void) {
   const uint32_t device_type = 1;
   struct BeckhoffDeviceType {
     enum Ty {
@@ -254,11 +252,11 @@ int32_t c_enum(int32_t in) {
   switch (ex) {
     case EX0: {
       return 0;
-      break;
-    };
+      // break;
+    }
     case EX1: {
       return 1;
-      break;
+      // break;
     }
   }
 }
@@ -292,19 +290,28 @@ inline void hash_combine(unsigned long *seed, unsigned long const value) {
 
 // https://github.com/tidwall/th64
 // looks like it is not includede in smhasher3 and does not look tiny
-inline uint64_t th64(const void *data, size_t len, uint64_t seed) {
-    uint8_t*p = (uint8_t*)data, *e = p+len;
-    uint64_t r = 0x14020a57acced8b7, x, h=seed;
-    while(p+8 <= e)
-      memcpy(&x, p, 8), x*=r, p+=8, x=x<<31|x>>33, h=h*r^x, h=h<<31|h>>33;
-    while(p<e)
-      h = h*r^*(p++);
-    return(h = h*r+len, h ^= h>>31, h *= r, h ^= h>>31, h *= r, h ^= h>>31, h *= r, h);
-}
+// inline uint64_t th64(void *data, size_t len, uint64_t seed) {
+//     //warning: unsafe pointer arithmetic [-Wunsafe-buffer-usage]
+//     // 294 |     uint8_t*p = (uint8_t*)data, *e = p+len;
+//     //                                            ^
+//     // uint8_t*p = (uint8_t*)data, *e = p+len;
+//     uint8_t*p = (uint8_t*)data, *e = p+len;
+//     uint64_t r = 0x14020a57acced8b7, x, h=seed;
+//     while(p+8 <= e)
+//       (void)memcpy(&x, p, 8), (void)(x*=r), (void)(p+=8), (void)(x=x<<31|x>>33), (void)(h=h*r^x), (void)(h=h<<31|h>>33);
+//     while(p<e)
+//       h = h*r^*(p++);
+//     return((void)(h = h*r+len), (void)(h ^= h>>31), (void)(h *= r), (void)(h ^= h>>31), (void)(h *= r), (void)(h ^= h>>31), (void)(h *= r), h);
+// }
 
 // TODO siphash for better performance
 // https://gitlab.com/fwojcik/smhasher3
 // https://github.com/rui314/mold/commit/fa8e95a289f911c0c47409d5848c993cb50c8862
+
+// SHENNANIGAN clang has useless warnings firing on trivial code like
+// templates\common.c:315:7: warning: unsafe pointer arithmetic [-Wunsafe-buffer-usage]
+//   315 |       tmps++;
+//       |       ^~~~
 
 /// assume: continuous data pointed to by str is terminated with 0x00
 int32_t Str_Len(const char* str) {
@@ -572,7 +579,7 @@ int sub(int a, int b) { return a - b; }
 int mul(int a, int b) { return a * b; }
 int div_noconflict(int a, int b) { return (b != 0) ? a / b : 0; }
 
-int main() {
+int main(void) {
   // Array of function pointers initialization
   int (*callbacks[4]) (int, int) = {sum, sub, mul, div_noconflict};
 
@@ -589,11 +596,11 @@ int main() {
 }
 
 // SHENNANIGAN const char* to void* cast has unhelpful error messages
-void fn_voidptr(void * raw_ptr, uint16_t len) {
+void fn_voidptr(void * raw_ptr, uint64_t len) {
   memset(raw_ptr, 0, len);
 }
 void use_voidptr(void) {
-	const char *sVars[] = {
+	char *sVars[] = {
 		"MAIN.bIn_Overflow",
 		"MAIN.bIn_Counter",
   };
@@ -618,7 +625,7 @@ void use_voidptr(void) {
 //   // Excludes rarely-used stuff from Windows headers
 //   #define WIN32_LEAN_AND_MEAN
 //   // Windows Header Files:
-//   #include <windows.h>
+//   #include <Windows.h>
 
 #ifdef _WIN32
 // different semantics of "secure fns" and not portable
@@ -772,6 +779,7 @@ void compound_literal_usage(void) {
 // }
 
 // SHENNANIGAN implementation dependent, so best to avoid them
+// [-Wfour-char-constants] warning: multi-character character constant
 void multi_character_constants(void) {
   enum State1 {
     Wait = 'WAIT',
@@ -834,12 +842,12 @@ void safe_debugging_on_unix() {
 
 #include <stdatomic.h>
 
-struct _No_Immutable_in_C_i64 {
+struct No_Immutable_in_C_i64 {
   _Atomic int64_t * p1;
   _Atomic int64_t cnt;
 };
-int32_t immut_set(struct _No_Immutable_in_C_i64 * obj, int64_t val);
-int32_t immut_get(struct _No_Immutable_in_C_i64 * obj, int64_t * val);
+int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val);
+int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val);
 
 // C provides no nice way to get generics (besides C11 non C++ usable generic
 // selection), so (usually) it makes no sense to have a method 'update' being
@@ -850,14 +858,14 @@ int32_t immut_get(struct _No_Immutable_in_C_i64 * obj, int64_t * val);
 // methods, no good way to use struct generically by filling fn ptr/callback for
 // additional method 'update'.
 // Omit shared_ptr methods here for brevity.
-int32_t immut_set(struct _No_Immutable_in_C_i64 * obj, int64_t val) {
+int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val) {
   if (obj != NULL) {
     atomic_store(obj->p1, val);
     return 0;
   }
   return 1;
 }
-int32_t immut_get(struct _No_Immutable_in_C_i64 * obj, int64_t * val) {
+int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val) {
   if (obj != NULL) {
     *val = atomic_load(obj->p1);
     return 0;
@@ -897,13 +905,19 @@ struct ImageSimple {
   int32_t width;
   int32_t height;
   struct Pixel *pixels_simple;
-} s_image_simple;
+};
+// static struct ImageSimple s_image_simple;
+// templates\common.c:904:27: warning: unused variable 's_image_simple' [-Wunused-variable]
+//   904 | static struct ImageSimple s_image_simple;
+//       |                           ^~~~~~~~~~~~~~
+struct ImageSimple s_image_simple;
 
 struct ImageVLA {
   int32_t width;
   int32_t height;
   struct Pixel pixels_vla[];
-} ImageVLA;
+};
+struct ImageVLA ImageVLA;
 // TODO align cast in C
 
 // Corresponding zig code:
@@ -958,7 +972,12 @@ struct ImageVLA {
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
 int FG_Init(char * errmsg_ptr, int * errmsg_len) {
   const char * msg = "balbla";
-  int st = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
+
+  // int st = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
+  //     'unsigned long long' [-Wsign-conversion]
+  // 966 |   int st = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
+  //     |            ~~~~~~~~             ^~~~~~~~~~~
+  int st = snprintf(errmsg_ptr, (size_t)*errmsg_len, "%s", msg);
   if (st > 0) return 0;
   return 1;
 }
@@ -1014,14 +1033,14 @@ int FG_Init(char * errmsg_ptr, int * errmsg_len) {
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-void deinitTimer();
-void resetOutputs();
+#include <Windows.h>
+void deinitTimer(void);
+void resetOutputs(void);
 LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo);
 void veh_example(void);
 
-  void deinitTimer() {}
-void resetOutputs() {}
+  void deinitTimer(void) {}
+void resetOutputs(void) {}
 
 // SHENNANIGAN windows
 // no guide how to minimize headers to optimize compilation time
@@ -1121,7 +1140,7 @@ void getFullPathNameUsage(void) {
 
 // delayed loaded via explicit calls to LoadLibrary and GetProcAddress
 
-// #include<windows.h>
+// #include<Windows.h>
 // #include<unistd.h>
 // Sleep/sleep
 
