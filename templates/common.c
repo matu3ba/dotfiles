@@ -22,6 +22,12 @@
 // DWARF and ELF verified spec impl + model usable as test oracle https://github.com/rems-project/linksem
 // TODO more checks
 // psyche-e incomplete file completer and compiler https://github.com/ltcmelo/psychec http://cuda.dcc.ufmg.br/psyche-c/
+// clang -fsanitize=address -g -O1 -fno-omit-frame-pointer main.cpp
+// * wiki with info
+// * 2x slowdown, increased binary size, needs build system support
+// * maps lots of virtual memory
+// * only as good as coverage
+// * ASan, UBSan, LSan, TSan, MSan
 
 //====version
 // setting iso version:
@@ -89,6 +95,56 @@
 // - Usage of restrict can be en/disabled in all compilers via #pragma optimize("", on/off).
 //   It can also be disabled in all compilers via #define restrict, using an according optimization level (typical -O1)
 //   or via separating header and implementation and disabling link time optimziations.
+static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment);
+void ptrtointtoptr(void);
+void assert_with_text(void);
+void standard_namespacing(void);
+void c_enum_in_struct_weirdness();
+void cpp_namespaces_enums_in_structs(int32_t device_type);
+int32_t c_enum(int32_t in);
+inline void hash_combine(unsigned long *seed, unsigned long const value);
+int32_t Str_Len(const char* str);
+void Str_Copy(const char* str, int32_t strlen, char* str2);
+int32_t Int_CeilDiv(int32_t x, int32_t y);
+void printBits(int32_t const size, void * const ptr);
+void print_size_t(void);
+int f(int* a);
+void sequence_points_ub(void);
+void aliasing_loader_clobberd_by_store(int* a, const int* b);
+void noaliasing(int* a, const long* b);
+void noaliasing_with_restrict(int* __restrict__ a, const int* b);
+void ptr_cmp(int* a, const int* b);
+void convert_string_to_int(const char *buff);
+void convert_string_to_int_simple(const char *buff);
+int no_reinterpret_cast(void);
+int ptr_no_reinterpret_cast(void);
+void padding(void);
+void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim);
+int testEq(int a, int b);
+void printf_align(void);
+int sum(int a, int b);
+int sub(int a, int b);
+int mul(int a, int b);
+int div_noconflict(int a, int b);
+void fn_voidptr(void * raw_ptr, uint16_t len);
+void use_voidptr(void);
+#ifdef _WIN32
+void ape_win_incompat_fileprint(void);
+#else
+void ape_fileprint(void);
+void ape_print(void);
+#endif
+void ape_win_print(void);
+void array_pointers(void);
+void designated_initializer(void);
+void multi_character_constants(void);
+void bitfields(void);
+void zero_bitfield(void);
+void flexible_array_member(void);
+void imaginary_cursor_position_in_printf(void);
+int FG_Init(char * errmsg_ptr, int * errmsg_len);
+void tagged_union(void);
+void enum_class(void);
 
 static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment) {
     assert((size_bytes & (alignment-1)) == 0); // Size aligned
@@ -100,7 +156,7 @@ static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t 
 // integer and back optimizations in for example clang and gcc
 // 3. Careful with LTO potentially creating problem 2. (clang -flto -funified-lto -fuse-ld=lld ptrtoint_inttoptr.c)
 // 4. Consider C11 aligned_alloc or posix_memalign
-void ptrtointtoptr() {
+void ptrtointtoptr(void) {
   const uint16_t alignment = 16;
   const uint16_t align_min_1 = alignment - 1;
   void * mem = malloc(1024+align_min_1);
@@ -115,11 +171,11 @@ void ptrtointtoptr() {
 
 // macro NULL = 0 or mingw null
 
-void assert_with_text() {
+void assert_with_text(void) {
   assert((1 == 1) && "sometext");
 }
 
-void standard_namespacing() {
+void standard_namespacing(void) {
   // Standard enum, struct etc
   struct Namespace1 {
     // unscoped enum place fields into outest file scope
@@ -171,6 +227,7 @@ void c_enum_in_struct_weirdness() {
 }
 
 void cpp_namespaces_enums_in_structs(int32_t device_type) {
+  (void)device_type;
   struct BeckhoffDeviceType {
     enum Ty {
       Undefined = 0,
@@ -182,13 +239,13 @@ void cpp_namespaces_enums_in_structs(int32_t device_type) {
     } ty;
   };
   struct BeckhoffDeviceType devty;
+  (void)devty;
   // c compiler: Use of undeclared identifier 'BeckhoffDeviceType'
   // cpp compiler: works fine and might be needed
   // devty.ty = (BeckhoffDeviceType.Ty)device_type;
 }
 
 int32_t c_enum(int32_t in) {
-  const uint32_t device_type = 1;
   enum Example {
     EX0 = 0,
     EX1,
@@ -229,14 +286,13 @@ BEGIN_ENUM(OsType)
 
 
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
-inline void hash_combine(unsigned long *seed, unsigned long const value)
-{
+inline void hash_combine(unsigned long *seed, unsigned long const value) {
     *seed ^= value + 0x9e3779b9 + (*seed << 6) + (*seed >> 2);
 }
 
 // https://github.com/tidwall/th64
 // looks like it is not includede in smhasher3 and does not look tiny
-static uint64_t th64(const void *data, size_t len, uint64_t seed) {
+inline uint64_t th64(const void *data, size_t len, uint64_t seed) {
     uint8_t*p = (uint8_t*)data, *e = p+len;
     uint64_t r = 0x14020a57acced8b7, x, h=seed;
     while(p+8 <= e)
@@ -251,8 +307,7 @@ static uint64_t th64(const void *data, size_t len, uint64_t seed) {
 // https://github.com/rui314/mold/commit/fa8e95a289f911c0c47409d5848c993cb50c8862
 
 /// assume: continuous data pointed to by str is terminated with 0x00
-int32_t Str_Len(const char* str)
-{
+int32_t Str_Len(const char* str) {
     const char* tmps = str;
     while(*tmps != 0)
       tmps++;
@@ -262,8 +317,7 @@ int32_t Str_Len(const char* str)
 /// assume: continuous data pointed by input terminated with 0x00
 /// assume: str2 has sufficient backed memory size
 /// copy strlen chars from str to str2
-void Str_Copy(const char* str, int32_t strlen, char* str2)
-{
+void Str_Copy(const char* str, int32_t strlen, char* str2) {
     for(int i=0; i<strlen; i+=1)
         str2[i] = str[i];
 }
@@ -271,17 +325,14 @@ void Str_Copy(const char* str, int32_t strlen, char* str2)
 /// assume: positive number
 /// assume: x + y does not overflow
 /// computes x/y
-int32_t Int_CeilDiv(int32_t x, int32_t y)
-{
+int32_t Int_CeilDiv(int32_t x, int32_t y) {
     return (x + y - 1) / y;
 }
 
 // assume: little endian
-void printBits(int32_t const size, void * const ptr)
-{
+void printBits(int32_t const size, void * const ptr) {
     int status = 0;
     unsigned char *b = (unsigned char*) ptr; // generic pointer (void)
-    unsigned char byte;
     for (int32_t i = size-1; i >= 0; i-=1)
     {
         for (int32_t j = 7; j >= 0; j-=1)
@@ -298,7 +349,7 @@ void printBits(int32_t const size, void * const ptr)
     if (status < 0) abort();
 }
 
-void print_size_t() {
+void print_size_t(void) {
   size_t val = 0;
   printf("%zu\n",val); // SHENNANIGAN clangd: no autocorrection of printf formatter string
 }
@@ -321,7 +372,7 @@ int f(int* a) {
 }
 
 // SHENNANIGAN
-void sequence_points_ub() {
+void sequence_points_ub(void) {
     int a = 0;
     // a = a++ + b++; // Multiple unsequenced modifications to a
     // Same problem without warnings:
@@ -386,6 +437,7 @@ void convert_string_to_int(const char *buff) {
     (void) fprintf(stderr, "%ld less than INT_MIN\n", sl);
   } else {
     si = (int)sl;
+    (void)si;
     // ..
   }
 }
@@ -398,6 +450,7 @@ void convert_string_to_int_simple(const char *buff) {
     && !((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno)
     && (sl >= INT_MIN) && (sl <= INT_MAX)) {
     si = (int)sl;
+    (void)si;
     // ..
   }
 }
@@ -423,7 +476,7 @@ void convert_string_to_int_simple(const char *buff) {
 // > C 2011 6.5 paragraph 71 is undefined behavior.
 // => The proper fix for access a pointer with increased alignment is to use a
 // temporary with memcopy
-int no_reinterpret_cast() {
+int no_reinterpret_cast(void) {
   //impl_reinterpret_cast_usage
   // clang-format: off
   const char some_vals[9] = { 0
@@ -439,11 +492,12 @@ int no_reinterpret_cast() {
 }
 
 // SHENNANIGAN unclear risk from clang/gcc provenance related miscomplations
-int ptr_no_reinterpret_cast() {
+int ptr_no_reinterpret_cast(void) {
   char arr[4] = {0,0,0,1};
   int32_t i32_arr = 0;            // unnecessary variable hopefully elided
   memcpy(&i32_arr, &arr[0], 4);
   int32_t * i32_arr_ptr = &i32_arr;
+  (void)i32_arr_ptr;
   // SHENNANIGAN dont return stack local variable here!
   return 0;
 }
@@ -455,7 +509,7 @@ struct sStruct1 {
   uint32_t b2;
 };
 // Ensure correct storage and padding size for pointers via sizeof.
-void padding() {
+void padding(void) {
   struct sStruct1 * str1 = malloc(sizeof(struct sStruct1));
   str1->a1 = 5;
   free(str1);
@@ -507,7 +561,7 @@ int testEq(int a, int b) {
 // https://zackoverflow.dev/writing/how-to-actually-write-c
 // https://zackoverflow.dev/writing/premature-abstraction
 
-void printf_align() {
+void printf_align(void) {
   // pad the input right in a field 10 characters long
   printf("|%-10s|", "Hello");
 }
@@ -519,26 +573,26 @@ int mul(int a, int b) { return a * b; }
 int div_noconflict(int a, int b) { return (b != 0) ? a / b : 0; }
 
 int main() {
-    // Array of function pointers initialization
-    int (*callbacks[4]) (int, int) = {sum, sub, mul, div_noconflict};
+  // Array of function pointers initialization
+  int (*callbacks[4]) (int, int) = {sum, sub, mul, div_noconflict};
 
-    // Using the function pointers
-    int result;
-    int i = 20, j = 5, op;
+  // Using the function pointers
+  int result;
+  int i = 20, j = 5, op;
 
-    for (op = 0; op < 4; op++) {
-        result = callbacks[op](i, j);
-        printf("Result: %d\n", result);
-    }
+  for (op = 0; op < 4; op++) {
+      result = callbacks[op](i, j);
+      printf("Result: %d\n", result);
+  }
 
-    return 0;
+  return 0;
 }
 
 // SHENNANIGAN const char* to void* cast has unhelpful error messages
 void fn_voidptr(void * raw_ptr, uint16_t len) {
   memset(raw_ptr, 0, len);
 }
-void use_voidptr() {
+void use_voidptr(void) {
 	const char *sVars[] = {
 		"MAIN.bIn_Overflow",
 		"MAIN.bIn_Counter",
@@ -568,7 +622,7 @@ void use_voidptr() {
 
 #ifdef _WIN32
 // different semantics of "secure fns" and not portable
-void ape_win_incompat_fileprint() {
+void ape_win_incompat_fileprint(void) {
   FILE * f1;
   const char * f1_name = "file1";
   char err_buf[100];
@@ -587,7 +641,7 @@ void ape_win_incompat_fileprint() {
 #ifndef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_DEPRECATE
-void ape_fileprint() {
+void ape_fileprint(void) {
   const char * f1_name = "file1";
   FILE * f1 = fopen(f1_name, "a+");
   if (f1 == NULL) {
@@ -600,7 +654,7 @@ void ape_fileprint() {
 #endif
 
 #ifdef _WIN32
-void ape_win_print() {
+void ape_win_print(void) {
   FILE * f1;
   fopen_s(&f1, "file1", "a+");
   fprintf(f1, "sometext\n");
@@ -609,7 +663,7 @@ void ape_win_print() {
 #endif
 
 #ifndef _WIN32
-void ape_print() {
+void ape_print(void) {
   FILE * f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
   fclose(f1);
@@ -619,7 +673,7 @@ void ape_print() {
 // Less known/arcane/cursed C based on https://jorenar.com/blog/less-known-c
 // -Wvla-larger-than=0
 // -Wvla
-void array_pointers() {
+void array_pointers(void) {
   int arr[10];
   int *ap0 = arr;
   ap0[0] = 5;
@@ -660,9 +714,11 @@ struct Des1 {
 
 // Designated initializer allow very ugly code, but also reasonable
 // array initialization since C99
-void designated_initializer() {
+void designated_initializer(void) {
   int arr0[] = { 1, 2, [10] = 8, [17] = 9 };
+  (void)arr0;
   struct Des1 d1 = { .y = 1, .s1 = "blubb", .x = -1 };
+  (void)d1;
   struct M1 {
     int x;
     int y;
@@ -673,42 +729,50 @@ void designated_initializer() {
     [1] = { 3, 4, 5 },
     [2] = { 6, 7, 8 },
   };
+  (void)arr1;
   struct {
     int sec, min, hour, day, mon, year;
   } dt1 = {
     .day = 1, 1, 2001,
     .sec = 1, 1, 1
   };
+  (void)dt1;
 }
+
 
 // Compound literals looks like brace-enclosed initializer list
 struct ComLit1 {
   int x, y;
 };
+void compound_literal(struct ComLit1 cl1);
+void compound_literal_by_addr(struct ComLit1 * cl1);
+void compound_literal_usage(void);
+
 void compound_literal(struct ComLit1 cl1) {
   fprintf(stdout, "%d, %d\n", cl1.x, cl1.y);
 }
 void compound_literal_by_addr(struct ComLit1 * cl1) {
   fprintf(stdout, "%d, %d\n", cl1->x, cl1->y);
 }
-void compound_literal_usage() {
+void compound_literal_usage(void) {
   // fun fact: red brackets by clangd show that this is cursed
   compound_literal((struct ComLit1){1, 2});
   compound_literal_by_addr(&(struct ComLit1){1, 2});
 }
 
-// SHENNANIGAN one can escape shadowing
-int x_global_cursed = 13;
-void escaping_shadowing() {
-  int x = 1;
-  {
-    extern int x;
-    fprintf(stdout, "%d\n", x);
-  }
-}
+// SHENNANIGAN one can escape shadowing potentially resulting in weird errors
+// int x_global_cursed = 13;
+// void escaping_shadowing() {
+//   int x = 1;
+//   (void)x;
+//   {
+//     extern int x;
+//     fprintf(stdout, "%d\n", x);
+//   }
+// }
 
 // SHENNANIGAN implementation dependent, so best to avoid them
-void multi_character_constants() {
+void multi_character_constants(void) {
   enum State1 {
     Wait = 'WAIT',
     run = 'RUN!',
@@ -717,7 +781,7 @@ void multi_character_constants() {
 }
 
 // SHENNANIGAN impementation defined behavior for nesting due to being underspecified
-void bitfields() {
+void bitfields(void) {
   struct Bitfield1 {
     unsigned int b0: 3;
     unsigned int b1: 4;
@@ -725,7 +789,7 @@ void bitfields() {
 }
 
 // SHENNANIGAN 0 bit field
-void zero_bitfield() {
+void zero_bitfield(void) {
   struct ZeroBitField1 {
     unsigned char x : 5;
     unsigned short : 0;
@@ -739,9 +803,9 @@ void zero_bitfield() {
 }
 
 // Introduced with C99, few usage example
-void flexible_array_member() {
+void flexible_array_member(void) {
   struct FlexibleArrayMember {
-    short len; // at least one other data member
+    uint32_t len; // at least one other data member
     double arr[]; // flexible array member must be last
     // potential padding
   };
@@ -751,7 +815,7 @@ void flexible_array_member() {
     flex_arr_mem->arr[i] = 20;
 }
 
-void imaginary_cursor_position_in_printf() {
+void imaginary_cursor_position_in_printf(void) {
   int pos1, pos2;
   const char * str_unknown_len = "some_string_here";
   fprintf(stdout, "write %n(%s)%n here\n", &pos1, str_unknown_len, &pos2);
@@ -770,6 +834,13 @@ void safe_debugging_on_unix() {
 
 #include <stdatomic.h>
 
+struct _No_Immutable_in_C_i64 {
+  _Atomic int64_t * p1;
+  _Atomic int64_t cnt;
+};
+int32_t immut_set(struct _No_Immutable_in_C_i64 * obj, int64_t val);
+int32_t immut_get(struct _No_Immutable_in_C_i64 * obj, int64_t * val);
+
 // C provides no nice way to get generics (besides C11 non C++ usable generic
 // selection), so (usually) it makes no sense to have a method 'update' being
 // usable as callback with additional type and runtime safety checks.
@@ -779,10 +850,6 @@ void safe_debugging_on_unix() {
 // methods, no good way to use struct generically by filling fn ptr/callback for
 // additional method 'update'.
 // Omit shared_ptr methods here for brevity.
-struct _No_Immutable_in_C_i64 {
-  _Atomic int64_t * p1;
-  _Atomic int64_t cnt;
-};
 int32_t immut_set(struct _No_Immutable_in_C_i64 * obj, int64_t val) {
   if (obj != NULL) {
     atomic_store(obj->p1, val);
@@ -948,7 +1015,12 @@ int FG_Init(char * errmsg_ptr, int * errmsg_len) {
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-void deinitTimer() {}
+void deinitTimer();
+void resetOutputs();
+LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo);
+void veh_example(void);
+
+  void deinitTimer() {}
 void resetOutputs() {}
 
 // SHENNANIGAN windows
@@ -957,6 +1029,7 @@ void resetOutputs() {}
 // #include <windef.h>
 // #include <winnt.h>
 LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo) {
+  (void)ExceptionInfo;
 	// 1. stop realtime thread via synchronously via timeKillEvent option TIME_KILL_SYNCHRONOUS
   deinitTimer();
 	// 2. write outputs, which is safe due to realtime thread being stopped
@@ -977,10 +1050,11 @@ LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo) {
   // TODO: when is the exception executed in each thread?
 }
 
-void veh_example() {
-	const ULONG prepend = 1;
+void veh_example(void) {
+  const ULONG prepend = 1;
   // global exception handler executed per thread
-	PVOID exception_h = AddVectoredExceptionHandler(prepend, Exception_Reset);
+  PVOID exception_h = AddVectoredExceptionHandler(prepend, Exception_Reset);
+  (void)exception_h;
   // local exception handler executed per thread
   // TODO
 }
@@ -998,10 +1072,13 @@ void veh_example() {
 //https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence
 
 #ifdef _WIN32
+BOOL WINAPI ConsoleHandler(DWORD);
+int setup_SIGINT_handler(void);
+void getFullPathNameUsage(void);
+
 // On Windows, Ctrl-C/SIGINT is called from newly spawned thread
 // and handled in ConsoleCtrlHandler.
 // https://stackoverflow.com/questions/16826097/equivalent-to-sigint-posix-signal-for-catching-ctrlc-under-windows-mingw
-BOOL WINAPI ConsoleHandler(DWORD);
 BOOL WINAPI ConsoleHandler(DWORD dwType)
 {
     switch(dwType) {
@@ -1017,7 +1094,7 @@ BOOL WINAPI ConsoleHandler(DWORD dwType)
     return TRUE;
 }
 
-int setup_SIGINT_handler() {
+int setup_SIGINT_handler(void) {
   if (!SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler,TRUE)) {
     fprintf(stderr, "Unable to install handler!\n");
     return EXIT_FAILURE;
@@ -1025,16 +1102,16 @@ int setup_SIGINT_handler() {
 
   return EXIT_SUCCESS;
 }
-#endif
 
-
-void getFullPathNameUsage() {
+void getFullPathNameUsage(void) {
   const char * argv = "test123";
   char *fileExt;
   char szDir[256]; //dummy buffer
   GetFullPathName(&argv[0], 256, szDir, &fileExt);
   printf("Full path: %s\nFilename: %s", szDir, fileExt);
 }
+
+#endif
 
 //====signaling on Posix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
@@ -1070,11 +1147,11 @@ void getFullPathNameUsage() {
 //  stdc_bit_floor
 // N2897 - memset_explicit
 
-void tagged_union() {
+void tagged_union(void) {
   // TODO std::variant equivalent
   // TODO enum class equivalent
 }
 
-void enum_class() {
+void enum_class(void) {
   // TODO enum class equivalent
 }
