@@ -11,7 +11,7 @@
 -- 'clangd', -- 'clangd'
 -- 'lemminx', -- 'lemminx'
 -- 'typst_lsp' -- 'typst-lsp'
--- 'tsserver'  -- 'typescript-language-server'
+-- 'ts_ls'  -- TODO different name 'typescript-language-server'
 -- 'omnisharp' --  'omnisharp'
 
 -- pip3 install -U --user jedi-language-server
@@ -68,7 +68,7 @@ local common_on_attach = function(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then navic.attach(client, bufnr) end
 end
 
--- local lsps_with_common_setup = {"clangd", "jedi_language_server", "julials", "rust_analyzer", "tsserver", "zls"}
+-- local lsps_with_common_setup = {"clangd", "jedi_language_server", "julials", "rust_analyzer", "ts_ls", "zls"}
 -- Common setup function for lsps.
 -- local common_setup = function(lsp)
 --   lspconfig.lsp_name.setup {
@@ -92,7 +92,7 @@ lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_
 lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.julials.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.tsserver.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.ts_ls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- lspconfig.typst_lsp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }

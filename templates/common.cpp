@@ -1,8 +1,28 @@
 // C++ tooling mandating C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
+
+// https://en.cppreference.com/w/cpp/language/string_literal
+// https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
+// (1,2) | ordinary string literal | const char[N]             | ordinary literal encoding
+// (3,4) | wide string literal     | const wchar_t[N]          | wide literal encoding
+// (5,6) | UTF-8 string literal    | const char[N]             | UTF8
+//                                 | const char8_t[N] s. C++20 |
+// (7,8) | UTF-16 string literal   | const char16_t[N]         | UTF-16
+// (9,10)| UTF-32 string literal   | const char32_t[N]         | UTF-32
+//
+// (1)"", (2)R"", (3)L"", (4)LR"", (5)u8"", (6)u8R"", (7)u"", (8)uR"", (9)U"", (10)UR""
+// s-char only in "", L"", u8"", u"", U""
+// d-char (r-char) d-char in R"", LR"", u8R"", uR"", UR""
+//
 // C++20 overview https://www.scs.stanford.edu/~dm/blog/param-pack.html
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
+//
+// [-fno-char8_t]
+// To stop crimes like incompatible to C (in C char8_t == unsigned char == uint8_t)
+// and u8"strings"
+// More sane alternative for C++ only code are "User-defined literals".
+// For C interop, one is forced to use macros.
 
 #if (__cplusplus >= 201703L)
 #define HAS_CPP17
@@ -37,6 +57,8 @@
 #ifdef HAS_CPP20
 // TODO make clangd not showing warnings and analyze concepts
 // #include <concepts> // NOLINT
+// https://stackoverflow.com/questions/57402464/is-c20-char8-t-the-same-as-our-old-char
+static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not distinct type; has C semantics");
 #endif
 
 #ifdef HAS_CPP23
@@ -1837,6 +1859,16 @@ int test_future() {
   return 0;
 }
 
+// SHENNANIGAN workaround char8_t, unfortunately string literals are not constexpr in C++20
+#ifdef HAS_CPP20
+char const* operator""_SC(const char8_t* str, std::size_t) {
+    return reinterpret_cast< const char* >(str);
+}
+//constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
+//    return reinterpret_cast< const char* >(str);
+//}
+#endif
+
 int main() { return 0; } // minimal stub
 
 // SHENNANIGAN MSVC C++20 freaks out on std::is_pod
@@ -1871,3 +1903,31 @@ int main() { return 0; } // minimal stub
 //     return a + b;
 // }
 // * Do not use negation in concepts, but more generalized ones
+
+// SHENNANIGAN C++20 has no default stream operator for enum classes, which forces
+// explicit casts everywhere.
+// Since C++11 there is at least std::is::enum and std::underlying_type
+
+// SHENNANIGAN Getting the string name from enum as template via reflection is discussed with this syntax:
+// template <typename E>
+//   requires std::is_enum_v<E>
+// constexpr std::string enum_to_string(E value) {
+//   template for (constexpr auto e : std::meta::enumerators_of(^E)) {
+//     if (value == [:e:]) {
+//       return std::string(std::meta::name_of(e));
+//     }
+//   }
+//   return "<unnamed>";
+// }
+//
+// enum Color { red, green, blue };
+// static_assert(enum_to_string(Color::red) == "red");
+// static_assert(enum_to_string(Color(42)) == "<unnamed>");
+
+// C++20 enum class workaround to get underlying type for printing
+// _T Result;
+// if constexpr (std::is_enum_v<Result>)
+// {
+// 	typedef std::underlying_type<_Type>::type _UnderlyingType;
+// 	_UnderlyingType UnderlResult = static_cast<_UnderlyingType>(Result);
+// }

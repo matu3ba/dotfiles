@@ -41,6 +41,16 @@
 # endif
 #endif
 
+// msvc requires /Zc:__cplusplus https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+#if defined(__cplusplus)
+  #if (__cplusplus == 202002L)
+    #define IS_CPP20
+  #endif
+  #if (__cplusplus == 202302L)
+    #define IS_CPP23
+  #endif
+#endif
+
 /* https://sourceforge.net/p/predef/wiki/Compilers/ */
 #ifdef _MSC_VER
 #define VISUAL_STUDIO 1

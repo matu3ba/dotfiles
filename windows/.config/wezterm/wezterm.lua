@@ -12,4 +12,22 @@ config.default_prog = { 'pwsh.exe', '-NoLogo', '-ExecutionPolicy', 'RemoteSigned
 -- https://github.com/kepano/flexoki
 -- config.color_scheme = 'colorscheme'
 
+-- Much more involved MSYS2 setup to get fish, Rust, cargo etc
+-- https://stackoverflow.com/questions/47379214/step-by-step-instruction-to-install-rust-and-cargo-for-mingw-with-msys2
+-- local launch_menu = {}
+-- if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+--   table.insert(launch_menu, {
+--     label = "PowerShell",
+--     args = { "pwsh.exe", "-nol" },
+--   })
+--   table.insert(launch_menu, {
+--     label = "MSYS UCRT64",
+--     args = { "cmd.exe ", "/k", "C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -ucrt64 -shell fish" },
+--   })
+--   -- config.default_prog = { "pwsh", "-nol" }
+--   config.default_prog = { "cmd.exe ", "/k", "C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -ucrt64 -shell fish" }
+-- end
+-- config.launch_menu = launch_menu
+
+
 return config

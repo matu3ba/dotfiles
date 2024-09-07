@@ -60,6 +60,28 @@
 // $(VC_ExecutablePath_x64_x64) looks like correct path on VS2022
 // $(VC_ExecutablePath_x64) can be wrongly expanded path on VS2022
 
+// Bump these on incompatibilities.
+// if using newer C version
+// static_assert(__STDC_VERSION__ >= 201710L);
+// requires /Zc:__cplusplus https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+//static_assert(__cplusplus >= 202002L);
+
+#if (__cplusplus == 202302L)
+  #define IS_CPP23
+  #define HAS_CPP23
+  static_assert(sizeof(char) == 1, "invalid char8_t size");
+  static_assert(sizeof(char8_t) == 1, "invalid char8_t size");
+  static_assert(sizeof(char16_t) == 2, "invalid char16_t size");
+  static_assert(sizeof(wchar_t) == 2, "invalid wchar_t size");
+  static_assert(sizeof(char32_t) == 4, "invalid char32_t size");
+
+  static_assert(std::is_signed_v<char>, "invalid char sign");
+  static_assert(std::is_unsigned_v<char8_t>, "invalid char8_t sign");
+  static_assert(std::is_unsigned_v<char16_t>, "invalid char16_t sign");
+  static_assert(std::is_unsigned_v<wchar_t>, "invalid wchar_t sign");
+  static_assert(std::is_unsigned_v<char32_t>, "invalid char32_t sign");
+#endif
+
 // file Stdafx.h
 // TODO C++26 use WideCharToMultiByte(CP_UTF8 ..), MultiBytetoWideChar
 // and remove following macro to ignore deprecation
@@ -70,6 +92,7 @@
 
 // #include "Stdafx.h"
 #include <stdio.h>
+
 
 int main() {
   fprintf(stdout, "hello world\n");

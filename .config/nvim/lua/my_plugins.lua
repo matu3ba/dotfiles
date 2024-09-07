@@ -149,9 +149,9 @@ return {
     -- initialized in .config/nvim/lua/my_gitsign.lua
     -- config = function() require('gitsigns').setup{} end,
   },
-  --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory (does not work with worktrees)
+  --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   -- USAGE
-  -- DiffviewOpen origin/HEAD...HEAD --imply-local
+  --:DiffviewOpen origin/HEAD...HEAD --imply-local
   --:DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges
   --:DiffviewFileHistory -g --range=stash
   -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md

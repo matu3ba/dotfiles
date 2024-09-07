@@ -1174,3 +1174,6 @@ void tagged_union(void) {
 void enum_class(void) {
   // TODO enum class equivalent
 }
+
+// TODO https://github.com/gritzko/librdx/blob/master/ABC.md
+// scalable high perf code requirements
