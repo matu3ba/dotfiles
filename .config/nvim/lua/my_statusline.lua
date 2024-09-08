@@ -8,7 +8,7 @@ local has_navic, navic = pcall(require, 'nvim-navic')
 if not has_plenary or not has_gitsigns then return end
 
 local statusline = {}
-vim.o.statusline = '%!v:lua.require("my_statusline").setup()'
+vim.o.statusline = "%!v:lua.require'my_statusline'.setup()"
 
 local visual_setting_choices = {
   [1] = 'nocwd',
@@ -146,7 +146,7 @@ local function get_bufinfo()
     buf_info = 'qf'
   elseif vim.bo.buftype == 'terminal' then
     buf_info = 'te'
-  elseif vim.tzo.buftype == 'prompt' then
+  elseif vim.bo.buftype == 'prompt' then
     buf_info = 'pr'
   else
     buf_info = '  '
@@ -217,7 +217,9 @@ function statusline.setup()
     ' ',
     context,
   }
-  return table.concat(statusline_sections)
+  local res = table.concat(statusline_sections)
+  if res == nil then res = '' end
+  return res
 end
 
 return statusline

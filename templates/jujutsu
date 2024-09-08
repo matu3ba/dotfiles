@@ -1,0 +1,40 @@
+https://martinvonz.github.io/jj/latest/
+https://www.vincentschmalbach.com/jujutsu-a-next-generation-replacement-for-git/
+
+Advantages
+* git compatibility, smooth conflict handling, working copy as commit
+* automatic rebasing
+* flexible ways to edit commit messages without complex rebase ops
+  see https://github.com/martinvonz/jj/blob/main/docs/git-comparison.md
+* operation logging and undo
+
+Shortcomings
+* requires LF and UTF8, does not support .gitattributes
+* missing features like git blame
+* there may be performance issues
+* ecosystem of tooling in its infancy
+* pre 1.0 with breaking changes
+* no worktree support
+* not yet shallow clone https://github.com/martinvonz/jj/issues/675
+https://martinvonz.github.io/jj/latest/sapling-comparison/
+For example, jj has no blame/annotate or bisect commands, and also no copy/rename support
+
+git init --git-repo .
+jj git clone --colocate
+jj git init --colocate
+
+js st
+echo "blabal" >> a.txt
+jj describe -m "Add a.txt"
+echo "blabal" >> b.txt
+jj desc -m "Add a.txt and b.txt
+jj obslog v
+echo "newc" >> c.txt
+jj split
+select a.txt and b.txt
+jj log
+jj new (same as jj commit)
+
+jj edit uniq_id_from_jj_log
+jj squash
+jj resolve
