@@ -5,7 +5,7 @@ flattening annotated pdfs:
 pdftocairo -pdf input.pdf output.pdf
 
 remove empty spaces
-TODO standalone
+idea standalone
 otherwise use neovim substitution
 
 Remove password from pdf document

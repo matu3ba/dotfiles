@@ -4,14 +4,15 @@ tldr; completion + validation of arguments/input requires either
 1. code duplication,
 2. highly performant metaprogramming,
 3. or a transpiler for the completion + validation parts of the program.
-TODO "Completion has the same drawbacks." Is this true?
+
+Use https://github.com/00JCIV00/cova
+and a shell/graphical program supporting hooks to write your own semantics.
+Completions may or may not validate inputs before execution and there is no
+great way to standardize this so you have to control the process yourself.
 
 #### Prior assumptions
 1. Shells are overly complex and should be bypassed by specialized programs, if possible.
  * Shell keep track of a huge chunk of state in a hacky manner
-   + TODO explanation
-   + TODO link1
-   + TODO link2
  * Less state means less memory and less complexity
 2. Shells are just repls, but hyper flexible tailored to state manipulation
    for process+job control and manipulating output (piping)
@@ -26,7 +27,6 @@ following cases:
 2. Completion (+validation) of attached input (files/configurations etc)
 3. Providing an output of how the internal state would change (a `--dry` run)
 
-TODO: improve this
 An encoding of all potential CLI configuration options would be an arbitrary,
 potentially cyclic directed graph.
 Often, programs may overwrite the existence of a certain flag, which leads to

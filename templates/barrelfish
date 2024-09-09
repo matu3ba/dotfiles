@@ -5,4 +5,4 @@ Unclear essential things
 - capability model looks like it may have flaws
   * uses AIC instead of ACID (durability assumed?)
 
-TODO
+not sure about practical use cases

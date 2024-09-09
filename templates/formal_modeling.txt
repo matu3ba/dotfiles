@@ -1,7 +1,7 @@
 List of dedicated formally proved languages
-- Simulink TODO context
-- TODO message passing languages
-- TODO automata verification
+- Simulink idea explanation
+- idea message passing languages
+- idea automata verification
   * standard formats for automata
   * import
   * codegen
@@ -23,11 +23,11 @@ More intuitively: Being free of side-effect means relevant constrains can be
 derived from the code, wich allows automatic proof code generation.
 This also means that, in theory, a sufficient powerful model can also explain
 code in a side-effect free manner by capturing all allowed semantics.
-TODO paper as source
+idea paper as source
 
 ====idioms
 https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specification
-* nondeterminism TODO
+* nondeterminism idea
 
 
 ====weak_memory
@@ -71,7 +71,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 4. Incremental verification via accurate tracking of code changes in editor
   * research in this area tries to recompute how git commits have changed
     code instead of eliminating the problem at the root
-  * TODO explain
+  * idea explain
 - 5. homotopy type theory as dependent types
   * unclear practicality outside of proof systems (https://www8.cs.fau.de/teaching/hott/)
     https://homotopytypetheory.org/book/
@@ -203,8 +203,8 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     * provided via IPC ABI rather than C/C++ dynamic linking API?
     * security for isolation of graphical components
     * time semantics for the render loop via Xorg compatible protocol?
-    * TODO formal model possible?
-    * TODO xorg design
+    * idea formal model possible?
+    * idea xorg design
     * https://news.ycombinator.com/item?id=40767108
     * https://trace.yshui.dev/2024-06-xorg-bug.html
 - 12. formal model for OS security and scheduling
@@ -292,7 +292,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
       o https://cboard.cprogramming.com/linux-programming/155448-sigchld-handler-not-executing-dependably.html
       o https://www.gnu.org/software/libc/manual/html_node/Merged-Signals.html
   * 2. filesystem restrictions
-     o TODO
+     o idea
 - 14. general formal model for graphics unfeasible
   * timing in graphics best effort: "lest things go kaboom almost immediately"
   * display server do to render jobs what the printer spooler did to print jobs
@@ -306,10 +306,10 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     https://danluu.com/file-consistency/, https://danluu.com/filesystem-errors/
   * https://michael.orlitzky.com/articles/problems_with_posix_acls_and_common_utilities.xhtml
     https://michael.orlitzky.com/articles/fix_busted_acls_faster_with_libadacl.xhtml
-    TODO summary
+    idea summary
 - 16. secure speculative execution
   * "A Formal Approach to Secure Speculation" by Cheang et al.
-  * TODO hackernews comment
+  * idea hackernews comment
 - 17. stateful machine learning
   * kv cache etc
   * idea: spikes are like synaptic connection strengths and represent output of neuron

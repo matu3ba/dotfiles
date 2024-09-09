@@ -15,8 +15,7 @@ function CheckExitCode {
   }
 }
 
-function ResolveMsBuild {
-  # TODO args: msbuild_version solution/project file
+function ResolveMsBuild2015 {
   #& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe" .\Solution.sln
   $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
   if($msb2017) {
@@ -34,7 +33,7 @@ function ResolveMsBuild {
 }
 
 # SHENNANIGAN Parallel cleanup is broken in msbuild
-function runMsbuild {
+function runMsbuild2015 {
   # msbuild test.sln /t:project /p:Configuration="Release" /p:Platform="x64" /p:BuildProjectReferences=false
   # Notice that what is assigned to /t is the project name in the solution, it can be different from the project file name.
   # Also, as stated in How to: Build specific targets in solutions by using MSBuild.exe:
@@ -46,9 +45,56 @@ function runMsbuild {
     [string[]] $build_args
     [string] $at = "."
   )
-  [string] $msBuild = ResolveMsBuild
+  [string] $msBuild = ResolveMsBuild2015
   Write-Verbose "build_args: $($build_args -join ' ')"
   return sane_StartProcess $msBuild $build_args $at
+}
+
+function ResolveMsBuild {
+  param (
+    [string] $msvc_version
+  )
+  [int] $year = [int]$($msvc_version -replace "[^0-9]" , '')
+  [string] $type = [string]$($msvc_version -replace "[0-9]" , '')
+
+  switch ($year) {
+    2015 { throw 'Visual Studio 2015 is unsupported' }
+    2019 { throw 'Visual Studio 2019 is unsupported' }
+    2022 {
+      [string] $wip_pa = ""
+      switch ($type) {
+        "c" { $wip_pa = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" }
+        "e" { $wip_pa = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" }
+        "p" { throw "Visual Studio 2022 Professional unsupported" }
+        default { throw "Unknown Visual Studio 2022 type $_ unsupported" }
+      }
+      [string] $check_pa = Resolve-Path $wip_pa
+      if($check_pa) { return $check_pa }
+      throw "Could not find msbuild at $wip_pa"
+    }
+    default { throw "unsupported version year $year" }
+  }
+}
+
+function runMsbuild {
+  param (
+    # msbuild: /m for parallelism, so far not needed /nr:false to prevent failing builds getting stuck
+    # Debug problems via -v:Lvl Lvl is q,m,n,d,diag
+    # msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 /nologo /v:d
+    # sane default @(".\PxApps.sln", "/t:Build", "/p:Configuration=ReleaseRevision", "/p:Platform=x64", "/nologo", "/m")
+    [string[]] $build_args,
+    # version[e|p|c] for enterprise, professional, community
+    [string] $msvc_version = "2022e"
+  )
+  [string] $msBuild = ResolveMsBuild $msvc_version
+  Write-Host "Start-Process $msBuild -ArgumentList $build_args -NoNewWindow -PassThru"
+  $proc = Start-Process "$msBuild" -ArgumentList $build_args -NoNewWindow -PassThru
+  $handle = $proc.Handle # cache proc.Handle to fix ExitCode to work correctly
+  $proc.WaitForExit() # early terminate on msbuild error instead of waiting 15min
+  if ($proc.ExitCode -ne 0) {
+    Write-Error "build error: $($proc.ExitCode), exiting.."
+    exit 2
+  }
 }
 
 function easytypos_param {
@@ -134,11 +180,11 @@ function show_object_properties {
 # write on switch -Verbose: Write-Verbose
 # write process: Write-Progress -Activity "Activity $activity" -PercentComplete $perc
 
-# TODO get stacktrace in powershell
+# idea get stacktrace in powershell
 #https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/everything-about-exceptions?view=powershell-7.4
 # https://stackoverflow.com/questions/795751/can-i-get-detailed-exception-stacktrace-in-powershell
 
-# TODO find installed software
+# idea find installed software
 # https://devblogs.microsoft.com/scripting/use-powershell-to-find-installed-software/
 
 # execute fn as another powershell session
@@ -246,7 +292,7 @@ function sane_BinaryDiff {
   if ($hash1 -ne $hash2) {
     if ($short) { return 1 }
     Write-Host "delta ${src_file} ${dest_file}"
-    # TODO: getting line number in text diffs
+    # idea: getting line number in text diffs
     # $src_cont = Get-Content "${src_file}"  | %{$i = 1} { new-object psobject -prop @{LineNum=$i;Text=$_}; $i++}
     # $dest_cont = Get-Content "${dest_file}" | %{$i = 1} { new-object psobject -prop @{LineNum=$i;Text=$_}; $i++}
     # $cmp = Compare-Object $src_cont $dest_cont -Property Text -PassThru -IncludeEqual
@@ -443,8 +489,11 @@ function stopWatch {
 # Adding a wildcard (*) to the end of the destination will suppress this prompt and default to copying as a file
 # xcopy file7.dll file.dll* /y /c /f /q
 
-# TODO fix this
-#https://stackoverflow.com/questions/49870753/functions-had-inline-decision-re-evaluated-but-remain-unchanged
+# idea fix this
+# https://stackoverflow.com/questions/49870753/functions-had-inline-decision-re-evaluated-but-remain-unchanged
+# re-evaluated inline decision was fixed for cached data in VS2022 Version 17.11.2
+# However, VS2022 still assumes artefacts were generated from last input and re-evaluates
+# on different input (ie msbuild instead of graphical, other selection of projects to build etc)
 
 function prefix_array() {
   param (

@@ -234,7 +234,6 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 # icacls.exe .\vs.ps1 /grant NT-AUTORITÄT\SYSTEM:RX
 
-# requires TODO
 # net use \\$IP\d $PW /USER:$USER
 # robocopy .\builddir\bin\ \\$IP\$DRIVE\$DIR *.dll
 # robocopy .\builddir\bin\ \\$IP\$DRIVE\$DIR *.pdb
@@ -248,7 +247,7 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # -t 15:30
 # -r restart
 
-# TODO commands from https://www.windows-commandline.com/
+# idea commands from https://www.windows-commandline.com/
 # ideally winrm
 
 #====problem_bootstrap_zig

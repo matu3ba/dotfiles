@@ -25,7 +25,7 @@ network={
   psk="mysecretpassphrase"
 }
 >systemctl restart wpa_supplicant.service
-TODO did not work, check again
+idea did not work, check again
 
 
 >systemctl start sshd

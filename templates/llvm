@@ -79,7 +79,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/tmp/llvm -P cmake_install.cmake
 mv /tmp/llvm $HOME/.local/llvm[bs]
 ```
 
-TODO runtime instrumentation for tracing / logging.
+TODO runtime instrumentation for tracing / logging LLVM things.
 
 SHENNANIGAN
 1. Rewrite

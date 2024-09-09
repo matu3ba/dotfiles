@@ -264,7 +264,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // x86_64-windows-none
 // wasm32-wasi
 
-// TODO:
+// TODO: How to get debug session in Zig from build system
 // qemu-arm -g 1234 ./b.out
 // gdb-multiarch ./b.out
 // target remote localhost:1234
@@ -334,7 +334,7 @@ fn totalAll(structs: []const BigStruct) u128 {
 //     std.debug.dumpCurrentStackTrace(null);
 // }
 
-// TODO general value initialization
+// idea Discuss general value initialization from Spex talk
 // const List = struct {
 //     items: []T,
 //     capacity: usize,
@@ -354,12 +354,12 @@ fn totalAll(structs: []const BigStruct) u128 {
 
 // SHENNANIGAN
 // Parameter Reference Optimization
-// TODO example
+// idea example
 
 // SHENNANIGAN
 // RLS (Result location semantics) is implicit, but copies are eliminated
 // This leads to surprising and potentially unwanted behavior.
-// TODO example
+// idea example
 
 // SHENNANIGAN
 // Test runner allows no signaling to qemu -g 4242 (debugger mode)

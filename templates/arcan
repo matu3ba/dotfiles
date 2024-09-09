@@ -2,7 +2,7 @@
 sqlite3, openal-soft, sdl2, opengl, luajit, gbm, kms, freetype, harfbuzz, libxkbcommon
 libvlc-core, ffmpeg suite, leptonica, tesseract (ocr), libvncserver libusb1, v4l2-loopback, mupdf
 
-TODO shell file
+idea shell file
 
 git clone https://github.com/letoram/arcan.git
 cd arcan/external/git

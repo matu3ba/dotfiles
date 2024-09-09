@@ -158,7 +158,7 @@ General
 
 win
   DWORD GetCurrentThreadId();
-  TODO ntdll call from zig
+  idea ntdll call from zig
 posix
 
 State of Art

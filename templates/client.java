@@ -10,7 +10,7 @@ import java.util.*;
 public class NonBlockingClient {
    private static BufferedReader input = null;
 
-   // TODO improve this ugly code eventually into init, deinit and do_work
+   // idea improve this ugly code eventually into init, deinit and do_work
    // to make connection reusable without allocation every time
    public static void main(String[] args) throws Exception {
       InetSocketAddress addr = new InetSocketAddress(

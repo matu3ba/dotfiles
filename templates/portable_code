@@ -1,6 +1,3 @@
-TODO add apis, which can be considered portable from my work on Zig with brief
-reasoning
-
 https://eklitzke.org/path-max-is-tricky
 https://blog.r-project.org/2023/03/07/path-length-limit-on-windows/
 Potential Long paths >32KB can make stack usage unfeasible and introduce lots

@@ -18,6 +18,9 @@ Shortcomings
 * not yet shallow clone https://github.com/martinvonz/jj/issues/675
 https://martinvonz.github.io/jj/latest/sapling-comparison/
 For example, jj has no blame/annotate or bisect commands, and also no copy/rename support
+* git pull --rebase does not exist and neither strategy to do things on remote
+  + script to automatically rebase remotes and force push xor rebase on git server
+  + script to automatically do the same locally and compare locally
 
 git init --git-repo .
 jj git clone --colocate

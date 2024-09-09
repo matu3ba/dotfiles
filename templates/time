@@ -61,4 +61,3 @@ and accept + handle offline inaccuracies and leap seconds yourself.
 
 UTC timestamp -> unix time conversion for size and speed from
 https://blog.reverberate.org/2020/05/12/optimizing-date-algorithms.html
-- TODO is all the standard stuff implemented in Zig including correction by using context for data adjustments?

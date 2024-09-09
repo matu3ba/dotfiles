@@ -137,8 +137,15 @@ Linux kernel supports a range of 33 different real-time signals, numbered 32 to 
   "certain blocking interfaces can fail with the error EINTR after the
   process is stopped by one of the stop signals and then resumed via SIGCONT"
 
-TODO properly explain trick from https://ldpreload.com/blog/signalfd-is-useless
-to handle multiple signals via self pipe
+handle multiple signals via self pipe
+signalfd
+* saves you an additional thread to handle signals
+* on startup child process must reset own signal masks (most libs dont so DIY)
+* works by dequeuing signals
+self-pipe trick
+* install handler with SA_NODEFER to allow signals to interrupt themself
+* mask signals except for thread who writes signals to pipe for consumption
+* portable (Windows does kind of the same)
 
 Okayish intro
 https://www.jmoisio.eu/en/blog/2020/04/20/handling-signals-correctly-in-a-linux-application/

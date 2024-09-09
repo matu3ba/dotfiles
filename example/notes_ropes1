@@ -37,7 +37,7 @@ is more readable as matrix than
 const matrix = {{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
 ```
 
-TODO: improve end of section
+idea: improve end of section
 
 #### Code formatting as layout change
 

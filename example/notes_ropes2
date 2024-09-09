@@ -1,6 +1,6 @@
 ## High level observations of defaulting layout to a formatter
 
-The previous article [link](TODO) introduced what a formatter is and why code
+The previous article notes_ropes1 introduced what a formatter is and why code
 formatters are used (establishing a common code layout).
 This article will discuss the tradeoffs of using a formatter and storing the
 layout differences to the formatter output.
@@ -125,3 +125,12 @@ The next article will discuss possible data structures for storing the layout.
 This is a prequisite to understand, if patching the layout of the AST
 in-place or using a separate AST representation format is better for your use
 cases.
+
+UPDATE: Storing the layout can not be compressed without limiting comment
+layouts. Hence, the endavour would increase complexity significantly, because
+that would require Git format for comments + layouts + per language AST
+compression format for everything else.
+
+It would simpler and more successful, 1. if "how AST has changed" can be stored
+abstractly and 2. how it affects semantically analyzed code.
+Each successful compilation could then be compared.

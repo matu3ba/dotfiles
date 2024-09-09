@@ -16,7 +16,7 @@
 // & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe" .\Solution.sln
 
 // ====generate compile_commands.json
-// TODO how to feed cl.exe args to msbuild
+// TODO how to extract cl.exe args from msbuild
 // parse build.log for cl.exe and retrieve flags
 // adjust compile_commands.json with content
 // {

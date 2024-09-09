@@ -1,6 +1,6 @@
 //! Forked from https://github.com/tigerbeetle/tigerbeetle/blob/7c4d63dcf0c684c10cbe5e8815950421448bab5f/src/copyhound.zig
 //! License (Apache v2) https://github.com/tigerbeetle/tigerbeetle/blob/7c4d63dcf0c684c10cbe5e8815950421448bab5f/LICENSE
-//! Adjusted stdx.cut TODO
+//! Adjusted stdx.cut
 //!
 //! Analyze LLVM IR to find:
 //! - large memcpy calls

@@ -63,16 +63,15 @@ TODO
 https://stackoverflow.com/questions/74072901/how-to-make-git-ignore-files-during-clone/74077699#74077699
 https://blog.gitbutler.com/git-tips-and-tricks/
 
-
 based on so you think you know git by gitbutler founder
-TODO
+TODO apply changes to git config
 
 Show credential helper via
 git config credential.helper
 manager-core
 
 https://wouterj.nl/2024/08/git-notes
-TODO store discussion with git
+idea store discussion with git
 
 SHENNANIGAN
 gitignore file is also matching case insensitive on Windows and there is no

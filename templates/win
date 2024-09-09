@@ -74,7 +74,7 @@ On incremental build slowdown search in verbose build output:
 - no usable IPDB/IOBJ from previous compilation was found.
   fix:
 - Creating "TARGET_DIR\PROJECT\PROJECT.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
-  fix: TODO
+  fix: use newer VS2022 version
 - fix custom build step dependency changing in tree files
   * replicate behavior of PxVersionDefinition.h
   * fix behavior of PxVersionDefinition.h
@@ -88,7 +88,7 @@ Debugging macros
 "Project + Properties, C/C++, Preprocessor, Preprocess to a File = Yes.
 /E, /P, /EP
 cl /I C:\Test\ /EP C:\Test\main.cpp > C:\Test\macro.txt
-TODO cl set out dir
+idea cl set out dir
 
 specify object file name
 https://learn.microsoft.com/en-us/cpp/build/reference/fo-object-file-name?view=msvc-170
@@ -170,7 +170,7 @@ Kernel mode debugging session http://www.vallejo.cc/2015/04/debugging-programs-w
 Windbg server client setup
 https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tutorial
 windbg -server
-TODO
+idea
 
 ====debugging_timetravel
 > 10x-20x performance hit in typical recording scenarios

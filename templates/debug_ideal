@@ -71,7 +71,7 @@ milk pig with mind-blowing complexity and scope).
 ====interested_discussion
 * Lauterbach or ericsson context may be most advanced regarding debugging techniques
 * ui missing and classes of problems to debug
-  - TODO problem source classification for debugging
+  - problem source classification for debugging
   - examples: missing session stuff, cerberus/miri/more concrete tooling and user annotation (program invariants, filters and stuff like that)
   - comparing continuations mandates something like miri/cerberus or an equivalent with more optimizations for threading problems.
   - not sure if bmc of cerberus does that.
