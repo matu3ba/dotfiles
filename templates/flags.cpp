@@ -1,3 +1,14 @@
+// Everything
+// clang++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// clang++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// clang++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// clang++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage
+
+// Fast
+// -verify -fsyntax-only
+
 -g -O -Wall -Weffc++ -pedantic  \
 -pedantic-errors -Wextra -Waggregate-return \
 -Wcast-qual  -Wchar-subscripts  -Wcomment -Wconversion \
@@ -19,7 +30,7 @@
 -Wunused-function  -Wunused-label  -Wunused-parameter \
 -Wunused-value  -Wunused-variable  -Wvariadic-macros \
 -Wvolatile-register-var  -Wwrite-strings
--Wcast-align  // ptr cast ie *u8 -> u32 can be just fine
+-Wcast-align
 
 -std=c++20 -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables
 -Ithird-party/xxhash -DMOLD_VERSION=\"1.1.1\" -DLIBDIR="\"/usr/local/lib\""

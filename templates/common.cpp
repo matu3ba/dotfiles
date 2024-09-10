@@ -1,4 +1,10 @@
-// C++ tooling mandating C++17 or compatible C++ compiler with features
+static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
+// Tested with
+// clang++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// ..
+// clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+
+// C++ tooling mandates C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
 
 // https://en.cppreference.com/w/cpp/language/string_literal
@@ -24,14 +30,25 @@
 // More sane alternative for C++ only code are "User-defined literals".
 // For C interop, one is forced to use macros.
 
+#if (__cplusplus >= 201402L)
+#define HAS_CPP14 1
+static_assert(HAS_CPP14, "use HAS_CPP14 macro");
+#endif
 #if (__cplusplus >= 201703L)
-#define HAS_CPP17
+#define HAS_CPP17 1
+static_assert(HAS_CPP17, "use HAS_CPP17 macro");
 #endif
 #if (__cplusplus >= 202002L)
-#define HAS_CPP20
+#define HAS_CPP20 1
+static_assert(HAS_CPP17, "use HAS_CPP20 macro");
 #endif
 #if (__cplusplus >= 202302L)
-#define HAS_CPP23
+#define HAS_CPP23 1
+static_assert(HAS_CPP17, "use HAS_CPP23 macro");
+#endif
+#if (__cplusplus >= 202702L) // fix when published
+#define HAS_CPP26 1
+static_assert(HAS_CPP17, "use HAS_CPP26 macro");
 #endif
 
 #ifdef _WIN32
@@ -40,6 +57,8 @@
 
 #include <cstdint>
 #include <cstdio> // fprintf
+#include <cstring> // C++ has no string split method, so use strtok() or strsep()
+#include <cmath> // nan
 
 #include <algorithm>
 #include <array>
@@ -75,31 +94,30 @@ static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not dist
 #include <unistd.h> // execve in libc
 #endif
 
-#include <cstring> // C++ has no string split method, so use strtok() or strsep()
 /// logging (better would be test based and scoped macros)
-#define DEBUG_FN_ENTER(message)                                                                                   \
-    if (debug)                                                                                                    \
-    {                                                                                                             \
-        debug_nesting += 1;                                                                                       \
-        std::cout << message << ": " << debug_nesting << "\n";                                                    \
-    }
-
-#define DEBUG_FN_EXIT(message)                                                                                    \
-    if (debug)                                                                                                    \
-    {                                                                                                             \
-        std::cout << message << ": " << debug_nesting << "\n";                                                    \
-        debug_nesting -= 1;                                                                                       \
-    }
-#define DEBUG_COUT(message)                                                                                       \
-    if (debug)                                                                                                    \
-    {                                                                                                             \
-        std::cout << message << "\n";                                                                             \
-    }
-#define DEBUG_COUT_SAMELINE(message)                                                                              \
-    if (debug)                                                                                                    \
-    {                                                                                                             \
-        std::cout << message;                                                                                     \
-    }
+// #define DEBUG_FN_ENTER(message)                                                                                   \
+//     if (debug)                                                                                                    \
+//     {                                                                                                             \
+//         debug_nesting += 1;                                                                                       \
+//         std::cout << message << ": " << debug_nesting << "\n";                                                    \
+//     }
+//
+// #define DEBUG_FN_EXIT(message)                                                                                    \
+//     if (debug)                                                                                                    \
+//     {                                                                                                             \
+//         std::cout << message << ": " << debug_nesting << "\n";                                                    \
+//         debug_nesting -= 1;                                                                                       \
+//     }
+// #define DEBUG_COUT(message)                                                                                       \
+//     if (debug)                                                                                                    \
+//     {                                                                                                             \
+//         std::cout << message << "\n";                                                                             \
+//     }
+// #define DEBUG_COUT_SAMELINE(message)                                                                              \
+//     if (debug)                                                                                                    \
+//     {                                                                                                             \
+//         std::cout << message;                                                                                     \
+//     }
 
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
 inline void hash_combine(unsigned long &seed, unsigned long const &value)
@@ -114,11 +132,7 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
 // FNV hash algorithm ?
 
 // Macros for creating enum + string for lookup up to 256 values from https://stackoverflow.com/a/5094430
-// Usage:
-// DEFINE_ENUM_WITH_STRING_CONVERSIONS(OS_type, (Linux)(Apple)(Windows))
-// OS_type t = Windows;
-// std::cout << ToString(t) << " " << ToString(Apple) << std::endl;
-// Might get superfluous with new C standard (C2x).
+#ifdef BOOST_VERSION
 #define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem)                                        \
     case elem:                                                                                                    \
         return BOOST_PP_STRINGIZE(elem);
@@ -138,6 +152,41 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
                 return "[Unknown " BOOST_PP_STRINGIZE(name) "]";                                                  \
         }                                                                                                         \
     }
+
+void enum_to_string_example();
+void enum_to_string_example() {
+  DEFINE_ENUM_WITH_STRING_CONVERSIONS(OS_type, (Linux)(Apple)(Windows))
+  OS_type t = Windows;
+  fprintf(stdout, "%s %s\n", ToString(t), ToString(Apple));
+}
+#endif
+
+#ifdef HAS_CPP26
+// C++26 enum_to_string and string_to_enum
+template <typename E>
+  requires std::is_enum_v<E>
+constexpr std::string enum_to_string(E value) {
+  template for (constexpr auto e : std::meta::enumerators_of(^E)) {
+    if (value == [:e:]) {
+      return std::string(std::meta::name_of(e));
+    }
+  }
+  return "<unnamed>";
+}
+template <typename E>
+  requires std::is_enum_v<E>
+constexpr std::optional<E> string_to_enum(std::string_view name) {
+  template for (constexpr auto e : std::meta::enumerators_of(^E)) {
+    if (name == std::meta::name_of(e)) {
+      return [:e:];
+    }
+  }
+  return std::nullopt;
+}
+enum Color { red, green, blue };
+static_assert(enum_to_string(Color::red) == "red");
+static_assert(enum_to_string(Color(42)) == "<unnamed>");
+#endif
 
 // better enums via enum class
 void enum_class_example();
@@ -550,7 +599,7 @@ void mutex_usage() {
     // to forbid copy constructor, handle different types of callbacks, data etc.
 }
 
-template <typename _RetTy, typename Ty>
+template <typename T_Ret, typename Ty>
 class Callback {
   // how to update SimplifiedImmutable, typically via loop
 };
@@ -561,27 +610,27 @@ class Callback {
 // instead of fn ptrs for additional type and runtime safety.
 // static_assert(std::is_copy_constructible<Type>::value, "not default constructible!");
 // static_assert(std::is_default_constructible<Type>::value, "not copy constructible!");
-template <typename _Ty>
+template <typename T_in>
 class SimplifiedImmutable {
   SimplifiedImmutable();
 
-	std::shared_ptr<const _Ty> Get() const;
-	void Set(const _Ty& Val);
-	void Set(_Ty&& Val);
-	void Update(const Callback<void, _Ty&>& CallsLater);
+	std::shared_ptr<const T_in> Get() const;
+	void Set(const T_in& Val);
+	void Set(T_in&& Val);
+	void Update(const Callback<void, T_in&>& CallsLater);
 	void Reset();
-	_Ty Type() const;
+	T_in Type() const;
 
 private:
-	void Set(std::shared_ptr<const _Ty> Val);
-	std::shared_ptr<const _Ty> m_Obj;
+	void Set(std::shared_ptr<const T_in> Val);
+	std::shared_ptr<const T_in> m_Obj;
 };
-template<typename _Ty>
-inline void SimplifiedImmutable<_Ty>::Set(const _Ty & Val) {
-	Set(std::make_shared<const _Ty>(Val));
+template<typename T_in>
+inline void SimplifiedImmutable<T_in>::Set(const T_in & Val) {
+	Set(std::make_shared<const T_in>(Val));
 }
-template<typename _Ty>
-inline void SimplifiedImmutable<_Ty>::Set(std::shared_ptr<const _Ty> Val) {
+template<typename T_in>
+inline void SimplifiedImmutable<T_in>::Set(std::shared_ptr<const T_in> Val) {
 	std::atomic_store(&m_Obj, Val);
 }
 // ..
@@ -819,7 +868,7 @@ class ExampleClass {
         // and instead is UB on target as different allocator and it leaves swapped items "destroyed"
         std::swap(mValue, other.mValue);
         return *this;
-    };
+    }
     // simple assign operator (C++98 style)
     // ExampleClass ex2(1), ex1(2); ex2 = ex1;
     // default: used on default for assignments unless forbidden
@@ -830,7 +879,7 @@ class ExampleClass {
         // => allocations => use std::move
         mValue = std::move(other.mValue);
         return *this;
-    };
+    }
     // copy assign operator (must have a public copy assignment operator), also
     // allowed signature: const ExampleClass& ExampleClass ex1(1); ExampleClass
     // ExampleClass ex2(1), ex1(2); ex2 = std::copy(ex1); // or ex2=ex1; if simple assign operator forbidden
@@ -838,7 +887,7 @@ class ExampleClass {
     ExampleClass& operator=(ExampleClass other) {
         (void)other;
         return *this;
-    };
+    }
 };
 
 // https://stackoverflow.com/questions/1226634/how-to-use-base-classs-constructors-and-assignment-operator-in-c
@@ -1035,30 +1084,31 @@ void ipc_read() {
 void cstring_interop_annoying();
 void cstring_interop_annoying() {
   const char * cmd = "ls";
-  char const * buffer[] = {"ls", "-l", NULL};
+  char const * buffer[] = {"ls", "-l", nullptr};
   char * const * argv = const_cast<char * const *>(buffer);
   // Posix name is deprecated, use _execve
-  int execed = _execve(cmd, argv, NULL);
-  execed = execed;
+  intptr_t execed = _execve(cmd, argv, nullptr);
+  (void)execed;
 }
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 // unique_ptr pattern to handle file handles and cleanup via RAII
+void raii_filehandles();
 void raii_filehandles() {
   std::string sFile = "blablabla";
   char csFile[MAX_PATH] = "";
   memcpy(csFile, sFile.c_str(), sFile.size());
   std::unique_ptr<void, decltype (&CloseHandle)> hFile(nullptr, CloseHandle);
   // GENERIC_WRITE, FILE_SHARE_WRITE for setting anything on the file
-  HANDLE tmphFile = CreateFile(csFile,
-    GENERIC_READ, // SYNCHRONIZED, GENERIC_WRITE
-    FILE_SHARE_READ, // FILE_SHARE_WRITE
-    NULL,
-    OPEN_EXISTING, //  CREATE_ALWAYS to overwrite if exists
-    FILE_ATTRIBUTE_NORMAL,
-    NULL
+  HANDLE tmphFile = CreateFile(csFile
+    , GENERIC_READ // SYNCHRONIZED, GENERIC_WRITE
+    , FILE_SHARE_READ // FILE_SHARE_WRITE
+    , nullptr
+    , OPEN_EXISTING //  CREATE_ALWAYS to overwrite if exists
+    , FILE_ATTRIBUTE_NORMAL
+    , nullptr
   );
   if (tmphFile == INVALID_HANDLE_VALUE) fprintf(stderr, "could not open file handle\n");
   hFile.reset(tmphFile);
@@ -1069,7 +1119,13 @@ void raii_filehandles() {
 
 void systemtime_filetime();
 void systemtime_filetime() {
-  SYSTEMTIME st_base = { 0 }; // looks like compiler does not support C initialization list (since C11/C++11)
+  // { 0 }; // looks like compiler does not support C initialization list (since C11/C++11)
+  // -Wmissing-field-initializers complains, but technically the default init is called by applying value to other fields.
+  // except if the structure/union/enum has default fields/is no POD
+  // = { .. }; as C initialization list exists since C11/C++11
+  // SYSTEMTIME st_base = { 0 };
+  SYSTEMTIME st_base;
+  memset(&st_base, 0, sizeof(st_base));
   st_base.wYear = 2000;
   FILETIME ft_base;
   FILETIME ft_wanted;
@@ -1097,7 +1153,7 @@ void systemtime_filetime() {
 void printGetLastError();
 void printGetLastError() {
     DWORD error = ::GetLastError();
-    std::string message = std::system_category().message(error);
+    std::string message = std::system_category().message(static_cast<int32_t>(error));
     fprintf(stdout, "ERROR: %s\n", message.c_str());
 }
 #endif
@@ -1130,7 +1186,7 @@ void printGetLastError() {
 // template <typename T, typename = std::enable_if_t< std::is_base_of<Foo, T>::value>
 
 // more simple std::is_same<T, int64_t>:
-template <typename _Integral, typename std::is_same<_Integral, int64_t>::type_value>
+template <typename T_Integral, typename std::is_same<T_Integral, int64_t>::type_value>
 void fun_placeholder1();
 
 // Forward declaration must specify one template per class and variable name
@@ -1228,6 +1284,7 @@ inline constexpr size_t fname_offs(const T(&str)[S], size_t i = S - 1) {
 }
 template <typename T>
 inline constexpr size_t fname_offs(T(&str)[1]) {
+  (void)str;
 	return 0;
 }
 namespace util_force_const_eval {
@@ -1251,32 +1308,41 @@ int testEq(int a, int b) {
   return 0;
 }
 
-// forward declaration in interface the Test function, if TV convertible to
-// double. Usage should be not inlined and use explicit instantiation,
-// especially in big code bases to save compilation time.
+#ifdef CPP20
 template <class TVAL, class TEXP, class TEPS>
-static typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type
-testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps);
-
-// check that value NaN if value convertible to double via parameter
-template <class TVAL>
-static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val);
-
-template <class TVAL>
-static bool isNan(const typename std::enable_if<std::is_convertible<TVAL, double>::value, double>::type & Val) {
-  return (Val != Val); // NaN => (Val != Val)
-  static_assert(std::is_copy_constructible<TVAL>::value, "Type must be copy-constructible!");
+requires std::convertible_to<TVAL, double> && std::convertible_to<TEXP, double>
+bool testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps) {
+  return abs(Val - Expect) <= Eps;
 }
-// Explanation: return value of std::is_convertible is true/false, enable_if
-// first param is boolean, second is enabled type result is either empty struct
-// or struct with type, value and we want the type from that
+
+template<class TVAL>
+requires std::convertible_to<TVAL, double>
+// inline typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type
+bool isNan(const TVAL& Val)
+{
+  return (Val != Val); // NaN => (Val != Val)
+}
+
+void test_testApprox();
+void test_testApprox() {
+  double a = 10.0;
+  testApprox(a, 10.0, 0.00001);
+}
+void test_isNan();
+void test_isNan() {
+  double c = nan("");
+  bool is_nan = isNan(c);
+  (void)is_nan;
+}
+#endif
 
 void someLambda(bool bVal, const std::string & sName);
 void someLambda(bool bVal, const std::string & sName) {
-  auto DrawOp = [&](bool bVal1, const std::string & sName) {
+  auto DrawOp = [&](bool bVal1, const std::string & sName1) {
     if (bVal1)
-      fprintf(stdout, "%s\n", sName.c_str());
+      fprintf(stdout, "%s\n", sName1.c_str());
   };
+  DrawOp(bVal, sName);
 }
 
 /// Windows Performance counter API's
@@ -1308,7 +1374,7 @@ void ape_print();
 void ape_print() {
   FILE * f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
-  fprintf(f1, "f1 ptr: %p\n", f1);
+  fprintf(f1, "f1 ptr: %p\n", static_cast<void*>(f1));
   fclose(f1);
 }
 
@@ -1372,7 +1438,7 @@ void chrono_usage() {
   // the work...
   auto t_end = std::chrono::high_resolution_clock::now();
   double elapsed_time = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-	uint64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
+	int64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
 
   double elapsed_time_ms = std::chrono::duration<double, std::milli>(
       std::chrono::high_resolution_clock::now() - t_start
@@ -1474,24 +1540,27 @@ void stream_flags() {
 class ISomeInterface {
 public:
   virtual int SomeMethod() = 0;
+  // without below fn
+  // error: 'ISomeInterface' has virtual functions but non-virtual destructor [-Werror,-Wnon-virtual-dtor]
+  virtual ~ISomeInterface() = 0;
 };
-class CSomeClass : ISomeInterface
+class CSomeClass : public ISomeInterface
 {
   CSomeClass();
   public:
   int SomeMethod() override {
     return 1;
   }
-  virtual ~CSomeClass();
+  virtual ~CSomeClass() override;
 };
-class CSomeDerivedClass : CSomeClass
+class CSomeDerivedClass final : public CSomeClass
 {
   CSomeDerivedClass();
   public:
   int SomeMethod() override final {
     return 2;
   }
-  virtual ~CSomeDerivedClass(); // optional virtual
+  virtual ~CSomeDerivedClass() override final; // optional virtual
 };
 
 //====injection via override implementaion of base class
@@ -1721,28 +1790,8 @@ void test() {
 #include<type_traits>
 namespace CHECK
 {
-  struct No {};
 
-  // check whether operator exists for identical types nice up to including C++17
-#ifndef HAS_CPP20
-  template<typename T, typename Arg> No operator== (const T&, const Arg&);
-  template<typename T, typename Arg = T>
-  struct EqualExists
-  {
-    // https://stackoverflow.com/questions/60386792/c20-comparison-warning-about-ambiguous-reversed-operator
-    enum { value = !std::is_same<decltype(*(T*)(nullptr) == *(Arg*)(nullptr)), No>::value };
-  };
-
-  // check whether operator exists for non-identical types has horrible error messages
-  // and is unusable for metaprogramming in C++14 without additional efforts
-  template<typename T1, typename T2> No operator* (const T1&, const T2&);
-  template<typename T1, typename T2>
-  struct MulExists
-  {
-    enum { value = !std::is_same<decltype(*(T1*)(nullptr) * *(T2*)(nullptr)), No>::value };
-  };
-#endif
-
+#ifdef HAS_CPP20
   template<typename T1, typename T2>
   concept CanMultiply = requires(T1 & a, T2 & b) {
     a * b;
@@ -1769,6 +1818,28 @@ namespace CHECK
   // ad-hoc constraint, note keyword used twice
   requires requires (T x) { x + x; }
   T add(T a, T b) { return a + b; }
+
+#else // < CPP20
+  // check whether operator exists for identical types nice up to including C++17
+  struct No {};
+  template<typename T, typename Arg> No operator== (const T&, const Arg&);
+  template<typename T, typename Arg = T>
+  struct EqualExists
+  {
+    // https://stackoverflow.com/questions/60386792/c20-comparison-warning-about-ambiguous-reversed-operator
+    enum { value = !std::is_same<decltype(*static_cast<T*>(nullptr) == *static_cast<Arg*>(nullptr)), No>::value };
+  };
+
+  // check whether operator exists for non-identical types has horrible error messages
+  // and is unusable for metaprogramming in C++14 without additional efforts
+  template<typename T1, typename T2> No operator* (const T1&, const T2&);
+  template<typename T1, typename T2>
+  struct MulExists
+  {
+    enum { value = !std::is_same<decltype(*static_cast<T1*>(nullptr) * *static_cast<T2*>(nullptr)), No>::value };
+  };
+#endif
+
 }
 
 struct A {
@@ -1861,6 +1932,7 @@ int test_future() {
 
 // SHENNANIGAN workaround char8_t, unfortunately string literals are not constexpr in C++20
 #ifdef HAS_CPP20
+char const* operator""_SC(const char8_t* str, std::size_t);
 char const* operator""_SC(const char8_t* str, std::size_t) {
     return reinterpret_cast< const char* >(str);
 }

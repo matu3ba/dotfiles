@@ -1,3 +1,15 @@
+// Pedantic
+// clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+// clang -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+// clang -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+
+// Fast
+// -verify -fsyntax-only
+// Prototype
+// clang -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-missing-variable-declarations -std=c99 .\templates\common.c
+// -Wno-missing-variable-declarations
+
 // TODO make this more structured https://nullprogram.com/blog/2023/04/29/
 // https://interrupt.memfault.com/blog/arm-cortexm-with-llvm-clang
 clang usage:

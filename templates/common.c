@@ -1,4 +1,32 @@
+#if (__STDC_VERSION__ < 199901L)
+#error "requires C99 for sanity"
+#endif
+// Tested with
+// clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+// ..
+// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+
 #include <assert.h>
+
+#if (__STDC_VERSION__ >= 199901L)
+#define HAS_C99 1
+#ifndef HAS_C99
+#error "use HAS_C11 macro"
+#endif
+#endif
+#if (__STDC_VERSION__ >= 201112L)
+#define HAS_C11 1
+static_assert(HAS_C11, "use HAS_C11 macro");
+#endif
+#if (__STDC_VERSION__ >= 201710L)
+#define HAS_C17 1
+static_assert(HAS_C17, "use HAS_C17 macro");
+#endif
+#if (__STDC_VERSION__ >= 202311L)
+#define HAS_C23 1
+static_assert(HAS_C23, "use HAS_C23 macro");
+#endif
+
 #include <stdint.h> // uint32_t, uint8_t
 #include <stdlib.h> // exit
 #include <stdio.h>  // fprintf
@@ -137,7 +165,7 @@ void ape_print(void);
 void ape_win_print(void);
 void array_pointers(void);
 void designated_initializer(void);
-void multi_character_constants(void);
+// void multi_character_constants(void);
 void bitfields(void);
 void zero_bitfield(void);
 void flexible_array_member(void);
@@ -780,13 +808,13 @@ void compound_literal_usage(void) {
 
 // SHENNANIGAN implementation dependent, so best to avoid them
 // [-Wfour-char-constants] warning: multi-character character constant
-void multi_character_constants(void) {
-  enum State1 {
-    Wait = 'WAIT',
-    run = 'RUN!',
-    stop = 'STOP',
-  };
-}
+// void multi_character_constants(void) {
+//   enum State1 {
+//     Wait = 'WAIT',
+//     run = 'RUN!',
+//     stop = 'STOP',
+//   };
+// }
 
 // SHENNANIGAN impementation defined behavior for nesting due to being underspecified
 void bitfields(void) {
@@ -840,6 +868,7 @@ void safe_debugging_on_unix() {
 }
 #endif
 
+#ifdef HAS_C11
 #include <stdatomic.h>
 
 struct No_Immutable_in_C_i64 {
@@ -872,6 +901,7 @@ int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val) {
   }
   return 1;
 }
+#endif
 
 // based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
 // TODO motivation
@@ -906,6 +936,7 @@ struct ImageSimple {
   int32_t height;
   struct Pixel *pixels_simple;
 };
+extern struct ImageSimple s_image_simple;
 // static struct ImageSimple s_image_simple;
 // templates\common.c:904:27: warning: unused variable 's_image_simple' [-Wunused-variable]
 //   904 | static struct ImageSimple s_image_simple;
@@ -917,6 +948,7 @@ struct ImageVLA {
   int32_t height;
   struct Pixel pixels_vla[];
 };
+extern struct ImageVLA ImageVLA;
 struct ImageVLA ImageVLA;
 // TODO align cast in C
 

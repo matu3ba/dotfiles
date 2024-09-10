@@ -1,7 +1,7 @@
-# Tagged union below C++17 means repeated footguns.
-# Metaprogramming below C++20 was unreadable.
+# Core reason for C++17 variant.
+# Core reason for C++20 are concepts.
 # Core reason for C++23 is std constexpr-ification.
-# Core reason for C++26 TODO hazard pointers?
+# Core reason for C++26 enum_to_string, string_to_enum
 CompileFlags:
   # Add: [-std=c++14]
   # Add: [-std=c++17]
