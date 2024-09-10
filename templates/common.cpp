@@ -334,6 +334,12 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
 }
 #endif
 
+void map_insert();
+void map_insert() {
+  std::map<uint32_t, uint32_t> i32map;
+  const auto [it, success] = i32map.insert({1, 2});
+}
+
 // SHENNANIGAN: default values prevent the class from being an aggregate, so
 // list initialization breaks with a very unhelpful message like:
 // error: could not convert xxx from race-enclosed initializer list
@@ -1910,7 +1916,6 @@ struct MultiOperator {
   // TODO document multi operator selection
 };
 
-
 struct Foo {
   Foo() : data(0) {}
   void sum(int i) { data +=i;}
@@ -1925,10 +1930,70 @@ int test_future() {
   f.get();
   std::cout << foo.data << "\n";
 
-  // TODO how to use lambda from local fn in async fn
-
   return 0;
 }
+
+// test future by async fn from lambda from local fn
+struct SPoint2D {
+  int32_t x;
+  int32_t y;
+};
+class CLambda {
+public:
+  CLambda() : m_ok(false)
+  {}
+public:
+  bool is_0point(const SPoint2D & pt) {
+    if (pt.x == 0 && pt.y == 0) {
+      return true; this->m_ok = true;
+    } else {
+      return false; this->m_ok = false;
+    }
+  };
+  void WhenMsgRead() {
+    // SHENNANIGAN VS2022 does not show "Function definition is not allowed here"
+    //                                   vvv
+    // auto is_other0point [=](const SPoint2D & pt) {
+    //   return true;
+    // };
+    SPoint2D pt_in = { 0, 0 };
+    // SHENNANIGAN Diagnostics to detect necessary scoping do not work, if fn
+    // is invalid and may only indicate incorrect usage instead of lambda being
+    // at forbidden location.
+    std::future<bool> res = std::async(&CLambda::is_0point, this, pt_in);
+    res.wait();
+    if (m_ok == false)
+      fprintf(stderr, "m_ok false");
+  }
+private:
+  bool m_ok;
+};
+
+// lambda_usage
+// for map signature
+// auto fn = [capture_list] (auto, val) { fn_body .. ; };
+// auto fn = [capture_list] (const uint32_t & key, const uint32_t & val) { fn_body .. ; };
+// with key,val being from map <uint32_t, uint32_t> for example traversed via
+// template <typename Ty>
+// inline void Foreach(const Ty& Operator) const {
+//  for (auto It = m_Map.begin(); It != m_Map.end(); ++It)
+//    Operator(It->first,*It->second);
+// }
+// used via 'DontCopyMap.Foreach(fn);' or fn being in-place.
+// Make sure to use 'const Ty& Operator' and 'inline' in the called fn 'Foreach'
+// or the type will be incorrectly propagated.
+
+// lambda_syntax capture_list
+// [] nothing
+// [this] this pointer per copy
+// [var] var per copy
+// [&bar] bar per reference
+// [&] anything in scope per reference, better explicit list
+// [=] anything in scope per copy, better use explicit list, copy only if needed
+// [&var,=] var per reference, anything else per copy
+// [=var, &] var per copy, anything else per reference, identically to [var, &]
+// [&var, &] illegal !!
+// [*this] use copy of this (since C++17)
 
 // SHENNANIGAN workaround char8_t, unfortunately string literals are not constexpr in C++20
 #ifdef HAS_CPP20
@@ -1940,8 +2005,6 @@ char const* operator""_SC(const char8_t* str, std::size_t) {
 //    return reinterpret_cast< const char* >(str);
 //}
 #endif
-
-int main() { return 0; } // minimal stub
 
 // SHENNANIGAN MSVC C++20 freaks out on std::is_pod
 // replace with std::is_standard_layout and/or std::is_trivial
@@ -1976,13 +2039,15 @@ int main() { return 0; } // minimal stub
 // }
 // * Do not use negation in concepts, but more generalized ones
 
-// SHENNANIGAN C++20 has no default stream operator for enum classes, which forces
-// explicit casts everywhere.
-// Since C++11 there is at least std::is::enum and std::underlying_type
+// SHENNANIGAN C++20 has no default stream operator for enum classes, which
+// forces explicit casts everywhere.
+// Since C++11 there is at least std::is::enum and std::underlying_type.
+// C++23 has std::to_underlying as shorthand for static_cast to the underlying type.
 
-// SHENNANIGAN Getting the string name from enum as template via reflection is discussed with this syntax:
+// SHENNANIGAN C++26 Getting the string name from enum as template via
+// reflection is discussed with this syntax:
 // template <typename E>
-//   requires std::is_enum_v<E>
+// requires std::is_enum_v<E>
 // constexpr std::string enum_to_string(E value) {
 //   template for (constexpr auto e : std::meta::enumerators_of(^E)) {
 //     if (value == [:e:]) {
@@ -1997,9 +2062,12 @@ int main() { return 0; } // minimal stub
 // static_assert(enum_to_string(Color(42)) == "<unnamed>");
 
 // C++20 enum class workaround to get underlying type for printing
-// _T Result;
+// Ty Result;
 // if constexpr (std::is_enum_v<Result>)
 // {
 // 	typedef std::underlying_type<_Type>::type _UnderlyingType;
 // 	_UnderlyingType UnderlResult = static_cast<_UnderlyingType>(Result);
 // }
+
+int main() { return 0; } // minimal stub
+
