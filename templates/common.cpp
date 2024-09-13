@@ -338,6 +338,8 @@ void map_insert();
 void map_insert() {
   std::map<uint32_t, uint32_t> i32map;
   const auto [it, success] = i32map.insert({1, 2});
+  (void)it;
+  (void)success;
 }
 
 // SHENNANIGAN: default values prevent the class from being an aggregate, so
@@ -349,8 +351,8 @@ void map_insert() {
 
 // map only works with iterators AND SHOULD ONLY BE USED WITH ITERATORS, see below
 // This is extremely easy to miss,
-void iter();
-void iter() {
+void iterate_map();
+void iterate_map() {
     std::map<int, std::string> mapexample;
     mapexample[1] = "t1"; // do not use this, reason below
     mapexample[2] = "t2"; // do not use this
@@ -1826,7 +1828,7 @@ namespace CHECK
   T add(T a, T b) { return a + b; }
 
 #else // < CPP20
-  // check whether operator exists for identical types nice up to including C++17
+  // check whether operator exists for identical types up to including C++17
   struct No {};
   template<typename T, typename Arg> No operator== (const T&, const Arg&);
   template<typename T, typename Arg = T>
@@ -1945,11 +1947,11 @@ public:
 public:
   bool is_0point(const SPoint2D & pt) {
     if (pt.x == 0 && pt.y == 0) {
-      return true; this->m_ok = true;
+      this->m_ok = true; return true;
     } else {
-      return false; this->m_ok = false;
+      this->m_ok = false; return false;
     }
-  };
+  }
   void WhenMsgRead() {
     // SHENNANIGAN VS2022 does not show "Function definition is not allowed here"
     //                                   vvv
@@ -1979,7 +1981,7 @@ private:
 //  for (auto It = m_Map.begin(); It != m_Map.end(); ++It)
 //    Operator(It->first,*It->second);
 // }
-// used via 'DontCopyMap.Foreach(fn);' or fn being in-place.
+// Used via 'm_Map.Foreach(fn);' or lambda fn being in-place.
 // Make sure to use 'const Ty& Operator' and 'inline' in the called fn 'Foreach'
 // or the type will be incorrectly propagated.
 
