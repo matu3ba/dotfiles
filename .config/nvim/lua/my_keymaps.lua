@@ -453,7 +453,8 @@ map('n', '<leader>tt', [[<cmd>lua require('telescope.builtin').tags()<CR>]], opt
 -- -- builtin.commands, nmap, vmap, imap
 map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
 map('n', '<leader>tf', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
-map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
+-- map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
+map('n', '<leader>tg', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
 -- map('n', '<leader>sp', [[<cmd>lua require'telescope'.extensions.project.project{}<CR>]], opts) -- search project
 -- map('n', '<leader>fd', [[<cmd>FileInDirectory<CR>]], opts) -- find files
 --.grep_string({ search = vim.fn.input("Grep For > ")})
@@ -511,11 +512,24 @@ map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across t
 --map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>', opts)
 
 -- vim-fugitive, other git keybindings have <leader>hX see :CGs .config/nvim/lua/my_gitsign.lua
-map('n', '<leader>gs', '<cmd>Git<CR>', opts)
-map('n', '<leader>g2', '<cmd>diffget //2<CR>', opts)
-map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)
-map('n', '<leader>d2', '<cmd>diffput //2<CR>', opts)
-map('n', '<leader>d3', '<cmd>diffput //3<CR>', opts)
+-- map('n', '<leader>gs', '<cmd>Git<CR>', opts)
+-- map('n', '<leader>g2', '<cmd>diffget //2<CR>', opts)
+-- map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)
+-- map('n', '<leader>d2', '<cmd>diffput //2<CR>', opts)
+-- map('n', '<leader>d3', '<cmd>diffput //3<CR>', opts)
+
+-- ====git
+local has_neogit, neogit = pcall(require, 'neogit')
+if has_neogit then
+  -- map("n", "<leader>gs", neogit.open, { desc = "Git status" })
+  vim.keymap.set("n", "<leader>gs", neogit.open, { silent = true, noremap = true, desc = "Git status" })
+  map("n", "<leader>gc", ":Neogit commit<Cr>", { desc = "Git commit" })
+  map("n", "<leader>gp", ":Neogit push<CR>", { desc = "Git push" })
+  -- TODO force with lease
+  -- map("n", "<leader>gP", "<leader>gp", { desc = "Git push" })
+  map("n", "<leader>gb", ":Telescope git_branches<CR>", { desc = "Telescope git branche" })
+  -- map("n", "<leader>gB", ":G blame<CR>", { desc = "Git blame" })
+end
 
 -- ####### Log the current executed shell command to a user-set file #######
 -- 1. Bash solution (requires setting environment variable for flexibility)

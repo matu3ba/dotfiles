@@ -126,19 +126,17 @@ return {
   },
   -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
 
-  --fugitive <leader> [gs|g2|g3|p2|p3]
-  -- TODO best shortcuts and brief usage
-  -- 1. :Git, =(toggle),-(),o(),v()
-  -- 2. reach the last commit that has touched the current file :Gedit !.
-  -- 3. :Gvdiffsplit!
-  -- goto conflict [c, ]c
-  -- On rebase file (mid, buffer has no number): :diffget left(2), right(3) [from git rebase 2] on branch 3
-  -- On left file (2): :diffput filename to put current se(le)ction into rebase file, otherwise use the right one(3) + vice versa
-  -- Faster one without selection: dp (diffput), do (diffget) does only work in 2 file diffs
-  -- Once done: C-w,C-o, :GWrite, :Git commit
-  -- SHENNANIGAN: ls! still shows hidden buffers
-  -- see also https://jeancharles.quillet.org/posts/2022-03-02-Practical-introduction-to-fugitive.html
-  { 'tpope/vim-fugitive' },
+  -- :Neogit
+  -- TODO :Neogit diffsplit
+  -- :Neogit pull, push, commit
+  -- TODO faster rewrite of commit msg
+  -- TODO faster squashing of message
+  -- leader gs,gc,gp, q to close
+  {
+    'NeogitOrg/neogit',
+    config = function() require('neogit').setup() end
+  },
+
   -- The alternative would be to use https://github.com/git/git/blob/master/Documentation/mergetools/vimdiff.txt
   -- as shown here https://gist.github.com/karenyyng/f19ff75c60f18b4b8149
 
@@ -346,3 +344,17 @@ return {
   -- telescope-ui-select.nvim
   -- text-case.nvim
 }
+
+--fugitive <leader> [gs|g2|g3|p2|p3]
+-- TODO best shortcuts and brief usage
+-- 1. :Git, =(toggle),-(),o(),v()
+-- 2. reach the last commit that has touched the current file :Gedit !.
+-- 3. :Gvdiffsplit!
+-- goto conflict [c, ]c
+-- On rebase file (mid, buffer has no number): :diffget left(2), right(3) [from git rebase 2] on branch 3
+-- On left file (2): :diffput filename to put current se(le)ction into rebase file, otherwise use the right one(3) + vice versa
+-- Faster one without selection: dp (diffput), do (diffget) does only work in 2 file diffs
+-- Once done: C-w,C-o, :GWrite, :Git commit
+-- SHENNANIGAN: ls! still shows hidden buffers
+-- see also https://jeancharles.quillet.org/posts/2022-03-02-Practical-introduction-to-fugitive.html
+-- { 'tpope/vim-fugitive' },
