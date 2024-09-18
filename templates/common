@@ -121,3 +121,21 @@ TODO processor performance characteristics 20240528
 Performance
 System Call Hook for ARM64 for trusted code https://github.com/retrage/svc-hook
 System Call Hook for Linux for trusted code https://github.com/yasukata/zpoline
+
+Sane ownership options for multi-threaded code:
+* 1. slowest mutex guard
+* 2. faster via atomic shared_ptr
+* 3. ^v tradeoffs
+     * latency/deadline/determinism
+     * contention
+     * recognition order of memory loads and stores
+* 4. very fast via each thread working on own copy of data and efficient merging strategy
+* 5. fastest via independent workable and fully saturable non-deadline bound
+  structures and/or racy reads and writes into preallocated space are permitted
+  due to not leading to inconsistent program state
+  * data only marked as visited and order of execution does not affect correctness,
+  * example: Paralel Seeded Region Growing
+
+Generally
+* Pooling and encoding of data and touching less cache lines faster
+* Less contention decreases synchronization cost

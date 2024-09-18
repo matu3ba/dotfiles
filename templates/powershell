@@ -1,34 +1,5 @@
-====common_paths
-echo $profile shows powershell configuration
-$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-$HOME/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
-$HOME\AppData\Local\Mozilla\Firefox\
-$HOME/AppData/Local/Mozilla/Firefox/
-
-no gf completion:
-C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-C:\Users\$($env:username)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-
 ====common_cmds
 dry-run: -WhatIf
-
-realpath pendant: Resolve-Path Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-
-copy recursively (much slower than rsync)
-cp -r -fo $HOME\dotfiles\.config\nvim $HOME\AppData\Local
-Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Recurse -Force
-Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Recurse -Force
-Pull all elements into top level destination scope via '-Container:$false'
-
-mount directory as drive
-net use R: /delete
-subst R: $HOME\somedir
-subst R: /d
-check logical disks of system
-wmic logicaldisk get name
-net use D: /delete /yes
-subst D: /d
-subst D: $HOME\somedir
 
 SHENNANIGAN confusing and wrong error message for mounting device
 $ subst d: /d

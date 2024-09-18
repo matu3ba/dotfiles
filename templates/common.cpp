@@ -1,8 +1,12 @@
 static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
-// clang++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// clang++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
 // ..
-// clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage .\templates\common.cpp
+// clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
+
+// Alternative is to always default to using default in switch case (MISRA C),
+// but this has drawback of making any refactorings much more annoying.
+// -Wno-covered-switch-default
 
 // C++ tooling mandates C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
@@ -23,6 +27,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // C++20 overview https://www.scs.stanford.edu/~dm/blog/param-pack.html
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
+// more: https://oleksandrkvl.github.io/2021/04/02/cpp-20-overview.html
 //
 // [-fno-char8_t]
 // To stop crimes like incompatible to C (in C char8_t == unsigned char == uint8_t)
@@ -40,25 +45,26 @@ static_assert(HAS_CPP17, "use HAS_CPP17 macro");
 #endif
 #if (__cplusplus >= 202002L)
 #define HAS_CPP20 1
-static_assert(HAS_CPP17, "use HAS_CPP20 macro");
+static_assert(HAS_CPP20, "use HAS_CPP20 macro");
 #endif
 #if (__cplusplus >= 202302L)
 #define HAS_CPP23 1
-static_assert(HAS_CPP17, "use HAS_CPP23 macro");
+static_assert(HAS_CPP23, "use HAS_CPP23 macro");
 #endif
 #if (__cplusplus >= 202702L) // fix when published
 #define HAS_CPP26 1
-static_assert(HAS_CPP17, "use HAS_CPP26 macro");
+static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #endif
 
 #ifdef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #endif // _WIN32
 
-#include <cstdint>
+#include <cassert>
+// #include <cmath> // nan
+#include <cstdint> // std::uintptr_t
 #include <cstdio> // fprintf
 #include <cstring> // C++ has no string split method, so use strtok() or strsep()
-#include <cmath> // nan
 
 #include <algorithm>
 #include <array>
@@ -80,9 +86,9 @@ static_assert(HAS_CPP17, "use HAS_CPP26 macro");
 static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not distinct type; has C semantics");
 #endif
 
-#ifdef HAS_CPP23
-#include <optional>
-#endif
+// #ifdef HAS_CPP23
+// #include <optional>
+// #endif
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
   #include <variant>
@@ -191,16 +197,16 @@ static_assert(enum_to_string(Color(42)) == "<unnamed>");
 // better enums via enum class
 void enum_class_example();
 void enum_class_example() {
-	enum class Loc {
-		Abs,
-		Rel,
-	};
+  enum class Loc {
+    Abs,
+    Rel,
+  };
   Loc loc1 = Loc::Rel;
   (void)loc1;
 }
 
-enum class eType {
-  ty1,
+enum class eType : uint8_t {
+  ty1 = 0,
   ty2,
 };
 
@@ -214,6 +220,16 @@ public:
 //       [-Wimplicit-fallthrough]
 //   152 |       case eType::ty2: {
 //       |       ^
+// SHENNANIGAN >= LLVM18 -Weverything may use conflicting and unnecessary
+// warnings for -Wcovered-switch-default and -Wswitch-default
+// .\templates\common.cpp:239:7: error: default label in switch which covers all
+//       enumeration values [-Werror,-Wcovered-switch-default]
+//   239 |       default: break;
+//       |       ^
+// .\templates\common.cpp:227:5: error: 'switch' missing 'default' label
+//       [-Werror,-Wswitch-default]
+//   227 |     switch (pix_ty) {
+//       |     ^
 struct sTemplatedTaggedUnion {
   eType m_pix_ty;
   union ImHist {
@@ -224,7 +240,8 @@ struct sTemplatedTaggedUnion {
   } im_hist;
   // ImHist im_hist;
   explicit sTemplatedTaggedUnion(eType pix_ty) {
-   switch (pix_ty) {
+    assert(eType::ty1 <= pix_ty and pix_ty <= eType::ty2);
+    switch (pix_ty) {
       case eType::ty1: {
         m_pix_ty = pix_ty;
         im_hist.im_hist_ty1 = CImageHistory<int64_t>();
@@ -235,10 +252,14 @@ struct sTemplatedTaggedUnion {
         im_hist.im_hist_ty2 = CImageHistory<int8_t>();
         break;
       }
+      // With -Wcovered-switch-default and -Wno-switch-default
+      // default: break;
+      // [[fallthrough]];
     }
   }
   ~sTemplatedTaggedUnion() {
    switch (m_pix_ty) {
+      assert(eType::ty1 <= m_pix_ty and m_pix_ty <= eType::ty2);
       case eType::ty1: {
         im_hist.im_hist_ty1.~CImageHistory<int64_t>();
         break;
@@ -334,13 +355,15 @@ unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned cha
 }
 #endif
 
+#ifdef HAS_CPP17
 void map_insert();
 void map_insert() {
   std::map<uint32_t, uint32_t> i32map;
-  const auto [it, success] = i32map.insert({1, 2});
+  const auto [it, success] = i32map.insert({1, 2}); // decomposition declarations
   (void)it;
   (void)success;
 }
+#endif
 
 // SHENNANIGAN: default values prevent the class from being an aggregate, so
 // list initialization breaks with a very unhelpful message like:
@@ -549,6 +572,16 @@ int ptr_no_reinterpret_cast() {
   (void)i32_arr_ptr;
   // dont return stack local variable here
   return 0;
+}
+
+void ptr_to_int();
+void ptr_to_int() {
+  const char str[] = "somestring";
+  std::uintptr_t uiptr_str = reinterpret_cast<std::uintptr_t>(str);
+  // int_to_ptr
+  // derived_str must satisfy aliasing rules!
+  const char * derived_str = reinterpret_cast<const char *>(uiptr_str);
+  (void)derived_str;
 }
 
 // SHENNANIGAN https://en.cppreference.com/w/cpp/container/map/find
@@ -2006,6 +2039,7 @@ char const* operator""_SC(const char8_t* str, std::size_t) {
 //constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
 //    return reinterpret_cast< const char* >(str);
 //}
+// More sane alternative without backwards compatibility is to use _UC for unsigned char.
 #endif
 
 // SHENNANIGAN MSVC C++20 freaks out on std::is_pod
@@ -2065,11 +2099,45 @@ char const* operator""_SC(const char8_t* str, std::size_t) {
 
 // C++20 enum class workaround to get underlying type for printing
 // Ty Result;
-// if constexpr (std::is_enum_v<Result>)
-// {
-// 	typedef std::underlying_type<_Type>::type _UnderlyingType;
-// 	_UnderlyingType UnderlResult = static_cast<_UnderlyingType>(Result);
+// if constexpr (std::is_enum_v<Result>) {
+//  typedef std::underlying_type<_Type>::type _UnderlyingType;
+//  _UnderlyingType UnderlResult = static_cast<_UnderlyingType>(Result);
 // }
 
-int main() { return 0; } // minimal stub
+// TODO template crime with decltype and declval not inferring identical result locations
+// for identical invocations for multiple levels of nesting etc
 
+// A change is therefore required which does not match the C semantics,
+// and C would then need to be updated to match.
+// It should be pointed out that C technically does not have forward progress guarantees,
+// but hints at maybe having some guarantees, thefore changes to C ought to consider
+// also adding forward progress guarantees.
+
+// SHENNANIGAN C++11 to not including C++26 trivial infinite loops undefined behavior
+// forward progress guarantee was added resulting in bad behavior
+// https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2809r3.html
+
+// SHENNANIGAN syntax for operator call
+// Input.operator ReturnValue()
+
+// Wrapper to infer fn args
+// template <typename ...T>
+// decltype(auto) wrapper(T... t)
+// {
+//     return func_whos_sig_keeps_changing(t...);
+// }
+
+// ensure identical named fn exist in child class, ie for template programming
+class ParentClass {
+  int fn_HighLevelClass (int i) {
+    return 0;
+  }
+}
+class ChildClass : ParentClass {
+  int fn_LowLevelClass (int i) {
+    // could be more optimized to inline the call
+    return fn_HighLevelClass(i);
+  }
+}
+
+int main() { return 0; } // minimal stub

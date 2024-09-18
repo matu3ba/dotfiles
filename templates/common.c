@@ -2,9 +2,9 @@
 #error "requires C99 for sanity"
 #endif
 // Tested with
-// clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+// clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
 // ..
-// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement .\templates\common.c
+// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
 
 #include <assert.h>
 
@@ -123,57 +123,9 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // - Usage of restrict can be en/disabled in all compilers via #pragma optimize("", on/off).
 //   It can also be disabled in all compilers via #define restrict, using an according optimization level (typical -O1)
 //   or via separating header and implementation and disabling link time optimziations.
-static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment);
-void ptrtointtoptr(void);
-void assert_with_text(void);
-void standard_namespacing(void);
-void c_enum_in_struct_weirdness(void);
-void cpp_namespaces_enums_in_structs(int32_t device_type);
-int32_t c_enum(int32_t in);
-inline void hash_combine(unsigned long *seed, unsigned long const value);
-int32_t Str_Len(const char* str);
-void Str_Copy(const char* str, int32_t strlen, char* str2);
-int32_t Int_CeilDiv(int32_t x, int32_t y);
-void printBits(int32_t const size, void * const ptr);
-void print_size_t(void);
-int f(int* a);
-void sequence_points_ub(void);
-void aliasing_loader_clobberd_by_store(int* a, const int* b);
-void noaliasing(int* a, const long* b);
-void noaliasing_with_restrict(int* __restrict__ a, const int* b);
-void ptr_cmp(int* a, const int* b);
-void convert_string_to_int(const char *buff);
-void convert_string_to_int_simple(const char *buff);
-int no_reinterpret_cast(void);
-int ptr_no_reinterpret_cast(void);
-void padding(void);
-void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim);
-int testEq(int a, int b);
-void printf_align(void);
-int sum(int a, int b);
-int sub(int a, int b);
-int mul(int a, int b);
-int div_noconflict(int a, int b);
-void fn_voidptr(void * raw_ptr, uint64_t len);
-void use_voidptr(void);
-#ifdef _WIN32
-void ape_win_incompat_fileprint(void);
-#else
-void ape_fileprint(void);
-void ape_print(void);
-#endif
-void ape_win_print(void);
-void array_pointers(void);
-void designated_initializer(void);
-// void multi_character_constants(void);
-void bitfields(void);
-void zero_bitfield(void);
-void flexible_array_member(void);
-void imaginary_cursor_position_in_printf(void);
-int FG_Init(char * errmsg_ptr, int * errmsg_len);
-void tagged_union(void);
-void enum_class(void);
 
+
+static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment);
 static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment) {
     assert((size_bytes & (alignment-1)) == 0); // Size aligned
     assert(((uintptr_t)ptr & (alignment-1)) == 0); // Pointer aligned
@@ -184,6 +136,7 @@ static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t 
 // integer and back optimizations in for example clang and gcc
 // 3. Careful with LTO potentially creating problem 2. (clang -flto -funified-lto -fuse-ld=lld ptrtoint_inttoptr.c)
 // 4. Consider C11 aligned_alloc or posix_memalign
+void ptrtointtoptr(void);
 void ptrtointtoptr(void) {
   const uint16_t alignment = 16;
   const uint16_t align_min_1 = alignment - 1;
@@ -199,10 +152,12 @@ void ptrtointtoptr(void) {
 
 // macro NULL = 0 or mingw null
 
+void assert_with_text(void);
 void assert_with_text(void) {
   assert((1 == 1) && "sometext");
 }
 
+void standard_namespacing(void);
 void standard_namespacing(void) {
   // Standard enum, struct etc
   struct Namespace1 {
@@ -236,6 +191,7 @@ void standard_namespacing(void) {
   }
 }
 
+void c_enum_in_struct_weirdness(void);
 void c_enum_in_struct_weirdness(void) {
   const uint32_t device_type = 1;
   struct BeckhoffDeviceType {
@@ -252,6 +208,7 @@ void c_enum_in_struct_weirdness(void) {
   devty.ty = device_type;
 }
 
+void cpp_namespaces_enums_in_structs(int32_t device_type);
 void cpp_namespaces_enums_in_structs(int32_t device_type) {
   (void)device_type;
   struct BeckhoffDeviceType {
@@ -271,6 +228,7 @@ void cpp_namespaces_enums_in_structs(int32_t device_type) {
   // devty.ty = (BeckhoffDeviceType.Ty)device_type;
 }
 
+int32_t c_enum(int32_t in);
 int32_t c_enum(int32_t in) {
   enum Example {
     EX0 = 0,
@@ -311,6 +269,7 @@ BEGIN_ENUM(OsType)
 // getStringOsType(WINBLOWS);
 
 
+inline void hash_combine(unsigned long *seed, unsigned long const value);
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
 inline void hash_combine(unsigned long *seed, unsigned long const value) {
     *seed ^= value + 0x9e3779b9 + (*seed << 6) + (*seed >> 2);
@@ -341,6 +300,7 @@ inline void hash_combine(unsigned long *seed, unsigned long const value) {
 //   315 |       tmps++;
 //       |       ^~~~
 
+int32_t Str_Len(const char* str);
 /// assume: continuous data pointed to by str is terminated with 0x00
 int32_t Str_Len(const char* str) {
     const char* tmps = str;
@@ -349,6 +309,7 @@ int32_t Str_Len(const char* str) {
     return (int32_t)(tmps-str);
 }
 
+void Str_Copy(const char* str, int32_t strlen, char* str2);
 /// assume: continuous data pointed by input terminated with 0x00
 /// assume: str2 has sufficient backed memory size
 /// copy strlen chars from str to str2
@@ -357,6 +318,7 @@ void Str_Copy(const char* str, int32_t strlen, char* str2) {
         str2[i] = str[i];
 }
 
+int32_t Int_CeilDiv(int32_t x, int32_t y);
 /// assume: positive number
 /// assume: x + y does not overflow
 /// computes x/y
@@ -364,6 +326,7 @@ int32_t Int_CeilDiv(int32_t x, int32_t y) {
     return (x + y - 1) / y;
 }
 
+void printBits(int32_t const size, void * const ptr);
 // assume: little endian
 void printBits(int32_t const size, void * const ptr) {
     int status = 0;
@@ -384,6 +347,7 @@ void printBits(int32_t const size, void * const ptr) {
     if (status < 0) abort();
 }
 
+void print_size_t(void);
 void print_size_t(void) {
   size_t val = 0;
   printf("%zu\n",val); // SHENNANIGAN clangd: no autocorrection of printf formatter string
@@ -401,19 +365,22 @@ void print_size_t(void) {
 //   + finding existential variables is usually the hardest problem in automatized proves,
 //     so it looks unfeasible to automatize for "non-experts"
 
-int f(int* a) {
+int helper_seq_points(int* a);
+int helper_seq_points(int* a) {
     *a=*a+1;
     return *a;
 }
 
+void sequence_points_ub(void);
 // SHENNANIGAN
 void sequence_points_ub(void) {
     int a = 0;
     // a = a++ + b++; // Multiple unsequenced modifications to a
     // Same problem without warnings:
-    a = f(&a) + f(&a);
+    a = helper_seq_points(&a) + helper_seq_points(&a);
 }
 
+void aliasing_loader_clobberd_by_store(int* a, const int* b);
 // SHENNANIGAN
 // Aliasing protection in C/C++ is based on type equivalence (in Rust not):
 void aliasing_loader_clobberd_by_store(int* a, const int* b) {
@@ -422,17 +389,20 @@ void aliasing_loader_clobberd_by_store(int* a, const int* b) {
   }
 }
 
+void noaliasing(int* a, const long* b);
 void noaliasing(int* a, const long* b) {
   for (int i=0; i<10; i+=1) {
     a[i] += *b;
   }
 }
+void noaliasing_with_restrict(int* __restrict__ a, const int* b);
 void noaliasing_with_restrict(int* __restrict__ a, const int* b) {
   for (int i=0; i<10; i+=1) {
     a[i] += *b;
   }
 }
 
+void ptr_cmp(int* a, const int* b);
 // SHENNANIGAN
 // Additional pointer semantics created unnecessary UB, so one has to compare
 // against 0 to be always compatible.
@@ -448,6 +418,7 @@ void ptr_cmp(int* a, const int* b) {
 // or using this from C++ is UB:
 //   int* a = void*;
 
+void convert_string_to_int(const char *buff);
 // SHENNANIGAN
 // No readable, portable simple to use, handling all standard cases for ascii standard
 // conversion routines for string to integer. <C++23> is worse without boost.
@@ -476,6 +447,8 @@ void convert_string_to_int(const char *buff) {
     // ..
   }
 }
+
+void convert_string_to_int_simple(const char *buff);
 void convert_string_to_int_simple(const char *buff) {
   char *end;
   int si;
@@ -505,6 +478,7 @@ void convert_string_to_int_simple(const char *buff) {
 //     return reinterpret_cast<T*>(malloc(count * sizeof(T)));
 // }
 
+int no_reinterpret_cast(void);
 // SHENNANIGAN reinterpret_cast does not exist making different pointer type access UB
 // > Dereferencing a pointer that aliases an object that is not of a
 // > compatible type or one of the other types allowed by
@@ -526,6 +500,7 @@ int no_reinterpret_cast(void) {
   return 0;
 }
 
+int ptr_no_reinterpret_cast(void);
 // SHENNANIGAN unclear risk from clang/gcc provenance related miscomplations
 int ptr_no_reinterpret_cast(void) {
   char arr[4] = {0,0,0,1};
@@ -543,6 +518,8 @@ struct sStruct1 {
   uint32_t b1;
   uint32_t b2;
 };
+
+void padding(void);
 // Ensure correct storage and padding size for pointers via sizeof.
 void padding(void) {
   struct sStruct1 * str1 = malloc(sizeof(struct sStruct1));
@@ -550,6 +527,7 @@ void padding(void) {
   free(str1);
 }
 
+void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim);
 void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim) {
   for(int i=0; i<len_bytes; i+=1) {
     if (bytes == lim) break;
@@ -583,6 +561,7 @@ typedef struct structname {
 // https://wiki.sei.cmu.edu/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow
 // slow standard approaches, because microsoft neither supports inline assembly
 
+int testEq(int a, int b);
 int testEq(int a, int b) {
   if (a != b) {
     // Prefer __FILE_NAME__ to prevent absolute paths making builds non-reproducible
@@ -596,12 +575,17 @@ int testEq(int a, int b) {
 // https://zackoverflow.dev/writing/how-to-actually-write-c
 // https://zackoverflow.dev/writing/premature-abstraction
 
+void printf_align(void);
 void printf_align(void) {
   // pad the input right in a field 10 characters long
   printf("|%-10s|", "Hello");
 }
 
 // function pointer example from https://stackoverflow.com/questions/252748/how-can-i-use-an-array-of-function-pointers
+int sum(int a, int b);
+int sub(int a, int b);
+int mul(int a, int b);
+int div_noconflict(int a, int b);
 int sum(int a, int b) { return a + b; }
 int sub(int a, int b) { return a - b; }
 int mul(int a, int b) { return a * b; }
@@ -623,10 +607,13 @@ int main(void) {
   return 0;
 }
 
+void fn_voidptr(void * raw_ptr, uint64_t len);
 // SHENNANIGAN const char* to void* cast has unhelpful error messages
 void fn_voidptr(void * raw_ptr, uint64_t len) {
   memset(raw_ptr, 0, len);
 }
+
+void use_voidptr(void);
 void use_voidptr(void) {
 	char *sVars[] = {
 		"MAIN.bIn_Overflow",
@@ -656,6 +643,7 @@ void use_voidptr(void) {
 //   #include <Windows.h>
 
 #ifdef _WIN32
+void ape_win_incompat_fileprint(void);
 // different semantics of "secure fns" and not portable
 void ape_win_incompat_fileprint(void) {
   FILE * f1;
@@ -674,6 +662,8 @@ void ape_win_incompat_fileprint(void) {
 
 // silence clangd warnings
 #ifndef _WIN32
+void ape_fileprint(void);
+void ape_print(void);
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_DEPRECATE
 void ape_fileprint(void) {
@@ -689,6 +679,7 @@ void ape_fileprint(void) {
 #endif
 
 #ifdef _WIN32
+void ape_win_print(void);
 void ape_win_print(void) {
   FILE * f1;
   fopen_s(&f1, "file1", "a+");
@@ -708,6 +699,7 @@ void ape_print(void) {
 // Less known/arcane/cursed C based on https://jorenar.com/blog/less-known-c
 // -Wvla-larger-than=0
 // -Wvla
+void array_pointers(void);
 void array_pointers(void) {
   int arr[10];
   int *ap0 = arr;
@@ -747,6 +739,7 @@ struct Des1 {
   const char * s1;
 };
 
+void designated_initializer(void);
 // Designated initializer allow very ugly code, but also reasonable
 // array initialization since C99
 void designated_initializer(void) {
@@ -806,6 +799,7 @@ void compound_literal_usage(void) {
 //   }
 // }
 
+// void multi_character_constants(void);
 // SHENNANIGAN implementation dependent, so best to avoid them
 // [-Wfour-char-constants] warning: multi-character character constant
 // void multi_character_constants(void) {
@@ -816,6 +810,7 @@ void compound_literal_usage(void) {
 //   };
 // }
 
+void bitfields(void);
 // SHENNANIGAN impementation defined behavior for nesting due to being underspecified
 void bitfields(void) {
   struct Bitfield1 {
@@ -824,6 +819,7 @@ void bitfields(void) {
   };
 }
 
+void zero_bitfield(void);
 // SHENNANIGAN 0 bit field
 void zero_bitfield(void) {
   struct ZeroBitField1 {
@@ -838,6 +834,7 @@ void zero_bitfield(void) {
   // zero-length field causes position to move to next short boundary
 }
 
+void flexible_array_member(void);
 // Introduced with C99, few usage example
 void flexible_array_member(void) {
   struct FlexibleArrayMember {
@@ -851,6 +848,7 @@ void flexible_array_member(void) {
     flex_arr_mem->arr[i] = 20;
 }
 
+void imaginary_cursor_position_in_printf(void);
 void imaginary_cursor_position_in_printf(void) {
   int pos1, pos2;
   const char * str_unknown_len = "some_string_here";
@@ -999,6 +997,7 @@ struct ImageVLA ImageVLA;
 // Use realtime thread with minimal time period to execute, but keep 1 thread at a time, even if taking longer
 // st = timeSetEvent(1, 0, &fnPtr, reinterpret_cast<DWORD_PTR>(this), TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 
+int FG_Init(char * errmsg_ptr, int * errmsg_len);
 // SHENNANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
 // In practive implementations unconditionally add 0 sentinel.
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
@@ -1198,14 +1197,44 @@ void getFullPathNameUsage(void) {
 //  stdc_bit_floor
 // N2897 - memset_explicit
 
+struct TaggedUnion {
+  union TheUnion {
+    const uint64_t * u64ptr;
+    const uint8_t * u8ptr;
+  } m_TheUnion;
+  enum TheTag {
+    u64ptr,
+    u8ptr,
+  } m_TheTag;
+};
+// struct TaggedUnion initTaggedUnion(union TheUnion, enum TheTag){}
+
+void tagged_union(void);
 void tagged_union(void) {
+
   // TODO std::variant equivalent
   // TODO enum class equivalent
 }
 
+void enum_class(void);
 void enum_class(void) {
   // TODO enum class equivalent
 }
+
+// https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2809r3.html
+// Forward progress guarantees
+// An iteration statement may be assumed by the implementation to terminate if
+// its controlling expression is not a constant expression, and none of the
+// following operations are performed in its body, controlling expression or (in
+// the case of a for statement) its expression:
+// * input/output operations
+// * accessing a volatile object
+// * synchronization or atomic operations.
+// Applicative to
+// while ( expression ) statement
+// do statement while ( expression ) ;
+// for ( expressionopt ; expressionopt ; expressionopt ) statement
+// for ( declaration expressionopt ; expressionopt ) statement
 
 // TODO https://github.com/gritzko/librdx/blob/master/ABC.md
 // scalable high perf code requirements

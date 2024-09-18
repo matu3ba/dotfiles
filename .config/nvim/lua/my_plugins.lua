@@ -134,7 +134,17 @@ return {
   -- leader gs,gc,gp, q to close
   {
     'NeogitOrg/neogit',
-    config = function() require('neogit').setup() end
+    config = function()
+      require('neogit').setup {
+        filewatcher = {
+          enabled = true,
+        },
+        disable_line_numbers = true,
+        auto_refresh = false,
+        console_timeout = 2000,
+        auto_show_console = true,
+      }
+    end
   },
 
   -- The alternative would be to use https://github.com/git/git/blob/master/Documentation/mergetools/vimdiff.txt

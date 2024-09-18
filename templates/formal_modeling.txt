@@ -318,6 +318,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   parallelism, states and changes over time via temporal logic
   * https://www.learntla.com/
   * TODO
+  * https://softwareengineering.stackexchange.com/questions/270674/which-language-has-most-advanced-support-for-proof-based-programming
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

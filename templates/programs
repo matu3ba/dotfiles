@@ -94,6 +94,13 @@ sudo make install
 # Installing desktop profile for zellij starting fish
 cd $HOME/dotfiles/mustcopy/ && ./cpfiles.sh
 
+sc Spreadsheet Calculator
+https://github.com/n-t-roff/sc
+https://github.com/andmarti1424/sc-im
+
+diagon Interactive ASCII art diagram generators.
+https://github.com/ArthurSonzogni/Diagon
+
 pipeworld?
 
 markdown editor: retext

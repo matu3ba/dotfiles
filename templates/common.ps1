@@ -1,8 +1,41 @@
+# Other files
+# :PWConf windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
+# :Templates templates\powershell
+#====common_paths
+#====file_watcher
+
+# ====common_paths
+# echo $profile shows powershell configuration
+# $HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+# $HOME/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+# $HOME\AppData\Local\Mozilla\Firefox\
+# $HOME/AppData/Local/Mozilla/Firefox/
+# C:\Users\$USER\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+# C:\Users\$($env:username)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+
+#====cli
+# realpath pendant: Resolve-Path Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+# copy recursive: cp -r -fo $HOME\dotfiles\.config\nvim $HOME\AppData\Local
+#  long form: Copy-Item -Path $HOME\dotfiles\.config\nvim -Destination $HOME\AppData\Local -Recurse -Force
+#  Pull all elements into top level destination scope via '-Container:$false'
+#  rsync equivalent via robocopy
+
+# mount directory as drive
+# net use R: /delete
+# subst R: $HOME\somedir
+# subst R: /d
+# check logical disks of system
+# wmic logicaldisk get name
+# net use D: /delete /yes
+# subst D: /d
+# subst D: $HOME\somedir
+
 #====file_watcher
 # https://superuser.com/questions/226828/how-to-monitor-a-folder-and-trigger-a-command-line-action-when-a-file-is-created
 # https://powershell.one/tricks/filesystem/filesystemwatcher
 # in lua for windows file system via winapi lua bindings https://github.com/stevedonovan/winapi with https://stevedonovan.github.io/winapi/api.html#watch_for_file_changes
 # or via ETW
+# TODO
 
 function GetLastExitCode {
   return !$?

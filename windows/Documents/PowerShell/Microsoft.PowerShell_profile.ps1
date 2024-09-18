@@ -1,5 +1,7 @@
 $env:Path += ";$($env:USERPROFILE)\bin"
 $env:Path += ";$HOME\.local\bin"
+# $env:Path += ";$HOME\llvm\bin"
+$env:Path += ";C:\Program Files\LLVM\bin"
 $env:Path += ";C:\Program Files\Mozilla Firefox"
 $env:Path += ";C:\Program Files\Python312\Scripts\pip.exe"
 $env:Path += ";C:\Program Files\Wireshark"

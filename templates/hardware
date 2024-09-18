@@ -1,3 +1,11 @@
+====computing
+====debugging
+
+====computing
+TODO performance classification from yt talk from zig discord
+classical CPUs are hardware based instruction interpreters
+
+====debugging
 - protect data transmission of unshielded cables
   * use at least CRC
   * certificate authorities will test for correct error behavior

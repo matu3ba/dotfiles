@@ -1,5 +1,8 @@
 CPU functionality and assembly below caches
 
+TODO describe methods in
+https://stackoverflow.com/questions/22165299/what-are-stalled-cycles-frontend-and-stalled-cycles-backend-in-perf-stat-resul/29059380#29059380
+
 #### CPU functionality
 - AMD Zen dont have a single physical location where each register lives
 - AMD Zen use a Register File (RF) and a Register Allocation Table (RAT)

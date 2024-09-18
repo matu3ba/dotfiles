@@ -711,3 +711,7 @@ TODO cleanup
 #endif
 
 SHENNANIGAN Portable include is #include <Windows.h>, but lower case also works on windows
+
+SHENNANIGAN Windows Input is very much not nice to use
+* use SDL3 instead https://gist.github.com/flibitijibibo/aa8a61196621adf17f76d182720830c1
+https://ph3at.github.io/posts/Windows-Input/
