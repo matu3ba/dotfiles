@@ -2,6 +2,9 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+-- clangd
+-- superhtml https://github.com/kristoff-it/superhtml
+
 --==LspInstallationsAndUsage
 
 -- Manual (nvim-lsp name -- mason name):
@@ -92,6 +95,7 @@ lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_
 lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.julials.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.superhtml.setup{ capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.ts_ls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- lspconfig.typst_lsp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
