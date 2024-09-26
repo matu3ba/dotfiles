@@ -1,0 +1,5 @@
+https://www.fossil-scm.org/home/uv/download.html
+./configure && make && cp ./fossil ~/.local/bin/
+fossil clone https://chiselapp.com/user/letoram/repository/arcan
+fossil clone https://chiselapp.com/user/letoram/repository/durden
+fossil clone https://chiselapp.com/user/letoram/repository/cat9
