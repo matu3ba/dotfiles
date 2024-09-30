@@ -32,6 +32,7 @@
 
 #remove last commit (--soft vs --hard)
 #git reset HEAD~1
+#git reset HEAD~1 [filename]
 
 #patch based work
 #git format-patch --stdout first_commit^..last_commit > changes.patch
@@ -226,7 +227,7 @@ alias gsr='git remote show origin'
 #alias gbsr='git bisect reset'
 #alias gbss='git bisect start'
 
-# git checkout commit filepath
+# git checkout commit [filepath]
 alias gco='git checkout'
 alias gcp='git cherry-pick'
 # credential helper config

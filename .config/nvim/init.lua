@@ -375,6 +375,9 @@ callback = function()
 -- reverse convert (before saving): :%!xxd -r
 -- show non-text ascii symbols with :ascii
 
+-- make-path
+-- :!mkdir -p somepath\somefile
+
 -- std::cout << "dbg1\n"; // DEBUG
 -- search with /.*DEBUG$
 -- delete with :g/.*DEBUG$/del

@@ -6,10 +6,10 @@ CompileFlags:
   # Add: [-std=c++14]
   # Add: [-std=c++17]
   # Add: [-std=c++20]
-  # Add: [-std=c++23]
+  Add: [-std=c++23]
   # Add: [-std=c++26]
 
-  Add: [-std=c99]
+  # Add: [-std=c99]
   # Add: [-std=c11]
   # Add: [-std=c17]
   # Add: [-std=c20]

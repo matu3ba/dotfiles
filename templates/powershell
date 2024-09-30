@@ -45,6 +45,7 @@ delete recursively files:
 rm -r -fo somedir
 
 New-item -Path ".\target\dir2" -ItemType Directory -Force
+mkdir -p ".\target\dir2"
 cargo install fd-find ripgrep zoxide
 
 print PATH (in contrast to echo %PATH% in cmd):

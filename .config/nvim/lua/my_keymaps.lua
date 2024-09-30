@@ -135,6 +135,10 @@ map('n', '<leader>qq', '<cmd>q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', '<cmd>q!<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>qb', '<cmd>bd<CR>', opts) -- faster delete buffer
 map('n', '<leader>qw', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
+map('n', '<leader>qh', '<cmd>wincmd h<CR><cmd>q<CR>', { desc = ':close left' })
+map('n', '<leader>qj', '<cmd>wincmd j<CR><cmd>q<CR>', { desc = ':close down' })
+map('n', '<leader>qk', '<cmd>wincmd k<CR><cmd>q<CR>', { desc = ':close up' })
+map('n', '<leader>ql', '<cmd>wincmd l<CR><cmd>q<CR>', { desc = ':close right' })
 -- map('n', '<leader>qc', '<cmd>bn<Bar>bdel#<CR>', opts) -- close terminal command
 
 --map('n', '<leader>y', '"+y', opts) -- used default

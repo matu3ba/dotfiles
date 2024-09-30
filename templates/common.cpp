@@ -75,8 +75,10 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <map>
 #include <memory> // unique_ptr, shared_ptr
 #include <mutex>
+#include <set>
 #include <stdexcept> // std::runtime_error
 #include <string>
+#include <utility> // std::true_type
 #include <vector>
 
 #ifdef HAS_CPP20
@@ -2129,15 +2131,156 @@ char const* operator""_SC(const char8_t* str, std::size_t) {
 
 // ensure identical named fn exist in child class, ie for template programming
 class ParentClass {
+public:
   int fn_HighLevelClass (int i) {
-    return 0;
+    return i;
   }
-}
+};
 class ChildClass : ParentClass {
   int fn_LowLevelClass (int i) {
     // could be more optimized to inline the call
     return fn_HighLevelClass(i);
   }
+};
+
+// requires #include <utility>
+template <typename>
+struct is_pair : std::false_type {};
+template <typename T, typename U>
+struct is_pair<std::pair<T, U>> : std::true_type {};
+
+template<class ITR>
+void use_is_pair(ITR && itr) {
+  //access of itr->second ok.
+  (void)itr;
+  if constexpr (is_pair<ITR>::value) {
+    printf("is_pair");
+    // use here itr.first and itr.second
+    // vvv
+    // ..
+  } else if constexpr (true) {
+    printf("longer constexpr example");
+  } else {
+    printf("unreachable");
+  }
 }
+
+template<class ITR, typename = typename std::enable_if<is_pair<typename ITR::value_type>::value, ITR>::type>
+decltype(auto) use_pair(ITR && itr) {
+  (void)itr;
+    //access of itr->second ok.
+}
+
+int check_pair();
+int check_pair() {
+    std::map<int, int> foo{
+        { 1, 2 },
+        { 3, 4 },
+    };
+    use_pair(foo.begin());
+    use_is_pair("");
+    return 0;
+}
+
+#ifdef HAS_CPP14
+// https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time
+// SHENNANIGAN core guidelines have nothing on pattern matching std things
+// type for STL containers. Reflection on (std) scope elements is not possible.
+namespace is_stl_container_impl{
+  template <typename T1>       struct is_stl_container:std::false_type{};
+  template <typename T1, std::size_t N> struct is_stl_container<std::array    <T1,N>>    :std::true_type{};
+  template <typename... Args> struct is_stl_container<std::vector            <Args...>>:std::true_type{};
+  template <typename... Args> struct is_stl_container<std::list              <Args...>>:std::true_type{};
+  template <typename... Args> struct is_stl_container<std::map               <Args...>>:std::true_type{};
+  template <typename... Args> struct is_stl_container<std::multimap          <Args...>>:std::true_type{};
+}
+//type trait to utilize the implementation type traits as well as decay the type
+template <typename T1> struct is_stl_container {
+  static constexpr bool const value = is_stl_container_impl::is_stl_container<std::decay_t<T1>>::value;
+};
+void use_is_stl_container();
+void use_is_stl_container() {
+  printf("%d\n", is_stl_container<std::vector<int>>::value);
+  printf("%d\n", is_stl_container<std::vector<int>const&>::value);
+  printf("%d\n", is_stl_container<int>::value);
+}
+#endif
+
+// TODO explain decltype declval SHENNANIGAN of editors with minimal example
+
+// keyword friend means
+// 1. static
+// 2. class can access private members
+
+// Improving readability of templates via concepts
+#ifdef HAS_CPP20
+// SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc
+template <typename T1>
+concept c_is_integral = std::is_integral_v<T1>;
+template <typename T1>
+concept co_is_not_integral = not std::is_integral_v<T1>;
+// At least in experiments vvv works, whereas ^^^ does not.
+template <typename T1>
+requires std::is_integral_v<T1>
+T1 addition_integral(T1 num1, T1 num2) {
+  return num1 + num2;
+}
+
+template <typename T1>
+requires co_is_not_integral<T1>
+int addition_nonintegral1(T1 num1, T1 num2) {
+  (void)num1;
+  (void)num2;
+  return 0;
+}
+// SHENNANIGAN Not recommended to use nest concepts due to concept subsumption rules
+// in conflict with core guidelines T.11: Whenever possible use standard concepts
+template <typename T1>
+requires (!std::is_integral_v<T1>) // () - Brackets in generics hint possible ambiguity
+int addition_nonintegral2(T1 num1, T1 num2) {
+  (void)num1;
+  (void)num2;
+  return 0;
+}
+
+void use_is_integral();
+void use_is_integral() {
+  int a = 1;
+  int b = 1;
+  int res = addition_integral(a, b);
+  (void)res;
+
+  struct Comp1 {
+    int a;
+    int b;
+  };
+  Comp1 comp1 = { 1, 2 };
+  int zero = addition_nonintegral1(comp1, comp1);
+  zero = addition_nonintegral2(comp1, comp1);
+  (void)zero;
+}
+#endif
+
+// SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const ist missing
+// std::multiset
+
+struct use_CustomComparator { // also known as predicate
+  int32_t a;
+  int32_t b;
+  struct CustomComparator {
+    bool operator() (const int32_t& lhs, const int32_t& rhs) const {
+      return lhs < rhs;
+    }
+  };
+  std::multiset<int32_t, CustomComparator> mset1;
+  // requires also move assign and move constructor
+};
+
+// SHENNANIGAN pure virtual method in interface must be used by overriden pure method
+// to infer the concrete method implementation or the used object with such method
+// must be given as template param effectively replacing need for (pure) virtual method.
+
+// SHENNANIGAN MSVC < C++20 is ok with static cast to class with virtual method, but C++20
+// (correctly) requires the absence to choose the correct method.
 
 int main() { return 0; } // minimal stub
