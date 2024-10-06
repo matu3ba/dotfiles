@@ -2283,4 +2283,11 @@ struct use_CustomComparator { // also known as predicate
 // SHENNANIGAN MSVC < C++20 is ok with static cast to class with virtual method, but C++20
 // (correctly) requires the absence to choose the correct method.
 
+// SHENNANIGAN C++20 will choose incorrect function due to
+// eliding copies, when given
+// fnname(Ty*& var) and fnname(Ty*&& var)
+// instead of correct
+// fnname(Ty* const& var) and fnname(Ty* && var)
+// and inside having to use push_back of the var.
+
 int main() { return 0; } // minimal stub

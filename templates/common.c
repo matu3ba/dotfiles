@@ -116,6 +116,11 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // - a character type."
 // => assume: Access upholds (&array[0] <= ptr && ptr < &array[len+1])
 
+// https://faultlore.com/blah/tower-of-weakenings/#the-tower-of-weakenings
+// https://lwn.net/Articles/990273/
+// https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/tbaa/
+// TODO explain tbaa
+
 // Exceptions:
 // - posix extension/Windows: casting pointers to functions (and back) also use for dynamic linking etc
 // - clang and gcc have -fno-strict-aliasing, msvc and tcc do disable type-based aliasing analysis based optimizations

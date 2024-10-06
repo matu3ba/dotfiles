@@ -92,7 +92,8 @@ add_cmd('Style', function(opts) require('material.functions').change_style(opts.
 
 add_cmd('StVis', function(opts) require('my_statusline').setVisualSetting(opts.args) end, {
   nargs = 1,
-  complete = function(_, _, _) return { 'cwd', 'nocwd' } end,
+  -- corresponds to visual_setting_choices
+  complete = function(_, _, _) return { 'min', 'cwd', 'pa', 'pa_cwd' } end,
 })
 
 --map('v', '<leader>b', '"+y', opts)

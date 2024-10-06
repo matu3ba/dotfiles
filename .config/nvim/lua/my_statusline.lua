@@ -11,14 +11,24 @@ local statusline = {}
 vim.o.statusline = "%!v:lua.require'my_statusline'.setup()"
 
 local visual_setting_choices = {
-  [1] = 'nocwd',
-  [2] = 'cwd',
+  [1] = 'min', -- minimal: no expanded path and no cwd
+  [2] = 'cwd', -- expanded cwd
+  [3] = 'pa', -- expanded path
+  [4] = 'pa_cwd', -- both expanded
 }
-local visual_setting = visual_setting_choices[1]
+_ = visual_setting_choices
+local visual_setting = 1
 
 ---Set visual setting. Caller responsible to validate input
 ---@param setting string Corresponds to entry of visual_setting_choices.
-statusline.setVisualSetting = function(setting) visual_setting = setting end
+statusline.setVisualSetting = function(setting)
+  if (setting == 'min') then visual_setting = 1
+  elseif (setting == 'cwd') then visual_setting = 2
+  elseif (setting == 'pa') then visual_setting = 3
+  elseif (setting == 'pa_cwd') then visual_setting = 4
+  else visual_setting = 1
+  end
+end
 
 -- print_lsp_progress from https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
 -- local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
@@ -76,16 +86,12 @@ local function git_statusline()
   return with_icon(table.concat(result, ' '), '')
 end
 
-local function get_cwd(_visual_setting)
-  if _visual_setting == 'cwd' then
-    local cwd = vim.loop.cwd()
-    if cwd == nil then
-      return ''
-    else
-      return cwd
-    end
-  else
+local function get_cwd()
+  local cwd = vim.loop.cwd()
+  if cwd == nil then
     return ''
+  else
+    return cwd
   end
 end
 
@@ -96,8 +102,7 @@ local function get_path()
   -- neovim should always return valid path and unlist the buffer instead, but if it fails, use
   -- if bufname == nil then return "[DELETED]" end
   local rel_path = plenary.path:new(bufname):make_relative()
-  if #rel_path < (vim.fn.winwidth(0) / 2) then return rel_path end
-  return vim.fn.pathshorten(rel_path)
+  return rel_path
 end
 
 local function search_result()
@@ -181,16 +186,37 @@ end
 -- idea vim.diagnostic.is_enabled() with vim.diagnostic.count()
 -- local mode = vim.api.nvim_get_mode().mode
 -- selection range
+-- config according to visual_setting_choices
 function statusline.setup()
+  local _visual_setting = visual_setting
   local reserved_rhs = 80
   local winwidth = vim.fn.winwidth(0)
-  local cwd = get_cwd(visual_setting)
-  local path = get_path()
+
+  local cwd = get_cwd()
   local cwd_width = vim.fn.strdisplaywidth(cwd)
+
+  local path = get_path()
   local path_width = vim.fn.strdisplaywidth(path)
-  if cwd_width + path_width + reserved_rhs > winwidth then
+
+  -- visual_setting_choices
+  -- cwd shown => 2,4 not shown => 1,3
+  -- full path shown => 3,4, not shown => 1,2
+  -- case 4 means both if possible
+  if _visual_setting == 1 then
+    cwd = ''
     path = vim.fn.pathshorten(path)
+  elseif _visual_setting == 2 then
+    path = ''
+    -- if cwd_width + path_width + reserved_rhs > winwidth then path = '' end
+  elseif _visual_setting == 3 then
+    cwd = ''
+    -- if cwd_width + path_width + reserved_rhs > winwidth then cwd = '' end
+  elseif _visual_setting == 4 then
     if cwd_width + path_width + reserved_rhs > winwidth then cwd = '' end
+    if path_width + reserved_rhs > winwidth then path = vim.fn.pathshorten(path) end
+  else
+    cwd = ''
+    path = vim.fn.pathshorten(path)
   end
 
   local lincol = get_linecol()
@@ -199,6 +225,7 @@ function statusline.setup()
   local search = search_result()
   local git_status = git_statusline()
   local context = get_context()
+  local status_conf = _visual_setting -- visual_setting_choices
 
   local cwd_draw = ''
   if cwd ~= '' then cwd_draw = cwd .. ' ' end
@@ -216,6 +243,8 @@ function statusline.setup()
     git_status,
     ' ',
     context,
+    ' ',
+    status_conf,
   }
   local res = table.concat(statusline_sections)
   if res == nil then res = '' end
