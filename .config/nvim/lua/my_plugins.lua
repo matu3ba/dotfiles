@@ -144,7 +144,7 @@ return {
         console_timeout = 2000,
         auto_show_console = true,
       }
-    end
+    end,
   },
 
   -- The alternative would be to use https://github.com/git/git/blob/master/Documentation/mergetools/vimdiff.txt

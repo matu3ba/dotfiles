@@ -526,12 +526,12 @@ map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across t
 local has_neogit, neogit = pcall(require, 'neogit')
 if has_neogit then
   -- map("n", "<leader>gs", neogit.open, { desc = "Git status" })
-  vim.keymap.set("n", "<leader>gs", neogit.open, { silent = true, noremap = true, desc = "Git status" })
-  map("n", "<leader>gc", ":Neogit commit<Cr>", { desc = "Git commit" })
-  map("n", "<leader>gp", ":Neogit push<CR>", { desc = "Git push" })
+  vim.keymap.set('n', '<leader>gs', neogit.open, { silent = true, noremap = true, desc = 'Git status' })
+  map('n', '<leader>gc', ':Neogit commit<Cr>', { desc = 'Git commit' })
+  map('n', '<leader>gp', ':Neogit push<CR>', { desc = 'Git push' })
   -- TODO force with lease
   -- map("n", "<leader>gP", "<leader>gp", { desc = "Git push" })
-  map("n", "<leader>gb", ":Telescope git_branches<CR>", { desc = "Telescope git branche" })
+  map('n', '<leader>gb', ':Telescope git_branches<CR>', { desc = 'Telescope git branche' })
   -- map("n", "<leader>gB", ":G blame<CR>", { desc = "Git blame" })
 end
 

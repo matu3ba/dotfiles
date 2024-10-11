@@ -146,7 +146,14 @@ local function load_options()
   vim.o.directory = utils.pathJoin(vim.fn.stdpath 'state', 'swap') --swap directory
   vim.o.swapfile = true
   -- spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
-  vim.o.spelllang = 'en,de'
+
+  if utils.is_windows == true then
+    -- workaround windows global system installation not being able to write
+    -- C:\Program Files\Neovim\share\nvim\runtime\spell
+    vim.o.spelllang = 'en'
+  else
+    vim.o.spelllang = 'en,de'
+  end
   --vim.o.scrolloff         = 8; view movements: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
   vim.wo.colorcolumn = '80,120,150'
   vim.wo.list = true

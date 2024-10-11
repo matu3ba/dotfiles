@@ -22,11 +22,16 @@ local visual_setting = 1
 ---Set visual setting. Caller responsible to validate input
 ---@param setting string Corresponds to entry of visual_setting_choices.
 statusline.setVisualSetting = function(setting)
-  if (setting == 'min') then visual_setting = 1
-  elseif (setting == 'cwd') then visual_setting = 2
-  elseif (setting == 'pa') then visual_setting = 3
-  elseif (setting == 'pa_cwd') then visual_setting = 4
-  else visual_setting = 1
+  if setting == 'min' then
+    visual_setting = 1
+  elseif setting == 'cwd' then
+    visual_setting = 2
+  elseif setting == 'pa' then
+    visual_setting = 3
+  elseif setting == 'pa_cwd' then
+    visual_setting = 4
+  else
+    visual_setting = 1
   end
 end
 
