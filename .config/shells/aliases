@@ -51,6 +51,10 @@ alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxl
 # -bsp1, -mx5 -ppassword; -r recursively searches for files which is wrong to use without dirs only
 #run commands at specific time: at (programs needs daemon config after installation)
 #or in 1h `sleep 3600 ; ./run.sh`
+#check encoding: file -i filepath
+#latin to utf8 encoding: iconv -f ISO-8859-1 -t UTF-8 filepath
+#   iconv -f WINDOWS-1252 -t UTF-8 filename.txt
+#   manually: https://kence.org/2019/11/27/detecting-windows-1252-encoding/
 #tmpfs: df -h /tmp
 #suspend in 5min: systemd-run --on-active="5m" suspend,  systemctl suspend
 #valgrind leakcheck:

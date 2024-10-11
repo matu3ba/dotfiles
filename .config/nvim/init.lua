@@ -199,6 +199,20 @@ end
 -- idea: selection + substitute selection with (simplify)
 -- fast select full function: va{V      no}
 
+-- read as latin :edit ++enc=latin1 filename
+-- read + write as latin
+-- :edit ++encoding=latin1 filepath
+-- :set fileencoding=latin1
+-- Looks like .editorconfig breaks behavior, so disable it via
+-- :lua vim.g.editorconfig = false
+-- or use nodepad++.
+-- Best to use git bash with 'file -i' and 'iconv -f from -t to' to reencode
+-- and use for example msvc in strict utf8 mode to prevent bad behavior.
+-- Writing may need :bd filepath
+-- :set encoding - set the encoding used to read the file (not working for some reason)
+-- :set fileencoding - set the encoding to use when saving the file
+-- :set termencoding - set the encoding to use to display characters to your terminal
+
 -- stylua: ignore start
 -- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
 vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})

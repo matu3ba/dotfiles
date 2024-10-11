@@ -374,6 +374,7 @@ search
   symbol results           Shift-f12
 quick action               Ctrl-.
 close document window      Ctrl-f4
+close all doc windows      Alt-w-l
 snippet expanding          Ctrl-k-s
 rename                     Ctrl-r,Ctrl-r
 go

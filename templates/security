@@ -182,3 +182,9 @@ Incomplete list of intrusion prevention and detection:
 * secure backup copies of system software and data
 * sys bootstrapping from local storage until hardening applied
 * write down attack vectors and plan etc
+
+====hardware_attack
+
+https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
+* with soldering a fire lighter is sufficient to get root
+* unclear how ECC affects this

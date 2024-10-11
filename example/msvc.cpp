@@ -66,6 +66,29 @@
 // requires /Zc:__cplusplus https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
 //static_assert(__cplusplus >= 202002L);
 
+// utf8 handling is bad in msvc
+// * msvc defaults to used locale, if msvc finds no BOM in file
+// * manual reencoding is needed, because msvc provides no tooling and neither
+// offers introspection in what encoding it internally uses
+// * good default requires /utf-8 and only errors out, if it can not find BOM
+
+// Looking up unicode symbols to copy paste
+// https://www.compart.com/en/unicode/U+00C4
+
+// typical manual conversion
+// * UTF8 LE BOM files with strings -> UTF8 files
+// * UTF16 LE BOM files with strings -> UTF8 files
+// * latin(ISO-8859-1)/WINDOWS-1252 files with strings -> UTF8 files
+
+// https://pspdfkit.com/blog/2021/string-literals-character-encodings-and-multiplatform-cpp/
+// https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170
+// https://learn.microsoft.com/en-us/windows/win32/Intl/code-page-identifiers
+// https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.vcprojectengine.vcclcompilertool.additionaloptions?view=visualstudiosdk-2022
+// https://en.wikipedia.org/wiki/Unicode_in_Microsoft_Windows#UTF-8
+// https://stackoverflow.com/questions/41335199/how-to-config-visual-studio-to-use-utf-8-as-the-default-encoding-for-all-project
+// TODO summary from https://stackoverflow.com/questions/1857668/c-visual-studio-character-encoding-issues
+// Unicode overview https://www.codeproject.com/Articles/38242/Reading-UTF-8-with-C-streams
+
 #if (__cplusplus == 202302L)
   #define IS_CPP23
   #define HAS_CPP23

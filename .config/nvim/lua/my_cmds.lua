@@ -342,13 +342,22 @@ if has_oil then
   end
 end
 
+-- Functions with suffix U and W do not do special case handling or validation.
 add_cmd('Frel', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
+add_cmd('FrelU', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative():gsub('\\', '/')) end, {})
+add_cmd('FrelW', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative():gsub('/', '\\')) end, {})
 add_cmd('FrelDir', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
+add_cmd('FrelDirU', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()):gsub('\\', '/')) end, {})
+add_cmd('FrelDirW', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()):gsub('/', '\\')) end, {})
 add_cmd('FrelLine', function() setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})
 add_cmd('FrelCol', function()
   local line_col_pair = api.nvim_win_get_cursor(0)
   setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), line_col_pair[1], line_col_pair[2])
 end, {})
+add_cmd('FabsU', function() setPlusAnd0Register('/' .. api.nvim_buf_get_name(0):gsub(':',''):gsub('\\', '/')) end, {})
+add_cmd('FabsW', function() setPlusAnd0Register(api.nvim_buf_get_name(0):gsub('/', '\\')) end, {})
+add_cmd('FabsDirU', function() setPlusAnd0Register('/' .. vim.fs.dirname(api.nvim_buf_get_name(0)):gsub(':', ''):gsub('\\', '/')) end, {})
+add_cmd('FabsDirW', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0)):gsub('/', '\\')) end, {})
 add_cmd('Fabs', function() setPlusAnd0Register(api.nvim_buf_get_name(0)) end, {})
 add_cmd('FabsDir', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
 add_cmd('FabsLine', function() setCursorInfo(api.nvim_buf_get_name(0), api.nvim_win_get_cursor(0)[1], nil) end, {})

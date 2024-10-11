@@ -139,3 +139,5 @@ Sane ownership options for multi-threaded code:
 Generally
 * Pooling and encoding of data and touching less cache lines faster
 * Less contention decreases synchronization cost
+
+copy paste unicode symbols from https://www.compart.com/en/unicode/

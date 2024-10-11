@@ -5,7 +5,6 @@
 // clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
 // ..
 // clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
-
 #include <assert.h>
 
 #if (__STDC_VERSION__ >= 199901L)
@@ -329,6 +328,27 @@ int32_t Int_CeilDiv(int32_t x, int32_t y);
 /// computes x/y
 int32_t Int_CeilDiv(int32_t x, int32_t y) {
     return (x + y - 1) / y;
+}
+
+// byte-wise dumping somewhat pretty compatible with strlen
+inline void dumpMemory(const char * memory, size_t size);
+inline void dumpMemory(const char * memory, size_t size) {
+  uint32_t cols = 80;
+  for (uint32_t i = 0; i<size; i+=1) {
+    fprintf(stdout, "%x ", memory[i]);
+    if ((cols + 1) % 2 == 0) fprintf(stdout, " ");
+    if (cols % cols == 0) fprintf(stdout, "\n");
+  }
+}
+
+void use_dumpMemory(void);
+void use_dumpMemory(void) {
+  const char * some_memory = "some_memory";
+  dumpMemory(some_memory, strlen(some_memory));
+
+  // options for lower aligned pointers
+  // 1. copy around memory etc to get lower aligned pointer to memory
+  // 2. copy pointers to print memory
 }
 
 void printBits(int32_t const size, void * const ptr);

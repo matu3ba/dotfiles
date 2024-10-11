@@ -58,6 +58,8 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 
 #ifdef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #endif // _WIN32
 
 #include <cassert>
@@ -72,6 +74,8 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <fstream> // fstream
 #include <future> // future
 #include <iostream> // io stream operators
+#include <sstream> // std::stringstream
+#include <ostream> // std::ostream for stream operator
 #include <map>
 #include <memory> // unique_ptr, shared_ptr
 #include <mutex>
@@ -82,8 +86,7 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <vector>
 
 #ifdef HAS_CPP20
-// TODO make clangd not showing warnings and analyze concepts
-// #include <concepts> // NOLINT
+#include <concepts> // NOLINT
 // https://stackoverflow.com/questions/57402464/is-c20-char8-t-the-same-as-our-old-char
 static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not distinct type; has C semantics");
 #endif
@@ -211,6 +214,8 @@ enum class eType : uint8_t {
   ty1 = 0,
   ty2,
 };
+
+// SHENNANIGAN operators and functions can not be part of enum class
 
 template <class _eTy>
 class CImageHistory {
@@ -1135,8 +1140,6 @@ void cstring_interop_annoying() {
 }
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
 // unique_ptr pattern to handle file handles and cleanup via RAII
 void raii_filehandles();
 void raii_filehandles() {
@@ -1819,7 +1822,7 @@ void test() {
 //  Shorter via
 //  template<typename... Args> void whatis();
 //  usage: whatis<T>();
-// * 6. avoid decltype and std::declval if possible
+// * 6. avoid decltype and std::declval if possible, for example via concepts
 //   * check whether operator exists for identical types trivial,
 //   for non-identical ones horrible to write without concepts
 //     + https://www.sandordargo.com/blog/2021/02/10/cpp-concepts-motivations
@@ -1949,10 +1952,6 @@ static_assert(std::is_same_v<T, float>, "");
 //     }
 // };
 
-struct MultiOperator {
-  // TODO document multi operator selection
-};
-
 struct Foo {
   Foo() : data(0) {}
   void sum(int i) { data +=i;}
@@ -2034,15 +2033,213 @@ private:
 
 // SHENNANIGAN workaround char8_t, unfortunately string literals are not constexpr in C++20
 #ifdef HAS_CPP20
-char const* operator""_SC(const char8_t* str, std::size_t);
-char const* operator""_SC(const char8_t* str, std::size_t) {
+inline char const* operator""_SC(const char8_t* str, std::size_t) {
     return reinterpret_cast< const char* >(str);
 }
 //constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
 //    return reinterpret_cast< const char* >(str);
 //}
 // More sane alternative without backwards compatibility is to use _UC for unsigned char.
-#endif
+// Best solution: Make all strings default utf8 encoded without special handling.
+// and u8"string" being used.
+
+// C++17 compliant alternative:
+// template  <typename Ty>
+// using can_create_string_from = std::is_convertible<Ty,std::string>;
+// template  <typename Ty>
+// using can_create_wstring_from = std::is_convertible<Ty,std::wstring>;
+// used via
+// can_create_string_from<Ty>::value
+
+template <typename Ty>
+concept can_create_string_from = requires(Ty t1) {
+    static_cast<std::string>(t1);
+};
+
+template <typename Ty>
+concept can_create_wstring_from = requires(Ty t1) {
+    static_cast<std::wstring>(t1);
+};
+
+// std::convertible_to means implicitly convertible to
+// "can be implicitly and explicitly converted to the type To"
+
+template <typename Ty>
+concept has_bound_toString = requires(Ty t1) {
+  { t1.toString() } -> std::convertible_to<std::string>;
+};
+template <typename Ty>
+concept has_free_toString = requires(Ty t1) {
+  { toString(t1) } -> std::convertible_to<std::string>;
+};
+template <typename Ty>
+concept has_toString = has_bound_toString<Ty> || has_free_toString<Ty>;
+
+struct S_test_toString {
+  int32_t mem;
+  std::string toString() { return std::to_string(mem); }
+};
+struct S_test_free_toString {
+  int32_t mem;
+};
+static std::string toString(S_test_free_toString sfree) { return std::to_string(sfree.mem); }
+struct S_test_none_toString {
+  int32_t mem;
+};
+
+static_assert(has_toString<S_test_toString>, "S_test_toString has no toString");
+static_assert(has_bound_toString<S_test_toString>, "S_test_toString has no bound toString");
+static_assert(!has_free_toString<S_test_toString>, "S_test_toString has free toString");
+static_assert(has_free_toString<S_test_free_toString>, "S_test_free_toString has no free toString");
+static_assert(has_toString<S_test_free_toString>, "S_test_free_toString has no toString");
+static_assert(!has_free_toString<S_test_none_toString>, "S_test_none_toString has free toString");
+static_assert(!has_bound_toString<S_test_none_toString>, "S_test_none_toString has free toString");
+static_assert(!has_toString<S_test_none_toString>, "S_test_none_toString has free toString");
+
+struct S_referenceMethods {
+  void referenceMethods() {
+    S_test_free_toString sfree = { 1 };
+    std::string str1 = toString(sfree);
+    (void)str1;
+  }
+};
+
+// same as https://mariusbancila.ro/blog/2022/06/20/requires-expressions-and-requires-clauses-in-cpp20/
+// has_ostream matches free ostream
+// Note that bound ostream does not work due to implicit this pointer being
+// unavailable.
+template <typename Ty>
+concept has_ostream = requires(Ty t1, std::ostream& os) {
+   { os << t1 } -> std::same_as<std::ostream&>;
+};
+
+// concept <=> constexpr bool
+template <typename Ty>
+constexpr bool has_ostream_altname = requires(Ty t1, std::ostream& os) {
+   { os << t1 } -> std::same_as<std::ostream&>;
+};
+struct S_test_bound_ostream {
+  int32_t mem;
+  // You can not do it as a member function, because the implicit this parameter is the left hand side of the <<-operator.
+  // SHENNANIGAN clangd does not complain about this function:
+  std::ostream& operator << (std::ostream& ostr) {
+    ostr << std::to_string(mem);
+    return ostr;
+  }
+};
+struct S_test_free_ostream {
+  int32_t mem;
+};
+static std::ostream& operator << (std::ostream& ostr, const S_test_free_ostream & SFree_ostream) {
+  ostr << std::to_string(SFree_ostream.mem);
+  return ostr;
+}
+
+void test_ostream();
+void test_ostream() {
+  S_test_bound_ostream sbound_ostream1 = { 1 };
+  std::stringstream ss1;
+  (void)sbound_ostream1;
+  (void)ss1;
+  // SHENNANIGAN: The ostream of sbound_ostream1 is unusable due to implicit this
+  // ss1 << sbound_ostream1;
+  // std::cout << ss1.str();
+
+  S_test_free_ostream sfree_ostream2 = { 1 };
+  std::stringstream ss2;
+  ss2 << sfree_ostream2;
+  (void)ss2;
+}
+
+static_assert(!has_ostream<S_test_bound_ostream>, "S_test_bound_ostream has a usable ostream");
+static_assert(has_ostream<S_test_free_ostream>, "S_test_free_ostream has no ostream");
+
+
+#ifdef _WIN32
+inline std::string ConvertWideToUtf8(const std::wstring& wstr) {
+    int count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int32_t>(wstr.length()), nullptr, 0, nullptr, nullptr);
+    if (count <= 0) return "";
+    std::string str(static_cast<size_t>(count), 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, nullptr, nullptr);
+    return str;
+}
+inline std::wstring ConvertUtf8ToWide(const std::string& str) {
+    int count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), nullptr, 0);
+    if (count <= 0) return L"";
+    std::wstring wstr(static_cast<size_t>(count), 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
+    return wstr;
+}
+#endif // _WIN32
+
+struct ValRefStr {
+  std::string val;
+  std::string ref;
+};
+template <class Ty1, class Ty2>
+static constexpr ValRefStr ConvertToString(const Ty1& value, const Ty2& reference) {
+  // 1 enum
+  // 2 integral types (integers)
+  // 3 float types
+  // 4 can_create_string_from (char*, std::string, with and without refs et)
+  // * create copy
+  // 5 can_create_wstring_from (wchar_t*, std::wstring, with and without refs et)
+  // * create tmp copy and convert it to std::string
+  // 6 composite types with custom string formatter: toString
+  if constexpr (std::is_enum_v<Ty1>) {
+    static_assert(std::is_same_v<Ty1, Ty2>);
+    // FIXME: check if
+    // 1. bound fn exists value.toString()
+    // 2. free fn exists toString(value);
+    // 3. if bound stream operator exists std::ofstream& operator << (std::ofstream & op);
+    // 4. free stream operator exists with additional arg Ty1 value
+    // if constexpr (std::is_invocable_v<decltype<&value.toString(), toString&, value>) {
+    //
+    // }
+    // Problem with invocable is that scope must be known, so its not usable to argue
+    // on "hasDecl" inside given type scope or in global scope
+    // invocable only guards correct arguments, but the symbol must exist in scope
+    // https://www.cppstories.com/2021/concepts-callables/
+    // https://stackoverflow.com/questions/61260441/stdis-invocable-checking-for-member-function
+    // https://stackoverflow.com/questions/67343673/c20-stdinvocable-syntax
+    // one nice side effect is however to condition pure fns via regular invocable,
+    // see https://johnfarrier.com/breaking-down-c20-callable-concepts/
+    using Ty1_underlyingTy = typename std::underlying_type_t<Ty1>;
+    auto val_casted = static_cast<Ty1_underlyingTy>(value);
+    auto ref_casted = static_cast<Ty1_underlyingTy>(reference);
+    return { std::to_string(val_casted), std::to_string(ref_casted) };
+  } else if constexpr (std::is_integral_v<Ty1>) {
+    static_assert(std::is_integral_v<Ty2>);
+    return { std::to_string(value), std::to_string(reference) };
+  } else if constexpr (std::is_floating_point_v<Ty2>) {
+    static_assert(std::is_floating_point_v<Ty2>);
+    return { std::to_string(value), std::to_string(reference) };
+  } else if constexpr (can_create_string_from<Ty1>) {
+    static_assert(can_create_string_from<Ty2>);
+    return { std::string(value), std::string(reference) };
+  }
+#ifdef _WIN32
+  else if constexpr (can_create_wstring_from<Ty1>) {
+    static_assert(can_create_wstring_from<Ty2>);
+    // convert wstring -> string for utf8 encoded output
+    return { ConvertWideToUtf8(std::wstring(value))
+      , ConvertWideToUtf8(std::wstring(reference))
+    };
+  }
+#endif // WIN32
+  else {
+    return { value.toString(), reference.toString() };
+  }
+}
+
+void test_ConvertToString();
+void test_ConvertToString() {
+  std::string s1 = "s1";
+  std::string s2 = "s2";
+  ValRefStr vals_refstr = ConvertToString(s1, s2);
+  (void)vals_refstr;
+}
+#endif // HAS_CPP20
 
 // SHENNANIGAN MSVC C++20 freaks out on std::is_pod
 // replace with std::is_standard_layout and/or std::is_trivial
@@ -2105,9 +2302,6 @@ char const* operator""_SC(const char8_t* str, std::size_t) {
 //  typedef std::underlying_type<_Type>::type _UnderlyingType;
 //  _UnderlyingType UnderlResult = static_cast<_UnderlyingType>(Result);
 // }
-
-// TODO template crime with decltype and declval not inferring identical result locations
-// for identical invocations for multiple levels of nesting etc
 
 // A change is therefore required which does not match the C semantics,
 // and C would then need to be updated to match.
@@ -2206,7 +2400,9 @@ void use_is_stl_container() {
 }
 #endif
 
-// TODO explain decltype declval SHENNANIGAN of editors with minimal example
+// SHENNANIGAN decltype declval over multiple templates requires to query the
+// public type of a child via using, because C++ is unable to infer the type
+// from given types.
 
 // keyword friend means
 // 1. static
@@ -2214,7 +2410,9 @@ void use_is_stl_container() {
 
 // Improving readability of templates via concepts
 #ifdef HAS_CPP20
-// SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc
+// SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc.
+// Do not nest concepts to prevent breaking of concept composition rules
+// (see co_is_not_integral and addition_nonintegral2).
 template <typename T1>
 concept c_is_integral = std::is_integral_v<T1>;
 template <typename T1>
@@ -2283,11 +2481,32 @@ struct use_CustomComparator { // also known as predicate
 // SHENNANIGAN MSVC < C++20 is ok with static cast to class with virtual method, but C++20
 // (correctly) requires the absence to choose the correct method.
 
-// SHENNANIGAN C++20 will choose incorrect function due to
+// SHENNANIGAN: C++20 uses move to do in-place construction on push_back, if possible,
+// in contrast to C++11 emplace()
+// Hence, C++20 may choose incorrect function due to
 // eliding copies, when given
 // fnname(Ty*& var) and fnname(Ty*&& var)
 // instead of correct
 // fnname(Ty* const& var) and fnname(Ty* && var)
 // and inside having to use push_back of the var.
+
+// Tradeoff
+// writing binary data to stream only possible via ostream::write() or ostream::put()
+
+// SHENNANIGAN implicit type conversion priority
+// - char16_t may be used as const char *
+//   even if another constructor is available and would match
+// => logic something along
+//   1. c and literal types
+//   2. explicit matching types
+//   3. template types before C++20 lazy (what fits for ex. type) after
+//      eager (all must fit for ex. type)
+//   4. implicit coercion types (ambiguous selection)
+// EXCEPT if user-provided function given (conflict or no conflict)
+
+// SHENNANIGAN iostream bad, successor not finished
+// * C++26 users should use std::print for formatting
+// * successor https://github.com/ned14/llfio
+// * https://www.reddit.com/r/cpp/comments/g187t6/current_iostream_status_in_c/
 
 int main() { return 0; } // minimal stub

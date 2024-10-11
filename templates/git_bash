@@ -1,2 +1,5 @@
 git bash on windows
 https://www.ii.com/git-bash-is-my-preferred-windows-shell/
+
+file -i filepath
+iconv -f FROM -t TO filepath

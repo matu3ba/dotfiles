@@ -309,6 +309,7 @@ test "perf array assignment" {
 // SHENNANIGAN
 // Parameter Reference Optimization
 // examples from @SpexGuy's talk
+// https://www.youtube.com/watch?v=dEIsJPpCZYg
 
 const BigStruct = struct {
     vals: [4]u128,
