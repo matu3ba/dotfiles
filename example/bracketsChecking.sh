@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# examples/bracketsChecking.sh
 #finding #.h, #.cc #.tpp in src, include of git root folder
 #counting brackets in file and after simple parsing giving according warnings
 #reqirements: cpp(C PreProcessor) git coreutils (find, grep,fgrep, wc) somewhat compatible shell

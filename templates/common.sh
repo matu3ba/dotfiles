@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# Posix examples largely compliant with bash shell.
+
 set -e
 CWD=$(pwd)
 trap "cd ${CWD}" EXIT HUP INT QUIT TERM
@@ -168,3 +170,15 @@ stopwatch() {
 
 # Get symbol information via
 # type symbol
+
+# SHENNANIGAN Shells other than powershell have no static and dynamic checks
+# for types So one has to do regex pattern matching at runtime for type checks
+# or hope that runtime type information are correct.
+
+# assume: $1 is given
+is_integer() {
+  case $1 in
+      ''|*[!0-9]*) echo 1 ;;
+      *) echo 0 ;;
+  esac
+}
