@@ -10,6 +10,19 @@ M.isRemoteSession = function()
 end
 -- let g:remoteSession = ($STY == "")
 
+-- taken from gitsigns
+-- local jit_os --- @type string
+-- if jit then
+--   jit_os = jit.os:lower()
+-- end
+-- local is_unix = false
+-- if jit_os then
+--   is_unix = jit_os == 'linux' or jit_os == 'osx' or jit_os == 'bsd'
+-- else
+--   local binfmt = package.cpath:match('%p[\\|/]?%p(%a+)')
+--   is_unix = binfmt ~= 'dll'
+-- end
+
 M.isWSL = function() return vim.fn.has 'wsl' == 1 end
 
 -- Taken from cseickel on reddit.

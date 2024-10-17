@@ -1,0 +1,6 @@
+Comparing GPUs
+
+* staring at generated code by mesa
+* roofline models
+  + used to compare throughput of GPUs in % of optimal throughput as simple heuristic
+  + idea: good bench suite

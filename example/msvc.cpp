@@ -80,6 +80,18 @@
 // * UTF16 LE BOM files with strings -> UTF8 files
 // * latin(ISO-8859-1)/WINDOWS-1252 files with strings -> UTF8 files
 
+// SHENNANIGAN git diff shows no difference, when the BOM was locally removed, because
+// it sees UTF-8 LE BOM as redundant to its internal utf8 storage.
+// However, msvc thinks differently and may choose other encodings than UTF-8
+
+// SHENNANIGAN execution with recompilation will save local file and reencode it,
+// if the file is opened in tab, even though no change in VS2022 editor has
+// happened.
+// Probably the timepoint and file content of file in opened tab nis cached,
+// so cache mismatches lead to automatic reencoding.
+// Hence, external changes must be done with closed file and reopen it,
+// if VS2022 would reencode the file and msvc incorrectly interpret it.
+
 // https://pspdfkit.com/blog/2021/string-literals-character-encodings-and-multiplatform-cpp/
 // https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170
 // https://learn.microsoft.com/en-us/windows/win32/Intl/code-page-identifiers

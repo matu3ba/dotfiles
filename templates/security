@@ -188,3 +188,9 @@ Incomplete list of intrusion prevention and detection:
 https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
 * with soldering a fire lighter is sufficient to get root
 * unclear how ECC affects this
+
+====encryption
+* authentication/trust usability only given with
+  + SCRAM (only protects you for the 2nd-nth connections, the password still needs to be provided the first time)
+  + main alternative is to use an out of band channel to communicate trust, for example
+    OTP with ideally OCRA or TOTP or HOTP or something given by humans

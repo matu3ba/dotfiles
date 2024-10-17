@@ -1,0 +1,5 @@
+https://github.com/hugsy/defcon_27_windbg_workshop
+https://github.com/hugsy/defcon_27_windbg_workshop/blob/main/windbg_cheatsheet.md
+TODO
+* use this including how to figure out symbol hidden by indirection and in stack
+* reproduce problem with minimal programs

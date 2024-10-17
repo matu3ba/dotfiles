@@ -236,6 +236,9 @@ Trace Back Forwards    t-  t
 Go Back Forwards       g-  g
 windbg -srcpath SourcePath
 ====windbg_intro
+best cheat sheet
+https://github.com/hugsy/defcon_27_windbg_workshop/blob/main/windbg_cheatsheet.md
+
 https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg--kernel-mode-
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/k--kb--kc--kd--kp--kp--kv--display-stack-backtrace-
 https://gist.github.com/nickfloyd/a332462f85ac32372c74
@@ -272,6 +275,9 @@ g
 Controls
 .lines            enable source line information
 bp binname!main   set initial breakpoint
+  Newer versions also support bp main
+  This may fail, if symbol is incorrectly scoped, needed may be scope::fn_name
+lm                list modules for bp usage (module!fn_name for non-executables)
 l+t               stepping will be done by source line
 l+s               source lines will be displayed at prompt
 g                 run program until "main" is entered

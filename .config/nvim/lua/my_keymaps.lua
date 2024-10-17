@@ -23,7 +23,7 @@ local opts = {} -- default opts
 -- map('n', '<a-cr>', [[<cmd>lua print('alt+enter')<cr>]], {noremap = true}) -- Alt+Enter -- works
 -- Workaround: https://neovim.discourse.group/t/how-can-i-map-ctrl-shift-f5-ctrl-shift-b-ctrl-and-alt-enter/2133/2
 
--- fast save,quit: ZZ, ZQ
+-- fast save,quit: ZZ, ZQ, better use leader+qq, leader+q!
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
@@ -118,11 +118,12 @@ map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected r
 -- '>+1<CR>gv=gv'  move text selection up with correct indent
 -- '<-2<CR>gv=gv'  move text selection down with correct indent
 
-map('n', 'J', 'mzJ`z', opts) -- J(join) with cursor remaining at same place
--- special J(join) with removing space after joined line
-map('n', '<leader>J', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
-map('v', '<leader>J', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
-map('n', 'B', 'i<CR><ESC>', opts) -- J(join) B(BackJoin): move text after cursor to next line
+-- J(join) with cursor remaining at same place (without spaces)
+map('n', 'J', 'mzJ`z', opts)
+map('n', 'gJ', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
+map('v', 'gJ', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
+-- special back J(join): a1 xa2 -> a1\na2 (x cursor), TODO dot-repeatable
+map('n', '<leader>J', 'mzi<CR><ESC>`zxB', opts)
 map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 -- idea parse current line until no ending \ inside register instead of blindly executing
 --map('n', '<leader>e', [[:exe getline(line('.'))<CR>]], opts) -- Run the current line as if it were a command
@@ -131,9 +132,11 @@ map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 --nnoremap <leader>e :exe getline(line('.'))<cr> -- Run the current line as if it were a command
 -- idea come up with something to select whole word under cursor, ie this.is.a.word(thisnot)
 
+-- better alternatives to ZZ and ZQ
 map('n', '<leader>qq', '<cmd>q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', '<cmd>q!<CR>', opts) -- faster, but no accidental quit
-map('n', '<leader>qb', '<cmd>bd<CR>', opts) -- faster delete buffer
+map('n', '<leader>bd', '<cmd>bd<CR>', opts) -- faster delete buffer
+map('n', '<leader>bq', '<cmd>bd!<CR>', opts) -- faster delete force buffer
 map('n', '<leader>qw', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
 map('n', '<leader>qh', '<cmd>wincmd h<CR><cmd>q<CR>', { desc = ':close left' })
 map('n', '<leader>qj', '<cmd>wincmd j<CR><cmd>q<CR>', { desc = ':close down' })
@@ -270,10 +273,10 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- visual mode regular
 -- window navigation: <C-w>[+|-|<|>|"|=|s|v|r| and _| height,width,height,width,equalise,split,swap max size horizontal/vertical
 -- view movements up+down: z+b|z|t, <C>+y|e (one line), ud (halfpage), bf (page, cursor to last line)
+-- view movements left+right: z+e|s(full page), h|l(1char), H|L|M(halfpage down,up,mid),
 -- move screen: C-[y|e|u|d|b|f] updown one line, updown1/2scrren, uppagelastline,downpagefirstline
 -- move screen opts: :h scrollbind, scrollback :set scb, :set noscb
 -- more aracane: z+,z-,z. like zt,zb,zz
--- view movements left+right: z+es(full page), hl(1char), HLM(halfpage down,up,mid),
 -- vim-surround: ds|cs|ys,yS etc is conflicting
 -- +/n/* goto beginning of next line/next instance of search/next instance of word under cursor
 -- C-t jumps back to the beginning of file entering from goto definition
@@ -282,9 +285,25 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- :g for actions on regex match
 -- /regex/n nth line below/above match, d/regex//0 to delete to first line matching regex incl line
 -- regex matches: \r for newline and \n for null character, except in search lol
--- K for move text to next line
 -- C-r C-w insert word under cursor
 -- ":, @: reruns last command :"p would print it to the buffer, :! for output
+-- cursor movements for word 0|ge|b|e|w|$ or WORDS gE|B|E|W (:h word|WORD)
+-- change to insertion mode + move a/A,i/I,o/O : ->/->line,no_move/<-line,v/^
+-- replace c,C,s/S: position->selection/position->eol, char/line
+-- add line below/above B/unmapped
+-- inlay editing R
+-- undo last change on line and toggle U
+
+-- selections
+-- * always starting from cursor position unless block mode (even if start not visible)
+-- * can be combined with selection, deletion, copying
+-- select count|inner words  (aw|aW)|(iw|iW)
+-- a (inner) sentence as|is
+-- a (inner) paragraph ap|ip
+-- a (inner) block (a[|])|(i[|]) and same for () and <> brackets
+-- a (inner) tag block at|it
+-- a (inner) block (a{|}|aB)|(i{|}|iB)
+-- a quoted string (a"|a'|a`)|(i"|i'|i`)
 
 -- insertion mode
 -- C-w delete last word, C-u delete until start of line

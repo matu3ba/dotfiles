@@ -5,6 +5,17 @@
 local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then vim.print 'Please install plenary for all features.' end
 
+--TODO steal commands to run find into quickfix list from
+--https://github.com/tpope/vim-eunuch
+-- TODO make fn for :!mkdir -p %:h
+-- TODO nvim +':w ++p' /path/to/file
+
+-- TODO
+-- * lua code to get selection
+-- * :Frel to copy selected path as relative path trimming file ending,
+-- if needed
+-- * vice versa as absolute path
+
 --==Globals
 local api = vim.api
 local utils = require 'my_utils'
