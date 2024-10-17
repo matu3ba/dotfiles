@@ -90,6 +90,7 @@ https://danluu.com/new-cpu-features/
   * >14_000 cycles, 40+ TLB evictions (of 64-entry TLB)
   * use io buffers + batching (io_uring etc or kernel mapped memory (vDSO))
 * SIMD for executing instruction on 128,256,512 bit data at once
+  * nice overview on alignment performance https://developer.ibm.com/articles/pa-dalign/
 * power management as race to idle, but microoptimizations often dont generalize
 * GPU
   * no branch prediction and no large caches, lower clock speed
@@ -113,7 +114,15 @@ https://danluu.com/new-cpu-features/
   * Hardware accelerators
   * Dark silicon for dedicated tasks
 
+
 100pm = 1Anstrom, Silicon van der Vaals radius is 200pm. So 2nm are something
 in between 10-20 atoms thick depending on configuration etc. Are there data
 points that can be extrapolated on knowledge/problem solving of quantum
 effects?
+
+#### Segmentation
+CPU feature for sub-page access granularity
+TODO go through and test guide https://nixhacker.com/segmentation-in-intel-64-bit/
+
+#### file_sytems
+TODO wait for it https://blog.jandroegehoff.de/

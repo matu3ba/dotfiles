@@ -56,7 +56,10 @@ return {
     -- { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
     -- { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
     -- Optional
-    { 'williamboman/mason.nvim', build = function() pcall(vim.cmd, 'MasonUpdate') end },
+    {
+      'williamboman/mason.nvim',
+      build = function() pcall(vim.cmd, 'MasonUpdate') end,
+    },
     -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
     { 'hrsh7th/cmp-buffer' },
     { 'hrsh7th/cmp-nvim-lua' },
@@ -72,7 +75,10 @@ return {
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
-  { 'tamton-aquib/keys.nvim', config = function() require('keys').setup {} end }, -- :KeysToggle
+  {
+    'tamton-aquib/keys.nvim',
+    config = function() require('keys').setup {} end,
+  }, -- :KeysToggle
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
@@ -261,7 +267,10 @@ return {
   }, -- :Telescope builtin.keymaps
 
   -- markdown live preview via :Glow[!] [path]
-  { 'ellisonleao/glow.nvim', config = function() require('glow').setup() end },
+  {
+    'ellisonleao/glow.nvim',
+    config = function() require('glow').setup() end,
+  },
   -- jupyter and markdown live preview, idea
   -- https://github.com/kiyoon/jupynium.nvim
   -- https://github.com/tamton-aquib/neorg-jupyter

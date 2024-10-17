@@ -38,8 +38,9 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 //====version
 //====lto
 //====pointers
-//====signaling on Posix
-//====signaling on Windows
+//====signaling_unix
+//====signaling_win
+//====printf_formatter
 
 //====tooling
 // cerberus
@@ -1049,7 +1050,7 @@ int FG_Init(char * errmsg_ptr, int * errmsg_len) {
 // https://stackoverflow.com/questions/3839922/aligned-malloc-in-gcc
 // _mm_alloc, _mm_free
 
-//====signaling on Windows
+//====signaling_win
 // TODO better writeup than this
 // 3 signal types:
 // * APC like IO completion ports which are just things to communicate
@@ -1135,6 +1136,19 @@ void veh_example(void) {
 }
 #endif
 
+//====printf_formatter
+// * use clangd for quick non-portable advice
+// * %[parameter][flags][width][.precision][length]type
+// * printf("%" PRI(d|i)BITWIDTH, var); // signed integers
+// * printf("%" PRI(u)BITWIDTH, var); // unsigned integers
+// * printf("%" PRI(x|X)BITWIDTH, var); // hex values (lower|upper) case
+// * float double upcasted to double before being printed
+//   with specifiers (%a, %e, %f, %g) HEXa, exponent, float, g-special values
+// * printf("%z(u|i|d|x)\n", sizeof(int64_t));
+// * printf("%+" PRId64 "\n", INT64_MIN);
+// * printf("%+" PRIi64 "\n", INT64_MIN);
+// * printf("%+" PRIu64 "\n", UINT64_MAX);
+
 // based on https://www.codeproject.com/articles/207464/exception-handling-in-visual-cplusplus
 // without the wrong information:
 // * VEHs are process global installed, but thread local executed
@@ -1188,7 +1202,7 @@ void getFullPathNameUsage(void) {
 
 #endif
 
-//====signaling on Posix
+//====signaling_unix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
 
 // https://maskray.me/blog/2024-05-12-exploring-gnu-extensions-in-linux-kernel

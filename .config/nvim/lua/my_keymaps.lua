@@ -23,7 +23,7 @@ local opts = {} -- default opts
 -- map('n', '<a-cr>', [[<cmd>lua print('alt+enter')<cr>]], {noremap = true}) -- Alt+Enter -- works
 -- Workaround: https://neovim.discourse.group/t/how-can-i-map-ctrl-shift-f5-ctrl-shift-b-ctrl-and-alt-enter/2133/2
 
--- fast save,quit: ZZ, ZQ, better use leader+qq, leader+q!
+-- better_alternatives_to_ZZ_and_ZQ worse fast save,quit: ZZ, ZQ
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
@@ -118,13 +118,16 @@ map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected r
 -- '>+1<CR>gv=gv'  move text selection up with correct indent
 -- '<-2<CR>gv=gv'  move text selection down with correct indent
 
--- J(join) with cursor remaining at same place (without spaces)
+-- J(join) with cursor remaining at same place (without spaces) and g-special Join
+-- Direct undo without cursor movements broken for unknown reasons, so use
+-- simpler workign version instead of 'hmzlxi<CR><ESC>`zxBh'
+-- idea: dot-repeatable and in-place redo and undo
 map('n', 'J', 'mzJ`z', opts)
+map('n', '<leader>J', 'mzi<CR><ESC>`zxB', opts)
 map('n', 'gJ', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
 map('v', 'gJ', [[<cmd>lua require("my_utils").joinRemoveBlank()<CR>]], opts)
--- special back J(join): a1 xa2 -> a1\na2 (x cursor), TODO dot-repeatable
-map('n', '<leader>J', 'mzi<CR><ESC>`zxB', opts)
 map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
+
 -- idea parse current line until no ending \ inside register instead of blindly executing
 --map('n', '<leader>e', [[:exe getline(line('.'))<CR>]], opts) -- Run the current line as if it were a command
 --nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
@@ -132,11 +135,11 @@ map('i', '<C-c>', '<ESC>', opts) -- vertical mode copy past should just work
 --nnoremap <leader>e :exe getline(line('.'))<cr> -- Run the current line as if it were a command
 -- idea come up with something to select whole word under cursor, ie this.is.a.word(thisnot)
 
--- better alternatives to ZZ and ZQ
+--==better_alternatives_to_ZZ_and_ZQ
 map('n', '<leader>qq', '<cmd>q<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>q!', '<cmd>q!<CR>', opts) -- faster, but no accidental quit
-map('n', '<leader>bd', '<cmd>bd<CR>', opts) -- faster delete buffer
-map('n', '<leader>bq', '<cmd>bd!<CR>', opts) -- faster delete force buffer
+map('n', '<leader>bq', '<cmd>bd<CR>', opts) -- faster delete buffer
+map('n', '<leader>b!', '<cmd>bd!<CR>', opts) -- faster delete force buffer
 map('n', '<leader>qw', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
 map('n', '<leader>qh', '<cmd>wincmd h<CR><cmd>q<CR>', { desc = ':close left' })
 map('n', '<leader>qj', '<cmd>wincmd j<CR><cmd>q<CR>', { desc = ':close down' })

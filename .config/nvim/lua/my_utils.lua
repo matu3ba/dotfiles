@@ -1,7 +1,7 @@
 --! Dependency free functions
 -- luacheck: globals vim
 -- luacheck: no max line length
--- see minimal_config
+-- see minimal_config and templates/nvim.lua
 local M = {}
 
 M.isRemoteSession = function()
@@ -311,12 +311,42 @@ M.CopyMatchingChar = function(backwards, register)
   vim.fn.setreg(register, copytext)
 end
 
+-- assume args are of output format by vim.fn.getpos (bufnum, lnum, col, off)
+-- with lnum and col being 1-indexed.
+local _is_startpos_after_endpos = function(start_pos, end_pos)
+  -- Is start_pos on line below end_pos?
+  if start_pos[2] > end_pos[2] then return true end
+  -- Is start_pos and end_pos on same line and start_pos in later col?
+  if start_pos[2] == end_pos[2] and start_pos[3] > end_pos[3] then return true end
+  -- otherwise
+  return false
+end
+
+-- returns start_(line,col), end_(line,col) each 1,0 index
+-- if selection was from visual line mode, then end_col == vim.v.maxcol
+-- block and visual mode are not distinguishable
+M.getSelectionForCmd = function() return { vim.api.nvim_buf_get_mark(0, '<'), vim.api.nvim_buf_get_mark(0, '>') } end
+-- {vstart,end} with each being {bufnum, lnum, col, off}
+M.getSelectionForKeys = function()
+  local vstart = vim.fn.getpos 'v' -- bufnum, lnum, col, off
+  local vend = vim.fn.getpos '.'
+  if _is_startpos_after_endpos(vstart, vend) then
+    vstart, vend = vend, vstart
+  end
+  return { vstart, vend }
+end
+
 -- Keep cursor and join next line without empty space, if existing
 M.joinRemoveBlank = function()
   -- SHENNANIGAN: '<', '>' still advertised as cursor positions, but its only extmarks
-  -- cursor positions are 'v' for first and '.' for last selectio positions
-  local vstart = vim.fn.getpos 'v' -- bufnum, lnum, col, off
-  local vend = vim.fn.getpos '.'
+  -- cursor positions are 'v' for first and '.' for last selection positions
+  -- bufnum, lnum, col, off
+  -- SHENNANIGAN: getpos has 1-indexed columns vs nvim_win_set_cursor 0-indexed
+  local vstart, vend = unpack(M.getSelectionForKeys())
+  if vstart == nil or vend == nil then
+    vim.print(vstart, vend)
+    return
+  end
   if vstart[2] == vend[2] then
     local line_content = vim.api.nvim_get_current_line()
     local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
@@ -336,8 +366,8 @@ M.joinRemoveBlank = function()
       line_content[1] = line_content[1] .. nextlines[i]
     end
     vim.api.nvim_buf_set_lines(0, vstart[2] - 1, vstart[2], true, { line_content[1] })
-    vim.api.nvim_win_set_cursor(vstart[1], { vstart[2], vstart[3] })
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<ESC>', true, false, true), 'x', false)
+    vim.api.nvim_win_set_cursor(vstart[1], { vstart[2], vstart[3] - 1 })
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<ESC>', true, false, true), 'n', false)
   end
 end
 
@@ -395,7 +425,7 @@ local lut_reg_to_index = {
 -- translates register to index, returns nil without match
 M.registerToIndex = function(register) return lut_reg_to_index[register] end
 
--- SHENNANIGAN no vim/neovim docs on how multple newlines should be serialized and i
+-- SHENNANIGAN no vim/neovim docs on how multple newlines should be serialized and
 -- deserialized to be visualized on 1 line.
 
 -- Parse buffer to registers, filepath format:

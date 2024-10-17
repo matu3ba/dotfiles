@@ -6,7 +6,15 @@ local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then vim.print 'Please install plenary for all features.' end
 
 --TODO steal commands to run find into quickfix list from
---https://github.com/tpope/vim-eunuch
+--vim.fn.setloclist(winnr, {}, ' ', { items = items })
+--vim.fn.setqflist({}, " ", {nr = "$", items = entries})
+--open qf/ll :copen|close,lopen|lclose (cope|ccl,lop|lcl) + height for open cmds
+--open qf/ll if errors exist: cw|lw[indow], async filling needs cbo|lbo
+--(c/l)ex[pr]! expr - create (q/l)l from expr + jump to first error
+--cad[dbuffer]|laddb[uffer] add errors to (q/l)list
+--(c/l)gete[xpr] expr - same as (c/l)ex[pr], but without jumping
+-- TODO document :cdo etc
+
 -- TODO make fn for :!mkdir -p %:h
 -- TODO nvim +':w ++p' /path/to/file
 
