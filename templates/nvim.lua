@@ -8,6 +8,12 @@ local M = {}
 -- SHENNANIGAN: getpos has 1-indexed columns vs nvim_win_set_cursor 0-indexed
 -- SHENNANIGAN no vim/neovim docs on how multple newlines should be serialized and
 -- deserialized to be visualized on 1 line.
+-- SHENNANIGAN Window system installation tries to use system location for language files,
+-- for which download fails due to missing write permissions.
+
+-- SHENNANIGAN copying in hex 22ef bfbd 22 (from latin encoding of degree via
+-- <degree>) breaks due to control character execution at least
+
 
 -- https://github.com/neovim/neovim/pull/30261/files
 

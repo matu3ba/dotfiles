@@ -1,7 +1,8 @@
 static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
 // clang++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
-// ..
+// clang++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
+// clang++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
 // clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
 
 // Alternative is to always default to using default in switch case (MISRA C),
@@ -2503,6 +2504,15 @@ struct use_CustomComparator { // also known as predicate
 //      eager (all must fit for ex. type)
 //   4. implicit coercion types (ambiguous selection)
 // EXCEPT if user-provided function given (conflict or no conflict)
+
+#ifdef HAS_CPP23
+// #include <numeric>
+// add_sat/sub_sat/mul_sat/div_sat/saturate_cast
+// SHENNANIGAN no consistent add_wrap/sub_wrap/mul_wrap/div_wrap/wraparound_cast
+// Must use instead C23 ckd_mul(&res_mul, a, b))
+// to stay portable.
+#endif
+
 
 // SHENNANIGAN iostream bad, successor not finished
 // * C++26 users should use std::print for formatting

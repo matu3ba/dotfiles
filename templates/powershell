@@ -59,8 +59,6 @@ or Get-Variable
 or visually more pleasing with: $env:path.Split(";")
 or even nicer: (Get-ChildItem Env:PATH).Value.Split(';') | Sort
 
-where pendant: Get-Command
-
 Tweak setting:
 Get-ExecutionPolicy -List
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine
@@ -243,70 +241,10 @@ if ( $value -like 'S-*-SQL??')
 #   () subexpression, \ escape next character
 # $value -is/-isnot [string]
 
-====access_control
-icacls is chmod and chown together.
-Permissions:
-  Full access (F)
-  Modify access (M) (includes ‘delete’)
-  Read and execute access (RX)
-  Read-only access (R)
-  Write-only access (W)
-icacls .\fileBackup.ps1
-icacls .\fileBackup.ps1 /grant group\user:RX /t /c
-/t for tree (recursive), /c to continue on error
-
-exceptional cases only: icacls Download /deny group\user:(OI)(CI)F /t /c
-reset: icacls Download /reset /t /c
-icacls Download /save Download_ACL_backup /t
-icacls Download /restore Download_ACL_backup /t
-icacls AdminOnly /setintegritylevel high
-icacls DisabledInheritanceDir /inheritance:d /t /c
-
-Get integrity level: whoami /groups
-A Process must have (at least) the integrity of the binary/process/file it tries
-to access or gets 'permission denied'.
-
 ====wsl_usage
 https://www.winfriedhyronimus.de/de/journal-beitraege/2021/05/16/rsync-unter-windows/
 https://www.winfriedhyronimus.de/de/journal-beitraege/2020/01/27/einrichtung-eines-ad-hoc-netzwerks-unter-windows-10/
 https://arunkrsoam.medium.com/how-to-use-rsync-on-windows-using-ssh-connection-835190e72ae0
 
-idea clock in powershell
+idea clock + calendar in powershell
 should be in powershell config
-
-====advanced
-
-https://stackoverflow.com/questions/74147128/how-do-i-send-keys-to-an-active-window-in-powershell
-$ps = Start-Process -PassThru -FilePath "C:\Program Files\VMware\VMware Horizon View Client\vmware-view.exe" -WindowStyle Normal
-$wshell = New-Object -ComObject wscript.shell
-
-# Wait until activating the target process succeeds.
-# Note: You may want to implement a timeout here.
-while (-not $wshell.AppActivate($ps.Id)) {
-  Start-Sleep -MilliSeconds 200
-}
-$wshell.SendKeys('~')
-Sleep 3
-$wshell.SendKeys('username')
-Sleep 2
-$wshell.SendKeys('{TAB}')
-Sleep 1
-$wshell.SendKeys('password')
-Stop-Process -Id $ps.Id
-
-function Switch-Item {
-  param ([switch]$on)
-  if ($on) { "Switch on" }
-  else { "Switch off" }
-}
-
-systeminfo |find "Available Physical Memory"
-Measure time (without memory): Measure-Command
-
-# https://stackoverflow.com/questions/8609204/union-and-intersection-in-powershell
-$a = (1,2,3,4)
-$b = (1,3,4,5)
-# union
-Compare-Object $a $b -PassThru -IncludeEqual
-# intersection
-Compare-Object $a $b -PassThru -IncludeEqual -ExcludeDifferent

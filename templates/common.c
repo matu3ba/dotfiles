@@ -3,15 +3,26 @@
 #endif
 // Tested with
 // clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
-// ..
-// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
+// clang -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat .\templates\common.c
+// clang -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat .\templates\common.c
+// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat .\templates\common.c
 #include <assert.h>
 
+// TODO list
+// GNU function attributes and storage class information
+// function attributes
+// C99
+// * TODO ..
+// C23
+// * [[deprecated]]
+// * [[fallthrough]]
+// * [[maybe_unused]]
+// * [[nodiscard]]
+// * [[noreturn]]
+// * [[reproducible]]
+// * [[unsequenced]]
 #if (__STDC_VERSION__ >= 199901L)
 #define HAS_C99 1
-#ifndef HAS_C99
-#error "use HAS_C11 macro"
-#endif
 #endif
 #if (__STDC_VERSION__ >= 201112L)
 #define HAS_C11 1
@@ -25,9 +36,15 @@ static_assert(HAS_C17, "use HAS_C17 macro");
 #define HAS_C23 1
 static_assert(HAS_C23, "use HAS_C23 macro");
 #endif
+#ifndef HAS_C99
+#error "use HAS_C11 macro"
+#endif
 
 #include <stdint.h> // uint32_t, uint8_t
 #include <stdlib.h> // exit
+#ifdef _WIN32
+#include <malloc.h> // not standard conform in stdlib.h and fn names with _ prefix
+#endif
 #include <stdio.h>  // fprintf
 #include <errno.h>  // errno
 #include <limits.h> // limit
@@ -608,29 +625,28 @@ void printf_align(void) {
 }
 
 // function pointer example from https://stackoverflow.com/questions/252748/how-can-i-use-an-array-of-function-pointers
-int sum(int a, int b);
-int sub(int a, int b);
-int mul(int a, int b);
-int div_noconflict(int a, int b);
-int sum(int a, int b) { return a + b; }
-int sub(int a, int b) { return a - b; }
-int mul(int a, int b) { return a * b; }
-int div_noconflict(int a, int b) { return (b != 0) ? a / b : 0; }
+int32_t sum(int32_t a, int32_t b);
+int32_t sub(int32_t a, int32_t b);
+int32_t mul(int32_t a, int32_t b);
+int32_t div_noconflict(int32_t a, int32_t b);
+int32_t sum(int32_t a, int32_t b) { return a + b; }
+int32_t sub(int32_t a, int32_t b) { return a - b; }
+int32_t mul(int32_t a, int32_t b) { return a * b; }
+int32_t div_noconflict(int32_t a, int32_t b) { return (b != 0) ? a / b : 0; }
 
-int main(void) {
+void use_callbacks(void);
+void use_callbacks(void) {
   // Array of function pointers initialization
-  int (*callbacks[4]) (int, int) = {sum, sub, mul, div_noconflict};
+  int32_t (*callbacks[4]) (int32_t, int32_t) = {sum, sub, mul, div_noconflict};
 
   // Using the function pointers
-  int result;
-  int i = 20, j = 5, op;
+  int32_t result;
+  int32_t i = 20, j = 5, op;
 
   for (op = 0; op < 4; op++) {
       result = callbacks[op](i, j);
-      printf("Result: %d\n", result);
+      fprintf(stdout, "Result: %d\n", result);
   }
-
-  return 0;
 }
 
 void fn_voidptr(void * raw_ptr, uint64_t len);
@@ -892,40 +908,6 @@ void safe_debugging_on_unix() {
 }
 #endif
 
-#ifdef HAS_C11
-#include <stdatomic.h>
-
-struct No_Immutable_in_C_i64 {
-  _Atomic int64_t * p1;
-  _Atomic int64_t cnt;
-};
-int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val);
-int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val);
-
-// C provides no nice way to get generics (besides C11 non C++ usable generic
-// selection), so (usually) it makes no sense to have a method 'update' being
-// usable as callback with additional type and runtime safety checks.
-// Typical C++ concepts based heavily on operators, constructors and inlined
-// templates with non-atomic operations are not automatically applicable.
-// Upside: Performance explicit, Downside: more verbose to write get/set
-// methods, no good way to use struct generically by filling fn ptr/callback for
-// additional method 'update'.
-// Omit shared_ptr methods here for brevity.
-int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val) {
-  if (obj != NULL) {
-    atomic_store(obj->p1, val);
-    return 0;
-  }
-  return 1;
-}
-int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val) {
-  if (obj != NULL) {
-    *val = atomic_load(obj->p1);
-    return 0;
-  }
-  return 1;
-}
-#endif
 
 // based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
 // TODO motivation
@@ -1219,23 +1201,6 @@ void getFullPathNameUsage(void) {
 // C23 attributes
 // TODO likely identical functionality to macro library
 
-
-// https://thephd.dev/c23-is-coming-here-is-what-is-on-the-menu
-// _Generic selection of enum
-// https://thephd.dev/_vendor/future_cxx/papers/C%20-%20Enhanced%20Enumerations.html
-// N3030 - Enhanced Enumerations
-// N3022 - Modern Bit Utilities
-//  Endian macros (__STDC_ENDIAN_BIG__, __STDC_ENDIAN_LITTLE__, __STDC_ENDIAN_NATIVE__)
-//  stdc_popcount
-//  stdc_bit_width
-//  stdc_leading_zeroes/stdc_leading_ones/stdc_trailing_zeros/stdc_trailing_ones
-//  stdc_first_leading_zero/stdc_first_leading_one/stdc_first_trailing_zero/stdc_first_trailing_one
-//  stdc_has_single_bit
-//  stdc_bit_width
-//  stdc_bit_ceil
-//  stdc_bit_floor
-// N2897 - memset_explicit
-
 struct TaggedUnion {
   union TheUnion {
     const uint64_t * u64ptr;
@@ -1277,3 +1242,205 @@ void enum_class(void) {
 
 // TODO https://github.com/gritzko/librdx/blob/master/ABC.md
 // scalable high perf code requirements
+
+#ifdef HAS_C11
+static _Thread_local uint32_t threadloc_var = 0;
+struct C11_alignment_struct {
+  uint8_t first;
+  uint32_t second;
+  uint64_t third;
+};
+// #include <stdalign.h> empty for msvc libc
+void C11_alignment_control();
+void C11_alignment_control() {
+  static_assert(_Alignof(char) == 1);
+  fprintf(stdout, "%zu\n", _Alignof(struct C11_alignment_struct));
+  _Alignas(128) _Atomic uint32_t mutex;
+  (void)mutex;
+  (void)threadloc_var;
+  // SHENNANIGAN allocation fns
+#ifdef _WIN32
+  uint8_t *ptr_aligned_mem = _aligned_malloc(1024, 1024);
+  _aligned_free(ptr_aligned_mem);
+#else
+  uint8_t *ptr_aligned_mem = aligned_alloc(1024, 1024);
+  free(ptr_aligned_mem);
+#endif
+}
+
+// #include <stdnoreturn.h> void C11_noreturn() {} deprecated
+#include <threads.h>
+void C11_threads();
+void C11_threads() {
+  // idea
+
+}
+
+#include <stdatomic.h>
+struct No_Immutable_in_C_i64 {
+  _Atomic int64_t * p1;
+  _Atomic int64_t cnt;
+};
+int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val);
+int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val);
+
+// C provides no nice way to get generics (besides C11 non C++ usable generic
+// selection), so (usually) it makes no sense to have a method 'update' being
+// usable as callback with additional type and runtime safety checks.
+// Typical C++ concepts based heavily on operators, constructors and inlined
+// templates with non-atomic operations are not automatically applicable.
+// Upside: Performance explicit, Downside: more verbose to write get/set
+// methods, no good way to use struct generically by filling fn ptr/callback for
+// additional method 'update'.
+// Omit shared_ptr methods here for brevity.
+int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val) {
+  if (obj != NULL) {
+    atomic_store(obj->p1, val);
+    return 0;
+  }
+  return 1;
+}
+int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val) {
+  if (obj != NULL) {
+    *val = atomic_load(obj->p1);
+    return 0;
+  }
+  return 1;
+}
+#endif
+
+#ifdef HAS_C17
+  // only fixed defects
+  // supports realloc with size = 0
+#endif
+
+#ifdef HAS_C23
+// breaking changes
+// * _Thread_local -> thread_local
+#if __has_include (<stdckdint.h>)
+  #include <stdckdint.h>
+#endif
+[[deprecated]] // warning on usage and clangd shows strikedthrough text
+void C23_deprecated();
+void C23_deprecated() {}
+[[nodiscard]] // warning on usage of discarded code
+int C23_discard(int x);
+int C23_discard(int x) {
+  return x + 1;
+}
+// SHENNANIGAN C23 has no macros to test target for branch-free wraparound or
+// saturation arithmetic (+|,|*)
+// SHENNANIGAN C23 has no saturation arithmetic
+void C23_wraparound_operations();
+void C23_wraparound_operations() {
+  uint64_t a = UINT64_MAX;
+  uint64_t b = UINT64_MAX;
+  uint64_t res_mul;
+  if (ckd_mul(&res_mul, a, b)) {
+    fprintf(stdout, "non-zero return: overflow");
+  } else {
+    fprintf(stdout, "no overflow");
+  }
+}
+// SHENNANIGAN C23 constexpr primarily to avoid VLAs
+// without constexpr fns
+void C23_constexpr();
+void C23_constexpr() {
+  constexpr float fvar = 23.0f;
+  constexpr int32_t ivar = 1;
+  constexpr char svar[] = "some_text";
+  fprintf(stdout, "%f%d%s\n", (double)fvar, ivar, svar);
+}
+void C23_typecoercion();
+void C23_typecoercion() {
+  auto x = 0b1111; // new binary integer constants
+  typeof(x) y = 1'000'000; // new separators
+  printf("%d\n", x); // prints 15
+  printf("%d\n", y); // prints 1000000
+}
+void C23_constexpr_to_prevent_VLA();
+void C23_constexpr_to_prevent_VLA() {
+  constexpr int32_t N = 10;
+  static_assert (N == 10);
+  bool a[N]; // array of N booleans instead of VLA
+  for (int i = 0; i < N; ++i) {
+    a[i] = true;
+  }
+  fprintf(stdout, "%d\n", a[0]);
+}
+// bool became a keyword since C17?
+// SHENNANIGAN char8_t was added instead of defaulting strings to UTF-8
+// [[noreturn]] instead of annotation
+
+enum efields : uint16_t { // best practice to specify len of enum
+    efields_x
+};
+int32_t C23_simple_generic_selection_on_enum();
+int32_t C23_simple_generic_selection_on_enum() {
+    return _Generic(efields_x, uint16_t: 0, default: 1);
+}
+enum values : uint64_t {
+	values_a = 0, // int
+  values_b = 1, // int
+	values_c = 3, // int
+	values_d = 0x1000, // int
+	values_f = 0xFFFFF, // int
+	values_g, // implicit +1, on 16-bit platform upgrades type of constant
+	values_e = values_g + 24, // current type of g - long or long long to do math and set value to e
+	values_i = ULLONG_MAX // usigned long or unsigned long long
+};
+int32_t C23_complex_generic_selection_on_enum();
+int32_t C23_complex_generic_selection_on_enum() {
+  // when enum is complete, it can select any type that it wants, so long as its
+  // big enough to represent the type
+  return _Generic(values_a, unsigned long: 1, unsigned long long: 0, default: 3);
+}
+
+#if __has_include (<stdbit.h>)
+void C23_stdbit();
+void C23_stdbit() {
+  if (__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_LITTLE__) {
+    assert(__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_LITTLE__);
+  }
+  else {
+    assert(__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_BIG__);
+  }
+  //  stdc_popcount
+  //  stdc_bit_width
+  //  stdc_leading_zeroes/stdc_leading_ones/stdc_trailing_zeros/stdc_trailing_ones
+  //  stdc_first_leading_zero/stdc_first_leading_one/stdc_first_trailing_zero/stdc_first_trailing_one
+  //  stdc_has_single_bit
+  //  stdc_bit_width
+  //  stdc_bit_ceil
+  //  stdc_bit_floor
+}
+#endif
+
+// not wokring in clang 19.1.2 using Windows libc
+// void C23_memset_explicit();
+// void C23_memset_explicit() {
+//   char mem1[100];
+//   memset_explicit(&mem1[0], 0, sizeof(mem1));
+// }
+// memset_explicit
+
+#endif
+
+// 1. flag -msse2
+//#ifdef __SSE2__
+//  #include <emmintrin.h>
+//#else
+//  #error SSE2 not supported.
+//#endif
+// 2. flag -mavx
+//#ifdef __AVX__
+//  #include <immintrin.h>
+//#else
+//  #error AVX not supported.
+//#endif
+// 3. flag -fopenmp-simd
+// Intel-portable SIMD via #include <immintrin.h>
+// Windwos SIMD via #include <intrin.h>
+// BEST: use another language offering portable SIMD via LLVM or own impl
+
+int32_t main(void) { return 0; }

@@ -1,3 +1,6 @@
+Motivation
+https://utf8everywhere.org/
+
 Detect unknown encodings based on
 https://unix.stackexchange.com/questions/304177/convert-binary-encoding-that-head-and-notepad-can-read-to-utf-8
 file -i unix_filepath
@@ -18,3 +21,6 @@ typical encodings
   + :set fileencoding
   + latin1
 iconv -f iso-8859-1 -t utf-8 /tmp/textFile  > /tmp/outtextFile
+
+idea explain C++ side + prepare for C++26
+https://dbj.org/c-convert-any-sequence-to-any-standard-string/

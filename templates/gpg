@@ -130,6 +130,12 @@ gpg --edit-key KEYID
 // following will not work, because we dont have secret master key
 addkey
 
+// fetch release keys
+download https://releases.llvm.org/release-keys.asc
+gpg --import release-keys.asc
+// verify .sig files with downloaded file llvm_release.tar.gz
+gpg --verify llvm_release.tar.gz.sig
+
 https://unix.stackexchange.com/questions/372879/import-my-ssh-key-as-gpg-sub-key-to-use-for-ssh-authentication
 
 commands taken from https://gock.net/blog/2020/gpg-cheat-sheet

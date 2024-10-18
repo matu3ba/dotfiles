@@ -1,6 +1,7 @@
 --! Plugin table used by lazy.nvim
 -- luacheck: globals vim
 -- luacheck: no max line length
+-- idea: create dynlibs and nvim API https://git.mzte.de/LordMZTE/znvim
 return {
   -- lazy local dev: ~/projects
   -- clean cache:

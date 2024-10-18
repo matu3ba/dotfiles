@@ -1,6 +1,7 @@
 local has_gitsigns, gitsigns = pcall(require, 'gitsigns')
 if not has_gitsigns then return end
-
+-- gitsigns://C:/Users/USERNAME/REPO/worktrees/WORKTREE//BRANCH_NAME_P1/BRANCH_NAME_P2:UNIX_FILE_PATH
+-- :Gitsigns diffthis BRANCH
 -- debug_mode = true
 gitsigns.setup {
   -- unchanged default settings

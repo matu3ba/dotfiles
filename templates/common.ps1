@@ -2,7 +2,9 @@
 # :PWConf windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 # :Templates templates\powershell
 #====common_paths
+#====cli
 #====file_watcher
+#====access_control
 
 # ====common_paths
 # echo $profile shows powershell configuration
@@ -36,6 +38,29 @@
 # in lua for windows file system via winapi lua bindings https://github.com/stevedonovan/winapi with https://stevedonovan.github.io/winapi/api.html#watch_for_file_changes
 # or via ETW
 # TODO
+
+#====access_control
+# icacls is chmod and chown together.
+# Permissions:
+#   Full access (F)
+#   Modify access (M) (includes ‘delete’)
+#   Read and execute access (RX)
+#   Read-only access (R)
+#   Write-only access (W)
+# icacls .\fileBackup.ps1
+# icacls .\fileBackup.ps1 /grant group\user:RX /t /c
+# /t for tree (recursive), /c to continue on error
+#
+# exceptional cases only: icacls Download /deny group\user:(OI)(CI)F /t /c
+# reset: icacls Download /reset /t /c
+# icacls Download /save Download_ACL_backup /t
+# icacls Download /restore Download_ACL_backup /t
+# icacls AdminOnly /setintegritylevel high
+# icacls DisabledInheritanceDir /inheritance:d /t /c
+#
+# Get integrity level: whoami /groups
+# A Process must have (at least) the integrity of the binary/process/file it tries
+# to access or gets 'permission denied'.
 
 function GetLastExitCode {
   return !$?
@@ -570,5 +595,51 @@ function switch_case() {
   switch -file .\random.txt {
       {$_ -match 'she'} { $_ }
   }
+}
 
+function Switch-Item {
+  param ([switch]$on)
+  if ($on) { "Switch on" }
+  else { "Switch off" }
+}
+
+# search for executable location
+function where_pendant() {
+  Get-Command Get-Command
+}
+
+
+# https://stackoverflow.com/questions/8609204/union-and-intersection-in-powershell
+function union_intersection() {
+  $a = (1,2,3,4)
+  $b = (1,3,4,5)
+  # union
+  Compare-Object $a $b -PassThru -IncludeEqual
+  # intersection
+  Compare-Object $a $b -PassThru -IncludeEqual -ExcludeDifferent
+}
+
+function htop() { systeminfo |find "Available Physical Memory" }
+
+# Measure time (without memory)
+function time() { Measure-Command }
+
+# https://stackoverflow.com/questions/74147128/how-do-i-send-keys-to-an-active-window-in-powershell
+function send_keys_to_active_program() {
+  $ps = Start-Process -PassThru -FilePath "C:\Program Files\VMware\VMware Horizon View Client\vmware-view.exe" -WindowStyle Normal
+  $wshell = New-Object -ComObject wscript.shell
+
+  # Wait until activating the target process succeeds.
+  # Note: You may want to implement a timeout here.
+  while (-not $wshell.AppActivate($ps.Id)) {
+    Start-Sleep -MilliSeconds 200
+  }
+  $wshell.SendKeys('~')
+  Sleep 3
+  $wshell.SendKeys('username')
+  Sleep 2
+  $wshell.SendKeys('{TAB}')
+  Sleep 1
+  $wshell.SendKeys('password')
+  Stop-Process -Id $ps.Id
 }

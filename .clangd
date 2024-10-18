@@ -1,17 +1,19 @@
-# Core reason for C++17 variant.
-# Core reason for C++20 are concepts.
-# Core reason for C++23 is std constexpr-ification.
-# Core reason for C++26 enum_to_string, string_to_enum
+# Core reason for C++17 variant, saner template programming
+# Core reason for C++20 are concepts for sane template programming, consteval
+# Core reason for C++23 is std constexpr-ification. consteval
+# Core reason for C++26 enum_to_string, string_to_enum, reflection, iostream replacement,
+# Core reason for C99   portable static integer sizes
+# Core reason for C11   generic selection, atomic, tls, threads, alignment
 CompileFlags:
   # Add: [-std=c++14]
   # Add: [-std=c++17]
   # Add: [-std=c++20]
   Add: [-std=c++23]
   # Add: [-std=c++26]
+  # Add: [-std=c++29]
 
   # Add: [-std=c99]
   # Add: [-std=c11]
   # Add: [-std=c17]
-  # Add: [-std=c20]
   # Add: [-std=c23]
-  # Add: [-std=c26]
+  # Add: [-std=c29]

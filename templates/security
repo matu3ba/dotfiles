@@ -194,3 +194,9 @@ https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
   + SCRAM (only protects you for the 2nd-nth connections, the password still needs to be provided the first time)
   + main alternative is to use an out of band channel to communicate trust, for example
     OTP with ideally OCRA or TOTP or HOTP or something given by humans
+
+====virtualization
+https://patchwork.kernel.org/project/qemu-devel/patch/20190701144705.102615-5-slp@redhat.com/hw/i386
+Introduce the microvm machine type
+
+http://phrack.org/issues/71/14.html#article

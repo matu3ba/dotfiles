@@ -1,3 +1,11 @@
+====possibilities
+* comptime
+* build system
+* fuzzing
+* interactive test generation
+* mapping API<->ABI<->docs
+
+
 --verbose-cimport
 --verbose-air
 --verbose-llvm-ir
