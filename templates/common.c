@@ -1,6 +1,3 @@
-#if (__STDC_VERSION__ < 199901L)
-#error "requires C99 for sanity"
-#endif
 // Tested with
 // clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
 // clang -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat .\templates\common.c
@@ -37,7 +34,7 @@ static_assert(HAS_C17, "use HAS_C17 macro");
 static_assert(HAS_C23, "use HAS_C23 macro");
 #endif
 #ifndef HAS_C99
-#error "use HAS_C11 macro"
+#error "requires C99 for sanity"
 #endif
 
 #include <stdint.h> // uint32_t, uint8_t

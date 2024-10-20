@@ -3,6 +3,7 @@
 
 build/
 zig-cache/
+.zig-cache/
 zig-out/
 
 .luarc.json

@@ -194,8 +194,8 @@ if status is-interactive
   abbr --add -g   zup1 ' ./build/stage3/bin/zig build update-zig1'
   abbr --add -g   zdoc ' cd {$HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
 
-  abbr --add -g  rmzigallcache ' rm -fr zig-cache/ zig-out/ "$HOME"/.cache/zig/'
-  abbr --add -g  rmzigcacherec ' fd -t d -u "zig-out|zig-cache" -x rm -fr {};'
+  abbr --add -g  rmzigallcache ' rm -fr ./.zig-cache/ ./zig-cache/ ./zig-out/ "$HOME"/.cache/zig/'
+  abbr --add -g  rmzigcacherec ' fd -t d -u "zig-out|zig-cache|.zig-cache" -x rm -fr {};'
 
   # firejail
   abbr --add -g   nojail  ' firejail --noprofile'

@@ -8,12 +8,24 @@
 --- rm ~/.local/nvim/lib/nvim/parser/cpp.so
 
 -- SHENNANIGAN DESIGN
--- treesitter can not be disabled: if it is installed, it will be loaded and
--- throw errors.
--- pcall nvim-treesitter.configs still not supported
--- treesitter languages may require: cargo install tree-sitter-cli
--- TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
---require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+-- * GENERAL
+--   + https://github.com/neovim/neovim/issues/22426
+--   + https://github.com/tree-sitter/tree-sitter/issues/930#issuecomment-974399515
+--     https://github.com/tree-sitter/tree-sitter/blob/master/docs/section-5-implementation.md#the-runtime
+--     no docs on runtime including query performance and query cache etc
+--     // The entries are sorted by the patterns' root symbols, and lookups use a
+--     // binary search. This ensures that the cost of this initial lookup step
+--     // scales logarithmically with the number of patterns in the query.
+--     However this only mentions "initial lookup step" and not overall worst case
+--     performance per pattern match or is unlucky formulated.
+-- * NEOVIM
+--   + treesitter can not be disabled: if it is installed, it will be loaded and
+--   throw errors.
+--   + pcall nvim-treesitter.configs still not supported
+--   + treesitter languages may require: cargo install tree-sitter-cli
+--   + TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
+--   + require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
+
 -- idea: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 require('nvim-treesitter.configs').setup {

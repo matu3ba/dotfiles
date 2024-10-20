@@ -392,6 +392,9 @@ State of art:
 - Hotswapping and/or with REPL are interpreted languages like Julia, Python, R
   and all functional + logic Programming Languages
 - Static languages intended for optimizing compilers like Rust, C, C++, D
+- Wrapup of midori as operating system for reduction of errors (without taking
+  into account performance)
+  https://joeduffyblog.com/2016/02/07/the-error-model/
 
 System implementation details towards correctness:
 - 1. Correctness requires to simplify data representation and handling (both

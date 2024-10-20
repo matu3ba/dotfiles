@@ -1,3 +1,8 @@
+====requirements
+* permissions to access /dev/dri/*
+* permissions to access input device nodes
+* usually need to be in input, graphics, render groups
+
 ====source_deps
 sqlite3, openal-soft, sdl2, opengl, luajit, gbm, kms, freetype, harfbuzz, libxkbcommon
 libvlc-core, ffmpeg suite, leptonica, tesseract (ocr), libvncserver libusb1, v4l2-loopback, mupdf

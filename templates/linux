@@ -1,3 +1,24 @@
+====systemd
+====autostart
+====udev
+
+====systemd
+Unusable to grep, useless path complexity:
+- https://www.freedesktop.org/software/systemd/man/systemd.unit
+- https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html
+systemd-analyze --user unit-paths
+systemd-analyze --global unit-paths
+systemd-analyze --system unit-paths
+incomplete:
+sudo systemctl --all list-unit-files --type=service
+
+====autostart
+$XDG_CONFIG_HOME/autostart - ~/.config/autostart/
+$XDG_CONFIG_DIRS/autostart - /etc/xdg/autostart
+
+====udev
+TODO
+
 https://nullprogram.com/blog/2015/05/15/ how clone() works
 
 get Kernel compilation+runtime config

@@ -63,6 +63,8 @@ https://lock.cmpxchg8b.com/zenbleed.html
 * 13. atomics and cache synchronization???
 TODO include feedback from https://github.com/ForwardCom/manual/issues/29
 
+TODO to what degree can (time) reversible computing and constant time execution (for crypto) be realized?
+
 RISC5 looks ideal for embedded systems, where instructions are typically smaller
 (addresses, constants, etc).
 It even has an instruction for flushing the complete cache + clear internal state.

@@ -1,3 +1,5 @@
+see for impls and techniques ./example/parallel_programming/README.md
+
 Based on talk by kprotty "Proficient Parallel Programming"
 paralellism: doing 2 or more things at the same time
 concurrency: doing 2 things not necessary at the same time
@@ -150,10 +152,12 @@ General
 * getting the size, if the storage is non-continous, has a perf cost
 * reliably detect, if a pop emptied a data storage, on the same thread after the pop, has a perf cost
 * vice versa detecting that the storage ran full
-* most papers have no reference implementation with tests linked or can have non-permissive licenses, so searching for them can be annoying
+* most papers have no reference implementation with tests linked or can have
+  non-permissive licenses, so searching for them can be annoying
   - reasonable code source https://github.com/pramalhe/ConcurrencyFreaks
     + no tests, but code looks good
-  - papers usually use raw pointers and user is expected to adjust to used external or internal storage
+  - papers usually use raw pointers and user is expected to adjust to used
+    external or internal storage
     + no overview papers of space vs memory vs works on weak memory tradeoffs
 
 win

@@ -185,8 +185,8 @@ alias  zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zi/zig/mas
 #./zig build test-stage2 -Denable-llvm -Dskip-compile-errors -fqemu -fwasmtime -fwine
 #zigtest is pending support for pipes other than the standard ones to be robust
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
-alias rmzigallcache='rm -fr zig-cache/ zig-out/ "${HOME}"/.cache/zig/'
-alias rmzigcacherec='fd -t d -u "zig-out|zig-cache" -x rm -fr {};'
+alias rmzigallcache='rm -fr ./zig-cache/ ./.zig-cache/ ./zig-out/ "${HOME}"/.cache/zig/'
+alias rmzigcacherec='fd -t d -u "zig-out|zig-cache|.zig-cache" -x rm -fr {};'
 #rm -fr zig-cache/ zig-out/'
 #find -type d "zig-out|zig-cache" -exec rm -fr {} \;
 

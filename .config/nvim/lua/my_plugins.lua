@@ -259,6 +259,8 @@ return {
   -- hydra venn ascii: <l>va
   -- set ve=all,:VBox or press f,HJKL,set ve=
   { 'jbyuki/ntangle.nvim' },
+  -- more functionality + tutorial
+  -- https://www.baeldung.com/linux/vim-drawit-ascii-diagrams
   { 'jbyuki/venn.nvim', dev = true },
   -- idea { 'simnalamburt/vim-mundo' } to search undotree
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)

@@ -1,0 +1,57 @@
+.{
+    // zig fetch --save URL
+    // redundant to include zig in this name, because it is  already within
+    // the Zig package namepace.
+    .name = "zigpkg",
+
+    // [Semantic Version](https://semver.org/) to be used in future for
+    // package deduplication.
+    .version = "0.0.0",
+
+    // optional: currently advisory
+    //.minimum_zig_version = "0.11.0",
+
+    // optional: dependencies must either provide 1. url, 2. hash or 3. path
+    // zig build --fetch
+    // can be used ot fetch recursively all deps of pkg for usage
+    // without internet access
+    .dependencies = .{
+        // see 'zig fetch --save URL' for a CLI to add dependencies
+        //.example = .{
+        //    // when updating field to new URL, delete corresponding hash
+        //    // or expect failures
+        //    .url = "https://example.com/foo.tar.gz",
+        //
+        //    // [multihash](https://multiformats.io/multihash/) computed from file
+        //    // contents of directory of files that is obtained after fetching URL
+        //    // and applying inclusion rules  given by field '.paths'
+        //    // Packages do not come from URL, but '.hash'
+        //    .hash = "...",
+        //
+        //    // '.path' xor '.url'
+        //    // used for path relative to build root and if used, '.hash'
+        //    // is irrelevant/not computed
+        //    .path = "foo",
+        //
+        //    // lazily fetched: dependency only fetched if used
+        //    .lazy = false,
+        //},
+    },
+
+    // set of files and dirs included in pkg
+    // only files and dirs listed here are included in '.hash' computed for this
+    // pkg and will remain on disk, when using zig package manager.
+    // rule of thumb: list files required files for compilation plus any
+    // licence(s).
+    // paths are relative to build root and use '""' to refer to the build root
+    // itself.
+    // dir listed means all files within recursively are included
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        // For example...
+        //"LICENSE",
+        //"README.md",
+    },
+}
