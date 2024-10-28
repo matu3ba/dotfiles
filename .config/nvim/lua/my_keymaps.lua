@@ -88,11 +88,36 @@ local opts = {} -- default opts
 -- current mapping requires 1. viwy, 2. * with jumping, 3. , (with mapping to keep pasting over)
 
 map('', '<Space>', '<Nop>', { desc = 'fix annoying space movements' })
-map('n', 'ZW', '<cmd>close<CR>', { desc = 'fast :close' })
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
 map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
+
+-- :h marks
+-- m{a-zA-Z}/'{a-z}  set/jump to mark at cursor position
+-- m' or m`          set previous context mark to be jumpable via '' or ``
+-- m[/m< or m]/m>    set '[/'< or ']/'> mark with latter to change what gv selects
+-- '{A-Z0-9}         global jump
+-- g'{mark]/g`{mark} jump without changing jumplist
+-- :marks/delm [{args}]/delm!   list/delete marks (of current buffer)
+-- 1.'[/'],2.'</'>/3.'',``,4.'",5.'^,6.'.,7.'(/'),8.'{,'},
+--   to first/last 1.char of prev changed/yanked text, 2. selection, 3. jump,
+--   4.quote,5.insertion mode stop,6.last change,7.sentence,8.paragraph
+-- 1.]'/2.]`/3.['    1.count time to next line with lowercase mark below cursor
+--   2.count times to lowercase mark after cusor, 3.count times to prev line
+--   with lower case mark before cursor, [` count time to lowercase mark before
+--   cursor
+-- 1.:loc,2.:kee,3.:keepj {cmd}   1. execute cmd without adjusting marks,
+--   2. currently only has effect for filter command :range!, 3.moving around
+--   in {cmd} does not change '','. and '^, jumplist or changelist
+-- 1.:ju,2.:cle      1.print/2.clear jump list (2. of current window)
+-- g;/g,             1.go to [count] older position in change list, 2.go to
+--                   [count] newer position in change list
+-- :changes          print change list
+
+-- [(/]),[{/]}       go to [count] prev/next unmatches (/),{/}
+-- ]m/[m,]M/[M       go to [count] next/prev start/end of method
+-- [#/]#,[*|[/,]*,]/ go to [count] prev/next start of C comment
 
 -- Search helpers
 map('n', ',', [[viwP]], opts) -- keep pasting over the same thing for current word, simple instead of broken for EOL [["_diwP]]
@@ -141,6 +166,7 @@ map('n', '<leader>q!', '<cmd>q!<CR>', opts) -- faster, but no accidental quit
 map('n', '<leader>bq', '<cmd>bd<CR>', opts) -- faster delete buffer
 map('n', '<leader>b!', '<cmd>bd!<CR>', opts) -- faster delete force buffer
 map('n', '<leader>qw', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing window
+-- map('n', 'ZW', '<cmd>close<CR>', { desc = 'fast :close' })
 map('n', '<leader>qh', '<cmd>wincmd h<CR><cmd>q<CR>', { desc = ':close left' })
 map('n', '<leader>qj', '<cmd>wincmd j<CR><cmd>q<CR>', { desc = ':close down' })
 map('n', '<leader>qk', '<cmd>wincmd k<CR><cmd>q<CR>', { desc = ':close up' })

@@ -48,6 +48,14 @@ Bochs x86 emulator
 windbg
 https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tutorial
 
+rad debugger
+https://github.com/EpicGamesExt/raddebugger/
+
+would be very neat, if there would be either incremental object update over
+network and/or linking both on source and target and use it for debugging.
+unfortunately it does not look like rad debugger provides instructions how to
+get to such a setup.
+
 Unfortunately we have a huge pile of calling conventions=protocols in systems
 in the field, which were also never designed with abi versioning in mind. And
 to eliminate requires building competing platforms/protocols to replace

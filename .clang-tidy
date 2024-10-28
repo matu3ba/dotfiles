@@ -1,0 +1,4 @@
+# SHENNANIGAN useless and annoying warnings, because semantics decrease
+# performance without covering full safety
+# SHENNANIGAN call Windows memcpy_s with destsize < bytecount
+Checks: "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
