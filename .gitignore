@@ -11,3 +11,4 @@ zig-out/
 
 /*.exe
 /*.obj
+/*.out

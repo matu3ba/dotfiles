@@ -1,7 +1,6 @@
 //! Why -Wstring-conversion is necessary.
 //! mkdir -p build && clang++ implicit_string_conversion.cpp -o build/implicit_string_conversion && ./build/implicit_string_conversion
 #include <cinttypes>
-#include <map>
 #include <string>
 #include <cstdio>
 

@@ -1,8 +1,8 @@
 // Tested with
-// clang -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default .\templates\common.c
-// clang -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat .\templates\common.c
-// clang -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat .\templates\common.c
-// clang -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat .\templates\common.c
+// zig cc -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c
+// zig cc -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c
+// zig cc -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c
+// zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c
 #include <assert.h>
 
 // TODO list
@@ -143,12 +143,27 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 //   It can also be disabled in all compilers via #define restrict, using an according optimization level (typical -O1)
 //   or via separating header and implementation and disabling link time optimziations.
 
+// SHENNANIGAN memset_s and other *_s fns are optional, have heavy cost
+// without benefit and C23 got instead memset_explicit.
+// clangd still complains
+// some features of memset_s that memset lacks (hence many platforms/libcs are
+// not implementing the routines):
+// * null pointer check on the destination array
+// * only partial sanity check on the block size
+// * memset_s() can not be elided: K.3.7.4.1
+// nevertheless Checks: "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
+// is needed and
 
 static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment);
 static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment) {
     assert((size_bytes & (alignment-1)) == 0); // Size aligned
     assert(((uintptr_t)ptr & (alignment-1)) == 0); // Pointer aligned
+// #ifdef HAS_C23
+//     // make sensitive information stored in the object inaccessible
+//     memset_explicit(ptr, byte, size_bytes);
+// #else
     memset(ptr, byte, size_bytes);
+// #endif
 }
 // 1. Careful with segmented address spaces: lookup uintptr_t semantics
 // 2. Careful with long standing existing optimization compiler bugs pointer to
@@ -186,6 +201,8 @@ void standard_namespacing(void) {
       Mode1,
       Mode2,
     } eMode;
+    char _pad1[60];
+
     union Repr {
       uint64_t u64;
       struct Splu64 {
@@ -199,6 +216,9 @@ void standard_namespacing(void) {
   U64.u64 = 12;
   sNamespace1.eMode = Undefined;
   sNamespace1.uRepr.u64 = 12;
+#ifdef HAS_C11
+  static_assert(sizeof(sNamespace1.eMode) == 4, "eMode has no size of 4 byte");
+#endif
 
   switch (sNamespace1.eMode) {
   case Undefined:
@@ -247,12 +267,15 @@ void cpp_namespaces_enums_in_structs(int32_t device_type) {
   // devty.ty = (BeckhoffDeviceType.Ty)device_type;
 }
 
-int32_t c_enum(int32_t in);
-int32_t c_enum(int32_t in) {
+int32_t c_enum(uint32_t in);
+int32_t c_enum(uint32_t in) {
   enum Example {
     EX0 = 0,
     EX1,
   };
+#ifdef HAS_C11
+  static_assert(sizeof(enum Example) == 4, "eMode has no size of 4 byte");
+#endif
   enum Example ex = in;
   switch (ex) {
     case EX0: {
@@ -346,8 +369,8 @@ int32_t Int_CeilDiv(int32_t x, int32_t y) {
 }
 
 // byte-wise dumping somewhat pretty compatible with strlen
-inline void dumpMemory(const char * memory, size_t size);
-inline void dumpMemory(const char * memory, size_t size) {
+// inline void dumpMemory(const char * memory, size_t size);
+static inline void dumpMemory(const char * memory, size_t size) {
   uint32_t cols = 80;
   for (uint32_t i = 0; i<size; i+=1) {
     fprintf(stdout, "%x ", memory[i]);
@@ -555,6 +578,7 @@ int ptr_no_reinterpret_cast(void) {
 struct sStruct1 {
   uint8_t a1;
   uint8_t a2;
+  char _pad1[30];
   uint32_t b1;
   uint32_t b2;
 };
@@ -703,8 +727,6 @@ void ape_win_incompat_fileprint(void) {
 #ifndef _WIN32
 void ape_fileprint(void);
 void ape_print(void);
-#define _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_DEPRECATE
 void ape_fileprint(void) {
   const char * f1_name = "file1";
   FILE * f1 = fopen(f1_name, "a+");
@@ -718,6 +740,8 @@ void ape_fileprint(void) {
 #endif
 
 #ifdef _WIN32
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_DEPRECATE
 void ape_win_print(void);
 void ape_win_print(void) {
   FILE * f1;
@@ -878,6 +902,7 @@ void flexible_array_member(void);
 void flexible_array_member(void) {
   struct FlexibleArrayMember {
     uint32_t len; // at least one other data member
+    char _pad1[28];
     double arr[]; // flexible array member must be last
     // potential padding
   };
@@ -1240,17 +1265,61 @@ void enum_class(void) {
 // TODO https://github.com/gritzko/librdx/blob/master/ABC.md
 // scalable high perf code requirements
 
+
+// GENERAL
+
+// based on https://en.cppreference.com/w/c/language/operator_precedence
+//Prec|  Op          | Description                              | Associativity(what comes first)
+// 1  | ++ --        | Suffix/postfix increment and decrement   | Left-to-right
+//    | ()           | Function call                            |
+//    | []           | Array subscripting                       |
+//    | .            | Structure and union member access        |
+//    | ->           | Struct and union member access via ptr   |
+//    | (type){list} | Compound literal(C99)                    |
+// 2  | ++ --        | Prefix increment and decrement[note 1]   | Right-to-left
+//    | + -          | Unary plus and minus                     |
+//    | ! ~          | Logical NOT and bitwise NOT              |
+//    | (type)       | Cast                                     |
+//    | *            | Indirection (dereference)                |
+//    | &            | Address-of                               |
+//    | sizeof       | Size-of[note 2]                          |
+//    |_Alignof      |                                          | Alignment requirement(C11)               |
+// 3  | * / %        | Multiplication, division, and remainder  | Left-to-right
+// 4  | + -          | Addition and subtraction                 |
+// 5  | << >>        | Bitwise left shift and right shift       |
+// 6  | < <=         | For rel. op < and ≤                      |
+//    | > >=         | For rel. op > and ≥                      |
+// 7  | == !=        | For rel. = and ≠                         |
+// 8  | &            | Bitwise AND                              |
+// 9  | ^            | Bitwise XOR (exclusive or)               |
+// 10 | |            | Bitwise OR (inclusive or)                |
+// 11 | &&           | Logical AND                              |
+// 12 | ||           | Logical OR                               |
+// 13 | ?:           | Ternary conditional                      | Right-to-left
+// 14 | =            | Simple asgn                              |
+//    | += -=        | Asgn by sum and difference               |
+//    | *= /= %=     | Asgn by product, quotient, and remainder |
+//    | <<= >>=      | Asgn by bitwise left + right shift       |
+//    | &= ^= |=     | Asgn by bitwise AND, XOR, and OR         |
+// 15 |  ,           | Comma                                    | Left-to-right
+
+// SHENNANIGAN Evaluation order of operators is undefined, the operator
+// precedence only describes the type of the result, not how it is evaluated.
+// Prefer to use new statements, if possible to remove evaluation order ambiguity.
+// See also ./example/operator_precedence.c
+
 #ifdef HAS_C11
 static _Thread_local uint32_t threadloc_var = 0;
 struct C11_alignment_struct {
   uint8_t first;
+  char _pad1[3];
   uint32_t second;
   uint64_t third;
 };
 // #include <stdalign.h> empty for msvc libc
-void C11_alignment_control();
-void C11_alignment_control() {
-  static_assert(_Alignof(char) == 1);
+void C11_alignment_control(void);
+void C11_alignment_control(void) {
+  static_assert(_Alignof(char) == 1, "char has no alignment of 1");
   fprintf(stdout, "%zu\n", _Alignof(struct C11_alignment_struct));
   _Alignas(128) _Atomic uint32_t mutex;
   (void)mutex;
@@ -1267,8 +1336,8 @@ void C11_alignment_control() {
 
 // #include <stdnoreturn.h> void C11_noreturn() {} deprecated
 #include <threads.h>
-void C11_threads();
-void C11_threads() {
+void C11_threads(void);
+void C11_threads(void) {
   // idea
 
 }
@@ -1394,6 +1463,7 @@ int32_t C23_complex_generic_selection_on_enum() {
 }
 
 #if __has_include (<stdbit.h>)
+#include <stdbit.h>
 void C23_stdbit();
 void C23_stdbit() {
   if (__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_LITTLE__) {

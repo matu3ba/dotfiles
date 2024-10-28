@@ -1,3 +1,5 @@
+// Tested with
+// zig test ./templates/common.zig
 const std = @import("std");
 const builtin = @import("builtin");
 
@@ -575,7 +577,7 @@ fn run_test_fn(t1: u8) !void {
         return error.Big;
     }
 }
-const FnError = @typeInfo(@typeInfo(@TypeOf(run_test_fn)).Fn.return_type.?).ErrorUnion.error_set;
+const FnError = @typeInfo(@typeInfo(@TypeOf(run_test_fn)).@"fn".return_type.?).error_union.error_set;
 const FnAndOtherFnError = error{Other} || FnError;
 fn other_fn(t2: u8) FnAndOtherFnError!void {
     if (t2 == 555) {
@@ -586,7 +588,9 @@ fn other_fn(t2: u8) FnAndOtherFnError!void {
 }
 
 test "comptime infer error set" {
-    try other_fn(42);
+    other_fn(42) catch |err| {
+        try std.testing.expectEqual(error.Medium, err);
+    };
 }
 
 // buffer partitioner via vtable

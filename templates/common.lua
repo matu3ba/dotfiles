@@ -1,4 +1,5 @@
---
+-- Tested with
+-- TODO
 --TODO https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
 -- how to better setup luarocks with luajit without yet another plugin
 
@@ -46,12 +47,12 @@ local function pair_ipair_difference()
 end
 
 local function reference()
-  _ = table_str
-  _ = table_int
-  _ = simplertable_str_alt
-  _ = simplertable_int_alt
+  local _ = table_str
+  local _ = table_int
+  local _ = simplertable_str_alt
+  local _ = simplertable_int_alt
 
-  _ = pair_ipair_difference
+  local _ = pair_ipair_difference
 end
 
-_ = reference
+local _ = reference

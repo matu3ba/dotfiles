@@ -553,8 +553,35 @@ alias gsu='git submodule update'
 #git short commit id: git rev-parse --short HEAD
 #git long commit id: git rev-parse HEAD
 
+# taken from nice tutorial https://learngitbranching.js.org
+# git describe <Ref-Name>
+# shows
+# <tag_name>_<commit_count>_g<hash>
+# to show non-annotated tags, use git describe --tags
+#
+# to select which selected predecessor should be followed with checkout/reset,
+# use ^NUMBER, whereas ^ means select the first one, ^2 the second etc
+# this also works in conjunction with ~ which selects the number of
+# predecessors which should be stepped, for example git reset HEAD~^2~2 one
+# step, second branch, two steps
+
+# currently on BRANCH1, now force BRANCH2 point to BRANCH1 quickly via
+# git branch -f BRANCH2 BRANCH1
+
+# for faster pushing to same branch, use instead of git fetch && git rebase
+# git pull --rebase
+
+# for faster switching + checkout use
+# git checkout -b feature commit
+# git push remote feature
+
 # TODO https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
 # TODO split commits in arbitrary commit range
 
 # TODO fast and intuitive git log search?
 # git log -G 'PxProfilControlGui:'
+
+#====plumbing commands (may break git repo)
+#local branch = branch1, git switch branch2 && git reset --hard branch1
+#git update-ref refs/heads/branch2 refs/heads/branch1
+#better use git branch -f three C2

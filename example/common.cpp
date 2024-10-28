@@ -3,10 +3,12 @@
 #include <fstream>      // std::ifstream
 #include <sstream>      // std::stringstream
 
+
 // C and C++, being both annoying want to hide the fact that
 // we are operating on file descriptors and instead provides
 // us with "a pointer to opaque".
 // So the second option is unnecessary annoying.
+// C++26 may fix this
 long GetFileSize(std::string filename)
 {
     struct stat stat_buf;

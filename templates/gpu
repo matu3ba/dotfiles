@@ -4,3 +4,6 @@ Comparing GPUs
 * roofline models
   + used to compare throughput of GPUs in % of optimal throughput as simple heuristic
   + idea: good bench suite
+
+Debugging the 3D graphics stack
+https://ballmerpeak.web.elte.hu/devblog/debugging-mesa-and-the-linux-3d-graphics-stack.html

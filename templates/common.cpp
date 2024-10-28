@@ -1,9 +1,10 @@
 static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
-// clang++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
-// clang++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
-// clang++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
-// clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\templates\common.cpp
+// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 
 // Alternative is to always default to using default in switch case (MISRA C),
 // but this has drawback of making any refactorings much more annoying.
@@ -11,6 +12,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 
 // C++ tooling mandates C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
+// https://github.com/hsutter/cppfront
 
 // https://en.cppreference.com/w/cpp/language/string_literal
 // https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
@@ -75,12 +77,13 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <fstream> // fstream
 #include <future> // future
 #include <iostream> // io stream operators
-#include <sstream> // std::stringstream
-#include <ostream> // std::ostream for stream operator
+#include <list>
 #include <map>
 #include <memory> // unique_ptr, shared_ptr
 #include <mutex>
+#include <ostream> // std::ostream for stream operator
 #include <set>
+#include <sstream> // std::stringstream
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <utility> // std::true_type
@@ -342,26 +345,30 @@ int usage_sTemplatedVariant() {
 #endif
 
 // defer-like behavior in C++
-#ifndef _WIN32
-#include <openssl/err.h>
-#include <openssl/evp.h>
-using EVP_CIPHER_CTX_free_ptr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&::EVP_CIPHER_CTX_free)>;
-
-unsigned char* encrypt(unsigned char* plaintext, int plaintext_len, unsigned char key[16], unsigned char iv[16]) {
-    // equivalent of c++
-    // EVP_CIPHER_CTX *ctx = try { EVP_CIPHER_CTX_new(); }
-    // with equivalent of Zig
-    // defer EVP_CIPHER_CTX_free(ctx);
-    EVP_CIPHER_CTX_free_ptr ctx(EVP_CIPHER_CTX_new(), ::EVP_CIPHER_CTX_free);
-
-    std::unique_ptr<int[]> p(new int[10]);
-    std::unique_ptr<unsigned char[]> p2(new unsigned char[plaintext_len]);
-
-    // main problem: throw not forced to be handled locally and hidden control
-    // other problem: we cant only defer on error to provide ctx to another function
-    return NULL;
-}
-#endif
+// #ifndef _WIN32
+// #include <openssl/err.h>
+// #include <openssl/evp.h>
+// using EVP_CIPHER_CTX_free_ptr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&::EVP_CIPHER_CTX_free)>;
+//
+// unsigned char* encrypt(unsigned char* plaintext, size_t plaintext_len, unsigned char key[16], unsigned char iv[16]);
+// unsigned char* encrypt(unsigned char* plaintext, size_t plaintext_len, unsigned char key[16], unsigned char iv[16]) {
+//   (void)plaintext;
+//   (void)key;
+//   (void)iv;
+//   // equivalent of c++
+//   // EVP_CIPHER_CTX *ctx = try { EVP_CIPHER_CTX_new(); }
+//   // with equivalent of Zig
+//   // defer EVP_CIPHER_CTX_free(ctx);
+//   EVP_CIPHER_CTX_free_ptr ctx(EVP_CIPHER_CTX_new(), ::EVP_CIPHER_CTX_free);
+//
+//   std::unique_ptr<int[]> p(new int[10]);
+//   std::unique_ptr<unsigned char[]> p2(new unsigned char[plaintext_len]);
+//
+//   // main problem: throw not forced to be handled locally and hidden control
+//   // other problem: we cant only defer on error to provide ctx to another function
+//   return NULL;
+// }
+// #endif
 
 #ifdef HAS_CPP17
 void map_insert();
@@ -506,6 +513,7 @@ public:
 
 #ifndef _WIN32
 // Also does split string.
+void stringRawDataAccess(std::string &comp);
 void stringRawDataAccess(std::string &comp) {
     std::string component_name = comp.c_str(); // may or may not copy construct (careful)
     // char* p_component_name = component_name.data(); returns const char*
@@ -529,7 +537,7 @@ ACTIONEXIT:
 
     char* end;
     long i = strtol(p_component_name, &end, 10);
-    i = i;
+    (void)i;
     // This requires usage of errno, so pick your poison.
     // alternative: use find with substring
 }
@@ -1136,7 +1144,11 @@ void cstring_interop_annoying() {
   char const * buffer[] = {"ls", "-l", nullptr};
   char * const * argv = const_cast<char * const *>(buffer);
   // Posix name is deprecated, use _execve
+#ifdef _WIN32
   intptr_t execed = _execve(cmd, argv, nullptr);
+#else
+  intptr_t execed = execve(cmd, argv, nullptr);
+#endif
   (void)execed;
 }
 
@@ -1807,7 +1819,7 @@ T calc(const T &val) {
 // * 2. Use typeid
 template<typename T>
 void test() {
-  fprintf("testing type %s\n", typeid(T).name());
+  fprintf(stdout, "testing type %s\n", typeid(T).name());
 }
 // * 3. Avoid default implementations
 // => Provide implementations or errors for all types without internal state.
@@ -2344,6 +2356,7 @@ struct is_pair : std::false_type {};
 template <typename T, typename U>
 struct is_pair<std::pair<T, U>> : std::true_type {};
 
+#ifdef HAS_CPP17
 template<class ITR>
 void use_is_pair(ITR && itr) {
   //access of itr->second ok.
@@ -2376,6 +2389,7 @@ int check_pair() {
     use_is_pair("");
     return 0;
 }
+#endif
 
 #ifdef HAS_CPP14
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time

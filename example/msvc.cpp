@@ -101,6 +101,8 @@
 // TODO summary from https://stackoverflow.com/questions/1857668/c-visual-studio-character-encoding-issues
 // Unicode overview https://www.codeproject.com/Articles/38242/Reading-UTF-8-with-C-streams
 
+#ifdef _WIN32
+
 #if (__cplusplus == 202302L)
   #define IS_CPP23
   #define HAS_CPP23
@@ -128,6 +130,7 @@
 // #include "Stdafx.h"
 #include <stdio.h>
 
+#endif
 
 int main() {
   fprintf(stdout, "hello world\n");
