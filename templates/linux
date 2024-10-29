@@ -353,3 +353,5 @@ https://github.com/lxc/lxc or https://github.com/lxc/incus
 
 show line numbers
 less -N FILE
+
+SHENNANIGAN io_uring does hidden allocations besides setup allocations

@@ -432,12 +432,25 @@ map('n', '<F12>', [[<cmd>DapStepOut<CR>]], opts) -- s-f12 not used to prevent es
 
 --==lspconfig
 -- defaults
--- <grn>: vim.lsp.buf.rename()
+-- <C-s>: vim.lsp.buf.signature_help()
+-- <gO>: vim.lsp.buf.document_symbol()
+-- <grS>: vim.lsp.buf.workspace_symbol()
 -- <gra>: vim.lsp.buf.code_action()
+-- <gri>: vim.lsp.buf.implementation()
+-- <grn>: vim.lsp.buf.rename()
 -- <grr>: vim.lsp.buf.references()
+-- <grs>: vim.lsp.buf.workspace_symbol()
 --vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 --vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 -- see :CLsp lua/my_lsp.lua LspAttach
+
+-- see also echasnovski/mini.bracketed
+-- • Mappings inspired by Tim Pope's vim-unimpaired:
+--     • |[q|, |]q|, |[Q|, |]Q|, |[CTRL-Q|, |]CTRL-Q| navigate through the |quickfix| list
+--     • |[l|, |]l|, |[L|, |]L|, |[CTRL-L|, |]CTRL-L| navigate through the |location-list|
+--     • |[t|, |]t|, |[T|, |]T|, |[CTRL-T|, |]CTRL-T| navigate through the |tag-matchlist|
+--     • |[a|, |]a|, |[A|, |]A| navigate through the |argument-list|
+--     • |[b|, |]b|, |[B|, |]B| navigate through the |buffer-list|
 
 --==ctags
 -- switch between source and header with `:e %<.c` with %< representing the current file without the ending

@@ -1632,6 +1632,12 @@ struct CTestSomeInterface : ISomeInterface {
   }
 };
 
+// SHENNANIGAN superfluous distinction between dynamic_cast (pointers) and std::dynamic_pointer_cast (shared ptrs)
+// if (dynamic_cast<ptrChildClass*>(ptrBaseClass) != nullptr)
+// {
+//   // found ptrChildClass
+// }
+
 struct SomeDll {
   std::string m_filename;
   void SetupDll(const std::string & config_file) {
@@ -2390,6 +2396,10 @@ int check_pair() {
     return 0;
 }
 #endif
+
+// TODO sort in
+// std::uniform_int_distribution<int32_t> Index(0, InclusiveEnd);
+// fprintf(stdout, "RandomModulo: %d\n", RandomModulo);
 
 #ifdef HAS_CPP14
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time

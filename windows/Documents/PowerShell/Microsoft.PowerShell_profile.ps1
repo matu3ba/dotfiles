@@ -19,7 +19,7 @@ $env:Editor = "nvim"
 # [-Wait] [-UseNewEnvironment] [-Environment <hashtable>] [-WhatIf] [-Confirm]
 # [<CommonParameters>]
 
-#====common
+#====common_cli
 # copy to clipboard including newline: pwd | clip
 # copy to clipboard no newline: pwd | Set-Clipboard
 # copy to mounted network shares does not work, must use UNC paths
@@ -109,10 +109,10 @@ New-Alias -Name gstu -Value GitStashPush -Force -Option AllScope
 New-Alias -Name gu -Value GitPullNoRebaseFfonly -Force -Option AllScope
 New-Alias -Name l -Value ListDense -Force -Option AllScope
 New-Alias -Name v -Value NvimCmd -Force -Option AllScope
-New-Alias -Name zbdeb -Value NvimCmd -Force -Option AllScope
+New-Alias -Name vi -Value NvimCmd -Force -Option AllScope
 New-Alias -Name zcbrel -Value ZigCrossBuildRelease -Force -Option AllScope
 New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
-# New-Alias -Name zdeb -Value ZigBuildDebug -Force -Option AllScope
+New-Alias -Name zcdeb -Value ZigCrossDebug -Force -Option AllScope
 # New-Alias -Name zbllvm -Value ZigDebug -Force -Option AllScope
 # New-Alias -Name zbsrel -Value ZigBootstrapRelease -Force -Option AllScope
 # New-Alias -Name zbrel -Value ZigBuildRelease -Force -Option AllScope
@@ -186,7 +186,10 @@ function GitShowRemote { & git remote show roigin $args }
 function GitStashPop { & git stash pop $args }
 function GitStashPush { & git stash push $args }
 function GitStatus { & git status $args }
+
+#====common_fns
 function ListDense { & Get-ChildItem $args -Force | Format-Wide Name -AutoSize }
+function NvimCmd { & nvim $args }
 function MakeWorkTree {
   # https://powershell.one/powershell-internals/attributes/parameters
   # param (
@@ -214,6 +217,7 @@ function MakePath {
   )
   New-Item -Path "$Path" -Force
 }
+function ZigCrossBuildDebug { & ..\..\zig-bootstrap\master\out-win\host\bin\zig.exe build -p deb --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=Debug --zig-lib-dir lib }
 function ZigCrossBuildRelease { & ..\..\zig-bootstrap\master\out-win\host\bin\zig.exe build -p rel --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=ReleaseSafe --zig-lib-dir lib }
 function ZigCrossRelease { & ..\master\rel\zig.exe build -p rel --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=ReleaseSafe --zig-lib-dir lib }
 

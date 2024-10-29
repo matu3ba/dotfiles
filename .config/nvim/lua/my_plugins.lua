@@ -111,6 +111,12 @@ return {
   -- [] mappings for buffer, komment, x conflict, diagnostics, file, indent, jump, location,
   -- location, oldfile, quickfix, treesitter, undo, window, yank
   -- [c,]c, used for diff
+  -- • Mappings inspired by Tim Pope's vim-unimpaired:
+  --   • |[q|, |]q|, |[Q|, |]Q|, |[CTRL-Q|, |]CTRL-Q| navigate through the |quickfix| list
+  --   • |[l|, |]l|, |[L|, |]L|, |[CTRL-L|, |]CTRL-L| navigate through the |location-list|
+  --   • |[t|, |]t|, |[T|, |]T|, |[CTRL-T|, |]CTRL-T| navigate through the |tag-matchlist|
+  --   • |[a|, |]a|, |[A|, |]A| navigate through the |argument-list|
+  --   • |[b|, |]b|, |[B|, |]B| navigate through the |buffer-list|
   {
     -- TODO debug problem
     'echasnovski/mini.bracketed',
