@@ -99,6 +99,7 @@ alias   aliases_git='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.con
 alias   aliases_nix='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
 alias     templates='${HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 
+alias             v='${HOME}/.local/nvim/bin/nvim'
 alias            vi='${HOME}/.local/nvim/bin/nvim'
 alias           jvi='firejail ${HOME}/.local/nvim/bin/nvim'
 alias           cvi='${HOME}/.local/nvim/bin/nvim -u NONE'

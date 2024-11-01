@@ -111,8 +111,9 @@ New-Alias -Name l -Value ListDense -Force -Option AllScope
 New-Alias -Name v -Value NvimCmd -Force -Option AllScope
 New-Alias -Name vi -Value NvimCmd -Force -Option AllScope
 New-Alias -Name zcbrel -Value ZigCrossBuildRelease -Force -Option AllScope
-New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
 New-Alias -Name zcdeb -Value ZigCrossDebug -Force -Option AllScope
+New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
+
 # New-Alias -Name zbllvm -Value ZigDebug -Force -Option AllScope
 # New-Alias -Name zbsrel -Value ZigBootstrapRelease -Force -Option AllScope
 # New-Alias -Name zbrel -Value ZigBuildRelease -Force -Option AllScope
@@ -217,12 +218,9 @@ function MakePath {
   )
   New-Item -Path "$Path" -Force
 }
-function ZigCrossBuildDebug { & ..\..\zig-bootstrap\master\out-win\host\bin\zig.exe build -p deb --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=Debug --zig-lib-dir lib }
 function ZigCrossBuildRelease { & ..\..\zig-bootstrap\master\out-win\host\bin\zig.exe build -p rel --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=ReleaseSafe --zig-lib-dir lib }
+function ZigCrossDebug { & ..\master\rel\zig.exe build -p deb --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=Debug --zig-lib-dir lib }
 function ZigCrossRelease { & ..\master\rel\zig.exe build -p rel --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" -Dstatic-llvm -Doptimize=ReleaseSafe --zig-lib-dir lib }
-
-# New-Alias -Name zcbrel -Value ZigCrossBuildRelease -Force -Option AllScope
-# New-Alias -Name zcrel -Value ZigCrossRelease -Force -Option AllScope
 
 #====filter
 filter fgrep($keyword) { if ( ($_ | Out-String) -like “*$keyword*”) { $_ } }

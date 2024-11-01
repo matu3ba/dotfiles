@@ -61,3 +61,15 @@ and accept + handle offline inaccuracies and leap seconds yourself.
 
 UTC timestamp -> unix time conversion for size and speed from
 https://blog.reverberate.org/2020/05/12/optimizing-date-algorithms.html
+
+https://www.timescale.com/blog/time-series-compression-algorithms-explained/
+time compression algorithms
+Integer compression:
+* Delta encoding
+* Delta-of-delta encoding
+* Simple-8b
+* Run-length encoding
+Floating point compression:
+* XOR-based compression
+Data-agnostic compression:
+* Dictionary compression

@@ -1,9 +1,19 @@
 ====scheduler_control
 * kubernetes as framework to integrate and control containers of own and hosted solutions
-TODO summarize videos from https://www.youtube.com/@AntonPutra/videos
+
+TODO
+====Kubernetes
++ scheduler
++ how to break it
++ diagnostics
++ lxc containers
+====nix/lix for linux kernel experiments/stuff
+====how to attach debugger over network over kubernetes
+
+====ideas
+idea summarize videos from https://www.youtube.com/@AntonPutra/videos
 for understanding what those things are and how
 * AWS
-* Kubernetes
 * minikube (simple test environment)
 * nginx
 * docker
@@ -12,20 +22,18 @@ for understanding what those things are and how
 * prometheus
 * app monitoring 4 golden signals
 
-TODO attacks and worst cases (single points of failures like bugs in tools to monitor bugs etc)
-TODO analysis/videos of overhead of kubernetes for understanding tradeoffs
-TODO analysis and debugging tools of kubernetes
-
+idea attacks and worst cases (single points of failures like bugs in tools to monitor bugs etc)
+idea analysis/videos of overhead of kubernetes for understanding tradeoffs
+idea analysis and debugging tools of kubernetes
 minikube tutorial https://www.youtube.com/watch?v=qBudNa-j7as
 intro to kubernetes https://www.youtube.com/watch?v=OS8S0FcrgvU
 structuring terraform projects https://www.youtube.com/watch?v=nMVXs8VnrF4
-
 more concrete
-TODO how much complexity one can manage on your own
-TODO automatic attaching a debugger for ssh into machine and attach
-TODO kernel debugging possible and how? should be simple ssh/separate login,
+idea how much complexity one can manage on your own
+idea automatic attaching a debugger for ssh into machine and attach
+idea kernel debugging possible and how? should be simple ssh/separate login,
 ideally something better than ssh supported on the platform
 
 ====databases
-TODO list databases for distributed use cases
-TODO list databases for not losing data by type TM
+idea list databases for distributed use cases
+idea list databases for not losing data by type TM

@@ -49,6 +49,10 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   - PL models with C/C++ not bad, but thin air problem big problem for reasoning
     about code (in weak memory context) using relaxed atomics in arbitrary ways
     * no clear path foward wrt tradeoffs
+* "Using LKMM atomics in Rust" on lwn.net
+  - https://lwn.net/Articles/993785/ TODO atomics semantics
+
+
 
 ====formal_problems
 - 1. implicit proof-carrying code
@@ -110,6 +114,14 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
    * instead of "update the value", "update the value for all associated
      aliases"
    * pointer provenance semantics for provenance based aliasing analysis and optimizations
+     + "Zapping pointers out of thin air" on lwn.net
+       https://lwn.net/Articles/993484/
+       I found these articles very informative regarding 1. atomics, 2. pointer semantics https://lwn.net/Articles/993484/, but probably you already know about this one.
+       general tldr;
+       - 1. ABA tolerance requires to annotate when pointer is physical instead of logical (and "angelic provenance" to simplify stuff for devs probably at compilation time cost + memory doesnt help with that)
+       - 2. writes are atemporal relations/links, reads create temporal relations as can be shown on real machines
+       - 3. pray that compiler devs fix their semantics on OOTA stuff and dont create additional loads
+       and theres stuff for compiler folks + link to simple looking model to eliminate OOTA (although still incomplete/unfinished) where Java, C etc commitees gave up.
      + Rust
        o https://rust-lang.github.io/rfcs/3559-rust-has-provenance.html
        o explicit management of provenance by programemrs

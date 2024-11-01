@@ -5,3 +5,12 @@ Encrypting Backups - tarsnap or full disk encryption
 Signing Packages - minisign
 Encrypting Application Data - libsodium
 Encrypting Files - age like https://github.com/str4d/rage
+
+https://microkerneldude.org/2024/04/18/gofetch-will-people-ever-learn/
+"OpenSSL reported that local side-channel attacks (i.e., ones where an attacker
+process runs on the same machine) fall outside of their threat model."
+Do not use openSSL on
+=> cloud hosting
+=> phone
+=> laptop running other programs not trusted to be bug-free
+=> car

@@ -136,6 +136,7 @@ if status is-interactive
   abbr --add -g    templatesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 
   #abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
+  abbr --add -g             v ' nvim'
   abbr --add -g            vi ' nvim'
   abbr --add -g           jvi ' firejail nvim'
   abbr --add -g           cvi ' nvim -u NONE'
