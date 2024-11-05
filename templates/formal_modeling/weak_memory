@@ -67,3 +67,18 @@ even if assuming intToptr/ptrToInt always loses all provenance.
 +that are unsound there but are technically fine/sound on hardware targets.
 +Thanks for the addition. Do you feel like I missed out more relevant details,
 +for example on the summary of the talks?
+
++ "Zapping pointers out of thin air" on lwn.net
+  https://lwn.net/Articles/993484/
+  I found these articles very informative regarding 1. atomics, 2. pointer semantics https://lwn.net/Articles/993484/, but probably you already know about this one.
+  general tldr;
+  - 1. ABA tolerance may require to annotate when pointer is physical instead of logical
+    (and "angelic provenance" to simplify stuff for devs probably at compilation time cost + memory doesnt help with that)
+  - 2. writes are atemporal relations/links, reads create temporal relations as can be shown on real machines
+  - 3. pray that compiler devs fix their semantics on OOTA stuff and dont create additional loads leading to miscompilations
+  - 4. there is no "simple optimal model" like "semantic dependencies" by ori lahav [link](https://www.youtube.com/watch?v=7VZtwIvZ6qE&list=PLyrlk8Xaylp6u1S3R6gH0W9dkxJhH4B9W&index=10)
+    * see  "[FOWM'24] A case against semantic dependencies"
+    * recommendation to watch stephen dolan's talk
+    * see "promising semantics"
+  - 5. constrain discussion for OOTA https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1916r0.pdf
+  - 6. shortcomings of C11 atomics shown in "Common Compiler Optimisations are Invalid in the C11 Memory Model and what we can do about it"

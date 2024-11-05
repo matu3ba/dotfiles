@@ -1,7 +1,17 @@
-basics
-applied_basics
-bubblewrap for sandboxing
+====basics
+====general
+====applied_basics
+====bubblewrap
+====virtualization
+====allocators
+====html
+====virtual_machine
+====state_stateless_splitting
+====pentesting
+====hardware_attack
+====encryption
 
+https://www.youtube.com/@stacksmashing
 
 CASR: Crash Analysis and Severity Report
 AFL: Fuzzing crashes
@@ -45,6 +55,22 @@ Timing channels in protocols are a huge problem
 * Interact and try to identify differences (patterns etc).
 
 idea examples or tools to for time analysis (io, network etc)
+
+====general
+Incomplete list of intrusion prevention and detection:
+* login policy
+* least privilege (network services non-privileged)
+* chroot jails or containers for network services
+* secured web content, encrypted authentication etc
+* fast patching
+* SELinux or Apparmor in enforcing mode
+* Tripwire or other intrusion detection software and schemes to detect changes to critical files.
+* rootkit detection scanners periodically
+* strict firewall rules, port forwarding etc
+* correct file permissions
+* secure backup copies of system software and data
+* sys bootstrapping from local storage until hardening applied
+* write down attack vectors and plan etc
 
 ====applied_basics
 
@@ -117,6 +143,19 @@ Advancements for seL4 Virtualization Support
 CAmkES and seL4cp Microkit
 IOMMU Solutions for seL4
 
+vmm as virtual machine monitor
+qemu alternate and simpler implementations with the same feature matrix support?
+see https://www.youtube.com/watch?v=O_NI61ADxjk and
+https://cloud.google.com/blog/products/gcp/7-ways-we-harden-our-kvm-hypervisor-at-google-cloud-security-in-plaintext
+https://superuser.com/questions/1490188/what-is-the-difference-and-relationship-between-kvm-virt-manager-qemu-and-libv
+
+https://bellard.org/tinyemu/
+vmm is very openbsd-specific, uses a serial port, single core, and x86-only
+https://www.openbsd.org/faq/faq16.html
+
+https://patchwork.kernel.org/project/qemu-devel/patch/20190701144705.102615-5-slp@redhat.com/hw/i386
+Introduce the microvm machine type
+
 ====allocators
 
 Preventing Use-After-Free Attacks with Fast Forward Allocation
@@ -137,17 +176,6 @@ Preventing Use-After-Free Attacks with Fast Forward Allocation
   - header data duplication due to being stateless, solution: better defaults, bad: save more state for compression
   - there is no formal model (state automaton) of HTTP2.0, not even from the client
 
-====virtual_machine
-vmm as virtual machine monitor
-qemu alternate and simpler implementations with the same feature matrix support?
-see https://www.youtube.com/watch?v=O_NI61ADxjk and
-https://cloud.google.com/blog/products/gcp/7-ways-we-harden-our-kvm-hypervisor-at-google-cloud-security-in-plaintext
-https://superuser.com/questions/1490188/what-is-the-difference-and-relationship-between-kvm-virt-manager-qemu-and-libv
-
-https://bellard.org/tinyemu/
-vmm is very openbsd-specific, uses a serial port, single core, and x86-only
-https://www.openbsd.org/faq/faq16.html
-
 ====state_stateless_splitting
 * handling non-software state
   - hardware (for drivers etc)
@@ -167,24 +195,9 @@ https://github.com/carlospolop/hacktricks
 https://github.com/carlospolop/hacktricks-cloud
 phrack magazine
 
-====general
-Incomplete list of intrusion prevention and detection:
-* login policy
-* least privilege (network services non-privileged)
-* chroot jails or containers for network services
-* secured web content, encrypted authentication etc
-* fast patching
-* SELinux or Apparmor in enforcing mode
-* Tripwire or other intrusion detection software and schemes to detect changes to critical files.
-* rootkit detection scanners periodically
-* strict firewall rules, port forwarding etc
-* correct file permissions
-* secure backup copies of system software and data
-* sys bootstrapping from local storage until hardening applied
-* write down attack vectors and plan etc
-
 ====hardware_attack
-
+channel https://www.youtube.com/@stacksmashing
+* Breaking Bitlocker - Bypassing the Windows Disk Encryption
 https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
 * with soldering a fire lighter is sufficient to get root
 * unclear how ECC affects this
@@ -194,9 +207,5 @@ https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
   + SCRAM (only protects you for the 2nd-nth connections, the password still needs to be provided the first time)
   + main alternative is to use an out of band channel to communicate trust, for example
     OTP with ideally OCRA or TOTP or HOTP or something given by humans
-
-====virtualization
-https://patchwork.kernel.org/project/qemu-devel/patch/20190701144705.102615-5-slp@redhat.com/hw/i386
-Introduce the microvm machine type
 
 http://phrack.org/issues/71/14.html#article

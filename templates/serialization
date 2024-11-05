@@ -1,0 +1,19 @@
+====constrains
+- hard ones
+  * Backwards compat (can open file_v1 with program_v3)
+  * Forwards compat (can open file_v3 with program_v1)
+  * self-description (tools can parse data without special knowledge)
+  * file size
+  * serialization speed
+  * reliability
+  * flexibility
+- soft ones
+  * human readability
+  * platform-independence
+  * usage complexity
+  * degree of abstraction
+  * standards compliance
+
+====simple
+* lbp https://gist.github.com/OswaldHurlem/2a19e63760cba014b9884ff58205ea95/revisions
+* zig https://github.com/kcbanner/ion-extras

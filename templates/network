@@ -167,3 +167,5 @@ https://github.com/samyk/pwnat
 https://www.haskellforall.com/2024/08/firewall-rules-not-as-secure-as-you.html
 common firewall workarounds
 TODO
+
+Low Level access to Linux network routines: man netdevice

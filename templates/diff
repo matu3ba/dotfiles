@@ -11,8 +11,8 @@ https://superuser.com/questions/125376/how-do-i-compare-binary-files-in-linux
 diff --color -y <(xxd foo1.bin) <(xxd foo2.bin)
 
 better binary diff:
-radare2: radiff2
-https://github.com/radareorg/radare2
+rizing: rz-diff
+https://github.com/rizinorg/rizin
 
 excellent binary diff:
 IDA+money, if no x86 or no cloud: diaphora
