@@ -42,11 +42,11 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 #ifdef _WIN32
 #include <malloc.h> // not standard conform in stdlib.h and fn names with _ prefix
 #endif
-#include <stdio.h>  // fprintf
-#include <errno.h>  // errno
-#include <limits.h> // limit
-#include <string.h> // memcpy
+#include <errno.h>    // errno
 #include <inttypes.h> // PRIXPTR and other portable printf formatter
+#include <limits.h>   // limit
+#include <stdio.h>    // fprintf
+#include <string.h>   // memcpy
 
 //====tooling
 //====version
@@ -154,16 +154,16 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // nevertheless Checks: "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
 // is needed and
 
-static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment);
-static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t alignment) {
-    assert((size_bytes & (alignment-1)) == 0); // Size aligned
-    assert(((uintptr_t)ptr & (alignment-1)) == 0); // Pointer aligned
-// #ifdef HAS_C23
-//     // make sensitive information stored in the object inaccessible
-//     memset_explicit(ptr, byte, size_bytes);
-// #else
-    memset(ptr, byte, size_bytes);
-// #endif
+static void memset_16aligned(void *ptr, char byte, size_t size_bytes, uint16_t alignment);
+static void memset_16aligned(void *ptr, char byte, size_t size_bytes, uint16_t alignment) {
+  assert((size_bytes & (alignment - 1)) == 0);     // Size aligned
+  assert(((uintptr_t)ptr & (alignment - 1)) == 0); // Pointer aligned
+                                                   // #ifdef HAS_C23
+  //     // make sensitive information stored in the object inaccessible
+  //     memset_explicit(ptr, byte, size_bytes);
+  // #else
+  memset(ptr, byte, size_bytes);
+  // #endif
 }
 // 1. Careful with segmented address spaces: lookup uintptr_t semantics
 // 2. Careful with long standing existing optimization compiler bugs pointer to
@@ -172,13 +172,13 @@ static void memset_16aligned(void * ptr, char byte, size_t size_bytes, uint16_t 
 // 4. Consider C11 aligned_alloc or posix_memalign
 void ptrtointtoptr(void);
 void ptrtointtoptr(void) {
-  const uint16_t alignment = 16;
-  const uint16_t align_min_1 = alignment - 1;
-  void * mem = malloc(1024+align_min_1);
+  uint16_t const alignment = 16;
+  uint16_t const align_min_1 = alignment - 1;
+  void *mem = malloc(1024 + align_min_1);
   // C89: void *ptr = (void *)(((INT_WITH_PTR_SIZE)mem+align_min_1) & ~(INT_WITH_PTR_SIZE)align_min_1);
   // ie void *ptr = (void *)(((uint64_t)mem+align_min_1) & ~(uint64_t)align_min_1);
   // offset ptr to next alignment byte boundary
-  void * ptr = (void *)(((uintptr_t)mem+align_min_1) & ~(uintptr_t)align_min_1);
+  void *ptr = (void *)(((uintptr_t)mem + align_min_1) & ~(uintptr_t)align_min_1);
   printf("0x%08" PRIXPTR ", 0x%08" PRIXPTR "\n", (uintptr_t)mem, (uintptr_t)ptr);
   memset_16aligned(ptr, 0, 1024, alignment);
   free(mem);
@@ -187,9 +187,7 @@ void ptrtointtoptr(void) {
 // macro NULL = 0 or mingw null
 
 void assert_with_text(void);
-void assert_with_text(void) {
-  assert((1 == 1) && "sometext");
-}
+void assert_with_text(void) { assert((1 == 1) && "sometext"); }
 
 void standard_namespacing(void);
 void standard_namespacing(void) {
@@ -221,18 +219,18 @@ void standard_namespacing(void) {
 #endif
 
   switch (sNamespace1.eMode) {
-  case Undefined:
+    case Undefined:
       break;
-  case Mode1:
+    case Mode1:
       break;
-  case Mode2:
+    case Mode2:
       break;
   }
 }
 
 void c_enum_in_struct_weirdness(void);
 void c_enum_in_struct_weirdness(void) {
-  const uint32_t device_type = 1;
+  uint32_t const device_type = 1;
   struct BeckhoffDeviceType {
     enum Ty {
       Undefined = 0,
@@ -291,30 +289,30 @@ int32_t c_enum(uint32_t in) {
 
 // Superfluous with C23.
 #ifndef GENERATE_ENUM_STRINGS
-    #define DECL_ENUM_ELEMENT( element ) element
-    #define BEGIN_ENUM( ENUM_NAME ) typedef enum tag##ENUM_NAME
-    #define END_ENUM( ENUM_NAME ) ENUM_NAME; \
-            char* getString##ENUM_NAME(enum tag##ENUM_NAME index);
+#define DECL_ENUM_ELEMENT(element) element
+#define BEGIN_ENUM(ENUM_NAME) typedef enum tag##ENUM_NAME
+#define END_ENUM(ENUM_NAME) \
+  ENUM_NAME;                \
+  char *getString##ENUM_NAME(enum tag##ENUM_NAME index);
 #else
-    #define DECL_ENUM_ELEMENT( element ) #element
-    #define BEGIN_ENUM( ENUM_NAME ) char* gs_##ENUM_NAME [] =
-    #define END_ENUM( ENUM_NAME ) ; char* getString##ENUM_NAME(enum \
-            tag##ENUM_NAME index){ return gs_##ENUM_NAME [index]; }
+#define DECL_ENUM_ELEMENT(element) #element
+#define BEGIN_ENUM(ENUM_NAME) char *gs_##ENUM_NAME[] =
+#define END_ENUM(ENUM_NAME) \
+  ;                         \
+  char *getString##ENUM_NAME(enum tag##ENUM_NAME index) { return gs_##ENUM_NAME[index]; }
 #endif
 // enum definition
-BEGIN_ENUM(OsType)
-{
+BEGIN_ENUM(OsType){
     DECL_ENUM_ELEMENT(WINBLOWS),
     DECL_ENUM_ELEMENT(HACKINTOSH),
 } END_ENUM(OsType)
-// usage
-// getStringOsType(WINBLOWS);
+    // usage
+    // getStringOsType(WINBLOWS);
 
-
-inline void hash_combine(unsigned long *seed, unsigned long const value);
+    inline void hash_combine(unsigned long *seed, unsigned long const value);
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
 inline void hash_combine(unsigned long *seed, unsigned long const value) {
-    *seed ^= value + 0x9e3779b9 + (*seed << 6) + (*seed >> 2);
+  *seed ^= value + 0x9e3779b9 + (*seed << 6) + (*seed >> 2);
 }
 
 // https://github.com/tidwall/th64
@@ -342,46 +340,46 @@ inline void hash_combine(unsigned long *seed, unsigned long const value) {
 //   315 |       tmps++;
 //       |       ^~~~
 
-int32_t Str_Len(const char* str);
+int32_t Str_Len(char const *str);
 /// assume: continuous data pointed to by str is terminated with 0x00
-int32_t Str_Len(const char* str) {
-    const char* tmps = str;
-    while(*tmps != 0)
-      tmps++;
-    return (int32_t)(tmps-str);
+int32_t Str_Len(char const *str) {
+  char const *tmps = str;
+  while (*tmps != 0)
+    tmps++;
+  return (int32_t)(tmps - str);
 }
 
-void Str_Copy(const char* str, int32_t strlen, char* str2);
+void Str_Copy(char const *str, int32_t strlen, char *str2);
 /// assume: continuous data pointed by input terminated with 0x00
 /// assume: str2 has sufficient backed memory size
 /// copy strlen chars from str to str2
-void Str_Copy(const char* str, int32_t strlen, char* str2) {
-    for(int i=0; i<strlen; i+=1)
-        str2[i] = str[i];
+void Str_Copy(char const *str, int32_t strlen, char *str2) {
+  for (int i = 0; i < strlen; i += 1)
+    str2[i] = str[i];
 }
 
 int32_t Int_CeilDiv(int32_t x, int32_t y);
 /// assume: positive number
 /// assume: x + y does not overflow
 /// computes x/y
-int32_t Int_CeilDiv(int32_t x, int32_t y) {
-    return (x + y - 1) / y;
-}
+int32_t Int_CeilDiv(int32_t x, int32_t y) { return (x + y - 1) / y; }
 
 // byte-wise dumping somewhat pretty compatible with strlen
 // inline void dumpMemory(const char * memory, size_t size);
-static inline void dumpMemory(const char * memory, size_t size) {
+static inline void dumpMemory(char const *memory, size_t size) {
   uint32_t cols = 80;
-  for (uint32_t i = 0; i<size; i+=1) {
+  for (uint32_t i = 0; i < size; i += 1) {
     fprintf(stdout, "%x ", memory[i]);
-    if ((cols + 1) % 2 == 0) fprintf(stdout, " ");
-    if (cols % cols == 0) fprintf(stdout, "\n");
+    if ((cols + 1) % 2 == 0)
+      fprintf(stdout, " ");
+    if (cols % cols == 0)
+      fprintf(stdout, "\n");
   }
 }
 
 void use_dumpMemory(void);
 void use_dumpMemory(void) {
-  const char * some_memory = "some_memory";
+  char const *some_memory = "some_memory";
   dumpMemory(some_memory, strlen(some_memory));
 
   // options for lower aligned pointers
@@ -389,31 +387,32 @@ void use_dumpMemory(void) {
   // 2. copy pointers to print memory
 }
 
-void printBits(int32_t const size, void * const ptr);
+void printBits(int32_t const size, void *const ptr);
 // assume: little endian
-void printBits(int32_t const size, void * const ptr) {
-    int status = 0;
-    unsigned char *b = (unsigned char*) ptr; // generic pointer (void)
-    for (int32_t i = size-1; i >= 0; i-=1)
-    {
-        for (int32_t j = 7; j >= 0; j-=1)
-        {
-            unsigned char byte = (b[i] >> j) & 1; // shift ->, rightmost bit
-            status = printf("%u", byte);
-            if (status < 0) abort(); // stdlib.h
-        }
-        status = printf("%x", b[i]);
-        if (status < 0) abort();
+void printBits(int32_t const size, void *const ptr) {
+  int status = 0;
+  unsigned char *b = (unsigned char *)ptr; // generic pointer (void)
+  for (int32_t i = size - 1; i >= 0; i -= 1) {
+    for (int32_t j = 7; j >= 0; j -= 1) {
+      unsigned char byte = (b[i] >> j) & 1; // shift ->, rightmost bit
+      status = printf("%u", byte);
+      if (status < 0)
+        abort(); // stdlib.h
     }
-    //printf(" ");
-    status = puts(""); // write empty string followed by newline
-    if (status < 0) abort();
+    status = printf("%x", b[i]);
+    if (status < 0)
+      abort();
+  }
+  //printf(" ");
+  status = puts(""); // write empty string followed by newline
+  if (status < 0)
+    abort();
 }
 
 void print_size_t(void);
 void print_size_t(void) {
   size_t val = 0;
-  printf("%zu\n",val); // SHENNANIGAN clangd: no autocorrection of printf formatter string
+  printf("%zu\n", val); // SHENNANIGAN clangd: no autocorrection of printf formatter string
 }
 
 // easy preventable ub:
@@ -428,48 +427,48 @@ void print_size_t(void) {
 //   + finding existential variables is usually the hardest problem in automatized proves,
 //     so it looks unfeasible to automatize for "non-experts"
 
-int helper_seq_points(int* a);
-int helper_seq_points(int* a) {
-    *a=*a+1;
-    return *a;
+int helper_seq_points(int *a);
+int helper_seq_points(int *a) {
+  *a = *a + 1;
+  return *a;
 }
 
 void sequence_points_ub(void);
 // SHENNANIGAN
 void sequence_points_ub(void) {
-    int a = 0;
-    // a = a++ + b++; // Multiple unsequenced modifications to a
-    // Same problem without warnings:
-    a = helper_seq_points(&a) + helper_seq_points(&a);
+  int a = 0;
+  // a = a++ + b++; // Multiple unsequenced modifications to a
+  // Same problem without warnings:
+  a = helper_seq_points(&a) + helper_seq_points(&a);
 }
 
-void aliasing_loader_clobberd_by_store(int* a, const int* b);
+void aliasing_loader_clobberd_by_store(int *a, int const *b);
 // SHENNANIGAN
 // Aliasing protection in C/C++ is based on type equivalence (in Rust not):
-void aliasing_loader_clobberd_by_store(int* a, const int* b) {
-  for (int i=0; i<10; i+=1) {
+void aliasing_loader_clobberd_by_store(int *a, int const *b) {
+  for (int i = 0; i < 10; i += 1) {
     a[i] += *b;
   }
 }
 
-void noaliasing(int* a, const long* b);
-void noaliasing(int* a, const long* b) {
-  for (int i=0; i<10; i+=1) {
+void noaliasing(int *a, long const *b);
+void noaliasing(int *a, long const *b) {
+  for (int i = 0; i < 10; i += 1) {
     a[i] += *b;
   }
 }
-void noaliasing_with_restrict(int* __restrict__ a, const int* b);
-void noaliasing_with_restrict(int* __restrict__ a, const int* b) {
-  for (int i=0; i<10; i+=1) {
+void noaliasing_with_restrict(int *__restrict__ a, int const *b);
+void noaliasing_with_restrict(int *__restrict__ a, int const *b) {
+  for (int i = 0; i < 10; i += 1) {
     a[i] += *b;
   }
 }
 
-void ptr_cmp(int* a, const int* b);
+void ptr_cmp(int *a, int const *b);
 // SHENNANIGAN
 // Additional pointer semantics created unnecessary UB, so one has to compare
 // against 0 to be always compatible.
-void ptr_cmp(int* a, const int* b) {
+void ptr_cmp(int *a, int const *b) {
   if (a == 0 && b == 0) {
     *a = *a + *b;
   }
@@ -481,7 +480,7 @@ void ptr_cmp(int* a, const int* b) {
 // or using this from C++ is UB:
 //   int* a = void*;
 
-void convert_string_to_int(const char *buff);
+void convert_string_to_int(char const *buff);
 // SHENNANIGAN
 // No readable, portable simple to use, handling all standard cases for ascii standard
 // conversion routines for string to integer. <C++23> is worse without boost.
@@ -489,21 +488,21 @@ void convert_string_to_int(const char *buff);
 // https://wiki.sei.cmu.edu/confluence/display/c/ERR34-C.+Detect+errors+when+converting+a+string+to+a+number
 // Note, that errno can be set directly.
 // #include <errno.h> #include <limits.h> #include <stdlib.h> #include <stdio.h>
-void convert_string_to_int(const char *buff) {
+void convert_string_to_int(char const *buff) {
   char *end;
   int si;
   errno = 0;
-  const long sl = strtol(buff, &end, 10);
+  long const sl = strtol(buff, &end, 10);
   if (end == buff) {
-    (void) fprintf(stderr, "%s: not a decimal number\n", buff);
+    (void)fprintf(stderr, "%s: not a decimal number\n", buff);
   } else if ('\0' != *end) {
-    (void) fprintf(stderr, "%s: extra characters at end of input: %s\n", buff, end);
+    (void)fprintf(stderr, "%s: extra characters at end of input: %s\n", buff, end);
   } else if ((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno) {
-    (void) fprintf(stderr, "%s out of range of type long\n", buff);
+    (void)fprintf(stderr, "%s out of range of type long\n", buff);
   } else if (sl > INT_MAX) {
-    (void) fprintf(stderr, "%ld greater than INT_MAX\n", sl);
+    (void)fprintf(stderr, "%ld greater than INT_MAX\n", sl);
   } else if (sl < INT_MIN) {
-    (void) fprintf(stderr, "%ld less than INT_MIN\n", sl);
+    (void)fprintf(stderr, "%ld less than INT_MIN\n", sl);
   } else {
     si = (int)sl;
     (void)si;
@@ -511,15 +510,14 @@ void convert_string_to_int(const char *buff) {
   }
 }
 
-void convert_string_to_int_simple(const char *buff);
-void convert_string_to_int_simple(const char *buff) {
+void convert_string_to_int_simple(char const *buff);
+void convert_string_to_int_simple(char const *buff) {
   char *end;
   int si;
   errno = 0;
-  const long sl = strtol(buff, &end, 10);
-  if ( (end != buff) && ('\0' == *end)
-    && !((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno)
-    && (sl >= INT_MIN) && (sl <= INT_MAX)) {
+  long const sl = strtol(buff, &end, 10);
+  if ((end != buff) && ('\0' == *end) && !((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno) && (sl >= INT_MIN) &&
+      (sl <= INT_MAX)) {
     si = (int)sl;
     (void)si;
     // ..
@@ -551,25 +549,24 @@ int no_reinterpret_cast(void);
 int no_reinterpret_cast(void) {
   //impl_reinterpret_cast_usage
   // clang-format: off
-  const char some_vals[9] = { 0
-                            , 1, 0, 0, 0
-                            , 0, 0, 0 ,0 };
+  char const some_vals[9] = {0, 1, 0, 0, 0, 0, 0, 0, 0};
   // clang-format: on
   // WRONG: int64_t val = *((uint64_t*)&some_vals[1]);
   int64_t val;
   // more type safe than reinterpret_cast, because some_vals[1] is a type error
   memcpy(&val, &some_vals[1], 8);
-  if (val != INT64_MIN) return 1;
+  if (val != INT64_MIN)
+    return 1;
   return 0;
 }
 
 int ptr_no_reinterpret_cast(void);
 // SHENNANIGAN unclear risk from clang/gcc provenance related miscomplations
 int ptr_no_reinterpret_cast(void) {
-  char arr[4] = {0,0,0,1};
-  int32_t i32_arr = 0;            // unnecessary variable hopefully elided
+  char arr[4] = {0, 0, 0, 1};
+  int32_t i32_arr = 0; // unnecessary variable hopefully elided
   memcpy(&i32_arr, &arr[0], 4);
-  int32_t * i32_arr_ptr = &i32_arr;
+  int32_t *i32_arr_ptr = &i32_arr;
   (void)i32_arr_ptr;
   // SHENNANIGAN dont return stack local variable here!
   return 0;
@@ -586,15 +583,16 @@ struct sStruct1 {
 void padding(void);
 // Ensure correct storage and padding size for pointers via sizeof.
 void padding(void) {
-  struct sStruct1 * str1 = malloc(sizeof(struct sStruct1));
+  struct sStruct1 *str1 = malloc(sizeof(struct sStruct1));
   str1->a1 = 5;
   free(str1);
 }
 
-void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim);
-void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim) {
-  for(int i=0; i<len_bytes; i+=1) {
-    if (bytes == lim) break;
+void allowed_aliasing(uint16_t *bytes, int32_t len_bytes, uint16_t *lim);
+void allowed_aliasing(uint16_t *bytes, int32_t len_bytes, uint16_t *lim) {
+  for (int i = 0; i < len_bytes; i += 1) {
+    if (bytes == lim)
+      break;
     bytes[i] = 42;
   }
 }
@@ -607,7 +605,7 @@ void allowed_aliasing(uint16_t * bytes, int32_t len_bytes, uint16_t * lim) {
 
 // typedef struct convention
 typedef struct structname {
-    int some_var;
+  int some_var;
 } structname_s;
 
 // SHENNANIGAN
@@ -658,31 +656,29 @@ int32_t div_noconflict(int32_t a, int32_t b) { return (b != 0) ? a / b : 0; }
 void use_callbacks(void);
 void use_callbacks(void) {
   // Array of function pointers initialization
-  int32_t (*callbacks[4]) (int32_t, int32_t) = {sum, sub, mul, div_noconflict};
+  int32_t (*callbacks[4])(int32_t, int32_t) = {sum, sub, mul, div_noconflict};
 
   // Using the function pointers
   int32_t result;
   int32_t i = 20, j = 5, op;
 
   for (op = 0; op < 4; op++) {
-      result = callbacks[op](i, j);
-      fprintf(stdout, "Result: %d\n", result);
+    result = callbacks[op](i, j);
+    fprintf(stdout, "Result: %d\n", result);
   }
 }
 
-void fn_voidptr(void * raw_ptr, uint64_t len);
+void fn_voidptr(void *raw_ptr, uint64_t len);
 // SHENNANIGAN const char* to void* cast has unhelpful error messages
-void fn_voidptr(void * raw_ptr, uint64_t len) {
-  memset(raw_ptr, 0, len);
-}
+void fn_voidptr(void *raw_ptr, uint64_t len) { memset(raw_ptr, 0, len); }
 
 void use_voidptr(void);
 void use_voidptr(void) {
-	char *sVars[] = {
-		"MAIN.bIn_Overflow",
-		"MAIN.bIn_Counter",
+  char *sVars[] = {
+      "MAIN.bIn_Overflow",
+      "MAIN.bIn_Counter",
   };
-  fn_voidptr((void*)sVars[0], strlen(sVars[0]));
+  fn_voidptr((void *)sVars[0], strlen(sVars[0]));
 }
 
 // SHENNANIGAN standard flag for Windows
@@ -709,8 +705,8 @@ void use_voidptr(void) {
 void ape_win_incompat_fileprint(void);
 // different semantics of "secure fns" and not portable
 void ape_win_incompat_fileprint(void) {
-  FILE * f1;
-  const char * f1_name = "file1";
+  FILE *f1;
+  char const *f1_name = "file1";
   char err_buf[100];
   errno_t err = fopen_s(&f1, f1_name, "a+");
   if (err != 0) {
@@ -728,8 +724,8 @@ void ape_win_incompat_fileprint(void) {
 void ape_fileprint(void);
 void ape_print(void);
 void ape_fileprint(void) {
-  const char * f1_name = "file1";
-  FILE * f1 = fopen(f1_name, "a+");
+  char const *f1_name = "file1";
+  FILE *f1 = fopen(f1_name, "a+");
   if (f1 == NULL) {
     fprintf(stderr, "cannot open file '%s': %s\n", f1_name, strerror(errno));
   } else {
@@ -744,7 +740,7 @@ void ape_fileprint(void) {
 #define _CRT_SECURE_NO_DEPRECATE
 void ape_win_print(void);
 void ape_win_print(void) {
-  FILE * f1;
+  FILE *f1;
   fopen_s(&f1, "file1", "a+");
   fprintf(f1, "sometext\n");
   fclose(f1);
@@ -753,7 +749,7 @@ void ape_win_print(void) {
 
 #ifndef _WIN32
 void ape_print(void) {
-  FILE * f1 = fopen("file1", "a+");
+  FILE *f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
   fclose(f1);
 }
@@ -767,22 +763,23 @@ void array_pointers(void) {
   int arr[10];
   int *ap0 = arr;
   ap0[0] = 5;
-  int (*ap1)[10] = &arr;
+  int(*ap1)[10] = &arr;
   (*ap1)[1] = 10;
 
   // multi-dimensional array on heap
-  int (*ap3)[9000][9000] = malloc(sizeof(*ap3));
-  if (ap3) free(ap3);
+  int(*ap3)[9000][9000] = malloc(sizeof(*ap3));
+  if (ap3)
+    free(ap3);
 
   // Variable Length Array (on stack)
-  int (*ap4)[1000][1000] = malloc(sizeof(*ap4));
+  int(*ap4)[1000][1000] = malloc(sizeof(*ap4));
   if (ap4) {
     // (*arr)[i][j]
     free(ap4);
   }
 
   // alternative (worse to use): 1d array with offsets, piecewise allocation or big fixed array
-  int* arr_1D = malloc(1000 * 1000 * (sizeof(*arr)));
+  int *arr_1D = malloc(1000 * 1000 * (sizeof(*arr)));
   if (arr_1D) {
     // arr_1D[1000*i + j] = 10;
     // ..
@@ -798,17 +795,17 @@ void array_pointers(void) {
 // digraphs, triggraphs, alternative tokens (ASCII)
 
 struct Des1 {
-  int x,y;
-  const char * s1;
+  int x, y;
+  char const *s1;
 };
 
 void designated_initializer(void);
 // Designated initializer allow very ugly code, but also reasonable
 // array initialization since C99
 void designated_initializer(void) {
-  int arr0[] = { 1, 2, [10] = 8, [17] = 9 };
+  int arr0[] = {1, 2, [10] = 8, [17] = 9};
   (void)arr0;
-  struct Des1 d1 = { .y = 1, .s1 = "blubb", .x = -1 };
+  struct Des1 d1 = {.y = 1, .s1 = "blubb", .x = -1};
   (void)d1;
   struct M1 {
     int x;
@@ -816,35 +813,27 @@ void designated_initializer(void) {
     int z;
   };
   struct M1 arr1[] = {
-    [0] = { 0, 1, 9 },
-    [1] = { 3, 4, 5 },
-    [2] = { 6, 7, 8 },
+      [0] = {0, 1, 9},
+      [1] = {3, 4, 5},
+      [2] = {6, 7, 8},
   };
   (void)arr1;
   struct {
     int sec, min, hour, day, mon, year;
-  } dt1 = {
-    .day = 1, 1, 2001,
-    .sec = 1, 1, 1
-  };
+  } dt1 = {.day = 1, 1, 2001, .sec = 1, 1, 1};
   (void)dt1;
 }
-
 
 // Compound literals looks like brace-enclosed initializer list
 struct ComLit1 {
   int x, y;
 };
 void compound_literal(struct ComLit1 cl1);
-void compound_literal_by_addr(struct ComLit1 * cl1);
+void compound_literal_by_addr(struct ComLit1 *cl1);
 void compound_literal_usage(void);
 
-void compound_literal(struct ComLit1 cl1) {
-  fprintf(stdout, "%d, %d\n", cl1.x, cl1.y);
-}
-void compound_literal_by_addr(struct ComLit1 * cl1) {
-  fprintf(stdout, "%d, %d\n", cl1->x, cl1->y);
-}
+void compound_literal(struct ComLit1 cl1) { fprintf(stdout, "%d, %d\n", cl1.x, cl1.y); }
+void compound_literal_by_addr(struct ComLit1 *cl1) { fprintf(stdout, "%d, %d\n", cl1->x, cl1->y); }
 void compound_literal_usage(void) {
   // fun fact: red brackets by clangd show that this is cursed
   compound_literal((struct ComLit1){1, 2});
@@ -877,8 +866,8 @@ void bitfields(void);
 // SHENNANIGAN impementation defined behavior for nesting due to being underspecified
 void bitfields(void) {
   struct Bitfield1 {
-    unsigned int b0: 3;
-    unsigned int b1: 4;
+    unsigned int b0 : 3;
+    unsigned int b1 : 4;
   };
 }
 
@@ -906,7 +895,7 @@ void flexible_array_member(void) {
     double arr[]; // flexible array member must be last
     // potential padding
   };
-  struct FlexibleArrayMember * flex_arr_mem = malloc(5 * sizeof(struct FlexibleArrayMember));
+  struct FlexibleArrayMember *flex_arr_mem = malloc(5 * sizeof(struct FlexibleArrayMember));
   flex_arr_mem->len = 5;
   for (uint32_t i = 0; i < flex_arr_mem->len; i += 1)
     flex_arr_mem->arr[i] = 20;
@@ -915,10 +904,10 @@ void flexible_array_member(void) {
 void imaginary_cursor_position_in_printf(void);
 void imaginary_cursor_position_in_printf(void) {
   int pos1, pos2;
-  const char * str_unknown_len = "some_string_here";
+  char const *str_unknown_len = "some_string_here";
   fprintf(stdout, "write %n(%s)%n here\n", &pos1, str_unknown_len, &pos2);
-  fprintf(stdout, "%*s\\%*s/\n", pos1, " ", pos2-pos1-2, " ");
-  fprintf(stdout, "%*s", pos1+1, " ");
+  fprintf(stdout, "%*s\\%*s/\n", pos1, " ", pos2 - pos1 - 2, " ");
+  fprintf(stdout, "%*s", pos1 + 1, " ");
 }
 
 // TODO finish up https://jorenar.com/blog/less-known-c
@@ -929,7 +918,6 @@ void safe_debugging_on_unix() {
   write(-1, "writes to non-existing file descriptors are still visible in strace");
 }
 #endif
-
 
 // based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
 // TODO motivation
@@ -1027,19 +1015,20 @@ struct ImageVLA ImageVLA;
 // Use realtime thread with minimal time period to execute, but keep 1 thread at a time, even if taking longer
 // st = timeSetEvent(1, 0, &fnPtr, reinterpret_cast<DWORD_PTR>(this), TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 
-int FG_Init(char * errmsg_ptr, int * errmsg_len);
+int FG_Init(char *errmsg_ptr, int *errmsg_len);
 // SHENNANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
 // In practive implementations unconditionally add 0 sentinel.
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
-int FG_Init(char * errmsg_ptr, int * errmsg_len) {
-  const char * msg = "balbla";
+int FG_Init(char *errmsg_ptr, int *errmsg_len) {
+  char const *msg = "balbla";
 
   // int st = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
   //     'unsigned long long' [-Wsign-conversion]
   // 966 |   int st = snprintf(errmsg_ptr, *errmsg_len, "%s", msg);
   //     |            ~~~~~~~~             ^~~~~~~~~~~
   int st = snprintf(errmsg_ptr, (size_t)*errmsg_len, "%s", msg);
-  if (st > 0) return 0;
+  if (st > 0)
+    return 0;
   return 1;
 }
 
@@ -1100,7 +1089,7 @@ void resetOutputs(void);
 LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo);
 void veh_example(void);
 
-  void deinitTimer(void) {}
+void deinitTimer(void) {}
 void resetOutputs(void) {}
 
 // SHENNANIGAN windows
@@ -1110,11 +1099,11 @@ void resetOutputs(void) {}
 // #include <winnt.h>
 LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo) {
   (void)ExceptionInfo;
-	// 1. stop realtime thread via synchronously via timeKillEvent option TIME_KILL_SYNCHRONOUS
+  // 1. stop realtime thread via synchronously via timeKillEvent option TIME_KILL_SYNCHRONOUS
   deinitTimer();
-	// 2. write outputs, which is safe due to realtime thread being stopped
+  // 2. write outputs, which is safe due to realtime thread being stopped
   resetOutputs();
-	return EXCEPTION_EXECUTE_HANDLER;
+  return EXCEPTION_EXECUTE_HANDLER;
 
   // https://learn.microsoft.com/en-us/cpp/cpp/try-except-statement?view=msvc-170
   // EXCEPTION_CONTINUE_EXECUTION -1
@@ -1172,23 +1161,22 @@ void getFullPathNameUsage(void);
 // On Windows, Ctrl-C/SIGINT is called from newly spawned thread
 // and handled in ConsoleCtrlHandler.
 // https://stackoverflow.com/questions/16826097/equivalent-to-sigint-posix-signal-for-catching-ctrlc-under-windows-mingw
-BOOL WINAPI ConsoleHandler(DWORD dwType)
-{
-    switch(dwType) {
+BOOL WINAPI ConsoleHandler(DWORD dwType) {
+  switch (dwType) {
     case CTRL_C_EVENT:
-        printf("ctrl-c\n");
-        break;
+      printf("ctrl-c\n");
+      break;
     case CTRL_BREAK_EVENT:
-        printf("break\n");
-        break;
+      printf("break\n");
+      break;
     default:
-        printf("Some other event\n");
-    }
-    return TRUE;
+      printf("Some other event\n");
+  }
+  return TRUE;
 }
 
 int setup_SIGINT_handler(void) {
-  if (!SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler,TRUE)) {
+  if (!SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler, TRUE)) {
     fprintf(stderr, "Unable to install handler!\n");
     return EXIT_FAILURE;
   }
@@ -1197,7 +1185,7 @@ int setup_SIGINT_handler(void) {
 }
 
 void getFullPathNameUsage(void) {
-  const char * argv = "test123";
+  char const *argv = "test123";
   char *fileExt;
   char szDir[256]; //dummy buffer
   GetFullPathName(&argv[0], 256, szDir, &fileExt);
@@ -1225,8 +1213,8 @@ void getFullPathNameUsage(void) {
 
 struct TaggedUnion {
   union TheUnion {
-    const uint64_t * u64ptr;
-    const uint8_t * u8ptr;
+    uint64_t const *u64ptr;
+    uint8_t const *u8ptr;
   } m_TheUnion;
   enum TheTag {
     u64ptr,
@@ -1264,7 +1252,6 @@ void enum_class(void) {
 
 // TODO https://github.com/gritzko/librdx/blob/master/ABC.md
 // scalable high perf code requirements
-
 
 // GENERAL
 
@@ -1339,16 +1326,15 @@ void C11_alignment_control(void) {
 void C11_threads(void);
 void C11_threads(void) {
   // idea
-
 }
 
 #include <stdatomic.h>
 struct No_Immutable_in_C_i64 {
-  _Atomic int64_t * p1;
+  _Atomic int64_t *p1;
   _Atomic int64_t cnt;
 };
-int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val);
-int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val);
+int32_t immut_set(struct No_Immutable_in_C_i64 *obj, int64_t val);
+int32_t immut_get(struct No_Immutable_in_C_i64 *obj, int64_t *val);
 
 // C provides no nice way to get generics (besides C11 non C++ usable generic
 // selection), so (usually) it makes no sense to have a method 'update' being
@@ -1359,14 +1345,14 @@ int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val);
 // methods, no good way to use struct generically by filling fn ptr/callback for
 // additional method 'update'.
 // Omit shared_ptr methods here for brevity.
-int32_t immut_set(struct No_Immutable_in_C_i64 * obj, int64_t val) {
+int32_t immut_set(struct No_Immutable_in_C_i64 *obj, int64_t val) {
   if (obj != NULL) {
     atomic_store(obj->p1, val);
     return 0;
   }
   return 1;
 }
-int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val) {
+int32_t immut_get(struct No_Immutable_in_C_i64 *obj, int64_t *val) {
   if (obj != NULL) {
     *val = atomic_load(obj->p1);
     return 0;
@@ -1376,24 +1362,22 @@ int32_t immut_get(struct No_Immutable_in_C_i64 * obj, int64_t * val) {
 #endif
 
 #ifdef HAS_C17
-  // only fixed defects
-  // supports realloc with size = 0
+// only fixed defects
+// supports realloc with size = 0
 #endif
 
 #ifdef HAS_C23
 // breaking changes
 // * _Thread_local -> thread_local
-#if __has_include (<stdckdint.h>)
-  #include <stdckdint.h>
+#if __has_include(<stdckdint.h>)
+#include <stdckdint.h>
 #endif
 [[deprecated]] // warning on usage and clangd shows strikedthrough text
 void C23_deprecated();
 void C23_deprecated() {}
 [[nodiscard]] // warning on usage of discarded code
 int C23_discard(int x);
-int C23_discard(int x) {
-  return x + 1;
-}
+int C23_discard(int x) { return x + 1; }
 // SHENNANIGAN C23 has no macros to test target for branch-free wraparound or
 // saturation arithmetic (+|,|*)
 // SHENNANIGAN C23 has no saturation arithmetic
@@ -1419,15 +1403,15 @@ void C23_constexpr() {
 }
 void C23_typecoercion();
 void C23_typecoercion() {
-  auto x = 0b1111; // new binary integer constants
+  auto x = 0b1111;         // new binary integer constants
   typeof(x) y = 1'000'000; // new separators
-  printf("%d\n", x); // prints 15
-  printf("%d\n", y); // prints 1000000
+  printf("%d\n", x);       // prints 15
+  printf("%d\n", y);       // prints 1000000
 }
 void C23_constexpr_to_prevent_VLA();
 void C23_constexpr_to_prevent_VLA() {
   constexpr int32_t N = 10;
-  static_assert (N == 10);
+  static_assert(N == 10);
   bool a[N]; // array of N booleans instead of VLA
   for (int i = 0; i < N; ++i) {
     a[i] = true;
@@ -1439,21 +1423,19 @@ void C23_constexpr_to_prevent_VLA() {
 // [[noreturn]] instead of annotation
 
 enum efields : uint16_t { // best practice to specify len of enum
-    efields_x
+  efields_x
 };
 int32_t C23_simple_generic_selection_on_enum();
-int32_t C23_simple_generic_selection_on_enum() {
-    return _Generic(efields_x, uint16_t: 0, default: 1);
-}
+int32_t C23_simple_generic_selection_on_enum() { return _Generic(efields_x, uint16_t: 0, default: 1); }
 enum values : uint64_t {
-	values_a = 0, // int
-  values_b = 1, // int
-	values_c = 3, // int
-	values_d = 0x1000, // int
-	values_f = 0xFFFFF, // int
-	values_g, // implicit +1, on 16-bit platform upgrades type of constant
-	values_e = values_g + 24, // current type of g - long or long long to do math and set value to e
-	values_i = ULLONG_MAX // usigned long or unsigned long long
+  values_a = 0,             // int
+  values_b = 1,             // int
+  values_c = 3,             // int
+  values_d = 0x1000,        // int
+  values_f = 0xFFFFF,       // int
+  values_g,                 // implicit +1, on 16-bit platform upgrades type of constant
+  values_e = values_g + 24, // current type of g - long or long long to do math and set value to e
+  values_i = ULLONG_MAX     // usigned long or unsigned long long
 };
 int32_t C23_complex_generic_selection_on_enum();
 int32_t C23_complex_generic_selection_on_enum() {
@@ -1462,14 +1444,13 @@ int32_t C23_complex_generic_selection_on_enum() {
   return _Generic(values_a, unsigned long: 1, unsigned long long: 0, default: 3);
 }
 
-#if __has_include (<stdbit.h>)
+#if __has_include(<stdbit.h>)
 #include <stdbit.h>
 void C23_stdbit();
 void C23_stdbit() {
   if (__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_LITTLE__) {
     assert(__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_LITTLE__);
-  }
-  else {
+  } else {
     assert(__STDC_ENDIAN_NATIVE__ == __STDC_ENDIAN_BIG__);
   }
   //  stdc_popcount

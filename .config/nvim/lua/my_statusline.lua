@@ -19,6 +19,8 @@ local visual_setting_choices = {
 _ = visual_setting_choices
 local visual_setting = 1
 
+-- idea config: toggle show size of last copy + selection in cmdline
+
 ---Set visual setting. Caller responsible to validate input
 ---@param setting string Corresponds to entry of visual_setting_choices.
 statusline.setVisualSetting = function(setting)

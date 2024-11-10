@@ -3,21 +3,25 @@
 local ok_lint, lint = pcall(require, 'lint')
 if not ok_lint then return end
 
--- python3 -m pip install --user --upgrade pip
--- pip3 install -U --user ruff
--- pip3 install -U --user mypy
--- distropkg install python[3[x]-[pexpect|ruff|mypy]
+--== installing freestanding python
+--https://github.com/allyourcodebase/cpython
 
--- updating pip
--- pip list --outdated
--- pip freeze > req.txt
--- sed -i 's|==|>=|g' req.txt
--- pip3 install --user -r req.txt --upgrade
+--==installing pip
+-- python -m ensurepip --upgrade
+
+--==installing pipx
+-- pip install --user -U pipx
+
+--==updating pipx
+-- pip install --user -U pipx
+-- pipx upgrade-all
+-- on error: pipx reinstall-all
 
 -- idea codespell
 -- https://sean.fish/x/blog/codespell-ignorelists-neovim/
 
 lint.linters_by_ft = {
+  sh = { 'shellcheck' },
   -- # ignore ruff lints for whole file (too long line)
   -- # ruff: noqa: E501 E701
   -- # ignore ruff lints with at end eof line:

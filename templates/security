@@ -24,6 +24,7 @@ Design of Uni-Kernel alone makes less unsecure due to less isolation of componen
 
 Note: Linux is becoming more Micro-Kernel-like with io_uring as 0-copy messaging,
 bpf as VM running statically compiled code inside Linux etc.
+RFC 9669 BPF Instruction Set Architecture (ISA)
 
 Proof code effort is quadratic to code size:
 * Bug hidden for any non-trivial or verified implementation.

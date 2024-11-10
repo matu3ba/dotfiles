@@ -2,7 +2,11 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
+
 -- clangd
+-- ziggy     https://github.com/kristoff-it/ziggy
+-- supermd   https://github.com/kristoff-it/supermd
 -- superhtml https://github.com/kristoff-it/superhtml
 
 --==LspInstallationsAndUsage
@@ -163,7 +167,8 @@ lspconfig.lua_ls.setup {
 
 --==Keybindings
 vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  -- group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  group = aucmd_lsp,
   callback = function(ev)
     -- Enable completion triggered by <c-x><c-o>
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -204,6 +209,45 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', '<leader>re', function() vim.cmd#'LspRestart' end', opts) -- restart lsp
   end,
 })
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = aucmd_lsp,
+  pattern = 'ziggy',
+  callback = function()
+    vim.lsp.start {
+      name = 'Ziggy LSP',
+      cmd = { 'ziggy', 'lsp' },
+      root_dir = vim.loop.cwd(),
+      flags = { exit_timeout = 1000, debounce_text_changes = 150 },
+    }
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = aucmd_lsp,
+  pattern = 'ziggy_schema',
+  callback = function()
+    vim.lsp.start {
+      name = 'Ziggy LSP',
+      cmd = { 'ziggy', 'lsp', '--schema' },
+      root_dir = vim.loop.cwd(),
+      flags = { exit_timeout = 1000, debounce_text_changes = 150 },
+    }
+  end,
+})
+
+-- vim.api.nvim_create_autocmd('FileType', {
+--   group = aucmd_lsp,
+--   pattern = 'superhtml',
+--   callback = function()
+--     vim.lsp.start {
+--       name = 'SuperHTML LSP',
+--       cmd = { 'superhtml', 'lsp' },
+--       root_dir = vim.loop.cwd(),
+--       flags = { exit_timeout = 1000, debounce_text_changes = 150, },
+--     }
+--   end,
+-- })
 
 --==CompleterSetup
 cmp.setup {

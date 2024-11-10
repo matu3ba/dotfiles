@@ -1,18 +1,26 @@
 --! Main entry point, very common things and autocommands
 -- luacheck: globals vim
 -- luacheck: no max line length
+vim.filetype.add {
+  extension = {
+    smd = 'supermd',
+    shtml = 'superhtml',
+    ziggy = 'ziggy',
+    ['ziggy-schema'] = 'ziggy_schema',
+  },
+}
+
 require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
 -- cp -rf $HOME/dotfiles/.config/nvim $HOME/AppData/Local/nvim
 -- cp -r -fo $HOME\dotfiles\.config\nvim $HOME\AppData\Local
 -- Copy-Item -Recurse -Force -Path $HOME/dotfiles/.config/nvim -Destination $HOME/AppData/Local
--- TODO: figure out for windows: cp -fr soruce/ destination/
 -- :lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 -- vim.opt.runtimepath:get(), :h vim.opt
 -- vim.opt.rtp:append()
 -- set environment variable NVIM_APPNAME to use $XDG_CONFIG_HOME/NVIM_APPNAME
--- NVIM_APPNAME=nvim is implicit, if NVIM_APPNAME is not defined.
+-- NVIM_APPNAME=nvim is implicit, iff NVIM_APPNAME is not defined.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 -- local has_lazy = vim.uv.fs_stat(lazypath)
 -- workaround git commit failure
@@ -36,22 +44,17 @@ else
   -- * 4. luasnips setup to create snippets for common stuff
   -- * 5. vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
-  -- TODO entity component system (ECS)
-  -- TODO ECS design idea:
-  -- composable testing lib to build + test + spawn suite with optional debugging vs simulation
 
   -- TODO https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
-  -- TODO config: setup NeoComposer
+  -- idea config: setup NeoComposer
 
-  -- TODO https://github.com/birth-software/birth
-  -- TODO advanced gdb to test signaling + reliable attaching of gdb to a process
+  -- idea https://github.com/birth-software/birth
+  -- idea advanced gdb to test signaling + reliable attaching of gdb to a process
 
-  -- TODO NixOS configs https://github.com/sebastiant/dotfiles
-  -- TODO setup https://arcan-fe.com within (NixOS xor chimera linux) + experiment with neovim shell commands
-  -- TODO web search via shell from https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
-  -- * which api end point?
-  -- TODO walk through https://www.youtube.com/@devopstoolbox/videos
-  -- TODO walk through https://github.com/bregman-arie/devops-exercises
+  -- idea NixOS configs https://github.com/sebastiant/dotfiles
+  -- idea web search via shell
+  -- idea walk through https://www.youtube.com/@devopstoolbox/videos
+  -- idea walk through https://github.com/bregman-arie/devops-exercises
   -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
   -- * \ prefix for find and replace helpers
   --   + also do them
@@ -64,17 +67,12 @@ else
   -- * clone current paragraph
   -- * rotate tabs: tabm0
 
-  -- idea config: toggle show size of last copy + selection in cmdline
-  -- idea config: toggle show context of functions, either via vim or via lua regex
-  -- TODO open source ascii editor, ideally within neovim. inspiration https://monodraw.helftone.com/
   -- idea email setup Kernel development mutt http://kroah.com/log/blog/2019/08/14/patch-workflow-with-mutt-2019/
   -- or https://webgefrickel.de/blog/a-modern-mutt-setup but there seem to be no significant advantages (no lua etc)
-  -- TODO
+  -- idea
   -- https://github.com/gto76/linux-cheatsheet
   -- https://github.com/gto76/python-cheatsheet
   -- container and sandboxing cheat sheet
-  --
-  -- TODO get better keyboard, for example ultimate hacker's keyboard
 
   -- idea https://phelipetls.github.io/posts/async-make-in-nvim-with-lua/
   -- https://stackoverflow.com/questions/60866833/vim-compiling-a-c-program-and-displaying-the-output-in-a-tab
@@ -100,6 +98,8 @@ else
   require 'my_surround' -- text_surround
   require 'my_aerial' -- overview_window
   require 'my_oil' -- file_explorer
+  require 'my_fmt' -- smart_formatter
+  require 'my_treesitter' -- smart_formatter
 
   -- workaronud lazy caching init.lua loading, but the module might be absent.
   local has_libbuf, _ = pcall(require, 'libbuf')
@@ -114,7 +114,7 @@ else
     group = lazy_cmds,
     pattern = 'LazyUpdatePre',
     desc = 'Backup lazy.nvim lockfile',
-    callback = function(event)
+    callback = function()
       vim.fn.mkdir(lazy_snapshot_dir, 'p')
       local snapshot = lazy_snapshot_dir .. os.date '/%Y-%m-%dT%H:%M:%S.json'
       vim.loop.fs_copyfile(lockfile, snapshot)
@@ -125,22 +125,6 @@ end
 require 'my_cmds'
 require 'my_keymaps'
 --require 'my_nvimcmp'
-
--- inspiration: https://www.reddit.com/r/neovim/comments/j7wub2/how_does_visual_selection_interact_with_executing/
--- vim.fn.expand('%:p:h'), vim.fn.expand('%:p:~:.:h'), vim.fn.fnamemodify
--- vim.api.nvim_call_function("stdpath", { "cache" })
-_G.Clangfmt = function()
-  vim.api.nvim_exec2(
-    [[
-if &modified && !empty(findfile('.clang-format', expand('%:p:h') . ';'))
-  let cursor_pos = getpos('.')
-  :%!clang-format
-  call setpos('.', cursor_pos)
-end
-]],
-    {}
-  )
-end
 
 -- GOOD_TO_KNOW
 -- * debugger scheduling control with gdb
@@ -214,56 +198,12 @@ end
 -- :set termencoding - set the encoding to use to display characters to your terminal
 
 -- stylua: ignore start
--- extend highlighting time, remove trailing spaces except in markdown files, call Clangfmt
-vim.api.nvim_create_augroup('MYAUCMDS',  {clear = true})
-vim.api.nvim_create_autocmd('TextYankPost', {group = 'MYAUCMDS', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
---vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*', command = [[:keepjumps keeppatterns %s/\s\+$//e]]}) -- remove trailing spaces
-vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, command = [[:lua Clangfmt()]]})
-
-vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = '*',
-callback = function()
-    if vim.bo.filetype == "markdown" then
-      return
-    end
-    local view = vim.fn.winsaveview()
-    vim.cmd([[%s/\v\s+$//e]]) -- remove trailing spaces
-    vim.fn.winrestview(view)
-    --vim.api.nvim_command [[:keepjumps keeppatterns %s/\s\+$//e]] -- remove trailing spaces
-  end,
-})
-
--- very verbose
--- local has_plenary, plenary = pcall(require, 'plenary')
--- if has_plenary then
---   -- Runs clangfmt on the whole file.
---   local clangfmt = function()
---     if vim.bo.modified then
---       local abs_fname = vim.api.nvim_buf_get_name(0)
---       for dir in vim.fs.parents(abs_fname) do
---         local abs_clangfmt = dir .. "/.clang-format"
---         local fh = io.open(abs_clangfmt, "r")
---         local file_exists = fh ~= nil
---         if file_exists then
---           io.close(fh)
---           local cursor_pos = vim.api.nvim_win_get_cursor(0)
---           local content = vim.api.nvim_buf_get_lines()
---           local plenary_run = plenary.job:new { command = 'clang-format', args = { "-i", abs_fname } }
---           local result = plenary_run:sync()
---           -- result checking etc
---           vim.api.nvim_buf_set_lines(result)
---           if plenary_run.code ~= 0 then print [[clangfmt had warning or error. Run ':%!clang-format']] end
---           vim.api.nvim_win_set_cursor(0, cursor_pos)
---           return
---         end
---       end
---     end
---   end
---   vim.api.nvim_create_autocmd('BufWritePre', {group = 'MYAUCMDS', pattern = { '*.h', '*.hpp', '*.c', '*.cpp' }, callback = function() clangfmt() end})
--- end
+vim.api.nvim_create_augroup('aucmds_graphics',  {clear = true})
+-- extend highlighting time
+vim.api.nvim_create_autocmd('TextYankPost', {group = 'aucmds_graphics', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
 -- stylua: ignore end
 
 -- keywords (capitalized): hack,todo,fixme
-
 -- type(), inspect(), :Inspect, vim.show_pos(), vim.inspect_pos()
 -- idea Repltikzbuild: compare mtimes
 -- check hash implementations in lua5.1 for incremental builds

@@ -14,7 +14,6 @@ local M = {}
 -- SHENNANIGAN copying in hex 22ef bfbd 22 (from latin encoding of degree via
 -- <degree>) breaks due to control character execution at least
 
-
 -- https://github.com/neovim/neovim/pull/30261/files
 
 -- SHENNANIGAN: '<', '>' still advertised as cursor positions, but its only extmarks
@@ -33,12 +32,13 @@ M.printSelectionAndMode = function()
   -- local vstart = vim.fn.getpos 'v'
   -- local vend = vim.fn.getpos '.'
   -- vim.print(vstart, vend)
-	local start_pos = vim.api.nvim_buf_get_mark(0, "<") -- 1,0 indexed line,col
-	local end_pos = vim.api.nvim_buf_get_mark(0, ">")
-	vim.print(":'<,'> ("..tostring(start_pos[1])..":"..tostring(start_pos[2]).."),"
-    .. "("..tostring(end_pos[1])..":"..tostring(end_pos[2])..") "
-    , vim.api.nvim_get_mode().mode)
+  local start_pos = vim.api.nvim_buf_get_mark(0, '<') -- 1,0 indexed line,col
+  local end_pos = vim.api.nvim_buf_get_mark(0, '>')
+  vim.print(
+    ":'<,'> (" .. tostring(start_pos[1]) .. ':' .. tostring(start_pos[2]) .. '),' .. '(' .. tostring(end_pos[1]) .. ':' .. tostring(end_pos[2]) .. ') ',
+    vim.api.nvim_get_mode().mode
+  )
 end
-vim.api.nvim_create_user_command("VPrintSelMode", M.printSelectionAndMode, { range = true })
+vim.api.nvim_create_user_command('VPrintSelMode', M.printSelectionAndMode, { range = true })
 
 return M

@@ -88,6 +88,7 @@ return {
     version = false,
     config = function() require('mini.indentscope').setup {} end,
   },
+  -- echasnovski/mini.splitjoin
 
   -- :lua vim.print(require('nvim-navic').is_available(0))
   -- :lua vim.print(require('nvim-navic').get_data())
@@ -192,6 +193,7 @@ return {
   -- g? help, <CR>|C-s|C-h select +[vsplit|split, C-p preview, C-c close, C-l refresh,
   -- - parent, _ open cwd, ` cd, ~ tcd, g. toggle hidden
   { 'stevearc/oil.nvim' }, -- my_oil.lua
+  { 'stevearc/conform.nvim' }, -- my_fmt.lua
   -- fn overview window with jumps etc
   { 'stevearc/aerial.nvim' },
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
@@ -267,6 +269,8 @@ return {
   { 'jbyuki/ntangle.nvim' },
   -- more functionality + tutorial
   -- https://www.baeldung.com/linux/vim-drawit-ascii-diagrams
+  -- TODO open source ascii editor, ideally within neovim
+  -- inspiration https://monodraw.helftone.com/
   { 'jbyuki/venn.nvim', dev = true },
   -- idea { 'simnalamburt/vim-mundo' } to search undotree
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
@@ -351,7 +355,7 @@ return {
   -- nvim-treesitter-textsubjects
   --==treesitter
   -- replacement without perf issues for context.vim would be great
-  -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
   -- block-wise movement and file-local replacements
   -- { 'nvim-treesitter/nvim-treesitter-refactor' },

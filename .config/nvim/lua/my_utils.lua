@@ -31,6 +31,23 @@ M.path_separator = '/'
 M.is_windows = vim.fn.has 'win32' == 1 or vim.fn.has 'win32unix' == 1
 if M.is_windows == true then M.path_separator = '\\' end
 
+-- Splits a string
+-- idea: get meta table
+-- ---@param delimiter string The delimiter used for splitting.
+-- ---@return table table Table of results by splitting.
+-- function string:split(delimiter)
+--   local result = { }
+--   local from  = 1
+--   local delim_from, delim_to = string.find( self, delimiter, from  )
+--   while delim_from do
+--     table.insert( result, string.sub( self, from , delim_from-1 ) )
+--     from  = delim_to + 1
+--     delim_from, delim_to = string.find( self, delimiter, from  )
+--   end
+--   table.insert( result, string.sub( self, from  ) )
+--   return result
+-- end
+
 --====utf utf8 utf16
 -- vim.str_utfindex and vim.str_byteindex
 

@@ -147,6 +147,8 @@ export -f stopGpg
 export -f countdown
 export -f stopwatch
 
+# bash tweaks to make it usable like fish
+# https://bluz71.github.io/2023/06/02/maximize-productivity-of-the-bash-shell.html
 
 ##==quickjumper
 type -P zoxide && eval "$(zoxide init bash)"

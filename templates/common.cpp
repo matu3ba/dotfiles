@@ -14,6 +14,14 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // https://github.com/andreasfertig/cppinsights
 // https://github.com/hsutter/cppfront
 
+// https://github.com/fffaraz/awesome-cpp
+// HPC
+// https://github.com/joadnacer/atomic_queues
+
+// simpel to read C++
+// https://github.com/magiblot/tvision
+// https://github.com/hsutter/cppfront
+
 // https://en.cppreference.com/w/cpp/language/string_literal
 // https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
 // (1,2) | ordinary string literal | const char[N]             | ordinary literal encoding
@@ -31,12 +39,6 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
 // more: https://oleksandrkvl.github.io/2021/04/02/cpp-20-overview.html
-//
-// [-fno-char8_t]
-// To stop crimes like incompatible to C (in C char8_t == unsigned char == uint8_t)
-// and u8"strings"
-// More sane alternative for C++ only code are "User-defined literals".
-// For C interop, one is forced to use macros.
 
 #if (__cplusplus >= 201402L)
 #define HAS_CPP14 1
@@ -68,14 +70,14 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <cassert>
 // #include <cmath> // nan
 #include <cstdint> // std::uintptr_t
-#include <cstdio> // fprintf
+#include <cstdio>  // fprintf
 #include <cstring> // C++ has no string split method, so use strtok() or strsep()
 
 #include <algorithm>
 #include <array>
 #include <atomic>
-#include <fstream> // fstream
-#include <future> // future
+#include <fstream>  // fstream
+#include <future>   // future
 #include <iostream> // io stream operators
 #include <list>
 #include <map>
@@ -83,7 +85,7 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <mutex>
 #include <ostream> // std::ostream for stream operator
 #include <set>
-#include <sstream> // std::stringstream
+#include <sstream>   // std::stringstream
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <utility> // std::true_type
@@ -100,44 +102,43 @@ static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not dist
 // #endif
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
-  #include <variant>
+#include <variant>
 #endif
 
 // posix only
 #ifndef _WIN32
 #include <sys/mman.h> // mmap flags
-#include <unistd.h> // execve in libc
+#include <unistd.h>   // execve in libc
 #endif
 
 /// logging (better would be test based and scoped macros)
-// #define DEBUG_FN_ENTER(message)                                                                                   \
-//     if (debug)                                                                                                    \
-//     {                                                                                                             \
-//         debug_nesting += 1;                                                                                       \
-//         std::cout << message << ": " << debug_nesting << "\n";                                                    \
+// #define DEBUG_FN_ENTER(message)                                \
+//     if (debug)                                                 \
+//     {                                                          \
+//         debug_nesting += 1;                                    \
+//         std::cout << message << ": " << debug_nesting << "\n"; \
 //     }
 //
-// #define DEBUG_FN_EXIT(message)                                                                                    \
-//     if (debug)                                                                                                    \
-//     {                                                                                                             \
-//         std::cout << message << ": " << debug_nesting << "\n";                                                    \
-//         debug_nesting -= 1;                                                                                       \
+// #define DEBUG_FN_EXIT(message)                                 \
+//     if (debug)                                                 \
+//     {                                                          \
+//         std::cout << message << ": " << debug_nesting << "\n"; \
+//         debug_nesting -= 1;                                    \
 //     }
-// #define DEBUG_COUT(message)                                                                                       \
-//     if (debug)                                                                                                    \
-//     {                                                                                                             \
-//         std::cout << message << "\n";                                                                             \
+// #define DEBUG_COUT(message)           \
+//     if (debug)                        \
+//     {                                 \
+//         std::cout << message << "\n"; \
 //     }
-// #define DEBUG_COUT_SAMELINE(message)                                                                              \
-//     if (debug)                                                                                                    \
-//     {                                                                                                             \
-//         std::cout << message;                                                                                     \
+// #define DEBUG_COUT_SAMELINE(message)  \
+//     if (debug)                        \
+//     {                                 \
+//         std::cout << message;         \
 //     }
 
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
-inline void hash_combine(unsigned long &seed, unsigned long const &value)
-{
-    seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+inline void hash_combine(unsigned long &seed, unsigned long const &value) {
+  seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
 // TODO: get better non-cryptographic hash
 // xxhash claims 31 GB/s, so thats ~10 byte/clock cycle on a 3 GHz cpu
@@ -148,25 +149,20 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value)
 
 // Macros for creating enum + string for lookup up to 256 values from https://stackoverflow.com/a/5094430
 #ifdef BOOST_VERSION
-#define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem)                                        \
-    case elem:                                                                                                    \
-        return BOOST_PP_STRINGIZE(elem);
+#define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem) \
+  case elem:                                                               \
+    return BOOST_PP_STRINGIZE(elem);
 
-#define DEFINE_ENUM_WITH_STRING_CONVERSIONS(name, enumerators)                                                    \
-    enum name                                                                                                     \
-    {                                                                                                             \
-        BOOST_PP_SEQ_ENUM(enumerators)                                                                            \
-    };                                                                                                            \
-                                                                                                                  \
-    inline const char *ToString(name v)                                                                           \
-    {                                                                                                             \
-        switch (v)                                                                                                \
-        {                                                                                                         \
-            BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE, name, enumerators)         \
-            default:                                                                                              \
-                return "[Unknown " BOOST_PP_STRINGIZE(name) "]";                                                  \
-        }                                                                                                         \
-    }
+#define DEFINE_ENUM_WITH_STRING_CONVERSIONS(name, enumerators)                                      \
+  enum name { BOOST_PP_SEQ_ENUM(enumerators) };                                                     \
+                                                                                                    \
+  inline const char *ToString(name v) {                                                             \
+    switch (v) {                                                                                    \
+      BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE, name, enumerators) \
+      default:                                                                                      \
+        return "[Unknown " BOOST_PP_STRINGIZE(name) "]";                                            \
+    }                                                                                               \
+  }
 
 void enum_to_string_example();
 void enum_to_string_example() {
@@ -178,9 +174,8 @@ void enum_to_string_example() {
 
 #ifdef HAS_CPP26
 // C++26 enum_to_string and string_to_enum
-template <typename E>
-  requires std::is_enum_v<E>
-constexpr std::string enum_to_string(E value) {
+template<typename E>
+requires std::is_enum_v<E> constexpr std::string enum_to_string(E value) {
   template for (constexpr auto e : std::meta::enumerators_of(^E)) {
     if (value == [:e:]) {
       return std::string(std::meta::name_of(e));
@@ -188,9 +183,8 @@ constexpr std::string enum_to_string(E value) {
   }
   return "<unnamed>";
 }
-template <typename E>
-  requires std::is_enum_v<E>
-constexpr std::optional<E> string_to_enum(std::string_view name) {
+template<typename E>
+requires std::is_enum_v<E> constexpr std::optional<E> string_to_enum(std::string_view name) {
   template for (constexpr auto e : std::meta::enumerators_of(^E)) {
     if (name == std::meta::name_of(e)) {
       return [:e:];
@@ -221,10 +215,9 @@ enum class eType : uint8_t {
 
 // SHENNANIGAN operators and functions can not be part of enum class
 
-template <class _eTy>
-class CImageHistory {
+template<class _eTy> class CImageHistory {
 public:
-  CImageHistory(){}
+  CImageHistory() {}
 };
 
 // .\templates\common.cpp:152:7: warning: unannotated fall-through between switch labels
@@ -263,13 +256,13 @@ struct sTemplatedTaggedUnion {
         im_hist.im_hist_ty2 = CImageHistory<int8_t>();
         break;
       }
-      // With -Wcovered-switch-default and -Wno-switch-default
-      // default: break;
-      // [[fallthrough]];
+        // With -Wcovered-switch-default and -Wno-switch-default
+        // default: break;
+        // [[fallthrough]];
     }
   }
   ~sTemplatedTaggedUnion() {
-   switch (m_pix_ty) {
+    switch (m_pix_ty) {
       assert(eType::ty1 <= m_pix_ty and m_pix_ty <= eType::ty2);
       case eType::ty1: {
         im_hist.im_hist_ty1.~CImageHistory<int64_t>();
@@ -311,24 +304,20 @@ int usage_sTemplatedTaggedUnion() {
 // unions in c++ have the concept of "active member" and can not be used for
 // type punning https://dev.to/pauljlucas/unions-stdvariant-in-c-2op1
 
-
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 
 struct sTemplatedVariant {
-  std::variant<
-    std::shared_ptr<const CImageHistory<int64_t>>,
-    std::shared_ptr<const CImageHistory<int8_t>>
-  > im_hist;
+  std::variant<std::shared_ptr<CImageHistory<int64_t> const>, std::shared_ptr<CImageHistory<int8_t> const>> im_hist;
 
   explicit sTemplatedVariant(eType pix_ty) {
-   switch (pix_ty) {
+    switch (pix_ty) {
       case eType::ty1: {
-        im_hist = std::make_shared<const CImageHistory<int64_t>>();
+        im_hist = std::make_shared<CImageHistory<int64_t> const>();
         // fprintf(stdout, "ty1\n");
         break;
       }
       case eType::ty2: {
-        im_hist = std::make_shared<const CImageHistory<int8_t>>();
+        im_hist = std::make_shared<CImageHistory<int8_t> const>();
         // fprintf(stdout, "ty2\n");
         break;
       }
@@ -374,7 +363,7 @@ int usage_sTemplatedVariant() {
 void map_insert();
 void map_insert() {
   std::map<uint32_t, uint32_t> i32map;
-  const auto [it, success] = i32map.insert({1, 2}); // decomposition declarations
+  auto const [it, success] = i32map.insert({1, 2}); // decomposition declarations
   (void)it;
   (void)success;
 }
@@ -391,95 +380,93 @@ void map_insert() {
 // This is extremely easy to miss,
 void iterate_map();
 void iterate_map() {
-    std::map<int, std::string> mapexample;
-    mapexample[1] = "t1"; // do not use this, reason below
-    mapexample[2] = "t2"; // do not use this
-    for (auto iter = std::cbegin(mapexample); iter != std::cend(mapexample); ++iter) {
-        printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
-    }
-    std::string* ptr_str = nullptr; // or 0 if portability is needed
-    for (auto iter = std::begin(mapexample); iter != std::end(mapexample); ++iter) {
-        printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
-        ptr_str = &iter->second;
-        (void)ptr_str; // read the value
-    }
-    auto search = mapexample.find(1);
-    if (search != mapexample.end()) ptr_str = &search->second;
+  std::map<int, std::string> mapexample;
+  mapexample[1] = "t1"; // do not use this, reason below
+  mapexample[2] = "t2"; // do not use this
+  for (auto iter = std::cbegin(mapexample); iter != std::cend(mapexample); ++iter) {
+    printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
+  }
+  std::string *ptr_str = nullptr; // or 0 if portability is needed
+  for (auto iter = std::begin(mapexample); iter != std::end(mapexample); ++iter) {
+    printf("mapexample period.uiStartPeriod: %d %s", iter->first, iter->second.c_str());
+    ptr_str = &iter->second;
     (void)ptr_str; // read the value
+  }
+  auto search = mapexample.find(1);
+  if (search != mapexample.end())
+    ptr_str = &search->second;
+  (void)ptr_str; // read the value
 }
 
 void sortarray();
 void sortarray() {
-    std::array<int, 5> arr_x {{0,1,2,3,4}};
-    std::sort(arr_x.begin(), arr_x.end()); // cbegin, cend
+  std::array<int, 5> arr_x{{0, 1, 2, 3, 4}};
+  std::sort(arr_x.begin(), arr_x.end()); // cbegin, cend
 }
 
 void sortarray_lambda_expression();
 void sortarray_lambda_expression() {
-    std::array<int, 5> arr_x {{0,1,2,3,4}};
-    std::sort(arr_x.begin(), arr_x.end(), [](int a, int b)
-        {
-              if (a < b)
-                return true;
-              else
-                return false;
-        });
+  std::array<int, 5> arr_x{{0, 1, 2, 3, 4}};
+  std::sort(arr_x.begin(), arr_x.end(), [](int a, int b) {
+    if (a < b)
+      return true;
+    else
+      return false;
+  });
 }
 
 void simpleCAS();
 void simpleCAS() {
-    // SHENNANIGAN atomic default initializer of integers is 0, but not well documented/simple to find
-    std::atomic<bool> is_initialized(false);
+  // SHENNANIGAN atomic default initializer of integers is 0, but not well documented/simple to find
+  std::atomic<bool> is_initialized(false);
 
-    // imagine 2 threads could do stuff with is_initialized
+  // imagine 2 threads could do stuff with is_initialized
 
-    // CAS: expect atomic transition is_initialized false -> true, no spurious wakeups.
-    // atomic equal with expected => replace with desired
-    //                       else => load memory into expected
-    bool expected = false;
-    const bool desired = true;
-    is_initialized.compare_exchange_strong(expected, desired);
-    if (true == expected) {
-        return; // already initialized
-    }
-
+  // CAS: expect atomic transition is_initialized false -> true, no spurious wakeups.
+  // atomic equal with expected => replace with desired
+  //                       else => load memory into expected
+  bool expected = false;
+  bool const desired = true;
+  is_initialized.compare_exchange_strong(expected, desired);
+  if (true == expected) {
+    return; // already initialized
+  }
 }
 
 void vector_reserve_capacity();
 void vector_reserve_capacity() {
-    std::vector<int> someints;
-    someints.reserve(20);
+  std::vector<int> someints;
+  someints.reserve(20);
 }
 
 void always_emplace_back();
 void always_emplace_back() {
-    std::vector<int> someints;
-    someints.push_back(1); // might make unnecessary copies, which can be seen in the move call.
-    someints.emplace_back(1); // can leverage constructor as arguments
+  std::vector<int> someints;
+  someints.push_back(1);    // might make unnecessary copies, which can be seen in the move call.
+  someints.emplace_back(1); // can leverage constructor as arguments
 }
 
 // SHENNANIGAN: managed objects like std::string or std::vector require manual
 // call of the destructor with active tag and construction of the destructor
 // `~Union(){}`.
-union S
-{
-    std::string str;
-    std::vector<int> vec;
-    ~S() {} // whole union occupies max(sizeof(string), sizeof(vector<int>))
+union S {
+  std::string str;
+  std::vector<int> vec;
+  ~S() {} // whole union occupies max(sizeof(string), sizeof(vector<int>))
 };
 int libmain();
 int libmain() {
-    S s = {"Hello, world"};
-    // at this point, reading from s.vec is undefined behavior
-    printf("s.str = %s\n", s.str.c_str());
-    s.str.~basic_string();
-    return 0;
+  S s = {"Hello, world"};
+  // at this point, reading from s.vec is undefined behavior
+  printf("s.str = %s\n", s.str.c_str());
+  s.str.~basic_string();
+  return 0;
 }
 
-bool contains(std::map<int,int>& container, int search_key);
-bool contains(std::map<int,int>& container, int search_key) {
-    // return container.end() != container.find(search_key);
-    return 1 == container.count(search_key); // std::map enforces 0 or 1 matches
+bool contains(std::map<int, int> &container, int search_key);
+bool contains(std::map<int, int> &container, int search_key) {
+  // return container.end() != container.find(search_key);
+  return 1 == container.count(search_key); // std::map enforces 0 or 1 matches
 }
 
 // SHENNANIGAN: Random access operators on hashmap use on non-existent of object
@@ -492,21 +479,21 @@ bool contains(std::map<int,int>& container, int search_key) {
 
 class T1 {
 public:
-    T1(); // needed to allow convenient random access via [] operator
-    T1(const std::string &t1): mName(t1) {}
-    std::string mName;
-    std::string prop1;
+  T1(); // needed to allow convenient random access via [] operator
+  T1(std::string const &t1)
+      : mName(t1) {}
+  std::string mName;
+  std::string prop1;
 };
 class T2 {
 public:
-    std::map<std::string, T1> mapex1;
-    void AddT1 (const std::string &t1str) {
-        T1 t1obj(t1str);
-        mapex1.emplace(t1str, t1obj);
-        mapex1[t1str].prop1 = "blabla"; // potential footgun!
-    }
+  std::map<std::string, T1> mapex1;
+  void AddT1(std::string const &t1str) {
+    T1 t1obj(t1str);
+    mapex1.emplace(t1str, t1obj);
+    mapex1[t1str].prop1 = "blabla"; // potential footgun!
+  }
 };
-
 
 // SHENNANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
 // more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html
@@ -515,31 +502,33 @@ public:
 // Also does split string.
 void stringRawDataAccess(std::string &comp);
 void stringRawDataAccess(std::string &comp) {
-    std::string component_name = comp.c_str(); // may or may not copy construct (careful)
-    // char* p_component_name = component_name.data(); returns const char*
-    char* p_component_name = &component_name[0];
-    // component_X_Y, X,Y in [0-9]+
-    // char* component_name = "some_example_t1";
-    if (p_component_name == nullptr) return;
-    char* name = strtok(p_component_name, "_"); // strok deprecated by windows
-    if (name == nullptr) return;
-    printf("%s\n", name);
+  std::string component_name = comp.c_str(); // may or may not copy construct (careful)
+  // char* p_component_name = component_name.data(); returns const char*
+  char *p_component_name = &component_name[0];
+  // component_X_Y, X,Y in [0-9]+
+  // char* component_name = "some_example_t1";
+  if (p_component_name == nullptr)
+    return;
+  char *name = strtok(p_component_name, "_"); // strok deprecated by windows
+  if (name == nullptr)
+    return;
+  printf("%s\n", name);
 
-    // awkward hackaround
-    int the_int = -1;
-    try {
-        the_int = std::stoi(std::string(comp));
-    } catch (...) {
-        goto ACTIONEXIT;
-    }
+  // awkward hackaround
+  int the_int = -1;
+  try {
+    the_int = std::stoi(std::string(comp));
+  } catch (...) {
+    goto ACTIONEXIT;
+  }
 ACTIONEXIT:
-    printf("%d\n", the_int);
+  printf("%d\n", the_int);
 
-    char* end;
-    long i = strtol(p_component_name, &end, 10);
-    (void)i;
-    // This requires usage of errno, so pick your poison.
-    // alternative: use find with substring
+  char *end;
+  long i = strtol(p_component_name, &end, 10);
+  (void)i;
+  // This requires usage of errno, so pick your poison.
+  // alternative: use find with substring
 }
 #endif
 
@@ -547,7 +536,7 @@ class ClassWithMutex { // class with mutex
   std::string s1;
   std::mutex m1;
   // copy constructor
-  ClassWithMutex(const ClassWithMutex& class1) {
+  ClassWithMutex(ClassWithMutex const &class1) {
     s1 = class1.s1;
     // mutex has forbidden move and copy constructor, so it must be omitted.
   }
@@ -567,24 +556,23 @@ class ClassWithMutex { // class with mutex
 int reinterpret_cast_usage();
 int reinterpret_cast_usage() {
   // see also common.c no_reinterpret_cast
-  // clang-format: off
-  uint8_t some_vals[9] = { 0,
-                              1, 0, 0, 0
-                            , 0, 0, 0 ,0 };
-  // clang-format: on
-	int64_t val = *reinterpret_cast<int64_t*>(&some_vals[1]);
-	// SHENNANIGAN less type safe than C variant (memcpy)
+  // clang-format off
+  uint8_t some_vals[9] = {0, 1, 0, 0, 0, 0, 0, 0, 0};
+  // clang-format on
+  int64_t val = *reinterpret_cast<int64_t *>(&some_vals[1]);
+  // SHENNANIGAN less type safe than C variant (memcpy)
   // WRONG int64_t val = *reinterpret_cast<int64_t*>(some_vals[1]);
-  if (val != INT64_MIN) return 1;
+  if (val != INT64_MIN)
+    return 1;
   return 0;
 }
 
 int ptr_no_reinterpret_cast();
 int ptr_no_reinterpret_cast() {
-  char some_vals[5] = {0, 0,0,0,1};
-	// SHENNANIGAN less type safe than C variant
+  char some_vals[5] = {0, 0, 0, 0, 1};
+  // SHENNANIGAN less type safe than C variant
   // WRONG int32_t val = reinterpret_cast<int32_t*>(some_vals[1]);
-  int32_t * i32_arr_ptr = reinterpret_cast<int32_t*>(&some_vals[1]);
+  int32_t *i32_arr_ptr = reinterpret_cast<int32_t *>(&some_vals[1]);
   (void)i32_arr_ptr;
   // dont return stack local variable here
   return 0;
@@ -592,11 +580,11 @@ int ptr_no_reinterpret_cast() {
 
 void ptr_to_int();
 void ptr_to_int() {
-  const char str[] = "somestring";
+  char const str[] = "somestring";
   std::uintptr_t uiptr_str = reinterpret_cast<std::uintptr_t>(str);
   // int_to_ptr
   // derived_str must satisfy aliasing rules!
-  const char * derived_str = reinterpret_cast<const char *>(uiptr_str);
+  char const *derived_str = reinterpret_cast<char const *>(uiptr_str);
   (void)derived_str;
 }
 
@@ -607,57 +595,59 @@ void ptr_to_int() {
 // Object oriented in-place mutex storage, with aforementioned limitation might not work.
 class Variable {
 public:
-    Variable() = delete; // forbid default constructor to prevent [] access in std::map
-    Variable(std::string value) : mValue(value) {} // initializer list
-    Variable(const Variable& aCpyVar) {
-        mValue = aCpyVar.mValue;
-    } // mutex requires copy constructor
-    std::string mValue;
-    std::mutex mValueMutex; // must not be initialized and must not be copied
+  Variable() = delete; // forbid default constructor to prevent [] access in std::map
+  Variable(std::string value)
+      : mValue(value) {}                                         // initializer list
+  Variable(Variable const &aCpyVar) { mValue = aCpyVar.mValue; } // mutex requires copy constructor
+  std::string mValue;
+  std::mutex mValueMutex; // must not be initialized and must not be copied
 };
 struct struct_iter {
-    std::map<std::string, Variable> map_str_str;
+  std::map<std::string, Variable> map_str_str;
 };
 
-int findReturnsMutIterAssignBoolValue(struct struct_iter* str_iter_ptr, std::string search_key, bool value);
-int findReturnsMutIterAssignBoolValue(struct struct_iter* str_iter_ptr, std::string search_key, bool value) {
-    auto var_iter = str_iter_ptr->map_str_str.find(search_key);
-    if (var_iter == str_iter_ptr->map_str_str.end()) return 1;
-    { // locked section
-        std::unique_lock<std::mutex> lock(var_iter->second.mValueMutex);
-        if (true == value) var_iter->second.mValue = std::string("true");
-        else var_iter->second.mValue = std::string("false");
-    }
-    return 0;
+int findReturnsMutIterAssignBoolValue(struct struct_iter *str_iter_ptr, std::string search_key, bool value);
+int findReturnsMutIterAssignBoolValue(struct struct_iter *str_iter_ptr, std::string search_key, bool value) {
+  auto var_iter = str_iter_ptr->map_str_str.find(search_key);
+  if (var_iter == str_iter_ptr->map_str_str.end())
+    return 1;
+  { // locked section
+    std::unique_lock<std::mutex> lock(var_iter->second.mValueMutex);
+    if (true == value)
+      var_iter->second.mValue = std::string("true");
+    else
+      var_iter->second.mValue = std::string("false");
+  }
+  return 0;
 }
 
-std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, std::string search_key, bool value);
-std::map<std::string, Variable> iterGetValues(struct struct_iter* str_iter_ptr, std::string search_key, bool value) {
-    (void)search_key;
-    (void)value;
-    std::map<std::string, Variable> res;
-    std::map<std::string, Variable>::iterator var_iter;
-    for (var_iter = str_iter_ptr->map_str_str.begin(); var_iter != str_iter_ptr->map_str_str.end(); var_iter++) {
-        std::unique_lock<std::mutex> lock(var_iter->second.mValueMutex);
-        res.emplace(var_iter->first, var_iter->second); // multiple keys not possible in std::map
-    }
-    return res;
+std::map<std::string, Variable> iterGetValues(struct struct_iter *str_iter_ptr, std::string search_key, bool value);
+std::map<std::string, Variable> iterGetValues(struct struct_iter *str_iter_ptr, std::string search_key, bool value) {
+  (void)search_key;
+  (void)value;
+  std::map<std::string, Variable> res;
+  std::map<std::string, Variable>::iterator var_iter;
+  for (var_iter = str_iter_ptr->map_str_str.begin(); var_iter != str_iter_ptr->map_str_str.end(); var_iter++) {
+    std::unique_lock<std::mutex> lock(var_iter->second.mValueMutex);
+    res.emplace(var_iter->first,
+                var_iter->second); // multiple keys not possible in std::map
+  }
+  return res;
 }
 
 void mutex_usage();
 void mutex_usage() {
-    std::mutex m1; // incorrect for simplification
-    std::lock_guard<std::mutex> guard(m1);
-    // critical section
-    // Prefer immutable object, see SimplifiedImmutable for time critical code
-    // or possible changes to use atomic swap ie via ImmutableObject, which is
-    // automatically handled ptr with atomic cnt.
-    // Consider using adaptions of SimplifiedImmutable for special cases, like
-    // to forbid copy constructor, handle different types of callbacks, data etc.
+  std::mutex m1; // incorrect for simplification
+  std::lock_guard<std::mutex> guard(m1);
+  // critical section
+  // Prefer immutable object, see SimplifiedImmutable for time critical code
+  // or possible changes to use atomic swap ie via ImmutableObject, which is
+  // automatically handled ptr with atomic cnt.
+  // Consider using adaptions of SimplifiedImmutable for special cases, like
+  // to forbid copy constructor, handle different types of callbacks, data etc.
 }
 
-template <typename T_Ret, typename Ty>
-class Callback {
+template<typename T_Ret, typename Ty> class Callback {
   // how to update SimplifiedImmutable, typically via loop
 };
 
@@ -667,28 +657,25 @@ class Callback {
 // instead of fn ptrs for additional type and runtime safety.
 // static_assert(std::is_copy_constructible<Type>::value, "not default constructible!");
 // static_assert(std::is_default_constructible<Type>::value, "not copy constructible!");
-template <typename T_in>
-class SimplifiedImmutable {
+template<typename T_in> class SimplifiedImmutable {
   SimplifiedImmutable();
 
-	std::shared_ptr<const T_in> Get() const;
-	void Set(const T_in& Val);
-	void Set(T_in&& Val);
-	void Update(const Callback<void, T_in&>& CallsLater);
-	void Reset();
-	T_in Type() const;
+  std::shared_ptr<T_in const> Get() const;
+  void Set(T_in const &Val);
+  void Set(T_in &&Val);
+  void Update(Callback<void, T_in &> const &CallsLater);
+  void Reset();
+  T_in Type() const;
 
 private:
-	void Set(std::shared_ptr<const T_in> Val);
-	std::shared_ptr<const T_in> m_Obj;
+  void Set(std::shared_ptr<T_in const> Val);
+  std::shared_ptr<T_in const> m_Obj;
 };
-template<typename T_in>
-inline void SimplifiedImmutable<T_in>::Set(const T_in & Val) {
-	Set(std::make_shared<const T_in>(Val));
+template<typename T_in> inline void SimplifiedImmutable<T_in>::Set(T_in const &Val) {
+  Set(std::make_shared<T_in const>(Val));
 }
-template<typename T_in>
-inline void SimplifiedImmutable<T_in>::Set(std::shared_ptr<const T_in> Val) {
-	std::atomic_store(&m_Obj, Val);
+template<typename T_in> inline void SimplifiedImmutable<T_in>::Set(std::shared_ptr<T_in const> Val) {
+  std::atomic_store(&m_Obj, Val);
 }
 // ..
 
@@ -724,30 +711,30 @@ inline void SimplifiedImmutable<T_in>::Set(std::shared_ptr<const T_in> Val) {
 // #undef protected
 class Variable2 {
 private:
-    friend class FriendOfVariable2;
+  friend class FriendOfVariable2;
+
 protected:
-    Variable2(): mValue("") {}
+  Variable2()
+      : mValue("") {}
+
 public:
-    // Variable2() = delete; // forbid default constructor to prevent [] access in std::map
-    Variable2(std::string value) : mValue(value) {} // initializer list
-    Variable2& operator=(Variable2 other) { // user-defined copy assignment (copy-and-swap idiom)
-        std::swap(mValue, other.mValue);
-        return *this;
-    }
-    Variable2(const Variable2& aCpyVar) {
-        mValue = aCpyVar.mValue;
-    } // mutex requires copy constructor
-    std::string mValue;
-    std::mutex mValueMutex; // must not be initialized and must not be copied
+  // Variable2() = delete; // forbid default constructor to prevent [] access in std::map
+  Variable2(std::string value)
+      : mValue(value) {}                  // initializer list
+  Variable2 &operator=(Variable2 other) { // user-defined copy assignment (copy-and-swap idiom)
+    std::swap(mValue, other.mValue);
+    return *this;
+  }
+  Variable2(Variable2 const &aCpyVar) { mValue = aCpyVar.mValue; } // mutex requires copy constructor
+  std::string mValue;
+  std::mutex mValueMutex; // must not be initialized and must not be copied
 };
 struct struct_iter2 {
-    std::map<std::string, Variable2> map_str_str;
+  std::map<std::string, Variable2> map_str_str;
 };
 class FriendOfVariable2 {
-    FriendOfVariable2() {
-        mVar = Variable2();
-    }
-    Variable2 mVar;
+  FriendOfVariable2() { mVar = Variable2(); }
+  Variable2 mVar;
 };
 
 // SHENNANIGAN googlemock creates default return values for mocked objects, which
@@ -893,88 +880,91 @@ class FriendOfVariable2 {
 
 // Constructor types and assignment operator types
 class ExampleClass {
-    int mValue;
-    std::mutex mMut;
-    // move constructor (move means much (2) ampersand arg)
-    // ExampleClass ex2 = std::move(ex1); // or ExampleClass ex2 = &&ex1;
-    // default: requires opt-in unless other constructors forbidden (move-only type)
-    ExampleClass(ExampleClass&& aCpyVar) {
-        mValue = aCpyVar.mValue;
-    }
-    // simple constructor
-    // ExampleClass ex1(1);
-    // default: used on default in constructor
-    ExampleClass(int aValue) {
-        mValue = aValue;
-    }
-    // copy constructor: ExampleClass ex1(1); ExampleClass ex2(ex1); // also ExampleClass ex2 = ex1;
-    // default: requires opt-in unless other constructors forbidden
-    ExampleClass(const ExampleClass& aCpyVar) {
-        mValue = aCpyVar.mValue;
-    } // mutex requires copy constructor
+  int mValue;
+  std::mutex mMut;
+  // move constructor (move means much (2) ampersand arg)
+  // ExampleClass ex2 = std::move(ex1); // or ExampleClass ex2 = &&ex1;
+  // default: requires opt-in unless other constructors forbidden (move-only type)
+  ExampleClass(ExampleClass &&aCpyVar) { mValue = aCpyVar.mValue; }
+  // simple constructor
+  // ExampleClass ex1(1);
+  // default: used on default in constructor
+  ExampleClass(int aValue) { mValue = aValue; }
+  // copy constructor: ExampleClass ex1(1); ExampleClass ex2(ex1); // also ExampleClass ex2 = ex1;
+  // default: requires opt-in unless other constructors forbidden
+  ExampleClass(ExampleClass const &aCpyVar) { mValue = aCpyVar.mValue; } // mutex requires copy constructor
 
-    // On absence of assignment operators primitive types are assigned, whereas
-    // the according default assignment (and on absence simple constructor) is
-    // called
+  // On absence of assignment operators primitive types are assigned, whereas
+  // the according default assignment (and on absence simple constructor) is
+  // called
 
-    // move assign operator (move means much (2) ampersand arg) usually used for move-only types
-    // ExampleClass ex1(1); ExampleClass ex2(2); ex2 = std:move(ex1); // or ex2 = &&ex1;
-    // default: requires opt-in unless other assignment operators forbidden (as move-only type)
-    ExampleClass& operator=(ExampleClass&& other) {
-        // swap lifts destruction and deallocation out of a critical/hot section
-        // and instead is UB on target as different allocator and it leaves swapped items "destroyed"
-        std::swap(mValue, other.mValue);
-        return *this;
-    }
-    // simple assign operator (C++98 style)
-    // ExampleClass ex2(1), ex1(2); ex2 = ex1;
-    // default: used on default for assignments unless forbidden
-    ExampleClass& operator=(ExampleClass& other) {
-        // move leaves moved items "undestroyed" to have defined state for
-        // different allocators usage not being UB
-        // => no allocations => use std::swap
-        // => allocations => use std::move
-        mValue = std::move(other.mValue);
-        return *this;
-    }
-    // copy assign operator (must have a public copy assignment operator), also
-    // allowed signature: const ExampleClass& ExampleClass ex1(1); ExampleClass
-    // ExampleClass ex2(1), ex1(2); ex2 = std::copy(ex1); // or ex2=ex1; if simple assign operator forbidden
-    // default: requires opt-in unless other assignment operators forbidden
-    ExampleClass& operator=(ExampleClass other) {
-        (void)other;
-        return *this;
-    }
+  // move assign operator (move means much (2) ampersand arg) usually used for move-only types
+  // ExampleClass ex1(1); ExampleClass ex2(2); ex2 = std:move(ex1); // or ex2 = &&ex1;
+  // default: requires opt-in unless other assignment operators forbidden (as move-only type)
+  ExampleClass &operator=(ExampleClass &&other) {
+    // swap lifts destruction and deallocation out of a critical/hot section
+    // and instead is UB on target as different allocator and it leaves swapped items "destroyed"
+    std::swap(mValue, other.mValue);
+    return *this;
+  }
+  // simple assign operator (C++98 style)
+  // ExampleClass ex2(1), ex1(2); ex2 = ex1;
+  // default: used on default for assignments unless forbidden
+  ExampleClass &operator=(ExampleClass &other) {
+    // move leaves moved items "undestroyed" to have defined state for
+    // different allocators usage not being UB
+    // => no allocations => use std::swap
+    // => allocations => use std::move
+    mValue = std::move(other.mValue);
+    return *this;
+  }
+  // copy assign operator (must have a public copy assignment operator), also
+  // allowed signature: const ExampleClass& ExampleClass ex1(1); ExampleClass
+  // ExampleClass ex2(1), ex1(2); ex2 = std::copy(ex1); // or ex2=ex1; if simple assign operator forbidden
+  // default: requires opt-in unless other assignment operators forbidden
+  ExampleClass &operator=(ExampleClass other) {
+    (void)other;
+    return *this;
+  }
 };
 
 // https://stackoverflow.com/questions/1226634/how-to-use-base-classs-constructors-and-assignment-operator-in-c
 // You can and might need to explicitly call constructors and assignment operators.
 class Base {
-    int32_t m_val;
+  int32_t m_val;
+
 public:
-    Base(const Base& copyctor) : m_val(copyctor.m_val) {}
-    // Base& operator=(const Base& copy_asgnctor) { this->m_val = copy_asgnctor.m_val; return *this; } // simple assign op, NOLINT
-    Base& operator=(const Base& copy_asgnop) { this->m_val = copy_asgnop.m_val; return *this; } // simple assign op, NOLINT
-    Base& operator=(const Base&& move_asgnop) { this->m_val = move_asgnop.m_val; return *this; } // move assign op, NOLINT
-    // Existence of a destructor prevents implicit move constructor
+  Base(Base const &copyctor)
+      : m_val(copyctor.m_val) {}
+  // Base& operator=(const Base& copy_asgnctor) { this->m_val = copy_asgnctor.m_val; return *this; } // simple assign op, NOLINT
+  Base &operator=(Base const &copy_asgnop) {
+    this->m_val = copy_asgnop.m_val;
+    return *this;
+  } // simple assign op, NOLINT
+  Base &operator=(Base const &&move_asgnop) {
+    this->m_val = move_asgnop.m_val;
+    return *this;
+  } // move assign op, NOLINT
+  // Existence of a destructor prevents implicit move constructor
 };
 
 class Derived : public Base {
-    int additional_;
+  int additional_;
+
 public:
-    Derived(const Derived& d)
-        : Base(d) // dispatch to base copy constructor
-        , additional_(d.additional_) {}
-    Derived& operator=(const Derived& d) { // simple assign op
-        Base::operator=(d);
-        additional_ = d.additional_;
-        return *this;
-    }
-    Derived& operator=(const Derived&& d) { // move assign op
-        Base::operator=(std::move(d));
-        additional_ = d.additional_;
-        return *this;
-    }
+  Derived(Derived const &d)
+      : Base(d) // dispatch to base copy constructor
+      , additional_(d.additional_) {}
+  Derived &operator=(Derived const &d) { // simple assign op
+    Base::operator=(d);
+    additional_ = d.additional_;
+    return *this;
+  }
+  Derived &operator=(Derived const &&d) { // move assign op
+    Base::operator=(std::move(d));
+    additional_ = d.additional_;
+    return *this;
+  }
 };
 
 // Debugging templates guidelines
@@ -1023,20 +1013,17 @@ public:
 // SHENNANIGAN
 // Checking, if typename is a string is complex (even with C++17 extension)
 #if __cplusplus > 201402L
-template<typename STR>
-inline constexpr bool is_string_class_decayed = false;
-template<typename... STR>
-inline constexpr bool is_string_class_decayed<std::basic_string<STR...>> = true;
+template<typename STR> inline constexpr bool is_string_class_decayed = false;
+template<typename... STR> inline constexpr bool is_string_class_decayed<std::basic_string<STR...>> = true;
 // decay_t will remove const, & and volatile from the type
-template<typename STR>
-inline constexpr bool is_string_class = is_string_class_decayed<std::decay_t<STR>>;
-template <typename TChar, typename TString>
+template<typename STR> inline constexpr bool is_string_class = is_string_class_decayed<std::decay_t<STR>>;
+template<typename TChar, typename TString>
 inline constexpr bool is_string = is_string_class<TString> && std::is_same_v<TChar, typename TString::value_type>;
 static_assert(is_string_class<std::string>);
-static_assert(is_string_class<const std::wstring&>); // that's why we need decay_t
+static_assert(is_string_class<std::wstring const &>); // that's why we need decay_t
 static_assert(!is_string_class<int>);
-static_assert(!is_string_class<const double>);
-static_assert(!is_string_class<const char*>);
+static_assert(!is_string_class<double const>);
+static_assert(!is_string_class<char const *>);
 static_assert(!is_string_class<std::vector<char>>);
 #endif
 
@@ -1096,13 +1083,13 @@ static_assert(!is_string_class<std::vector<char>>);
 #ifdef _POSIX
 // IPC over shared process memory
 enum ProcState { IDLE, STOPPING, RUNNING };
-static void * some_memregion = nullptr; // c++ only
+static void *some_memregion = nullptr; // c++ only
 static bool app_stopped = false;
 void some_ipc() {
   some_memregion = mmap(nullptr, sizeof(ProcState), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
   if (some_memregion == MAP_FAILED) {
-      perror("mmap failed");
-      exit(1);
+    perror("mmap failed");
+    exit(1);
   }
   ProcState proc_state = ProcState::IDLE;
   memcpy(some_memregion, &proc_state, sizeof(proc_state));
@@ -1117,7 +1104,7 @@ void some_ipc() {
 }
 
 void ipc_read() {
-  while(!app_stopped) {
+  while (!app_stopped) {
     ProcState proc_state; // undefined
     // get old state
     memcpy(some_memregion, &proc_state, sizeof(proc_state));
@@ -1129,8 +1116,10 @@ void ipc_read() {
         msync(some_memregion, sizeof(proc_state), MS_ASYNC);
         break;
       }
-      case ProcState::IDLE: [[fallthrough]];
-      case ProcState::RUNNING: break;
+      case ProcState::IDLE:
+        [[fallthrough]];
+      case ProcState::RUNNING:
+        break;
     }
   }
 }
@@ -1140,9 +1129,9 @@ void ipc_read() {
 // interoperating type safe with c strings is very cumbersome
 void cstring_interop_annoying();
 void cstring_interop_annoying() {
-  const char * cmd = "ls";
-  char const * buffer[] = {"ls", "-l", nullptr};
-  char * const * argv = const_cast<char * const *>(buffer);
+  char const *cmd = "ls";
+  char const *buffer[] = {"ls", "-l", nullptr};
+  char *const *argv = const_cast<char *const *>(buffer);
   // Posix name is deprecated, use _execve
 #ifdef _WIN32
   intptr_t execed = _execve(cmd, argv, nullptr);
@@ -1159,17 +1148,15 @@ void raii_filehandles() {
   std::string sFile = "blablabla";
   char csFile[MAX_PATH] = "";
   memcpy(csFile, sFile.c_str(), sFile.size());
-  std::unique_ptr<void, decltype (&CloseHandle)> hFile(nullptr, CloseHandle);
+  std::unique_ptr<void, decltype(&CloseHandle)> hFile(nullptr, CloseHandle);
   // GENERIC_WRITE, FILE_SHARE_WRITE for setting anything on the file
-  HANDLE tmphFile = CreateFile(csFile
-    , GENERIC_READ // SYNCHRONIZED, GENERIC_WRITE
-    , FILE_SHARE_READ // FILE_SHARE_WRITE
-    , nullptr
-    , OPEN_EXISTING //  CREATE_ALWAYS to overwrite if exists
-    , FILE_ATTRIBUTE_NORMAL
-    , nullptr
-  );
-  if (tmphFile == INVALID_HANDLE_VALUE) fprintf(stderr, "could not open file handle\n");
+  // accessors: SYNCHRONIZED, GENERIC_READ, GENERIC_WRITE
+  // shared_as: FILE_SHARE_READ, FILE_SHARE_WRITE
+  // ops: CREATE_ALWAYS (overwrite if existing), OPEN_EXISTING
+  HANDLE tmphFile =
+      CreateFile(csFile, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (tmphFile == INVALID_HANDLE_VALUE)
+    fprintf(stderr, "could not open file handle\n");
   hFile.reset(tmphFile);
 
   // do some work
@@ -1191,7 +1178,8 @@ void systemtime_filetime() {
 
   bool bSt = false;
   bSt = SystemTimeToFileTime(&st_base, &ft_base);
-  if (bSt == false) exit(1);
+  if (bSt == false)
+    exit(1);
 
   st_base.wMonth = 12;
   st_base.wDayOfWeek = 12;
@@ -1201,19 +1189,20 @@ void systemtime_filetime() {
   st_base.wSecond = 12;
   st_base.wMilliseconds = 12;
   bSt = SystemTimeToFileTime(&st_base, &ft_wanted);
-  if (bSt == false) exit(2);
+  if (bSt == false)
+    exit(2);
 }
 
 // https://stackoverflow.com/questions/70715882/modify-file-create-time-in-windows-using-only-c
 
 // windows GetLastError
 //
-//#include <system_error>
+// #include <system_error>
 void printGetLastError();
 void printGetLastError() {
-    DWORD error = ::GetLastError();
-    std::string message = std::system_category().message(static_cast<int32_t>(error));
-    fprintf(stdout, "ERROR: %s\n", message.c_str());
+  DWORD error = ::GetLastError();
+  std::string message = std::system_category().message(static_cast<int32_t>(error));
+  fprintf(stdout, "ERROR: %s\n", message.c_str());
 }
 #endif
 
@@ -1245,8 +1234,7 @@ void printGetLastError() {
 // template <typename T, typename = std::enable_if_t< std::is_base_of<Foo, T>::value>
 
 // more simple std::is_same<T, int64_t>:
-template <typename T_Integral, typename std::is_same<T_Integral, int64_t>::type_value>
-void fun_placeholder1();
+template<typename T_Integral, typename std::is_same<T_Integral, int64_t>::type_value> void fun_placeholder1();
 
 // Forward declaration must specify one template per class and variable name
 // in order of first occurence.
@@ -1337,22 +1325,18 @@ void fun_placeholder1();
 // SHENNANIGAN
 // msvc has no reliable relative paths as macro yet (see experimental:deterministic mode)
 // workaround get filename by Andry https://stackoverflow.com/a/54335644
-template <typename T, size_t S>
-inline constexpr size_t fname_offs(const T(&str)[S], size_t i = S - 1) {
-	return (str[i] == '/' || str[i] == '\\') ? i + 1 : (i > 0 ? fname_offs(str, i - 1) : 0);
+template<typename T, size_t S> inline constexpr size_t fname_offs(T const (&str)[S], size_t i = S - 1) {
+  return (str[i] == '/' || str[i] == '\\') ? i + 1 : (i > 0 ? fname_offs(str, i - 1) : 0);
 }
-template <typename T>
-inline constexpr size_t fname_offs(T(&str)[1]) {
+template<typename T> inline constexpr size_t fname_offs(T (&str)[1]) {
   (void)str;
-	return 0;
+  return 0;
 }
 namespace util_force_const_eval {
-	template <typename T, T v>
-	struct const_expr_value
-	{
-		static constexpr const T value = v;
-	};
-}
+template<typename T, T v> struct const_expr_value {
+  static constexpr T const value = v;
+};
+} // namespace util_force_const_eval
 #define FORCE_CONST_EVAL(exp) ::util_force_const_eval::const_expr_value<decltype(exp), exp>::value
 #define LEAF(FN) (&FN[FORCE_CONST_EVAL(fname_offs(FN))])
 
@@ -1361,24 +1345,23 @@ int testEq(int a, int b) {
   if (a != b) {
     // Prefer __FILE_NAME__, which also works in C. Ideally, the compiler
     // can be told to provide relative file paths.
-    fprintf(stderr,"%s:%d got '%d' expected '%d'\n", LEAF(__FILE__), __LINE__, a, b);
+    fprintf(stderr, "%s:%d got '%d' expected '%d'\n", LEAF(__FILE__), __LINE__, a, b);
     return 1;
   }
   return 0;
 }
 
 #ifdef CPP20
-template <class TVAL, class TEXP, class TEPS>
+template<class TVAL, class TEXP, class TEPS>
 requires std::convertible_to<TVAL, double> && std::convertible_to<TEXP, double>
-bool testApprox(const TVAL & Val, const TEXP & Expect, const TEPS & Eps) {
+bool testApprox(const TVAL &Val, const TEXP &Expect, const TEPS &Eps) {
   return abs(Val - Expect) <= Eps;
 }
 
 template<class TVAL>
 requires std::convertible_to<TVAL, double>
 // inline typename std::enable_if<std::is_convertible<TVAL, double>::value, void>::type
-bool isNan(const TVAL& Val)
-{
+bool isNan(const TVAL &Val) {
   return (Val != Val); // NaN => (Val != Val)
 }
 
@@ -1395,9 +1378,9 @@ void test_isNan() {
 }
 #endif
 
-void someLambda(bool bVal, const std::string & sName);
-void someLambda(bool bVal, const std::string & sName) {
-  auto DrawOp = [&](bool bVal1, const std::string & sName1) {
+void someLambda(bool bVal, std::string const &sName);
+void someLambda(bool bVal, std::string const &sName) {
+  auto DrawOp = [&](bool bVal1, std::string const &sName1) {
     if (bVal1)
       fprintf(stdout, "%s\n", sName1.c_str());
   };
@@ -1431,23 +1414,21 @@ void ape_printing_bad() {
 #endif
 void ape_print();
 void ape_print() {
-  FILE * f1 = fopen("file1", "a+");
+  FILE *f1 = fopen("file1", "a+");
   fprintf(f1, "sometext\n");
-  fprintf(f1, "f1 ptr: %p\n", static_cast<void*>(f1));
+  fprintf(f1, "f1 ptr: %p\n", static_cast<void *>(f1));
   fclose(f1);
 }
 
 [[noreturn]] void ape_throw();
-[[noreturn]] void ape_throw() {
-  throw std::runtime_error("error");
-}
+[[noreturn]] void ape_throw() { throw std::runtime_error("error"); }
 
 // Cast iterator to pointer
 void ape_itertoptr();
 void ape_itertoptr() {
-  std::string my_str= "hello world";
+  std::string my_str = "hello world";
   std::string::iterator it(my_str.begin());
-  char* pointer_inside_buffer=&(*it);
+  char *pointer_inside_buffer = &(*it);
   fprintf(stdout, "%s\n", pointer_inside_buffer);
 }
 
@@ -1497,11 +1478,10 @@ void chrono_usage() {
   // the work...
   auto t_end = std::chrono::high_resolution_clock::now();
   double elapsed_time = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-	int64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
+  int64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
 
-  double elapsed_time_ms = std::chrono::duration<double, std::milli>(
-      std::chrono::high_resolution_clock::now() - t_start
-  ).count();
+  double elapsed_time_ms =
+      std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - t_start).count();
   (void)elapsed_time;
   (void)elapsed_time_ms_cast;
   (void)elapsed_time_ms;
@@ -1530,49 +1510,37 @@ void chrono_usage() {
 // * Data, context and interaction (DCI)
 // * no runtime overhead in contrast to dynamic
 // * simplified with C++23
-template <class T>
-class Base1
-{
-    // methods within Base1 can use template to access members of Derived
+template<class T> class Base1 {
+  // methods within Base1 can use template to access members of Derived
 };
-class Derived1 : public Base1<Derived>
-{
-    // ..
+class Derived1 : public Base1<Derived> {
+  // ..
 };
 // Use case Static Polymorphism
-template <class T>
-struct Base2
-{
-    void interface() {
-        static_cast<T*>(this)->implementation();
-    }
-    static void static_func() {
-        T::static_sub_func();
-    }
+template<class T> struct Base2 {
+  void interface() { static_cast<T *>(this)->implementation(); }
+  static void static_func() { T::static_sub_func(); }
 };
-struct Derived2 : Base2<Derived>
-{
-    void implementation();
-    static void static_sub_func();
+struct Derived2 : Base2<Derived> {
+  void implementation();
+  static void static_sub_func();
 };
 // other use cases include object counter, polymorphic chaining|copy construct
 
 // simple template specialization
-
 
 // SHENNANIGAN streams do not enforce C abi and are overly complex for printing memory
 // This may hide serious bugs like memcpy to std::vector<bool>.
 void stream_flags();
 void stream_flags() {
   // https://codereview.stackexchange.com/questions/165120/printing-hex-dumps-for-diagnostics
-  std::vector<uint8_t> array {1, 0, 0, 0};
-
+  std::vector<uint8_t> array{1, 0, 0, 0};
   // SHENNANIGAN implicit instantiation is allowed at least in msvc of visual studio 2015
   std::fstream fstream{"somestream.txt", std::fstream::app | std::fstream::out};
   /*fstream.open();*/
   auto flags = fstream.flags();
   fstream << std::hex;
-  for (uint32_t i = 0; i < array.size(); i+=1)
+  for (uint32_t i = 0; i < array.size(); i += 1)
     fstream << std::hex << array[i];
   fstream.flags(flags);
   fstream << "\n";
@@ -1603,22 +1571,16 @@ public:
   // error: 'ISomeInterface' has virtual functions but non-virtual destructor [-Werror,-Wnon-virtual-dtor]
   virtual ~ISomeInterface() = 0;
 };
-class CSomeClass : public ISomeInterface
-{
+class CSomeClass : public ISomeInterface {
+public:
   CSomeClass();
-  public:
-  int SomeMethod() override {
-    return 1;
-  }
+  int SomeMethod() override { return 1; }
   virtual ~CSomeClass() override;
 };
-class CSomeDerivedClass final : public CSomeClass
-{
+class CSomeDerivedClass final : public CSomeClass {
+public:
   CSomeDerivedClass();
-  public:
-  int SomeMethod() override final {
-    return 2;
-  }
+  int SomeMethod() override final { return 2; }
   virtual ~CSomeDerivedClass() override final; // optional virtual
 };
 
@@ -1640,7 +1602,7 @@ struct CTestSomeInterface : ISomeInterface {
 
 struct SomeDll {
   std::string m_filename;
-  void SetupDll(const std::string & config_file) {
+  void SetupDll(std::string const &config_file) {
     // do stuff and simplify by comparing to config_file
     if (config_file == "DriverError")
       throw std::runtime_error("DriverError: sometext");
@@ -1652,8 +1614,8 @@ struct SomeDll {
   }
 };
 
-int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len);
-int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
+int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len);
+int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len) {
   // SHENNANIGAN clangd
   // shows ISO C++11 does not allow conversion from string literal to 'char *const' instead of
   // recommending the proper fix below
@@ -1671,31 +1633,30 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
   struct SomeDll some_dll;
   try {
     some_dll.SetupDll("someconfig_file");
-  }
-  catch (std::runtime_error & rt_err) {
+  } catch (std::runtime_error &rt_err) {
     std::string err = rt_err.what();
     // std::string::StartsWith : err.rfind("DriverError:", 0) == 0)
     if (err.rfind(const_drivermsg, 0) == 0) {
       int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_drivermsg)]);
-      if (st <= 0) return 1; // C89 allows less than 1, C99 NULL
-        return 2;
-    }
-    else if (err.rfind(const_initmsg, 0) == 0) {
+      if (st <= 0)
+        return 1; // C89 allows less than 1, C99 NULL
+      return 2;
+    } else if (err.rfind(const_initmsg, 0) == 0) {
       int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_initmsg)]);
-      if (st <= 0) return 1;
-        return 2;
-    }
-    else if (err.rfind(const_nocamfoundmsg, 0) == 0) {
+      if (st <= 0)
+        return 1;
+      return 2;
+    } else if (err.rfind(const_nocamfoundmsg, 0) == 0) {
       int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_nocamfoundmsg)]);
-      if (st <= 0) return 1;
+      if (st <= 0)
+        return 1;
       return 3;
     }
-  }
-  catch (std::exception & exc)
-  {
+  } catch (std::exception &exc) {
     std::string err = exc.what();
     int st = snprintf(&errmsg_ptr[0], *errmsg_len, "%s", &err.c_str()[sizeof(const_nocamfoundmsg)]);
-    if (st <= 0) return 1;
+    if (st <= 0)
+      return 1;
     return 100;
   }
   return 0;
@@ -1716,17 +1677,14 @@ int why_exceptions_dont_scale(char * errmsg_ptr, uint32_t * errmsg_len) {
 // https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-unions/
 // https://www.quora.com/How-do-you-initialize-a-std-shared_ptr-in-C
 
-union union_tmp
-{
+union union_tmp {
   // WRONG
   // union_tmp() {}
   union_tmp()
-  : ptr{} // <--
+      : ptr{} // <--
   {}
-  ~union_tmp()
-  {}
-  union
-  {
+  ~union_tmp() {}
+  union {
     int a;
     std::shared_ptr<std::vector<int>> ptr;
   };
@@ -1734,10 +1692,10 @@ union union_tmp
 
 int use_union_tmp();
 int use_union_tmp() {
-    union_tmp b;
-    std::shared_ptr<std::vector<int>> tmp(new std::vector<int>);
-    b.ptr = tmp; //here segmentation fault happens
-    return 0;
+  union_tmp b;
+  std::shared_ptr<std::vector<int>> tmp(new std::vector<int>);
+  b.ptr = tmp; // here segmentation fault happens
+  return 0;
 }
 
 // SHENNANIGAN exceptions implementation are complex
@@ -1774,7 +1732,6 @@ int use_union_tmp() {
 // private interior class may need inline constructor to propagate type
 // information to header, if forward declared in header
 
-
 // generic lambda with deduced return type with unpacking the return type
 // using ReturnedType = typename std::result_of<CallableType()>::type;
 // template <typename T = ReturnedType>
@@ -1802,9 +1759,7 @@ int use_union_tmp() {
 class OperatorExample {
   OperatorExample() {}
   ~OperatorExample() {}
-  void operator * (OperatorExample & other) {
-    m_value *= other.m_value;
-  }
+  void operator*(OperatorExample &other) { m_value *= other.m_value; }
   uint32_t m_value;
 };
 
@@ -1813,20 +1768,13 @@ class OperatorExample {
 // - https://github.com/mikael-s-persson/templight
 // - better use C++20 concepts to parametrize templates
 // * 1. Specify temporary types
-template<typename T>
-T some_other_calc(const T &val) {
-  return val;
-}
-template<typename T>
-T calc(const T &val) {
+template<typename T> T some_other_calc(T const &val) { return val; }
+template<typename T> T calc(T const &val) {
   T temporary_ = some_other_calc(val);
   return temporary_ / 100.0;
 }
 // * 2. Use typeid
-template<typename T>
-void test() {
-  fprintf(stdout, "testing type %s\n", typeid(T).name());
-}
+template<typename T> void test() { fprintf(stdout, "testing type %s\n", typeid(T).name()); }
 // * 3. Avoid default implementations
 // => Provide implementations or errors for all types without internal state.
 // * 4. Use static_assert where possible
@@ -1851,75 +1799,67 @@ void test() {
 //     + https://www.modernescpp.com/index.php/c-20-define-the-concept-equal-and-ordering/
 // code from https://ideone.com/pldMrr by
 // https://stackoverflow.com/questions/6534041/how-to-check-whether-operator-exists/6536204#6536204
-#include<iostream>
-#include<type_traits>
-namespace CHECK
-{
+#include <iostream>
+#include <type_traits>
+namespace CHECK {
 
 #ifdef HAS_CPP20
-  template<typename T1, typename T2>
-  concept CanMultiply = requires(T1 & a, T2 & b) {
-    a * b;
-  };
-  template<typename T1, typename T2> requires CanMultiply<T1, T2>
-  void mul(T1 & t1, T2 & t2) {
-      t1.m = t1 * t2;
-  }
-
-  // same_as may use compiler intrinsics to compare types or use something like
-  // _EXPORT_STD template <class, class>
-  // constexpr bool is_same_v = false;
-  // template <class T>
-  // constexpr bool is_same_v<T, T> = true;
-  // _EXPORT_STD template <class T1, class T2>
-  // struct is_same : std::bool_constant<is_same_v<T1, T2>> {};
-
-  template<typename T1, typename T2> requires std::same_as<T1, T2>
-  void mul_sametype(T1 & t1, T2 & t2) {
-      t1.m = t1 * t2;
-  }
-  // if unsure that RHS is a concept, check the libstd implementation
-  template<typename T>
-  // ad-hoc constraint, note keyword used twice
-  requires requires (T x) { x + x; }
-  T add(T a, T b) { return a + b; }
-
-#else // < CPP20
-  // check whether operator exists for identical types up to including C++17
-  struct No {};
-  template<typename T, typename Arg> No operator== (const T&, const Arg&);
-  template<typename T, typename Arg = T>
-  struct EqualExists
-  {
-    // https://stackoverflow.com/questions/60386792/c20-comparison-warning-about-ambiguous-reversed-operator
-    enum { value = !std::is_same<decltype(*static_cast<T*>(nullptr) == *static_cast<Arg*>(nullptr)), No>::value };
-  };
-
-  // check whether operator exists for non-identical types has horrible error messages
-  // and is unusable for metaprogramming in C++14 without additional efforts
-  template<typename T1, typename T2> No operator* (const T1&, const T2&);
-  template<typename T1, typename T2>
-  struct MulExists
-  {
-    enum { value = !std::is_same<decltype(*static_cast<T1*>(nullptr) * *static_cast<T2*>(nullptr)), No>::value };
-  };
-#endif
-
+template<typename T1, typename T2>
+concept CanMultiply = requires(T1 &a, T2 &b) { a *b; };
+template<typename T1, typename T2>
+requires CanMultiply<T1, T2> void mul(T1 &t1, T2 &t2) {
+  t1.m = t1 * t2;
 }
 
+// same_as may use compiler intrinsics to compare types or use something like
+// _EXPORT_STD template <class, class>
+// constexpr bool is_same_v = false;
+// template <class T>
+// constexpr bool is_same_v<T, T> = true;
+// _EXPORT_STD template <class T1, class T2>
+// struct is_same : std::bool_constant<is_same_v<T1, T2>> {};
+
+template<typename T1, typename T2>
+requires std::same_as<T1, T2> void mul_sametype(T1 &t1, T2 &t2) {
+  t1.m = t1 * t2;
+}
+// if unsure that RHS is a concept, check the libstd implementation
+template<typename T>
+// ad-hoc constraint, note keyword used twice
+requires requires(T x) { x + x; } T add(T a, T b) {
+  return a + b;
+}
+
+#else // < CPP20
+// check whether operator exists for identical types up to including C++17
+struct No {};
+template<typename T, typename Arg> No operator==(T const &, Arg const &);
+template<typename T, typename Arg = T> struct EqualExists {
+  // https://stackoverflow.com/questions/60386792/c20-comparison-warning-about-ambiguous-reversed-operator
+  enum { value = !std::is_same<decltype(*static_cast<T *>(nullptr) == *static_cast<Arg *>(nullptr)), No>::value };
+};
+
+// check whether operator exists for non-identical types has horrible error messages
+// and is unusable for metaprogramming in C++14 without additional efforts
+template<typename T1, typename T2> No operator*(const T1 &, const T2 &);
+template<typename T1, typename T2> struct MulExists {
+  enum { value = !std::is_same<decltype(*static_cast<T1 *>(nullptr) * *static_cast<T2 *>(nullptr)), No>::value };
+};
+#endif
+
+} // namespace CHECK
+
 struct A {
-  bool operator == (A const &);
-  int operator * (int factor) {
-    return m * factor;
-  }
+  bool operator==(A const &);
+  int operator*(int factor) { return m * factor; }
   int m;
 };
 struct B {
-  short operator == (B const &);
+  short operator==(B const &);
 };
 struct C {};
 struct D {
-  short operator == (short);
+  short operator==(short);
 };
 
 int test_OperatorExistence();
@@ -1927,20 +1867,20 @@ int test_OperatorExistence() {
   // C++14
 #ifndef HAS_CPP20
 #ifdef HAS_CPP14
-  std::cout<< "A::operator== () exists: " << CHECK::EqualExists<A>::value << std::endl;
-  std::cout<< "B::operator== () exists: " << CHECK::EqualExists<B>::value << std::endl;
-  std::cout<< "C::operator== () exists: " << CHECK::EqualExists<C>::value << std::endl;
-  std::cout<< "D::operator== (short) exists: " << CHECK::EqualExists<D, short>::value << std::endl;
+  std::cout << "A::operator== () exists: " << CHECK::EqualExists<A>::value << std::endl;
+  std::cout << "B::operator== () exists: " << CHECK::EqualExists<B>::value << std::endl;
+  std::cout << "C::operator== () exists: " << CHECK::EqualExists<C>::value << std::endl;
+  std::cout << "D::operator== (short) exists: " << CHECK::EqualExists<D, short>::value << std::endl;
 
-  std::cout<< "A::operator* () exists: " << CHECK::MulExists<A, int>::value << std::endl;
+  std::cout << "A::operator* () exists: " << CHECK::MulExists<A, int>::value << std::endl;
   // std::cout<< "B::operator* () exists: " << CHECK::MulExists<B, double>::value << std::endl; // fails with bogous errors
 #endif // HAS_CPP14
 #endif // HAS_CPP20
 
 #ifdef HAS_CPP20
-  A a = { 2 };
+  A a = {2};
   int b = 10;
-  CHECK::mul( a, b );
+  CHECK::mul(a, b);
   fprintf(stdout, "a: %d\n", a.m);
 #endif // HAS_CPP20
 
@@ -1953,9 +1893,8 @@ int test_OperatorExistence() {
 // typeAt from https://stackoverflow.com/questions/72643091/how-to-get-an-element-of-type-list-by-index
 #ifdef HAS_CPP20
 template<typename...> struct type_list {};
-template <std::size_t I, typename T>
-struct typeAt;
-template <std::size_t I, typename... Args>
+template<std::size_t I, typename T> struct typeAt;
+template<std::size_t I, typename... Args>
 struct typeAt<I, type_list<Args...>> : std::tuple_element<I, std::tuple<Args...>> {};
 using L = type_list<int, char, float, double>;
 using R = typename typeAt<0, L>::type;
@@ -1972,8 +1911,9 @@ static_assert(std::is_same_v<T, float>, "");
 // };
 
 struct Foo {
-  Foo() : data(0) {}
-  void sum(int i) { data +=i;}
+  Foo()
+      : data(0) {}
+  void sum(int i) { data += i; }
   int data;
 };
 
@@ -1995,14 +1935,17 @@ struct SPoint2D {
 };
 class CLambda {
 public:
-  CLambda() : m_ok(false)
-  {}
+  CLambda()
+      : m_ok(false) {}
+
 public:
-  bool is_0point(const SPoint2D & pt) {
+  bool is_0point(SPoint2D const &pt) {
     if (pt.x == 0 && pt.y == 0) {
-      this->m_ok = true; return true;
+      this->m_ok = true;
+      return true;
     } else {
-      this->m_ok = false; return false;
+      this->m_ok = false;
+      return false;
     }
   }
   void WhenMsgRead() {
@@ -2011,7 +1954,7 @@ public:
     // auto is_other0point [=](const SPoint2D & pt) {
     //   return true;
     // };
-    SPoint2D pt_in = { 0, 0 };
+    SPoint2D pt_in = {0, 0};
     // SHENNANIGAN Diagnostics to detect necessary scoping do not work, if fn
     // is invalid and may only indicate incorrect usage instead of lambda being
     // at forbidden location.
@@ -2020,6 +1963,7 @@ public:
     if (m_ok == false)
       fprintf(stderr, "m_ok false");
   }
+
 private:
   bool m_ok;
 };
@@ -2050,17 +1994,18 @@ private:
 // [&var, &] illegal !!
 // [*this] use copy of this (since C++17)
 
-// SHENNANIGAN workaround char8_t, unfortunately string literals are not constexpr in C++20
+// SHENNANIGAN workaround char8_t from given char8_t string literals (u8"", u8R"")
 #ifdef HAS_CPP20
-inline char const* operator""_SC(const char8_t* str, std::size_t) {
-    return reinterpret_cast< const char* >(str);
-}
-//constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
+inline char const *operator""_SC(char8_t const *str, std::size_t) { return reinterpret_cast<char const *>(str); }
+// Unfortunately string literals are not constexpr in C++20:
+// constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
 //    return reinterpret_cast< const char* >(str);
 //}
-// More sane alternative without backwards compatibility is to use _UC for unsigned char.
-// Best solution: Make all strings default utf8 encoded without special handling.
-// and u8"string" being used.
+// More sane alternative would be to use _UC for unsigned char like C23.
+// Best solution: use /utf-8 in msvc and use clang/gcc defaults of UTF-8
+// and have "default utf-8 strings" instead of "code-page dependent encoding"
+// without any usage of u8"unnecessary" instead of u8"only guaranteed utf-8 string".
+// C interop requires usage of macros xor /utf-8.
 
 // C++17 compliant alternative:
 // template  <typename Ty>
@@ -2070,28 +2015,24 @@ inline char const* operator""_SC(const char8_t* str, std::size_t) {
 // used via
 // can_create_string_from<Ty>::value
 
-template <typename Ty>
-concept can_create_string_from = requires(Ty t1) {
-    static_cast<std::string>(t1);
-};
+template<typename Ty>
+concept can_create_string_from = requires(Ty t1) { static_cast<std::string>(t1); };
 
-template <typename Ty>
-concept can_create_wstring_from = requires(Ty t1) {
-    static_cast<std::wstring>(t1);
-};
+template<typename Ty>
+concept can_create_wstring_from = requires(Ty t1) { static_cast<std::wstring>(t1); };
 
 // std::convertible_to means implicitly convertible to
 // "can be implicitly and explicitly converted to the type To"
 
-template <typename Ty>
+template<typename Ty>
 concept has_bound_toString = requires(Ty t1) {
   { t1.toString() } -> std::convertible_to<std::string>;
 };
-template <typename Ty>
+template<typename Ty>
 concept has_free_toString = requires(Ty t1) {
   { toString(t1) } -> std::convertible_to<std::string>;
 };
-template <typename Ty>
+template<typename Ty>
 concept has_toString = has_bound_toString<Ty> || has_free_toString<Ty>;
 
 struct S_test_toString {
@@ -2117,7 +2058,7 @@ static_assert(!has_toString<S_test_none_toString>, "S_test_none_toString has fre
 
 struct S_referenceMethods {
   void referenceMethods() {
-    S_test_free_toString sfree = { 1 };
+    S_test_free_toString sfree = {1};
     std::string str1 = toString(sfree);
     (void)str1;
   }
@@ -2127,21 +2068,21 @@ struct S_referenceMethods {
 // has_ostream matches free ostream
 // Note that bound ostream does not work due to implicit this pointer being
 // unavailable.
-template <typename Ty>
-concept has_ostream = requires(Ty t1, std::ostream& os) {
-   { os << t1 } -> std::same_as<std::ostream&>;
+template<typename Ty>
+concept has_ostream = requires(Ty t1, std::ostream &os) {
+  { os << t1 } -> std::same_as<std::ostream &>;
 };
 
 // concept <=> constexpr bool
-template <typename Ty>
-constexpr bool has_ostream_altname = requires(Ty t1, std::ostream& os) {
-   { os << t1 } -> std::same_as<std::ostream&>;
+template<typename Ty>
+constexpr bool has_ostream_altname = requires(Ty t1, std::ostream &os) {
+  { os << t1 } -> std::same_as<std::ostream &>;
 };
 struct S_test_bound_ostream {
   int32_t mem;
   // You can not do it as a member function, because the implicit this parameter is the left hand side of the <<-operator.
   // SHENNANIGAN clangd does not complain about this function:
-  std::ostream& operator << (std::ostream& ostr) {
+  std::ostream &operator<<(std::ostream &ostr) {
     ostr << std::to_string(mem);
     return ostr;
   }
@@ -2149,14 +2090,14 @@ struct S_test_bound_ostream {
 struct S_test_free_ostream {
   int32_t mem;
 };
-static std::ostream& operator << (std::ostream& ostr, const S_test_free_ostream & SFree_ostream) {
+static std::ostream &operator<<(std::ostream &ostr, S_test_free_ostream const &SFree_ostream) {
   ostr << std::to_string(SFree_ostream.mem);
   return ostr;
 }
 
 void test_ostream();
 void test_ostream() {
-  S_test_bound_ostream sbound_ostream1 = { 1 };
+  S_test_bound_ostream sbound_ostream1 = {1};
   std::stringstream ss1;
   (void)sbound_ostream1;
   (void)ss1;
@@ -2164,7 +2105,7 @@ void test_ostream() {
   // ss1 << sbound_ostream1;
   // std::cout << ss1.str();
 
-  S_test_free_ostream sfree_ostream2 = { 1 };
+  S_test_free_ostream sfree_ostream2 = {1};
   std::stringstream ss2;
   ss2 << sfree_ostream2;
   (void)ss2;
@@ -2173,21 +2114,23 @@ void test_ostream() {
 static_assert(!has_ostream<S_test_bound_ostream>, "S_test_bound_ostream has a usable ostream");
 static_assert(has_ostream<S_test_free_ostream>, "S_test_free_ostream has no ostream");
 
-
 #ifdef _WIN32
-inline std::string ConvertWideToUtf8(const std::wstring& wstr) {
-    int count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int32_t>(wstr.length()), nullptr, 0, nullptr, nullptr);
-    if (count <= 0) return "";
-    std::string str(static_cast<size_t>(count), 0);
-    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, nullptr, nullptr);
-    return str;
+inline std::string ConvertWideToUtf8(std::wstring const &wstr) {
+  int count =
+      WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int32_t>(wstr.length()), nullptr, 0, nullptr, nullptr);
+  if (count <= 0)
+    return "";
+  std::string str(static_cast<size_t>(count), 0);
+  WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, nullptr, nullptr);
+  return str;
 }
-inline std::wstring ConvertUtf8ToWide(const std::string& str) {
-    int count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), nullptr, 0);
-    if (count <= 0) return L"";
-    std::wstring wstr(static_cast<size_t>(count), 0);
-    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
-    return wstr;
+inline std::wstring ConvertUtf8ToWide(std::string const &str) {
+  int count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), nullptr, 0);
+  if (count <= 0)
+    return L"";
+  std::wstring wstr(static_cast<size_t>(count), 0);
+  MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
+  return wstr;
 }
 #endif // _WIN32
 
@@ -2195,8 +2138,7 @@ struct ValRefStr {
   std::string val;
   std::string ref;
 };
-template <class Ty1, class Ty2>
-static constexpr ValRefStr ConvertToString(const Ty1& value, const Ty2& reference) {
+template<class Ty1, class Ty2> static constexpr ValRefStr ConvertToString(Ty1 const &value, Ty2 const &reference) {
   // 1 enum
   // 2 integral types (integers)
   // 3 float types
@@ -2226,28 +2168,26 @@ static constexpr ValRefStr ConvertToString(const Ty1& value, const Ty2& referenc
     using Ty1_underlyingTy = typename std::underlying_type_t<Ty1>;
     auto val_casted = static_cast<Ty1_underlyingTy>(value);
     auto ref_casted = static_cast<Ty1_underlyingTy>(reference);
-    return { std::to_string(val_casted), std::to_string(ref_casted) };
+    return {std::to_string(val_casted), std::to_string(ref_casted)};
   } else if constexpr (std::is_integral_v<Ty1>) {
     static_assert(std::is_integral_v<Ty2>);
-    return { std::to_string(value), std::to_string(reference) };
+    return {std::to_string(value), std::to_string(reference)};
   } else if constexpr (std::is_floating_point_v<Ty2>) {
     static_assert(std::is_floating_point_v<Ty2>);
-    return { std::to_string(value), std::to_string(reference) };
+    return {std::to_string(value), std::to_string(reference)};
   } else if constexpr (can_create_string_from<Ty1>) {
     static_assert(can_create_string_from<Ty2>);
-    return { std::string(value), std::string(reference) };
+    return {std::string(value), std::string(reference)};
   }
 #ifdef _WIN32
   else if constexpr (can_create_wstring_from<Ty1>) {
     static_assert(can_create_wstring_from<Ty2>);
     // convert wstring -> string for utf8 encoded output
-    return { ConvertWideToUtf8(std::wstring(value))
-      , ConvertWideToUtf8(std::wstring(reference))
-    };
+    return {ConvertWideToUtf8(std::wstring(value)), ConvertWideToUtf8(std::wstring(reference))};
   }
 #endif // WIN32
   else {
-    return { value.toString(), reference.toString() };
+    return {value.toString(), reference.toString()};
   }
 }
 
@@ -2272,7 +2212,7 @@ void test_ConvertToString() {
 // * T.11: Whenever possible use standard concepts
 // * T.12: Prefer concept names over auto for local variables
 // * T.13: Prefer the shorthand notation for simple, single-type argument concepts
-//template<typename T>       // Correct but verbose: "The parameter is
+// template<typename T>       // Correct but verbose: "The parameter is
 //     requires sortable<T>   // of type T which is the name of a type
 // void sort(T&);             // that is sortable"
 //
@@ -2345,27 +2285,22 @@ void test_ConvertToString() {
 // ensure identical named fn exist in child class, ie for template programming
 class ParentClass {
 public:
-  int fn_HighLevelClass (int i) {
-    return i;
-  }
+  int fn_HighLevelClass(int i) { return i; }
 };
 class ChildClass : ParentClass {
-  int fn_LowLevelClass (int i) {
+  int fn_LowLevelClass(int i) {
     // could be more optimized to inline the call
     return fn_HighLevelClass(i);
   }
 };
 
 // requires #include <utility>
-template <typename>
-struct is_pair : std::false_type {};
-template <typename T, typename U>
-struct is_pair<std::pair<T, U>> : std::true_type {};
+template<typename> struct is_pair : std::false_type {};
+template<typename T, typename U> struct is_pair<std::pair<T, U>> : std::true_type {};
 
 #ifdef HAS_CPP17
-template<class ITR>
-void use_is_pair(ITR && itr) {
-  //access of itr->second ok.
+template<class ITR> void use_is_pair(ITR &&itr) {
+  // access of itr->second ok.
   (void)itr;
   if constexpr (is_pair<ITR>::value) {
     printf("is_pair");
@@ -2380,20 +2315,20 @@ void use_is_pair(ITR && itr) {
 }
 
 template<class ITR, typename = typename std::enable_if<is_pair<typename ITR::value_type>::value, ITR>::type>
-decltype(auto) use_pair(ITR && itr) {
+decltype(auto) use_pair(ITR &&itr) {
   (void)itr;
-    //access of itr->second ok.
+  // access of itr->second ok.
 }
 
 int check_pair();
 int check_pair() {
-    std::map<int, int> foo{
-        { 1, 2 },
-        { 3, 4 },
-    };
-    use_pair(foo.begin());
-    use_is_pair("");
-    return 0;
+  std::map<int, int> foo{
+      {1, 2},
+      {3, 4},
+  };
+  use_pair(foo.begin());
+  use_is_pair("");
+  return 0;
 }
 #endif
 
@@ -2405,22 +2340,24 @@ int check_pair() {
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time
 // SHENNANIGAN core guidelines have nothing on pattern matching std things
 // type for STL containers. Reflection on (std) scope elements is not possible.
-namespace is_stl_container_impl{
-  template <typename T1>       struct is_stl_container:std::false_type{};
-  template <typename T1, std::size_t N> struct is_stl_container<std::array    <T1,N>>    :std::true_type{};
-  template <typename... Args> struct is_stl_container<std::vector            <Args...>>:std::true_type{};
-  template <typename... Args> struct is_stl_container<std::list              <Args...>>:std::true_type{};
-  template <typename... Args> struct is_stl_container<std::map               <Args...>>:std::true_type{};
-  template <typename... Args> struct is_stl_container<std::multimap          <Args...>>:std::true_type{};
-}
-//type trait to utilize the implementation type traits as well as decay the type
-template <typename T1> struct is_stl_container {
+// clang-format off
+namespace is_stl_container_impl {
+template<typename T1> struct is_stl_container : std::false_type {};
+template<typename T1, std::size_t N> struct is_stl_container<std::array<T1, N>> : std::true_type {};
+template<typename... Args>           struct is_stl_container<std::vector<Args...>> : std::true_type {};
+template<typename... Args>           struct is_stl_container<std::list<Args...>> : std::true_type {};
+template<typename... Args>           struct is_stl_container<std::map<Args...>> : std::true_type {};
+template<typename... Args>           struct is_stl_container<std::multimap<Args...>> : std::true_type {};
+} // namespace is_stl_container_impl
+// clang-format on
+// type trait to utilize the implementation type traits as well as decay the type
+template<typename T1> struct is_stl_container {
   static constexpr bool const value = is_stl_container_impl::is_stl_container<std::decay_t<T1>>::value;
 };
 void use_is_stl_container();
 void use_is_stl_container() {
   printf("%d\n", is_stl_container<std::vector<int>>::value);
-  printf("%d\n", is_stl_container<std::vector<int>const&>::value);
+  printf("%d\n", is_stl_container<std::vector<int> const &>::value);
   printf("%d\n", is_stl_container<int>::value);
 }
 #endif
@@ -2438,28 +2375,26 @@ void use_is_stl_container() {
 // SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc.
 // Do not nest concepts to prevent breaking of concept composition rules
 // (see co_is_not_integral and addition_nonintegral2).
-template <typename T1>
+template<typename T1>
 concept c_is_integral = std::is_integral_v<T1>;
-template <typename T1>
+template<typename T1>
 concept co_is_not_integral = not std::is_integral_v<T1>;
 // At least in experiments vvv works, whereas ^^^ does not.
-template <typename T1>
-requires std::is_integral_v<T1>
-T1 addition_integral(T1 num1, T1 num2) {
+template<typename T1>
+requires std::is_integral_v<T1> T1 addition_integral(T1 num1, T1 num2) {
   return num1 + num2;
 }
 
-template <typename T1>
-requires co_is_not_integral<T1>
-int addition_nonintegral1(T1 num1, T1 num2) {
+template<typename T1>
+requires co_is_not_integral<T1> int addition_nonintegral1(T1 num1, T1 num2) {
   (void)num1;
   (void)num2;
   return 0;
 }
 // SHENNANIGAN Not recommended to use nest concepts due to concept subsumption rules
 // in conflict with core guidelines T.11: Whenever possible use standard concepts
-template <typename T1>
-requires (!std::is_integral_v<T1>) // () - Brackets in generics hint possible ambiguity
+template<typename T1>
+requires(!std::is_integral_v<T1>) // () - Brackets in generics hint possible ambiguity
 int addition_nonintegral2(T1 num1, T1 num2) {
   (void)num1;
   (void)num2;
@@ -2477,7 +2412,7 @@ void use_is_integral() {
     int a;
     int b;
   };
-  Comp1 comp1 = { 1, 2 };
+  Comp1 comp1 = {1, 2};
   int zero = addition_nonintegral1(comp1, comp1);
   zero = addition_nonintegral2(comp1, comp1);
   (void)zero;
@@ -2491,9 +2426,7 @@ struct use_CustomComparator { // also known as predicate
   int32_t a;
   int32_t b;
   struct CustomComparator {
-    bool operator() (const int32_t& lhs, const int32_t& rhs) const {
-      return lhs < rhs;
-    }
+    bool operator()(int32_t const &lhs, int32_t const &rhs) const { return lhs < rhs; }
   };
   std::multiset<int32_t, CustomComparator> mset1;
   // requires also move assign and move constructor
@@ -2536,7 +2469,6 @@ struct use_CustomComparator { // also known as predicate
 // Must use instead C23 ckd_mul(&res_mul, a, b))
 // to stay portable.
 #endif
-
 
 // SHENNANIGAN iostream bad, successor not finished
 // * C++26 users should use std::print for formatting

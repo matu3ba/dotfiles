@@ -62,6 +62,8 @@ https://lock.cmpxchg8b.com/zenbleed.html
   + TODO
 * 13. atomics and cache synchronization???
 TODO include feedback from https://github.com/ForwardCom/manual/issues/29
+-> TODO CHERI support possible or planned?
+-> TODO sync model/semantics?
 
 TODO to what degree can (time) reversible computing and constant time execution (for crypto) be realized?
 

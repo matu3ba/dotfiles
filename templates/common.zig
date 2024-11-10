@@ -21,6 +21,12 @@ const builtin = @import("builtin");
 // dumpbin - Developer Command Prompt for VS2015
 // ntrace - https://github.com/rogerorr/NtTrace
 
+// common libs
+// allocator
+// * powerful and simple https://github.com/joadnacer/jdz_allocator
+// * decent simple and usable in C https://github.com/mjansson/rpmalloc
+// * more complex https://github.com/microsoft/mimalloc
+
 // typesafe version of (u16*)codepoint with codepoint type u8*
 // codepoint created from Utf8View which is [_]u8
 // const char = std.mem.bytesAsValue(u16, codepoint[0..2]); // U+0080...U+07FF

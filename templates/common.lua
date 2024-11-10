@@ -22,13 +22,13 @@
 --====basics
 -- indices are 1-based
 local table_str = {
-  [-1] = "t-1", -- ipair does not iterate over this
-  [0] = "t0", -- ipair does not iterate over this
-  [1] = "t1",
-  [2] = "t2",
+  [-1] = 't-1', -- ipair does not iterate over this
+  [0] = 't0', -- ipair does not iterate over this
+  [1] = 't1',
+  [2] = 't2',
 }
 
-local simplertable_str_alt = { "t1", "t2", }
+local simplertable_str_alt = { 't1', 't2' }
 
 local table_int = {
   [-1] = -1, -- ipair does not iterate over this
@@ -41,9 +41,13 @@ local simplertable_int_alt = { 1, 2 }
 local function pair_ipair_difference()
   -- deterministic by numeric magnitude,
   -- starts at 1 ignoring non-numeric values and stops on any gap
-  for key, value in ipairs(table_str) do print(key, value) end
+  for key, value in ipairs(table_str) do
+    print(key, value)
+  end
   -- associative tables with keys preserved but order unspecified
-  for key, value in pairs(table_str) do print(key, value) end
+  for key, value in pairs(table_str) do
+    print(key, value)
+  end
 end
 
 local function reference()
