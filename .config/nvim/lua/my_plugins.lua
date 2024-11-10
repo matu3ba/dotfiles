@@ -255,7 +255,6 @@ return {
   { 'mfussenegger/nvim-lint' }, -- configuration in my_lint.lua
   --{ "neomake/neomake" } -- get useful comments for code semantics
   -- { 'LnL7/vim-nix' }, -- flakes highlighting: wait until nix converts their stuff to flakes
-  { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
   --==Organization
   -- ideas
   -- - ascii boxing
@@ -376,6 +375,8 @@ return {
   -- telescope-ui-select.nvim
   -- text-case.nvim
 }
+
+-- { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
 
 --fugitive <leader> [gs|g2|g3|p2|p3]
 -- TODO best shortcuts and brief usage

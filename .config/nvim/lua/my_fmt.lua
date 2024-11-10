@@ -9,7 +9,23 @@ local has_conform, conform = pcall(require, 'conform')
 if not has_conform then return end
 -- local util = conform.util
 
+-- ruff_format: no cmd for combined linting and fmt yet https://github.com/astral-sh/ruff/issues/8232
+-- stylua: cargo install stylua --features lua52
+local fmts_by_ft = {
+  -- cmake = { 'cmake_format' },
+  c = { 'clang-format' }, -- // clang-format off|on
+  cpp = { 'clang-format' }, -- // clang-format off|on
+  lua = { 'stylua' }, -- stylua: ignore start|end
+  python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
+  rust = { 'rustfmt', lsp_format = 'fallback' },
+  shtml = { 'superhtml' },
+  zig = { 'zigfmt', lsp_format = 'fallback' },
+  ziggy = { 'ziggy' },
+  ziggy_schema = { 'ziggy_schema' },
+}
+
 conform.setup {
+  -- additional / custom formatter
   formatters = {
     superhtml = {
       inherit = false,
@@ -29,6 +45,7 @@ conform.setup {
       stdin = true,
       args = { 'fmt', '--stdin-schema' },
     },
+    -- TODO testing to see if needed
     -- clang_format = function()
     --   local cwd = assert(vim.loop.cwd())
     --   -- find path/.clang-format
@@ -64,24 +81,11 @@ conform.setup {
     --   return {}
     -- end,
   },
-  -- zifmt: handled by lsp zig = { "zifmt", lsp_format = "fallback" },
-  -- ruff_format: no cmd for combined linting and fmt yet https://github.com/astral-sh/ruff/issues/8232
-  -- stylua: cargo install stylua --features lua52
 
-  formatters_by_ft = {
-    -- cmake = { 'cmake_format' },
-    c = { 'clang-format' }, -- // clang-format off|on
-    cpp = { 'clang-format' }, -- // clang-format off|on
-    lua = { 'stylua' }, -- stylua: ignore start|end
-    python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
-    rust = { 'rustfmt', lsp_format = 'fallback' },
-    shtml = { 'superhtml' },
-    ziggy = { 'ziggy' },
-    ziggy_schema = { 'ziggy_schema' },
-  },
+  formatters_by_ft = fmts_by_ft,
 }
 
--- used
+-- TODO testing to see if needed
 -- _G.Clangfmt = function()
 --   vim.api.nvim_exec2(
 --     [[
@@ -138,7 +142,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 })
 
 local MustNotRemoveTrailingLines = function(filetype)
-  if filetype == 'markdown' or filetype == 'supermd' then
+  if filetype == 'markdown' or filetype == 'supermd' or fmts_by_ft[filetype] ~= nil then
     return true
   else
     return false
