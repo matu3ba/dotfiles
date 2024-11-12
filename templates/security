@@ -10,6 +10,7 @@
 ====pentesting
 ====hardware_attack
 ====encryption
+====hashing
 
 https://www.youtube.com/@stacksmashing
 
@@ -210,3 +211,42 @@ https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
     OTP with ideally OCRA or TOTP or HOTP or something given by humans
 
 http://phrack.org/issues/71/14.html#article
+
+====hashing
+https://orlp.net/blog/breaking-hash-functions/
+breaking hashing
+* for universal hashing it was proven that it can not be broken with inversion
+* Pre-image resistance. For some constant cc it should be hard to find some input mm such that h(m)=ch(m)=c.
+* Second pre-image resistance. For some input m_1 it should be hard to find another input m_2 such that h(m_1)=h(m_2).
+* Collision resistance. It should be hard to find inputs m_1,m_2 such that h(m_1)=h(m_2).
+* Inversion
+  o x += y => x -= y
+  o x *= c => (modular multiplicate inverse of C) c * c^{-1} = 1 (mod m)
+def egcd(a, b):
+    if a == 0: return (b, 0, 1)
+    g, y, x = egcd(b % a, a)
+    return (g, x - (b // a) * y, y)
+def modinv(c, m):
+    g, x, y = egcd(c, m)
+    assert g == 1, "c, m must be coprime"
+    return x % m
+  o x ^= y => x ^= y
+  o bit shift can not be inverted (easily) unless 1. bit rotation by const, 2. "xorshift"
+1.
+abcdef -> (x >> k) | (x << (w-k)), k places and w width of int type
+defabc <- (x << k) | (x >> (w-k)), ..
+2.
+left_xorshift(x, k) := x ^= x << k (left xor shift)
+right_xorshift(x, k ) x ^= x >> k (left xor shift)
+and for both left and right xorshift it holds:
+xorshift(xorshift(x,k),k) = xorshift(x,2k)
+xorshift(x,2^q * k) = x
+
+# w is width of integer x
+def inv_leftxorshift(x: int, k: int, w: int) -> int:
+  k_step = k
+  while (k < w):
+    x ^= x << k_step
+    k_step *= 2
+
+and right shift has with orthogonal logic.

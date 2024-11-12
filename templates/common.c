@@ -93,11 +93,12 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // clang -flto -fuse-ld=lld foo.o  # pass --lto=full to ld.lld
 
 // meta lang, algebraic data types, interfaces for C99
-// https://github.com/Hirrolot/metalang99, datatype99, interface99
+// https://github.com/Hirrolot/metalang99, https://github.com/Hirrolot/datatype99, https://github.com/Hirrolot/interface99
+// compiler C abi checks
 // https://github.com/Gankra/abi-cafe
 
-// https://ahgamut.github.io/2022/10/23/debugging-c-with-cosmo/
 // Debugging with cosmopolitcan libc
+// https://ahgamut.github.io/2022/10/23/debugging-c-with-cosmo/
 
 // Standards
 // http://port70.net/~nsz/c/
@@ -548,9 +549,9 @@ int no_reinterpret_cast(void);
 // temporary with memcopy
 int no_reinterpret_cast(void) {
   //impl_reinterpret_cast_usage
-  // clang-format: off
+  // clang-format off
   char const some_vals[9] = {0, 1, 0, 0, 0, 0, 0, 0, 0};
-  // clang-format: on
+  // clang-format on
   // WRONG: int64_t val = *((uint64_t*)&some_vals[1]);
   int64_t val;
   // more type safe than reinterpret_cast, because some_vals[1] is a type error
@@ -1472,6 +1473,28 @@ void C23_stdbit() {
 // }
 // memset_explicit
 
+// * keywords as of C23
+// alignas alignof auto bool break
+// case char const constexpr continue
+// default do double else enum
+// extern false float for goto
+// if inline int long nullptr
+// register restrict return short signed
+// sizeof static static_assert struct switch
+// thread_local true typedef typeof typeof_unqual
+// union unsigned void volatile while
+// _Atomic, _BitInt, _Complex
+// _Decimal32, _Decimal64 _Decimal128,
+// _Generic, _Imaginary
+// * macro keywords
+// if elif else endif
+// ifdef ifndef elifdef elifndef define undef
+// include embed line error warning pragma
+// defined __has_include __has_embed __has_c_attribute
+// * tokens outside of preprocessor
+// _Pragma
+// * extensions conditionally supported
+// asm fortran
 #endif
 
 // 1. flag -msse2

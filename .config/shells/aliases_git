@@ -258,6 +258,7 @@ gce () {
 }
 
 # git commit
+# Recover message from .git/COMMIT_EDITMSG
 alias gc='git commit -v -S' # sign is faster
 alias gcn='git commit -v' # nosign
 alias gcmsg='git commit -m'

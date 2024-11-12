@@ -4,6 +4,9 @@
 # Core reason for C++26 enum_to_string, string_to_enum, reflection, iostream replacement,
 # Core reason for C99   portable static integer sizes
 # Core reason for C11   generic selection, atomic, tls, threads, alignment
+# Core reason for C17   bug fixes and deprecations
+# Core reason for C23   attributes, digit separators ', nullptr, empty initializer, embed
+# Core reason for C29   tba
 CompileFlags:
   # Add: [-std=c++14]
   # Add: [-std=c++17]
@@ -12,6 +15,7 @@ CompileFlags:
   # Add: [-std=c++26]
   # Add: [-std=c++29]
 
+  # Add: [-std=c89]
   # Add: [-std=c99]
   # Add: [-std=c11]
   # Add: [-std=c17]

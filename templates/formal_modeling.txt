@@ -1,3 +1,11 @@
+====theory
+* Promise theory
+* Integer arithmetics
+* Floating point arithmetics
+* TODO pointer theory
+
+====idioms
+
 List of dedicated formally proved languages
 - Simulink idea explanation
 - idea message passing languages
@@ -29,8 +37,15 @@ idea paper as source
 https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specification
 * nondeterminism idea
 
+* Idris2 dependent types alone are too low-level.
+* Zig is a systems language, which solves biformity from different compile-time
+  and runtime semantics for most parts.
+* High-level code to simplify problem to simplify memory, strings, atomics not
+  possible in Zig
 
 ====weak_memory
+* best theory overview and consequences "The One-Decade Task: Putting std::atomic in CUDA. - Olivier Giroux - CppCon 2019"
+  https://www.youtube.com/watch?v=VogqOscJYvk
 * "Multicore Semantics: Making Sense of Relaxed Memory"
 * C/C++
   - sequential
@@ -51,8 +66,6 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     * no clear path foward wrt tradeoffs
 * "Using LKMM atomics in Rust" on lwn.net
   - https://lwn.net/Articles/993785/ TODO atomics semantics
-
-
 
 ====formal_problems
 - 1. implicit proof-carrying code

@@ -1,5 +1,10 @@
+====access_latencies
+====human
+====hardware_transactional_memory
+
 Memory, from basic to complex.
 
+====access_latencies
 https://stackoverflow.com/questions/4087280/approximate-cost-to-access-various-caches-and-main-memory
 Core i7 Xeon 5500 Series Data Source Latency (approximate)               [Pg. 22]
 local  L1 CACHE hit,                              ~4 cycles (   2.1 -  1.2 ns )
@@ -447,3 +452,8 @@ C: 0 (ish) bytes are still memory mapped. maxrss=0 (ish)
 * alacritty and kitty with higher throughput and next best average latency
 * ghostty latency estimated around (derived from iphone measurements)
   20-30ms
+
+====hardware_transactional_memory
+* advantage: get more performance when having poor design based on locking
+* disadvantage: 1. non-determinism and 2. big slow-down, when contention occurs
+* worse disadvantage: fighting the symptom instead of fixing it via (re)design

@@ -1,5 +1,20 @@
+====general
 ====computing
 ====debugging
+
+====general
+* avoid or mitigate Common-Mode Noise (CMN) / Gleichtaktstörung
+  + measurable +SRC or -SRC against GND
+  + can be up to ~100V AC CMR for 12V USB laptop charger
+  + workarounds:
+    - use power supply without CMR
+    - always measure before usage
+    - connect -SRC of power supply with GND / ref GND of power supply with GND,
+    either with capacitor or direct connection
+      o connect with for example power supply, power socket etc
+  + problematic with laptops, no problem with grounded desktop pc
+  + correct hardware design more complex/expensive, simpler to provide GND
+  see also https://electronics.stackexchange.com/questions/79752/what-is-common-mode-noise
 
 ====computing
 TODO performance classification from yt talk from zig discord

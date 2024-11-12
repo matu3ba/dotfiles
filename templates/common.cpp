@@ -22,6 +22,11 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // https://github.com/magiblot/tvision
 // https://github.com/hsutter/cppfront
 
+// safe C++ syntax horrible to write with ^
+// overview https://www.circle-lang.org/site/index.html
+// https://safecpp.org/draft-lifetimes.html https://github.com/cplusplus/papers/issues/2045
+// lifetimes https://safecpp.org/draft.html https://github.com/cplusplus/papers/issues/2108
+
 // https://en.cppreference.com/w/cpp/language/string_literal
 // https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
 // (1,2) | ordinary string literal | const char[N]             | ordinary literal encoding
@@ -2299,6 +2304,14 @@ template<typename> struct is_pair : std::false_type {};
 template<typename T, typename U> struct is_pair<std::pair<T, U>> : std::true_type {};
 
 #ifdef HAS_CPP17
+// In theory hardware_constructive_interference_size should map to L1 cache line size and
+// hardware_destructive_interference_size to the prefetcher size as potential multiple of
+// hardware_constructive_interference_size (1x, 2x, ..), but the compile-time
+// or runtime detection of hardware might not be sufficient.
+// see also https://igoro.com/archive/gallery-of-processor-cache-effects/
+static_assert(std::hardware_constructive_interference_size <= std::hardware_destructive_interference_size,
+              "likely promote true-sharing size not lower equals likely avoid false-sharing size");
+
 template<class ITR> void use_is_pair(ITR &&itr) {
   // access of itr->second ok.
   (void)itr;
@@ -2468,6 +2481,46 @@ struct use_CustomComparator { // also known as predicate
 // SHENNANIGAN no consistent add_wrap/sub_wrap/mul_wrap/div_wrap/wraparound_cast
 // Must use instead C23 ckd_mul(&res_mul, a, b))
 // to stay portable.
+#endif
+
+#ifdef HAS_CPP26
+// * keywords as of C++26
+// alignas alignof and and_eq asm
+// atomic_cancel atomic_commit atomic_noexcept auto bitand
+// bitor bool break case catch
+// char char8_t char16_t char32_t class
+// compl concept const consteval constexpr
+// constinit const_cast continue co_await co_return
+// co_yield
+//
+// decltype default delete do double
+// dynamic_cast else enum explicit export
+// extern false float for friend
+// goto if inline int long
+// mutable namespace new noexcept not
+// not_eq nullptr operator or or_eq
+// private protected public
+//
+// reflexpr register reinterpret_cast requires return
+// short signed sizeof static static_assert
+// static_cast struct switch synchronized template
+// this thread_local throw true try
+// typedef typeid typename union unsigned
+// using virtual void volatile wchar_t
+// while xor xor_eq
+// * identifiers with special meaning
+// final override transaction_safe transaction_safe_dynamic import
+// module
+// * macro keywords
+// if elif else endif
+// ifdef ifndef elifdef elifndef define undef
+// include [NO_EMBED] line error warning pragma
+// defined __has_include [NO__has_embed] [NO__HAS_c_attribute] __has_cpp_attribute
+// export import module
+// * tokens outside of preprocessor
+// _Pragma
+// * extensions conditionally supported??
+// asm fortran
 #endif
 
 // SHENNANIGAN iostream bad, successor not finished

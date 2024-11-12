@@ -1,3 +1,7 @@
+# fast and sane python tooling
+# https://github.com/astral-sh/uv instead of pipx etc
+# https://github.com/astral-sh/ruff as linter, formatter, fixer
+
 # import sys
 # import threading
 # import _thread
@@ -8,7 +12,7 @@ import json
 import logging
 import math
 import os
-import requests
+import requests  # requires library stubs
 import signal
 import subprocess  # control external process within python
 import sys

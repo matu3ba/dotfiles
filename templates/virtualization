@@ -1,3 +1,8 @@
+
+====qemu
+
+====qemu
+custom object model https://github.com/qemu/qemu/tree/master/include/qapi/qmp
 TODO definition
 
 TODO components of qemu

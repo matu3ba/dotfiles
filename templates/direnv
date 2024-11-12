@@ -1,0 +1,35 @@
+direnv allow .
+
+SHENNANIGAN direnv is not reliably deleting allow entries, when being run with
+direnv deny
+direnv deny .
+direnv deny .envrc
+(or block or disallow or revoke)
+and (prune or reload)
+does not work with 'direnv status' not confirming '.envrc is denied access'
+
+and 'direnv status' shows:
+direnv exec path /usr/bin/direnv
+DIRENV_CONFIG /home/$USER/.config/direnv
+bash_path /usr/bin/bash
+disable_stdin false
+warn_timeout 5s
+whitelist.prefix []
+whitelist.exact map[]
+Loaded RC path /$SOMEPATH/.envrc
+Loaded watch: ".envrc" - 2024-11-12T11:27:02+01:00
+Loaded watch: "../../../../.local/share/direnv/allow/$ALLOWHASH" - 1970-01-01T01:00:00+01:00
+Loaded watch: "../../../../.local/share/direnv/deny/$DENYHASH" - 2024-11-12T11:26:18+01:00
+Loaded RC allowed 2
+Loaded RC allowPath /home/$USER/.local/share/direnv/allow/$ALLOWHASH
+Found RC path /$SOMEPATH/.envrc
+Found watch: ".envrc" - 2024-11-12T11:27:02+01:00
+Found watch: "../../../../.local/share/direnv/allow/$ALLOWHASH" - 1970-01-01T01:00:00+01:00
+Found watch: "../../../../.local/share/direnv/deny/$DENYHASH" - 2024-11-12T11:26:18+01:00
+Found RC allowed 2
+Found RC allowPath /home/$USER/.local/share/direnv/allow/$ALLOWHASH
+
+Workaround
+* Restart + rm -fr ~/.local/share/direnv/
+fixes the problem. This basic functionality should definitely work and not rely
+on restarts (of a service).

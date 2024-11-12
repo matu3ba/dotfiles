@@ -3,10 +3,18 @@
 
 TODO
 ====Kubernetes
+* reason 1 scale vertically applications on demand
+* reason 2 reduce operator cost by declarative configuration
+* tradeoff: no hard latency or time-critical control
+* go code with garbage collection
+* https://medium.com/@arschles/go-experience-report-generics-in-kubernetes-25da87430301
+* https://pkg.go.dev/k8s.io/apimachinery/pkg/runtime
 + scheduler
 + how to break it
 + diagnostics
 + lxc containers
+https://github.com/omissis/zho/
+
 ====nix/lix for linux kernel experiments/stuff
 ====how to attach debugger over network over kubernetes
 
