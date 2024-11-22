@@ -3,18 +3,18 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h> // TCP_NODELAY
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
-#include <netinet/tcp.h> // TCP_NODELAY
-#include <signal.h>
 // #include <arpa/inet.h>
 // #include <asm-generic/errno-base.h>
 // #include <asm-generic/errno.h>
-#include <unistd.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #define CONNMAX 5
 
@@ -24,8 +24,8 @@ static bool g_stop = false;
 
 // forward declare
 void setnonblocking(int sock);
-void startServer(const uint16_t port, int *listenfd);
-void server_forever(const uint16_t port_poll);
+void startServer(uint16_t const port, int *listenfd);
+void server_forever(uint16_t const port_poll);
 
 void setnonblocking(int sock) {
   int opt;
@@ -42,7 +42,7 @@ void setnonblocking(int sock) {
   }
 }
 
-void startServer(const uint16_t port, int *listenfd) {
+void startServer(uint16_t const port, int *listenfd) {
   // static char addr_str[NI_MAXHOST];
   int addr_family;
   //int ip_protocol;
@@ -57,11 +57,11 @@ void startServer(const uint16_t port, int *listenfd) {
   addr_family = AF_INET6;
 
   *listenfd = socket(addr_family, SOCK_STREAM, 0);
-  if (listenfd < 0) {
+  if (*listenfd < 0) {
     perror("unable to create socket");
     exit(1);
   }
-   // 1 - on, 0 - off
+  // 1 - on, 0 - off
   int opt_REUSEADDR = 1;
   int opt_NODELAY = 1;
   int st = setsockopt(*listenfd, SOL_SOCKET, SO_REUSEADDR, &opt_REUSEADDR, sizeof(opt_REUSEADDR));
@@ -76,7 +76,7 @@ void startServer(const uint16_t port, int *listenfd) {
     close(*listenfd);
     exit(1);
   }
-  st = bind(*listenfd, (struct sockaddr*) &dest_addr, sizeof(dest_addr));
+  st = bind(*listenfd, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
   if (st != 0) {
     perror("unable to bind socket");
     close(*listenfd);
@@ -84,8 +84,7 @@ void startServer(const uint16_t port, int *listenfd) {
   }
   // listen for 10_000 incoming connections
   st = listen(*listenfd, 10000);
-  if (st != 0)
-  {
+  if (st != 0) {
     perror("listen() error");
     shutdown(*listenfd, SHUT_RDWR);
     close(*listenfd);
@@ -94,14 +93,13 @@ void startServer(const uint16_t port, int *listenfd) {
 }
 
 struct data_t {
-	uint8_t some;
-	uint8_t data;
+  uint8_t some;
+  uint8_t data;
 } data;
-
 
 static int clients[CONNMAX];
 
-void server_forever(const uint16_t port_poll) {
+void server_forever(uint16_t const port_poll) {
   struct sockaddr_in clientaddr;
   socklen_t addrlen;
   int slot = 0;
@@ -114,9 +112,7 @@ void server_forever(const uint16_t port_poll) {
   signal(SIGCHLD, SIG_IGN);
   setnonblocking(listenfd);
 
-  struct data_t prev_data = {
-    255, 255
-  };
+  struct data_t prev_data = {255, 255};
 
   // 1ms timeout to prevent flooding logs
   // Alternatively, one can use poll or notifications for the loop.
@@ -153,16 +149,17 @@ void server_forever(const uint16_t port_poll) {
 
     // handle incomping tcp connections
     addrlen = sizeof(clientaddr);
-    int client_tcp = accept(listenfd, (struct sockaddr*) &clientaddr, &addrlen);
+    int client_tcp = accept(listenfd, (struct sockaddr *)&clientaddr, &addrlen);
     if (client_tcp < 0) {
-      switch(errno) {
+      switch (errno) {
         case EWOULDBLOCK: // = EAGAIN
-          ; break;// ok, we are non-blocking
+            ;
+          break; // ok, we are non-blocking
         case EINTR:
           fprintf(stdout, "accept interupted");
           break;
         case EOPNOTSUPP: // [[fallthrough]] ;
-        case EINVAL: // [[fallthrough]] ;
+        case EINVAL:     // [[fallthrough]] ;
         case ENOTSOCK:
           perror("accept()");
           exit(1);
@@ -179,7 +176,7 @@ void server_forever(const uint16_t port_poll) {
         slot %= CONNMAX;
         if (old_slot == slot) {
           fprintf(stderr, "max. connections, dropping last connection");
-          int st  = shutdown(client_tcp, SHUT_RDWR);
+          int st = shutdown(client_tcp, SHUT_RDWR);
           if (st == -1) {
             perror("shutdown error in tcp client");
             if (EBADF == st) {
@@ -195,17 +192,18 @@ void server_forever(const uint16_t port_poll) {
           max_connections = true;
         }
       }
-      if (false == max_connections) clients[slot] = client_tcp;
+      if (false == max_connections)
+        clients[slot] = client_tcp;
     }
 
     // write data
     struct data_t cur_data = {
-      1, 2,
+        1,
+        2,
     };
 
     // write data, if updated data different.
-    if (prev_data.some != cur_data.some
-      || prev_data.data != cur_data.data) {
+    if (prev_data.some != cur_data.some || prev_data.data != cur_data.data) {
       char buf[20]; // x chars is length of formatter string
       int written = sprintf(buf, "some=%d,data=%d\n", cur_data.some, cur_data.data);
       if (written > 0) {
@@ -218,8 +216,8 @@ void server_forever(const uint16_t port_poll) {
             // printf("bytes_send: %d\n", bytes_send);
             if (bytes_send == -1) {
               switch (errno) {
-                case EACCES: // [[fallthrough]] ; // no access permissions
-                case ENOTCONN: // [[fallthrough]] ; // not connected
+                case EACCES:     // [[fallthrough]] ; // no access permissions
+                case ENOTCONN:   // [[fallthrough]] ; // not connected
                 case ECONNRESET: // [[fallthrough]] ; // connection reset
                 case EPIPE: {
                   shutdown(clients[now_slot], SHUT_RDWR); // broken pipe
@@ -233,7 +231,7 @@ void server_forever(const uint16_t port_poll) {
                 case EINTR:
                   fprintf(stdout, "send interupted"); // ignore
                   break;
-                break;
+                  break;
 
                 default:
                   break; // ignore
@@ -247,7 +245,8 @@ void server_forever(const uint16_t port_poll) {
           }
           now_slot += 1; // step
           now_slot %= CONNMAX;
-          if (now_slot == slot) break;
+          if (now_slot == slot)
+            break;
         }
       } else {
         perror("FAIL: data loss, because insufficient buffer size");

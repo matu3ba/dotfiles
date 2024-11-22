@@ -3,6 +3,12 @@
 const std = @import("std");
 const builtin = @import("builtin");
 
+//====cmds
+//====packages
+//====formatting
+//====keywords
+//====builtins
+
 // Tools (common vs special)
 // kcov [obsolete] - https://github.com/liyu1981/kcov
 // tracy - https://github.com/wolfpld/tracy
@@ -37,6 +43,7 @@ const builtin = @import("builtin");
 // builder.pathJoin(&.{ "foo", "bar", "baz"})
 
 // Crosscompiling: templates/crosscompiling_zig.sh
+// decentish intro: https://pedropark99.github.io/zig-book/
 
 test "beware_endianess" {
     // const content_len: [4]u8 = .{ 0, 0, 0, 4 }; // wrong for little endian 4
@@ -219,6 +226,7 @@ fn debugCwd(alloc: std.mem.Allocator) void {
 const VarT = if (!builtin.is_test) u32 else void;
 threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 
+//====cmds
 // in build.zig use -D (as desribed in zig build -h)
 // Typical flags: -fwasmtime -fqemu -freference-trace -lc -Dtarget=x86_64-windows-gnu
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
@@ -482,6 +490,7 @@ test "coercion to return type example" {
     return if (test_error) error.TestError else {};
 }
 
+//====packages
 // Zig Package System Usage:
 // * 1. Option
 //   * Add url and below hash with correct length, but incorrect content
@@ -630,4 +639,151 @@ test compute_with_error {
     // num = 42;
 }
 
+//====formatting
+test "horizontal without a trailing comma" {
+    std.debug.print("{any}\n", .{.{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 }});
+}
+
+test "vertical with a trailing comma" {
+    std.debug.print("{any}\n", .{.{
+        0,
+        10,
+        100,
+    }});
+}
+
+test "aligned matrix with width set by first row (needs trailing comma)" {
+    std.debug.print("{any}\n", .{.{
+        0,   0,   0,   0,
+        1,   1,   1,   1,
+        10,  10,  10,  10,
+        100, 100, 100, 100,
+    }});
+}
+
+test "manually formatted with trailing comments" {
+    std.debug.print("{any}\n", .{.{
+        0, //
+        1, 1, //
+        10, 10, 10, //
+        100, 100, 100, 100, //
+    }});
+    // without a trailing comma this formats weirdly.
+    // you also can't manually align the comments.
+}
+
+test "disabling the formatter (bug)" {
+    // 'zig fmt: off' inside decl array broken, see https://github.com/ziglang/zig/issues/10418
+    // zig fmt: off // < remove this line to reproduce the bug
+    std.debug.print("{any}\n", .{.{
+        // zig fmt: off
+        0,
+        1,               1,
+        10,   10,       10,
+        100, 100, 100, 100,
+        // zig fmt: on
+    }});
+    // zig fmt: on // < without this line below block, if commented in, does not format
+}
+
+// test "formatter is still off" {
+//     const
+// x = 1;
+//         _ = x;
+// }
+// // zig fmt: on
+
+test "indented chains" {
+    const msg =
+        \\ like so.
+        \\
+    ;
+
+    const stdout =
+        std
+        .io
+        .getStdout()
+        .writer();
+    try stdout
+        .print(msg, .{});
+}
+
+test "linebreaks preserved after operators" {
+    if (true and true and true and true) {}
+    if (true and
+        true and
+        true and true and
+        true)
+    {}
+    const sum = 1 +
+        2 +
+        3 + 4 + 5;
+    _ = sum;
+}
+
+test "switch details" {
+    switch (0) {
+        0 => {},
+
+        1, 2 => {},
+
+        3,
+        4,
+        => {},
+
+        inline 5,
+        6,
+        => {},
+
+        inline //
+        7,
+        8,
+        => {},
+
+        else => {},
+    }
+}
+
 // setup https://kristoff.it/blog/improving-your-zls-experience/
+
+//====keywords as of 0.14.0-dev.6323+862266514
+// addrspace align allowzero and anyframe
+// anytype asm async await break
+// callconv catch comptime const continue
+// defer else enum errdefer error
+// export extern fn for if
+// inline noalias nosuspend noinline opaque
+// or orelse packed pub resume
+// return linksection struct suspend switch
+// test threadlocal try union unreachable
+// usingnamespace var volatile while
+// => 53 keywords
+
+//====builtins as of 0.14.0-dev.6323+862266514
+// @addrSpaceCast @addWithOverflow @alignCast @alignOf @as
+// @atomicLoad @atomicRmw @atomicStore @bitCast @bitOffsetOf
+// @bitSizeOf @branchHint @breakpoint @mulAdd @byteSwap
+// @bitReverse @offsetOf @call @cDefine @cImport
+// @cInclude @clz @cmpxchgStrong @cmpxchgWeak @compileError
+// @compileLog @constCast @ctz @cUndef @cVaArg
+// @cVaCopy @cVaEnd @cVaStart @divExact @divFloor
+// @divTrunc @embedFile @enumFromInt @errorFromInt @errorName
+// @errorReturnTrace @errorCast @export @extern @field
+// @fieldParentPtr @FieldType @floatCast @floatFromInt @frameAddress
+// @hasDecl @hasField @import @inComptime @intCast
+// @intFromBool @intFromEnum @intFromError @intFromFloat @intFromPtr
+// @max @memcpy @memset @min @wasmMemorySize
+// @wasmMemoryGrow @mod @mulWithOverflow @panic @popCount
+// @prefetch @ptrCast @ptrFromInt @rem @returnAddress
+// @select @setEvalBranchQuota @setFloatMode @setRuntimeSafety @shlExact
+// @shlWithOverflow @shrExact @shuffle @sizeOf @splat
+// @reduce @src @sqrt @sin @cos
+// @tan @exp @exp2 @log @log2
+// @log10 @abs @floor @ceil @trunc
+// @round @subWithOverflow @tagName @This @trap
+// @truncate @Type @typeInfo @typeName @TypeOf
+// @unionInit @Vector @volatileCast @workGroupId @workGroupSize
+// @workItemId
+// 23*5+1 => 116 builtins
+
+// https://github.com/CTSRD-CHERI/qemu/tree/qemu-cheri

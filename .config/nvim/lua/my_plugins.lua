@@ -2,6 +2,7 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 -- idea: create dynlibs and nvim API https://git.mzte.de/LordMZTE/znvim
+-- idea: look into plugins of https://github.com/fredrikaverpil/dotfiles/blob/main/nvim-fredrik/lazy-lock.json
 return {
   -- lazy local dev: ~/projects
   -- clean cache:
@@ -69,6 +70,10 @@ return {
   },
 
   --==cmd line completions (breaks cmdline visuals for :echo $<C-d>)
+  --idea using AI: * for proprietary projects codecompanion.nvim with Claude
+  --               * for open source projects GitHub Copilot
+  --               * Claude or o1-preview on my codebase to get intent of code;
+  --               validate to find issues and improvements
   { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
 
   --==macros

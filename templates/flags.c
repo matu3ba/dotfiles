@@ -12,6 +12,7 @@
 
 // TODO make this more structured https://nullprogram.com/blog/2023/04/29/
 // https://interrupt.memfault.com/blog/arm-cortexm-with-llvm-clang
+// clang-format off
 clang usage:
 $make clean && CLI_CFLAG_OVERRIDES="-Weverything -Wno-error" \
   COMPILER=clang make &> compilation_results.txt

@@ -9,6 +9,8 @@ Shell is a convenience cli and arbitrary complex scripting glue for
 There is a complete wiki dedicated to the weird quirks of bash:
 https://wiki.bash-hackers.org/syntax/expansion/brace
 
+shell tools
+https://github.com/charmbracelet
 simple process executer, queue and history with shell api
 https://github.com/Nukesor/pueue
 more simple one without any config

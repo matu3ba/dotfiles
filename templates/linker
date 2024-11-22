@@ -191,3 +191,6 @@ Tentative definitions aka common symbols
 * Then value implicitly zerofilled
 * Tentative defs are a remnant of fortran
 * probably should be purged
+
+
+https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md

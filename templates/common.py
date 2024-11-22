@@ -1,6 +1,10 @@
 # fast and sane python tooling
 # https://github.com/astral-sh/uv instead of pipx etc
 # https://github.com/astral-sh/ruff as linter, formatter, fixer
+# SHENNANIGAN E305 blank-lines-after-function-or-class is wasting lots of space
+# https://peps.python.org/pep-0008/#blank-lines
+# and not even the PEP is following the guide
+# https://docs.python.org/3/library/pdb.html debugger
 
 # import sys
 # import threading
@@ -689,8 +693,6 @@ def isLocalHost(arg: str) -> bool:
 #     if str(type(module)) != "<class 'module'>": return 1
 #     return 0
 # 'module: object' is the closest we can get as simple annotation
-
-
 def check_fn(fn: list) -> int:
   if not callable(fn[0]):
     return 1
@@ -703,8 +705,6 @@ def check_fn(fn: list) -> int:
 # As example: 1 main thread, 2 deamon threads may cause the relevant deamon thread
 # not being scheduled for 2 seconds. Empirically 3 seconds work.
 # In other words: Python thread scheduling is extremely unreliable.
-
-
 def redirect_stderr() -> None:
   # access stdout via sys.__stdout__
   sys.stderr = sys.stdout
@@ -713,8 +713,6 @@ def redirect_stderr() -> None:
 # SHENNANIGAN
 # Must not use trailing comma in dictionary or json.dumps generated string has
 # silent failures, for example on parsing the output as json via php.
-
-
 def sendHtml(self, ip: str, port: int, msg: str) -> int:
   url = f"http://{ip}:{port}/{msg}"
   try:

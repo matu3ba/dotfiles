@@ -2,17 +2,47 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
 // zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+
+// -Wunsafe-buffer-usage opt-out:
+// [[clang::unsafe_buffer_usage]]
+// void method() { .. }
+// struct A {
+//   [[clang::unsafe_buffer_usage]] int *ptr1;
+//   [[clang::unsafe_buffer_usage]] int *ptr2, buf[10];
+//   [[clang::unsafe_buffer_usage]] size_t sz;
+// };
 
 // Alternative is to always default to using default in switch case (MISRA C),
 // but this has drawback of making any refactorings much more annoying.
 // -Wno-covered-switch-default
 
+// best practice https://github.com/cpp-best-practices/cppbestpractices
+// comptime stuff https://github.com/lefticus/tools
+
+// https://bughunters.google.com/blog/6368559657254912/llvm-s-rfc-c-buffer-hardening-at-google
+// best practice security
+// * safe coding (tolerance against risky dev/user choices, understandable invariants + checks)
+// * hardened libc++ via bounds checking
+//   - -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE
+//     o _LIBCPP_HARDENING_MODE_[NONE|FAST|EXTENSIVE|DEBUG]
+//     o FAST only checks valid access and input ragen
+//     o EXTENSIVE also checks for non-null, valid deallocation etc
+//     o DEBUG also checks semantic-requirement and internal
+//   - index-based iteration unnecessary slow, can use iterators at cost of slower debug builds
+//   - store refs for repeatedly accessed container element, but be aware of outdated refs
+// * C-style arrays/buffers + pointer arithmetic unsafe and to be replaced with hardened C++ code
+// * no fix for temporal memory problems, sanitizers with hopefully enough coverage only options
+// * ~1% queries per second, ~2.5% latency regression
+
 // C++ tooling mandates C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
+// alternative more sane syntax
 // https://github.com/hsutter/cppfront
+// C++ will not add safety like Rust and instead cppfront claims they can
+// improve without it, see proposals "Safe C++" and "Memory safety without lifetime parameters"
 
 // https://github.com/fffaraz/awesome-cpp
 // HPC
@@ -44,6 +74,9 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
 // more: https://oleksandrkvl.github.io/2021/04/02/cpp-20-overview.html
+
+//====version_changes
+//====CPP20string_ops
 
 #if (__cplusplus >= 201402L)
 #define HAS_CPP14 1
@@ -81,9 +114,10 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <algorithm>
 #include <array>
 #include <atomic>
-#include <fstream>  // fstream
-#include <future>   // future
-#include <iostream> // io stream operators
+#include <fstream>    // fstream
+#include <functional> // std::invoke
+#include <future>     // future
+#include <iostream>   // io stream operators
 #include <list>
 #include <map>
 #include <memory> // unique_ptr, shared_ptr
@@ -96,10 +130,16 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <utility> // std::true_type
 #include <vector>
 
+#ifdef HAS_CPP17
+#include <string_view>
+#endif
 #ifdef HAS_CPP20
 #include <concepts> // NOLINT
 // https://stackoverflow.com/questions/57402464/is-c20-char8-t-the-same-as-our-old-char
 static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not distinct type; has C semantics");
+#endif
+#ifdef HAS_CPP23
+#include <print>
 #endif
 
 // #ifdef HAS_CPP23
@@ -175,31 +215,6 @@ void enum_to_string_example() {
   OS_type t = Windows;
   fprintf(stdout, "%s %s\n", ToString(t), ToString(Apple));
 }
-#endif
-
-#ifdef HAS_CPP26
-// C++26 enum_to_string and string_to_enum
-template<typename E>
-requires std::is_enum_v<E> constexpr std::string enum_to_string(E value) {
-  template for (constexpr auto e : std::meta::enumerators_of(^E)) {
-    if (value == [:e:]) {
-      return std::string(std::meta::name_of(e));
-    }
-  }
-  return "<unnamed>";
-}
-template<typename E>
-requires std::is_enum_v<E> constexpr std::optional<E> string_to_enum(std::string_view name) {
-  template for (constexpr auto e : std::meta::enumerators_of(^E)) {
-    if (name == std::meta::name_of(e)) {
-      return [:e:];
-    }
-  }
-  return std::nullopt;
-}
-enum Color { red, green, blue };
-static_assert(enum_to_string(Color::red) == "red");
-static_assert(enum_to_string(Color(42)) == "<unnamed>");
 #endif
 
 // better enums via enum class
@@ -2349,6 +2364,18 @@ int check_pair() {
 // std::uniform_int_distribution<int32_t> Index(0, InclusiveEnd);
 // fprintf(stdout, "RandomModulo: %d\n", RandomModulo);
 
+// SHENNANIGAN constexpr fn can return stack memory
+// * gcc evals constexpr eagerly, llvm medium, msvc lazy
+// * must be forced to be comptime via const lhs, static_assert
+// => almost always use `static constexpr` to force constant-initialization
+// (or `constexpr static`)
+
+// to catch stack locals from constexpr
+// run all tests with ASAN
+// run both Debug and Release with ASAN with tests
+
+//====version_changes
+
 #ifdef HAS_CPP14
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time
 // SHENNANIGAN core guidelines have nothing on pattern matching std things
@@ -2383,8 +2410,11 @@ void use_is_stl_container() {
 // 1. static
 // 2. class can access private members
 
-// Improving readability of templates via concepts
 #ifdef HAS_CPP20
+// * added "constinit" to force static initilaization + offer mutability
+// instead of constant `constexpr static`
+// * improving readability of templates via concepts
+
 // SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc.
 // Do not nest concepts to prevent breaking of concept composition rules
 // (see co_is_not_integral and addition_nonintegral2).
@@ -2430,7 +2460,47 @@ void use_is_integral() {
   zero = addition_nonintegral2(comp1, comp1);
   (void)zero;
 }
-#endif
+
+constexpr int32_t some_constexpr(int32_t val) { return 2 * val; }
+consteval int32_t some_consteval(int32_t val) { return 2 * val; }
+// looks like const is optional here
+template<auto Value> consteval auto make_comptime() { return Value; }
+consteval auto as_constant_orig(auto value) { return value; }
+
+template<typename... Param> consteval decltype(auto) consteval_invoke(Param &&...param) {
+  return std::invoke(std::forward<Param>(param)...);
+}
+
+// all the ways to force comptime evaluation in C++20
+void use_comptime();
+void use_comptime() {
+  constexpr auto res0 = some_constexpr(42); // const + no comptime guarantee
+
+  constexpr static auto res1 = some_constexpr(42); // const + static
+  static constexpr auto res2 = some_constexpr(42); // SHENNANIGAN readability
+
+  constinit static auto res3 = some_constexpr(42); // non-const + static
+  static constinit auto res4 = some_constexpr(42);
+
+  auto res5 = some_consteval(42); // comptime evaluated
+  // res3 = 4;
+  // res5 = 4;
+
+  auto res6 = make_comptime<some_constexpr(42)>(); // comptime evaluated, bad syntax
+
+  // another fn call, otherwise no downsides
+  auto res7 = as_constant_orig(some_constexpr(42)); // comptime evaluated,
+
+  auto res8 = consteval_invoke(some_constexpr, 42); // comptime evaluated,
+
+  fprintf(stdout, "%d\n", res0 + res1 + res2 + res3 + res4 + res5 + res6 + res7 + res8);
+}
+
+#ifndef __has_include
+#error "C++20 should have __has_include"
+#endif // __has_include
+
+#endif // HAS_CPP20
 
 // SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const ist missing
 // std::multiset
@@ -2476,15 +2546,81 @@ struct use_CustomComparator { // also known as predicate
 // EXCEPT if user-provided function given (conflict or no conflict)
 
 #ifdef HAS_CPP23
+// most of cmath with constexpr except trigonometrics, for those consider to use "gcem"
+// has if constexpr
+// has optional as monad with chaining/currying
 // #include <numeric>
 // add_sat/sub_sat/mul_sat/div_sat/saturate_cast
 // SHENNANIGAN no consistent add_wrap/sub_wrap/mul_wrap/div_wrap/wraparound_cast
 // Must use instead C23 ckd_mul(&res_mul, a, b))
 // to stay portable.
+
+// std::print, std::format can be used via <fmt/core.h> and fmt::print, fmt::format
+#include <print>
+void use_fmt_print();
+void use_fmt_print() {
+  std::print("Hello, world!\n");
+  std::string s = std::format("The answer is {}.", 42);
+  std::print("{}\n", s);
+  (void)s;
+}
+
+//====CPP23string_ops
+//* C++ metaprogramming fells like a Rube-Goldberg machine to do meaningful work
+constexpr std::string make_string(std::string_view str_view, int32_t const rep) {
+  std::string res;
+  for (int32_t i = 0; i < rep; i += 1)
+    res += str_view;
+  return res;
+}
+
+struct oversized_array {
+  std::array<char, 10 * 1024 * 1024> data{};
+  std::size_t size;
+};
+
+consteval auto to_oversizes_array(std::string const &str) {
+  oversized_array res;
+  std::copy(str.begin(), str.end(), res.data.begin());
+  res.size = str.size();
+  return res;
+}
+
+consteval auto to_correct_sized_array(auto callable) {
+  constexpr auto oversized = to_oversizes_array(callable());
+  std::array<char, oversized.size> res;
+  std::copy(oversized.data.begin(), std::next(oversized.data.begin(), oversized.size), res.begin());
+  return res;
+}
+
+template<auto Data> consteval auto const &make_static() { return Data; }
+
+consteval auto to_string_view(auto callable) -> std::string_view {
+  constexpr auto &static_data = make_static<to_correct_sized_array(callable)>();
+  return std::string_view(static_data.begin(), static_data.size());
+}
+
+void use_to_string_view();
+void use_to_string_view() {
+  constexpr std::string_view sv1{"Hello, world!"};
+  std::print("{}", sv1);
+
+  // TODO comptime creation of std::string does not work
+  // constexpr std::string s1 = make_string("Hello World ", 3);
+  // std::print("{}", s1);
+  // fprintf(stdout, "%zu: %s\n", s1.size(), s1.c_str());
+
+  // constexpr auto const make_data = []() { return make_string("Hello World,", 3); };
+  // constexpr static auto str_view = to_string_view(make_data);
+  // (void)str_view;
+  // std::print("{}", s1);
+  // fprintf(stdout, "%d: %s\n", str_view.size(), str_view.c_str());
+}
+
 #endif
 
 #ifdef HAS_CPP26
-// * keywords as of C++26
+//====keywords as of C++26
 // alignas alignof and and_eq asm
 // atomic_cancel atomic_commit atomic_noexcept auto bitand
 // bitor bool break case catch
@@ -2512,8 +2648,8 @@ struct use_CustomComparator { // also known as predicate
 // final override transaction_safe transaction_safe_dynamic import
 // module
 // * macro keywords
-// if elif else endif
-// ifdef ifndef elifdef elifndef define undef
+// if elif else endif ifdef
+// ifndef elifdef elifndef define undef
 // include [NO_EMBED] line error warning pragma
 // defined __has_include [NO__has_embed] [NO__HAS_c_attribute] __has_cpp_attribute
 // export import module
@@ -2521,6 +2657,31 @@ struct use_CustomComparator { // also known as predicate
 // _Pragma
 // * extensions conditionally supported??
 // asm fortran
+// => 31 + 33 + 33 + 6 + (15+3+3) + 3 = 127
+
+// C++26 enum_to_string and string_to_enum
+template<typename E>
+requires std::is_enum_v<E> constexpr std::string enum_to_string(E value) {
+  template for (constexpr auto e : std::meta::enumerators_of(^E)) {
+    if (value == [:e:]) {
+      return std::string(std::meta::name_of(e));
+    }
+  }
+  return "<unnamed>";
+}
+template<typename E>
+requires std::is_enum_v<E> constexpr std::optional<E> string_to_enum(std::string_view name) {
+  template for (constexpr auto e : std::meta::enumerators_of(^E)) {
+    if (name == std::meta::name_of(e)) {
+      return [:e:];
+    }
+  }
+  return std::nullopt;
+}
+enum Color { red, green, blue };
+static_assert(enum_to_string(Color::red) == "red");
+static_assert(enum_to_string(Color(42)) == "<unnamed>");
+
 #endif
 
 // SHENNANIGAN iostream bad, successor not finished
@@ -2528,4 +2689,38 @@ struct use_CustomComparator { // also known as predicate
 // * successor https://github.com/ned14/llfio
 // * https://www.reddit.com/r/cpp/comments/g187t6/current_iostream_status_in_c/
 
-int main() { return 0; } // minimal stub
+constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
+// FIXME: switch off incorrect clangd diagnostics in this function
+constexpr auto sum(std::vector<int> const &v) {
+  int ret = 0;
+  // SHENNANIGAN clangd version 18.1.8
+  //non-constexpr function 'operator!=<const int *, std::vector<int>>' cannot be used in a constant expression
+  //          v
+  for (auto i : v) {
+    ret += i;
+  }
+  return ret;
+}
+
+int main() {
+#ifdef HAS_CPP23
+  static constexpr std::string res1 = []() {
+    std::string str = "Hello world!";
+    appendBlabla(str);
+    return str.substr(0, 5);
+  }();
+  // res += "noworld!"; does not work
+  std::print("{}\n", res1);
+  static constinit std::string res2 = []() {
+    std::string str = "Hello world!";
+    appendBlabla(str);
+    return str.substr(0, 5);
+  }();
+  // res += "noworld!"; does not work
+  std::print("{}\n", res2);
+  static constexpr auto val_sum = sum({5, 7, 9});
+  std::print("{}\n", val_sum);
+#endif
+
+  return 0;
+} // minimal stub

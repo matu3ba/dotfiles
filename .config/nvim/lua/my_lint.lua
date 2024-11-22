@@ -6,16 +6,35 @@ if not ok_lint then return end
 --== installing freestanding python
 --https://github.com/allyourcodebase/cpython
 
---==installing pip
+--==installing pip + pipx
 -- python -m ensurepip --upgrade
-
---==installing pipx
 -- pip install --user -U pipx
 
 --==updating pipx
 -- pip install --user -U pipx
 -- pipx upgrade-all
 -- on error: pipx reinstall-all
+
+--==installing packages
+-- pip(x) install --upgrade ruff
+-- pip(x) install --upgrade uv
+
+--==installing uv
+-- pip install uv
+-- pipx install uv
+
+--==installing pixi
+-- git clone 'https://github.com/prefix-dev/pixi'
+-- cargo install --locked --git https://github.com/prefix-dev/pixi.git pixi
+
+--==updating uv
+--uv self update
+
+--== packages
+-- uv tool install
+-- uv tool uninstall
+-- uv tool upgrade --all
+-- uv python install 3.12
 
 -- idea codespell
 -- https://sean.fish/x/blog/codespell-ignorelists-neovim/

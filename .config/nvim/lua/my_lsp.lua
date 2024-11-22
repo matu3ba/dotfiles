@@ -11,16 +11,18 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 --==LspInstallationsAndUsage
 
+-- pip(x) install --upgrade ruff
+-- npm install --save-dev --save-exact @biomejs/biome
+
 -- Manual (nvim-lsp name -- mason name):
 -- 'bashls', -- 'bash-language-server'
--- 'jedi_language_server', -- 'jedi-language-server'
+-- 'biome' -- 'biome'
+-- 'jedi_language_server', -- 'jedi-language-server' prefer ruffs server
 -- 'ltex', -- 'ltex-ls'
 -- 'clangd', -- 'clangd'
 -- 'lemminx', -- 'lemminx'
--- 'typst_lsp' -- 'typst-lsp'
--- 'ts_ls'  -- TODO different name 'typescript-language-server'
 -- 'omnisharp' --  'omnisharp'
-
+--
 -- pip3 install -U --user jedi-language-server
 -- pipx install jedi-language-server
 
@@ -75,7 +77,7 @@ local common_on_attach = function(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then navic.attach(client, bufnr) end
 end
 
--- local lsps_with_common_setup = {"clangd", "jedi_language_server", "julials", "rust_analyzer", "ts_ls", "zls"}
+-- local lsps_with_common_setup = {"clangd", "julials", "rust_analyzer", "zls"}
 -- Common setup function for lsps.
 -- local common_setup = function(lsp)
 --   lspconfig.lsp_name.setup {
@@ -94,15 +96,15 @@ end
 -- traverses parent dir up to find yaml file .clangd
 -- CompileFlags:
 --   Add: [-std=c++20]
+--lspconfig.biome.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
---require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
-lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+--lspconfig.gopls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+-- lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.julials.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+lspconfig.ruff.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.superhtml.setup{ capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.ts_ls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
--- lspconfig.typst_lsp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- https://sookocheff.com/post/vim/neovim-java-ide/
 -- https://javadev.org/devtools/ide/neovim/lsp/

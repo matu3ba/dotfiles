@@ -18,6 +18,7 @@
 
 --====tooling
 -- luax - lua repl https://github.com/CDSoft/luax
+-- tracing luajit https://www.polarsignals.com/blog/posts/2024/11/13/lua-unwinding
 
 --====basics
 -- indices are 1-based

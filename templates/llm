@@ -1,0 +1,23 @@
+====llms
+====artifacts
+
+====llms
+* Gemini
+* ChatGPT
+
+====artifacts
+https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of-the-kind/
+* sumarizing
+  - parameters from training material
+    o subject is well-represented by the parameters => parameters dominate the
+    summary more and the actual text you want to summarise influences the summary
+    less
+    o bad in making specific summaries of a subject that is widespread
+  - context (prompts and answers until now in chat) including the text given to summarise
+    o context very small => little influence, so result dominated by parameters
+    o context large enough and subject not well-represented by params =>
+    text to summarize dominates results resulting in "text shortening", not
+    true summarizing
+  - no intelligence involved, query machine with context for processing
+
+TODO https://news.ycombinator.com/item?id=42100560

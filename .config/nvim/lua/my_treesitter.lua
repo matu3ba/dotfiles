@@ -155,7 +155,7 @@ require('nvim-treesitter.configs').setup {
   },
   indent = {
     enable = true,
-    -- disable = { 'python', 'zig' }, -- broken
+    disable = { 'c', 'cpp' }, -- broken
   },
   --set foldmethod=expr --respecting foldnestmax setting
   --set foldexpr=nvim_treesitter#foldexpr()

@@ -29,5 +29,4 @@ config.default_prog = { 'pwsh.exe', '-NoLogo', '-ExecutionPolicy', 'RemoteSigned
 -- end
 -- config.launch_menu = launch_menu
 
-
 return config

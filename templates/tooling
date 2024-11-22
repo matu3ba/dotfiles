@@ -1,5 +1,5 @@
 https://reproducible-builds.org/tools/
-diffoscope - https://diffoscope.org/
+in-depth comparison of files, archives and dirs: diffoscope - https://diffoscope.org/
 rebuilderd - https://github.com/kpcyrd/rebuilderd
 comby - https://github.com/comby-tools/comby
 see https://comby.dev/blog/2021/03/26/comby-reducer
@@ -24,7 +24,9 @@ shell: fish, crush-shell
 terminal: contour, ghostty
 editors: neovim[more plugins], vim[stable+no surprises], helix[lazy setup, few plugins], kakoune
 tracy -- frame tracer and visualizer
+Continuous profiling via typescript frontend parca https://github.com/parca-dev/parca
 hex and reverse engineering editor: imhex https://github.com/WerWolv/ImHex
+simple diffs for dirs, files, version control: https://meld.app/
 
 TUI API client - https://github.com/darrenburns/posting
 

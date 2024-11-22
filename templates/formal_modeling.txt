@@ -183,6 +183,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
      PNVI-plain, and PVI semantics for C) does not cover all the edge cases from pointers
      https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
 - 8. build system parallelization relies on "Jobserver Implementation" protocol
+   * Pain point: protocol relies on a process manually releasing resources
+     before it dies, rather than relying on kernel-managed resources that are
+     automatically released when the process dies
    * https://gittup.org/tup/build_system_rules_and_algorithms.pdf "Build System Rules and Algorithms" by Mike Shal
    * https://make.mad-scientist.net/papers/jobserver-implementation/
    * token write to child and read after finishing, if incoming data exists
@@ -201,6 +204,8 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
    * can not track processes killed via SIGKILL
    * Solution space https://monorepo.tools
    * Proposed Solution to Job server implementation:
+     + no (portable) solution exists to fix the fundamental problems of Make Jobserver protocol, see https://github.com/rust-lang/cargo/issues/14102
+     + jobserver protocol and non-crashing threads or processes should be faster, see https://github.com/ziglang/zig/issues/20274
  - 9. debug system
     * rr simulates threading and multiple processes in one process to get
     accurate performance counter timings for accurate reproducibility.
@@ -224,6 +229,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
       + requires something like "Multiobjective optimization under uncertainty"
       with big complexity/amount of variables (numbers missing).
 - 11. arcan desktop engine semantics
+    * more low level description https://arcan-fe.com/2024/11/21/a-deeper-dive-into-the-shmif-ipc-system/
     * UI toolkit
     * provided by OS / DE
     * provided via IPC ABI rather than C/C++ dynamic linking API?

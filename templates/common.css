@@ -1,0 +1,100 @@
+/*====grids
+ *
+ */
+
+/* Highly customizable, low-level CSS framework that allows for complete
+ * control over the design and layout of a website - steeper learning curve
+ * https://github.com/tailwindlabs/tailwindcss
+ */
+
+/*====grids are to create tables in CSS*/
+/* https://css-tricks.com/snippets/css/complete-guide-grid/ */
+/* https://css-tricks.com/dont-overthink-flexbox-grids/ */
+/* https://philipwalton.github.io/solved-by-flexbox/demos/grids/ */
+/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+
+ * possible with flexbox and dynamic width (offs is static offset):
+ * <offs>title
+ *   |       centered      |
+ *   left_col<20px>right_col
+ */
+.home_table_flex_grid { display: flex; justify-content: space-between; }
+.home_left, .home_right { flex: 1; } /* .home_column */
+@media screen and (max-width: 600px) { .home_table_flex_grid { display: block; } }
+
+/* (derived) fixed width grid
+ * -----------------------
+ * | blue                |
+ * -----------------------
+ * | orange   | blue     |
+ * -----------------------
+ */
+/* html
+ * <div class='flex_grid'>
+ *   <div class='flex_row'>
+ *     <div class='flex_double_column'>
+ *       <div class='blue-column'> Some Text in row 2 double column 1 </div>
+ *     </div>
+ *   </div>
+ *   <div class='flex_row'>
+ *     <div class='flex_column'>
+ *       <div class='orange-column'> Some Text in Column One </div>
+ *     </div>
+ *     <div class='flex_column'>
+ *       <div class='blue-column'> Some Text in Column Two </div>
+ *     </div>
+ *   </div>
+ * </div>
+ */
+.flex_grid {
+  background-color: red; column-gap: 20px; justify-content: center; margin: 15px;
+  /* display: flex; breaks stuff*/
+}
+.flex_row { display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; }
+.flex_double_column { display: flex; flex-direction: column; flex-basis: 100%; flex: 2 }
+.flex_column { display: flex; flex-direction: column; flex-basis: 100%; flex: 1 }
+.orange-column { background-color: orange; height: 100px; }
+.blue-column { background-color: blue; height: 100px; }
+.green-column { background-color: green; height: 100px; }
+
+/* dynamic width/height for table/grid possible
+ * with dynamic width (flexbox):
+ *   |       centered      |
+ *   title
+ *   left_col<20px>right_col
+ */
+/* html
+ * <div class="home_page">
+ *   <div class='flex_grid'>
+ *     <div class='flex_row'>
+ *       <div class='flex_double_column'>
+ *         <h2 :text="$page.title"></h2>
+ *       </div>
+ *     </div>
+ *     <div class='flex_row'>
+ *       <div class='flex_column'>
+ *         <div :html="$page.contentSection('home_left')"></div>
+ *       </div>
+ *       <div class='flex_column'>
+ *         <div :html="$page.contentSection('home_right')"></div>
+ *       </div>
+ *     </div>
+ *   </div>
+ * </div>
+ */
+.flex_grid { column-gap: 20px; justify-content: center; margin: 15px; }
+.flex_row { display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; }
+.flex_double_column { display: flex; flex-direction: column; flex-basis: 100%; flex: 2 }
+.flex_column { display: flex; flex-direction: column; flex-basis: 100%; flex: 1 }
+/* home.smd */
+.home_page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+.home_table_flex_grid { display: flex; justify-content: center; column-gap: 20px; flex-wrap: nowrap; }
+.home_left { flex: 1; width: 300px; }
+.home_right { flex: 1; width: 300px; }
+@media screen and (max-width: 600px) { .home_page { display: block; } }

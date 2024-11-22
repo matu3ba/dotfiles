@@ -17,3 +17,7 @@ github.com/friendlyanon/cmake-init:
 github.com/jasmcaus/tau
 - micro unit testing framework
 idea: build lib for mocking
+
+codespell
+grammar checker https://github.com/elijah-potter/harper
+ast-grep(sg) https://github.com/ast-grep/ast-grep

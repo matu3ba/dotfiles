@@ -1473,7 +1473,7 @@ void C23_stdbit() {
 // }
 // memset_explicit
 
-// * keywords as of C23
+//====keywords as of C23
 // alignas alignof auto bool break
 // case char const constexpr continue
 // default do double else enum
@@ -1483,18 +1483,20 @@ void C23_stdbit() {
 // sizeof static static_assert struct switch
 // thread_local true typedef typeof typeof_unqual
 // union unsigned void volatile while
-// _Atomic, _BitInt, _Complex
-// _Decimal32, _Decimal64 _Decimal128,
-// _Generic, _Imaginary
+// _Atomic _BitInt _Complex _Decimal32 _Decimal64
+// _Decimal128, _Generic _Imaginary
 // * macro keywords
-// if elif else endif
-// ifdef ifndef elifdef elifndef define undef
-// include embed line error warning pragma
-// defined __has_include __has_embed __has_c_attribute
+// if elif else endif ifdef
+// ifndef elifdef elifndef define undef
+// include embed line error warning
+// pragma defined __has_include __has_embed __has_c_attribute
 // * tokens outside of preprocessor
 // _Pragma
 // * extensions conditionally supported
 // asm fortran
+// => 53 + 20 + 3 = 76
+//====builtins
+// compiler specific and not guaranteed to be stable across versions
 #endif
 
 // 1. flag -msse2

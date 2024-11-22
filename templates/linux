@@ -355,3 +355,12 @@ show line numbers
 less -N FILE
 
 SHENNANIGAN io_uring does hidden allocations besides setup allocations
+
+====Linux forensics
+many tools for various things
+ptrace, memfetch, fmem, LiMe
+sudo memdump > dump.mem
+hexdump -C dump.mem > dump_mem.hex
+dcfldd
+sudo losetup --find --read-only --partscan --show image.raw
+mount /dev/loop0p1 /mnt

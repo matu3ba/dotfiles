@@ -722,3 +722,12 @@ SHENNANIGAN Portable include is #include <Windows.h>, but lower case also works 
 SHENNANIGAN Windows Input is very much not nice to use
 * use SDL3 instead https://gist.github.com/flibitijibibo/aa8a61196621adf17f76d182720830c1
 https://ph3at.github.io/posts/Windows-Input/
+
+https://googleprojectzero.blogspot.com/2024/06/the-windows-registry-adventure-3.html
+Tools to inspect Windows registry
+* windbg !reg querykey \Registry\Machine\Software\DefaultUserEnvironment
+* pdbs
+* regdump
+* https://github.com/strozfriedberg/notatin
+* https://github.com/ColinFinck/nt-hive
+* https://github.com/libguestfs/hivex

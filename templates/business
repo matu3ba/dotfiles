@@ -41,3 +41,42 @@ and/or 2. low abstraction of target and/or 3. not or hard to debug.
 One can therefore argue that all domain specific programming without the need
 of any hardware or kernel knowledge would be non-system and the rest system
 programming.
+
+interesting theories by Clayton Christensen based on
+https://www.youtube.com/watch?v=rpkoCZ4vBSI
+https://www.youtube.com/watch?v=Ei57yFEljrI
+https://www.youtube.com/watch?v=Zn6-KksdOgE
+* 1. customers(users) hire(use) products for the job to be done
+* 2. disruption requires a scalable technological core
+
+management by Clayton Christensen
+* good theories on products, but bad/does not take into account experience-based jobs
+* management heavily depends on how profitability and planning for future investments is measured
+* capitalist's dilemma (where growth comes from)
+  - 3 types of innovations (target of investment, what creates growth)
+  1. disruptive innovations (makes products more affordable and accessible, growth, jobs, needs capital)
+  2. sustaining innovations (make good products better, improve margins; market share, little net growth)
+  3. efficiency innovations (eliminates jobs, increases fee, cash flow)
+  - doctrines: waste cheap stuff, careful on costly stuff
+  - RONA, IRR, EPS, GMP, EVA, margin cost/revenue, debt/equity, net present value, revenue per employer
+  - profitability metrics for efficiency innovations are always better than those sustaining innovations
+    => doing the right thing will kill your position
+  - problem: wrong metrics for investment, better: use different metrics for investment
+focusing on job-to-be-done companies can do the job better
+open, modular interface between service<->customer vs bank<->payment provider
+make money with interdependent interface
+pulling solutions works, pushing not (make things simple and affordable meaning cheap products)
+global capital invests into efficiency innovations, meaning very few create local disruptions
+market of non-consumers/non-consumption most of the time bigger than consumer market
+* law of conservation of modularity ?
+* law of wasting abundance (venture capital) ?
+
+competing against luck
+* non-consumption
+* not too many inter-dependencies
+
+business models are not designed to evolve
+* coporations can evolve by setting up new business models
+* business professors are mostly aweful without plausible theories
+* bring technology to doctors offices to do more affordable things etc
+* education: online learning by making teacher a tutor

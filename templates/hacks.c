@@ -1,5 +1,5 @@
 // http://scaryreasoner.wordpress.com/2009/02/28/checking-sizeof-at-compile-time/
-#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2 * !!(condition)]))
 // usage: BUILD_BUG_ON( sizeof(someThing) != PAGE_SIZE );
 
 // dump macro definitions
@@ -8,13 +8,13 @@
 // force color codes
 // preload.c
 int isatty(int fd) {
-    switch (fd) {
-        case 0: // [[fallthrough]]
-        case 1: // [[fallthrough]]
-        case 2:
-            return 1;
-    }
-    return 0;
+  switch (fd) {
+    case 0: // [[fallthrough]]
+    case 1: // [[fallthrough]]
+    case 2:
+      return 1;
+  }
+  return 0;
 }
 // gcc -o preload.so preload.c -shared -fPIC
 // LD_PRELOAD=preload.so ls -a &> tmp.txt
