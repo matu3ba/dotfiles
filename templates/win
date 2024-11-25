@@ -718,6 +718,9 @@ TODO cleanup
 #endif
 
 SHENNANIGAN Portable include is #include <Windows.h>, but lower case also works on windows
+SHENNANIGAN github runner wants <windows.h> or complains with
+error: non-portable path to file '<windows.h>'; specified path differs in case
+from file name on disk [-Werror,-Wnonportable-system-include-path].
 
 SHENNANIGAN Windows Input is very much not nice to use
 * use SDL3 instead https://gist.github.com/flibitijibibo/aa8a61196621adf17f76d182720830c1

@@ -1,6 +1,8 @@
 //! Simple server to write data changes to connecting sockets.
 //! Main reason is to get the netinet.h usage for static linking.
 
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
+
 // #include <time.h> // C11
 #include <errno.h>
 #include <fcntl.h>
@@ -261,4 +263,6 @@ void server_forever(uint16_t const port_poll) {
   printf("Stop server\n");
 }
 
-int32_t main(void) {}
+#endif // unix,apple+mach
+
+int32_t main(void) { return 0; }

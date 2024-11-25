@@ -708,7 +708,7 @@ void use_voidptr(void) {
 // #ifdef _WIN32
 // #define NOMINMAX
 // #define WIN32_LEAN_AND_MEAN
-// #include <Windows.h>
+// #include <windows.h>
 // #else
 // #endif
 
@@ -718,7 +718,7 @@ void use_voidptr(void) {
 //   // Excludes rarely-used stuff from Windows headers
 //   #define WIN32_LEAN_AND_MEAN
 //   // Windows Header Files:
-//   #include <Windows.h>
+//   #include <windows.h>
 
 #ifdef _WIN32
 void ape_win_incompat_fileprint(void);
@@ -755,8 +755,10 @@ void ape_fileprint(void) {
 #endif
 
 #ifdef _WIN32
+#ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_DEPRECATE
+#endif
 void ape_win_print(void);
 void ape_win_print(void) {
   FILE *f1;
@@ -1102,7 +1104,7 @@ int FG_Init(char *errmsg_ptr, int *errmsg_len) {
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <windows.h>
 void deinitTimer(void);
 void resetOutputs(void);
 LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo);
@@ -1221,7 +1223,7 @@ void getFullPathNameUsage(void) {
 
 // delayed loaded via explicit calls to LoadLibrary and GetProcAddress
 
-// #include<Windows.h>
+// #include<windows.h>
 // #include<unistd.h>
 // Sleep/sleep
 

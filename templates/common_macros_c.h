@@ -81,6 +81,10 @@
 #define constexpr
 #endif
 
+// checking semi-OS API collections
+// 1. unix: #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__)) #endif
+// 2. posix:  #if defined(_POSIX_VERSION) #endif
+
 // checking OS (platform)
 // Akaros (http://akaros.org)        __ros__
 // Android                           __ANDROID__ (implies __linux__)

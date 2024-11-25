@@ -172,7 +172,8 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #ifdef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <process.h>
+#include <windows.h>
 #endif // _WIN32
 
 #include <cassert>
@@ -1499,8 +1500,10 @@ void ape_printing_bad() {
 #ifdef _WIN32
 // make msvc not complain about fopen
 // to be used in first lines of .cpp file
+#ifdef _MSC_VER
 // #define _CRT_SECURE_NO_WARNINGS
 // #define _CRT_SECURE_NO_DEPRECATE
+#endif
 #endif
 void ape_print();
 void ape_print() {

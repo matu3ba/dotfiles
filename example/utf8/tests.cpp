@@ -6,7 +6,7 @@
 static_assert(HAS_CPP20, "use HAS_CPP20 macro");
 #endif
 
-#include "../util_test.h"
+#include "../util_test.hpp"
 #include <sstream>
 
 // #include <iostream>
@@ -26,20 +26,23 @@ static_assert(HAS_CPP20, "use HAS_CPP20 macro");
 // #include <print> // C++23 sane utf8 encoding without locale influence
 #include <string>
 // https://stackoverflow.com/questions/6693010/how-do-i-use-multibytetowidechar
-static std::string ConvertWideToANSI(const std::wstring& wstr) {
-    int count = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), static_cast<int32_t>(wstr.length()), nullptr, 0, nullptr, nullptr);
-    if (count <= 0) return "";
-    std::string str(static_cast<size_t>(count), 0);
-    WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, &str[0], count, nullptr, nullptr);
-    return str;
+static std::string ConvertWideToANSI(std::wstring const &wstr) {
+  int count =
+      WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), static_cast<int32_t>(wstr.length()), nullptr, 0, nullptr, nullptr);
+  if (count <= 0)
+    return "";
+  std::string str(static_cast<size_t>(count), 0);
+  WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, &str[0], count, nullptr, nullptr);
+  return str;
 }
 
-static std::wstring ConvertAnsiToWide(const std::string& str) {
-    int count = MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int32_t>(str.length()), nullptr, 0);
-    if (count <= 0) return L"";
-    std::wstring wstr(static_cast<size_t>(count), 0);
-    MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
-    return wstr;
+static std::wstring ConvertAnsiToWide(std::string const &str) {
+  int count = MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int32_t>(str.length()), nullptr, 0);
+  if (count <= 0)
+    return L"";
+  std::wstring wstr(static_cast<size_t>(count), 0);
+  MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
+  return wstr;
 }
 
 static int32_t test_utf8comparison() {
@@ -65,9 +68,9 @@ static int32_t deprecated_test_utf8utf32conversion() {
 static int32_t test_utf8uf16conversion() {
   (void)ConvertWideToANSI;
   (void)ConvertAnsiToWide;
-  #ifndef HAS_CPP20
+#ifndef HAS_CPP20
   (void)deprecated_test_utf8utf32conversion;
-  #endif
+#endif
 
   // \x00C4
   std::wstring HelloUTF16Str = L"  HelloÄ   ";
@@ -121,17 +124,16 @@ struct SPoint2 {
   int32_t x;
   int32_t y;
 };
-static std::ostream& operator<<(std::ostream& Stream, const SPoint2 Val)
-{
-	std::locale loc = Stream.getloc();
-	auto pt = std::use_facet<std::numpunct<char>>(loc).decimal_point();
-	Stream << "[" << Val.x << pt << Val.y << "]";
+static std::ostream &operator<<(std::ostream &Stream, SPoint2 const Val) {
+  std::locale loc = Stream.getloc();
+  auto pt = std::use_facet<std::numpunct<char>>(loc).decimal_point();
+  Stream << "[" << Val.x << pt << Val.y << "]";
 
-	return Stream;
+  return Stream;
 }
 
 static int32_t test_localestreamop() {
-  SPoint2 p2 = { 1, 2 };
+  SPoint2 p2 = {1, 2};
   std::stringstream ss_p2;
   ss_p2 << p2;
   std::string actual = ss_p2.str();
@@ -141,7 +143,7 @@ static int32_t test_localestreamop() {
   return 0; // ok
 }
 
-int main(int argc, const char* argv[]) {
+int main(int argc, char const *argv[]) {
   // std::cout.imbue(std::locale(""));
   // std::wcout.imbue(std::locale(""));
   // std::cerr.imbue(std::locale(""));
@@ -150,7 +152,7 @@ int main(int argc, const char* argv[]) {
   (void)argv;
 #ifdef _WIN32
   // comparable to _setmode(_fileno(stdout), _O_U8TEXT);
-  SetConsoleOutputCP( CP_UTF8 );
+  SetConsoleOutputCP(CP_UTF8);
   // no buffering to prevent interference in unfinished UTF8 byte sequences
   // setvbuf( stderr, nullptr, _IONBF, 0 );
   // setlocale(LC_CTYPE,"C");

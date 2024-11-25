@@ -93,10 +93,14 @@ fn checkC(
         run_step.dependOn(&exe_cfile.step);
     }
 
-    // special c89 file
-    const run_zig_cc_c89 = b.addSystemCommand(zig_cc_c89_cmd);
-    run_zig_cc_c89.addArg("templates/common_c89.c");
-    run_step.dependOn(&run_zig_cc_c89.step);
+    if (!target.result.isDarwin()) {
+        // Darwin needs 'typedef unsigned long long uint64_t;', but long long
+        // needs an extension for C89.
+
+        const run_zig_cc_c89 = b.addSystemCommand(zig_cc_c89_cmd);
+        run_zig_cc_c89.addArg("templates/common_c89.c");
+        run_step.dependOn(&run_zig_cc_c89.step);
+    }
 
     // proj TODO
 }
