@@ -43,18 +43,28 @@ SHENNANIGAN checking if c89 or c90 has no macro
 #endif
 
 #if 0
-/* SHENNANIGAN There are no fixed typed integers. */
-/* So no inttypes.h and stdint.h */
-/* Missing pile of target dependent pointer sizes to reimplement stdint.h */
-/* Prefer typedefs, if possible */
+SHENNANIGANThere are no fixed typed integers.
+So no inttypes.h and stdint.h
+Missing pile of target dependent pointer sizes to reimplement stdint.h
+Prefer typedefs, if possible.
 #endif
 
 /* only for x86_64 */
+#ifdef __x86_64__
 typedef short unsigned int uint16_t;
 typedef unsigned int uint32_t;
 typedef unsigned long uint64_t;
 typedef unsigned long size_t;
 typedef unsigned long uintptr_t;
+#endif
+
+#ifdef __aarch64__
+typedef short unsigned int uint16_t;
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
+typedef unsigned long size_t;
+typedef unsigned long uintptr_t;
+#endif
 
 #include <assert.h>
 #include <stdio.h>

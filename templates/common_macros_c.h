@@ -20,34 +20,34 @@
 /* C++/CLI __cplusplus_cli = 200406L   ECMA-372           */
 
 #if defined(__STDC__)
-# define IS_C89
-# if defined(__STDC_VERSION__)
-#  if (__STDC_VERSION__ == 199409L)
-#   define IS_C94
-#  endif
-#  if (__STDC_VERSION__ == 199901L)
-#   define IS_C99
-#  endif
-#  if (__STDC_VERSION__ == 201112L)
-#   define IS_C11
-#  endif
-#  if (__STDC_VERSION__ == 201710L)
-#   define IS_C17
-#  endif
-#  if (__STDC_VERSION__ == 202311L)
-#   define IS_C23
-#  endif
-# endif
+#define IS_C89
+#if defined(__STDC_VERSION__)
+#if (__STDC_VERSION__ == 199409L)
+#define IS_C94
+#endif
+#if (__STDC_VERSION__ == 199901L)
+#define IS_C99
+#endif
+#if (__STDC_VERSION__ == 201112L)
+#define IS_C11
+#endif
+#if (__STDC_VERSION__ == 201710L)
+#define IS_C17
+#endif
+#if (__STDC_VERSION__ == 202311L)
+#define IS_C23
+#endif
+#endif
 #endif
 
 // msvc requires /Zc:__cplusplus https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
 #if defined(__cplusplus)
-  #if (__cplusplus == 202002L)
-    #define IS_CPP20
-  #endif
-  #if (__cplusplus == 202302L)
-    #define IS_CPP23
-  #endif
+#if (__cplusplus == 202002L)
+#define IS_CPP20
+#endif
+#if (__cplusplus == 202302L)
+#define IS_CPP23
+#endif
 #endif
 
 /* https://sourceforge.net/p/predef/wiki/Compilers/ */
@@ -65,7 +65,7 @@
 #if MIN_VS2015
 #define DEPRECATED(MSG) [[deprecated(MSG)]]
 #define DEPRECATED_CONSTRUCTOR __declspec(deprecated)
-#define DISABLE_DEPRECATED_WARNINGS __pragma(warning(disable:4996))  // disables deprecated warnings in msvc
+#define DISABLE_DEPRECATED_WARNINGS __pragma(warning(disable : 4996)) // disables deprecated warnings in msvc
 #define FINAL sealed
 #define NORETURN [[noreturn]]
 #define NULLPTR nullptr
@@ -73,10 +73,40 @@
 #elif MIN_VS2010
 #define DEPRECATED(MSG) __declspec(deprecated(MSG))
 #define DEPRECATED_CONSTRUCTOR __declspec(deprecated)
-#define DISABLE_DEPRECATED_WARNINGS __pragma(warning(disable:4996))
+#define DISABLE_DEPRECATED_WARNINGS __pragma(warning(disable : 4996))
 #define FINAL sealed
 #define NORETURN __declspec(noreturn)
 #define NULLPTR nullptr
 #define OVERRIDE override
 #define constexpr
 #endif
+
+// checking OS (platform)
+// Akaros (http://akaros.org)        __ros__
+// Android                           __ANDROID__ (implies __linux__)
+// AsmJS                             __asmjs__
+// Darwin (Mac OS X and iOS)         __APPLE__
+// Fuchsia                           __Fuchsia__
+// Linux (non-Android)               __linux__ && !__ANDROID__
+// Linux and Linux-derived           __linux__
+// NaCL                              __native_client__
+// Windows                           _WIN32
+// Windows 64 bit                    _WIN64 (implies _WIN32)
+
+// checking arch
+// __i386__
+// __x86_64__
+// __arm__
+//     __ARM_ARCH_5T__
+//     __ARM_ARCH_7A__
+// __powerpc64__
+// __aarch64__
+
+// checking compiler
+// MinGW 32            __MINGW32__
+// MinGW-w64 32bit     __MINGW32__
+// MinGW-w64 64bit     __MINGW64__
+// Visual Studio       _MSC_VER
+// clang               __clang__
+// emscripten          __EMSCRIPTEN__ (asm.js + webassembly)
+// gcc                 __GNUC__

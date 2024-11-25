@@ -1340,12 +1340,14 @@ void C11_alignment_control(void) {
 #endif
 }
 
+#ifndef __APPLE__
 // #include <stdnoreturn.h> void C11_noreturn() {} deprecated
 #include <threads.h>
 void C11_threads(void);
 void C11_threads(void) {
   // idea
 }
+#endif
 
 #include <stdatomic.h>
 struct No_Immutable_in_C_i64 {
