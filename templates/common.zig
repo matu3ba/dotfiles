@@ -401,40 +401,41 @@ const windows_utf16_string_literal = struct {
     const L = std.unicode.utf8ToUtf16LeStringLiteral;
 };
 
-test "append slice" {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
-    const allocator = arena.allocator();
-
-    var argv = std.ArrayList([]const u8).init(allocator);
-    defer argv.deinit();
-    try argv.append("/usr/bin/sleep");
-    try argv.appendSlice(&[_][]const u8{ "--help", "'not read anymore'" });
-
-    const res0 = std.process.Child.run(.{
-        .allocator = allocator,
-        .argv = argv.items,
-    }) catch {
-        return error.CouldNotRunClang;
-    };
-    _ = res0;
-
-    const res1 = std.process.Child.run(.{
-        .allocator = allocator,
-        .argv = &[_][]const u8{ "/usr/bin/sleep", "1" },
-    }) catch {
-        return error.CouldNotRunSleep;
-    };
-    _ = res1;
-
-    const res2 = std.process.Child.run(.{
-        .allocator = allocator,
-        .argv = &[_][]const u8{ "/usr/bin/bash", "-c", "'sleep 1'" },
-    }) catch {
-        return error.CouldNotRunShellExplicit;
-    };
-    _ = res2;
-}
+// TODO do not use files from absolute path
+// test "append slice" {
+//     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+//     defer arena.deinit();
+//     const allocator = arena.allocator();
+//
+//     var argv = std.ArrayList([]const u8).init(allocator);
+//     defer argv.deinit();
+//     try argv.append("/usr/bin/sleep");
+//     try argv.appendSlice(&[_][]const u8{ "--help", "'not read anymore'" });
+//
+//     const res0 = std.process.Child.run(.{
+//         .allocator = allocator,
+//         .argv = argv.items,
+//     }) catch {
+//         return error.CouldNotRunClang;
+//     };
+//     _ = res0;
+//
+//     const res1 = std.process.Child.run(.{
+//         .allocator = allocator,
+//         .argv = &[_][]const u8{ "/usr/bin/sleep", "1" },
+//     }) catch {
+//         return error.CouldNotRunSleep;
+//     };
+//     _ = res1;
+//
+//     const res2 = std.process.Child.run(.{
+//         .allocator = allocator,
+//         .argv = &[_][]const u8{ "/usr/bin/bash", "-c", "'sleep 1'" },
+//     }) catch {
+//         return error.CouldNotRunShellExplicit;
+//     };
+//     _ = res2;
+// }
 
 test "100 clients connect to server" {
     if (builtin.os.tag == .wasi) return error.SkipZigTest;
@@ -453,42 +454,42 @@ test "100 clients connect to server" {
     defer for (client_streams) |cleanup_stream| cleanup_stream.close();
 }
 
-test "coercion to return type example" {
-    var gpa_state = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
-    defer if (gpa_state.deinit() != .ok) {
-        @panic("found memory leaks");
-    };
-    const gpa = gpa_state.allocator();
-    var child = std.process.Child.init(&.{ "/usr/bin/sleep", "1" }, gpa);
-    child.stdin_behavior = .Close;
-    child.stdout_behavior = .Pipe;
-    child.stderr_behavior = .Pipe;
-    // child.uid = 10_000;
-    try child.spawn();
-
-    var test_error = false;
-    const stderr = std.io.getStdErr().writer();
-
-    const wait_res = child.wait() catch |err| {
-        try stderr.print("child failure with error during waiting: {};\n", .{err});
-        test_error = true;
-        // forgetting this yields in error: incompatible types
-        return error.TestError;
-    };
-    switch (wait_res) {
-        .Exited => |code| {
-            if (code != 0) {
-                try stderr.print("child exit code: {d}; want 0\n", .{code});
-                test_error = true;
-            }
-        },
-        else => |term| {
-            try stderr.print("child abnormal term: {}; want 0\n", .{term});
-            test_error = true;
-        },
-    }
-    return if (test_error) error.TestError else {};
-}
+// test "coercion to return type example" {
+//     var gpa_state = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
+//     defer if (gpa_state.deinit() != .ok) {
+//         @panic("found memory leaks");
+//     };
+//     const gpa = gpa_state.allocator();
+//     var child = std.process.Child.init(&.{ "/usr/bin/sleep", "1" }, gpa);
+//     child.stdin_behavior = .Close;
+//     child.stdout_behavior = .Pipe;
+//     child.stderr_behavior = .Pipe;
+//     // child.uid = 10_000;
+//     try child.spawn();
+//
+//     var test_error = false;
+//     const stderr = std.io.getStdErr().writer();
+//
+//     const wait_res = child.wait() catch |err| {
+//         try stderr.print("child failure with error during waiting: {};\n", .{err});
+//         test_error = true;
+//         // forgetting this yields in error: incompatible types
+//         return error.TestError;
+//     };
+//     switch (wait_res) {
+//         .Exited => |code| {
+//             if (code != 0) {
+//                 try stderr.print("child exit code: {d}; want 0\n", .{code});
+//                 test_error = true;
+//             }
+//         },
+//         else => |term| {
+//             try stderr.print("child abnormal term: {}; want 0\n", .{term});
+//             test_error = true;
+//         },
+//     }
+//     return if (test_error) error.TestError else {};
+// }
 
 //====packages
 // Zig Package System Usage:
