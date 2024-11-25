@@ -28,35 +28,44 @@ pub fn build(b: *std.Build) !void {
     // unplanned dependencies in $PATH
     // * go (shfmt)
 
-    // planned optionally dependencies in $PATH
+    // optionally dependencies in $PATH
+    // * cargo (stylua)
     // * haskell (shellcheck)
+    // * llvm-tools (clang-format, clang-tidy)
+    // * luacheck
     // -Dno_opt_deps
     const no_opt_deps = b.option(bool, "no_opt_deps", "Exclude optional dependencies") orelse false;
 
-    // planned mandatory dependencies in $PATH
-    // * cargo (stylua)
-    // * llvm-tools (clang-format, clang-tidy)
-    // * luacheck
-    // * zig
-
-    // current mandatory dependencies in $PATH
-    // * llvm-tools (clang-format, clang-tidy)
+    // mandatory dependencies in $PATH
     // * zig
     const run_step = b.step("test", "Test with mandatory dependencies");
 
-    checkC(b, target, optimize, run_step);
-    checkCpp(b, target, optimize, run_step);
+    checkC(b, target, optimize, run_step, no_opt_deps);
+    checkCpp(b, target, optimize, run_step, no_opt_deps);
     checkLua(b, run_step, no_opt_deps);
     checkSh(b, run_step, no_opt_deps);
     checkZig(b, target, optimize, run_step);
 }
 
-fn checkC(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_step: *std.Build.Step) void {
+fn checkC(
+    b: *std.Build,
+    target: ResolvedTarget,
+    optimize: OptimizeMode,
+    run_step: *std.Build.Step,
+    no_opt_deps: bool,
+) void {
     // fmt lint build
     for (SingleCFiles[0..]) |cfile| {
-        const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-        run_clang_format_check.addArg(cfile);
-        run_step.dependOn(&run_clang_format_check.step);
+        if (!no_opt_deps) {
+            const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
+            run_clang_format_check.addArg(cfile);
+            run_step.dependOn(&run_clang_format_check.step);
+
+            // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+            // run_clang_tidy_check.addArg(cfile);
+            // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
+            // run_step.dependOn(&run_clang_tidy_check.step);
+        }
 
         const run_zig_cc_c99 = b.addSystemCommand(zig_cc_c99_cmd);
         run_zig_cc_c99.addArg(cfile);
@@ -73,12 +82,6 @@ fn checkC(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_ste
         const run_zig_cc_c23 = b.addSystemCommand(zig_cc_c23_cmd);
         run_zig_cc_c23.addArg(cfile);
         run_step.dependOn(&run_zig_cc_c23.step);
-
-        // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
-        // // run_clang_tidy_check.addArg("example/link/main.c");
-        // run_clang_tidy_check.addArg(cfile);
-        // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
-        // run_step.dependOn(&run_clang_tidy_check.step);
 
         const exe_cfile = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cfile)),
@@ -97,14 +100,28 @@ fn checkC(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_ste
 
     // proj TODO
 }
-fn checkCmake() void {} // nofmt nolint nobuild noproj
-fn checkCpp(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_step: *std.Build.Step) void {
-    // fmt lint build
 
+fn checkCmake() void {} // nofmt nolint nobuild noproj
+
+fn checkCpp(
+    b: *std.Build,
+    target: ResolvedTarget,
+    optimize: OptimizeMode,
+    run_step: *std.Build.Step,
+    no_opt_deps: bool,
+) void {
+    // fmt lint build
     for (SingleCppFiles[0..]) |cppfile| {
-        const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-        run_clang_format_check.addArg(cppfile);
-        run_step.dependOn(&run_clang_format_check.step);
+        if (!no_opt_deps) {
+            const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
+            run_clang_format_check.addArg(cppfile);
+            run_step.dependOn(&run_clang_format_check.step);
+
+            // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+            // run_clang_tidy_check.addArg(cppfile);
+            // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
+            // run_step.dependOn(&run_clang_tidy_check.step);
+        }
 
         const run_zig_cpp_c14 = b.addSystemCommand(zig_cpp_c14_cmd);
         run_zig_cpp_c14.addArg(cppfile);
@@ -126,12 +143,6 @@ fn checkCpp(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_s
         run_zig_cpp_c26.addArg(cppfile);
         run_step.dependOn(&run_zig_cpp_c26.step);
 
-        // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
-        // // run_clang_tidy_check.addArg("example/link/main.c");
-        // run_clang_tidy_check.addArg(cppfile);
-        // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
-        // run_step.dependOn(&run_clang_tidy_check.step);
-
         const exe_cfile = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
             .target = target,
@@ -147,11 +158,8 @@ fn checkCss() void {} // nofmt nolint nobuild noproj
 fn checkFish() void {} // nofmt nolint nobuild noproj
 fn checkJava() void {} // nofmt nolint nobuild noproj
 fn checkJs() void {} // nofmt nolint nobuild noproj
-fn checkLua(
-    b: *std.Build,
-    run_step: *std.Build.Step,
-    no_opt_deps: bool,
-) void {
+
+fn checkLua(b: *std.Build, run_step: *std.Build.Step, no_opt_deps: bool) void {
     // fmt lint nobuild noproj
     for (SingleLuaFiles[0..]) |luafile| {
         if (!no_opt_deps) {
@@ -170,27 +178,31 @@ fn checkLua(
         }
     }
 }
+
 fn checkNix() void {} // nofmt nolint nobuild noproj
 fn checkPhp() void {} // nofmt nolint nobuild noproj
 fn checkPs1() void {} // nofmt nolint nobuild noproj
 fn checkPy() void {} // nofmt nolint nobuild noproj
 fn checkRs() void {} // nofmt nolint nobuild noproj
+
 fn checkSh(b: *std.Build, run_step: *std.Build.Step, no_opt_deps: bool) void {
     // fmt lint nobuild noproj
     for (SingleShFiles[0..]) |shfile| {
-        // shfmt has no way to disable fmt and check mode
-        // var run_shfmt_check = b.addSystemCommand(&.{"shfmt"});
-        // run_shfmt_check.addArg(shfile);
-        // run_step.dependOn(&run_shfmt_check.step);
-
         if (!no_opt_deps) {
+            // shfmt has no way to disable fmt and check mode, so it is not included
+            // const run_shfmt_check = b.addSystemCommand(&.{"shfmt"});
+            // run_shfmt_check.addArg(shfile);
+            // run_step.dependOn(&run_shfmt_check.step);
+
             const run_shellcheck = b.addSystemCommand(&.{"shellcheck"});
             run_shellcheck.addArg(shfile);
             run_step.dependOn(&run_shellcheck.step);
         }
     }
 }
+
 fn checkTex() void {} // nofmt nolint nobuild noproj
+
 fn checkZig(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_step: *std.Build.Step) void {
     // fmt lint build
     for (SingleZigFiles[0..]) |zigfile| {
