@@ -101,7 +101,7 @@
 // TODO summary from https://stackoverflow.com/questions/1857668/c-visual-studio-character-encoding-issues
 // Unicode overview https://www.codeproject.com/Articles/38242/Reading-UTF-8-with-C-streams
 
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_MSC_VER)
 
 #if (__cplusplus == 202302L)
 static_assert(sizeof(char) == 1, "invalid char8_t size");
