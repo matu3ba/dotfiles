@@ -1,6 +1,7 @@
 //! Simple server to write data changes to connecting sockets.
 //! Main reason is to get the netinet.h usage for static linking.
 
+// #include <time.h> // C11
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -14,7 +15,7 @@
 // #include <asm-generic/errno-base.h>
 // #include <asm-generic/errno.h>
 #include <stdbool.h>
-#include <unistd.h>
+#include <unistd.h> // usleep needs C11 and/or posix extensions
 
 #define CONNMAX 5
 
@@ -46,10 +47,10 @@ void startServer(uint16_t const port, int *listenfd) {
   // static char addr_str[NI_MAXHOST];
   int addr_family;
   //int ip_protocol;
-  struct sockaddr_in6 source_addr = {}; // can contain Ipv4 and Ipv6
+  struct sockaddr_in6 source_addr; // can contain Ipv4 and Ipv6
   memset(&source_addr, 0, sizeof(source_addr));
   //struct in_addr source_addr;
-  struct sockaddr_in6 dest_addr = {};
+  struct sockaddr_in6 dest_addr;
   memset(&dest_addr, 0, sizeof(dest_addr));
 
   dest_addr.sin6_family = AF_INET6;
@@ -95,7 +96,7 @@ void startServer(uint16_t const port, int *listenfd) {
 struct data_t {
   uint8_t some;
   uint8_t data;
-} data;
+};
 
 static int clients[CONNMAX];
 
@@ -103,8 +104,6 @@ void server_forever(uint16_t const port_poll) {
   struct sockaddr_in clientaddr;
   socklen_t addrlen;
   int slot = 0;
-  int i;
-  int client;
   int listenfd;
   startServer(port_poll, &listenfd);
   printf("Server started %shttp://127.0.0.1:%d%s\n", "\033[92m", port_poll, "\033[0m");
@@ -125,7 +124,7 @@ void server_forever(uint16_t const port_poll) {
       slot %= CONNMAX;
       while (slot != old_slot) {
         if (clients[slot] != -1) {
-          int read_cnt = read(clients[slot], buf, 10);
+          ssize_t read_cnt = read(clients[slot], buf, 10);
           if (read_cnt == 0) {
             int st = shutdown(clients[slot], SHUT_RDWR);
             if (st == -1) {
@@ -147,7 +146,7 @@ void server_forever(uint16_t const port_poll) {
       }
     }
 
-    // handle incomping tcp connections
+    // handle incoming tcp connections
     addrlen = sizeof(clientaddr);
     int client_tcp = accept(listenfd, (struct sockaddr *)&clientaddr, &addrlen);
     if (client_tcp < 0) {
@@ -156,7 +155,7 @@ void server_forever(uint16_t const port_poll) {
             ;
           break; // ok, we are non-blocking
         case EINTR:
-          fprintf(stdout, "accept interupted");
+          fprintf(stdout, "accept interrupted");
           break;
         case EOPNOTSUPP: // [[fallthrough]] ;
         case EINVAL:     // [[fallthrough]] ;
@@ -212,7 +211,7 @@ void server_forever(uint16_t const port_poll) {
         while (true) {
           if (clients[now_slot] != -1) {
             // printf("sending data in client_tcp %d..\n", clients[now_slot]);
-            int bytes_send = send(clients[now_slot], buf, written, MSG_NOSIGNAL);
+            ssize_t bytes_send = send(clients[now_slot], buf, (size_t)written, MSG_NOSIGNAL);
             // printf("bytes_send: %d\n", bytes_send);
             if (bytes_send == -1) {
               switch (errno) {
@@ -229,8 +228,7 @@ void server_forever(uint16_t const port_poll) {
                   clients[slot] = -1; // invalid fd => mark slot as free
                   break;
                 case EINTR:
-                  fprintf(stdout, "send interupted"); // ignore
-                  break;
+                  fprintf(stdout, "send interrupted"); // ignore
                   break;
 
                 default:
@@ -257,8 +255,10 @@ void server_forever(uint16_t const port_poll) {
     prev_data.some = cur_data.some;
     prev_data.data = cur_data.data;
 
-    usleep(1000);
+    sleep(1);
   }
 
   printf("Stop server\n");
 }
+
+int32_t main(void) {}

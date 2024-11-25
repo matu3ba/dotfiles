@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-loginctl unlock-session $SESSION_N
+loginctl unlock-session "$SESSION_N"

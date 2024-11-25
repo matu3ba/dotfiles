@@ -5,7 +5,7 @@
 set -e
 
 CWD=$(pwd)
-trap "cd ${CWD}" EXIT
+trap cd '${CWD}' EXIT
 
 if test -d "${CWD}/master"; then
   # it must hold GITDIR = GITCOMMDIR
@@ -13,13 +13,15 @@ if test -d "${CWD}/master"; then
   GITDIR=$(git rev-parse --git-dir)
   GITCOMMDIR=$(git rev-parse --git-common-dir)
   if test "${GITDIR}" != "${GITCOMMDIR}"; then
-    echo "GITDIR = GITCOMMONDIR (no bare repo), exiting.."; exit 1
+    echo "GITDIR = GITCOMMONDIR (no bare repo), exiting.."
+    exit 1
   fi
   cd master
 else
   WORKTREEROOT=$(git rev-parse --show-toplevel) # failure outside of worktree
   if test "${WORKTREEROOT}" != "${CWD}"; then
-    echo "must build from WORKTREEROOT, exiting.."; exit 1
+    echo "must build from WORKTREEROOT, exiting.."
+    exit 1
   fi
   pathtomaster="${WORKTREEROOT}/../master"
   cd "${pathtomaster}"

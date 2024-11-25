@@ -1,4 +1,6 @@
 -- Tested with
+-- luacheck: globals vim
+-- luacheck: no max line length
 -- TODO
 --TODO https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
 -- how to better setup luarocks with luajit without yet another plugin
@@ -43,11 +45,11 @@ local function pair_ipair_difference()
   -- deterministic by numeric magnitude,
   -- starts at 1 ignoring non-numeric values and stops on any gap
   for key, value in ipairs(table_str) do
-    print(key, value)
+    vim.print(key, value)
   end
   -- associative tables with keys preserved but order unspecified
   for key, value in pairs(table_str) do
-    print(key, value)
+    vim.print(key, value)
   end
 end
 

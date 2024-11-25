@@ -1,2 +1,2 @@
-//! 4.4 function instrumentation hooks
-// TODO:
+/// 4.4 function instrumentation hooks
+///

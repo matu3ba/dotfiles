@@ -104,19 +104,17 @@
 #ifdef _WIN32
 
 #if (__cplusplus == 202302L)
-  #define IS_CPP23
-  #define HAS_CPP23
-  static_assert(sizeof(char) == 1, "invalid char8_t size");
-  static_assert(sizeof(char8_t) == 1, "invalid char8_t size");
-  static_assert(sizeof(char16_t) == 2, "invalid char16_t size");
-  static_assert(sizeof(wchar_t) == 2, "invalid wchar_t size");
-  static_assert(sizeof(char32_t) == 4, "invalid char32_t size");
+static_assert(sizeof(char) == 1, "invalid char8_t size");
+static_assert(sizeof(char8_t) == 1, "invalid char8_t size");
+static_assert(sizeof(char16_t) == 2, "invalid char16_t size");
+static_assert(sizeof(wchar_t) == 2, "invalid wchar_t size");
+static_assert(sizeof(char32_t) == 4, "invalid char32_t size");
 
-  static_assert(std::is_signed_v<char>, "invalid char sign");
-  static_assert(std::is_unsigned_v<char8_t>, "invalid char8_t sign");
-  static_assert(std::is_unsigned_v<char16_t>, "invalid char16_t sign");
-  static_assert(std::is_unsigned_v<wchar_t>, "invalid wchar_t sign");
-  static_assert(std::is_unsigned_v<char32_t>, "invalid char32_t sign");
+static_assert(std::is_signed_v<char>, "invalid char sign");
+static_assert(std::is_unsigned_v<char8_t>, "invalid char8_t sign");
+static_assert(std::is_unsigned_v<char16_t>, "invalid char16_t sign");
+static_assert(std::is_unsigned_v<wchar_t>, "invalid wchar_t sign");
+static_assert(std::is_unsigned_v<char32_t>, "invalid char32_t sign");
 #endif
 
 // file Stdafx.h
@@ -126,13 +124,14 @@
 // TODO C++23 use std::atomic<std::shared_ptr<>> for atomic shared_ptr
 // and remove following macro to ignore deprecation
 #define _SILENCE_CXX20_OLD_SHARED_PTR_ATOMIC_SUPPORT_DEPRECATION_WARNING
-
 // #include "Stdafx.h"
-#include <stdio.h>
 
 #endif
 
-int main() {
+#include <stdint.h>
+#include <stdio.h>
+
+int32_t main() {
   fprintf(stdout, "hello world\n");
   return 0;
 }

@@ -355,7 +355,7 @@ return {
 
   -- nvim-treesitter
   -- nvim-treesitter-context
-  -- nvim-treesitter-textobjects
+  -- nvim-treesitter-textobjects (https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
   -- nvim-treesitter-textsubjects
   --==treesitter
   -- replacement without perf issues for context.vim would be great

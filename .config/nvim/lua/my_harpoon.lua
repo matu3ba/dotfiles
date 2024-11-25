@@ -1,8 +1,9 @@
---! Dependecy harpoon
+--! Dependency harpoon
 --! TODO cmds
 local M = {}
 local has_harpoon, harpoon = pcall(require, 'harpoon')
 local has_harpoonterm, harp_term = pcall(require, 'harpoon.term')
+local _ = harpoon
 
 --====harpoon2 usage blocked by
 -- 1. What would be a sane setup with potentially necessary default values, ie empty files 1+2?
@@ -53,6 +54,7 @@ M.setCursorToBottom = function(harpoon_term_nr)
   local term_handle = harp_term.getBufferTerminalId(harpoon_term_nr)
   local buf_id = term_handle['buf_id']
   local term_id = term_handle['term_id']
+  local _ = term_id
   local windows = vim.fn.win_findbuf(buf_id)
   if #windows ~= 1 then return end
   local crowcount = vim.api.nvim_buf_line_count(0)

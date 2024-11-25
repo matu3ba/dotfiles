@@ -5,9 +5,9 @@
 // * no unwind table at call boundary  -fno-asynchronous-unwind-tables
 // *
 // * position independent code pic     -fPIC"
-        // try cflags.append("-fvisibility=hidden");
-        // try cflags.append("-fvisibility-inlines-hidden");
-        // try cflags.append("-fvisibility-global-new-delete=force-hidden");
+// try cflags.append("-fvisibility=hidden");
+// try cflags.append("-fvisibility-inlines-hidden");
+// try cflags.append("-fvisibility-global-new-delete=force-hidden");
 // * last C++ standard                 -std=c++23
 
 //  .strip = comp.compilerRtStrip(),
@@ -48,11 +48,10 @@
 #include <vector>
 
 int32_t main() {
-  std::vector <uint32_t> tmp1 = {0, 1, 2, 3, 4};
+  std::vector<uint32_t> tmp1 = {0, 1, 2, 3, 4};
   fprintf(stdout, "tmp1: ");
-  for (const auto & it1 : tmp1) {
-    fprintf(stdout, "%d ", it1);
+  for (auto const &it1 : tmp1) {
+    fprintf(stdout, "%u ", it1);
   }
   fprintf(stdout, "\n");
 }
-

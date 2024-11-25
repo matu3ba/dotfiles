@@ -3,7 +3,7 @@
 
 set -e
 CWD=$(pwd)
-trap "cd ${CWD}" EXIT HUP INT QUIT TERM
+trap cd "${CWD}" EXIT HUP INT QUIT TERM
 # if SIGSEGV is included, then at least bash complains with 'trap: SIGSEGV: bad trap'
 
 # unless commands return non-zero status, use
@@ -16,11 +16,12 @@ set -e
 # see https://unix.stackexchange.com/questions/520035/exit-trap-with-posix
 # Using signal numbers as complete solution is not portable and listing all signal
 # names is ugly/unreadable
+CWD=""
 CWD=$(pwd)
-trap "cd ${CWD}" EXIT HUP INT QUIT SEGV TERM
+trap cd "${CWD}" EXIT HUP INT QUIT SEGV TERM
 
 wait 20 &
-pid_wait=$!
+# pid_wait=$!
 kill $! # default SIGTERM
 wait $!
 
@@ -41,9 +42,10 @@ wait $!
 #      uname, type, nohup, wait, who
 #
 # Example snippets to use for hacking
-i=1; while [ ${i} -le 3 ]; do
+i=1
+while [ ${i} -le 3 ]; do
   echo ${i}
-  i=$(( i + 1 ))
+  i=$((i + 1))
 done
 
 # simpler alternative for smol loops
@@ -56,9 +58,12 @@ s='A|B|C|D' # specify your "array" as a string with a sigil between elements
 IFS='|'     # specify separator between elements
 set -f      # disable glob expansion, so a * doesn't get replaced with a list of files
 
-getNth()  { shift "$(( $1 + 1 ))"; printf '%s\n' "$1"; }
-getLast() { getNth "$(( $(length "$@") - 1 ))" "$@"; }
-length()  { echo "$#"; }
+getNth() {
+  shift "$(($1 + 1))"
+  printf '%s\n' "$1"
+}
+getLast() { getNth "$(($(length "$@") - 1))" "$@"; }
+length() { echo "$#"; }
 
 length $s   # emits 4
 getNth 0 $s # emits A
@@ -66,53 +71,54 @@ getNth 1 $s # emits B
 getLast $s  # emits D
 
 s2='t1 t2 t3 t4'
-set -f; IFS=' '      # IFS='\n' appears to be broken
+set -f
+IFS=' ' # IFS='\n' appears to be broken
 for jar in ${s2}; do
-  set +f; unset IFS
-  echo "$jar"        # restore globbing and field splitting at all whitespace
+  set +f
+  unset IFS
+  echo "$jar" # restore globbing and field splitting at all whitespace
 done
-set +f; unset IFS    # do it again in case $INPUT was empty
+set +f
+unset IFS # do it again in case $INPUT was empty
 echo "done"
-
 
 # contains(string, substring)
 #
 # Returns 0 if the specified string contains the specified substring,
 # otherwise returns 1.
 contains() {
-    string="$1"
-    substring="$2"
-    if test "${string#*$substring}" != "$string"
-    then
-        return 0    # $substring is in $string
-    else
-        return 1    # $substring is not in $string
-    fi
+  string="$1"
+  substring="$2"
+  if test "${string#*"$substring"}" != "$string"; then
+    return 0 # $substring is in $string
+  else
+    return 1 # $substring is not in $string
+  fi
 }
 
-var="abcdef"
-removed_prefix="${var#a}"
-removed_suffix="${var%e}"
+# var="abcdef"
+# removed_prefix="${var#a}"
+# removed_suffix="${var%e}"
 
 # parameter expansion https://stackoverflow.com/a/16753536
 
 # check posix conform, if executable exists
-command -v 'tmux' 1> /dev/null
+command -v 'tmux' 1>/dev/null
 if test $? -ne 0; then
-   echo "Please create dir dev/"
-   exit 1
+  echo "Please create dir dev/"
+  exit 1
 fi
 
 # negation in posix
 if ! test $? -eq 0; then
-   echo "Please create dir dev/"
-   exit 1
+  echo "Please create dir dev/"
+  exit 1
 fi
-# or (careful with spacing!)
-if ! [ $? -eq 0 ]; then
-   echo "Please create dir dev/"
-   exit 1
-fi
+# or bad practice (careful with spacing!)
+# if ! [ $? -eq 0 ]; then
+#    echo "Please create dir dev/"
+#    exit 1
+# fi
 
 # based on https://github.com/dylanaraps/pure-sh-bible
 TEST1=""
@@ -130,7 +136,7 @@ if test "${TEST1}" != "${TEST1}"; then echo "non-equal"; fi
 # ${VAR##PATTERN}  remove longest match based on pattern from start
 # ${VAR%PATTERN}   remove shortest match based on pattern from end
 # ${VAR%%PATTERN}  remove longest match based on pattern from end
-# ${#VAR}          lenght of var in characters (utf8 ?)
+# ${#VAR}          length of var in characters (utf8 ?)
 # ${VAR:-STRING} If VAR is empty or unset, use STRING as its value.
 # ${VAR-STRING}  If VAR is unset, use STRING as its value.
 # ${VAR:=STRING} If VAR is empty or unset, set the value of VAR to STRING.
@@ -148,21 +154,21 @@ ssh localhost ls
 env -i bash --noprofile --norc -c "command"
 
 countdown() {
-    start="$(( $(date '+%s') + $1))"
-    while [ $start -ge $(date +%s) ]; do
-        time="$(( $start - $(date +%s) ))"
-        printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
-        sleep 0.1
-    done
+  start="$(($(date '+%s') + $1))"
+  while [ $start -ge "$(date +%s)" ]; do
+    time="$((start - $(date +%s)))"
+    printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
+    sleep 0.1
+  done
 }
 
 stopwatch() {
-    start=$(date +%s)
-    while true; do
-        time="$(( $(date +%s) - $start))"
-        printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
-        sleep 0.1
-    done
+  start=$(date +%s)
+  while true; do
+    time="$(($(date +%s) - start))"
+    printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
+    sleep 0.1
+  done
 }
 
 # SHENNANIGAN
@@ -178,7 +184,7 @@ stopwatch() {
 # assume: $1 is given
 is_integer() {
   case $1 in
-      ''|*[!0-9]*) echo 1 ;;
-      *) echo 0 ;;
+  '' | *[!0-9]*) echo 1 ;;
+  *) echo 0 ;;
   esac
 }

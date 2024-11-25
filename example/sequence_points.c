@@ -1,10 +1,11 @@
 #include <stdint.h>
 #include <stdio.h>
-int f(int* a) {
-  *a=*a+1;
+
+static int f(int *a) {
+  *a = *a + 1;
   return *a;
 }
-void simple_sequence_points() {
+static void simple_sequence_points(void) {
   int a = 0;
   // warning: Multiple unsequenced modifications to a
   // a = a++ + a++;
@@ -13,15 +14,22 @@ void simple_sequence_points() {
   a = f(&a);
   a += f(&a);
 }
-struct sExample { int32_t a[1]; };
-struct sExample create_sExample(void) {
-  structt sExample res = { { 1 } };
+struct sExample {
+  uint32_t a[1];
+};
+static struct sExample create_sExample(void) {
+  struct sExample res = {{1}};
   return res;
 }
-int storage_lifetime_footgun(void) {
+static int storage_lifetime_footgun(void) {
   // undefined behavior introduced if temporary is missing
   // printf("%x", ++(create_fail().a[0]));
   struct sExample res = create_sExample();
   printf("%x", ++(res.a[0]));
   return 0;
+}
+
+int32_t main(void) {
+  simple_sequence_points();
+  storage_lifetime_footgun();
 }

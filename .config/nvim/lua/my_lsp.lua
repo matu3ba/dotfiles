@@ -2,6 +2,12 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+-- lsp protocol
+-- 1. file opened in editor -> editor supposed to inform server about changes to
+-- document. Builtin neovim client do that. How exactly file stored on disk
+-- not important in that case.
+-- SHENNANIGAN no plumbing API in neovim to do low-level fixup tasks
+
 local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 -- clangd
@@ -105,6 +111,7 @@ lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = comm
 lspconfig.ruff.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.superhtml.setup{ capabilities = common_capabilities, on_attach = common_on_attach, }
+-- .config/zls.json https://raw.githubusercontent.com/zigtools/zls/master/schema.json
 lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- https://sookocheff.com/post/vim/neovim-java-ide/
 -- https://javadev.org/devtools/ide/neovim/lsp/
@@ -192,6 +199,47 @@ vim.api.nvim_create_autocmd('LspAttach', {
     --==provided with mini.bracketed
     -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
     -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
+
+    -- TODO: figure out how to solve this, because this is super annoying
+    -- local bufnr = vim.api.nvim_get_current_buf()
+    -- stylua: ignore start
+    vim.keymap.set('n', 'grf', function()
+      local params = vim.lsp.util.make_range_params()
+      params.context = { only = { "source.fixAll" }, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked, diagnostics = vim.lsp.diagnostic.get_line_diagnostics(), }
+      -- results is an array of lsp.CodeAction
+      local diags = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+      if diags then
+        for _, value0 in pairs(diags) do
+          for _, value1 in pairs(value0) do
+            for key2, _ in ipairs(value1) do
+              if key2 > 1 then
+                value1[key2] = nil
+              end
+            end
+            -- for key2, value2 in ipairs(value1) do
+            --   vim.print("key", key2)
+            --   vim.print("value", value2)
+            -- end
+          end
+        end
+        -- this does not work and docs in neovim are very bad on this
+        vim.lsp.buf.code_action {
+          context = { diagnostics = unpack(diags), only = { "source.fixAll" }, },
+          apply = true,
+        }
+      end
+      -- vim.print(diags)
+      -- context = { diagnostics = diags, only = { 'source.fixAll', triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked, } },
+    end, opts)
+    -- stylua: ignore end
+
+    vim.keymap.set('n', 'grf', function()
+      vim.lsp.buf.code_action {
+        -- type annotation for missing field diagnostics is wrong, because its optional
+        context = { only = { 'source.fixAll' } },
+        apply = true,
+      }
+    end, opts)
 
     -- vim.keymap.set('n', '<leader>hi', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end, opts)
     -- defaults with neovim realease 10.0

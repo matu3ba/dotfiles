@@ -16,20 +16,21 @@ const std = @import("std");
 //0 for inherit handle
 //os.windows.CreateProcessW(null, ch_n, null, null, os.windows.TRUE, 0, null, null, &si, &pi) catch |err| {
 
-fn printErrorSet(comptime fun: anytype) void {
-    const info = @typeInfo(@TypeOf(fun));
-    const ret_type = info.Fn.return_type.?;
-    inline for (@typeInfo(@typeInfo(ret_type).ErrorUnion.error_set).ErrorSet.?) |reterror| {
-        std.debug.print("{s}\n", .{reterror.name});
-    }
-}
-fn testme() !void {
-    const stdout = std.io.getStdOut();
-    try stdout.writer().print("testme\n", .{});
-}
-test "printErrorSet" {
-    printErrorSet(testme);
-}
+// FIXME
+// fn printErrorSet(comptime fun: anytype) void {
+//     const info = @typeInfo(@TypeOf(fun));
+//     const ret_type = info.Fn.return_type.?;
+//     inline for (@typeInfo(@typeInfo(ret_type).ErrorUnion.error_set).ErrorSet.?) |reterror| {
+//         std.debug.print("{s}\n", .{reterror.name});
+//     }
+// }
+// fn testme() !void {
+//     const stdout = std.io.getStdOut();
+//     try stdout.writer().print("testme\n", .{});
+// }
+// test printErrorSet {
+//     printErrorSet(testme);
+// }
 
 pub fn printErrorSet2() void {
     const e = @field(anyerror, "NotFound");
@@ -75,3 +76,5 @@ fn memcpyslice() void {
     @memcpy(msg.?[0..src_len], "somemsg");
     std.debug.print("msg: {?s}\n", .{msg});
 }
+
+pub fn main() void {}

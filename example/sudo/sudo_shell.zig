@@ -4,7 +4,7 @@ pub fn main() !void {
     defer arena.deinit();
     const allocator = arena.allocator();
 
-    const res = std.ChildProcess.run(.{
+    const res = std.process.Child.run(.{
         .allocator = allocator,
         .argv = &[_][]const u8{ "/usr/bin/sudo", "/usr/bin/groupadd", "test123123" },
     }) catch {

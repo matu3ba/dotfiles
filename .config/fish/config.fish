@@ -72,6 +72,7 @@ if status is-interactive
   # PATH settings
   fish_add_path "$HOME/.cargo/bin"
   fish_add_path "$HOME/.local/bin"
+  fish_add_path "$HOME/go/bin"
   fish_add_path "$HOME/.local/appimages"
   fish_add_path "$HOME/.local/cerberus/bin"
   fish_add_path "$HOME/dev/zdev/zig/master/rel/bin" # zig stages 3

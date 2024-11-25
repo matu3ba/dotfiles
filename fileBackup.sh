@@ -1,19 +1,19 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 ## search sub-folder paths and create symlinks of un-ignored files
 ## example: ln -s $HOME/dotfiles/.bashrc $HOME/.bashrc
 
 # The following script assumes filenames do not contain
 # control characters and dont contain leading dashes(-).
-set -o errexit   # abort on nonzero exitstatus
-set -o nounset   # abort on unbound variable
-set -o pipefail  # don't hide errors within pipes
-IFS="`printf '\n\t'`" # change IFS to just newline and tab
+set -o errexit         # abort on nonzero exitstatus
+set -o nounset         # abort on unbound variable
+set -o pipefail        # don't hide errors within pipes
+IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
 FAIL="TRUE"
 cd "${HOME}/dotfiles"
 dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
-DATETIME=`date +"%Y%m%d_%H%M%S"`
+DATETIME=$(date +"%Y%m%d_%H%M%S")
 BACK_FOLDER="${HOME}/back/${DATETIME}_backconfig/"
 #mkdir -p "$BACK_FOLDER"
 
@@ -40,7 +40,7 @@ while IFS= read -r dfPath; do
     printf '%-20s' "found no file"
   fi
   echo -en "\n"
-done <<< "$dotfilePaths"
+done <<<"$dotfilePaths"
 if test "$FAIL" = "FALSE"; then
   echo "backup created at ${BACK_FOLDER}"
 fi

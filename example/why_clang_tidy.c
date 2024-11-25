@@ -1,15 +1,12 @@
 //! Why clang-tidy should be used.
 
+#include <stdint.h>
 #include <stdlib.h>
-int string_to_int(const char *num);
+int string_to_int(char const *num);
 void ls(void);
-int string_to_int(const char *num) {
-  return atoi(num);
-}
+int string_to_int(char const *num) { return atoi(num); }
 
-void ls(void) {
-  system("ls");
-}
+void ls(void) { system("ls"); }
 
 // clang -Weverything -c why_clang_tidy.c -o build/why_clang_tidy
 // clang-tidy -checks='bugprone-*,cert-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*' why_clang_tidy.c -- -std=c11
@@ -26,3 +23,5 @@ void ls(void) {
 //   Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from sy
 //   stem headers as well.
 
+#include <stdlib.h>
+int32_t main(void) {}

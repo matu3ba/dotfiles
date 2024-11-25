@@ -1,9 +1,11 @@
 //! Infinity loop to examplify gdb and VS Debugger usage and entry point
 //! into adv/ for advanced point 4. and expert exp/ point 5.
-#include <stdbool.h> // bool
+// Tested with
+// TODO
 #include <inttypes.h> // PRIu64, uint64_t (stdint.h not needed)
-#include <stdio.h> // printf
-#include <unistd.h> // sleep
+#include <stdbool.h>  // bool
+#include <stdio.h>    // printf
+#include <unistd.h>   // sleep
 
 // To fix permission problems, see PERMISSIONS in ../../templates/gdb
 // Usage:
@@ -38,13 +40,13 @@
 // TODO basics how gdb works
 // https://sysdig.com/blog/sysdig-vs-dtrace-vs-strace-a-technical-discussion/
 
-int main() {
-    uint64_t runtime = 0;
-    uint64_t sleeptime = 1;
+int main(void) {
+  uint64_t runtime = 0;
+  uint32_t sleeptime = 1;
 
-    while ( true ) {
-        sleep(sleeptime);
-        runtime += sleeptime;
-        printf("%" PRIu64 "\n", runtime);
-    }
+  while (true) {
+    sleep(sleeptime);
+    runtime += sleeptime;
+    printf("%" PRIu64 "\n", runtime);
+  }
 }

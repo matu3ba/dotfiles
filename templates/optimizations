@@ -1,12 +1,97 @@
+====resources
+====types
+====benchmarking
+
+====resources
+https://www.brendangregg.com/methodology.html
+https://www.brendangregg.com/blog/2020-07-15/systems-performance-2nd-edition.html
+"Systems Performance: Enterprise and the Cloud, 2nd Edition"
+nice links https://ankush.dev/
+unclear: book on hardware perf tools
+
 Misc noteworthy global optimization ideas
 * "Reducing Code Size with Function Merging" by Rodrigo Caeteano de Oliveira Rocha
   * 11-15% compile time overhead? need to check again if correct
   * messes up debug locations
   * no fixup algorithm for debug locations mentioned
 
-
 https://github.com/jnordwick/tempus
 benchmarking functions
 clock_gettime should already not perform a syscall for most systems + tempus
 doesnt seem to check for invariant-tsc before assuming rdtsc(p) validity (or
 uses lfence for non p variant)
+
+====types
+1. CPU bound
+problem: the datastructure and algorithm is sub-optimal or the problem has
+inherent complexity cost
+* solution 1: Data Oriented Design methods
+* solution 2: caching/use more memory
+* solution 3: use faster method for less optimal solution
+2. IO bound: RAM, disk or network leading to yielding CPU
+* problem: frequent context switches on linux 1-20 microsecs
+* solution 1: event-driven architecture (async-await, ui_uring, select)
+* solution 2: user-space schedulers (goroutines, grenlets)
+* solution 3: TODO improve phrasing, use better RAM tradeoffs
+3. Memory bound
+* solution 1: Data Oriented Design methods
+* solution 2: less caching/use less memory
+* solution 3: use other method for less optimal solution
+
+====Simple Measuring how IO bound
+time app.exe args
+user_time user sys_time system percentage total_time total
+12.67s user 1.45s system 91% 15.482 total
+with total = user_time + sys_time + wait_time,
+perc_wait_time = 1 - (user_time + sys_time)/total = 1 - (12.67 + 1.45)/15.482 = 0.088
+wait_time includes: disk+networking IO waiting, explicit sleep calls, lock waiting,
+scheduling delays from kernel
+=> workload defines if process is IO bound
+
+====Advanced Measuring how IO bound
+https://github.com/iovisor/bcc
+ -K (kernel stack), -p pid, 5 (seconds)
+offcputime -K -p `pgrep app.exe` 5
+
+====benchmarking
+https://ankush.dev/p/reliable-benchmarking
+* Simultaneous Multi-Threading (SMT, CPU simultaneously executing 2 or more threads using 1 core)
+* Boosted clock frequencies (Temporary boost on few cores aka "Turbo Boost")
+* Thermal throttling
+* Scheduling noise, other running processes
+
+Disable SMT
+sudo cat /sys/devices/system/cpu/cpu*/topology/thread_siblings_list
+disabled_cpus=(1 3 5 7 9 11 13 15)
+for cpu_no in $disabled_cpus
+do
+  echo 0 | sudo tee /sys/devices/system/cpu/cpu$cpu_no/online
+done
+
+Disable dynamic clock boost
+enabled_cpus=(0 2 4 6 8 10 12 14)
+for cpu_no in $enabled_cpus
+do
+  echo 2700000 | sudo tee /sys/devices/system/cpu/cpufreq/policy$cpu_no/scaling_max_freq
+done
+
+Better scaling governor
+enabled_cpus=(0 2 4 6 8 10 12 14)
+for cpu_no in $enabled_cpus
+do
+  echo performance | sudo tee /sys/devices/system/cpu/cpu$cpu_no/cpufreq/scaling_governor
+done
+
+Remove Scheduler Noise
+taskset, cset https://documentation.suse.com/sle-rt/12-SP5/html/SLE-RT-all/cha-shielding-cpuset.html
+
+Disable ASLR
+echo 0 | sudo tee /proc/sys/kernel/randomize_va_space
+
+Warmup and Cooldown
+* keep energy connection
+* between two runs, let processor temperature recover to reasonable numbers
+* long runs => warming up by running benchmark without not measuring (CPU and page cache)
+* short runs => drop caches before each benchmark run
+
+Mechanical Sympathy => no death by 1_000 cuts

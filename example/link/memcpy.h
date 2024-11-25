@@ -1,1 +1,1 @@
-void new_memcpy(char* aa, char* bb, char* cc);
+void new_memcpy(char *aa, char *bb, char *cc);

@@ -371,6 +371,8 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
       o make fns reversible
       o use and make explicit garbage outputs
       o purely reversible
+- 20. fuzzers or fuzzer modes for testing spatial and temporal coverage?
+  * must be able to express what to change
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 # -- manually --
 # git bisect start BADCOMMIT GOODCOMMIT
@@ -27,8 +27,7 @@
 #git bisect reset
 #git switch master
 
-
-# search through occurence of string in latest log file
+# search through occurrence of string in latest log file
 # broken with rigrep: https://github.com/BurntSushi/ripgrep/issues/273
 # ls -rt /tmp/fancydir/* | tail -1 | xargs tail -f
 # ls -rt /tmp/fancydir/* | tail -1 | xargs grep -F 'some string'

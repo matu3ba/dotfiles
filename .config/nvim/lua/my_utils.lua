@@ -158,6 +158,7 @@ end
 -- to unload commands, mappings + relevant plugin symbols
 -- https://neovim.discourse.group/t/reload-init-lua-and-all-require-d-scripts/971/15
 M.reloadconfig = function()
+  ---@diagnostic disable-next-line: undefined-field
   local luacache = (_G.__luacache or {}).cache
   for pkg, _ in pairs(package.loaded) do
     if pkg:match '^my_.+' then
@@ -171,6 +172,7 @@ M.reloadconfig = function()
 end
 
 M.makeScratch = function(scratchpath)
+  local _ = scratchpath
   local buf = vim.api.nvim_create_buf(true, true) -- listed, scratch: nomodified, nomodeline
   vim.api.nvim_win_set_buf(0, buf)
 end
@@ -271,7 +273,7 @@ M.reloadModule = function(module)
   vim.notify('Module ' .. module .. ' reloaded!', vim.log.levels.INFO)
 end
 
---- Copy forward/backwards until first occurence of same symbol into register
+--- Copy forward/backwards until first occurrence of same symbol into register
 -- without match, a message is printed
 -- @param backwards boolean if search is forwards or backwards
 -- @param register register where content is copied to
@@ -442,7 +444,7 @@ local lut_reg_to_index = {
 -- translates register to index, returns nil without match
 M.registerToIndex = function(register) return lut_reg_to_index[register] end
 
--- SHENNANIGAN no vim/neovim docs on how multple newlines should be serialized and
+-- SHENNANIGAN no vim/neovim docs on how multiple newlines should be serialized and
 -- deserialized to be visualized on 1 line.
 
 -- Parse buffer to registers, filepath format:

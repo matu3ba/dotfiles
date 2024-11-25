@@ -35,7 +35,8 @@ cd "${DIR}"
 # A4, color is default
 # --mode Gray
 # --resolution 300
-#a5 => l=(210-148)/2 => scanimage -b --format tiff -d 'OUTHELP_DEVICE' --source 'OUTHELP_SOURCE' --resolution 200 -l 31 -x 148 -y 210
+#a5 => l=(210-148)/2 => 31.0
+scanimage -b --format tiff -d 'OUTHELP_DEVICE' --source 'OUTHELP_SOURCE' --resolution 200 -l 31 -x 148 -y 210
 scanimage -b --format tiff -d 'OUTHELP_DEVICE' --source 'OUTHELP_SOURCE' --resolution 150 -x 210 -y 297
-FILES=$(find ./  -type f | cut -sd / -f 2-)
-convert $FILES -quality 10 -compress jpeg "$CUR/$1"
+FILES=$(find ./ -type f | cut -sd / -f 2-)
+convert "$FILES" -quality 10 -compress jpeg "$CUR/$1"

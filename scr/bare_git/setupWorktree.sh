@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Script to setup worktree from git bare repo
 # Asserts: Directory structure is
 # barerepo/

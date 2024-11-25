@@ -19,7 +19,7 @@ h:close()
 -- end
 --print(dat)
 
-function mysplit(inputstr, sep)
+local function mysplit(inputstr, sep)
   sep = sep or '%s'
   local t = {}
   for str in string.gmatch(inputstr, '([^' .. sep .. ']+)') do
@@ -59,6 +59,7 @@ local diag = function(opts)
       -- previewer,
       -- attach_mappings
       attach_mappings = function(prompt_bufnr, map)
+        local _ = map
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()

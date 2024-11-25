@@ -2,11 +2,11 @@
 set -e
 if test -z "$USER"; then
   # git bash
-  cd /c/Users/$USERNAME/Desktop
+  cd "/c/Users/$USERNAME/Desktop"
   #grep 'ZIG_LLVM_CLANG_LLD_NAME =' /c/Users/$USERNAME/Desktop/zig/ci/x86_64-windows-debug.ps1 > /c/Users/$USERNAME/Desktop/pzdown.txt
 else
   # WSL
-  cd /mnt/c/Users/$USER/Desktop
+  cd "/mnt/c/Users/$USER/Desktop"
   #grep 'ZIG_LLVM_CLANG_LLD_NAME =' /mnt/c/Users/$USER/Desktop/zig/ci/x86_64-windows-debug.ps1 > /mnt/c/Users/$USER/Desktop/pzdown.txt
 fi
 TARGET="x86_64-windows-gnu"

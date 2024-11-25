@@ -1,8 +1,8 @@
-// Tested with
-// zig cc -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c
-// zig cc -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c
-// zig cc -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c
-// zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c
+//! Tested with
+//! zig cc -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c
+//! zig cc -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c
+//! zig cc -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c
+//! zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c
 #include <assert.h>
 
 // TODO list
@@ -50,6 +50,7 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 
 //====tooling
 //====version
+//====macros
 //====lto
 //====pointers
 //====signaling_unix
@@ -71,6 +72,8 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // * only as good as coverage
 // * ASan, UBSan, LSan, TSan, MSan
 
+// makefile that builds GCC cross-toolchains for many archs https://github.com/vezel-dev/kruco
+
 //====version
 // setting iso version:
 // clang4  -std=c89
@@ -78,6 +81,21 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // clang4  -std=c11
 // clang6  -std=c17
 // clang18 -std=c23
+
+// ====macros
+// http://scaryreasoner.wordpress.com/2009/02/28/checking-sizeof-at-compile-time/
+// #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2 * !!(condition)]))
+// Stuck with C90, better use assert or static_assert
+// uint8_t const var0 = 0;
+// uint8_t const var2 = 0;
+// #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int : (-!!(e)); })))
+// #define WTF BUILD_BUG_ON_ZERO(0)
+// usage: #define MACRO (BUILD_BUG_ON( sizeof(someThing) != PAGE_SIZE ));
+// #define CHECKED_MACRO_VAR0(w) (BUILD_BUG_ON(var0))
+// #define CHECKED_MACRO_VAR2(w) (BUILD_BUG_ON(var2))
+
+// dump macro definitions
+// echo common.h  | clang -E -dM -
 
 //====lto
 // # Compile and link. Select regular LTO at link time.
@@ -470,7 +488,7 @@ void ptr_cmp(int *a, int const *b);
 // Additional pointer semantics created unnecessary UB, so one has to compare
 // against 0 to be always compatible.
 void ptr_cmp(int *a, int const *b) {
-  if (a == 0 && b == 0) {
+  if (a != 0 && b != 0) {
     *a = *a + *b;
   }
 }
@@ -694,7 +712,7 @@ void use_voidptr(void) {
 // #else
 // #endif
 
-// Very aweful, if used withing stdafx.h:
+// Very awful, if used within stdafx.h:
 //   #pragma once
 //   #include "targetver.h"
 //   // Excludes rarely-used stuff from Windows headers
@@ -864,7 +882,7 @@ void compound_literal_usage(void) {
 // }
 
 void bitfields(void);
-// SHENNANIGAN impementation defined behavior for nesting due to being underspecified
+// SHENNANIGAN implementation defined behavior for nesting due to being underspecified
 void bitfields(void) {
   struct Bitfield1 {
     unsigned int b0 : 3;
@@ -922,7 +940,7 @@ void safe_debugging_on_unix() {
 
 // based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
 // TODO motivation
-// Duffs device inspired (case statement is legel within a sub-block
+// Duffs device inspired (case statement is legal within a sub-block
 // of its matching switch statement
 // TODO
 
@@ -970,7 +988,7 @@ struct ImageVLA ImageVLA;
 // TODO align cast in C
 
 // Corresponding zig code:
-// const Pixel = externs truct {
+// const Pixel = externs struct {
 //     red: u8,
 //     green: u8,
 //     blue: u8,
@@ -1018,7 +1036,7 @@ struct ImageVLA ImageVLA;
 
 int FG_Init(char *errmsg_ptr, int *errmsg_len);
 // SHENNANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
-// In practive implementations unconditionally add 0 sentinel.
+// In practice implementations unconditionally add 0 sentinel.
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
 int FG_Init(char *errmsg_ptr, int *errmsg_len) {
   char const *msg = "balbla";
@@ -1049,7 +1067,7 @@ int FG_Init(char *errmsg_ptr, int *errmsg_len) {
 // 3 signal types:
 // * APC like IO completion ports which are just things to communicate
 // * SEH exceptions first handled by debugger, then VEH exceptions, then SEH exceptions, then frame handler
-// * async things which should be only SIGINT and excecuted by passing another thread
+// * async things which should be only SIGINT and exececuted by passing another thread
 // https://www.osronline.com/article.cfm%5earticle=469.htm
 
 // 1. Are signals executed sequentially or can other threads execute the handler
@@ -1436,7 +1454,7 @@ enum values : uint64_t {
   values_f = 0xFFFFF,       // int
   values_g,                 // implicit +1, on 16-bit platform upgrades type of constant
   values_e = values_g + 24, // current type of g - long or long long to do math and set value to e
-  values_i = ULLONG_MAX     // usigned long or unsigned long long
+  values_i = ULLONG_MAX     // unsigned long or unsigned long long
 };
 int32_t C23_complex_generic_selection_on_enum();
 int32_t C23_complex_generic_selection_on_enum() {
@@ -1465,7 +1483,7 @@ void C23_stdbit() {
 }
 #endif
 
-// not wokring in clang 19.1.2 using Windows libc
+// not working in clang 19.1.2 using Windows libc
 // void C23_memset_explicit();
 // void C23_memset_explicit() {
 //   char mem1[100];
@@ -1513,7 +1531,7 @@ void C23_stdbit() {
 //#endif
 // 3. flag -fopenmp-simd
 // Intel-portable SIMD via #include <immintrin.h>
-// Windwos SIMD via #include <intrin.h>
+// Windows SIMD via #include <intrin.h>
 // BEST: use another language offering portable SIMD via LLVM or own impl
 
 int32_t main(void) { return 0; }

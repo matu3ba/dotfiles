@@ -12,7 +12,7 @@ indent_style = space
 insert_final_newline = false
 trim_trailing_whitespace = true
 
-[*.{c,h,lua}]
+[*.{c,cpp,h,hpp,lua}]
 insert_final_newline = true
 
 [*.md]

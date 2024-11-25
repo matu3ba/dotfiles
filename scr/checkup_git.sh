@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-set -o errexit   # abort on nonzero exitstatus
-set -o nounset   # abort on unbound variable
-set -o pipefail  # don't hide errors within pipes
+set -o errexit  # abort on nonzero exitstatus
+set -o nounset  # abort on unbound variable
+set -o pipefail # don't hide errors within pipes
 
 cd "$HOME/dev/git/c/firejail/"
 git fetch
-if test "$(git rev-parse HEAD)" = "$(git rev-parse @{u})"; then
+if test "$(git rev-parse HEAD)" = "$(git rev-parse '@{u}')"; then
   echo "firejail: HEAD and upstream identical"
 else
   echo "firejail: HEAD and upstream different"
@@ -14,7 +14,7 @@ else
   git merge --ff-only upstream/master && CC="zig cc -fno-sanitize=all" ./configure && make && sudo make install-strip && sudo firecfg
 fi
 
-# hack for runnig zig compiler on document
+# hack for running zig compiler on document
 # ///usr/bin/env -S zig run
 
 # 2. Build zig compiler, if needed
@@ -36,7 +36,7 @@ cd "${HOME}/dev/git/zi/zig/master"
 #fi
 # 2.3 if no updates exist => exit
 git fetch
-if test "$(git rev-parse HEAD)" = "$(git rev-parse @{u})"; then
+if test "$(git rev-parse HEAD)" = "$(git rev-parse '@{u}')"; then
   echo "zig: HEAD and upstream identical"
 else
   echo "zig: HEAD and upstream different"
@@ -45,7 +45,7 @@ else
   #echo "zig: building stage3 with stage3"
   #/usr/bin/time -v "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/zig-x86_64-linux-musl-native/bin/zig" build -p build/stage3 --search-prefix "${HOME}/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm
   # echo "zig: building stage1,2,3.."
-  mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install  && cd .. &
+  mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd .. &
   mkdir -p buildrel/ && cd buildrel/ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && /usr/bin/time -v ninja install && cd ..
   #-DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/glibc/out/host/"
 fi

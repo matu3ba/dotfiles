@@ -37,6 +37,76 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // * no fix for temporal memory problems, sanitizers with hopefully enough coverage only options
 // * ~1% queries per second, ~2.5% latency regression
 
+// profiles
+// * most likely catchy name for "integrate control into the language" for ASAN,
+// different types of assertions etc to make usage uniform/simple
+// * Why no "safe c++": Even with reference implementation, realistically would take very long time to hash out details in standard,
+// even longer for all the mainstream compilers to have ok support, so something that can be achieved in the near(er) future
+// was prioritized. Convert/Inter-op with legacy code unclear and rewrite of code bases likely simpler in Rust.
+//   - pessimistic time needed 15-20 years
+// * spatial memory problems: spatial means all arithmetic-related things
+// * temporal memory problems: temporal means if there is a timing when stuff is used in an potentially undesired way or underlying bits in an potentially undefined way
+//   - undesired would be, if one messes up synchronization by incorrect usage annotation
+//   - bear in mind one can also do memory accesses intentionally racy if only visiting memory
+//   - pointer chasing hard, because identifying overlapping sets on arithmetic is hard and over-approximation tricky
+//     o rust chose to just miscompile stuff in unsafe, if one does not satisfy
+//     the requirements to have no third "unoptimized unsafe mode"
+//   - graph annotations for sync problems require solver framework with applying wlp,
+//   but advantage would be to have immediate options for better sync perf once weak memory gets solved/becomes usable
+// * deadlock/livelock problems: typestate programming (encode allowed and disallowed automata over fns)
+
+// best practice compilation times
+// * prefer c headers
+// * no #include <algorithm>
+// * no #include <iostream>
+// * no #include <ranges>
+// * unclear: effect of modules
+//   - on doubt do not use modules unless able to debug underlying C++ problems,
+//     see https://www.youtube.com/watch?v=flu-f6SDnOE
+//     depends on compiler, lang version, build flags
+//   - https://www.reddit.com/r/cpp/comments/1btx5j6/c_modules_build_times_and_ease_of_use/
+//     private module fragment changes only work with ccache. Pure CMake + Ninja combo will
+//     still attempt to rebuild the entire dependency chain.
+//   - modules work with precompiled headers
+// * sccache https://github.com/mozilla/sccache
+// * -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+//   export CMAKE_CXX_COMPILER_LAUNCHER=ccache
+//   cmake -S ... -B ...
+// * use std::span,
+// * <spanstream>
+// * https://learnmoderncpp.com/2023/12/29/replacing-the-preprocessor-in-modern-c/
+//   - replace #define with 'static constexpr' and 'auto lambda_fn = [](auto ..) {}'
+//   - templates instead of type params (or write out coercible types): template <typename T> T square(T n) { return n * n; }
+//   - constexpr/consteval if and SFINAE (ie std::enable_if or concepts)
+//   - variadic templates instead of macro ellipsis/VA_ARGS
+//   template <typename... Args>
+//   void printValues(Args&&... args) {
+//     ((std::cout << args << " "), ...);
+//   }
+//   - replace __FILE_NAME__ __LINE__ with const std::source_location location =  std::source_location::current()
+//   - use std::stacktrace trc = std::stacktrace::current()
+//   - static_asserts instead of #error
+//   - exceptions instead of asserts xor
+//   FIXME what does 'extern constexpr bool' mean?
+//   extern constexpr bool ReleaseBuild = false;
+//   template<typename T>
+//   inline void log_assert(
+//     T&& assertion
+//     , const std::string_view log_msg = {}
+//     , std::ostream& out = std::cerr
+//     , const char *file = __FILE_NAME__
+//     , const int line = __LINE__
+//   ) {
+//     if constexpr (!ReleaseBuild) {
+//       if (!assertion) {
+//         out << file << ':' << line << " *** assertion failed: " << log_msg << '\n';
+//       }
+//     }
+//   }
+
+// best practice custom allocator
+// https://johnfarrier.com/custom-allocators-in-c-high-performance-memory-management/
+
 // C++ tooling mandates C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
 // alternative more sane syntax
@@ -2476,9 +2546,11 @@ void use_comptime();
 void use_comptime() {
   constexpr auto res0 = some_constexpr(42); // const + no comptime guarantee
 
+  // no checks for global exit-time destructors
   constexpr static auto res1 = some_constexpr(42); // const + static
   static constexpr auto res2 = some_constexpr(42); // SHENNANIGAN readability
 
+  // allows checks for global exit-time destructors
   constinit static auto res3 = some_constexpr(42); // non-const + static
   static constinit auto res4 = some_constexpr(42);
 
@@ -2704,6 +2776,7 @@ constexpr auto sum(std::vector<int> const &v) {
 
 int main() {
 #ifdef HAS_CPP23
+  // res1 is allowed to have exit-time destructors for global objects
   static constexpr std::string res1 = []() {
     std::string str = "Hello world!";
     appendBlabla(str);
@@ -2711,16 +2784,20 @@ int main() {
   }();
   // res += "noworld!"; does not work
   std::print("{}\n", res1);
-  static constinit std::string res2 = []() {
-    std::string str = "Hello world!";
-    appendBlabla(str);
-    return str.substr(0, 5);
-  }();
+
+  // static means here only "globally initialized", see -Wexit-time-destructors
+  // std::string can not be trivially comptime-constructed
+  // static constinit std::string res2 = []() {
+  //   std::string str = "Hello world!";
+  //   as_constant_orig(appendBlabla(str));
+  //   return str.substr(0, 5);
+  // }();
   // res += "noworld!"; does not work
-  std::print("{}\n", res2);
+  // std::print("{}\n", res2);
+
   static constexpr auto val_sum = sum({5, 7, 9});
   std::print("{}\n", val_sum);
 #endif
 
   return 0;
-} // minimal stub
+}

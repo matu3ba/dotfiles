@@ -18,6 +18,8 @@ znvim from LordMZTE https://mzte.de/git/LordMZTE/znvim (glpv3)
 zellij: s-e (scrollback-edit)
 yazi as file manager https://github.com/sxyazi/yazi
 flow control editor https://github.com/neurocyte/flow
+typos-cli typo https://github.com/crate-ci/typos
+(faster than spellcheck)
 
 build system respecting unused files and detect parallel-unsafe build description (db can become huge): tup
 shell: fish, crush-shell

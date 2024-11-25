@@ -10,6 +10,8 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 int main(int argc, char const *argv[]) {
+  (void)argc;
+  (void)argv;
 
   printf(ANSI_COLOR_RED     "This text is RED!"     ANSI_COLOR_RESET "\n");
   printf(ANSI_COLOR_GREEN   "This text is GREEN!"   ANSI_COLOR_RESET "\n");

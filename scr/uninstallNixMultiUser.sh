@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# This installs every nix-related diretory on the local system.
+# This installs every nix-related directory on the local system.
 # However: This does not restore the /etc/shell backup!
 # Restore and clean this up manually to prevent bashrc hiccups.
 

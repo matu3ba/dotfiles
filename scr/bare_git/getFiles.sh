@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Stub to get necessary files
 
 ROOT=$(git rev-parse --show-toplevel)

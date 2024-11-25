@@ -40,6 +40,7 @@ if not ok_lint then return end
 -- https://sean.fish/x/blog/codespell-ignorelists-neovim/
 
 lint.linters_by_ft = {
+  -- # shellcheck disable=SC2016
   sh = { 'shellcheck' },
   -- # ignore ruff lints for whole file (too long line)
   -- # ruff: noqa: E501 E701
@@ -108,7 +109,12 @@ ruff.args = {
 -- clangtidy.args = {
 --   '--quiet',
 -- }
+local aucmds_lint = vim.api.nvim_create_augroup('aucmds_lint', { clear = true })
 
 vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
-  callback = function() lint.try_lint() end,
+  group = aucmds_lint,
+  callback = function()
+    lint.try_lint()
+    lint.try_lint 'typos'
+  end,
 })

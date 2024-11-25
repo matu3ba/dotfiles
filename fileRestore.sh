@@ -1,16 +1,16 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 ## delete regular files only depending on structure of dotfiles
 ## example: if $1 is a path leading to $HOME/back/FOLDER, we restore
 ## restoring only works, if there is currently no file
 
 # The following script assumes filenames do not contain
 # control characters and dont contain leading dashes(-).
-set -o errexit   # abort on nonzero exitstatus
-set -o nounset   # abort on unbound variable
-set -o pipefail  # don't hide errors within pipes
-IFS="`printf '\n\t'`" # change IFS to just newline and tab
+set -o errexit         # abort on nonzero exitstatus
+set -o nounset         # abort on unbound variable
+set -o pipefail        # don't hide errors within pipes
+IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
-FAIL="TRUE"            # will be filled with defaults
+FAIL="TRUE" # will be filled with defaults
 cd "${HOME}/dotfiles"
 dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
@@ -22,11 +22,11 @@ fi
 ROOT_BACK_FOLDER="$1"
 rootbackupFolderPath=$(dirname "$ROOT_BACK_FOLDER")
 if test "$rootbackupFolderPath" != "${HOME}/back"; then
-  echo '$1 (backup folder) is not in $HOME/back'
+  echo "$1 (backup folder) is not in $HOME/back"
   echo "usage: ./fileRestore.sh $HOME/back/FOLDER"
 fi
 if ! test -d "$rootbackupFolderPath"; then
-  echo '$1 (backup folder) is no folder'
+  echo "$1 (backup folder) is no folder"
   echo "usage: ./fileRestore.sh $HOME/back/FOLDER"
 fi
 
@@ -34,9 +34,9 @@ while IFS= read -r dfPath; do
   printf '%-40s' "$dfPath"
   dfabsPath="${HOME}/dotfiles/${dfPath}"
   backupAbsPath="${ROOT_BACK_FOLDER}/${dfPath}"
-  backupFolderPath=$(dirname "$backupAbsPath")
+  # backupFolderPath=$(dirname "$backupAbsPath")
   sysAbsPath="${HOME}/${dfPath}"
-  sysFolderPath=$(dirname "$sysAbsPath")
+  # sysFolderPath=$(dirname "$sysAbsPath")
   if test -e "$dfabsPath"; then
     if test -f "$backupAbsPath"; then
       if ! test -e "$sysAbsPath"; then
@@ -53,7 +53,7 @@ while IFS= read -r dfPath; do
     printf '%-20s' "FATAL: fix fd or ignorefiles"
   fi
   echo -en "\n"
-done <<< "$dotfilePaths"
+done <<<"$dotfilePaths"
 if test "$FAIL" = "FALSE"; then
   echo "restored from ${ROOT_BACK_FOLDER}"
 else

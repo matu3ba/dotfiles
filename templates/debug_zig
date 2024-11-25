@@ -18,7 +18,7 @@ and the clang flags, if needed.
 
 As I understand it, this is a regression.
 I'd use this strategy (probably try 1+2 first) to identify the cause unless the problem does not reproduce in Debug builds:
-- 1. bisect the compiler via bisecting script (consider grepping for errors to rule out false positives https://github.com/matu3ba/dotfiles/blob/master/scr/bisect.sh)
+- 1. bisect the compiler via bisecting script, consider grepping for errors to rule out false positives ./scr/bisect.sh
 - 2. Quickly grasp at compiler logs for sema to look for hints (what kind of functions are recursively called):
 ```
 # Zig

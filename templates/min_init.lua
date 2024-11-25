@@ -22,7 +22,10 @@ local root = vim.fn.fnamemodify('./.repro', ':p')
 
 -- set stdpaths to use .repro
 for _, name in ipairs { 'config', 'data', 'state', 'cache' } do
+  -- SHENNANIGAN vim.env has only information as being read-only
+  -- luacheck: push ignore
   vim.env[('XDG_%s_HOME'):format(name:upper())] = root .. '/' .. name
+  -- luacheck: pop ignore
 end
 
 -- bootstrap lazy

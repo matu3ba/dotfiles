@@ -1,2 +1,2 @@
-//! 4.5 replace function of panic handler at runtime
-//
+/// 4.5 replace function of panic handler at runtime
+///

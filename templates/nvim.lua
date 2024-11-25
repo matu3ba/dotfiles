@@ -34,10 +34,13 @@ M.printSelectionAndMode = function()
   -- vim.print(vstart, vend)
   local start_pos = vim.api.nvim_buf_get_mark(0, '<') -- 1,0 indexed line,col
   local end_pos = vim.api.nvim_buf_get_mark(0, '>')
+  -- stylua: ignore start
   vim.print(
-    ":'<,'> (" .. tostring(start_pos[1]) .. ':' .. tostring(start_pos[2]) .. '),' .. '(' .. tostring(end_pos[1]) .. ':' .. tostring(end_pos[2]) .. ') ',
+    ":'<,'> (" .. tostring(start_pos[1]) .. ':' .. tostring(start_pos[2]) .. '),'
+    .. '(' .. tostring(end_pos[1]) .. ':' .. tostring(end_pos[2]) .. ') ',
     vim.api.nvim_get_mode().mode
   )
+  -- stylua: ignore end
 end
 vim.api.nvim_create_user_command('VPrintSelMode', M.printSelectionAndMode, { range = true })
 

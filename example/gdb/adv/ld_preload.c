@@ -1,9 +1,11 @@
-//! 4.1 LD_PRELOAD
-//! Purpose is to do static and hacky replacements of shared objects
-//! functionality.
-//! Stolen from https://www.themetabytes.com/2017/11/25/ld_preload-hacks/
-//! TODO
-//! - convert to Zig for portability across Unixes
+/// 4.1 LD_PRELOAD
+///Tested with
+///TODO
+/// Purpose is to do static and hacky replacements of shared objects
+/// functionality.
+/// Stolen from https://www.themetabytes.com/2017/11/25/ld_preload-hacks/
+/// TODO
+/// - convert to Zig for portability across Unixes
 
 // Base Usage: gcc ./adv/ld_preload.c -o ./build/rand && ./build/rand
 // use //==1_simple
@@ -31,27 +33,27 @@
 // https://stackoverflow.com/questions/49226864/why-is-library-loaded-via-ld-preload-operating-before-initialization
 
 #ifndef USE_SIGNAL
-#include <stdbool.h> // bool
 #include <inttypes.h> // PRIu64, uint64_t (stdint.h not needed)
-#include <stdio.h> // printf
-#include <unistd.h> // sleep
-#include <time.h>
+#include <stdbool.h>  // bool
+#include <stdio.h>    // printf
 #include <stdlib.h>
+#include <time.h>
+#include <unistd.h> // sleep
 int main() {
-    srand(time(NULL));
-    int32_t i = 10;
-    while(i > 0) {
-        i -= 1;
-        printf("% " PRId32 "\n",rand() % 100);
-    }
-    return 0;
+  srand(time(NULL));
+  int32_t i = 10;
+  while (i > 0) {
+    i -= 1;
+    printf("% " PRId32 "\n", rand() % 100);
+  }
+  return 0;
 }
 #else
 #include <stdio.h>
 #include <stdlib.h>
 int main() {
-    printf("it goes downhill from here ...\n");
-    int i = *(int*)0;
-    return 0;
+  printf("it goes downhill from here ...\n");
+  int i = *(int *)0;
+  return 0;
 }
 #endif

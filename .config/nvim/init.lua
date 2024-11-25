@@ -101,17 +101,17 @@ else
   require 'my_fmt' -- smart_formatter
   require 'my_treesitter' -- smart_formatter
 
-  -- workaronud lazy caching init.lua loading, but the module might be absent.
+  -- workaround lazy caching init.lua loading, but the module might be absent.
   local has_libbuf, _ = pcall(require, 'libbuf')
   if has_libbuf then require 'my_buf' end
 
   --==lazy fast restore state from https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
-  local lazy_cmds = vim.api.nvim_create_augroup('lazy_cmds', { clear = true })
+  local aucmds_lazy = vim.api.nvim_create_augroup('aucmds_lazy', { clear = true })
   local lazy_snapshot_dir = vim.fn.stdpath 'data' .. '/lazy_snapshot'
   local lockfile = vim.fn.stdpath 'config' .. '/lazy-lock.json'
   vim.api.nvim_create_user_command('BrowseSnapshots', 'edit ' .. lazy_snapshot_dir, {})
   vim.api.nvim_create_autocmd('User', {
-    group = lazy_cmds,
+    group = aucmds_lazy,
     pattern = 'LazyUpdatePre',
     desc = 'Backup lazy.nvim lockfile',
     callback = function()
@@ -172,7 +172,7 @@ require 'my_keymaps'
 
 -- working with regex
 -- :help non-greedy
--- Instead of .* use .\{-}, for example %s/style=".\{-}"//g to remove occurences of style="..."
+-- Instead of .* use .\{-}, for example %s/style=".\{-}"//g to remove occurrences of style="..."
 -- https://stackoverflow.com/questions/1305853/how-can-i-make-my-match-non-greedy-in-vim
 -- another option for multiple matches is :%s/\v(style|class)\=".{-}"//g
 -- To match escaped string symbols of JSON use /\\".\{-}\\"
@@ -198,9 +198,9 @@ require 'my_keymaps'
 -- :set termencoding - set the encoding to use to display characters to your terminal
 
 -- stylua: ignore start
-vim.api.nvim_create_augroup('aucmds_graphics',  {clear = true})
+local aucmds_graphics = vim.api.nvim_create_augroup('aucmds_graphics',  {clear = true})
 -- extend highlighting time
-vim.api.nvim_create_autocmd('TextYankPost', {group = 'aucmds_graphics', pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
+vim.api.nvim_create_autocmd('TextYankPost', {group = aucmds_graphics, pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
 -- stylua: ignore end
 
 -- keywords (capitalized): hack,todo,fixme

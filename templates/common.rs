@@ -8,3 +8,5 @@
 // require destructures, inners and other mumbo-jumbos.
 // * often solution is to write macro, so lots of macros pile up and they feel like an entirely
 // different language
+//
+// https://model-checking.github.io/verify-rust-std/

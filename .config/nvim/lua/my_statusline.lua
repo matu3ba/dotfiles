@@ -38,7 +38,7 @@ statusline.setVisualSetting = function(setting)
 end
 
 -- print_lsp_progress from https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
--- local statusline_group = vim.api.nvim_create_augroup('custom_statusline', { clear = true })
+-- local aucmds_statusline = vim.api.nvim_create_augroup('aucmds_statusline', { clear = true })
 -- local lsp = {
 --   message = '',
 --   printed_done = false,
@@ -69,7 +69,7 @@ end
 -- end
 -- if vim.fn.has('nvim-0.10.0') > 0 then
 --   vim.api.nvim_create_autocmd({ 'LspProgress' }, {
---     group = statusline_group,
+--     group = aucmds_statusline,
 --     pattern = 'LspProgressUpdate',
 --     callback = print_lsp_progress,
 --   })

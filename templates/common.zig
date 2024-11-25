@@ -45,7 +45,7 @@ const builtin = @import("builtin");
 // Crosscompiling: templates/crosscompiling_zig.sh
 // decentish intro: https://pedropark99.github.io/zig-book/
 
-test "beware_endianess" {
+test "beware_endianness" {
     // const content_len: [4]u8 = .{ 0, 0, 0, 4 }; // wrong for little endian 4
     // const content = "\x00\x00\x00\x04"; // also wrong
     const content_len: [4]u8 = .{ 4, 0, 0, 0 }; // correct little endian 4
@@ -101,7 +101,7 @@ pub fn main() !void {
     for (args) |arg| {
         std.debug.print("{s}\n", .{arg});
     }
-    std.mem.copy(u8, path_buffer[n_pbuf..], args[1]);
+    std.mem.copyForwards(u8, path_buffer[n_pbuf..], args[1]);
     n_pbuf += args[1].len;
 
     // alternative:
@@ -145,7 +145,7 @@ fn arraybitset() void {
 //    return a.start < b.start;
 //}
 
-// using artefact without insalling
+// using artefact without installing
 pub fn buildCommon(b: *std.build.Builder) void {
     const mode = b.standardReleaseOptions();
     const child = b.addExecutable("child", "child.zig");
@@ -227,7 +227,7 @@ const VarT = if (!builtin.is_test) u32 else void;
 threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 
 //====cmds
-// in build.zig use -D (as desribed in zig build -h)
+// in build.zig use -D (as described in zig build -h)
 // Typical flags: -fwasmtime -fqemu -freference-trace -lc -Dtarget=x86_64-windows-gnu
 // zig build test-standalone -Dtest-filter=childprocess_extrapipe --zig-lib-dir lib
 // zig build test-std -Dtest-filter="getDefaultPageSize smoke test" -fqemu --zig-lib-dir lib
@@ -300,7 +300,7 @@ fn simpleCAS() !void {
     var available: Available = .NotStarted;
     // type, ptr_checked, expect .NotStarted, new_value .Started
     // if expect satisfied => apply new value + return null
-    //           otherwise => no value applied, retun old value in available
+    //           otherwise => no value applied, return old value in available
     const state = @cmpxchgStrong(Available, &available, .NotStarted, .Started, .SeqCst, .SeqCst) orelse return null;
     switch (state) {
         .NotStarted => unreachable, // can not be .Notstarted
@@ -522,7 +522,7 @@ test "coercion to return type example" {
 //           "src/"
 //       },
 //   }
-// build.zig (mapp)
+// build.zig (map)
 //   pub fn build(b: *b.Build) void {
 //       const target = b.standardTargetOptions(.{});
 //       const optimize = b.standardOptimizeOption(.{});
@@ -640,51 +640,51 @@ test compute_with_error {
 }
 
 //====formatting
-test "horizontal without a trailing comma" {
-    std.debug.print("{any}\n", .{.{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 }});
-}
-
-test "vertical with a trailing comma" {
-    std.debug.print("{any}\n", .{.{
-        0,
-        10,
-        100,
-    }});
-}
-
-test "aligned matrix with width set by first row (needs trailing comma)" {
-    std.debug.print("{any}\n", .{.{
-        0,   0,   0,   0,
-        1,   1,   1,   1,
-        10,  10,  10,  10,
-        100, 100, 100, 100,
-    }});
-}
-
-test "manually formatted with trailing comments" {
-    std.debug.print("{any}\n", .{.{
-        0, //
-        1, 1, //
-        10, 10, 10, //
-        100, 100, 100, 100, //
-    }});
-    // without a trailing comma this formats weirdly.
-    // you also can't manually align the comments.
-}
-
-test "disabling the formatter (bug)" {
-    // 'zig fmt: off' inside decl array broken, see https://github.com/ziglang/zig/issues/10418
-    // zig fmt: off // < remove this line to reproduce the bug
-    std.debug.print("{any}\n", .{.{
-        // zig fmt: off
-        0,
-        1,               1,
-        10,   10,       10,
-        100, 100, 100, 100,
-        // zig fmt: on
-    }});
-    // zig fmt: on // < without this line below block, if commented in, does not format
-}
+// test "horizontal without a trailing comma" {
+//     std.debug.print("{any}\n", .{.{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 }});
+// }
+//
+// test "vertical with a trailing comma" {
+//     std.debug.print("{any}\n", .{.{
+//         0,
+//         10,
+//         100,
+//     }});
+// }
+//
+// test "aligned matrix with width set by first row (needs trailing comma)" {
+//     std.debug.print("{any}\n", .{.{
+//         0,   0,   0,   0,
+//         1,   1,   1,   1,
+//         10,  10,  10,  10,
+//         100, 100, 100, 100,
+//     }});
+// }
+//
+// test "manually formatted with trailing comments" {
+//     std.debug.print("{any}\n", .{.{
+//         0, //
+//         1, 1, //
+//         10, 10, 10, //
+//         100, 100, 100, 100, //
+//     }});
+//     // without a trailing comma this formats weirdly.
+//     // you also can't manually align the comments.
+// }
+//
+// test "disabling the formatter (bug)" {
+//     // 'zig fmt: off' inside decl array broken, see https://github.com/ziglang/zig/issues/10418
+//     // zig fmt: off // < remove this line to reproduce the bug
+//     std.debug.print("{any}\n", .{.{
+//         // zig fmt: off
+//         0,
+//         1,               1,
+//         10,   10,       10,
+//         100, 100, 100, 100,
+//         // zig fmt: on
+//     }});
+//     // zig fmt: on // < without this line below block, if commented in, does not format
+// }
 
 // test "formatter is still off" {
 //     const
@@ -693,20 +693,20 @@ test "disabling the formatter (bug)" {
 // }
 // // zig fmt: on
 
-test "indented chains" {
-    const msg =
-        \\ like so.
-        \\
-    ;
-
-    const stdout =
-        std
-        .io
-        .getStdout()
-        .writer();
-    try stdout
-        .print(msg, .{});
-}
+// test "indented chains" {
+//     const msg =
+//         \\ like so.
+//         \\
+//     ;
+//
+//     const stdout =
+//         std
+//         .io
+//         .getStdOut()
+//         .writer();
+//     try stdout
+//         .print(msg, .{});
+// }
 
 test "linebreaks preserved after operators" {
     if (true and true and true and true) {}

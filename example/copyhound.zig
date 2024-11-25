@@ -40,7 +40,7 @@ const assert = std.debug.assert;
 const log = std.log;
 pub const log_level: std.log.Level = .info;
 
-const size_thershold = 1024;
+const size_threshold = 1024;
 
 const CliArgs = union(enum) {
     memcpy: struct { bytes: u32 },
@@ -102,8 +102,8 @@ pub fn main() !void {
     const allocator = arena.allocator();
 
     const cli_args = try CliArgs.parse(allocator);
-    var line_buffer = try allocator.alloc(u8, 1024 * 1024);
-    var func_buf = try allocator.alloc(u8, 4096);
+    const line_buffer = try allocator.alloc(u8, 1024 * 1024);
+    const func_buf = try allocator.alloc(u8, 4096);
 
     const stdin = std.io.getStdIn();
     var buf_reader = std.io.bufferedReader(stdin.reader());

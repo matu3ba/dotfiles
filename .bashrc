@@ -67,6 +67,7 @@ fi
 ##==PATH
 PATH=${PATH}:"$HOME/.cargo/bin"
 PATH=${PATH}:"$HOME/.local/bin"
+PATH=${PATH}:"$HOME/go/bin"
 PATH=${PATH}:"$HOME/.local/appimages"
 PATH=${PATH}:"$HOME/.local/cerberus/bin"
 PATH=${PATH}:"$HOME/dev/zdev/zig/master/rel/bin/"
