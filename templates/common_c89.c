@@ -3,8 +3,13 @@
 Tested with
 zig cc -std=c89 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common_c89.c
 zig cc -std=c89 -Werror -Weverything ./templates/common_c89.c
+zig cc -std=c89 --target=x86_64-windows -Werror -Weverything ./templates/common_c89.c
 clang -std=c89 -Werror -Weverything templates/common_c89.c
 msvc: cl.exe /Za templates/common_c89.c
+
+Requires support for
+* clang diagnostic push
+* clang diagnostic ignored
 
 SHENNANIGAN rounding direction for division with negative integers is implementation defined
 SHENNANIGAN checking if c89 or c90 has no macro
@@ -52,11 +57,18 @@ Prefer typedefs, if possible.
 #if defined(__x86_64__) && (defined(__linux__) || defined(_WIN32))
 typedef short unsigned int uint16_t;
 typedef unsigned int uint32_t;
-typedef unsigned long uint64_t;
+// typedef unsigned long uint64_t;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wlong-long"
+typedef unsigned long long uint64_t;
+#pragma clang diagnostic pop
+#if defined(__linux)
 typedef unsigned long size_t;
 typedef unsigned long uintptr_t;
 #endif
+#endif
 
+// this is probably wrong, but works on github ci for darwin
 #ifdef __aarch64__
 typedef short unsigned int uint16_t;
 typedef unsigned int uint32_t;
@@ -82,7 +94,7 @@ void ptrtointtoptr(void) {
   uint16_t align_min_1 = alignment - 1;
   void *mem = malloc(1024 + align_min_1);
   void *ptr = (void *)((((uint64_t)mem) + align_min_1) & ~(uint64_t)align_min_1);
-  printf("0x%lu, 0x%lu\n", (unsigned long)mem, (unsigned long)ptr);
+  printf("0x%llu, 0x%llu\n", (uint64_t)mem, (uint64_t)ptr);
   memset_16aligned(ptr, 0, 1024, alignment);
   free(mem);
 }
