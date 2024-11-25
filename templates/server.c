@@ -264,6 +264,9 @@ void server_forever(uint16_t const port_poll) {
   printf("Stop server\n");
 }
 
-#endif // unix,apple+mach
+#else // ^ (unix,apple+mach), v not(unix,apple+mach)
+
+#include <stdint.h>
+#endif // (unix,apple+mach)
 
 int32_t main(void) { return 0; }

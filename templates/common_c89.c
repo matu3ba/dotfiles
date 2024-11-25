@@ -49,8 +49,7 @@ Missing pile of target dependent pointer sizes to reimplement stdint.h
 Prefer typedefs, if possible.
 #endif
 
-/* only for x86_64 */
-#if defined(__x86_64__) && defined(__linux__)
+#if defined(__x86_64__) && (defined(__linux__) || defined(_WIN32))
 typedef short unsigned int uint16_t;
 typedef unsigned int uint32_t;
 typedef unsigned long uint64_t;
