@@ -17,19 +17,47 @@ https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Gu
 Suggestion to also use -Wsystem-headers, if feasible.
 Note: This document does not include C++ options for hardening llvm libc++.
 See further "Additional options flags" for production code etc.
-Unclear: -fno-omit-frame-pointer ?
+Unclear for backtraces: -fno-omit-frame-pointer
 2. context
 3. recommendations
 cc -O2 -dM -E - < /dev/null
 4. discouraged
 search paths
+
 5. sanitizers
 instrumented sanitizers with 2x-4x slodown vs dynamic ones with 20x-50x.
 -fsanitize=address
--fsanitize=thread
 -fsanitize=leak
+-fsanitize=thread
 -fsanitize=undefined
 -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common
+
+* docs https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer
+* extras outside of -fsanitize=address
+use -O1 or higher, -fno-omit-frame-pointer, no TCE -fno-optimize-sibling-calls
+Typical slowdown 2x
+ASAN_OPTIONS=detect_stack_use_after_return=1/0
+ASAN_OPTIONS=check_initialization_order=1 (not supported on macOS)
+ASAN_OPTIONS=detect_leaks=1 (no support on windows)
+* extras outside of -fsanitize=leak
+minimal performance and memory overhead until end of process (leak checking phase)
+also available configurably as ASAN option: ASAN_OPTIONS=detect_leaks=1
+* extras outside of incompat to address -fsanitize=memory
+Uninitialized Memory sanitizer
+use -O1 or higher, -fno-omit-frame-pointer, no TCE -fno-optimize-sibling-calls
+Memory usage 2x to 3x
+Typical slowdown 3x
+* extras outside of -fsanitize=undefined
+Extra options
+-fsanitize=unsigned-integer-overflow
+-fsanitize=implicit-conversion
+-fsanitize=array-bounds
+-fsanitize=nullability
+* extras outside of -fsanitize=thread
+use -O1 or higher -g for file names and line numbers
+Memory usage 5x to 10x + 1MB per thread
+Typical slowdown 5x to 15x
+
 6. maintain debug infos in separate files
 objcopy --only-keep-debug executable_file executable_file.debug
 objcopy --strip-unneeded executable_file
@@ -40,3 +68,37 @@ strip --strip-unneeded executable_file
 --enable-default-pie --enable-default-ssp --enable-host-pie --enable-host-bind-now
 --disable-default-execstack --enable-warn-execstack --enable-error-execstack --enable-warn-rwx-segments --enable-error-rwx-segments --enable-relro --enable-textrel-check=error --enable-secureplt
 8. missing are fuzzer usage
+
+9. analyzers and static checkers
+clang -std=c99 --analyze file.c
+TODO
+
+
+Appendum. Other ecosystems
+* zig
+  - no default configuration files
+  - simple diagnostics
+  - Disable standard include dirs for C++ std lib -nostdinc
+  - no spell check -fno-spell-checking
+  - system path -isystem
+  - sanitize a bunch of things except function prongs -fsanitize
+  - red zone compiler not clobbered by compiler or OS (default on) -mred-zone
+  - emit frame ptr, strong stack protector
+  - depfile contains user and system headers -MD
+  - depfile NMake/Jom format -MV
+  - depfile path -MF
+  - only run preprocess, compile, and assemble steps -c
+  - output to file -o
+clang --no-default-config -fno-caret-diagnostics -D__GLIBC_MINOR__=39
+-nostdinc -fno-spell-checking
+-isystem zig_include_path -isystem /usr/include
+-fsanitize=undefined -fsanitize-trap=undefined -fno-sanitize=function
+-mred-zone -fno-omit-frame-pointer -fstack-protector-strong
+--param ssp-buffer-size=4
+-D_DEBUG -O0
+-funwind-tables -fPIC
+-gdwarf-4 -gdwarf32
+-MD -MV -MF PROJECT_PREFIX/.zig-cache/tmp/HASH-catch.o.d
+-c
+-o PROJECT_PREFIX/.zig-cache/tmp/HASH-catch.o
+--serialize-diagnostics PROJECT_PREFIX/.zig-cache/tmp/HASH-catch.o.diag

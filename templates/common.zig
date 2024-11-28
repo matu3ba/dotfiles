@@ -61,6 +61,26 @@ test "testing.allocator" {
     defer ally.free(mem);
 }
 
+const TypeTag = enum {
+    ok,
+    not_ok,
+};
+const OkType = union(TypeTag) {
+    ok: u8,
+    not_ok: void,
+};
+
+test "switch on tagged union" {
+    const c = OkType{ .ok = 42 };
+    try std.testing.expectEqual(@as(TypeTag, c), TypeTag.ok);
+    try std.testing.expectEqual(std.meta.activeTag(c), TypeTag.ok);
+
+    switch (c) {
+        .ok => |value| try std.testing.expectEqual(value, 42),
+        .not_ok => unreachable,
+    }
+}
+
 const factorial_lookup_table = createFactorialLookupTable(u128, 25);
 pub fn createFactorialLookupTable(comptime Int: type, comptime num_terms: comptime_int) [num_terms]Int {
     if (@typeInfo(Int) != .Int) {

@@ -3,10 +3,22 @@ const zine = @import("zine");
 const ResolvedTarget = std.Build.ResolvedTarget;
 const OptimizeMode = std.builtin.OptimizeMode;
 
+const TargetTypeTag = enum {
+    cli,
+    test_cases,
+};
+const TargetType = union(TargetTypeTag) {
+    cli: ResolvedTarget,
+    test_cases: struct {
+        triplet: []const u8,
+        resolved: ResolvedTarget,
+    },
+};
+
 // zig build test_all --summary all
 pub fn build(b: *std.Build) !void {
-    const target = b.standardTargetOptions(.{});
-    const optimize = b.standardOptimizeOption(.{});
+    const cli_target: ResolvedTarget = b.standardTargetOptions(.{});
+    const optimize: std.builtin.OptimizeMode = b.standardOptimizeOption(.{});
     //checkC     fmt   lint   build   proj   nounit
     //checkCmake nofmt nolint nobuild noproj nounit
     //checkCpp   fmt   lint   build   proj   nounit
@@ -25,6 +37,8 @@ pub fn build(b: *std.Build) !void {
     //checkTex   nofmt nolint nobuild noproj nounit
     //checkZig   fmt   lint   build   proj   unit
 
+    // FIXME get LLVM target triplet to be used in zig cc, zig c++
+
     // unplanned dependencies in $PATH
     // * go (shfmt)
 
@@ -40,23 +54,32 @@ pub fn build(b: *std.Build) !void {
     // * zig
     const run_step = b.step("test", "Test with mandatory dependencies");
 
-    checkC(b, target, optimize, run_step, no_opt_deps);
-    checkCpp(b, target, optimize, run_step, no_opt_deps);
-    checkLua(b, run_step, no_opt_deps);
-    checkSh(b, run_step, no_opt_deps);
-    checkZig(b, target, optimize, run_step);
+    { // cli, usually native
+        const cli_target_ty = TargetType{ .cli = cli_target };
+        checkC(b, cli_target_ty, optimize, run_step, no_opt_deps);
+        checkCpp(b, cli_target_ty, optimize, run_step, no_opt_deps);
+        checkLua(b, run_step, no_opt_deps);
+        checkSh(b, run_step, no_opt_deps);
+        checkZig(b, cli_target_ty, optimize, run_step);
+    }
+
+    // TODO foreign test selection by user
 }
 
 fn checkC(
     b: *std.Build,
-    target: ResolvedTarget,
+    target_ty: TargetType,
     optimize: OptimizeMode,
     run_step: *std.Build.Step,
     no_opt_deps: bool,
 ) void {
     // fmt lint build
+    const target = target: switch (target_ty) {
+        .cli => |val| break :target val,
+        .test_cases => |val| break :target val.resolved,
+    };
     for (SingleCFiles[0..]) |cfile| {
-        if (!no_opt_deps) {
+        if (!no_opt_deps and std.meta.activeTag(target_ty) == TargetTypeTag.cli) {
             const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
             run_clang_format_check.addArg(cfile);
             run_step.dependOn(&run_clang_format_check.step);
@@ -91,6 +114,14 @@ fn checkC(
         exe_cfile.addCSourceFile(.{ .file = b.path(cfile) });
         exe_cfile.linkLibC();
         run_step.dependOn(&exe_cfile.step);
+
+        // FIXME
+        // * figure out if commands are just appended or what is missing
+        // * figure out what commands are missing for production usage
+        // exe.addCSourceFile("src/c/lzrw.c", &.{
+        //     "-fno-sanitize=undefined",
+        // });
+
     }
 
     if (!target.result.isDarwin()) {
@@ -109,24 +140,38 @@ fn checkCmake() void {} // nofmt nolint nobuild noproj
 
 fn checkCpp(
     b: *std.Build,
-    target: ResolvedTarget,
+    target_ty: TargetType,
     optimize: OptimizeMode,
     run_step: *std.Build.Step,
     no_opt_deps: bool,
 ) void {
     // fmt lint build
+    const target = target: switch (target_ty) {
+        .cli => |val| break :target val,
+        .test_cases => |val| break :target val.resolved,
+    };
     for (SingleCppFiles[0..]) |cppfile| {
-        if (!no_opt_deps) {
-            const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-            run_clang_format_check.addArg(cppfile);
-            run_step.dependOn(&run_clang_format_check.step);
+        if (std.meta.activeTag(target_ty) == TargetTypeTag.cli) {
+            if (!no_opt_deps) {
+                const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
+                run_clang_format_check.addArg(cppfile);
+                run_step.dependOn(&run_clang_format_check.step);
 
-            // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
-            // run_clang_tidy_check.addArg(cppfile);
-            // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
-            // run_step.dependOn(&run_clang_tidy_check.step);
+                // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+                // run_clang_tidy_check.addArg(cppfile);
+                // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
+                // run_step.dependOn(&run_clang_tidy_check.step);
+
+            }
+            const exe_cfile = b.addExecutable(.{
+                .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+                .target = target,
+                .optimize = optimize,
+            });
+            exe_cfile.addCSourceFile(.{ .file = b.path(cppfile) });
+            exe_cfile.linkLibCpp();
+            run_step.dependOn(&exe_cfile.step);
         }
-
         const run_zig_cpp_c14 = b.addSystemCommand(zig_cpp_c14_cmd);
         run_zig_cpp_c14.addArg(cppfile);
         run_step.dependOn(&run_zig_cpp_c14.step);
@@ -146,15 +191,6 @@ fn checkCpp(
         const run_zig_cpp_c26 = b.addSystemCommand(zig_cpp_c26_cmd);
         run_zig_cpp_c26.addArg(cppfile);
         run_step.dependOn(&run_zig_cpp_c26.step);
-
-        const exe_cfile = b.addExecutable(.{
-            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-            .target = target,
-            .optimize = optimize,
-        });
-        exe_cfile.addCSourceFile(.{ .file = b.path(cppfile) });
-        exe_cfile.linkLibCpp();
-        run_step.dependOn(&exe_cfile.step);
     }
 }
 fn checkCs() void {} // nofmt nolint nobuild noproj
@@ -207,7 +243,16 @@ fn checkSh(b: *std.Build, run_step: *std.Build.Step, no_opt_deps: bool) void {
 
 fn checkTex() void {} // nofmt nolint nobuild noproj
 
-fn checkZig(b: *std.Build, target: ResolvedTarget, optimize: OptimizeMode, run_step: *std.Build.Step) void {
+fn checkZig(
+    b: *std.Build,
+    target_ty: TargetType,
+    optimize: OptimizeMode,
+    run_step: *std.Build.Step,
+) void {
+    const target = target: switch (target_ty) {
+        .cli => |val| break :target val,
+        .test_cases => |val| break :target val.resolved,
+    };
     // fmt lint build
     for (SingleZigFiles[0..]) |zigfile| {
         // fmt check run by CI in .github/workflows/ci.yml: zig fmt --check .
@@ -261,6 +306,7 @@ const SingleCFiles = [_][]const u8{
     // "example/provenance_miscompilation/extern.c",
     // "example/provenance_miscompilation/ptr_provenance_miscompilation.c",
     "example/sequence_points.c",
+    "example/util_string.c",
     "example/why_clang_tidy.c",
     "templates/colors.c",
     "templates/common.c",

@@ -250,6 +250,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {group = aucmds_graphics, pattern = 
 -- :lua file = assert(io.open("tmpfile123", "a")); file:write(vim.o.backup); file:close()
 -- :lua file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(vim.o.backup)); file:close()
 
+-- Debugging message sources.
+-- local original = vim.notify
+-- ---@diagnostic disable-next-line: duplicate-set-field
+-- vim.notify = function(msg, level, opts)
+--   local fp = assert(io.open('/tmp/tmpfile', 'w')) --DEBUG
+--   fp:write(msg) --DEBUG
+--   fp:write '\n' --DEBUG
+--   fp:close() --DEBUG
+--   if msg == 'No code actions available' then return end
+--   original(msg, level, opts)
+-- end
+
 -- Debugging Neovim with vimscript via writing settings to file
 -- :call writefile([], './tmpfile123')
 -- :call writefile(split(g:material_lighter_contrast, "\n", 1), glob('./tmpfile123'), 'b')

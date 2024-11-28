@@ -60,17 +60,19 @@
 // $(VC_ExecutablePath_x64_x64) looks like correct path on VS2022
 // $(VC_ExecutablePath_x64) can be wrongly expanded path on VS2022
 
+// Fix preprocessor VAR_ARGS with flag /Zc:preprocessor
+
 // Bump these on incompatibilities.
 // if using newer C version
 // static_assert(__STDC_VERSION__ >= 201710L);
-// requires /Zc:__cplusplus https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+// requires flag /Zc:__cplusplus https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
 //static_assert(__cplusplus >= 202002L);
 
 // utf8 handling is bad in msvc
 // * msvc defaults to used locale, if msvc finds no BOM in file
 // * manual reencoding is needed, because msvc provides no tooling and neither
 // offers introspection in what encoding it internally uses
-// * good default requires /utf-8 and only errors out, if it can not find BOM
+// * good default requires flag /utf-8 and only errors out, if it can not find BOM
 
 // Looking up unicode symbols to copy paste
 // https://www.compart.com/en/unicode/U+00C4

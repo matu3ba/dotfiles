@@ -3,4 +3,13 @@ https://gitlab.com/qemu-project/qemu
 https://www.qemu.org/docs/master/devel/build-system.html
 
 ====attack_vectors
-TODO
+
+* reasonable secure implementation:
+  - accept certain timing side channels
+  - neglect hardware defects [no secrets on VM and VM should be reset]
+  - resulting slowdown: 10x
+* qemu as unreasonable secure but fast implementation:
+  - emulator and paravirtualization hybrid
+  - mapping to native devices to get acceptable dispatch rate (timing, perf)
+  - cheat and JIT for performance
+  - resulting slowdown: 2.?x

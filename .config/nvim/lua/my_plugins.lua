@@ -49,6 +49,7 @@ return {
 
   -- { 'rafcamlet/nvim-luapad' }, -- lua dev
   { 'folke/neodev.nvim', opts = {} }, -- lua dev
+  -- lazydev?
 
   { --==LSP
     { 'neovim/nvim-lspconfig' }, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
@@ -284,10 +285,13 @@ return {
   }, -- :Telescope builtin.keymaps
 
   -- markdown live preview via :Glow[!] [path]
-  {
-    'ellisonleao/glow.nvim',
-    config = function() require('glow').setup() end,
-  },
+  -- {
+  --   'ellisonleao/glow.nvim',
+  --   config = function() require('glow').setup() end,
+  -- },
+  -- TODO figure out which markdown viewer to use
+  -- markdown OXY2DEV/markview.nvim
+  -- markdown MeangeringProgrammer/render-markdown.nvim
   -- jupyter and markdown live preview, idea
   -- https://github.com/kiyoon/jupynium.nvim
   -- https://github.com/tamton-aquib/neorg-jupyter

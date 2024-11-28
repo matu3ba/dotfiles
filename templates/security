@@ -250,3 +250,5 @@ def inv_leftxorshift(x: int, k: int, w: int) -> int:
     k_step *= 2
 
 and right shift has with orthogonal logic.
+
+https://arcan-fe.com/2024/11/21/a-deeper-dive-into-the-shmif-ipc-system/

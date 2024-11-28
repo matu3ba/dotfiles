@@ -2,7 +2,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
 // zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 
@@ -15,9 +15,15 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //   [[clang::unsafe_buffer_usage]] size_t sz;
 // };
 
-// Alternative is to always default to using default in switch case (MISRA C),
+// Alternative to -Wno-switch-default is to always default to using default in switch case (MISRA C),
 // but this has drawback of making any refactorings much more annoying.
 // -Wno-covered-switch-default
+
+// Fix -Wpadded via clangd neovim vim.lsp.buf.hover keybinding K to show padding.
+// ./dir/file.hpp:line:col: error: padding class 'Class' with 4 bytes to align 'transforms' [-Werror,-Wpadded]
+//    44 |   uint64_t transforms;
+//       |            ^
+// => add 4 bytes padding before field 'uint64_t transforms;'
 
 // best practice https://github.com/cpp-best-practices/cppbestpractices
 // comptime stuff https://github.com/lefticus/tools
@@ -117,6 +123,9 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // https://github.com/fffaraz/awesome-cpp
 // HPC
 // https://github.com/joadnacer/atomic_queues
+
+// std::string sucks due to allocating, use for string handling
+// https://github.com/skullchap/chadstr
 
 // simpel to read C++
 // https://github.com/magiblot/tvision
@@ -252,6 +261,11 @@ static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not dist
 //         std::cout << message;         \
 //     }
 
+void default_init_vector();
+void default_init_vector() {
+  std::vector<int32_t> vect(20); // default initialize vector
+}
+
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance
 inline void hash_combine(unsigned long &seed, unsigned long const &value) {
   seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -368,7 +382,7 @@ struct sTemplatedTaggedUnion {
 };
 
 // SHENNANIGAN: only works without constructor and destructor
-// void C_like_aggregrate_construction_() {
+// void C_like_aggregate_construction_() {
 //   sTemplatedTaggedUnion templ_tagged_union = {eType::ty1, CImageHistory<int64_t>()};
 // }
 
@@ -384,7 +398,7 @@ void tagged_union() {
 #endif
 }
 
-// SHENNANIGAN: rules out C_like_aggregrate_construction_
+// SHENNANIGAN: rules out C_like_aggregate_construction_
 int usage_sTemplatedTaggedUnion();
 int usage_sTemplatedTaggedUnion() {
   sTemplatedTaggedUnion ttu0(eType::ty1);
@@ -449,16 +463,6 @@ int usage_sTemplatedVariant() {
 //   return NULL;
 // }
 // #endif
-
-#ifdef HAS_CPP17
-void map_insert();
-void map_insert() {
-  std::map<uint32_t, uint32_t> i32map;
-  auto const [it, success] = i32map.insert({1, 2}); // decomposition declarations
-  (void)it;
-  (void)success;
-}
-#endif
 
 // SHENNANIGAN: default values prevent the class from being an aggregate, so
 // list initialization breaks with a very unhelpful message like:
@@ -561,7 +565,7 @@ bool contains(std::map<int, int> &container, int search_key) {
 }
 
 // SHENNANIGAN: Random access operators on hashmap use on non-existent of object
-// a default constructor or fail with an extremely bogous error message, if none
+// a default constructor or fail with an extremely bogus error message, if none
 // is given.
 // It always better to never use hashmap[key], because there is no check for the elements
 // existence or values (typically raw C values) object creation can remain undefined.
@@ -678,6 +682,34 @@ void ptr_to_int() {
   char const *derived_str = reinterpret_cast<char const *>(uiptr_str);
   (void)derived_str;
 }
+
+int32_t handle_allocation_failure_with_nothrow(char const *buf, size_t size);
+int32_t handle_allocation_failure_with_nothrow(char const *buf, size_t size) {
+  char *buf_cpy = new (std::nothrow) char[size];
+  if (buf_cpy == nullptr)
+    return 1;
+  memcpy(buf_cpy, buf, size * sizeof(*buf_cpy));
+  // compute ..
+
+  delete[] buf_cpy;
+  return 0;
+}
+
+int32_t handle_allocation_failure_with_bad_alloc(char const *buf, size_t size);
+int32_t handle_allocation_failure_with_bad_alloc(char const *buf, size_t size) {
+  char *buf_cpy;
+  try {
+    buf_cpy = new (std::nothrow) char[size];
+  } catch (std::bad_alloc) {
+    return 1;
+  }
+  memcpy(buf_cpy, buf, size * sizeof(*buf_cpy));
+  // compute ..
+
+  delete[] buf_cpy;
+  return 0;
+}
+// https://wiki.sei.cmu.edu/confluence/display/cplusplus/MEM52-CPP.+Detect+and+handle+memory+allocation+errors
 
 // SHENNANIGAN https://en.cppreference.com/w/cpp/container/map/find
 // "Compiler decides whether to return iterator of (non) const type by way of
@@ -848,7 +880,7 @@ class FriendOfVariable2 {
 //                 .WillRepeatedly(DoAll(SetArgReferee<2>(mockedarg2),Return(0)));
 
 // SHENNANIGAN namespaces can not befriended, so test code relying on those
-// plus macros or templaces forces use of macro hacks to prevent outlined above
+// plus macros or templates forces use of macro hacks to prevent outlined above
 // to prevent accidental use of the default constructor: In short, friend
 // classes are a leaky abstraction (useless or force to use the pattern
 // everywhere).
@@ -858,7 +890,7 @@ class FriendOfVariable2 {
 // - 3. DOD / C with more sane ~~namespaces~~classes + more typed macros
 
 // SHENNANIGAN googlemock
-// inline implementation in headers can not be mocked and fail with bogous errors
+// inline implementation in headers can not be mocked and fail with bogus errors
 //   error: redefinition of ‘Ctor::Ctor(const string&)’
 //   ..
 //   error: redefinition of ‘Ctor::Ctor(const string&)’
@@ -917,7 +949,7 @@ class FriendOfVariable2 {
 // }
 
 // SHENNANIGAN
-// error: Unkown classname, did you mean xyz?
+// error: Unknown classname, did you mean xyz?
 // headers with classes include another:
 //  h1.h: #include h2.h
 //  h2.h: #include h1.h
@@ -1064,7 +1096,7 @@ public:
 // * Sandboxes: Test as soon as it starts behaving weird, ideally with commits (ie on separate branch)
 // * Specify temporary types for better source location info, debugging, to prevent compiler limitations etc
 // * use typeid: std::cout << "testing type " << typeid(T).name() << std::endl;
-// * remove unnecessary default implemenations
+// * remove unnecessary default implementations
 //     template<typename T, bool is_integral = boost::is_numeric<T>::value >
 //       struct my_traits;
 //
@@ -1328,7 +1360,7 @@ void printGetLastError() {
 template<typename T_Integral, typename std::is_same<T_Integral, int64_t>::type_value> void fun_placeholder1();
 
 // Forward declaration must specify one template per class and variable name
-// in order of first occurence.
+// in order of first occurrence.
 // template<typename T>
 // template <int N>
 // class Outer<T>::Inner {};
@@ -1677,8 +1709,8 @@ public:
   virtual ~CSomeDerivedClass() override final; // optional virtual
 };
 
-//====injection via override implementaion of base class
-// idea: write the private classs of "SomeClass" via replacing the shared_ptr
+//====injection via override implementation of base class
+// idea: write the private class of "SomeClass" via replacing the shared_ptr
 // which the class holds to the private class with the struct class instead.
 struct CTestSomeInterface : ISomeInterface {
   int SomeMethod() override {
@@ -1718,7 +1750,7 @@ int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len) {
   constexpr char const_nocamfoundmsg[] = "NoCameraFound: ";
   // Underlying idea: prefix exception strings with text. Below case handling
   // shows how error prone this is to make runtime decisions with C abi
-  // compatibililty across dll. And this does not cover compiler mangling and
+  // compatibility across dll. And this does not cover compiler mangling and
   // dependency on runtime etc.
   // Further more, tooling like clangd is unable to infer all possible strings
   // to enforce correct error handling of the bubbled up exceptions and not even
@@ -1966,7 +1998,7 @@ int test_OperatorExistence() {
   std::cout << "D::operator== (short) exists: " << CHECK::EqualExists<D, short>::value << std::endl;
 
   std::cout << "A::operator* () exists: " << CHECK::MulExists<A, int>::value << std::endl;
-  // std::cout<< "B::operator* () exists: " << CHECK::MulExists<B, double>::value << std::endl; // fails with bogous errors
+  // std::cout<< "B::operator* () exists: " << CHECK::MulExists<B, double>::value << std::endl; // fails with bogus errors
 #endif // HAS_CPP14
 #endif // HAS_CPP20
 
@@ -2358,7 +2390,7 @@ void test_ConvertToString() {
 // A change is therefore required which does not match the C semantics,
 // and C would then need to be updated to match.
 // It should be pointed out that C technically does not have forward progress guarantees,
-// but hints at maybe having some guarantees, thefore changes to C ought to consider
+// but hints at maybe having some guarantees, therefore changes to C ought to consider
 // also adding forward progress guarantees.
 
 // SHENNANIGAN C++11 to not including C++26 trivial infinite loops undefined behavior
@@ -2392,6 +2424,22 @@ template<typename> struct is_pair : std::false_type {};
 template<typename T, typename U> struct is_pair<std::pair<T, U>> : std::true_type {};
 
 #ifdef HAS_CPP17
+static_assert(std::is_unsigned_v<size_t>);
+
+void map_insert();
+void map_insert() {
+  std::map<uint32_t, uint32_t> i32map;
+  auto const [it, success] = i32map.insert({1, 2}); // decomposition declarations
+  (void)it;
+  (void)success;
+}
+
+void use_transform();
+void use_transform() {
+  std::string lc = "lowercase";
+  std::transform(lc.begin(), lc.end(), lc.begin(), [](char c) { return (std::toupper(c)); });
+}
+
 // In theory hardware_constructive_interference_size should map to L1 cache line size and
 // hardware_destructive_interference_size to the prefetcher size as potential multiple of
 // hardware_constructive_interference_size (1x, 2x, ..), but the compile-time
@@ -2577,7 +2625,7 @@ void use_comptime() {
 
 #endif // HAS_CPP20
 
-// SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const ist missing
+// SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const is missing
 // std::multiset
 
 struct use_CustomComparator { // also known as predicate
@@ -2590,7 +2638,7 @@ struct use_CustomComparator { // also known as predicate
   // requires also move assign and move constructor
 };
 
-// SHENNANIGAN pure virtual method in interface must be used by overriden pure method
+// SHENNANIGAN pure virtual method in interface must be used by overridden pure method
 // to infer the concrete method implementation or the used object with such method
 // must be given as template param effectively replacing need for (pure) virtual method.
 
@@ -2634,9 +2682,9 @@ struct use_CustomComparator { // also known as predicate
 #include <print>
 void use_fmt_print();
 void use_fmt_print() {
-  std::print("Hello, world!\n");
+  std::print(stdout, "Hello, world!\n");
   std::string s = std::format("The answer is {}.", 42);
-  std::print("{}\n", s);
+  std::print(stdout, "{}\n", s);
   (void)s;
 }
 

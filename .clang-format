@@ -35,6 +35,9 @@ IndentPPDirectives: None
 IndentRequiresClause: false
 IndentWidth: 2
 InsertNewlineAtEOF: true
+# clang clang-format 19
+# KeepEmptyLines:
+#   AtEndOfFile: true
 LineEnding: LF
 NamespaceIndentation: None
 QualifierAlignment: Right

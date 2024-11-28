@@ -37,6 +37,17 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 #error "requires C99 for sanity"
 #endif
 
+// null ptr compat
+#ifdef HAS_C23
+#define NULLPTR nullptr
+#else
+#if defined(_MSC_VER) || defined(__cplusplus)
+#define NULLPTR 0
+#else
+#define NULLPTR ((void *)0)
+#endif
+#endif
+
 #include <stdint.h> // uint32_t, uint8_t
 #include <stdlib.h> // exit
 #ifdef _WIN32
@@ -45,7 +56,7 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 #include <errno.h>    // errno
 #include <inttypes.h> // PRIXPTR and other portable printf formatter
 #include <limits.h>   // limit
-#include <stdio.h>    // fprintf
+#include <stdio.h>    // fprintf, fseek, FILE
 #include <string.h>   // memcpy
 
 //====tooling
@@ -71,6 +82,8 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // * maps lots of virtual memory
 // * only as good as coverage
 // * ASan, UBSan, LSan, TSan, MSan
+
+// string handling https://github.com/skullchap/chadstr
 
 // makefile that builds GCC cross-toolchains for many archs https://github.com/vezel-dev/kruco
 
@@ -173,7 +186,22 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // nevertheless Checks: "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
 // is needed and
 
-static void memset_16aligned(void *ptr, char byte, size_t size_bytes, uint16_t alignment);
+// Inherently racy, so do not use, if possible. The stat call is also faster,
+// but this demonstrates how to poke and peek through a file.
+size_t getFileSize(char const *file_path);
+size_t getFileSize(char const *file_path) {
+  FILE *file = NULLPTR;
+  file = fopen(file_path, "rb");
+  if (file == NULLPTR)
+    exit(1); // could not open file, better use file handle
+  fseek(file, 0u, SEEK_END);
+  long file_size_or_err = ftell(file);
+  if (file_size_or_err < 0)
+    exit(1); // invalid file size
+  fseek(file, 0u, SEEK_SET);
+  return (size_t)file_size_or_err;
+}
+
 static void memset_16aligned(void *ptr, char byte, size_t size_bytes, uint16_t alignment) {
   assert((size_bytes & (alignment - 1)) == 0);     // Size aligned
   assert(((uintptr_t)ptr & (alignment - 1)) == 0); // Pointer aligned
@@ -189,11 +217,13 @@ static void memset_16aligned(void *ptr, char byte, size_t size_bytes, uint16_t a
 // integer and back optimizations in for example clang and gcc
 // 3. Careful with LTO potentially creating problem 2. (clang -flto -funified-lto -fuse-ld=lld ptrtoint_inttoptr.c)
 // 4. Consider C11 aligned_alloc or posix_memalign
-void ptrtointtoptr(void);
-void ptrtointtoptr(void) {
+int32_t ptrtointtoptr(void);
+int32_t ptrtointtoptr(void) {
   uint16_t const alignment = 16;
   uint16_t const align_min_1 = alignment - 1;
   void *mem = malloc(1024 + align_min_1);
+  if (mem == NULLPTR)
+    return 1;
   // C89: void *ptr = (void *)(((INT_WITH_PTR_SIZE)mem+align_min_1) & ~(INT_WITH_PTR_SIZE)align_min_1);
   // ie void *ptr = (void *)(((uint64_t)mem+align_min_1) & ~(uint64_t)align_min_1);
   // offset ptr to next alignment byte boundary
@@ -201,6 +231,7 @@ void ptrtointtoptr(void) {
   printf("0x%08" PRIXPTR ", 0x%08" PRIXPTR "\n", (uintptr_t)mem, (uintptr_t)ptr);
   memset_16aligned(ptr, 0, 1024, alignment);
   free(mem);
+  return 0;
 }
 
 // macro NULL = 0 or mingw null
@@ -599,12 +630,15 @@ struct sStruct1 {
   uint32_t b2;
 };
 
-void padding(void);
+int32_t padding(void);
 // Ensure correct storage and padding size for pointers via sizeof.
-void padding(void) {
+int32_t padding(void) {
   struct sStruct1 *str1 = malloc(sizeof(struct sStruct1));
+  if (str1 == NULLPTR)
+    return 1;
   str1->a1 = 5;
   free(str1);
+  return 0;
 }
 
 void allowed_aliasing(uint16_t *bytes, int32_t len_bytes, uint16_t *lim);
@@ -789,19 +823,19 @@ void array_pointers(void) {
 
   // multi-dimensional array on heap
   int(*ap3)[9000][9000] = malloc(sizeof(*ap3));
-  if (ap3)
+  if (ap3 == NULLPTR)
     free(ap3);
 
   // Variable Length Array (on stack)
   int(*ap4)[1000][1000] = malloc(sizeof(*ap4));
-  if (ap4) {
+  if (ap4 == NULLPTR) {
     // (*arr)[i][j]
     free(ap4);
   }
 
   // alternative (worse to use): 1d array with offsets, piecewise allocation or big fixed array
   int *arr_1D = malloc(1000 * 1000 * (sizeof(*arr)));
-  if (arr_1D) {
+  if (arr_1D == NULLPTR) {
     // arr_1D[1000*i + j] = 10;
     // ..
     free(arr_1D);
@@ -907,9 +941,9 @@ void zero_bitfield(void) {
   // zero-length field causes position to move to next short boundary
 }
 
-void flexible_array_member(void);
+int32_t flexible_array_member(void);
 // Introduced with C99, few usage example
-void flexible_array_member(void) {
+int32_t flexible_array_member(void) {
   struct FlexibleArrayMember {
     uint32_t len; // at least one other data member
     char _pad1[28];
@@ -917,9 +951,12 @@ void flexible_array_member(void) {
     // potential padding
   };
   struct FlexibleArrayMember *flex_arr_mem = malloc(5 * sizeof(struct FlexibleArrayMember));
+  if (flex_arr_mem == NULLPTR)
+    return 1;
   flex_arr_mem->len = 5;
   for (uint32_t i = 0; i < flex_arr_mem->len; i += 1)
     flex_arr_mem->arr[i] = 20;
+  return 0;
 }
 
 void imaginary_cursor_position_in_printf(void);

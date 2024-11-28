@@ -7,6 +7,9 @@
 -- document. Builtin neovim client do that. How exactly file stored on disk
 -- not important in that case.
 -- SHENNANIGAN no plumbing API in neovim to do low-level fixup tasks
+-- SHENNANIGAN lsp offers not a lot control
+-- SHENNANIGAN neovim api is not great either with important things missing like
+-- silent mode/quiet mode for non-errors
 
 local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 

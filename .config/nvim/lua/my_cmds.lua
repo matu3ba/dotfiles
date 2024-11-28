@@ -247,33 +247,33 @@ add_cmd('Pdffigure', function() vim.fn.jobstart('okular figures' .. sep .. vim.f
 --==nvim_spacetab
 add_cmd('Spacelen2', function()
   vim.bo.expandtab = true --expand tabs to spaces
-  vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
+  vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indentation
+  vim.bo.tabstop = 2 --Tab key: number of spaces for indentation
 end, {})
 add_cmd('Spacelen4', function()
   vim.bo.expandtab = true --expand tabs to spaces
-  vim.bo.shiftwidth = 4 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 4 --Tab key: number of spaces for indendation
+  vim.bo.shiftwidth = 4 --visual mode >,<-key: number of spaces for indentation
+  vim.bo.tabstop = 4 --Tab key: number of spaces for indentation
 end, {})
 add_cmd('Spacelen8', function()
   vim.bo.expandtab = true --expand tabs to spaces
-  vim.bo.shiftwidth = 8 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 8 --Tab key: number of spaces for indendation
+  vim.bo.shiftwidth = 8 --visual mode >,<-key: number of spaces for indentation
+  vim.bo.tabstop = 8 --Tab key: number of spaces for indentation
 end, {})
 add_cmd('Tablen2', function()
   vim.bo.expandtab = false --expand tabs to spaces
-  vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
+  vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indentation
+  vim.bo.tabstop = 2 --Tab key: number of spaces for indentation
 end, {})
 add_cmd('Tablen4', function()
   vim.bo.expandtab = false --expand tabs to spaces
-  vim.bo.shiftwidth = 4 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 4 --Tab key: number of spaces for indendation
+  vim.bo.shiftwidth = 4 --visual mode >,<-key: number of spaces for indentation
+  vim.bo.tabstop = 4 --Tab key: number of spaces for indentation
 end, {})
 add_cmd('Tablen8', function()
   vim.bo.expandtab = false --expand tabs to spaces
-  vim.bo.shiftwidth = 8 --visual mode >,<-key: number of spaces for indendation
-  vim.bo.tabstop = 8 --Tab key: number of spaces for indendation
+  vim.bo.shiftwidth = 8 --visual mode >,<-key: number of spaces for indentation
+  vim.bo.tabstop = 8 --Tab key: number of spaces for indentation
 end, {})
 
 --==macros ----
@@ -641,6 +641,16 @@ add_cmd('PrintCliArgs', function()
     args = args .. v .. ' '
   end
   print(args)
+end, {})
+
+add_cmd('PrintLspClientsOfBuffer', function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local clients = vim.lsp.get_clients { bufnr = bufnr }
+  if next(clients) == nil then
+    print 'none'
+    return
+  end
+  vim.print(clients)
 end, {})
 
 --add_cmd('RunAsTask', function(params)

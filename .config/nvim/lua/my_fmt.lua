@@ -21,28 +21,12 @@ local fmts_by_ft = {
   rust = { 'rustfmt', lsp_format = 'prefer' },
   sh = { 'shfmt' },
   shtml = { 'superhtml' },
-  -- zig = { 'zigfmt', lsp_format = 'prefer' },
-  -- zig = { lsp_format = 'prefer' },
+  zig = { 'zigfmt', lsp_format = 'prefer' },
+  -- -- zig = { lsp_format = 'prefer' },
   ziggy = { 'ziggy' },
   ziggy_schema = { 'ziggy_schema' },
-  -- ['*'] = { 'typos' },
-  ['_'] = { 'trim_whitespace', 'trim_newlines' },
-}
-
-local pattern_most = {
-  '*.h',
-  '*.hh',
-  '*.c',
-  '*.cc', -- c
-  '*.cmake',
-  '*.hpp',
-  '*.cpp', -- cpp
-  '*.lua', -- lua
-  '*.py', -- python
-  '*.rs', -- rust
-  '*.sh', -- sh
-  '*.shtml', -- shtml
-  -- no file endings .zig, .zon
+  -- ['*'] = { 'typos' }, -- autofix for programming bad, but useful for text only
+  -- call directly, dont use ['_'] for { 'trim_whitespace', 'trim_newlines' }
 }
 
 conform.setup {
@@ -73,29 +57,90 @@ conform.setup {
 
 -- local aucmds_basicfmt = vim.api.nvim_create_augroup('aucmds_basicfmt', { clear = true })
 local aucmds_conform_fmt = vim.api.nvim_create_augroup('aucmds_conform_fmt', { clear = true })
-local aucmds_zig_fmt = vim.api.nvim_create_augroup('aucmds_zig_fmt', { clear = true })
+-- local aucmds_zig_fmt = vim.api.nvim_create_augroup('aucmds_zig_fmt', { clear = true })
 
-vim.api.nvim_create_autocmd('BufWritePre', {
-  group = aucmds_conform_fmt,
-  pattern = pattern_most,
-  callback = function(args) conform.format { bufnr = args.buf } end,
-})
-
-vim.api.nvim_create_autocmd('BufWritePre', {
-  group = aucmds_zig_fmt,
-  pattern = { '*.zig', '*.zon' },
-  callback = function()
+-- SHENNANIGAN code_action has no silent mode https://github.com/neovim/neovim/pull/22651
+local user_fmts_by_ft = {
+  markdown = function() end, -- stub
+  supermd = function() end, -- stub
+  zig = function(args)
+    local original = vim.notify
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.notify = function(msg, level, opts)
+      if msg == 'No code actions available' then return end
+      original(msg, level, opts)
+    end
     vim.lsp.buf.code_action {
-      -- SHENNANIGAN lsp.CodeActionContext: diagnostics field is optional,
-      -- but shown as error by lsp from meta information
+      ---@diagnostic disable-next-line: missing-fields
       context = { only = { 'source.fixAll' } },
       apply = true,
     }
-    vim.loop.sleep(5)
-    -- SHENNANIGAN conform.nvim can screw up formatting the first time
-    vim.lsp.buf.format()
+    conform.format { bufnr = args.buf, formatters = fmts_by_ft['zig'] }
+  end,
+  zon = function(args) conform.format { bufnr = args.buf, formatters = fmts_by_ft['zig'] } end,
+}
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  group = aucmds_conform_fmt,
+  pattern = '*',
+  callback = function(args)
+    local ft = vim.bo[args.buf].filetype
+    if user_fmts_by_ft[ft] ~= nil then
+      user_fmts_by_ft[ft](args)
+    else
+      if fmts_by_ft[ft] == nil then
+        conform.format { bufnr = args.buf, formatters = { 'trim_whitespace' } }
+      else
+        conform.format { bufnr = args.buf, formatters = fmts_by_ft[ft] }
+      end
+    end
   end,
 })
+
+-- taken from  https://github.com/neovim/neovim/issues/17758#issuecomment-2337109283
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--     pattern = { "*.go" },
+--     callback = function()
+--         vim.lsp.buf.format()
+--
+--         local params = vim.lsp.util.make_range_params()
+--         params.context = {only = {"source.organizeImports"}}
+--         vim.lsp.buf_request_all(0, "textDocument/codeAction", params, function(responses)
+--             for client_id, response in pairs(responses) do
+--                 if response.result then
+--                     for _, result in pairs(response.result) do
+--                         if result.edit then
+--                             vim.lsp.util.apply_workspace_edit(result.edit, vim.lsp.get_client_by_id(client_id).offset_encoding)
+--                         else
+--                             vim.lsp.buf.execute_command(result.command)
+--                         end
+--                     end
+--                     -- This routine is async, which I like because it doesn't lock up.
+--                     -- However, it doesn't complete before the write, so it needs another write.
+--                     -- The below write() *can* trigger an infinite loop of BufWritePre if the language server acts up.
+--                     -- See the nvim-lspconfig issue for alternatives: https://github.com/neovim/nvim-lspconfig/issues/115
+--                     vim.cmd.write()
+--                 end
+--             end
+--         end)
+--     end,
+-- })
+
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   group = aucmds_zig_fmt,
+--   pattern = { '*.zig', '*.zon' },
+--   callback = function()
+--     vim.lsp.buf.code_action {
+--       -- SHENNANIGAN lsp.CodeActionContext: diagnostics field is optional,
+--       -- but shown as error by lsp from meta information
+--       context = { only = { 'source.fixAll' } },
+--       apply = true,
+--     }
+--     vim.loop.sleep(5)
+--     -- SHENNANIGAN conform.nvim can screw up formatting the first time
+--     vim.lsp.buf.format()
+--   end,
+-- })
 
 -- markdown, supermd not handled in trim_whitespace
 -- local MustNotRemoveTrailingLines = function(filetype)

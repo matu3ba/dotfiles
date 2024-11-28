@@ -9,13 +9,10 @@ charset = utf-8
 end_of_line = lf
 indent_size = 2
 indent_style = space
-insert_final_newline = false
+insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{c,cpp,h,hpp,lua}]
-insert_final_newline = true
-
-[*.md]
+[*.{md,smd}]
 trim_trailing_whitespace = false
 
 [*.{zig,zon}]
