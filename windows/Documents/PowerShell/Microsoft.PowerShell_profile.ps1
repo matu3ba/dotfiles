@@ -230,6 +230,18 @@ filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 #====whereis
 # gcm pwsh.exe
 # where pwsh.exe
+# search for dlls:
+# cd C:\
+# Get-Childitem -Recurse newtonsoft*.dll | Format-Table directory,creationtime,lastwritetime,@{label="ProductVersion";expression={$_.versioninfo.productversion}},@{label="FileVersion";expression={$_.versioninfo.fileversion}}
+# Get-ChildItem -Recurse newtonsoft*.dll | Format-Table directory,@{label="FileVersion";expression={$_.versioninfo.fileversion}},lastwritetime
+# Get-ChildItem -Recurse newtonsoft*.dll
+# common system paths:
+# C:\Windows\SysWOW64
+# C:\Programs
+# C:\Programs (x86)
+
+# debug runtime files for deploying along application
+# C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\debug_nonredist\x64\Microsoft.VC143.DebugCRT
 
 #====setup
 

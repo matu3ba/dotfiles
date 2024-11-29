@@ -1572,4 +1572,6 @@ void C23_stdbit() {
 // Windows SIMD via #include <intrin.h>
 // BEST: use another language offering portable SIMD via LLVM or own impl
 
+// idea: do some simd https://blog.mattstuchlik.com/2024/07/21/fastest-memory-read.html
+
 int32_t main(void) { return 0; }

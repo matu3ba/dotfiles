@@ -10,6 +10,7 @@ zig-out/
 .mypy_cache
 
 /*.exe
+/*.lib
 /*.obj
 /*.out
 /*.pdb

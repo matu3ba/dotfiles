@@ -339,6 +339,10 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * https://michael.orlitzky.com/articles/problems_with_posix_acls_and_common_utilities.xhtml
     https://michael.orlitzky.com/articles/fix_busted_acls_faster_with_libadacl.xhtml
     idea summary
+  * embedded
+    + prefer storing in-memory, if possible
+    + LittleFS (memory efficient, reliable, speed, metadata)
+    + SPIFFS (simple, compat, low mem overhead, efficient)
 - 16. secure speculative execution
   * "A Formal Approach to Secure Speculation" by Cheang et al.
   * idea hackernews comment
@@ -373,6 +377,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
       o purely reversible
 - 20. fuzzers or fuzzer modes for testing spatial and temporal coverage?
   * must be able to express what to change
+- 21. https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/TIGER_STYLE.md
+  * theory/paper on bounded vs unbounded reasoning for computer systems?
+  * think about design tradeoffs
 
 Interesting ideas
 * https://catern.com/ideas.html file-descriptor API for processes

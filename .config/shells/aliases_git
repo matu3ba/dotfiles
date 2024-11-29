@@ -376,7 +376,16 @@ alias glo='git log --oneline --decorate'
 # alias gloga='git log --all --decorate --oneline --graph --stat'
 
 # git log adogs
+# show overview (gladogs)
 alias gladogs='git log --all --decorate  --oneline --graph --simplify-by-decoration'
+# show commits including merge commits (without simplify-by-decoration)
+# git log --graph --pretty=oneline --abbrev-commit
+# TODO https://stackoverflow.com/questions/56724650/git-log-full-diff-what-does-it-do
+# https://adamj.eu/tech/2023/10/30/git-show-commit-message-subject/
+# https://dev.to/vishnuchilamakuru/git-show-command-cheat-sheet-45ph
+
+# TODO git shortlog
+# https://git-scm.com/book/id/v2/Git-Tools-Advanced-Merging#_manual_remerge
 
 # show only branch relation
 # alias glbr0='git log --graph --all --decorate --simplify-by-decoration'
@@ -403,7 +412,7 @@ alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 # git log --graph --decorate --pretty=oneline --abbrev-commit
 
 # merge without forward (less reliable)
-alias gm='git merge --no-ff'
+# alias gm='git merge --no-ff'
 alias gmce='git merge --edit --no-ff --commit'
 alias gmse='git merge --squash -e --comit'
 # merge with forward
@@ -418,6 +427,11 @@ alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
 alias gmum='git merge --ff-only upstream/master'
 # The following may lose data due to unability to reconstruct pre-merge state:
 # alias gma='git merge --abort'
+
+# TODO own tutorial
+# https://stackoverflow.com/questions/30136558/how-to-squash-commits-which-have-merge-commit-in-between
+# https://shinglyu.com/web/2018/03/25/merge-pull-requests-without-merge-commits.html
+# https://stackoverflow.com/questions/16358418/how-to-avoid-merge-commit-hell-on-github-bitbucket
 
 alias gp='git push'
 alias gpdry='git push --dry-run'

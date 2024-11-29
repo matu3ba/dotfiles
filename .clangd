@@ -1,12 +1,13 @@
-# Core reason for C++17 variant, saner template programming
-# Core reason for C++20 concepts for sane template programming, consteval
-# Core reason for C++23 std constexpr-ification, consteval
+# Core reason for C++17 variant, pair and tuple destructuring, saner template programming
+# Core reason for C++20 concepts for sane template programming, consteval (constexpr bad)
+# Core reason for C++23 stacktraces, std constexpr-ification, consteval, print
 # Core reason for C++26 enum_to_string, string_to_enum, reflection, iostream replacement
 # Core reason for C99   portable static integer sizes
 # Core reason for C11   generic selection, atomic, tls, threads, alignment
 # Core reason for C17   bug fixes and deprecations
 # Core reason for C23   attributes, digit separators ', nullptr, empty initializer, embed
-# Core reason for C29   tba
+#                       constexpr to prevent VLA + constant obbject init, auto + generic (without C++ compat)
+# Core reason for C29   relative sane UTF8 conversion
 CompileFlags:
   # Add: [-std=c++14]
   # Add: [-std=c++17]

@@ -3,16 +3,20 @@ https://utf8everywhere.org/
 
 Detect unknown encodings based on
 https://unix.stackexchange.com/questions/304177/convert-binary-encoding-that-head-and-notepad-can-read-to-utf-8
-file -i unix_filepath
-pip install chardet
-chardetect file_pa1 file_pa2 ..
-
-iconv -f utf-8 -t utf-8 /tmp/textFile -o /tmp/outtextFile
-iconv -f utf-8 -t utf-8 /tmp/textFile  > /tmp/outtextFile
+file unix_filepath
+- 1. no result?
+  * pip install chardet
+  * chardetect file_pa1 file_pa2 ..
+  * iconv -f FROM -t utf-8 /tmp/textFile -o /tmp/outtextFile
+  * iconv -f FROM -t utf-8 /tmp/textFile  > /tmp/outtextFile
+  * iconv -f ISO-8859-1 -t utf-8 /tmp/textFile  > /tmp/outtextFile
+- 2. result without UTF-8 BOM: use iconv step in 1.
+- 3. result with UTF-8 BOM
+  * sed -i 's/\xef\xbb\xbf//' /tmp/textFile
 
 show file encodings detected by editor
 * vim/nvim: :set fileencoding
-* TODO complete typical editors
+* TODO typical editors
 
 typical encodings
 
@@ -24,3 +28,5 @@ iconv -f iso-8859-1 -t utf-8 /tmp/textFile  > /tmp/outtextFile
 
 idea explain C++ side + prepare for C++26
 https://dbj.org/c-convert-any-sequence-to-any-standard-string/
+
+TODO utf8 table

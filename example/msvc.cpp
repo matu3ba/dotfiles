@@ -1,3 +1,10 @@
+// Development dependencies
+// * debug symbols for Operating Sysem (Win32 and lower to ntdll and blow) shipped with Windows SDK
+// * debug symbols for C and C++ libs shipped via Visual Studio, for example
+//   + C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\debug_nonredist\x64\Microsoft.VC143.DebugCRT
+//   + C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\debug_nonredist\x64\Microsoft.VC143.DebugOpenMP
+//   + C:\Program Files (x86)\Windows Kits\10\bin\x64\ucrt
+//
 // https://stackoverflow.com/questions/73161788/visual-studio-2022-how-to-access-the-built-in-developer-powershell-instead-of
 // VsDevCmd.bat batch file or Launch-VsDevShell.ps1
 // Get-ChildItem 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\'
@@ -93,6 +100,32 @@
 // so cache mismatches lead to automatic reencoding.
 // Hence, external changes must be done with closed file and reopen it,
 // if VS2022 would reencode the file and msvc incorrectly interpret it.
+
+// SHENNANIGAN AdditionalOptions are mutual exclusive and can lead to incorrect
+// precompiled headers.
+//  <ClCompile>
+//    <WarningLevel>Level3</WarningLevel>
+//    <PrecompiledHeader>Use</PrecompiledHeader>
+//    <Optimization>MaxSpeed</Optimization>
+//    <FunctionLevelLinking>true</FunctionLevelLinking>
+//    <IntrinsicFunctions>true</IntrinsicFunctions>
+//    <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN64;NDEBUG;_CONSOLE;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+//    <AdditionalIncludeDirectories>$(SolutionDir)MyLibrary;</AdditionalIncludeDirectories>
+//    <TreatWarningAsError>true</TreatWarningAsError>
+//    <OpenMPSupport>true</OpenMPSupport>
+//    <MultiProcessorCompilation>true</MultiProcessorCompilation>
+//    <WholeProgramOptimization>true</WholeProgramOptimization>
+//    <LanguageStandard>stdcpp20</LanguageStandard>
+//    <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+//  </ClCompile>
+//  ..
+// -    <ClCompile Include="SomeFile.cpp">
+// -      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+// -      </AdditionalOptions>
+// -      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+// -      </AdditionalOptions>
+// -    </ClCompile>
+// +    <ClCompile Include="SomeFile.cpp" />
 
 // https://pspdfkit.com/blog/2021/string-literals-character-encodings-and-multiplatform-cpp/
 // https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170

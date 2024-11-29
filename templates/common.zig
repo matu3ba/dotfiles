@@ -44,6 +44,7 @@ const builtin = @import("builtin");
 
 // Crosscompiling: templates/crosscompiling_zig.sh
 // decentish intro: https://pedropark99.github.io/zig-book/
+// regex https://github.com/mnemnion/mvzr
 
 test "beware_endianness" {
     // const content_len: [4]u8 = .{ 0, 0, 0, 4 }; // wrong for little endian 4
@@ -808,3 +809,4 @@ test "switch details" {
 // 23*5+1 => 116 builtins
 
 // https://github.com/CTSRD-CHERI/qemu/tree/qemu-cheri
+// nice comptime usage https://bur.gy/2024/08/31/why-not-zig.html

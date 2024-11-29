@@ -194,8 +194,8 @@ require 'my_keymaps'
 -- and use for example msvc in strict utf8 mode to prevent bad behavior.
 -- Writing may need :bd filepath
 -- :set encoding - set the encoding used to read the file (not working for some reason)
--- :set fileencoding - set the encoding to use when saving the file
--- :set termencoding - set the encoding to use to display characters to your terminal
+-- :set fileencoding - show and set the encoding to use when saving the file
+-- :set termencoding - show and set the encoding to use to display characters to your terminal
 
 -- stylua: ignore start
 local aucmds_graphics = vim.api.nvim_create_augroup('aucmds_graphics',  {clear = true})

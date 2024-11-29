@@ -2,7 +2,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
 // zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 
@@ -891,9 +891,9 @@ class FriendOfVariable2 {
 
 // SHENNANIGAN googlemock
 // inline implementation in headers can not be mocked and fail with bogus errors
-//   error: redefinition of ‘Ctor::Ctor(const string&)’
+//   error: redefinition of constructor(const std::string& str)
 //   ..
-//   error: redefinition of ‘Ctor::Ctor(const string&)’
+//   error: redefinition of constructor(const std::string& str)
 // for each such used function.
 
 // SHENNANIGAN googlemock
@@ -919,7 +919,7 @@ class FriendOfVariable2 {
 //   * high perf + 0BSD to let others steal the code
 
 // SHENNANIGAN
-// "static initialization order ‘fiasco’ (problem)"
+// "static initialization order fiasco problem"
 // 2 static objects in 'x.cpp' and 'y.cpp', y.init() calls method on x object.
 // poor solution "Construct On First Use Idiom", which never destructs
 // better solution "Make it a lib" to provide explicit context instead of implicit
@@ -960,7 +960,7 @@ class FriendOfVariable2 {
 // Template usage with base class adding to map via emplace (base class with interfaces is not
 // templated, specialized one is) may have undecipherable error messages (due no automatic upcast to base class):
 //   file.cpp:1032:64:   required from here
-//   /usr/include/c++/9/ext/new_allocator.h:146:4: error: no matching function for call to ‘std::pair<const std::__cxx11::basic_string<char>, std::shared_ptr<FileInterface> >::pair(std::__cxx11::basic_string<char>, std::shared_ptr<File<std::__cxx11::basic_string<char> > >&)’
+//   /usr/include/c++/9/ext/new_allocator.h:146:4: error: no matching function for call to std::pair<const std::__cxx11::basic_string<char>, std::shared_ptr<FileInterface> >::pair(std::__cxx11::basic_string<char>, std::shared_ptr<File<std::__cxx11::basic_string<char> > >&)
 //     146 |  { ::new((void *)__p) _Up(std::forward<_Args>(__args)...); }
 //         |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // It does not matter to use std::shared_ptr<Variable<std::string>> var_obj = std::make_shared<Variable<std::string>>(varValue, varName.c_str(), varPath.c_str(), varAttr);
@@ -1989,7 +1989,6 @@ struct D {
 
 int test_OperatorExistence();
 int test_OperatorExistence() {
-  // C++14
 #ifndef HAS_CPP20
 #ifdef HAS_CPP14
   std::cout << "A::operator== () exists: " << CHECK::EqualExists<A>::value << std::endl;
@@ -2041,6 +2040,13 @@ struct Foo {
   void sum(int i) { data += i; }
   int data;
 };
+
+// TODO how are futures processed (by producer or consumer)?
+// TODO how are futures synced (SPSC, SPMC possible or default)?
+// std::async for thread, return_val, fn_name, args
+// std::future -> used by consumer via consumer.get()
+// std::promise -> low level routines constructed by producer (for C interop)
+// and offers methods like .getFuture()
 
 int test_future();
 int test_future() {
@@ -2126,11 +2132,25 @@ inline char const *operator""_SC(char8_t const *str, std::size_t) { return reint
 // constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
 //    return reinterpret_cast< const char* >(str);
 //}
+
 // More sane alternative would be to use _UC for unsigned char like C23.
 // Best solution: use /utf-8 in msvc and use clang/gcc defaults of UTF-8
 // and have "default utf-8 strings" instead of "code-page dependent encoding"
 // without any usage of u8"unnecessary" instead of u8"only guaranteed utf-8 string".
 // C interop requires usage of macros xor /utf-8.
+void test_char_encoding();
+void test_char_encoding() {
+  // FIXME check reflog
+  // SHENNANIGAN conform.nvim and/or clang-format version 19.1.2 breaks german characters on Windows
+  // and it ignores clang-format off
+  // clang-format off
+  // const unsigned char somechar1 = ''; // 188, Character too large for enclosing character literal type [character_too_large]
+  // const signed char somechar2 = ''; // -68, Character too large for enclosing character literal type [character_too_large]
+  // const char somechar3 = ''; // -68, Character too large for enclosing character literal type [character_too_large]
+  // const uint8_t somechar4 = ''; // 188, Character too large for enclosing character literal type [character_too_large]
+  // const char umlaut_ue[] = "ö"; // works
+  // clang-format on
+}
 
 // C++17 compliant alternative:
 // template  <typename Ty>
@@ -2671,13 +2691,11 @@ struct use_CustomComparator { // also known as predicate
 #ifdef HAS_CPP23
 // most of cmath with constexpr except trigonometrics, for those consider to use "gcem"
 // has if constexpr
-// has optional as monad with chaining/currying
 // #include <numeric>
 // add_sat/sub_sat/mul_sat/div_sat/saturate_cast
 // SHENNANIGAN no consistent add_wrap/sub_wrap/mul_wrap/div_wrap/wraparound_cast
 // Must use instead C23 ckd_mul(&res_mul, a, b))
 // to stay portable.
-
 // std::print, std::format can be used via <fmt/core.h> and fmt::print, fmt::format
 #include <print>
 void use_fmt_print();
@@ -2727,17 +2745,47 @@ void use_to_string_view();
 void use_to_string_view() {
   constexpr std::string_view sv1{"Hello, world!"};
   std::print("{}", sv1);
+}
 
-  // TODO comptime creation of std::string does not work
-  // constexpr std::string s1 = make_string("Hello World ", 3);
-  // std::print("{}", s1);
-  // fprintf(stdout, "%zu: %s\n", s1.size(), s1.c_str());
+// TODO comptime creation of std::string does not work
+// constexpr std::string s1 = make_string("Hello World ", 3);
+// std::print("{}", s1);
+// fprintf(stdout, "%zu: %s\n", s1.size(), s1.c_str());
 
-  // constexpr auto const make_data = []() { return make_string("Hello World,", 3); };
-  // constexpr static auto str_view = to_string_view(make_data);
-  // (void)str_view;
-  // std::print("{}", s1);
-  // fprintf(stdout, "%d: %s\n", str_view.size(), str_view.c_str());
+// constexpr auto const make_data = []() { return make_string("Hello World,", 3); };
+// constexpr static auto str_view = to_string_view(make_data);
+// (void)str_view;
+// std::print("{}", s1);
+// fprintf(stdout, "%d: %s\n", str_view.size(), str_view.c_str());
+// void use_ckd_mul();
+// void use_ckd_mul() {
+//   add_sat();
+// }
+
+// mingw64 has no <stacktrace> yet
+// #include <stacktrace>
+// void use_stacktrace();
+// void use_stacktrace() {
+//   std::stacktrace stacktr = std::stacktrace::current();
+//   fprintf(stdout, "%s\n", std::to_string(stacktr).c_str());
+// }
+
+#include <optional>
+static std::optional<std::string> check_empty(bool is_empty) {
+  if (is_empty)
+    return "nonempty";
+  return {};
+}
+// std::nullopt can be used to create any (empty) std::optional
+static auto deriveOptionalReturnType(bool is_empty) {
+  return is_empty ? std::optional<std::string>{"nonempty"} : std::nullopt;
+}
+void use_optional();
+void use_optional() {
+  std::cout << "create(false) returned " << check_empty(false).value_or("empty") << '\n';
+  // optional-returning factory functions are usable as conditions of while and if
+  if (auto str = deriveOptionalReturnType(true))
+    fprintf(stdout, "%s%s\n", "create2(true) returned ", str->c_str());
 }
 
 #endif
@@ -2805,12 +2853,10 @@ enum Color { red, green, blue };
 static_assert(enum_to_string(Color::red) == "red");
 static_assert(enum_to_string(Color(42)) == "<unnamed>");
 
-#endif
-
-// SHENNANIGAN iostream bad, successor not finished
-// * C++26 users should use std::print for formatting
-// * successor https://github.com/ned14/llfio
+// SHENNANIGAN iostream bad, successor https://github.com/ned14/llfio
+// * use std::print for formatting
 // * https://www.reddit.com/r/cpp/comments/g187t6/current_iostream_status_in_c/
+#endif
 
 constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
 // FIXME: switch off incorrect clangd diagnostics in this function
@@ -2826,6 +2872,11 @@ constexpr auto sum(std::vector<int> const &v) {
 }
 
 int main() {
+  // sane output encoding, use additional flag /utf-8
+#ifdef _WIN32
+  SetConsoleOutputCP(CP_UTF8); // consoleapi2.h, winnls.h
+#endif
+
 #ifdef HAS_CPP23
   // res1 is allowed to have exit-time destructors for global objects
   static constexpr std::string res1 = []() {

@@ -22,6 +22,13 @@ configurations and alike.
 
 This includes router vendors, camera vendors etc.
 
+====organization
+
+* as decentralized as reasonable
+* separate actionable well-specified tasks from discussions
+* make it simple to collect and link information relevant to tasks and discussions
+* docs: ideally git-versioned
+
 ====system_programming
 "Systems programming" based on wikipedia.
 "In computing, a virtual machine (VM) is the virtualization or emulation of a computer system."
@@ -42,6 +49,7 @@ One can therefore argue that all domain specific programming without the need
 of any hardware or kernel knowledge would be non-system and the rest system
 programming.
 
+vvv needs simplification vvv
 interesting theories by Clayton Christensen based on
 https://www.youtube.com/watch?v=rpkoCZ4vBSI
 https://www.youtube.com/watch?v=Ei57yFEljrI
