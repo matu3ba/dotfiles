@@ -1,0 +1,44 @@
+# config and default keymaps hints outside of sane vim defaults
+# custom config home dir: env "YAZI_CONFIG_HOME=~/.config/yazi-alt" yazi
+
+# ESC, C-[         exit visual mode,clear selected, or cancel search
+# q|Q              quit [without writing cwd-file]
+# C-c              close current tab or quit, if last tab
+# C-z              suspend current process
+
+# H|L              previous/next dir
+# J|K              seek down|up 5 units in preview
+# ' '              toggle selection
+# v|V              visual (selection|unset) mode
+# C-a|C-r          select all files|inverse selection of all files
+# o|O / CR|C-CR    open [interactively]
+# y|x              yank (cut)
+# p|P              paste (force)
+# -|_              symlink absolute|relative paths of yanked file
+# C-'-'            hardlink yanked files
+# Y|X              cancel yank status
+# d|D              trash (permanently) selected files
+# a                create files/dir [dir must end with /]
+# r                rename selected files
+# ;|:              run shell command (blocked until finish)
+# .                toggle hidden files
+# s|S              search via fd|rg
+# C-s              cancel current search operation
+# z|Z              jump to dir via zoxide|fzf (or reveal file via fzf)
+
+# m + s|p|c|m|o|n  set linemode to size|permissions|ctime|mtime|owner|none
+
+# c + c|d|f|n      copy file path|dir path|filename|filename without extension
+
+# f                filter files
+
+# /|?              find next/prev file
+# n|N              goto next/prev search result
+
+# , + m|M |c|C |e|E |a|A |n|N | s|S| r
+# sort by modified time (reverse)| created time (rev)
+# extension | alphabetically | naturally | size | randomly
+
+# g + h|c|d|' '    goto HOME|CONFIG|~/Downloads|interactively
+
+# ~|F1             help

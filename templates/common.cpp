@@ -1002,6 +1002,7 @@ class FriendOfVariable2 {
 // so we have barely an advantage over not using enum + union.
 
 // Constructor types and assignment operator types
+// NOLINTBEGIN(clang-diagnostic-padded)
 class ExampleClass {
   int mValue;
   std::mutex mMut;
@@ -1050,6 +1051,7 @@ class ExampleClass {
     return *this;
   }
 };
+// NOLINTEND(clang-diagnostic-padded)
 
 // https://stackoverflow.com/questions/1226634/how-to-use-base-classs-constructors-and-assignment-operator-in-c
 // You can and might need to explicitly call constructors and assignment operators.
@@ -2788,6 +2790,12 @@ void use_optional() {
     fprintf(stdout, "%s%s\n", "create2(true) returned ", str->c_str());
 }
 
+// SHENNANIGAN function chaining makes code unreadable
+void use_function_chaining();
+void use_function_chaining() {
+  // TODO https://www.cppstories.com/2023/monadic-optional-ops-cpp23/
+}
+
 #endif
 
 #ifdef HAS_CPP26
@@ -2853,23 +2861,26 @@ enum Color { red, green, blue };
 static_assert(enum_to_string(Color::red) == "red");
 static_assert(enum_to_string(Color(42)) == "<unnamed>");
 
+// TODO reflexpr https://en.cppreference.com/w/cpp/keyword/reflexpr
+
 // SHENNANIGAN iostream bad, successor https://github.com/ned14/llfio
 // * use std::print for formatting
 // * https://www.reddit.com/r/cpp/comments/g187t6/current_iostream_status_in_c/
 #endif
 
 constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
-// FIXME: switch off incorrect clangd diagnostics in this function
-constexpr auto sum(std::vector<int> const &v) {
-  int ret = 0;
-  // SHENNANIGAN clangd version 18.1.8
-  //non-constexpr function 'operator!=<const int *, std::vector<int>>' cannot be used in a constant expression
-  //          v
-  for (auto i : v) {
-    ret += i;
-  }
-  return ret;
-}
+
+// constexpr function never produces a constant expression [clang-diagnostic-invalid-constexpr]
+// constexpr auto sum(std::vector<int> const &v) {
+//   int ret = 0;
+//   // SHENNANIGAN clangd version 18.1.8
+//   //non-constexpr function 'operator!=<const int *, std::vector<int>>' cannot be used in a constant expression
+//   //          v
+//   for (auto i : v) {
+//     ret += i;
+//   }
+//   return ret;
+// }
 
 int main() {
   // sane output encoding, use additional flag /utf-8
@@ -2897,8 +2908,8 @@ int main() {
   // res += "noworld!"; does not work
   // std::print("{}\n", res2);
 
-  static constexpr auto val_sum = sum({5, 7, 9});
-  std::print("{}\n", val_sum);
+  // static constexpr auto val_sum = sum({5, 7, 9});
+  // std::print("{}\n", val_sum);
 #endif
 
   return 0;

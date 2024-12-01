@@ -823,19 +823,19 @@ void array_pointers(void) {
 
   // multi-dimensional array on heap
   int(*ap3)[9000][9000] = malloc(sizeof(*ap3));
-  if (ap3 == NULLPTR)
+  if (ap3 != NULLPTR)
     free(ap3);
 
   // Variable Length Array (on stack)
   int(*ap4)[1000][1000] = malloc(sizeof(*ap4));
-  if (ap4 == NULLPTR) {
+  if (ap4 != NULLPTR) {
     // (*arr)[i][j]
     free(ap4);
   }
 
   // alternative (worse to use): 1d array with offsets, piecewise allocation or big fixed array
   int *arr_1D = malloc(1000 * 1000 * (sizeof(*arr)));
-  if (arr_1D == NULLPTR) {
+  if (arr_1D != NULLPTR) {
     // arr_1D[1000*i + j] = 10;
     // ..
     free(arr_1D);
@@ -956,6 +956,8 @@ int32_t flexible_array_member(void) {
   flex_arr_mem->len = 5;
   for (uint32_t i = 0; i < flex_arr_mem->len; i += 1)
     flex_arr_mem->arr[i] = 20;
+
+  free(flex_arr_mem);
   return 0;
 }
 
@@ -1269,6 +1271,7 @@ void getFullPathNameUsage(void) {
 // C23 attributes
 // TODO likely identical functionality to macro library
 
+// NOLINTBEGIN(clang-diagnostic-padded)
 struct TaggedUnion {
   union TheUnion {
     uint64_t const *u64ptr;
@@ -1278,7 +1281,9 @@ struct TaggedUnion {
     u64ptr,
     u8ptr,
   } m_TheTag;
+  char _pad[4]; // padding
 };
+// NOLINTEND(clang-diagnostic-padded)
 // struct TaggedUnion initTaggedUnion(union TheUnion, enum TheTag){}
 
 void tagged_union(void);

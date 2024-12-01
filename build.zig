@@ -3,41 +3,27 @@ const zine = @import("zine");
 const ResolvedTarget = std.Build.ResolvedTarget;
 const OptimizeMode = std.builtin.OptimizeMode;
 
-const TargetTypeTag = enum {
-    cli,
-    test_cases,
-};
-const TargetType = union(TargetTypeTag) {
-    cli: ResolvedTarget,
-    test_cases: struct {
-        triplet: []const u8,
-        resolved: ResolvedTarget,
-    },
-};
-
 // zig build test_all --summary all
+// zig build test -Dno_opt_deps -Dno_cross --summary all
 pub fn build(b: *std.Build) !void {
-    const cli_target: ResolvedTarget = b.standardTargetOptions(.{});
     const optimize: std.builtin.OptimizeMode = b.standardOptimizeOption(.{});
-    //checkC     fmt   lint   build   proj   nounit
-    //checkCmake nofmt nolint nobuild noproj nounit
-    //checkCpp   fmt   lint   build   proj   nounit
-    //checkCs    nofmt nolint nobuild noproj nounit
-    //checkCss   nofmt nolint nobuild noproj nounit
-    //checkFish  nofmt nolint nobuild noproj nounit
-    //checkJava  nofmt nolint nobuild noproj nounit
-    //checkJs    nofmt nolint nobuild noproj nounit
-    //checkLua   fmt   lint   nobuild noproj nounit
-    //checkNix   nofmt nolint nobuild noproj nounit
-    //checkPhp   nofmt nolint nobuild noproj nounit
-    //checkPs1   nofmt nolint nobuild noproj nounit
-    //checkPy    nofmt nolint nobuild noproj nounit
-    //checkRs    nofmt nolint nobuild noproj nounit
-    //checkSh    fmt   lint   nobuild noproj nounit
-    //checkTex   nofmt nolint nobuild noproj nounit
-    //checkZig   fmt   lint   build   proj   unit
-
-    // FIXME get LLVM target triplet to be used in zig cc, zig c++
+    // C     fmt   lint   build   proj   nounit
+    // Cmake nofmt nolint nobuild noproj nounit
+    // Cpp   fmt   lint   build   proj   nounit
+    // Cs    nofmt nolint nobuild noproj nounit
+    // Css   nofmt nolint nobuild noproj nounit
+    // Fish  nofmt nolint nobuild noproj nounit
+    // Java  nofmt nolint nobuild noproj nounit
+    // Js    nofmt nolint nobuild noproj nounit
+    // Lua   fmt   lint   nobuild noproj nounit
+    // Nix   nofmt nolint nobuild noproj nounit
+    // Php   nofmt nolint nobuild noproj nounit
+    // Ps1   nofmt nolint nobuild noproj nounit
+    // Py    nofmt nolint nobuild noproj nounit
+    // Rs    nofmt nolint nobuild noproj nounit
+    // Sh    fmt   lint   nobuild noproj nounit
+    // Tex   nofmt nolint nobuild noproj nounit
+    // Zig   fmt   lint   build   proj   unit
 
     // unplanned dependencies in $PATH
     // * go (shfmt)
@@ -47,228 +33,322 @@ pub fn build(b: *std.Build) !void {
     // * haskell (shellcheck)
     // * llvm-tools (clang-format, clang-tidy)
     // * luacheck
-    // -Dno_opt_deps
-    const no_opt_deps = b.option(bool, "no_opt_deps", "Exclude optional dependencies") orelse false;
+    const no_opt_deps = b.option(bool, "no_opt_deps", "Exclude optional dependencies") orelse false; // -Dno_opt_deps
+    const no_cross = b.option(bool, "no_cross", "No cross-compiling to common targets") orelse false; // -Dno_cross
 
     // mandatory dependencies in $PATH
     // * zig
     const run_step = b.step("test", "Test with mandatory dependencies");
 
-    { // cli, usually native
-        const cli_target_ty = TargetType{ .cli = cli_target };
-        checkC(b, cli_target_ty, optimize, run_step, no_opt_deps);
-        checkCpp(b, cli_target_ty, optimize, run_step, no_opt_deps);
-        checkLua(b, run_step, no_opt_deps);
-        checkSh(b, run_step, no_opt_deps);
-        checkZig(b, cli_target_ty, optimize, run_step);
+    fmtC(b, run_step);
+    fmtCpp(b, run_step);
+    if (!no_opt_deps) fmtLua(b, run_step);
+    if (!no_opt_deps) fmtSh(b, run_step);
+    fmtZig(b, run_step);
+
+    lintC(b, run_step);
+    lintCpp(b, run_step);
+    if (!no_opt_deps) lintLua(b, run_step);
+    if (!no_opt_deps) lintSh(b, run_step);
+    lintZig(b, run_step);
+
+    { // native target
+        const native_target_query: std.Target.Query = .{};
+        const native_target = b.resolveTargetQuery(native_target_query);
+        buildC(b, native_target, optimize, run_step);
+        buildCpp(b, native_target, optimize, run_step);
+        buildZig(b, native_target, optimize, run_step);
+        testZig(b, native_target, optimize, run_step);
     }
 
-    // TODO foreign test selection by user
+    if (!no_cross) { // cross targets
+        for (cross_target_queries) |cross_target_query| {
+            const cross_target = b.resolveTargetQuery(cross_target_query);
+            buildC(b, cross_target, optimize, run_step);
+            buildCpp(b, cross_target, optimize, run_step);
+            buildZig(b, cross_target, optimize, run_step);
+        }
+    }
 }
 
-fn checkC(
+const cross_target_queries = [_]std.Target.Query{
+    .{ .cpu_arch = .aarch64, .os_tag = .linux },
+    .{ .cpu_arch = .aarch64, .os_tag = .linux, .abi = .musl },
+    .{ .cpu_arch = .aarch64, .os_tag = .macos },
+    .{ .cpu_arch = .aarch64, .os_tag = .windows },
+    .{ .cpu_arch = .x86_64, .os_tag = .linux },
+    .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .musl },
+    .{ .cpu_arch = .x86_64, .os_tag = .macos },
+    .{ .cpu_arch = .x86_64, .os_tag = .windows },
+};
+
+fn fmtC(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleCFiles[0..]) |cfile| {
+        const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
+        run_clang_format_check.addArg(cfile);
+        run_step.dependOn(&run_clang_format_check.step);
+    }
+}
+
+fn lintC(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleCFiles[0..]) |cfile| {
+        // clang-tidy clang-tidy_flags file -- clang_flags
+        const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+        run_clang_tidy_check.addArg(cfile);
+        run_clang_tidy_check.addArg("--");
+        run_clang_tidy_check.addArgs(&c99_flags);
+        run_step.dependOn(&run_clang_tidy_check.step);
+    }
+}
+
+fn buildC(
     b: *std.Build,
-    target_ty: TargetType,
+    target: ResolvedTarget,
     optimize: OptimizeMode,
     run_step: *std.Build.Step,
-    no_opt_deps: bool,
 ) void {
-    // fmt lint build
-    const target = target: switch (target_ty) {
-        .cli => |val| break :target val,
-        .test_cases => |val| break :target val.resolved,
-    };
+    var c89flags: []const []const u8 = &c89_flags;
+    var c99flags: []const []const u8 = &c99_flags;
+    var c11flags: []const []const u8 = &c11_flags;
+    var c17flags: []const []const u8 = &c17_flags;
+    var c23flags: []const []const u8 = &c23_flags;
+    if (target.result.isMusl()) {
+        c89flags = &(c89_flags ++ cmusl_flag);
+        c99flags = &(c99_flags ++ cmusl_flag);
+        c11flags = &(c11_flags ++ cmusl_flag);
+        c17flags = &(c17_flags ++ cmusl_flag);
+        c23flags = &(c23_flags ++ cmusl_flag);
+    }
+    const exe_c89 = b.addExecutable(.{
+        .name = "common_c89",
+        .target = target,
+        .optimize = optimize,
+    });
+    exe_c89.addCSourceFile(.{ .file = b.path("templates/common_c89.c"), .flags = c89flags });
+    exe_c89.linkLibC();
+    run_step.dependOn(&exe_c89.step);
+
     for (SingleCFiles[0..]) |cfile| {
-        if (!no_opt_deps and std.meta.activeTag(target_ty) == TargetTypeTag.cli) {
-            const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-            run_clang_format_check.addArg(cfile);
-            run_step.dependOn(&run_clang_format_check.step);
-
-            // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
-            // run_clang_tidy_check.addArg(cfile);
-            // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
-            // run_step.dependOn(&run_clang_tidy_check.step);
-        }
-
-        const run_zig_cc_c99 = b.addSystemCommand(zig_cc_c99_cmd);
-        run_zig_cc_c99.addArg(cfile);
-        run_step.dependOn(&run_zig_cc_c99.step);
-
-        const run_zig_cc_c11 = b.addSystemCommand(zig_cc_c11_cmd);
-        run_zig_cc_c11.addArg(cfile);
-        run_step.dependOn(&run_zig_cc_c11.step);
-
-        const run_zig_cc_c17 = b.addSystemCommand(zig_cc_c17_cmd);
-        run_zig_cc_c17.addArg(cfile);
-        run_step.dependOn(&run_zig_cc_c17.step);
-
-        const run_zig_cc_c23 = b.addSystemCommand(zig_cc_c23_cmd);
-        run_zig_cc_c23.addArg(cfile);
-        run_step.dependOn(&run_zig_cc_c23.step);
-
-        const exe_cfile = b.addExecutable(.{
+        const exe_cdefault = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cfile)),
             .target = target,
             .optimize = optimize,
         });
-        exe_cfile.addCSourceFile(.{ .file = b.path(cfile) });
-        exe_cfile.linkLibC();
-        run_step.dependOn(&exe_cfile.step);
+        exe_cdefault.addCSourceFile(.{ .file = b.path(cfile) });
+        exe_cdefault.linkLibC();
+        run_step.dependOn(&exe_cdefault.step);
 
-        // FIXME
-        // * figure out if commands are just appended or what is missing
-        // * figure out what commands are missing for production usage
-        // exe.addCSourceFile("src/c/lzrw.c", &.{
-        //     "-fno-sanitize=undefined",
-        // });
-
-    }
-
-    if (!target.result.isDarwin()) {
-        // Darwin needs 'typedef unsigned long long uint64_t;', but long long
-        // needs an extension for C89.
-
-        const run_zig_cc_c89 = b.addSystemCommand(zig_cc_c89_cmd);
-        run_zig_cc_c89.addArg("templates/common_c89.c");
-        run_step.dependOn(&run_zig_cc_c89.step);
-    }
-
-    // proj TODO
-}
-
-fn checkCmake() void {} // nofmt nolint nobuild noproj
-
-fn checkCpp(
-    b: *std.Build,
-    target_ty: TargetType,
-    optimize: OptimizeMode,
-    run_step: *std.Build.Step,
-    no_opt_deps: bool,
-) void {
-    // fmt lint build
-    const target = target: switch (target_ty) {
-        .cli => |val| break :target val,
-        .test_cases => |val| break :target val.resolved,
-    };
-    for (SingleCppFiles[0..]) |cppfile| {
-        if (std.meta.activeTag(target_ty) == TargetTypeTag.cli) {
-            if (!no_opt_deps) {
-                const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-                run_clang_format_check.addArg(cppfile);
-                run_step.dependOn(&run_clang_format_check.step);
-
-                // const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
-                // run_clang_tidy_check.addArg(cppfile);
-                // TODO adjust clang flags -- -I include_path -D MY_DEFINES ...
-                // run_step.dependOn(&run_clang_tidy_check.step);
-
-            }
-            const exe_cfile = b.addExecutable(.{
-                .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-                .target = target,
-                .optimize = optimize,
-            });
-            exe_cfile.addCSourceFile(.{ .file = b.path(cppfile) });
-            exe_cfile.linkLibCpp();
-            run_step.dependOn(&exe_cfile.step);
-        }
-        const run_zig_cpp_c14 = b.addSystemCommand(zig_cpp_c14_cmd);
-        run_zig_cpp_c14.addArg(cppfile);
-        run_step.dependOn(&run_zig_cpp_c14.step);
-
-        const run_zig_cpp_c17 = b.addSystemCommand(zig_cpp_c17_cmd);
-        run_zig_cpp_c17.addArg(cppfile);
-        run_step.dependOn(&run_zig_cpp_c17.step);
-
-        const run_zig_cpp_c20 = b.addSystemCommand(zig_cpp_c20_cmd);
-        run_zig_cpp_c20.addArg(cppfile);
-        run_step.dependOn(&run_zig_cpp_c20.step);
-
-        const run_zig_cpp_c23 = b.addSystemCommand(zig_cpp_c23_cmd);
-        run_zig_cpp_c23.addArg(cppfile);
-        run_step.dependOn(&run_zig_cpp_c23.step);
-
-        const run_zig_cpp_c26 = b.addSystemCommand(zig_cpp_c26_cmd);
-        run_zig_cpp_c26.addArg(cppfile);
-        run_step.dependOn(&run_zig_cpp_c26.step);
-    }
-}
-fn checkCs() void {} // nofmt nolint nobuild noproj
-fn checkCss() void {} // nofmt nolint nobuild noproj
-fn checkFish() void {} // nofmt nolint nobuild noproj
-fn checkJava() void {} // nofmt nolint nobuild noproj
-fn checkJs() void {} // nofmt nolint nobuild noproj
-
-fn checkLua(b: *std.Build, run_step: *std.Build.Step, no_opt_deps: bool) void {
-    // fmt lint nobuild noproj
-    for (SingleLuaFiles[0..]) |luafile| {
-        if (!no_opt_deps) {
-            const run_stylua_check = b.addSystemCommand(&.{ "stylua", "--check" });
-            run_stylua_check.addArg(luafile);
-            run_step.dependOn(&run_stylua_check.step);
-
-            const run_luacheck = b.addSystemCommand(&.{ "luacheck", "--no-color", "-q" });
-            run_luacheck.addArg(luafile);
-            const expected_msg =
-                \\Total: 0 warnings / 0 errors in 1 file
-                \\
-            ;
-            run_luacheck.expectStdOutEqual(expected_msg);
-            run_step.dependOn(&run_luacheck.step);
-        }
-    }
-}
-
-fn checkNix() void {} // nofmt nolint nobuild noproj
-fn checkPhp() void {} // nofmt nolint nobuild noproj
-fn checkPs1() void {} // nofmt nolint nobuild noproj
-fn checkPy() void {} // nofmt nolint nobuild noproj
-fn checkRs() void {} // nofmt nolint nobuild noproj
-
-fn checkSh(b: *std.Build, run_step: *std.Build.Step, no_opt_deps: bool) void {
-    // fmt lint nobuild noproj
-    for (SingleShFiles[0..]) |shfile| {
-        if (!no_opt_deps) {
-            // shfmt has no way to disable fmt and check mode, so it is not included
-            // const run_shfmt_check = b.addSystemCommand(&.{"shfmt"});
-            // run_shfmt_check.addArg(shfile);
-            // run_step.dependOn(&run_shfmt_check.step);
-
-            const run_shellcheck = b.addSystemCommand(&.{"shellcheck"});
-            run_shellcheck.addArg(shfile);
-            run_step.dependOn(&run_shellcheck.step);
-        }
-    }
-}
-
-fn checkTex() void {} // nofmt nolint nobuild noproj
-
-fn checkZig(
-    b: *std.Build,
-    target_ty: TargetType,
-    optimize: OptimizeMode,
-    run_step: *std.Build.Step,
-) void {
-    const target = target: switch (target_ty) {
-        .cli => |val| break :target val,
-        .test_cases => |val| break :target val.resolved,
-    };
-    // fmt lint build
-    for (SingleZigFiles[0..]) |zigfile| {
-        // fmt check run by CI in .github/workflows/ci.yml: zig fmt --check .
-
-        const run_shellcheck = b.addSystemCommand(&.{ "zig", "ast-check" });
-        run_shellcheck.addArg(zigfile);
-        run_step.dependOn(&run_shellcheck.step);
-
-        const zigfile_unit_tests = b.addTest(.{
-            .root_source_file = b.path(zigfile),
+        const exe_c99 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cfile)),
             .target = target,
             .optimize = optimize,
         });
-        const run_zigfile_unit_tests = b.addRunArtifact(zigfile_unit_tests);
-        run_step.dependOn(&run_zigfile_unit_tests.step);
+        exe_c99.addCSourceFile(.{ .file = b.path(cfile), .flags = c99flags });
+        exe_c99.linkLibC();
+        run_step.dependOn(&exe_c99.step);
 
+        const exe_c11 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_c11.addCSourceFile(.{ .file = b.path(cfile), .flags = c11flags });
+        exe_c11.linkLibC();
+        run_step.dependOn(&exe_c11.step);
+
+        const exe_c17 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_c17.addCSourceFile(.{ .file = b.path(cfile), .flags = c17flags });
+        exe_c17.linkLibC();
+        run_step.dependOn(&exe_c17.step);
+
+        const exe_c23 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_c23.addCSourceFile(.{ .file = b.path(cfile), .flags = c23flags });
+        exe_c23.linkLibC();
+        run_step.dependOn(&exe_c23.step);
+    }
+}
+
+// fn checkCmake() void {} // nofmt nolint nobuild noproj
+
+fn fmtCpp(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleCppFiles[0..]) |cfile| {
+        const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
+        run_clang_format_check.addArg(cfile);
+        run_step.dependOn(&run_clang_format_check.step);
+    }
+}
+
+fn lintCpp(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleCppFiles[0..]) |cfile| {
+        // clang-tidy clang-tidy_flags file -- clang_flags
+        const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+        run_clang_tidy_check.addArg(cfile);
+        run_clang_tidy_check.addArg("--");
+        run_clang_tidy_check.addArgs(&cpp14_flags);
+        run_step.dependOn(&run_clang_tidy_check.step);
+    }
+}
+
+fn buildCpp(
+    b: *std.Build,
+    target: ResolvedTarget,
+    optimize: OptimizeMode,
+    run_step: *std.Build.Step,
+) void {
+    var cpp14flags: []const []const u8 = &cpp14_flags;
+    var cpp17flags: []const []const u8 = &cpp17_flags;
+    var cpp20flags: []const []const u8 = &cpp20_flags;
+    var cpp23flags: []const []const u8 = &cpp23_flags;
+    var cpp26flags: []const []const u8 = &cpp26_flags;
+    if (target.result.isMusl()) {
+        cpp14flags = &(cpp14_flags ++ cppmusl_flag);
+        cpp17flags = &(cpp17_flags ++ cppmusl_flag);
+        cpp20flags = &(cpp20_flags ++ cppmusl_flag);
+        cpp23flags = &(cpp23_flags ++ cppmusl_flag);
+        cpp26flags = &(cpp26_flags ++ cppmusl_flag);
+    }
+    for (SingleCppFiles[0..]) |cppfile| {
+        const exe_cppdefault = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_cppdefault.addCSourceFile(.{ .file = b.path(cppfile) });
+        exe_cppdefault.linkLibCpp();
+        run_step.dependOn(&exe_cppdefault.step);
+
+        const exe_cpp14 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_cpp14.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp14flags });
+        exe_cpp14.linkLibCpp();
+        run_step.dependOn(&exe_cpp14.step);
+
+        const exe_cpp17 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_cpp17.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp17flags });
+        exe_cpp17.linkLibCpp();
+        run_step.dependOn(&exe_cpp17.step);
+
+        const exe_cpp20 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_cpp20.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp20flags });
+        exe_cpp20.linkLibCpp();
+        run_step.dependOn(&exe_cpp20.step);
+
+        const exe_cpp23 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_cpp23.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp23flags });
+        exe_cpp23.linkLibCpp();
+        run_step.dependOn(&exe_cpp23.step);
+
+        const exe_cpp26 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .target = target,
+            .optimize = optimize,
+        });
+        exe_cpp26.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp26flags });
+        exe_cpp26.linkLibCpp();
+        run_step.dependOn(&exe_cpp26.step);
+    }
+}
+
+// fn checkCs() void {} // nofmt nolint nobuild noproj
+// fn checkCss() void {} // nofmt nolint nobuild noproj
+// fn checkFish() void {} // nofmt nolint nobuild noproj
+// fn checkJava() void {} // nofmt nolint nobuild noproj
+// fn checkJs() void {} // nofmt nolint nobuild noproj
+
+fn fmtLua(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleLuaFiles[0..]) |luafile| {
+        const run_stylua_check = b.addSystemCommand(&.{ "stylua", "--check" });
+        run_stylua_check.addArg(luafile);
+        run_step.dependOn(&run_stylua_check.step);
+    }
+}
+
+fn lintLua(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleLuaFiles[0..]) |luafile| {
+        const run_luacheck = b.addSystemCommand(&.{ "luacheck", "--no-color", "-q" });
+        run_luacheck.addArg(luafile);
+        const expected_msg =
+            \\Total: 0 warnings / 0 errors in 1 file
+            \\
+        ;
+        run_luacheck.expectStdOutEqual(expected_msg);
+        run_step.dependOn(&run_luacheck.step);
+    }
+}
+
+// fn checkNix() void {} // nofmt nolint nobuild noproj
+// fn checkPhp() void {} // nofmt nolint nobuild noproj
+// fn checkPs1() void {} // nofmt nolint nobuild noproj
+// fn checkPy() void {} // nofmt nolint nobuild noproj
+// fn checkRs() void {} // nofmt nolint nobuild noproj
+
+fn fmtSh(b: *std.Build, run_step: *std.Build.Step) void {
+    // shfmt has no way to disable fmt / check mode, so it is not enabled
+    _ = b;
+    _ = run_step;
+    // for (SingleShFiles[0..]) |shfile| {
+    //         const run_shfmt_check = b.addSystemCommand(&.{"shfmt"});
+    //         run_shfmt_check.addArg(shfile);
+    //         run_step.dependOn(&run_shfmt_check.step);
+    // }
+}
+
+fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleShFiles[0..]) |shfile| {
+        const run_shellcheck = b.addSystemCommand(&.{"shellcheck"});
+        run_shellcheck.addArg(shfile);
+        run_step.dependOn(&run_shellcheck.step);
+    }
+}
+
+// fn checkTex() void {} // nofmt nolint nobuild noproj
+
+fn fmtZig(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleZigFiles[0..]) |zigfile| {
+        const run_shellcheck = b.addSystemCommand(&.{ "zig", "fmt", "--check" });
+        run_shellcheck.addArg(zigfile);
+        run_step.dependOn(&run_shellcheck.step);
+    }
+}
+
+fn lintZig(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleZigFiles[0..]) |zigfile| {
+        const run_shellcheck = b.addSystemCommand(&.{ "zig", "ast-check" });
+        run_shellcheck.addArg(zigfile);
+        run_step.dependOn(&run_shellcheck.step);
+    }
+}
+
+fn buildZig(
+    b: *std.Build,
+    target: ResolvedTarget,
+    optimize: OptimizeMode,
+    run_step: *std.Build.Step,
+) void {
+    for (SingleZigFiles[0..]) |zigfile| {
         const exe_zigfile = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(zigfile)),
             .root_source_file = b.path(zigfile),
@@ -277,15 +357,32 @@ fn checkZig(
         });
         run_step.dependOn(&exe_zigfile.step);
     }
-
-    // proj TODO
 }
 
-const zig_cc_c89_cmd = &.{ "zig", "cc", "-std=c89", "-Werror", "-Weverything" };
-const zig_cc_c99_cmd = &.{ "zig", "cc", "-std=c99", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default" };
-const zig_cc_c11_cmd = &.{ "zig", "cc", "-std=c11", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
-const zig_cc_c17_cmd = &.{ "zig", "cc", "-std=c17", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
-const zig_cc_c23_cmd = &.{ "zig", "cc", "-std=c23", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-c++98-compat", "-Wno-pre-c11-compat", "-Wno-pre-c23-compat" };
+fn testZig(
+    b: *std.Build,
+    target: ResolvedTarget,
+    optimize: OptimizeMode,
+    run_step: *std.Build.Step,
+) void {
+    for (SingleZigFiles[0..]) |zigfile| {
+        const zigfile_unit_tests = b.addTest(.{
+            .root_source_file = b.path(zigfile),
+            .target = target,
+            .optimize = optimize,
+        });
+        const run_zigfile_unit_tests = b.addRunArtifact(zigfile_unit_tests);
+        run_step.dependOn(&run_zigfile_unit_tests.step);
+    }
+}
+
+// zig cc flags
+const cmusl_flag = [_][]const u8{"-Wno-disabled-macro-expansion"};
+const c89_flags = [_][]const u8{ "-std=c89", "-Werror", "-Weverything" };
+const c99_flags = [_][]const u8{ "-std=c99", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default" };
+const c11_flags = [_][]const u8{ "-std=c11", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
+const c17_flags = [_][]const u8{ "-std=c17", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
+const c23_flags = [_][]const u8{ "-std=c23", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-c++98-compat", "-Wno-pre-c11-compat", "-Wno-pre-c23-compat" };
 
 const SingleCFiles = [_][]const u8{
     // "example/gdb/adv/catch.c",
@@ -316,11 +413,13 @@ const SingleCFiles = [_][]const u8{
     "templates/server.c",
 };
 
-const zig_cpp_c14_cmd = &.{ "zig", "c++", "-std=c++14", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
-const zig_cpp_c17_cmd = &.{ "zig", "c++", "-std=c++17", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
-const zig_cpp_c20_cmd = &.{ "zig", "c++", "-std=c++20", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
-const zig_cpp_c23_cmd = &.{ "zig", "c++", "-std=c++23", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
-const zig_cpp_c26_cmd = &.{ "zig", "c++", "-std=c++26", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
+// zig c++ flags
+const cppmusl_flag = [_][]const u8{"-Wno-disabled-macro-expansion"};
+const cpp14_flags = [_][]const u8{ "-std=c++14", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
+const cpp17_flags = [_][]const u8{ "-std=c++17", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
+const cpp20_flags = [_][]const u8{ "-std=c++20", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
+const cpp23_flags = [_][]const u8{ "-std=c++23", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
+const cpp26_flags = [_][]const u8{ "-std=c++26", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
 
 const SingleCppFiles = [_][]const u8{
     "example/common.cpp",

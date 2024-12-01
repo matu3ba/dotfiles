@@ -9,8 +9,10 @@ zig-out/
 .luarc.json
 .mypy_cache
 
-/*.exe
-/*.lib
-/*.obj
-/*.out
-/*.pdb
+# binaries
+*.exe
+*.lib
+*.log
+*.obj
+*.out
+*.pdb

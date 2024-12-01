@@ -26,7 +26,5 @@ ptrdiff_t char_findchar(struct sCharSlice s_charslice, char ch, size_t start, si
 // return slice into buf, empty slice on failure
 struct sCharSlice char_findstring(struct sCharSlice buf, struct sCharSlice search);
 
-// returns s_charslice1 <  s_charslice2 -> -1
-//         s_charslice1 == s_charslice2 -> 0
-//         s_charslice1 >  s_charslice2 -> 1
-int32_t compare_sCharsSlice(struct sCharSlice s_charslice1, struct sCharSlice s_charslice2);
+// returns 0 iff equal, other 1
+int32_t isEqual_sCharsSlice(struct sCharSlice s_charslice1, struct sCharSlice s_charslice2);

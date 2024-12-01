@@ -48,7 +48,7 @@ SHENNANIGAN checking if c89 or c90 has no macro
 #endif
 
 #if 0
-SHENNANIGANThere are no fixed typed integers.
+SHENNANIGAN There are no fixed typed integers.
 So no inttypes.h and stdint.h
 Missing pile of target dependent pointer sizes to reimplement stdint.h
 Prefer typedefs, if possible.
@@ -62,19 +62,25 @@ typedef unsigned int uint32_t;
 #pragma clang diagnostic ignored "-Wlong-long"
 typedef unsigned long long uint64_t;
 #pragma clang diagnostic pop
+
 #if defined(__linux)
 typedef unsigned long size_t;
 typedef unsigned long uintptr_t;
 #endif
 #endif
 
-// this is probably wrong, but works on github ci for darwin
-#ifdef __aarch64__
+#if defined(__aarch64__)
 typedef short unsigned int uint16_t;
 typedef unsigned int uint32_t;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wlong-long"
 typedef unsigned long long uint64_t;
+#pragma clang diagnostic pop
+
+#if defined(__linux)
 typedef unsigned long size_t;
 typedef unsigned long uintptr_t;
+#endif
 #endif
 
 #include <assert.h>

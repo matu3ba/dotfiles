@@ -18,8 +18,18 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-
     b.installArtifact(exe);
+
+    const cexe = b.addExecutable(.{
+        .name = "cexe",
+        .target = target,
+        .optimize = optimize,
+    });
+    cexe.addCSourceFile(.{ .file = b.path("src/main.c") });
+    cexe.linkLibC();
+
+    const run_buildc_step = b.step("buildc", "Build c file");
+    run_buildc_step.dependOn(&cexe.step);
 
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());

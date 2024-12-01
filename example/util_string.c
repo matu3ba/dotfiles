@@ -4,7 +4,15 @@
 #include "util_string.h"
 
 struct sCharSlice char_subslice(struct sCharSlice s_charslice, size_t start, size_t end) {
+  // TODO SAFETY with nullptr checks
+
+  // 1 [ ]
+  // 2  [ ]
+  // 3   [ ]
+  // 4 [   ]
+
   // TODO bound checks
+
   struct sCharSlice res_slice = {
       .ptr = s_charslice.ptr + start,
       .len = end - start,
@@ -14,29 +22,89 @@ struct sCharSlice char_subslice(struct sCharSlice s_charslice, size_t start, siz
 }
 
 ptrdiff_t char_findchar(struct sCharSlice s_charslice, char ch, size_t start, size_t end) {
-  // TODO
-  (void)s_charslice;
-  (void)ch;
-  (void)start;
-  (void)end;
+  // TODO SAFETY with nullptr checks
 
+  size_t i = start;
+  if (s_charslice.len < start || s_charslice.len < end)
+    return -1;
+  for (; i < end; i += 1) {
+    if (s_charslice.ptr[i] == ch)
+      return (ptrdiff_t)i;
+  }
   return -1;
 }
 
 struct sCharSlice char_findstring(struct sCharSlice buf, struct sCharSlice search) {
-  // TODO
-  (void)buf;
-  (void)search;
-  struct sCharSlice res_slice = {.ptr = 0, .len = 0};
+  // TODO SAFETY with nullptr checks
+
+  // edge case:
+  // aaab,    search aab
+  // a        prefix_match_cnt = 1
+  // aa       prefix_match_cnt = 2
+  // aaa      prefix_match_cnt = 2, forward search_len-match_cnt = 1
+
+  // zxyaab   search aab
+  // zxy      prefix_match_cnt = 0, forward search_len-match_cnt = 3
+
+  size_t buf_i = 0;
+  struct sCharSlice res_slice = {.ptr = buf.ptr, .len = 0};
+  if (buf.len == 0 || search.len > buf.len) {
+    return res_slice;
+  }
+  if (search.len == 0)
+    return buf;
+
+  size_t prefix_match_cnt = 0;
+  // forward progress invariant: prefix_match_cnt > 0, iff forward search_len-match_cnt > 0
+  // meaning result was found.
+  // bound invariant: search.len <= buf.len => 0 <= buf.len - search.len
+  while (buf_i < buf.len - search.len) {
+    size_t match_cnt = 0;
+    for (size_t search_i = 0; search_i < search.len; search_i += 1) {
+      if (buf.ptr[buf_i + search_i] != search.ptr[search_i]) {
+        prefix_match_cnt = search.len - match_cnt;
+        break;
+      }
+      match_cnt += 1;
+      search_i += 1;
+    }
+
+    if (prefix_match_cnt == 0) {
+      // result found
+      res_slice.ptr = &buf.ptr[buf_i];
+      res_slice.len = search.len;
+      return res_slice;
+    }
+
+    buf_i += prefix_match_cnt;
+  }
 
   return res_slice;
 }
 
-int32_t compare_sCharsSlice(struct sCharSlice s_charslice1, struct sCharSlice s_charslice2) {
+// TODO return prefix of two slices
+// int32_t compare_sCharsSlice(struct sCharSlice s_charslice1, struct sCharSlice s_charslice2) {
+//   // TODO SAFETY with nullptr checks
+//
+//   if (s_charslice1.len != s_charslice2.len)
+//     return 1;
+//
+//   for (size_t i = 0; i < s_charslice1.len; i += 1)
+//     if (s_charslice1.ptr[i] != s_charslice2.ptr[i])
+//       return 1;
+//
+//   return 0;
+// }
 
-  // TODO
-  (void)s_charslice1;
-  (void)s_charslice2;
+int32_t isEqual_sCharsSlice(struct sCharSlice s_charslice1, struct sCharSlice s_charslice2) {
+  // TODO SAFETY with nullptr checks
+
+  if (s_charslice1.len != s_charslice2.len)
+    return 1;
+
+  for (size_t i = 0; i < s_charslice1.len; i += 1)
+    if (s_charslice1.ptr[i] != s_charslice2.ptr[i])
+      return 1;
 
   return 0;
 }
@@ -85,17 +153,19 @@ int main(void) {
     memset(&print_buf[0], 0, 1024);
   }
 
-  {
-    struct sCharSlice rhs_cmp_str1 = {.ptr = "012345678", .len = 10};
-    int32_t cmp = compare_sCharsSlice(sl1, rhs_cmp_str1);
-    fprintf(stdout, "3. compare_sCharsSlice1 res: %" PRIi32 "expect 6\n", cmp);
-  }
+  (void)buf2;
 
-  {
-    struct sCharSlice rhs_cmp_str2 = {.ptr = buf2, .len = 10};
-    int32_t cmp = compare_sCharsSlice(sl1, rhs_cmp_str2);
-    fprintf(stdout, "4. compare_sCharsSlice2 res: %" PRIi32 "expect 6\n", cmp);
-  }
+  // {
+  //   struct sCharSlice rhs_cmp_str1 = {.ptr = "012345678", .len = 10};
+  //   int32_t cmp = compare_sCharsSlice(sl1, rhs_cmp_str1);
+  //   fprintf(stdout, "3. compare_sCharsSlice1 res: %" PRIi32 "expect 6\n", cmp);
+  // }
+  //
+  // {
+  //   struct sCharSlice rhs_cmp_str2 = {.ptr = buf2, .len = 10};
+  //   int32_t cmp = compare_sCharsSlice(sl1, rhs_cmp_str2);
+  //   fprintf(stdout, "4. compare_sCharsSlice2 res: %" PRIi32 "expect 6\n", cmp);
+  // }
 
   return 0;
 }

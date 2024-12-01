@@ -32,8 +32,5 @@ jobs:
 
       - run: zig env
 
-      - name: Run zig fmt
-        run: zig fmt --check .
-
       - name: Run Tests
-        run: zig build -Dno_opt_deps test --summary all
+        run: zig build -Dno_opt_deps -Dno_cross test --summary all
