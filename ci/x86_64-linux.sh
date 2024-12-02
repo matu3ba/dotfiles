@@ -12,6 +12,8 @@ if test "$CHECK_SIZE_B" -ge $MAX_SIZE_B; then
   rm -fr "$ZIG_CACHE_DIR"
 fi
 
+clang-format --version
+clang-tidy --version
 zig env
 
 zig build -Dno_opt_deps -Dno_cross test --summary all

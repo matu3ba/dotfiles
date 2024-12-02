@@ -12,6 +12,10 @@ if ($CHECK_SIZE_B -gt $MAX_SIZE_B) {
   CheckLastExitCode
 }
 
+clang-format --version
+CheckLastExitCode
+clang-tidy --version
+CheckLastExitCode
 zig env
 CheckLastExitCode
 
