@@ -42,6 +42,18 @@ jobs:
         with:
           version: master
           mirror: 'https://pkg.machengine.org/zig'
+      - name: Get pwd
+        run: pwd
+      - name: Get tree
+        run: tree
+      - name: Get dirs
+        run: ls .
+      - name: Get git rel path to git root
+        run: git rev-parse --show-cdup
+      - name: Get normal git HEAD
+        run: git rev-parse HEAD
+      - name: Get fancy git HEAD
+        run: git rev-parse HEAD^{}
       - name: Build and Test
         run: ci/x86_64-linux.sh
   x86_64-windows:

@@ -18,7 +18,9 @@ Suggestion to also use -Wsystem-headers, if feasible.
 Note: This document does not include C++ options for hardening llvm libc++.
 See further "Additional options flags" for production code etc.
 Unclear for backtraces: -fno-omit-frame-pointer
+Unclear for clang only in dev and production: -Wmost
 2. context
+too long for summary
 3. recommendations
 cc -O2 -dM -E - < /dev/null
 4. discouraged

@@ -393,6 +393,8 @@ inline void hash_combine(unsigned long *seed, unsigned long const value) {
 int32_t Str_Len(char const *str);
 /// assume: continuous data pointed to by str is terminated with 0x00
 int32_t Str_Len(char const *str) {
+  if (str == NULLPTR)
+    return 0;
   char const *tmps = str;
   while (*tmps != 0)
     tmps++;
@@ -400,7 +402,7 @@ int32_t Str_Len(char const *str) {
 }
 
 void Str_Copy(char const *str, int32_t strlen, char *str2);
-/// assume: continuous data pointed by input terminated with 0x00
+/// assume: continuous data pointed by input str terminated with 0x00
 /// assume: str2 has sufficient backed memory size
 /// copy strlen chars from str to str2
 void Str_Copy(char const *str, int32_t strlen, char *str2) {
@@ -417,6 +419,8 @@ int32_t Int_CeilDiv(int32_t x, int32_t y) { return (x + y - 1) / y; }
 // byte-wise dumping somewhat pretty compatible with strlen
 // inline void dumpMemory(const char * memory, size_t size);
 static inline void dumpMemory(char const *memory, size_t size) {
+  if (memory == NULLPTR)
+    return;
   uint32_t cols = 80;
   for (uint32_t i = 0; i < size; i += 1) {
     fprintf(stdout, "%x ", memory[i]);
@@ -440,6 +444,8 @@ void use_dumpMemory(void) {
 void printBits(int32_t const size, void *const ptr);
 // assume: little endian
 void printBits(int32_t const size, void *const ptr) {
+  if (ptr == NULLPTR)
+    return;
   int status = 0;
   unsigned char *b = (unsigned char *)ptr; // generic pointer (void)
   for (int32_t i = size - 1; i >= 0; i -= 1) {
@@ -1532,6 +1538,26 @@ void C23_stdbit() {
 //   char mem1[100];
 //   memset_explicit(&mem1[0], 0, sizeof(mem1));
 // }
+
+// -Wnullability-completeness
+// -Wnullability-extension
+
+// not quite sure why
+// #if defined(__clang__)
+// // custom optional and non-standard attributes
+// #pragma clang diagnostic push
+// #pragma clang diagnostic ignored "-Wnullability-extension"
+// void Str_Copy_NonNull(char const *_Nonnull str, int32_t strlen, char *_Nonnull str2);
+// /// assume: continuous data pointed by input str terminated with 0x00
+// /// assume: str2 has sufficient backed memory size
+// /// copy strlen chars from str to str2
+// void Str_Copy_NonNull(char const *_Nonnull str, int32_t strlen, char *_Nonnull str2) {
+//   for (int i = 0; i < strlen; i += 1)
+//     str2[i] = str[i];
+// }
+// #pragma clang diagnostic pop
+// #endif
+
 // memset_explicit
 
 //====keywords as of C23

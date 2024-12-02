@@ -13,7 +13,7 @@
 
 #restore specific file
 #git restore --source=COMMITHASH filename
-#git restore -s=COMMITHASH filename
+#git restore -s COMMITHASH filename
 #root directory of current git repo
 #git rev-parse --show-toplevel
 #git restore --source HEAD@{10.minutes.ago} file.txt
@@ -26,7 +26,7 @@
 #overwrite current branch with other branch without losing content
 #git tag old-email-branch
 #git reset --hard staging
-# recover from losing (un)commited changes by git reset --hard
+# recover from losing (un)committed changes by git reset --hard
 #git reflog show
 #git reset HEAD@{2}
 
@@ -79,7 +79,7 @@ alias gshn='git --no-pager show --name-only'
 
 #change file permission
 #git ls-tree HEAD
-#git ls-tree -r branch --name-onyl *.py
+#git ls-tree -r branch --name-only *.py
 #add execution bit
 #git update-index --chmod=+x script.sh
 
@@ -414,7 +414,7 @@ alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 # merge without forward (less reliable)
 # alias gm='git merge --no-ff'
 alias gmce='git merge --edit --no-ff --commit'
-alias gmse='git merge --squash -e --comit'
+alias gmse='git merge --squash -e --commit'
 # merge with forward
 alias gm='git merge --ff-only'
 # dont forward and dont commit (most reliable)

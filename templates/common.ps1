@@ -6,6 +6,9 @@
 #====file_watcher
 #====access_control
 
+# https://4sysops.com/archives/measure-object-computing-the-size-of-folders-and-files-in-powershell/
+# https://www.gngrninja.com/script-ninja/2016/5/24/powershell-calculating-folder-sizes
+
 # ====common_paths
 # echo $profile shows powershell configuration
 # $HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
