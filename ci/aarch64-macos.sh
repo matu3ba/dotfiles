@@ -5,9 +5,9 @@
 set -o errexit # abort on nonzero exitstatus
 set -o nounset # abort on unbound variable
 
-MAX_SIZE_B=2147483648 #2 GB = 2*(1024)**3 B
+MAX_SIZE_B=2097152 #2 GB = 2*(1024)**2 KB
 ZIG_CACHE_DIR="$(zig env | jq '. "global_cache_dir"')"
-CHECK_SIZE_B=$(du -sb "$ZIG_CACHE_DIR" | cut -f1)
+CHECK_SIZE_B=$(du -ks "$ZIG_CACHE_DIR" | cut -f1)
 if test "$CHECK_SIZE_B" -ge $MAX_SIZE_B; then
   rm -fr "$ZIG_CACHE_DIR"
 fi

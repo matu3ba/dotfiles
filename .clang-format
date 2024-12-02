@@ -5,12 +5,17 @@
 # config BasedOnStyle: WebKit instead of LLVM
 # 3. default ColumnLimit: 80 instead of more sane 100 or 120
 
+# clang-format < 16
+# AlignTrailingComments: true/false
+# clang-format >= 16
+# AlignTrailingComments:
+#   Kind: Always
+#   OverEmptyLines: 0
+
 # C and C++
 ---
 AlignEscapedNewlines: Left
-AlignTrailingComments:
-  Kind: Always
-  OverEmptyLines: 0
+AlignTrailingComments: true
 BasedOnStyle: LLVM
 BraceWrapping:
   AfterCaseLabel: false

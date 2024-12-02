@@ -14,6 +14,20 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //   [[clang::unsafe_buffer_usage]] int *ptr2, buf[10];
 //   [[clang::unsafe_buffer_usage]] size_t sz;
 // };
+// backwards compat
+// #pragma clang unsafe_buffer_usage begin
+// #pragma clang unsafe_buffer_usage end
+// The heuristics for this feature can as of clang 20 not detect static
+// wraparound arrays and (often) do not distinguish between
+// 1. possible unhandled nullptr
+// 2. possible invalid pointer arithmetic
+// 3. possible out of bounds access
+
+// disable diagnostics https://clang.llvm.org/docs/DiagnosticsReference.html
+// #pragma clang diagnostic push
+// #pragma clang diagnostic ignored "-Wnullability-extension"
+// some code section
+// #pragma clang diagnostic pop
 
 // Alternative to -Wno-switch-default is to always default to using default in switch case (MISRA C),
 // but this has drawback of making any refactorings much more annoying.

@@ -7,23 +7,23 @@ const OptimizeMode = std.builtin.OptimizeMode;
 // zig build test -Dno_opt_deps -Dno_cross --summary all
 pub fn build(b: *std.Build) !void {
     const optimize: std.builtin.OptimizeMode = b.standardOptimizeOption(.{});
-    // C     fmt   lint   build   proj   nounit
-    // Cmake nofmt nolint nobuild noproj nounit
-    // Cpp   fmt   lint   build   proj   nounit
-    // Cs    nofmt nolint nobuild noproj nounit
-    // Css   nofmt nolint nobuild noproj nounit
-    // Fish  nofmt nolint nobuild noproj nounit
-    // Java  nofmt nolint nobuild noproj nounit
-    // Js    nofmt nolint nobuild noproj nounit
-    // Lua   fmt   lint   nobuild noproj nounit
-    // Nix   nofmt nolint nobuild noproj nounit
-    // Php   nofmt nolint nobuild noproj nounit
-    // Ps1   nofmt nolint nobuild noproj nounit
-    // Py    nofmt nolint nobuild noproj nounit
-    // Rs    nofmt nolint nobuild noproj nounit
-    // Sh    fmt   lint   nobuild noproj nounit
-    // Tex   nofmt nolint nobuild noproj nounit
-    // Zig   fmt   lint   build   proj   unit
+    // C   fmt lint analyze build
+    // Cmake
+    // Cpp fmt lint analyze build
+    // Cs
+    // Css
+    // Fish
+    // Java
+    // Js
+    // Lua fmt lint noanal  nobuild
+    // Nix
+    // Php
+    // Ps1
+    // Py
+    // Rs
+    // Sh  fmt lint noanal  nobuild
+    // Tex
+    // Zig fmt lint noanal  build
 
     // unplanned dependencies in $PATH
     // * go (shfmt)
@@ -46,8 +46,11 @@ pub fn build(b: *std.Build) !void {
     if (!no_opt_deps) fmtSh(b, run_step);
     fmtZig(b, run_step);
 
-    lintC(b, run_step);
-    lintCpp(b, run_step);
+    // compiler and linter error "unsafe buffer access" horrible to use.
+    // clang-tidy version in CI too old, so disable it to prevent errors
+    // and use local clang-tidy without "unsafe buffer access" errors.
+    if (!no_opt_deps) lintC(b, run_step);
+    if (!no_opt_deps) lintCpp(b, run_step);
     if (!no_opt_deps) lintLua(b, run_step);
     if (!no_opt_deps) lintSh(b, run_step);
     lintZig(b, run_step);
