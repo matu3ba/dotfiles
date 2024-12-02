@@ -43,6 +43,7 @@ windirstat for directory overview - https://windirstat.net/
 xml parser: yxml https://code.blicky.net/yorhel/yxml
 disk usage explorer: ncdu https://code.blicky.net/yorhel/ncdu or KDE filelight
 simple header testing framework: utest.h https://github.com/sheredom/utest.h
+github workflow/action validation: https://github.com/mpalmer/action-validator
 
 proprietary
 - whitebox - program execution tracer and visualizer

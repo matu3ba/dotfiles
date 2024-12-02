@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
   # not needed here https://github.com/actions/cache
-
+jobs:
   aarch64-macos:
     timeout-minutes: 20
     runs-on: "macos-latest"
