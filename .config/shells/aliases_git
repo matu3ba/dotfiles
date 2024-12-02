@@ -551,6 +551,24 @@ alias gsu='git submodule update'
 #
 # Expected unless OSS and you (can) take the time.
 
+# currently on branch 'feature' without git switch/checkout
+# from branch 'feature' to branch 'master'
+# -1 push master to upstream/master
+# git push <remote> <local_branch_name>:<remote_branch_to_push_into>
+# git push upstream master:master
+# 0. fast-forward merge
+# git fetch <remote> <sourceBranch>:<destinationBranch>
+# git fetch . feature:master
+# 1. merge with merge commit + push
+# git switch master && git merge --no-ff --no-commit && git switch feature
+# git switch master && git merge --no-ff --no-commit && git switch feature && git push upstream master:master
+# 2. quash and merge + push
+# git switch master && git merge --squash && git switch feature
+# git switch master && git merge --squash && git switch feature && git push upstream master:master
+# 3. rebase and merge + push
+# git rebase master feature && git fetch . feature:master
+# git rebase master feature && git fetch . feature:master && git push upstream master:master
+
 #====checks
 #has git: git rev-parse --is-inside-work-tree
 #git commit sha: git rev-parse HEAD
