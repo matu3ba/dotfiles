@@ -10,9 +10,10 @@ concurrency:
   group: ${{ github.head_ref || github.run_id }}-${{ github.actor }}
   cancel-in-progress: true
 
-# not needed here https://github.com/actions/cache
+  # not needed here https://github.com/actions/cache
 
   aarch64-macos:
+    timeout-minutes: 20
     runs-on: "macos-latest"
     env:
       ARCH: "aarch64"
@@ -27,6 +28,7 @@ concurrency:
       - name: Build and Test
         run: ci/aarch64-macos.sh
   x86_64-linux:
+    timeout-minutes: 20
     runs-on: "ubuntu-latest"
     env:
       ARCH: "x86_64"
@@ -41,6 +43,7 @@ concurrency:
       - name: Build and Test
         run: ci/x86_64-linux.sh
   x86_64-windows:
+    timeout-minutes: 20
     runs-on: "windows-latest"
     env:
       ARCH: "x86_64"
