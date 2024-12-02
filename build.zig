@@ -40,8 +40,8 @@ pub fn build(b: *std.Build) !void {
     // * zig
     const run_step = b.step("test", "Test with mandatory dependencies");
 
-    fmtC(b, run_step);
-    fmtCpp(b, run_step);
+    if (!no_opt_deps) fmtC(b, run_step);
+    if (!no_opt_deps) fmtCpp(b, run_step);
     if (!no_opt_deps) fmtLua(b, run_step);
     if (!no_opt_deps) fmtSh(b, run_step);
     fmtZig(b, run_step);

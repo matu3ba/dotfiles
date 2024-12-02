@@ -6,16 +6,15 @@ function CheckLastExitCode {
 
 $MAX_SIZE_B = 2147483648 #2 GB = 2*(1024)**3 B
 [string] $ZIG_CACHE_DIR = $(zig env | jq '. "global_cache_dir"')
-$CHECK_SIZE_B = ((gci $ZIG_CACHE_DIR | measure Length -s).Sum
-if ($CHECK_SIZE_B -gt $MAX_SIZE_B) {
-  Remove-Item -Recurse -Force -ErrorAction Ignore -Path $ZIG_CACHE_DIR
-  CheckLastExitCode
+if (Test-Path $ZIG_CACHE_DIR) {
+  $CHECK_SIZE_B = (gci $ZIG_CACHE_DIR | measure Length -s).Sum
+  if ($CHECK_SIZE_B -gt $MAX_SIZE_B) {
+    Write-Host "Removing global zig cache dir.."
+    Remove-Item -Recurse -Force -ErrorAction Ignore -Path $ZIG_CACHE_DIR
+    CheckLastExitCode
+  }
 }
 
-clang-format --version
-CheckLastExitCode
-clang-tidy --version
-CheckLastExitCode
 zig env
 CheckLastExitCode
 
