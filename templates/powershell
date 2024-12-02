@@ -31,7 +31,7 @@ SHENNANIGAN Windows might return Access Denied, if running out of space
 Username and password is handles via directory letter (net use D: ..)
 reliably copy over network with retries
 #   0          1     2      3      4   5          6           7          8     9
-# cmd         src  dest   what  time? exclusive nojobheader nosummary reapeat wait_until_repeat
+# cmd         src  dest   what  time? exclusive nojobheader nosummary  repeat wait_until_repeat
 robocopy.exe $src $dest filename /eta /xx       /njh        /njs       /R:0   /W:5
 robocopy $src $dest *.exe /eta /xx /njh /njs /R:0 /W:5
 robocopy $src $dest *.dll /eta /xx /njh /njs /R:0 /W:5
@@ -42,7 +42,7 @@ leading to the same result as -Container:$false
 - '-r' and '-fo' options are not mentioned in the powershell reference
 
 delete recursively files:
-rm -r -fo somedir
+rm -fo -r somedir
 
 New-item -Path ".\target\dir2" -ItemType Directory -Force
 mkdir -p ".\target\dir2"

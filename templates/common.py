@@ -51,6 +51,7 @@ with urllib.request.urlopen(req) as response:
 
 # JSON operations can also be done with jq
 # jq '. | length'
+# jq '. | selected_field'
 
 # Python is unreliable on getting the local ip address
 # One usually has multiple ip addresses with at least localhost=127.0.0.1,

@@ -1,6 +1,13 @@
 #!/usr/bin/env sh
 # Posix examples largely compliant with bash shell.
 
+# The following script assumes filenames do not contain
+# control characters and dont contain leading dashes(-).
+set -o errexit # abort on nonzero exitstatus
+set -o nounset # abort on unbound variable
+# set -o pipefail        # (not posix only) don't hide errors within pipes
+# IFS="$(printf '\n\t')" # change IFS to just newline and tab
+
 set -e
 CWD=$(pwd)
 trap cd "${CWD}" EXIT HUP INT QUIT TERM

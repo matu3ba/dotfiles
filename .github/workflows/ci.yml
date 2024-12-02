@@ -1,5 +1,4 @@
 name: ci
-
 on:
   push:
     branches:
@@ -13,24 +12,45 @@ concurrency:
 
 # not needed here https://github.com/actions/cache
 
-jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    timeout-minutes: 30
-    runs-on: ${{ matrix.os }}
+  aarch64-macos:
+    runs-on: "macos-latest"
+    env:
+      ARCH: "aarch64"
     steps:
-      - uses: actions/checkout@v4
-      - uses: mlugg/setup-zig@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
         with:
           version: master
           mirror: 'https://pkg.machengine.org/zig'
-
-      # TODO: clean cache, if size of ~/.cache/zig > 5GB
-
-      - run: zig env
-
-      - name: Run Tests
-        run: zig build -Dno_opt_deps -Dno_cross test --summary all
+      - name: Build and Test
+        run: ci/aarch64-macos.sh
+  x86_64-linux:
+    runs-on: "ubuntu-latest"
+    env:
+      ARCH: "x86_64"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: master
+          mirror: 'https://pkg.machengine.org/zig'
+      - name: Build and Test
+        run: ci/x86_64-linux.sh
+  x86_64-windows:
+    runs-on: "windows-latest"
+    env:
+      ARCH: "x86_64"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: master
+          mirror: 'https://pkg.machengine.org/zig'
+      - name: Build and Test
+        run: ci/x86_64-windows.ps1
