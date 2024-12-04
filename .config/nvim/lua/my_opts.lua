@@ -112,7 +112,7 @@ local function load_options()
   vim.o.smartindent = true
   vim.o.termguicolors = true
   -- neovim core has to this date no path functions + separator in core and neither stdpath
-  vim.o.undodir = utils.pathJoin(vim.fn.stdpath 'state', 'undodir') --undodir
+  vim.o.undodir = utils.pathJoin(tostring(vim.fn.stdpath 'state'), 'undodir') --undodir
   vim.o.undofile = true
   vim.o.updatetime = 50
   vim.o.wildmode = 'longest,list' --C-d: possible completions, C-n|p cycle results
@@ -143,7 +143,7 @@ local function load_options()
   -- disable with -n or :set noswapfile
   --   nvim -u NONE or use less
   --   unusing all the plugins etc https://github.com/LunarVim/bigfile.nvim
-  vim.o.directory = utils.pathJoin(vim.fn.stdpath 'state', 'swap') --swap directory
+  vim.o.directory = utils.pathJoin(tostring(vim.fn.stdpath 'state'), 'swap') --swap directory
   vim.o.swapfile = true
   -- spell: 'z=', 'zW', 'zg', 'zG', 'zw', 'zuW', 'zug', 'zuG', 'zuw'
 
@@ -177,8 +177,8 @@ local function load_options()
   -- note: https://stackoverflow.com/a/159065
   -- vim.bo.expandtab = false --use Tab character on pressing Tab key
   -- vim.bo.expandtab = false --expand tabs to spaces: use fuzzy impl
-  -- vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indendation
-  -- vim.bo.tabstop = 2 --Tab key: number of spaces for indendation
+  -- vim.bo.shiftwidth = 2 --visual mode >,<-key: number of spaces for indentation
+  -- vim.bo.tabstop = 2 --Tab key: number of spaces for indentation
   -- tabstop/expandtab breaks inconsistently for c++ and lua
 
   -- :retab just works, so no need for extab

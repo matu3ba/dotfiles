@@ -94,7 +94,7 @@ local function git_statusline()
 end
 
 local function get_cwd()
-  local cwd = vim.loop.cwd()
+  local cwd = vim.uv.cwd()
   if cwd == nil then
     return ''
   else

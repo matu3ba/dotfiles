@@ -561,7 +561,7 @@ end, {})
 --   print(vim.bo.commentstring)
 -- end, {})
 
-add_cmd('PrintCwd', function() print(vim.loop.cwd()) end, {})
+add_cmd('PrintCwd', function() print(vim.uv.cwd()) end, {})
 
 add_cmd('PrintAllWinOptions', function()
   local win_number = api.nvim_get_current_win()

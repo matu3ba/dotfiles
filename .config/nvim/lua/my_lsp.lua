@@ -48,22 +48,21 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 --==PluginChecks
 
--- neodev has setup in my_dap.lua
-local has_neodev, neodev = pcall(require, 'neodev')
-if has_neodev then neodev.setup {
-  library = { plugins = { 'nvim-dap-ui' }, types = true },
-} end
-
-local has_cmp, cmp = pcall(require, 'cmp')
 local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
-if not has_cmp or not has_lspconfig then
-  print 'Please install hrsh7th/nvim-cmp and neovim/nvim-lspconfig'
+if not has_lspconfig then
+  print 'Please install neovim/nvim-lspconfig'
   return
 end
 
-local has_cmpnvimlsp, cmpnvimlsp = pcall(require, 'cmp_nvim_lsp')
-if not has_cmpnvimlsp then
-  print 'Please install hrsh7th/cmp-nvim-lsp'
+local has_lazydev, lazydev = pcall(require, 'lazydev')
+if not has_lazydev then
+  print 'Please install folke/lazydev.nvim'
+  return
+end
+
+local has_blink, blink = pcall(require, 'blink.cmp')
+if not has_blink then
+  print 'Please install Saghen/blink.cmp'
   return
 end
 
@@ -77,26 +76,24 @@ end
 
 --==LspConfigurations
 
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
--- capabilities.textDocument.completion.completionItem.snippetSupport = true
+lazydev.setup {
+  library = {
+    -- Load luvit types when the `vim.uv` word is found
+    { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+  },
+  -- stylua: ignore start
+  enabled = function(root_dir)
+    vim.print(root_dir)
+    return (vim.g.lazydev_enabled == nil or vim.g.lazydev_enabled)
+      and (not vim.uv.fs_stat(root_dir .. '/.luarc.json'))
+  end,
+  -- stylua: ignore end
+}
 
-local common_capabilities = cmpnvimlsp.default_capabilities() -- get the cmp_nvim_lsp ones
-
+local common_capabilities = blink.get_lsp_capabilities()
 local common_on_attach = function(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then navic.attach(client, bufnr) end
 end
-
--- local lsps_with_common_setup = {"clangd", "julials", "rust_analyzer", "zls"}
--- Common setup function for lsps.
--- local common_setup = function(lsp)
---   lspconfig.lsp_name.setup {
---     capabilities = common_capabilities,
---     on_attach = common_on_attach,
---   }
--- end
--- for _, lsp_n in ipairs(lsps_with_common_setup) do
---   common_setup(lsp_n)
--- end
 
 -- stylua: ignore start
 -- TODO https://www.reddit.com/r/neovim/comments/17j0p58/clangd_lsp_for_header_files_as_well_as_source_code/
@@ -150,10 +147,10 @@ lspconfig.lua_ls.setup {
     -- :lua local file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(client.config.settings) .. "\n"); file:close()
 
     -- :lua print(client.workspace_folders[1].name .. "\n")
-    -- :lua print(tostring(not vim.loop.fs_stat(client.workspace_folders[1].name..'/.luarc.json')) .. "\n")
-    -- :lua print(tostring(not vim.loop.fs_stat(client.workspace_folders[1].name..'/.luarc.jsonc')) .. "\n")
+    -- :lua print(tostring(not vim.uv.fs_stat(client.workspace_folders[1].name..'/.luarc.json')) .. "\n")
+    -- :lua print(tostring(not vim.uv.fs_stat(client.workspace_folders[1].name..'/.luarc.jsonc')) .. "\n")
 
-    if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+    if not vim.uv.fs_stat(path .. '/.luarc.json') and not vim.uv.fs_stat(path .. '/.luarc.jsonc') then
       -- vim.print("special client setup")
       client.config.settings = vim.tbl_deep_extend('force', client.config.settings.Lua, {
         -- cmd = { sumneko_binary, "--logpath", "$HOME/.cache/lua-language-server/", "--metapath", "$HOME/.cache/lua-language-server/meta/"}
@@ -179,7 +176,6 @@ lspconfig.lua_ls.setup {
 
 --==Keybindings
 vim.api.nvim_create_autocmd('LspAttach', {
-  -- group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   group = aucmd_lsp,
   callback = function(ev)
     -- Enable completion triggered by <c-x><c-o>
@@ -245,7 +241,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
 
     -- vim.keymap.set('n', '<leader>hi', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end, opts)
-    -- defaults with neovim realease 10.0
+    -- defaults with neovim release 10.0
     -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
     vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
@@ -270,7 +266,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start {
       name = 'Ziggy LSP',
       cmd = { 'ziggy', 'lsp' },
-      root_dir = vim.loop.cwd(),
+      root_dir = vim.uv.cwd(),
       flags = { exit_timeout = 1000, debounce_text_changes = 150 },
     }
   end,
@@ -283,7 +279,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.lsp.start {
       name = 'Ziggy LSP',
       cmd = { 'ziggy', 'lsp', '--schema' },
-      root_dir = vim.loop.cwd(),
+      root_dir = vim.uv.cwd(),
       flags = { exit_timeout = 1000, debounce_text_changes = 150 },
     }
   end,
@@ -296,63 +292,91 @@ vim.api.nvim_create_autocmd('FileType', {
 --     vim.lsp.start {
 --       name = 'SuperHTML LSP',
 --       cmd = { 'superhtml', 'lsp' },
---       root_dir = vim.loop.cwd(),
+--       root_dir = vim.uv.cwd(),
 --       flags = { exit_timeout = 1000, debounce_text_changes = 150, },
 --     }
 --   end,
 -- })
 
 --==CompleterSetup
-cmp.setup {
-  mapping = {
-    ['<C-leader>'] = cmp.mapping.complete(),
-    ['<C-y>'] = cmp.mapping.confirm { select = true },
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-d>'] = cmp.mapping.scroll_docs(4),
-    ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item()), -- needed for unknown reasons
-    ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item()),
-    -- C-b (back) C-f (forward) for snippet placeholder navigation. TODO not working?
-    -- ['<C-t>'] = cmp.mapping.complete({
-    --     config = {
-    --       sources = {
-    --         { name = 'tags' },
-    --       }
-    --     }
-    -- })
-    -- No selection annoyance (= 1 less keypress)
-    --['<CR>'] = cmp.mapping.confirm { -- Accept currently selected item.
-    --  behavior = cmp.ConfirmBehavior.Replace,
-    --  select = true,
-    --},
+blink.setup {
+  appearance = {
+    use_nvim_cmp_as_default = true,
+    nerd_font_variant = 'mono',
   },
-
-  snippet = {
-    expand = function(args) vim.snippet.expand(args.body) end,
-  },
+  keymap = { preset = 'default' },
   sources = {
-    { name = 'path' },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'nvim_lsp', keyword_length = 3 },
-    {
-      name = 'buffer',
-      keyword_length = 5,
-      option = {
-        get_bufnrs = function() return vim.api.nvim_list_bufs() end,
-      },
+    completion = {
+      enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
+    },
+    providers = {
+      -- dont show LuaLS require statements when lazydev has items
+      lsp = { fallback_for = { 'lazydev' } },
+      lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink' },
     },
   },
-  -- window = {
+  -- default trigger = {},
+  -- default windows = {},
+  -- experimental brackets support
+  -- completion = {
+  --   accept = {
+  --     auto_brackets = { enabled = true },
+  --   },
   -- },
+  -- experimental signatures support
+  -- signature = { enabled = true },
 }
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
 
-  sources = cmp.config.sources {
-    { name = 'cmdline' },
-  },
-  matching = { disallow_symbol_nonprefix_matching = false },
-})
+-- cmp.setup {
+--   mapping = {
+--     ['<C-leader>'] = cmp.mapping.complete(),
+--     ['<C-y>'] = cmp.mapping.confirm { select = true },
+--     ['<C-e>'] = cmp.mapping.abort(),
+--     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+--     ['<C-d>'] = cmp.mapping.scroll_docs(4),
+--     ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item()), -- needed for unknown reasons
+--     ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item()),
+--     -- C-b (back) C-f (forward) for snippet placeholder navigation. TODO not working?
+--     -- ['<C-t>'] = cmp.mapping.complete({
+--     --     config = {
+--     --       sources = {
+--     --         { name = 'tags' },
+--     --       }
+--     --     }
+--     -- })
+--     -- No selection annoyance (= 1 less keypress)
+--     --['<CR>'] = cmp.mapping.confirm { -- Accept currently selected item.
+--     --  behavior = cmp.ConfirmBehavior.Replace,
+--     --  select = true,
+--     --},
+--   },
+--
+--   snippet = {
+--     expand = function(args) vim.snippet.expand(args.body) end,
+--   },
+--   sources = {
+--     { name = 'path' },
+--     { name = 'nvim_lsp_signature_help' },
+--     { name = 'nvim_lsp', keyword_length = 3 },
+--     {
+--       name = 'buffer',
+--       keyword_length = 5,
+--       option = {
+--         get_bufnrs = function() return vim.api.nvim_list_bufs() end,
+--       },
+--     },
+--   },
+--   -- window = {
+--   -- },
+-- }
+-- cmp.setup.cmdline(':', {
+--   mapping = cmp.mapping.preset.cmdline(),
+--
+--   sources = cmp.config.sources {
+--     { name = 'cmdline' },
+--   },
+--   matching = { disallow_symbol_nonprefix_matching = false },
+-- })
 
 -- incomplete workaround C-y for confirmation in cmd-cmpline not working
 -- https://github.com/hrsh7th/nvim-cmp/issues/692

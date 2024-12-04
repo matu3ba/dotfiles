@@ -22,9 +22,8 @@ require 'my_opts'
 -- set environment variable NVIM_APPNAME to use $XDG_CONFIG_HOME/NVIM_APPNAME
 -- NVIM_APPNAME=nvim is implicit, iff NVIM_APPNAME is not defined.
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
--- local has_lazy = vim.uv.fs_stat(lazypath)
 -- workaround git commit failure
-local has_lazy = vim.loop.fs_stat(lazypath)
+local has_lazy = vim.uv.fs_stat(lazypath)
 if not has_lazy then
   print 'Please install lazy, instructions in init.lua'
 else
@@ -90,7 +89,6 @@ else
   -- require 'my_diffview' -- cycle through diffs for modified files and git rev
   require 'my_hydra' -- multi_mode
   require 'my_dap' -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
-  -- neodev setup is in my_dap
   require 'my_lsp' -- setup in my_nvimcmp.lua
   require 'my_lint' -- setup in my_lint.lua
   require 'my_statusline' -- statusline
@@ -117,7 +115,7 @@ else
     callback = function()
       vim.fn.mkdir(lazy_snapshot_dir, 'p')
       local snapshot = lazy_snapshot_dir .. os.date '/%Y-%m-%dT%H:%M:%S.json'
-      vim.loop.fs_copyfile(lockfile, snapshot)
+      vim.uv.fs_copyfile(lockfile, snapshot)
     end,
   })
 end

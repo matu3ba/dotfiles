@@ -136,7 +136,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 --       context = { only = { 'source.fixAll' } },
 --       apply = true,
 --     }
---     vim.loop.sleep(5)
+--     vim.uv.sleep(5)
 --     -- SHENNANIGAN conform.nvim can screw up formatting the first time
 --     vim.lsp.buf.format()
 --   end,
@@ -198,7 +198,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 -- unused conform formatter for 'conform.setup'
 -- clang_format = function()
---   local cwd = assert(vim.loop.cwd())
+--   local cwd = assert(vim.uv.cwd())
 --   -- find path/.clang-format
 --   for dir in vim.fs.parents(cwd) do
 --     local fh = io.open(dir, "r")

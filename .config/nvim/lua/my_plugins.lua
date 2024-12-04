@@ -47,27 +47,67 @@ return {
   -- Note: omnifunction or completefunc is typically used by plugin, so may not
   -- be available to user (here it is not due to usage of nvim-cmp).
 
-  -- { 'rafcamlet/nvim-luapad' }, -- lua dev
-  { 'folke/neodev.nvim', opts = {} }, -- lua dev
-  -- lazydev?
-
   { --==LSP
     { 'neovim/nvim-lspconfig' }, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
     -- Autocompletion
-    { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
-    { 'hrsh7th/cmp-nvim-lsp' }, -- LSP source for nvim-cmp
+    -- activate/deactive vim.g.lazydev_enabled = false
+    -- :LazyDev debug, :LazyDev lsp
+    { 'folke/lazydev.nvim' }, -- lua dev, setup in my_lsp.lua
+    -- { 'rafcamlet/nvim-luapad' }, -- lua dev
+
+    {
+      'saghen/blink.cmp',
+      lazy = false,
+      dependencies = 'rafamadriz/friendly-snippets',
+      version = 'v0.*',
+      build = 'cargo build --release',
+      ---@module 'blink.cmp'
+      ---@type blink.cmp.Config
+      opts = {
+        keymap = { preset = 'default' },
+        appearance = {
+          use_nvim_cmp_as_default = true,
+          nerd_font_variant = 'mono',
+        },
+        sources = {
+          completion = {
+            enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
+          },
+          providers = {
+            -- dont show LuaLS require statements when lazydev has items
+            lsp = { fallback_for = { 'lazydev' } },
+            lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink' },
+          },
+        },
+        -- experimental bracketing and signature support
+        -- completion = {
+        --   accept = {
+        --     auto_brackets = { enabled = true },
+        --   },
+        -- },
+        -- signature = { enabled = true },
+      },
+      -- opts_extend. defines list-like tables that will be
+      -- merged by lazy.nvim instead of overwritten
+      -- opts_extend = { "sources.completion.enabled_providers" },
+    },
+    -- { 'Saghen/blink.cmp' },
+
+    -- { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
+    -- { 'hrsh7th/cmp-nvim-lsp' }, -- LSP source for nvim-cmp
     -- { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
     -- { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
     -- Optional
     {
       'williamboman/mason.nvim',
+      ---@diagnostic disable-next-line: param-type-mismatch
       build = function() pcall(vim.cmd, 'MasonUpdate') end,
     },
     -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
-    { 'hrsh7th/cmp-buffer' },
-    { 'hrsh7th/cmp-nvim-lua' },
-    { 'hrsh7th/cmp-path' },
-    { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+    -- { 'hrsh7th/cmp-buffer' },
+    -- { 'hrsh7th/cmp-nvim-lua' },
+    -- { 'hrsh7th/cmp-path' },
+    -- { 'hrsh7th/cmp-nvim-lsp-signature-help' },
   },
 
   --==cmd line completions (breaks cmdline visuals for :echo $<C-d>)
@@ -75,7 +115,7 @@ return {
   --               * for open source projects GitHub Copilot
   --               * Claude or o1-preview on my codebase to get intent of code;
   --               validate to find issues and improvements
-  { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
+  -- { 'hrsh7th/cmp-cmdline' }, -- completions for :e, /
 
   --==macros
   -- { 'ecthelionvi/NeoComposer.nvim', dependencies = { 'kkharji/sqlite.lua' } }, -- idea for macros
