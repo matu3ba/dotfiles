@@ -9,6 +9,13 @@ const builtin = @import("builtin");
 //====keywords
 //====builtins
 
+// Exclusive Options for handling resource R
+// 1. Either R is acquired and released in main
+// 2. main allocates N instances of R, the rest of the code explicitly juggles this finite pool of N.
+// This juggling typically doesn't involve memory managing at all, as, at this level of precision, so you only code the happy path
+// 3. some sort of arena, where a bunch of resources have a single owner, users dont bother cleaning
+// up their resources, and instead the owner does it once at the end
+
 // Tools (common vs special)
 // kcov [obsolete] - https://github.com/liyu1981/kcov
 // tracy - https://github.com/wolfpld/tracy

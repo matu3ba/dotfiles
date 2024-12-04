@@ -76,6 +76,16 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // * deadlock/livelock problems: typestate programming (encode allowed and disallowed automata over fns)
 
 // best practice compilation times
+// * https://codingnest.com/the-little-things-speeding-up-c-compilation/
+//   - include less, ideally IWYU https://include-what-you-use.org/
+//   - forward decls
+//   - replace 'throw foo;' with '[[noreturn]] void throw_foo(char const* msg)'
+//   - hidden friend
+//    struct A {
+//        friend int operator<<(A, int); // hidden friend
+//        friend int operator<<(int, A); // not a hidden friend
+//    };
+//    int operator<<(int, A);
 // * prefer c headers
 // * no #include <algorithm>
 // * no #include <iostream>
@@ -89,11 +99,15 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //     still attempt to rebuild the entire dependency chain.
 //   - modules work with precompiled headers
 // * sccache https://github.com/mozilla/sccache
+// or distcc https://www.distcc.org/ with distcc server container
+// https://developers.redhat.com/blog/2019/05/15/2-tips-to-make-your-c-projects-compile-3-times-faster
 // * -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 //   export CMAKE_CXX_COMPILER_LAUNCHER=ccache
 //   cmake -S ... -B ...
-// * use std::span,
+// * use std::span, it is very cheap
 // * <spanstream>
+// * https://vitaut.net/posts/2024/faster-cpp-compile-times/
+// * https://vitaut.net/posts/2024/binary-size/
 // * https://learnmoderncpp.com/2023/12/29/replacing-the-preprocessor-in-modern-c/
 //   - replace #define with 'static constexpr' and 'auto lambda_fn = [](auto ..) {}'
 //   - templates instead of type params (or write out coercible types): template <typename T> T square(T n) { return n * n; }
@@ -126,6 +140,9 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 
 // best practice custom allocator
 // https://johnfarrier.com/custom-allocators-in-c-high-performance-memory-management/
+
+// list of undefined behavior https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1705r1.html
+// partial program correctness (yet unused) https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p1494r4.html
 
 // C++ tooling mandates C++17 or compatible C++ compiler with features
 // https://github.com/andreasfertig/cppinsights
@@ -2571,6 +2588,7 @@ void use_is_stl_container() {
 // * added "constinit" to force static initilaization + offer mutability
 // instead of constant `constexpr static`
 // * improving readability of templates via concepts
+// * std::format
 
 // SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc.
 // Do not nest concepts to prevent breaking of concept composition rules
@@ -2658,6 +2676,14 @@ void use_comptime() {
 #ifndef __has_include
 #error "C++20 should have __has_include"
 #endif // __has_include
+
+#include <numbers>
+void use_format();
+void use_format() {
+  std::string fmted = std::format("{}", std::numbers::pi_v<double>);
+  std::cout << fmted;
+  // SHENNANIGAN std::print not part of C++20
+}
 
 #endif // HAS_CPP20
 

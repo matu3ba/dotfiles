@@ -1,3 +1,43 @@
+
+fault-tolerance?
+consistency?
+service discovery?
+
+====future
+https://www.macchaffee.com/blog/2024/the-next-platform/
+app needed
+* can accept tcp + http from internet
+* can store state which is highly-available, secure and backed-up
+* can manage app configs and secrets
+* can collect logs, metrics and other debug infos from app
+* can easily deploy new versions of app
+infra needed
+* custom hw/network/security
+* edge connectivity
+* compat with legacy apps
+* can run on-premise
+* affordable at scale
+unclear parts:
+* core use cases of Kubernetes
+  - 1. gobble together unreliable applications
+  - 2. do on-demand scaling
+    2.1 without performance optimizations of an application or
+    2.2 buying/scaling infrastructure
+* reasonable implementation and configuration complexity?
+* few advantages of self-hosting for optimizing cross-pod 1. bandwidth or 2. latency guarantees
+  - less often used/likely: hard real-time capable control solutions
+  - soft real-time capable control solutions
+  - better time sync
+  - meaningful time diagnostics to understand network<->application
+  https://community.fs.com/encyclopedia/network-slicing.html
+* make more system data part of the resource management scheduling plan (when
+  what device can serve how much traffic and what the network prediction is)
+  => simpler to use and portable SLURM with real-time stuff usable for cloud
+  => see "HPC cluster management software"
+* maybe vertical scaling always means giving up (high) control on latency and
+  resource efficiency (to a degree) or having (unreasonable) complex system
+  configurations?
+
 ====scheduler_control
 * kubernetes as framework to integrate and control containers of own and hosted solutions
 

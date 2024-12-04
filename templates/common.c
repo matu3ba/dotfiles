@@ -68,6 +68,80 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 //====signaling_win
 //====printf_formatter
 
+// best practice compilation time
+// * https://codingnest.com/the-little-things-speeding-up-c-compilation/
+//   - include less, ideally IWYU https://include-what-you-use.org/
+//   - forward decls
+// * sccache https://github.com/mozilla/sccache
+// * avoid macros and macro nesting and macro deps, if possible
+// https://interrupt.memfault.com/blog/improving-compilation-times-c-cpp-projects
+
+// best practice resource handling
+// * Simple options for handling resource R
+//   - 1. Either R is acquired and released in main
+//   - 2. main allocates N instances of R, the rest of the code explicitly juggles this finite pool of N.
+//     This juggling typically doesn't involve memory managing at all, as, at this level of precision, so you only code the happy path
+//   - 3. some sort of arena, where a bunch of resources have a single owner, users dont bother cleaning
+//     up their resources, and instead the owner does it once at the end
+// * defer pattern with jump labels
+int32_t defer_in_c(void);
+int32_t defer_in_c(void) {
+  int32_t st = 0;
+
+  int32_t *var1 = malloc(sizeof(int32_t));
+  *var1 = 10;
+  int32_t wr_st1 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
+  if (wr_st1 <= 0) {
+    st = 1;
+    goto DEFER_CLEANUP1;
+  }
+
+  int32_t *var2 = malloc(sizeof(int32_t));
+  *var2 = 20;
+  int32_t wr_st2 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
+  if (wr_st2 <= 0) {
+    st = 1;
+    goto DEFER_CLEANUP2;
+  }
+
+DEFER_CLEANUP2:
+  free(var2);
+DEFER_CLEANUP1:
+  free(var1);
+
+  return st;
+}
+// * errdefer pattern with jump labels
+int32_t *errdefer_in_c(void);
+int32_t *errdefer_in_c(void) {
+  int32_t st = 0;
+  int32_t *var1 = malloc(sizeof(int32_t));
+  *var1 = 10;
+  int32_t wr_st1 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
+  if (wr_st1 <= 0) {
+    goto ERRDEFER_CLEANUP1;
+  }
+
+  int32_t *var2 = malloc(sizeof(int32_t));
+  *var2 = 30;
+  int32_t wr_st2 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
+  if (wr_st2 <= 0) {
+    st = 1;
+    goto DEFER_CLEANUP2;
+  }
+
+DEFER_CLEANUP2:
+  free(var2);
+
+  if (st == 0)
+    return var1;
+
+ERRDEFER_CLEANUP1:
+  free(var1);
+
+  return NULLPTR;
+}
+
 //====tooling
 // cerberus
 // clang-tidy
@@ -82,6 +156,9 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // * maps lots of virtual memory
 // * only as good as coverage
 // * ASan, UBSan, LSan, TSan, MSan
+// no zero-runtime cost type-safe printf possible without adding more powerful
+// meta-programming (or stack-based macros for iterating),
+// see https://github.com/moehriegitt/vastringify
 
 // string handling https://github.com/skullchap/chadstr
 
@@ -161,6 +238,55 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // - an aggregate or union type that includes one of the aforementioned types among its members (including, recursively, a member of a subaggregate or contained union), or
 // - a character type."
 // => assume: Access upholds (&array[0] <= ptr && ptr < &array[len+1])
+
+// bound check annotations https://clang.llvm.org/docs/BoundsSafety.html
+// * -fbounds-safety
+// * int32_t * __counted_by(N) ptr_name
+// * __single is default annotation for visible ptrs
+// * __counted_by: ptr points to N elems of pointee type,
+// * __sized_by: ptr points to memory that contain N bytes
+// * __ended_by: final ptr value not allowed to be dereferenced
+struct wide_pointer_datalayout {
+  void *pointer;     // Address used for dereferences and pointer arithmetic
+  void *upper_bound; // Points one past the highest address that can be accessed
+  void *lower_bound; // (Optional) Points to lowest address that can be accessed
+};
+// * without annotation local pointer variable is implicitly __bidi_indexable
+// * otherwise use __indexable for no explicit lower bound
+// * C strings are implicitly __null_terminated as special case of __terminated_by(T)
+// * __unsafe_terminated_by_to_indexable(P, T), __unsafe_null_terminated_to_indexable(P) to convert
+// __terminated_by pointer P to an __indexable pointer
+// * __unsafe_indexable behave like plain C pointers, typically used for ptrs by system code
+// * __unsafe_terminated_by_from_indexable(T, PTR [, PTR_TO_TERM])
+// * __unsafe_forge_terminated_by(T, P, E)
+
+#if defined(__clang__) && defined(HAS_C23)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wbuiltin-macro-redefined"
+#pragma clang diagnostic ignored "-Wmacro-redefined"
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#if defined(__has_feature) && __has_feature(bounds_safety)
+#define __counted_by(T) __attribute__((__counted_by__(T)))
+// ... other bounds annotations
+#else
+#define __counted_by(T) // defined as nothing
+// ... other bounds annotations
+#endif
+#pragma clang diagnostic pop
+#endif
+
+#if defined(__clang__) && defined(HAS_C23)
+size_t use_counted_by(char *__counted_by(len) ptr, size_t len);
+size_t use_counted_by(char *__counted_by(len) ptr, size_t len) {
+  size_t str_len = 0;
+  for (size_t i = 0; i < len; i += 1) {
+    if (ptr[i] == 0)
+      break;
+    str_len += 1;
+  }
+  return str_len;
+}
+#endif
 
 // https://faultlore.com/blah/tower-of-weakenings/#the-tower-of-weakenings
 // https://lwn.net/Articles/990273/

@@ -341,8 +341,10 @@ local _is_startpos_after_endpos = function(start_pos, end_pos)
   return false
 end
 
--- returns start_(line,col), end_(line,col) each 1,0 index
--- if selection was from visual line mode, then end_col == vim.v.maxcol
+-- returns start_(line,col), end_(line,col) each 1,0 index for last selection
+-- it is {{0,0}, {0,0}} if no selection history is known on file buffer
+-- if selection was from visual line mode, then
+-- vstart[1] == 0 and vstart[1] == vim.v.maxcol
 -- block and visual mode are not distinguishable
 M.getSelectionForCmd = function() return { vim.api.nvim_buf_get_mark(0, '<'), vim.api.nvim_buf_get_mark(0, '>') } end
 -- {vstart,end} with each being {bufnum, lnum, col, off}
@@ -353,6 +355,34 @@ M.getSelectionForKeys = function()
     vstart, vend = vend, vstart
   end
   return { vstart, vend }
+end
+
+--- Check, if cursor is on either start line or end line of given interval [row,col]
+---@param start_end ?table start_end to check for
+M.isCursorAtRowOfInterval = function(start_end)
+  if start_end == nil then return false end
+  if start_end[1] == nil or start_end[2] == nil then return false end
+  local cursor_row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+  return start_end[1][1] == cursor_row or start_end[2][1] == cursor_row
+end
+
+--- Print or replace selection with os.date fmt string, if cursor at start or
+--- end line of previous file selection.
+---@param os_fmt ?string formatting string for os.date(os_fmt)
+M.printOrReplaceOsDate = function(os_fmt)
+  local os_date_str
+  if os_fmt == nil then
+    os_date_str = tostring(os.date())
+  else
+    os_date_str = tostring(os.date(os_fmt))
+  end
+  local start_end = M.getSelectionForCmd()
+  if M.isCursorAtRowOfInterval(start_end) then
+    -- print("replace [",start_end[1][1],",", start_end[2][1], "] with", os.date("%Y%m%d"))
+    vim.api.nvim_buf_set_lines(0, start_end[1][1] - 1, start_end[2][1], true, { os_date_str })
+  else
+    print(os_date_str)
+  end
 end
 
 -- Keep cursor and join next line without empty space, if existing

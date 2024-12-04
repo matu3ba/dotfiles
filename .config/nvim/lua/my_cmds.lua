@@ -392,7 +392,9 @@ add_cmd('FCol', function()
   setCursorInfo(vim.fs.basename(api.nvim_buf_get_name(0)), line_col_pair[1], line_col_pair[2])
 end, {})
 add_cmd('ShAbsPath', function() print(vim.fn.expand '%:p') end, {})
-add_cmd('ShDate', function() print(os.date()) end, {})
+add_cmd('ShDay', function() utils.printOrReplaceOsDate("%Y%m%d") end, { range=true })
+add_cmd('ShTime', function() utils.printOrReplaceOsDate("%H:%M:%S") end, { range=true })
+add_cmd('ShDate', function() utils.printOrReplaceOsDate("") end, { range=true })
 -- stylua: ignore end
 
 --==zig

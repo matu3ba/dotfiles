@@ -17,7 +17,7 @@ Summary of content.
    while IFS="" read -r -d "" file ; do ...
      # Use "${file}" not $file everywhere.
    done
-3. Do not display filenames (or other stuff) from anthing that could be untrusted
+3. Do not display filenames (or other stuff) from anything that could be untrusted
    - filenames can include control characters and modify the terminal
    => Pipe them to a file or editor for inspection, if you are unsure.
    If unsure, goto point 5.
