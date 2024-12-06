@@ -5,6 +5,22 @@
 local has_plenary, plenary = pcall(require, 'plenary')
 if not has_plenary then vim.print 'Please install plenary for all features.' end
 
+-- run commands
+-- :! {cmd}, !% {cmd}
+-- dont use these: :terminal {cmd} io.popen(), uv.spawn()
+-- use instead: vim.system() [sync and async], fn.termopen({cmd}) [async], api.nvim_open_term [async]
+-- rarely useful: api.nvim_open_term
+-- vim.system({'echo', 'hello'}, { text=true }, function(obj)
+--   print(obj.code)
+--   print(obj.stdout)
+--   print(obj.stderr)
+-- end)
+-- local obj = vim.system({'echo', 'hello'}, { text=true }):wait()
+-- { code = 0, signal = 0, stdout = '..', stderr = '' }
+
+-- local obj = vim.system(exec curl)
+-- local decoded = vim.json.decode(obj)
+
 --TODO steal commands to run find into quickfix list from
 --vim.fn.setloclist(winnr, {}, ' ', { items = items })
 --vim.fn.setqflist({}, " ", {nr = "$", items = entries})
@@ -13,7 +29,6 @@ if not has_plenary then vim.print 'Please install plenary for all features.' end
 --(c/l)ex[pr]! expr - create (q/l)l from expr + jump to first error
 --cad[dbuffer]|laddb[uffer] add errors to (q/l)list
 --(c/l)gete[xpr] expr - same as (c/l)ex[pr], but without jumping
--- TODO document :cdo etc
 
 -- TODO make fn for :!mkdir -p %:h
 -- TODO nvim +':w ++p' /path/to/file

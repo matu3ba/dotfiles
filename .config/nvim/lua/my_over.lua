@@ -117,6 +117,11 @@ end
 --   end
 -- end
 
+--====overseer
+--build,close,clear,del,info,loadbu,open,quickact,runcmd,savebu,taskact,toggle,
+vim.keymap.set('n', ';tt', [[<cmd>OverseerToggle<CR>]], { desc = string.format 'Toggle Overseer' })
+-- vim.keymap.set('n', ';tt', overseer.setup, { desc = string.format 'Toggle Overseer' })
+
 -- ;1..9 ;e1..9 ;o1..9 ;p1..9 ;t1..9
 for i = 1, 9 do
   vim.keymap.set('n', ';o' .. i, get_task_callback(i, 'open'), { desc = string.format('Open output here task #%d', i) })
@@ -128,11 +133,11 @@ end
 
 vim.keymap.set('n', ';bs', function()
   local bundle_name = vim.fs.basename(vim.fn.getcwd())
-  require('overseer').save_task_bundle(bundle_name, nil, { on_conflict = 'overwrite' })
+  overseer.save_task_bundle(bundle_name, nil, { on_conflict = 'overwrite' })
 end)
 vim.keymap.set('n', ';bl', function()
   local bundle_name = vim.fs.basename(vim.fn.getcwd())
-  require('overseer').load_task_bundle(bundle_name)
+  overseer.load_task_bundle(bundle_name)
 end)
 
 -- local function validate_callback(task_id, exact)

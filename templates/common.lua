@@ -1,8 +1,6 @@
 -- Tested with
 -- luacheck: globals vim
 -- luacheck: no max line length
--- TODO
---TODO https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
 -- how to better setup luarocks with luajit without yet another plugin
 
 --====busted

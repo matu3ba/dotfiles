@@ -150,6 +150,7 @@ end
 
 M.dump = function(...)
   local objects = vim.tbl_map(vim.inspect, { ... })
+  ---@diagnostic disable-next-line: deprecated
   print(unpack(objects))
   return ...
 end
@@ -222,6 +223,34 @@ end
 -- vim.env does not contain all environment variables, for example EDITOR is missing
 -- vim.env.CMDLOG = 'bar'
 -- print(vim.env.CMDLOG) -- called from subshells, however works
+
+--Open floating window used to display top
+--@param opts? {win?:integer}
+M.show = function()
+  -- opts = opts or {}
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_set_option_vlue('bufhidden', 'wipe', { buf = buf })
+  vim.api.nvim_set_option_vlue('modifiable', false, { buf = buf })
+
+  local height = math.ceil(vim.o.lines * 0.8)
+  local width = math.ceil(vim.o.columns * 0.8)
+  local win = vim.api.nvim_open_win(buf, true, {
+    style = 'minimal',
+    relative = 'editor',
+    width = width,
+    height = height,
+    row = math.ceil(vim.o.lines - height) / 2,
+    col = math.ceil(vim.o.columns - width) / 2,
+    border = 'single',
+  })
+  vim.api.nvim_set_current_win(win)
+  vim.fn.termopen({ 'top' }, {
+    on_exit = function(_, _, _)
+      if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
+    end,
+  })
+  vim.cmd.startinsert() -- terminal mode
+end
 
 M.printPairsToTmp = function(table)
   local fp = assert(io.open('/tmp/tmpfile', 'a'))
@@ -362,6 +391,7 @@ end
 M.isCursorAtRowOfInterval = function(start_end)
   if start_end == nil then return false end
   if start_end[1] == nil or start_end[2] == nil then return false end
+  ---@diagnostic disable-next-line: deprecated
   local cursor_row, _ = unpack(vim.api.nvim_win_get_cursor(0))
   return start_end[1][1] == cursor_row or start_end[2][1] == cursor_row
 end
@@ -391,6 +421,7 @@ M.joinRemoveBlank = function()
   -- cursor positions are 'v' for first and '.' for last selection positions
   -- bufnum, lnum, col, off
   -- SHENNANIGAN: getpos has 1-indexed columns vs nvim_win_set_cursor 0-indexed
+  ---@diagnostic disable-next-line: deprecated
   local vstart, vend = unpack(M.getSelectionForKeys())
   if vstart == nil or vend == nil then
     vim.print(vstart, vend)
@@ -551,6 +582,7 @@ M.moveDirectionUntilNonSpaceSymbol = function(direction)
   if direction == 'up' then
     while crow > 0 do
       crow = crow - 1
+      ---@diagnostic disable-next-line: undefined-field
       cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)
       if cchar ~= first_char then break end
     end
@@ -558,6 +590,7 @@ M.moveDirectionUntilNonSpaceSymbol = function(direction)
     local crowcount = vim.api.nvim_buf_line_count(0)
     while crow < crowcount do
       crow = crow + 1
+      ---@diagnostic disable-next-line: undefined-field
       cchar = vim.api.nvim_buf_get_lines(0, crow - 1, crow, false):sub(ccol + 1, ccol + 1)
       if cchar ~= first_char then break end
     end

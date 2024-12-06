@@ -1,8 +1,15 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
+-- require 'my_surround' -- text_surround, unused, worse defaults than mini.surround
+-- { 'kylechui/nvim-surround' },
+
 local has_sur, sur = pcall(require, 'nvim-surround')
 if not has_sur then return end
 local sur_config = require 'nvim-surround.config'
+
+--( saiw)
+--( sdiw)
+--( sriw)
 
 --     Old text                    Command         New text
 -- --------------------------------------------------------------------------------

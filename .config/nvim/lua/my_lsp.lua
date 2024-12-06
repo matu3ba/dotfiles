@@ -184,17 +184,32 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Buffer local mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = ev.buf }
-    -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
     -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
     -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
 
+    -- unclear if needed or not, works
+    --==defaults
+    -- see my_keymaps.lua for gO
+    -- vim.keymap.del('v', 'gra') -- '<leader>ra'
+    -- vim.keymap.del('n', 'gra') -- '<leader>rd'
+    -- vim.keymap.del('n', 'gri') -- '<leader>ri'
+    -- vim.keymap.del('n', 'grn') -- '<leader>rn'
+    -- vim.keymap.del('n', 'grr') -- '<leader>rr'
+
+    vim.keymap.set('n', '<leader>O', vim.lsp.buf.document_symbol, opts)
+    vim.keymap.set('n', '<leader>rD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', '<leader>ra', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<leader>rd', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<leader>ri', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<leader>rr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.signature_help, opts)
+
     -- switch source header in same folder: map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
     vim.keymap.set('n', '<leader>sh', ':ClangdSwitchSourceHeader<CR>', opts) -- switch header_source
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    --==defaults
-    -- <grn>: vim.lsp.buf.rename()
-    -- <gra>: vim.lsp.buf.code_action()
-    -- <grr>: vim.lsp.buf.references()
+
+    -- TODO use different keybindings
+
     --==provided with mini.bracketed
     -- vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev() end, opts) -- next error
     -- vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next() end, opts) -- previous error
@@ -202,8 +217,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- TODO: figure out how to solve this, because this is super annoying
     -- local bufnr = vim.api.nvim_get_current_buf()
     -- stylua: ignore start
-    vim.keymap.set('n', 'grf', function()
-      local params = vim.lsp.util.make_range_params()
+    vim.keymap.set('n', '<leader>rf', function()
+      local params = vim.lsp.util.make_range_params(0, "utf-8")
       params.context = { only = { "source.fixAll" }, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked, diagnostics = vim.lsp.diagnostic.get_line_diagnostics(), }
       -- results is an array of lsp.CodeAction
       local diags = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
@@ -232,13 +247,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
     -- stylua: ignore end
 
-    vim.keymap.set('n', 'grf', function()
-      vim.lsp.buf.code_action {
-        -- type annotation for missing field diagnostics is wrong, because its optional
-        context = { only = { 'source.fixAll' } },
-        apply = true,
-      }
-    end, opts)
+    -- vim.keymap.set('n', 'grf', function()
+    --   vim.lsp.buf.code_action {
+    --     -- type annotation for missing field diagnostics is wrong, because its optional
+    --     context = { only = { 'source.fixAll' } },
+    --     apply = true,
+    --   }
+    -- end, opts)
 
     -- vim.keymap.set('n', '<leader>hi', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end, opts)
     -- defaults with neovim release 10.0
@@ -304,7 +319,13 @@ blink.setup {
     use_nvim_cmp_as_default = true,
     nerd_font_variant = 'mono',
   },
-  keymap = { preset = 'default' },
+  keymap = {
+    preset = 'default',
+    -- ['<C-space>'] = { 'accept', 'fallback' },
+    -- ['<C-y>'] = { 'select_and_accept' },
+    -- ['<C-d>'] = { 'show', 'show_documentation', 'hide_documentation' },
+    -- ['<CR>'] = { 'accept', 'fallback' },
+  },
   sources = {
     completion = {
       enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },

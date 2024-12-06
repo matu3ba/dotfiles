@@ -40,6 +40,9 @@ rizin - reverse debugging
 grafana - visualization
 windirstat for directory overview - https://windirstat.net/
 
+browser firefox, ladybird?
+browser with vim keybindings lynx, qutebrowser?
+
 xml parser: yxml https://code.blicky.net/yorhel/yxml
 disk usage explorer: ncdu https://code.blicky.net/yorhel/ncdu or KDE filelight
 simple header testing framework: utest.h https://github.com/sheredom/utest.h

@@ -104,7 +104,7 @@ map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 --   to first/last 1.char of prev changed/yanked text, 2. selection, 3. jump,
 --   4.quote,5.insertion mode stop,6.last change,7.sentence,8.paragraph
 -- 1.]'/2.]`/3.['    1.count time to next line with lowercase mark below cursor
---   2.count times to lowercase mark after cusor, 3.count times to prev line
+--   2.count times to lowercase mark after cursor, 3.count times to prev line
 --   with lower case mark before cursor, [` count time to lowercase mark before
 --   cursor
 -- 1.:loc,2.:kee,3.:keepj {cmd}   1. execute cmd without adjusting marks,
@@ -120,11 +120,13 @@ map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- [#/]#,[*|[/,]*,]/ go to [count] prev/next start of C comment
 
 -- Search helpers
-map('n', ',', [[viwP]], opts) -- keep pasting over the same thing for current word, simple instead of broken for EOL [["_diwP]]
+-- map('n', ',', [[viwP]], opts) -- keep pasting over the same thing for current word, simple instead of broken for EOL [["_diwP]]
 map('n', '*', [[m`:keepjumps normal! *``<CR>]], opts) -- word boundary search, no autojump
 map('n', 'g*', [[m`:keepjumps normal! g*``<CR>]], opts) -- no word boundary search no autojump
 --map('n', '/', [[:setl hls | let @/ = input('/')<CR>]], opts) -- no incsearch on typing
 -- Note: * and # also work, but they autojump to next search result
+-- TODO line search must also work for V selection, not only for 0vE//
+-- TODO implement block search
 map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected region on current line
 -- 1. cgn to cut global next or something
 -- 2. /pattern/e
@@ -457,18 +459,9 @@ map('n', '<F12>', [[<cmd>DapStepOut<CR>]], opts) -- s-f12 not used to prevent es
 --nnoremap <leader>db :Telescope dap list_breakpoints<CR>
 
 --==lspconfig
--- defaults
--- <C-s>: vim.lsp.buf.signature_help()
--- <gO>: vim.lsp.buf.document_symbol()
--- <grS>: vim.lsp.buf.workspace_symbol()
--- <gra>: vim.lsp.buf.code_action()
--- <gri>: vim.lsp.buf.implementation()
--- <grn>: vim.lsp.buf.rename()
--- <grr>: vim.lsp.buf.references()
--- <grs>: vim.lsp.buf.workspace_symbol()
---vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
---vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
--- see :CLsp lua/my_lsp.lua LspAttach
+-- looks like deleting one default keybinding deletes all of them
+vim.keymap.del('n', 'gO') -- '<leader>O'
+-- see :CLsp .config/nvim/lua/my_lsp.lua LspAttach
 
 -- see also echasnovski/mini.bracketed
 -- • Mappings inspired by Tim Pope's vim-unimpaired:
@@ -504,7 +497,7 @@ map('n', '<leader>ta', '<cmd>execute "tag " .. expand("<cword>")<CR>', opts)
 --map('n', '<LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.hover({border = "single"})<CR>', opts)
 --map('n', '<RightMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', opts)
 
---==telescope fuzzy_match 'extact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
+--==telescope fuzzy_match 'exact_match ^prefix-exact suffix_exact$ !inverse_match, C-x split,C-v vsplit,C-t new tab
 -- vimgrep AA also sends into a quickfix
 -- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
 -- :norm {Vim} run command on every line
@@ -512,11 +505,11 @@ map('n', '<leader>ta', '<cmd>execute "tag " .. expand("<cword>")<CR>', opts)
 -- TODO overlap with gitsigns somehow
 -- TODO: resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
-map('n', '<leader>ts', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
+map('n', '<leader>tls', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
 map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], opts) -- keybindings
 map('n', '<leader>tt', [[<cmd>lua require('telescope.builtin').tags()<CR>]], opts) -- keybindings
 -- -- builtin.commands, nmap, vmap, imap
-map('n', '<leader>tS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
+map('n', '<leader>tlS', [[<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<CR>]], opts) -- workspace symbols (bigger)
 map('n', '<leader>tf', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], opts) -- find files
 -- map('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
 map('n', '<leader>tg', [[<cmd>lua require('telescope.builtin').git_files()<CR>]], opts) -- git files
@@ -527,10 +520,10 @@ map('n', '<leader>ma', [[<cmd>lua require('material.functions').find_style()<CR>
 
 -- stylua: ignore start
 -- telescope leaks memory at cancellation points (unless the query can processes quickly)
-map('n', '<leader>rg', [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) -- ripgrep string search
-map('n', '<leader>ss', [[<cmd>lua require("my_telesc").searchStringRecentReg()<CR>]], opts) -- search string
-map('n', '<leader>fs', [[<cmd>GrepInDirectory<CR>]], opts) -- forwardIntoDir searchstring
-map('n', '<leader>th', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
+map('n', '<leader>trg', [[<cmd>lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>]], opts) -- ripgrep string search
+map('n', '<leader>tss', [[<cmd>lua require("my_telesc").searchStringRecentReg()<CR>]], opts) -- search string
+map('n', '<leader>tfs', [[<cmd>GrepInDirectory<CR>]], opts) -- forwardIntoDir searchstring
+map('n', '<leader>the', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], opts) -- helptags
 -- stylua: ignore end
 -- <C-p> for projects ?
 --map('n', '<leader>pr', [[<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<CR>]], opts) -- project: d, r, c, s(in your project), w(change dir without open), f
@@ -616,10 +609,6 @@ end
 --   * instead, must send the command to the other instance cmdlline:
 --     `sendCommand(1, ':lua callfn(arg1, arg2,..)<CR>')`
 --     or provide the cwd to use for the other neovim instance.
-
---====overseer
---build,close,clear,del,info,loadbu,open,quickact,runcmd,savebu,taskact,toggle,
-map('n', ';t', [[<cmd>OverseerToggle<CR>]], opts)
 
 --====harpoon
 -- TODO copy last command into named/unnamed register

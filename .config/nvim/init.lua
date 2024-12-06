@@ -93,7 +93,6 @@ else
   require 'my_lint' -- setup in my_lint.lua
   require 'my_statusline' -- statusline
   require 'my_over' -- runner
-  require 'my_surround' -- text_surround
   require 'my_aerial' -- overview_window
   require 'my_oil' -- file_explorer
   require 'my_fmt' -- smart_formatter

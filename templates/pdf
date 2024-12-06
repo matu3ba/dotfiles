@@ -15,3 +15,10 @@ evince print to document
 
 Visual diff a pdf
 https://github.com/vslavik/diff-pdf
+
+Viewers
+evince, mupdf, okular, qpdfview, zathura
+xournalpp
+
+Editors
+Adobe Reader or simple editing programs

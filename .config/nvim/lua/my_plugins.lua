@@ -21,7 +21,9 @@ return {
   -- { 'https://mzte.de/git/LordMZTE/znvim' },
   -- Debug plugins startuptime via: nvim -V1 --startuptime FILE
   -- To find which plugins to disable, use :verbose au BufEnter
+
   { 'nvim-lua/plenary.nvim' },
+
   {
     'marko-cerovac/material.nvim',
     priority = 1000, --<l>ma
@@ -33,81 +35,46 @@ return {
       vim.cmd.colorscheme 'material'
     end,
   },
-  {
-    'williamboman/mason.nvim',
-    config = function() require('mason').setup() end,
-  }, ---=none
-  --==completions
-  -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
-  -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
-  -- C-x + C-v | C-z | C-]    vim, stop, tags
-  -- C-x + C-o                user function (omnifunction)
-  -- C-x + C-u                user function (completefunc)
-  -- C-x + C-d | C-i          macros, include paths
-  -- Note: omnifunction or completefunc is typically used by plugin, so may not
-  -- be available to user (here it is not due to usage of nvim-cmp).
+
+  -- only used to install lua-language-server
+  { 'williamboman/mason.nvim', config = function() require('mason').setup() end },
 
   { --==LSP
-    { 'neovim/nvim-lspconfig' }, --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f (workspace folders, loclist, formatting)
+    -- <leader> prefix r
+    --:sh, gd,gi,gs,gr,K,<l>ca,<l>cd,<l>rf,[e,]e, UNUSED: <l>wa/wr/wl/q/f
+    -- (workspace folders, loclist, formatting)
+    { 'neovim/nvim-lspconfig' },
+
     -- Autocompletion
     -- activate/deactive vim.g.lazydev_enabled = false
     -- :LazyDev debug, :LazyDev lsp
     { 'folke/lazydev.nvim' }, -- lua dev, setup in my_lsp.lua
-    -- { 'rafcamlet/nvim-luapad' }, -- lua dev
 
+    -- { 'rafcamlet/nvim-luapad' }, -- lua dev scratchpad
+
+    -- :lua vim.print(require('nvim-navic').is_available(0))
+    -- :lua vim.print(require('nvim-navic').get_data())
+    { 'SmiteshP/nvim-navic', requires = 'neovim/nvim-lspconfig' },
+
+    --==completions
+    -- C-x + C-n|p | C-f | C-k  buffer, filepaths, keywords
+    -- C-x + C-l | C-s | C-t    lines, spell, thesaurus
+    -- C-x + C-v | C-z | C-]    vim, stop, tags
+    -- C-x + C-o                user function (omnifunction)
+    -- C-x + C-u                user function (completefunc)
+    -- C-x + C-d | C-i          macros, include paths
+    -- Note: omnifunction or completefunc is typically used by plugin, so may not
+    -- be available to user (here it is not due to usage of nvim-cmp).
     {
       'saghen/blink.cmp',
       lazy = false,
       dependencies = 'rafamadriz/friendly-snippets',
       version = 'v0.*',
       build = 'cargo build --release',
-      ---@module 'blink.cmp'
-      ---@type blink.cmp.Config
-      opts = {
-        keymap = { preset = 'default' },
-        appearance = {
-          use_nvim_cmp_as_default = true,
-          nerd_font_variant = 'mono',
-        },
-        sources = {
-          completion = {
-            enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
-          },
-          providers = {
-            -- dont show LuaLS require statements when lazydev has items
-            lsp = { fallback_for = { 'lazydev' } },
-            lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink' },
-          },
-        },
-        -- experimental bracketing and signature support
-        -- completion = {
-        --   accept = {
-        --     auto_brackets = { enabled = true },
-        --   },
-        -- },
-        -- signature = { enabled = true },
-      },
       -- opts_extend. defines list-like tables that will be
       -- merged by lazy.nvim instead of overwritten
       -- opts_extend = { "sources.completion.enabled_providers" },
     },
-    -- { 'Saghen/blink.cmp' },
-
-    -- { 'hrsh7th/nvim-cmp' }, -- Autocompletion plugin
-    -- { 'hrsh7th/cmp-nvim-lsp' }, -- LSP source for nvim-cmp
-    -- { 'L3MON4D3/LuaSnip' }, -- Snippets plugin
-    -- { 'saadparwaiz1/cmp_luasnip' }, -- Snippets source for nvim-cmp
-    -- Optional
-    {
-      'williamboman/mason.nvim',
-      ---@diagnostic disable-next-line: param-type-mismatch
-      build = function() pcall(vim.cmd, 'MasonUpdate') end,
-    },
-    -- {'williamboman/mason-lspconfig.nvim'}, -- Optional
-    -- { 'hrsh7th/cmp-buffer' },
-    -- { 'hrsh7th/cmp-nvim-lua' },
-    -- { 'hrsh7th/cmp-path' },
-    -- { 'hrsh7th/cmp-nvim-lsp-signature-help' },
   },
 
   --==cmd line completions (breaks cmdline visuals for :echo $<C-d>)
@@ -122,52 +89,96 @@ return {
   -- { "chrisgrieser/nvim-recorder" },
   -- think about yoinking the macro history parts
   -- { "AckslD/nvim-neoclip.lua" }, -- setup for macro history + storage (sqlite for persistent storage)?
-  {
-    'tamton-aquib/keys.nvim',
-    config = function() require('keys').setup {} end,
-  }, -- :KeysToggle
+
+  -- :Screenkey
+  { 'NStefan002/screenkey.nvim', config = function() require('screenkey').setup { clear_after = 300 } end },
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
   -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
-  {
-    'echasnovski/mini.indentscope',
-    version = false,
-    config = function() require('mini.indentscope').setup {} end,
-  },
-  -- echasnovski/mini.splitjoin
+  { 'echasnovski/mini.indentscope', config = function() require('mini.indentscope').setup {} end },
 
-  -- :lua vim.print(require('nvim-navic').is_available(0))
-  -- :lua vim.print(require('nvim-navic').get_data())
-  { 'SmiteshP/nvim-navic', requires = 'neovim/nvim-lspconfig' },
+  -- gS
+  { 'echasnovski/mini.splitjoin', config = function() require('mini.splitjoin').setup {} end },
 
   -- idea, if annoying: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L232-L260
   -- ga no preview, gA preview
-  {
-    'echasnovski/mini.align',
-    version = false,
-    config = function() require('mini.align').setup {} end,
-  },
+  { 'echasnovski/mini.align', config = function() require('mini.align').setup {} end },
+
+  -- text editing concepts
+  -- :h text-objects
+  -- :h operator
+  -- :h .
+
+  -- vi(,vi), va(,va) to select without/with () brackets repeat with i(,i),a(,a)
+  -- vaq, for quotes, repeat with aq
+  -- vab for various brackets, repeat with ab
+  -- via for argument, ia to repeat
+  -- vif for fn call, if to repeat, af for all fn
+  -- 1aa_cc1 dd
+  -- di_ delete inside, da_ delete also with
+  -- di1 to delete inside digits
+  -- da' ' to delete also with whitespace
   -- a,i main prefixes, an,in,al,il next last textobject, g[,g] movement
-  {
-    'echasnovski/mini.ai',
-    version = false,
-    config = function() require('mini.ai').setup {} end,
-  },
-  -- [] mappings for buffer, komment, x conflict, diagnostics, file, indent, jump, location,
-  -- location, oldfile, quickfix, treesitter, undo, window, yank
-  -- [c,]c, used for diff
-  -- • Mappings inspired by Tim Pope's vim-unimpaired:
+  -- (((( explicit move: van)in)al)il)
+  -- cina/cila to modify fn args
+  -- example: 2cina to modify 'bb' in 'f(aa, bb)'
+  -- idea: get to prev selection not possible?
+  { 'echasnovski/mini.ai', config = function() require('mini.ai').setup {} end },
+
+  -- sa + motion/textobject + output id (to add), ie ( saiw) word -> (((word)))
+  -- sd + input id (to find and delete), ie ( sd) ( ( ( word ) ) ) -> ( word )
+  -- sr + input id (to find) + output id (to add), ie [ sr(]. :) ( ( ( word ) ) ) -> ( [[word]] )
+  -- builtin surroundings: sdq,sdb: [{("' aa '")}] -> aa
+  -- fn calls: saiwf fnname srff fun sdf: aa -> fnname(aa) -> fun(aa) -> aa
+  -- default sd_ sd1 sd' ' 1aa_bb_cc1 dd -> 1aabbcc1 dd -> aabbcc dd ->aabbccdd
+  -- sdn/srn, sdl/srl (sd/sr next, sd/sr left)
+  -- [(  srn)]. :   (aa) (bb) -> [aa] (bb) -> [aa] [bb]
+  -- surround with brackets, quotes, call etc
+  -- adjust inner padding srn{{   }}: { a ={ b = {c} } }
+  -- sf/F to find left/right surrounding, sh to highlight left/right surrounding
+  { 'echasnovski/mini.surround', config = function() require('mini.surround').setup() end },
+
+  -- idea gm,gx,gsi conflicts
+  -- g+<key> for operator
+  -- g+<key>+<key> to act on current line
+  -- gr to rename, gm to multiply/duplicate, gx to exchange
+  -- griw w.w.       aa bb cc dd -> aa aa aa aa
+  -- gmiw.. gmm gcc  ab -> abababababababab -> abababababababab\nabababababababab -> --abababababababab\nabababababababab
+  -- gxiw w gxiw w.  aa bb cc dd -> bb cc aa dd
+  -- gxx             bb cc aa dd
+  -- g=ina .         [1 + 1, 2 +2] -> [2, 4]
+  -- g== vim.lsp.get_clients({bufnr = 0}) -> content of vim.lsp.get_clients({bufnr = 0})
+  -- ( gsin) (bb, dd, aa, cc) -> (aa, bb, cc, dd)
+  -- gspi for sorting paragraph (same as :sort on paragraph selection vip)
+  { 'echasnovski/mini.operators', config = function() require('mini.operators').setup {} end },
+
+  -- |[q|, |]q|, |[Q|, |]Q|, |[CTRL-Q|, |]CTRL-Q| mappings
+  --   • brackets                     { :h ]}
+  --   • [B .. ]B   |buffer-list|
+  --   • [C .. ]C   |comment|,        [c,]c, used for diff
+  --   • [D .. ]D   |diagnostics|
+  --   • [F .. ]F   |file|
+  --   • [I .. ]I   |indent|
+  --   • [J .. ]J   |jump|
+  --   • [L .. ]L   |location-list|
+  --   • [M .. ]M                     [ :h ]m
+  --   • [O .. ]O   |oldfile|
+  --   • [Q .. ]Q   |quickfix|
+  --   • [T .. ]T   |treesitter|
+  --   • [U .. ]U   |undo|
+  --   • [V .. ]V   |comment|         undocumented?
+  --   • [W .. ]W   |window|
+  --   • [Y .. ]Y   |yank|
   --   • |[q|, |]q|, |[Q|, |]Q|, |[CTRL-Q|, |]CTRL-Q| navigate through the |quickfix| list
   --   • |[l|, |]l|, |[L|, |]L|, |[CTRL-L|, |]CTRL-L| navigate through the |location-list|
   --   • |[t|, |]t|, |[T|, |]T|, |[CTRL-T|, |]CTRL-T| navigate through the |tag-matchlist|
   --   • |[a|, |]a|, |[A|, |]A| navigate through the |argument-list|
   --   • |[b|, |]b|, |[B|, |]B| navigate through the |buffer-list|
   {
-    -- TODO debug problem
+    -- debug problem
     'echasnovski/mini.bracketed',
-    version = false,
     config = function()
       require('mini.bracketed').setup {
         comment = { suffix = 'v' }, -- verbose comment
@@ -175,16 +186,9 @@ return {
       }
     end,
   },
+
   -- usage in my_hydra.lua
-  {
-    'echasnovski/mini.move',
-    version = false,
-  },
-  {
-    'echasnovski/mini.operators',
-    version = false,
-  },
-  -- { "echasnovski/mini.completion", version = false } -- idea: think how to configure nvim-cmp to use something else than C-n|p
+  { 'echasnovski/mini.move' },
 
   -- :Neogit
   -- TODO :Neogit diffsplit
@@ -226,14 +230,16 @@ return {
   -- np, nextprev file tab,s-tab cycle
   -- cycle through diffs for modified files and git rev
   { 'sindrets/diffview.nvim' },
+
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
   --requires = { "tpope/vim-repeat" },
   -- leap: s|S char1 char2 (<space>|<tab>)* label?
   -- leap: gs in all other windows on the tab page
-  -- leap: enter repeates, tab reverses the motion
-  -- (unused default breaks nvim-surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
+  -- leap: enter repeats, tab reverses the motion
+  -- (unused default breaks mini.surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   { 'ggandor/leap.nvim' }, -- repeat action not yet supported
+
   -- Remote editing
   -- nvim oil-ssh://[username@]hostname[:port]/[path]
   -- g? help, <CR>|C-s|C-h select +[vsplit|split, C-p preview, C-c close, C-l refresh,
@@ -241,8 +247,9 @@ return {
   { 'stevearc/oil.nvim' }, -- my_oil.lua
   { 'stevearc/conform.nvim' }, -- my_fmt.lua
   -- fn overview window with jumps etc
-  { 'stevearc/aerial.nvim' },
+  { 'stevearc/aerial.nvim' }, -- my_aerial.lua
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
+
   -- crs coerce to snake_case
   -- crm MixedCase = PascalCase
   -- crc camelCase
@@ -251,11 +258,9 @@ return {
   -- cr. dot.case
   -- missing handling of custom user prefixes for: m_MemberVar, eMember, sStruct
   { 'tpope/vim-abolish' }, -- { 'text-case.nvim' },
-  { 'kylechui/nvim-surround' },
-  {
-    'NvChad/nvim-colorizer.lua',
-    config = function() require('colorizer').setup() end,
-  },
+
+  { 'NvChad/nvim-colorizer.lua', config = function() require('colorizer').setup() end },
+
   --==taskrunner
   { 'stevearc/overseer.nvim', opts = {}, dev = false },
   -- { 'monaqa/dial.nvim' }, --idea
@@ -267,13 +272,13 @@ return {
   -- keep pressing M or C-b to reapply changes in selection
   -- press <CR> to mark match at cursor ignored
   -- navigate without changing with C-j, C-k
-  -- ga: change all occurences
+  -- ga: change all occurrences
   -- idea handroll debugger control for gdb via server and pipe stuff to buffer
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
   --==bufferactions
   -- blockers of harpoon2 mentioned in my_harpoon.lua
-  -- { 'ThePrimeagen/harpoon', branch = 'harpoon2', config = function() require('nvim-surround').setup() end, },
+  -- { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- { 'ThePrimeagen/harpoon' }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- use instead track.nvim?
@@ -286,10 +291,9 @@ return {
   --==finder
   { 'jake-stewart/jfind.nvim', branch = '2.0' },
   -- think about design to resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
-  {
-    'nvim-telescope/telescope.nvim',
-    dependencies = { { 'nvim-lua/popup.nvim', lazy = false } },
-  }, --<l>tb/ff/gf/rg/th/pr/(deactivated)z
+
+  --<leader> prefix t
+  { 'nvim-telescope/telescope.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
   { 'natecraddock/telescope-zf-native.nvim', lazy = false }, -- simpler algorithm for matching
   -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
   -- Telescope gh issues author=windwp label=bug search=miscompilation
@@ -298,9 +302,8 @@ return {
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
   --==languages
-  { 'mfussenegger/nvim-lint' }, -- configuration in my_lint.lua
+  { 'mfussenegger/nvim-lint' }, -- my_lint.lua
   --{ "neomake/neomake" } -- get useful comments for code semantics
-  -- { 'LnL7/vim-nix' }, -- flakes highlighting: wait until nix converts their stuff to flakes
   --==Organization
   -- ideas
   -- - ascii boxing
@@ -311,18 +314,20 @@ return {
   -- hydra venn extended: <l>ve
   -- hydra venn ascii: <l>va
   -- set ve=all,:VBox or press f,HJKL,set ve=
-  { 'jbyuki/ntangle.nvim' },
+  -- { 'jbyuki/ntangle.nvim' },
+
   -- more functionality + tutorial
   -- https://www.baeldung.com/linux/vim-drawit-ascii-diagrams
   -- TODO open source ascii editor, ideally within neovim
   -- inspiration https://monodraw.helftone.com/
   { 'jbyuki/venn.nvim', dev = true },
   -- idea { 'simnalamburt/vim-mundo' } to search undotree
+
+  -- TODO replacement with search
   { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
-  {
-    'folke/which-key.nvim',
-    config = function() require('which-key').setup() end,
-  }, -- :Telescope builtin.keymaps
+
+  -- :Telescope builtin.keymaps
+  { 'folke/which-key.nvim', config = function() require('which-key').setup() end },
 
   -- markdown live preview via :Glow[!] [path]
   -- {
@@ -428,7 +433,7 @@ return {
 -- { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
 
 --fugitive <leader> [gs|g2|g3|p2|p3]
--- TODO best shortcuts and brief usage
+-- best shortcuts and brief usage
 -- 1. :Git, =(toggle),-(),o(),v()
 -- 2. reach the last commit that has touched the current file :Gedit !.
 -- 3. :Gvdiffsplit!
