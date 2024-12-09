@@ -9,6 +9,12 @@ local has_conform, conform = pcall(require, 'conform')
 if not has_conform then return end
 -- local util = conform.util
 
+---ruff.toml
+-- line-length = 100
+-- [format]
+-- quote-style = "single"
+-- indent-style = "space"
+
 -- ruff_format: no cmd for combined linting and fmt yet https://github.com/astral-sh/ruff/issues/8232
 -- stylua: cargo install stylua --features lua52
 local fmts_by_ft = {
@@ -17,7 +23,7 @@ local fmts_by_ft = {
   c = { 'clang-format' }, -- // clang-format off|on
   cpp = { 'clang-format' }, -- // clang-format off|on
   lua = { 'stylua' }, -- stylua: ignore start|end
-  python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
+  -- python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
   rust = { 'rustfmt', lsp_format = 'prefer' },
   sh = { 'shfmt' },
   shtml = { 'superhtml' },

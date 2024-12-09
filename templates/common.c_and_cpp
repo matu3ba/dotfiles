@@ -104,3 +104,11 @@ clang --no-default-config -fno-caret-diagnostics -D__GLIBC_MINOR__=39
 -c
 -o PROJECT_PREFIX/.zig-cache/tmp/HASH-catch.o
 --serialize-diagnostics PROJECT_PREFIX/.zig-cache/tmp/HASH-catch.o.diag
+* strict gcc
+gcc -Wall -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror -Wextra -Wpedantic -Wtrampolines -Wshadow -Wold-style-cast -Woverloaded-virtual file.c
+* strict g++
+g++ -Wall -Wformat -Wformat=2 -Wconversion -Wimplicit-fallthrough -Werror -Wextra -Wpedantic -Wtrampolines -Wshadow -Wold-style-cast -Woverloaded-virtual file.cpp
+* reasonable strictest warnings clang/zig cc
+zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c
+* reasonable strictest warnings clang++/zig c++
+zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default file.cpp

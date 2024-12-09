@@ -48,3 +48,11 @@ Core problem of abstraction in gdb:
 
 ====windbg
 https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tutorial
+
+====kvm
+https://github.com/qemu/qemu
+https://github.com/tw4452852/zvm
+
+====tracer
+https://github.com/anakryiko/retsnoop
+https://github.com/tw4452852/zbpf

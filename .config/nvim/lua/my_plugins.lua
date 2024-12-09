@@ -138,6 +138,7 @@ return {
   -- surround with brackets, quotes, call etc
   -- adjust inner padding srn{{   }}: { a ={ b = {c} } }
   -- sf/F to find left/right surrounding, sh to highlight left/right surrounding
+  -- selection + sa/sd/sr + key also works!
   { 'echasnovski/mini.surround', config = function() require('mini.surround').setup() end },
 
   -- idea gm,gx,gsi conflicts

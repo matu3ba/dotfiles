@@ -158,7 +158,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // std::string sucks due to allocating, use for string handling
 // https://github.com/skullchap/chadstr
 
-// simpel to read C++
+// simple to read C++
 // https://github.com/magiblot/tvision
 // https://github.com/hsutter/cppfront
 
@@ -184,6 +184,22 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
 // more: https://oleksandrkvl.github.io/2021/04/02/cpp-20-overview.html
+
+// type_traits helpers
+// std::remove_reference
+// std::add_lvalue_reference
+// std::add_rvalue_reference
+// std::remove_cv
+// std::remove_const
+// std::remove_volatile
+// std::add_cv
+// std::add_const
+// std::add_volatile
+
+// https://medium.com/@barryrevzin/value-categories-in-c-17-f56ae54bccbe
+//     glvalue  |  rvalue
+// lvalue |  xvalue  | prvalue
+// xvalue can be reused, meaning location arbitrary
 
 //====version_changes
 //====CPP20string_ops
@@ -229,6 +245,7 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <functional> // std::invoke
 #include <future>     // future
 #include <iostream>   // io stream operators
+#include <limits>
 #include <list>
 #include <map>
 #include <memory> // unique_ptr, shared_ptr
@@ -2739,7 +2756,7 @@ struct use_CustomComparator { // also known as predicate
 // Must use instead C23 ckd_mul(&res_mul, a, b))
 // to stay portable.
 // std::print, std::format can be used via <fmt/core.h> and fmt::print, fmt::format
-#include <print>
+#include <print> // 'std::print' can verbatimc replace 'fprintf'
 void use_fmt_print();
 void use_fmt_print() {
   std::print(stdout, "Hello, world!\n");
@@ -2748,8 +2765,15 @@ void use_fmt_print() {
   (void)s;
 }
 
+void use_string_view();
+void use_string_view() {
+  auto str_lit = "The answer is: 42";
+  std::string_view str_view{str_lit};
+  std::print(stdout, "{}\n", str_view);
+}
+
 //====CPP23string_ops
-//* C++ metaprogramming fells like a Rube-Goldberg machine to do meaningful work
+//* C++ metaprogramming feels like a Rube-Goldberg machine to do meaningful work
 constexpr std::string make_string(std::string_view str_view, int32_t const rep) {
   std::string res;
   for (int32_t i = 0; i < rep; i += 1)
@@ -2834,6 +2858,66 @@ void use_optional() {
 void use_function_chaining();
 void use_function_chaining() {
   // TODO https://www.cppstories.com/2023/monadic-optional-ops-cpp23/
+}
+
+// #include <expected> // std::expected
+// constexpr std::expected<int32_t, std::errc> assume_not_max(int32_t number) {
+//   if (number == std::numeric_limits<int32_t>::max())
+//     return std::unexpected{std::errc::invalid_argument};
+//   else
+//     return number;
+// }
+//
+// void use_expected();
+// void use_expected() {
+//   auto [val, ec] = assume_not_max(std::numeric_limits<int32_t>::max());
+//   // static_assert(ec == TODO
+// }
+
+// UNSOLVED
+// https://yongweiwu.wordpress.com/2022/06/19/compile-time-strings/
+// TODO test this
+// https://stackoverflow.com/questions/15858141/conveniently-declaring-compile-time-strings-in-c
+// https://yongweiwu.wordpress.com/2024/10/11/cxx-compile-time-programming/
+// https://adroit-things.com/programming/c-cpp/constructing-compile-time-string-objects/
+
+// SHENNANIGAN Looks like C++ wants to only create objects at comptime and make
+// object properties usable thereafter, but never fill runtime-known data
+// structures at comptime.
+// Therefore, one has to template or consteval construct objects with such data.
+
+// So the only very neat thing left is to static_assert constexpr fns to
+// force comptime evaluation.
+
+// void comptime_create_string_literal();
+// void comptime_create_string_literal(){}
+
+// You can't use std::string_view, you must stick to string literals that expose
+// their size in the type. Have your method take in const char(&str)[Size] as
+// parameters, declare a basic structure containing a char array of
+// Size1 + Size2 - 1 elements and copy both strings into the array. Afterwards
+// declare a comparison operator between the structure and a string_view and
+// that's it, you can concatenate string literals at compile time.
+
+struct StringComposer {
+public:
+  StringComposer() {}
+
+private:
+};
+
+consteval std::string concatStrLiterals(char buf[], char const str1[], char const str2[]) {
+  // (void)str1;
+  // (void)str2;
+  return std::string(str1) + std::string(str2);
+}
+
+void use_concatStrLiterals();
+void use_concatStrLiterals() {
+  char buf[100];
+  constexpr char strlit1[] = "abc";
+  constexpr char strlit2[] = "def";
+  std::string concat = concatStrLiterals(buf, strlit1, strlit2);
 }
 
 #endif

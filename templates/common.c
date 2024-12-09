@@ -162,6 +162,26 @@ ERRDEFER_CLEANUP1:
 
 // string handling https://github.com/skullchap/chadstr
 
+// standard memory functions
+// search, compare, copy, copy-overlap, set
+// memchr, memcmp, memcpy, memmove, memset,
+// * memset_s to avoid unwanted compiler optimizations
+
+// -->standard string functions mandate '\0' termination<--
+// antipattern locale fns: strcoll, strxfrm
+// error code description: strerror
+// concat: strcat->strncat, careful: remember to subtract 1 from buffer len!
+// * strcat_s neither a fix
+// compare: strcmp->strncmp
+// copy: strcpy->strncpy, careful: does not add '\0' termination without space
+// * strcpy_s neither a fix
+// length: strlen
+// prefix substring: strcspn (reject), strspn (accept)
+// byte set search: strpbrk
+// find first/last occurrence of string including '\0': strchr/strrchr
+// find first occurrence of string without '\0': strstr
+// extract tokens from strings: strtok, strtok_r
+
 // makefile that builds GCC cross-toolchains for many archs https://github.com/vezel-dev/kruco
 
 //====version

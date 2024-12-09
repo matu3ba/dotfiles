@@ -7,6 +7,9 @@ procstat -f, fstat
 FreeBSD: sockstat
 Linux: ss
 
+TODO summarize methods mentioned in
+https://www.brendangregg.com/blog/2024-03-17/the-return-of-the-frame-pointers.html
+
 best practice long-running system design
 https://arcan-fe.com/2020/02/10/leveraging-the-display-server-to-improve-debugging/
 idea: make it cross-platform

@@ -84,6 +84,9 @@ done
 
 Remove Scheduler Noise
 taskset, cset https://documentation.suse.com/sle-rt/12-SP5/html/SLE-RT-all/cha-shielding-cpuset.html
+netlink/CN_PROC_IDX protocol to notify "task forks during move and its child remains in the root cpuset",
+but it's difficult to handle all events correctly to make this bulletproof (libcgroup has been using it and there were several fixups).
+dont rely on asynchronous migration in general and use configuration that starts processes with respective affinity.
 
 Disable ASLR
 echo 0 | sudo tee /proc/sys/kernel/randomize_va_space
