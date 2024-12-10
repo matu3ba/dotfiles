@@ -2899,26 +2899,26 @@ void use_function_chaining() {
 // declare a comparison operator between the structure and a string_view and
 // that's it, you can concatenate string literals at compile time.
 
-struct StringComposer {
-public:
-  StringComposer() {}
-
-private:
-};
-
-consteval std::string concatStrLiterals(char buf[], char const str1[], char const str2[]) {
-  // (void)str1;
-  // (void)str2;
-  return std::string(str1) + std::string(str2);
-}
-
-void use_concatStrLiterals();
-void use_concatStrLiterals() {
-  char buf[100];
-  constexpr char strlit1[] = "abc";
-  constexpr char strlit2[] = "def";
-  std::string concat = concatStrLiterals(buf, strlit1, strlit2);
-}
+// struct StringComposer {
+// public:
+//   StringComposer() {}
+//
+// private:
+// };
+//
+// consteval std::string concatStrLiterals(char buf[], char const str1[], char const str2[]) {
+//   // (void)str1;
+//   // (void)str2;
+//   return std::string(str1) + std::string(str2);
+// }
+//
+// void use_concatStrLiterals();
+// void use_concatStrLiterals() {
+//   char buf[100];
+//   constexpr char strlit1[] = "abc";
+//   constexpr char strlit2[] = "def";
+//   std::string concat = concatStrLiterals(buf, strlit1, strlit2);
+// }
 
 #endif
 

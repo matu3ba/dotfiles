@@ -80,10 +80,11 @@ lazydev.setup {
   library = {
     -- Load luvit types when the `vim.uv` word is found
     { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+    'nvim-dap-ui',
   },
   -- stylua: ignore start
   enabled = function(root_dir)
-    vim.print(root_dir)
+    -- vim.print(root_dir) DEBUG
     return (vim.g.lazydev_enabled == nil or vim.g.lazydev_enabled)
       and (not vim.uv.fs_stat(root_dir .. '/.luarc.json'))
   end,

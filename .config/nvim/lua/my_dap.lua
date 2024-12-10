@@ -21,19 +21,21 @@
 local M = {}
 local has_dap, dap = pcall(require, 'dap')
 local has_dapui, dapui = pcall(require, 'dapui')
-local _ = dap
 
-if not has_dap or not has_dapui then return end
+if not has_dap then
+  vim.print 'no dap installed'
+  return
+end
 
-if not has_dap or not has_dapui then
-  vim.print 'no dap or no dapui'
+if not has_dapui then
+  vim.print 'no dapui installed'
   return
 end
 
 --==adapters
 dap.adapters.lldb = {
   type = 'executable',
-  command = '/usr/bin/lldb-vscode', -- adjust as needed
+  command = '/usr/bin/lldb-dap', -- lldb-vscode was renamed to lldb-dap
   name = 'lldb',
 }
 
@@ -74,11 +76,46 @@ dap.configurations.cpp = {
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
+vim.keymap.set('n', ',b', dap.toggle_breakpoint)
+vim.keymap.set('n', ',gb', dap.run_to_cursor)
+vim.keymap.set('n', ',o', dap.repl.open)
+vim.keymap.set('n', ',q', dap.terminate)
+
+-- vim.keymap.set('n', ',gc', dap.goto_())
+-- vim.keymap.set('n', ',e', function() dapui.eval(nil, { enter = true }) end)
+
+-- TODO dap.pause
+-- dap.up, dap.down
+-- dap.reverse_continue
+-- dap.focus_frame
+-- dap.restart_frame
+
+-- vim.keymap.set('n', ',1', dap.continue)
+-- vim.keymap.set('n', ',2', dap.step_into)
+-- vim.keymap.set('n', ',3', dap.step_over)
+-- vim.keymap.set('n', ',4', dap.step_out)
+-- vim.keymap.set('n', ',5', dap.step_back)
+-- vim.keymap.set('n', ',12', dap.restart)
+vim.keymap.set('n', '<F1>', dap.continue)
+vim.keymap.set('n', '<F2>', dap.step_into)
+vim.keymap.set('n', '<F3>', dap.step_over)
+vim.keymap.set('n', '<F4>', dap.step_out)
+vim.keymap.set('n', '<F5>', dap.step_back)
+vim.keymap.set('n', '<F12>', dap.restart)
+-- TODO: how to get debug position for setting cursor there?
+-- TODO: reverse step setup with rr + gdb
+-- TODO: wingbd setup, microsoft reverse stepping?
+
+dap.listeners.before.attach.dapui_config = function() dapui.open() end
+dap.listeners.before.launch.dapui_config = function() dapui.open() end
+dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+
 -- 1. https://github.com/rcarriga/cmp-dap
 -- The following should print true when you are in an active debug session for cmp-dap to work:
 -- :lua= require("dap").session().capabilities.supportsCompletionsRequest
 -- https://github.com/mfussenegger/nvim-dap/wiki/
-
+-- dap.setup()
 dapui.setup()
 
 return M

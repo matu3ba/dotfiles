@@ -47,7 +47,7 @@ local opts = {} -- default opts
 --    * harpoon set_current_at file
 --    * harpoon gotoTerminal
 --  idea figure out where to put fuzzy finding mappings (e.g. files, buffers, helptags etc)
---  ;       runnig things: jkluio register content, 1-6?, r renew,
+--  ;       running things: jkluio register content, 1-6?, r renew,
 --    * enter, repeat, lineUnderCursorLogAndSendToShell, C-c, jump to bottom, prev|next prompt
 --  \       find and replace helpers TODO
 --  _       backwards jump
@@ -147,7 +147,7 @@ map('v', '//', [[y/\V<C-R>=escape(@",'/\')<CR><CR>]], opts) -- search selected r
 
 -- J(join) with cursor remaining at same place (without spaces) and g-special Join
 -- Direct undo without cursor movements broken for unknown reasons, so use
--- simpler workign version instead of 'hmzlxi<CR><ESC>`zxBh'
+-- simpler working version instead of 'hmzlxi<CR><ESC>`zxBh'
 -- idea: dot-repeatable and in-place redo and undo
 map('n', 'J', 'mzJ`z', opts)
 map('n', '<leader>J', 'mzi<CR><ESC>`zxB', opts)
@@ -172,7 +172,7 @@ map('n', '<leader>qw', '<cmd>bn<Bar>bdel#<CR>', opts) -- :bdel without closing w
 map('n', '<leader>qh', '<cmd>wincmd h<CR><cmd>q<CR>', { desc = ':close left' })
 map('n', '<leader>qj', '<cmd>wincmd j<CR><cmd>q<CR>', { desc = ':close down' })
 map('n', '<leader>qk', '<cmd>wincmd k<CR><cmd>q<CR>', { desc = ':close up' })
-map('n', '<leader>ql', '<cmd>wincmd l<CR><cmd>q<CR>', { desc = ':close right' })
+-- map('n', '<leader>ql', '<cmd>wincmd l<CR><cmd>q<CR>', { desc = ':close right' })
 -- map('n', '<leader>qc', '<cmd>bn<Bar>bdel#<CR>', opts) -- close terminal command
 
 --map('n', '<leader>y', '"+y', opts) -- used default
@@ -283,7 +283,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 --   if venn_enabled == 'nil' then
 --     vim.b.venn_enabled = true
 --     vim.cmd [[setlocal ve=all]]
---     -- draw a line on HJKL keystokes
+--     -- draw a line on HJKL keystrokes
 --     vim.api.nvim_buf_set_keymap(0, 'n', 'J', '<C-v>j:VBox<CR>', opts)
 --     vim.api.nvim_buf_set_keymap(0, 'n', 'K', '<C-v>k:VBox<CR>', opts)
 --     vim.api.nvim_buf_set_keymap(0, 'n', 'L', '<C-v>l:VBox<CR>', opts)
@@ -340,7 +340,7 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- C-w delete last word, C-u delete until start of line
 -- C-o execute 1 command and continue in insertion mode (go to normal mode for 1 key action)
 -- C-h switch back to normal mode(side effect from coq_nvim, C-r insert from register,
--- quick setttings
+-- quick settings
 -- :set rnu!   to toggle relative numbers
 -- :set spell!   to toggle spelling
 
@@ -415,31 +415,25 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 
 --==dap
 --:DapContinue
-map('n', '<leader>da', [[<cmd>lua require'debugHelper'.attach()<CR>]], opts)
-map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], opts)
-
-map('n', '<leader>dt', [[<cmd>lua require("dapui").toggle()<CR>]], opts)
-map('n', '<leader>db', [[<cmd>DapToggleBreakpoint<CR>]], opts)
-map('n', '<leader>dr', [[<cmd>lua require("dapui").open({reset = true})<CR>]], opts)
-map('n', '<leader>dk', [[<cmd>lua require("dap").terminate()<CR>]], opts) -- kill it
-map('n', '<leader>dR', [[<cmd>lua require("dap").run_last()()<CR>]], opts) -- Run last
-
---VSCODE debugger mappings
-map('n', '<F4>', [[<cmd>lua require'dap'.reverse_continue()<CR>]], opts)
-map('n', '<F5>', [[<cmd>DapContinue<CR>]], opts)
-map('n', '<F6>', [[<cmd>lua require'dap'.pause()<CR>]], opts)
--- Shift+<F9> inline breakpoints not supported by dap
-map('n', '<F9>', [[<cmd>DapToggleBreakpoint<CR>]], opts)
-map('n', '<F10>', [[<cmd>DapStepOver<CR>]], opts)
-map('n', '<F11>', [[<cmd>DapStepInto<CR>]], opts)
-map('n', '<F12>', [[<cmd>DapStepOut<CR>]], opts) -- s-f12 not used to prevent escape code setup
+-- map('n', '<leader>da', [[<cmd>lua require'debugHelper'.attach()<CR>]], opts)
+-- map('n', '<leader>dA', [[<cmd>lua require'debugHelper'.attachToRemote()<CR>]], opts)
+-- map('n', '<leader>dt', [[<cmd>lua require("dapui").toggle()<CR>]], opts)
+-- map('n', '<leader>db', [[<cmd>DapToggleBreakpoint<CR>]], opts)
+-- map('n', '<leader>dr', [[<cmd>lua require("dapui").open({reset = true})<CR>]], opts)
+-- map('n', '<leader>dk', [[<cmd>lua require("dap").terminate()<CR>]], opts) -- kill it
+-- map('n', '<leader>dR', [[<cmd>lua require("dap").run_last()()<CR>]], opts) -- Run last
+-- --VSCODE debugger mappings
+-- map('n', '<F4>', [[<cmd>lua require'dap'.reverse_continue()<CR>]], opts)
+-- map('n', '<F5>', [[<cmd>DapContinue<CR>]], opts)
+-- map('n', '<F6>', [[<cmd>lua require'dap'.pause()<CR>]], opts)
+-- -- Shift+<F9> inline breakpoints not supported by dap
+-- map('n', '<F9>', [[<cmd>DapToggleBreakpoint<CR>]], opts)
+-- map('n', '<F10>', [[<cmd>DapStepOver<CR>]], opts)
 -- map('n', '<F11>', [[<cmd>DapStepInto<CR>]], opts)
-
+-- map('n', '<F12>', [[<cmd>DapStepOut<CR>]], opts) -- s-f12 not used to prevent escape code setup
 -- map('n', '<F6>', [[<cmd>DapPause<CR>]], opts)
---map('n', '<A-k>', [[<cmd>DapStepInto<CR>]], opts)
 --map('n', '<A-l>', [[<cmd>lua require'dap'.step_into()<CR>]], opts)
 --map('n', '<A-j>', [[<cmd>lua require'dap'.step_over()<CR>]], opts)
-
 --map('n', '<leader>db', [[<cmd>lua require'dap'.toggle_breakpoint()<CR>]], opts)
 --map('n', '<leader>ds', [[<cmd>lua require'dap'.stop()<CR>]], opts)
 --map('n', '<leader>dc', [[<cmd>lua require'dap'.continue()<CR>]], opts)
@@ -585,7 +579,7 @@ if has_neogit then
   map('n', '<leader>gp', ':Neogit push<CR>', { desc = 'Git push' })
   -- TODO force with lease
   -- map("n", "<leader>gP", "<leader>gp", { desc = "Git push" })
-  map('n', '<leader>gb', ':Telescope git_branches<CR>', { desc = 'Telescope git branche' })
+  map('n', '<leader>gb', ':Telescope git_branches<CR>', { desc = 'Telescope git branches' })
   -- map("n", "<leader>gB", ":G blame<CR>", { desc = "Git blame" })
 end
 

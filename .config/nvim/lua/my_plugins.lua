@@ -36,8 +36,10 @@ return {
     end,
   },
 
+  -- used to install lua-language-server and debugger
   -- only used to install lua-language-server
   { 'williamboman/mason.nvim', config = function() require('mason').setup() end },
+  -- { 'jay-babu/mason-nvim-dap.nvim', config = function() require('mason-nvim-dap').setup() end },
 
   { --==LSP
     -- <leader> prefix r
@@ -354,8 +356,7 @@ return {
   -- chrigieser/nvim-genghis convenience file operations in lua
 
   --'nvim-telescope/telescope-dap.nvim',
-  { 'rcarriga/nvim-dap-ui' },
-  { 'mfussenegger/nvim-dap' },
+  { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
   { 'theHamsta/nvim-dap-virtual-text' },
   -- nvim-dap
   -- nvim-dap-ui
