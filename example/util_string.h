@@ -8,9 +8,15 @@
 /// or another method
 /// memcpy(buffer, sl1.ptr, sl1.len);
 /// fwrite(sl1.ptr, sizeof(char), sl1.len, stdout);
-/// size_t cstring_space = char_cstringspace(sl1);
-/// char* cstring = char_tocstring(char* str);
+/// size_t cstr_len = char_cstringspace(sl1);
+/// .. allocate or use buffer of sufficient size ..
+/// size_t cstr_written = sCharSlice_tocstring(sl1, &cstr_ptr[0], cstr_len);
 /// Do not use string.h methods on 'struct sCharSlice'.
+
+/// Consider using
+/// C99 basic string literal check
+/// #define IS_STR_LIT(x) (void)((void)(x), &("" x ""))
+/// #define MAXSTRLEN_OF_BUF(x) sizeof(x) - 1
 
 // standard memory functions
 // search, compare, copy, copy-overlap, set
@@ -41,6 +47,7 @@
 
 // ====sCharSlice routines====
 
+/// len in interval [0, ptrdiff_t] is supported
 struct sCharSlice {
   /// pointer to string, which may or may not be '\0' terminated
   /// if unsure, do not use standard string.h functions with this data structure
@@ -51,18 +58,35 @@ struct sCharSlice {
 
 /// assume: str_ptr[] is '\0' terminated, for example via
 /// string literal like "somestring"
+/// When using gcc and clang, __builtin_constant_p is used
+/// to ensure that a string literal (always being '\0' terminated)
+/// is being used.
 /// memcpy(buf1, string_literal, sizeof(string_literal));
 /// memset(buf1, 0, sizeof(buf1));
-struct sCharSlice sCharSlice_fromcstring(char cstr_ptr[]);
+/// correct(good): sCharSlice_fromliteral("some_literal");
+/// correct(bad): sCharSlice_fromliteral(&buf[0], sizeof(buf)-1);
+struct sCharSlice sCharSlice_fromliteral(char cstr_ptr[]);
 
-/// create sCharSlice from buffer
-struct sCharSlice sCharSlice_frombuffer(char str_ptr[], size_t str_len);
+/// create sCharSlice from buffer which has string absent of '\0' termination
+/// wrong: sCharSlice_frombuffer(&buf[0], sizeof(buf));
+/// correct(best): sCharSlice_frombuffer(&buf[0], MAXSTRLEN_OF_BUF(buf));
+/// correct(ok): sCharSlice_frombuffer(&buf[0], sizeof(buf)-1);
+/// correct(nah): sCharSlice_frombuffer(&buf[0], strlen(buf));
+struct sCharSlice sCharSlice_frombuffer(char str_ptr[], size_t str_size_no0term);
 
-/// write into null-terminated cstr_ptr content of sCharSlice
-/// returns number of written bytes
+/// create sCharSlice from buffer which has string including '\0' termination
+/// wrong: sCharSlice_fromcstrbuffer(&buf[0], sizeof(buf)-1);
+/// wrong: sCharSlice_fromcstrbuffer(&buf[0], strlen(buf));
+/// correct(ok): sCharSlice_fromcstrbuffer(&buf[0], 0);
+/// correct(ok): sCharSlice_fromcstrbuffer(&buf[0], sizeof(buf));
+struct sCharSlice sCharSlice_fromcstrbuffer(char str_ptr[], size_t str_size_incl0term);
+
+/// write s_charslice into cstr_ptr and add '\0'-termination
+/// cstr_size is usable size for writing
+/// returns number of written bytes including '\0'-termination
 /// assume: s_charslice.ptr does not overlap with cstr_ptr
 /// assume: s_charslice.len < 2<<63-1
-size_t sCharSlice_tocstring(struct sCharSlice s_charslice, char cstr_ptr[], size_t cstr_len);
+size_t sCharSlice_tocstring(struct sCharSlice s_charslice, char cstr_ptr[], size_t cstr_size);
 
 /// write into null-terminated cstr_ptr content of sCharSlice
 /// returns number of written bytes including '\0' byte

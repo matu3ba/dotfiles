@@ -1,4 +1,10 @@
 // Tested with
+// zig cc -g -DSLICE_TEST -DSAFETY -DTRACE -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -DSLICE_TEST -DSAFETY -DTRACE -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -DSLICE_TEST -DSAFETY -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -DSLICE_TEST -DSAFETY -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -DSLICE_TEST -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -DSLICE_TEST -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/util_string.c -o util_string23.exe && ./util_string23.exe
 // zig cc -g -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
 // zig cc -g -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/util_string.c -o util_string23.exe && ./util_string23.exe
 // TODO zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
@@ -39,7 +45,7 @@
 
 // ====sCharSlice routines====
 
-struct sCharSlice sCharSlice_fromcstring(char str_ptr[]) {
+struct sCharSlice sCharSlice_fromliteral(char str_ptr[]) {
   size_t str_len = strlen(str_ptr);
   struct sCharSlice res = {
       .ptr = str_ptr,
@@ -48,10 +54,18 @@ struct sCharSlice sCharSlice_fromcstring(char str_ptr[]) {
   return res;
 }
 
-struct sCharSlice sCharSlice_frombuffer(char str_ptr[], size_t str_len) {
+struct sCharSlice sCharSlice_frombuffer(char str_ptr[], size_t str_size_no0term) {
   struct sCharSlice res = {
       .ptr = str_ptr,
-      .len = str_len,
+      .len = str_size_no0term,
+  };
+  return res;
+}
+
+struct sCharSlice sCharSlice_fromcstrbuffer(char str_ptr[], size_t str_size_incl0term) {
+  struct sCharSlice res = {
+      .ptr = str_ptr,
+      .len = (((ptrdiff_t)str_size_incl0term - 1) < 0) ? 0 : str_size_incl0term - 1,
   };
   return res;
 }
@@ -294,43 +308,63 @@ struct sCharSlice sCharSlice_tokenize(struct sCharSlice s_charslice, struct sCha
   return result_sl; // FIXME
 }
 
-#ifdef SLICE_TEST
+#if defined(SLICE_TEST)
 #include <inttypes.h> // PRIu64
 #include <stdio.h>
 #include <string.h>
 
+// C99 basic string literal check
+#define IS_STR_LIT(x) (void)((void)(x), &("" x ""))
+#define MAXSTRLEN_OF_BUF(x) sizeof(x) - 1
+
 int main(void) {
+  // testing sCharSlice routines
+  char print_buf[1024];
+
+  // sCharSlice_frombuffer
   char buf1[10];
   memcpy(buf1, "012345678", sizeof("012345678")); // 9 + 1, sizeof = 10
-  struct sCharSlice sl1 = sCharSlice_fromcstring(&buf1[0]);
-
-  char print_buf[1024];
+  struct sCharSlice sl1 = sCharSlice_frombuffer(&buf1[0], MAXSTRLEN_OF_BUF(buf1));
   memset(&print_buf[0], 0, 1024);
 
-  // testing sCharSlice routines
-  {
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("012345678");
+  { // sCharSlice_fromliteral
+    IS_STR_LIT("012345678");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("012345678");
     if (sCharSlice_isEqual(sl1, expect_sl) != 0) {
       memcpy(print_buf, sl1.ptr, sl1.len);
-      fprintf(stderr, "1. sCharSlice_fromcstring [%s], sl1.len: [%zu] expect [012345678], [9]\n", print_buf, sl1.len);
+      fprintf(stderr, "sCharSlice_fromliteral [%s], sl1.len, expect_sl.len: [%zu, %zu] expect [012345678], [9]\n",
+              print_buf, sl1.len, expect_sl.len);
       memset(&print_buf[0], 0, 1024);
     }
   }
 
-  {
+  { // sCharSlice_fromcstrbuffer
+    IS_STR_LIT("012345678");
+    char buf2[10];
+    memcpy(buf2, "012345678", sizeof("012345678"));
+    struct sCharSlice expect_sl = sCharSlice_fromcstrbuffer(&buf2[0], sizeof(buf2));
+    if (sCharSlice_isEqual(sl1, expect_sl) != 0) {
+      memcpy(print_buf, sl1.ptr, sl1.len);
+      fprintf(stderr, "sCharSlice_fromcstrbuffer [%s], sl1.len, expect_sl.len: [%zu, %zu] expect [012345678], [9]\n",
+              print_buf, sl1.len, expect_sl.len);
+      memset(&print_buf[0], 0, 1024);
+    }
+  }
+
+  { // sCharSlice_tocstring
     char buf2[10];
     size_t printed = sCharSlice_tocstring(sl1, &buf2[0], 10);
     if (strncmp(sl1.ptr, &buf2[0], sl1.len) != 0) {
       memcpy(print_buf, buf2, 10);
-      fprintf(stderr, "1. sCharSlice_tocstring [%s], printed: [%zu] expect [012345678], [10]\n", print_buf, printed);
+      fprintf(stderr, "sCharSlice_tocstring [%s], printed: [%zu] expect [012345678], [10]\n", print_buf, printed);
       memset(&print_buf[0], 0, 1024);
     }
   }
 
-  {
+  { // sCharSlice_tocstring_overlapping
     char buf2[10];
     memcpy(buf2, "012345678", sizeof("012345678")); // 9 + 1, sizeof = 10
-    struct sCharSlice sl2 = sCharSlice_frombuffer(&buf1[0], sizeof(buf2));
+    struct sCharSlice sl2 = sCharSlice_frombuffer(&buf2[0], MAXSTRLEN_OF_BUF(buf2));
     size_t printed = sCharSlice_tocstring_overlapping(sl2, &buf2[0], 10);
     if (strncmp(sl2.ptr, &buf2[0], sl2.len) != 0) {
       memcpy(print_buf, buf2, 10);
@@ -340,9 +374,9 @@ int main(void) {
     }
   }
 
-  {
+  { // sCharSlice_subslice
     struct sCharSlice sub_sl1 = sCharSlice_subslice(sl1, 1, 3);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("12");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("12");
     if (sCharSlice_isEqual(sub_sl1, expect_sl) != 0) {
       memcpy(print_buf, sub_sl1.ptr, sub_sl1.len);
       fprintf(stderr, "2. sCharSlice_subslice [%s] expect [12]\n", print_buf);
@@ -352,13 +386,13 @@ int main(void) {
 
   // testing string.h like routines
 
-  {
-    struct sCharSlice sli1 = sCharSlice_fromcstring("12");
-    struct sCharSlice sli2 = sCharSlice_fromcstring("34");
+  { // sCharSlice_concat, TODO
+    struct sCharSlice sli1 = sCharSlice_fromliteral("12");
+    struct sCharSlice sli2 = sCharSlice_fromliteral("34");
     char buf[10];
-    struct sCharSlice res_sl = sCharSlice_frombuffer(&buf[0], sizeof(buf));
+    struct sCharSlice res_sl = sCharSlice_frombuffer(&buf[0], MAXSTRLEN_OF_BUF(buf));
     int32_t st = sCharSlice_concat(&res_sl, sli1, sli2);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("1234");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("1234");
     if (st != 0 || sCharSlice_isEqual(res_sl, expect_sl) != 0) {
       memcpy(print_buf, res_sl.ptr, res_sl.len);
       fprintf(stderr, "2. sCharSlice_concat [%s] expect [1234]\n", print_buf);
@@ -366,30 +400,48 @@ int main(void) {
     }
   }
 
-  {
-    // FIXME doule check by result of strncmp
-    struct sCharSlice sli1 = sCharSlice_fromcstring("12");
-    struct sCharSlice sli2 = sCharSlice_fromcstring("34");
-    struct sCharSlice sli3 = sCharSlice_fromcstring("");
-    struct sCharSlice sli4 = sCharSlice_fromcstring("12");
+  { // sCharSlice_compare, strcmp
+    struct sCharSlice sli1 = sCharSlice_fromliteral("12");
+    struct sCharSlice sli2 = sCharSlice_fromliteral("34");
+    struct sCharSlice sli3 = sCharSlice_fromliteral("");
+    struct sCharSlice sli4 = sCharSlice_fromliteral("12");
+    int st_string_ref = strcmp("12", "34");
     int32_t st = sCharSlice_compare(sli1, sli2);
     if (st != -1)
       fprintf(stderr, "sCharSlice_compare1 [%d] expect [-1]\n", st);
+    if (st != st_string_ref)
+      fprintf(stderr, "sCharSlice_compare1 != ref [%d] expect [-1]\n", st_string_ref);
+
     st = sCharSlice_compare(sli1, sli3);
     if (st != 1)
       fprintf(stderr, "sCharSlice_compare2 [%d] expect [1]\n", st);
+    st_string_ref = strcmp("12", "");
+    if (st != st_string_ref)
+      fprintf(stderr, "sCharSlice_compare2 != ref [%d] expect [-1]\n", st_string_ref);
+
     st = sCharSlice_compare(sli1, sli4);
     if (st != 0)
       fprintf(stderr, "sCharSlice_compare3 [%d] expect [0]\n", st);
+    st_string_ref = strcmp("12", "12");
+    if (st != st_string_ref)
+      fprintf(stderr, "sCharSlice_compare3 != ref [%d] expect [-1]\n", st_string_ref);
+
     st = sCharSlice_compare(sli2, sli3);
     if (st != 1)
       fprintf(stderr, "sCharSlice_compare4 [%d] expect [1]\n", st);
+    st_string_ref = strcmp("34", "");
+    if (st != st_string_ref)
+      fprintf(stderr, "sCharSlice_compare4 != ref [%d] expect [-1]\n", st_string_ref);
+
     st = sCharSlice_compare(sli2, sli4);
     if (st != 1)
       fprintf(stderr, "sCharSlice_compare5 [%d] expect [1]\n", st);
+    st_string_ref = strcmp("34", "12");
+    if (st != st_string_ref)
+      fprintf(stderr, "sCharSlice_compare5 != ref [%d] expect [-1]\n", st_string_ref);
   }
 
-  {
+  { // sCharSlice_findbyte, TODO
     ptrdiff_t findres = sCharSlice_findbyte(sl1, '1');
     if (findres != 1)
       fprintf(stderr, "sCharSlice_findbyte1 res: %td expect 1\n", findres);
@@ -413,32 +465,30 @@ int main(void) {
       fprintf(stderr, "sCharSlice_findbyte7 res: %td expect 5\n", findres);
   }
 
-  {
-    struct sCharSlice search_str = sCharSlice_fromcstring("90");
+  { // sCharSlice_findstring, TODO
+    struct sCharSlice search_str = sCharSlice_fromliteral("90");
     struct sCharSlice result_sl = sCharSlice_findstring(sl1, search_str);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("");
     if (sCharSlice_isEqual(result_sl, expect_sl) != 0) {
       memcpy(print_buf, result_sl.ptr, result_sl.len);
       fprintf(stderr, "2. sCharSlice_findstring(12) [%s] expect []\n", print_buf);
       memset(&print_buf[0], 0, 1024);
     }
   }
-
   {
-    struct sCharSlice search_str = sCharSlice_fromcstring("345");
+    struct sCharSlice search_str = sCharSlice_fromliteral("345");
     struct sCharSlice result_sl = sCharSlice_findstring(sl1, search_str);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("345");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("345");
     if (sCharSlice_isEqual(result_sl, expect_sl) != 0) {
       memcpy(print_buf, result_sl.ptr, result_sl.len);
       fprintf(stderr, "2. sCharSlice_findstring(345) [%s] expect [345]\n", print_buf);
       memset(&print_buf[0], 0, 1024);
     }
   }
-
   {
-    struct sCharSlice search_str = sCharSlice_fromcstring("012345678");
+    struct sCharSlice search_str = sCharSlice_fromliteral("012345678");
     struct sCharSlice result_sl = sCharSlice_findstring(sl1, search_str);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("012345678");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("012345678");
     if (sCharSlice_isEqual(result_sl, expect_sl) != 0) {
       memcpy(print_buf, result_sl.ptr, result_sl.len);
       fprintf(stderr, "2. sCharSlice_findstring(012345678) [%s] expect [012345678]\n", print_buf);
@@ -447,20 +497,19 @@ int main(void) {
   }
 
   {
-    struct sCharSlice search_str = sCharSlice_fromcstring("12");
+    struct sCharSlice search_str = sCharSlice_fromliteral("12");
     struct sCharSlice result_sl = sCharSlice_findstring(sl1, search_str);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("12");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("12");
     if (sCharSlice_isEqual(result_sl, expect_sl) != 0) {
       memcpy(print_buf, result_sl.ptr, result_sl.len);
       fprintf(stderr, "2. sCharSlice_findstring(12) [%s] expect [12]\n", print_buf);
       memset(&print_buf[0], 0, 1024);
     }
   }
-
   {
-    struct sCharSlice search_str = sCharSlice_fromcstring("78");
+    struct sCharSlice search_str = sCharSlice_fromliteral("78");
     struct sCharSlice result_sl = sCharSlice_findstring(sl1, search_str);
-    struct sCharSlice expect_sl = sCharSlice_fromcstring("78");
+    struct sCharSlice expect_sl = sCharSlice_fromliteral("78");
     if (sCharSlice_isEqual(result_sl, expect_sl) != 0) {
       memcpy(print_buf, result_sl.ptr, result_sl.len);
       fprintf(stderr, "sCharSlice_findstring1(12) [%s] expect [78]\n", print_buf);
@@ -468,33 +517,32 @@ int main(void) {
     }
   }
 
-  {
-    struct sCharSlice cmp_sl = sCharSlice_fromcstring("012345678");
+  { // sCharSlice_isEqual
+    struct sCharSlice cmp_sl = sCharSlice_fromliteral("012345678");
     int32_t eql = sCharSlice_isEqual(sl1, cmp_sl);
     if (eql != 0)
       fprintf(stderr, "sCharSlice_findstring2(012345678) [%d] expect [0]\n", eql);
   }
-
   {
-    struct sCharSlice cmp_sl = sCharSlice_fromcstring("012345678");
+    struct sCharSlice cmp_sl = sCharSlice_fromliteral("012345678");
     int32_t eql = sCharSlice_isEqual(sl1, cmp_sl);
     if (eql != 0)
       fprintf(stderr, "sCharSlice_findstring3(012345678) [%d] expect [0]\n", eql);
   }
-
   {
-    struct sCharSlice cmp_sl = sCharSlice_fromcstring("12345678");
+    struct sCharSlice cmp_sl = sCharSlice_fromliteral("12345678");
     int32_t eql = sCharSlice_isEqual(sl1, cmp_sl);
     if (eql == 0)
       fprintf(stderr, "sCharSlice_findstring4(12345678) [%d] expect [1]\n", eql);
   }
-
   {
-    struct sCharSlice cmp_sl = sCharSlice_fromcstring("123456789");
+    struct sCharSlice cmp_sl = sCharSlice_fromliteral("123456789");
     int32_t eql = sCharSlice_isEqual(sl1, cmp_sl);
     if (eql == 0)
       fprintf(stderr, "sCharSlice_findstring5(123456789) [%d] expect [1]\n", eql);
   }
+
+  // TODO
 
   // {
   //   struct sCharSlice rhs_cmp_str1 = {.ptr = "012345678", .len = 10};
