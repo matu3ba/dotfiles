@@ -105,6 +105,8 @@ vim.keymap.set('n', '<F12>', dap.restart)
 -- TODO: how to get debug position for setting cursor there?
 -- TODO: reverse step setup with rr + gdb
 -- TODO: wingbd setup, microsoft reverse stepping?
+-- TODO: list and clear debug points
+-- TODO: SIGINT process under debug and get backtrace etc
 
 dap.listeners.before.attach.dapui_config = function() dapui.open() end
 dap.listeners.before.launch.dapui_config = function() dapui.open() end

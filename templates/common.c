@@ -48,16 +48,17 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 #endif
 #endif
 
-#include <stdint.h> // uint32_t, uint8_t
-#include <stdlib.h> // exit
-#ifdef _WIN32
-#include <malloc.h> // not standard conform in stdlib.h and fn names with _ prefix
-#endif
 #include <errno.h>    // errno
 #include <inttypes.h> // PRIXPTR and other portable printf formatter
 #include <limits.h>   // limit
-#include <stdio.h>    // fprintf, fseek, FILE
-#include <string.h>   // memcpy
+#ifdef _WIN32
+#include <malloc.h> // not standard conform in stdlib.h and fn names with _ prefix
+#endif
+#include <stddef.h>
+#include <stdint.h> // uint32_t, uint8_t
+#include <stdio.h>  // fprintf, fseek, FILE
+#include <stdlib.h> // exit
+#include <string.h> // memcpy
 
 //====tooling
 //====version
@@ -613,8 +614,16 @@ void printBits(int32_t const size, void *const ptr) {
 
 void print_size_t(void);
 void print_size_t(void) {
-  size_t val = 0;
-  printf("%zu\n", val); // SHENNANIGAN clangd: no autocorrection of printf formatter string
+  // SHENNANIGAN clangd: no autocorrection of printf formatter string
+  size_t val_size_t = 0;
+  printf("%zu\n", val_size_t);
+  ptrdiff_t val_ptrdiff_t = 0;
+  printf("%td\n", val_ptrdiff_t);
+
+  uint32_t val_uint32_t = 0;
+  printf("%" PRIu32 "\n", val_uint32_t);
+  int32_t val_int32_t = 0;
+  printf("%" PRId32 "\n", val_int32_t);
 }
 
 // easy preventable ub:

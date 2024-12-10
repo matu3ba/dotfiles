@@ -1,4 +1,8 @@
+//! Tested with
+//! zig cc -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c
+//! zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c
 #include <inttypes.h> // PRIu64
+#include <stddef.h>   // ptrdiff_t
 #include <stdio.h>    // printf
 // since c++11 usable with #include <cinttypes>
 // and with abs, quotient, remainder, conversion of byte string and wide string to
@@ -8,6 +12,8 @@
 
 int main(void) {
   // https://en.cppreference.com/w/cpp/types/integer
+  ptrdiff_t num = -3;
+  printf("%td\n", num);
   printf("%zu\n", sizeof(int64_t));
   printf("%s\n", PRId64);
   printf("%+" PRId64 "\n", INT64_MIN);

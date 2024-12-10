@@ -345,11 +345,13 @@ END_OMIT_PREFIXES:;
 #define MAXSTRLEN_OF_BUF(x) sizeof(x) - 1
 // __FILE_NAME__
 // __FILE__
-#define CHECK_EQ(VAR, EXPECTED)                                                         \
-  if (VAR != EXPECTED) {                                                                \
-    fprintf(stdout, "%s:%d %zu != %d (expected)\n", __FILE__, __LINE__, VAR, EXPECTED); \
-    *status += 1;                                                                       \
-  }
+#define CHECK_EQ(VAR, EXPECTED)                                                           \
+  do {                                                                                    \
+    if (VAR != EXPECTED) {                                                                \
+      fprintf(stdout, "%s:%d %zu != %d (expected)\n", __FILE__, __LINE__, VAR, EXPECTED); \
+      *status += 1;                                                                       \
+    }                                                                                     \
+  } while (0)
 
 static void test_sCharSlice_fromliteral(int32_t *status) {
   char print_buf[1024];
@@ -704,7 +706,7 @@ static void test_sCharSlice_findbytes(int32_t *status) {
   ptrdiff_t res_findbytes = sCharSlice_findbytes(searched_sl, bytes);
   if (res_findbytes != 3) {
     *status += 1;
-    fprintf(stderr, "sCharSlice_findbytes1 res: %zu expect 3\n", res_findbytes);
+    fprintf(stderr, "sCharSlice_findbytes1 res: %td expect 3\n", res_findbytes);
   }
   char const *searched_lit1 = "012345678";
   char *ref_strpbrk = strpbrk(searched_lit1, "73");
