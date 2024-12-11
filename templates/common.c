@@ -85,6 +85,57 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 //   - 3. some sort of arena, where a bunch of resources have a single owner, users dont bother cleaning
 //     up their resources, and instead the owner does it once at the end
 // * defer pattern with jump labels
+
+// best practice compile time checks
+// * macro hacks like these for static_assert https://stackoverflow.com/questions/3385515/static-assert-in-c
+// * compiler builtins
+// * static_assert with C11: _Static_assert (0, "assert1");
+// * constexpr in C23
+
+// SHENNANIGAN __builtin_constant_p does not check for string literals
+
+#if defined(HAS_C23)
+static_assert((2 + 2) % 3 == 1, "Whoa dude, you knew!");
+#define outscope_assert(expr) static_assert(expr, "")
+outscope_assert((2 + 2) % 3 == 1);
+#define comptime_assert(expr, msg) static_assert(expr, msg)
+comptime_assert((2 + 2) % 3 == 1, "Whoa dude, you knew!");
+#elif defined(HAS_C11)
+_Static_assert(2 + 2 * 2 == 6, "Lucky guess!?");
+#define outscope_assert(expr) _Static_assert(expr, "")
+outscope_assert(2 + 2 * 2 == 6);
+#define comptime_assert(expr, msg) _Static_assert(expr, msg)
+comptime_assert((2 + 2) % 3 == 1, "Whoa dude, you knew!");
+#else
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wmissing-variable-declarations"
+#define CONCAT_(prefix, suffix) prefix##suffix
+#define CONCAT(prefix, suffix) CONCAT_(prefix, suffix)
+#define outscope_assert(expr)                      \
+  struct CONCAT(outscope_assert___, __COUNTER__) { \
+    char outscope_assert[2 * (expr) - 1];          \
+                                                   \
+  } CONCAT(outscope_assert___, __COUNTER__)
+#define inscope_assert(expr)             \
+  do {                                   \
+    char inscope_assert[2 * (expr) - 1]; \
+    (void)inscope_assert;                \
+  } while (0)
+#define comptime_assert(expr, msg) outscope_assert(expr)
+outscope_assert(1 < 2);
+comptime_assert(1 < 2, "");
+void prevent_error(void);
+void prevent_error(void) {
+  char buf[10];
+  outscope_assert(2 + 2 * 2 == 6);
+  outscope_assert(sizeof(buf) == 10);
+  comptime_assert(1 < 2, "unused");
+  inscope_assert(sizeof(buf) == 10);
+}
+#pragma clang diagnostic pop
+#endif
+
 int32_t defer_in_c(void);
 int32_t defer_in_c(void) {
   int32_t st = 0;

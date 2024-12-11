@@ -379,6 +379,65 @@ fn testZig(
     }
 }
 
+// Fetch and workaround Macos not setting executable bit.
+// Use 'zig fetch' to download and unpack the specified URL and verify the checksum.
+// TODO use this for clang-format, clang-tidy
+fn fetch(b: *std.Build, options: struct {
+    url: []const u8,
+    file_name: []const u8,
+    hash: ?[]const u8,
+}) std.Build.LazyPath {
+    const copy_from_cache = b.addRunArtifact(b.addExecutable(.{
+        .name = "copy-from-cache",
+        .root_source_file = b.addWriteFiles().add("main.zig",
+            \\const builtin = @import("builtin");
+            \\const std = @import("std");
+            \\const assert = std.debug.assert;
+            \\
+            \\pub fn main() !void {
+            \\    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+            \\    const allocator = arena.allocator();
+            \\    const args = try std.process.argsAlloc(allocator);
+            \\    assert(args.len == 6);
+            \\
+            \\    const hash_and_newline = try std.fs.cwd().readFileAlloc(allocator, args[2], 128);
+            \\    assert(hash_and_newline[hash_and_newline.len - 1] == '\n');
+            \\    const hash = hash_and_newline[0 .. hash_and_newline.len - 1];
+            \\    if (!std.mem.eql(u8, args[5], hash)) {
+            \\        std.debug.panic(
+            \\            \\bad hash
+            \\            \\specified:  {s}
+            \\            \\downloaded: {s}
+            \\            \\
+            \\        , .{ args[5], hash });
+            \\    }
+            \\
+            \\    const source_path = try std.fs.path.join(allocator, &.{ args[1], hash, args[3] });
+            \\    try std.fs.cwd().copyFile(
+            \\        source_path,
+            \\        std.fs.cwd(),
+            \\        args[4],
+            \\        // TODO(Zig): https://github.com/ziglang/zig/pull/21555
+            \\        .{ .override_mode = if (builtin.target.os.tag == .macos) 0o777 else null },
+            \\    );
+            \\}
+        ),
+        .target = b.graph.host,
+    }));
+    copy_from_cache.addArg(
+        b.graph.global_cache_root.join(b.allocator, &.{"p"}) catch @panic("OOM"),
+    );
+    copy_from_cache.addFileArg(
+        b.addSystemCommand(&.{ b.graph.zig_exe, "fetch", options.url }).captureStdOut(),
+    );
+    copy_from_cache.addArg(options.file_name);
+    const result = copy_from_cache.addOutputFileArg(options.file_name);
+    if (options.hash) |hash| {
+        copy_from_cache.addArg(hash);
+    }
+    return result;
+}
+
 // zig cc flags
 const cmusl_flag = [_][]const u8{"-Wno-disabled-macro-expansion"};
 const c89_flags = [_][]const u8{ "-std=c89", "-Werror", "-Weverything" };

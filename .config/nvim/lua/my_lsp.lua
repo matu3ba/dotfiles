@@ -322,6 +322,10 @@ blink.setup {
   },
   keymap = {
     preset = 'default',
+    -- Tab should only be used, if completion is active, otherwise it should
+    -- be available for indentation.
+    ['<Tab>'] = {},
+    ['<S-Tab>'] = {},
     -- ['<C-space>'] = { 'accept', 'fallback' },
     -- ['<C-y>'] = { 'select_and_accept' },
     -- ['<C-d>'] = { 'show', 'show_documentation', 'hide_documentation' },

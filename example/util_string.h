@@ -38,6 +38,10 @@
 // find first occurrence of string without '\0': strstr
 // extract tokens from strings: strtok, strtok_r
 
+// Recommendation to use these macros:
+// #define IS_STR_LITERAL(x) (void)((void)(x), &("" x ""))
+// #define MAXSTRLEN_OF_BUF(x) sizeof(x) - 1
+
 #pragma once
 
 #include <stddef.h>
@@ -47,12 +51,13 @@
 
 // ====sCharSlice routines====
 
-/// len in interval [0, ptrdiff_t] is supported
+/// Len in interval [0, max(ptrdiff_t)] is supported.
+/// This data structure may contain '\0' characters not indicating string end.
 struct sCharSlice {
-  /// pointer to string, which may or may not be '\0' terminated
-  /// if unsure, do not use standard string.h functions with this data structure
+  /// Pointer to string, which may or may not be '\0' terminated.
+  /// If unsure, do not use string.h functions with this data structure.
   char *ptr;
-  /// string len excluding '\0' character
+  /// String len, if existing, excluding '\0' character.
   size_t len;
 };
 

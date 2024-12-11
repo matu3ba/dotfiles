@@ -1,6 +1,6 @@
 // zig cc -g -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
-// zig cc -g -std=c11 -Werror -Weverything -Wno-gnu-statement-expression-from-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
-// zig cc -g -std=c23 -Werror -Weverything -Wno-gnu-statement-expression-from-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
+// zig cc -g -std=c11 -Werror -Weverything -Wno-gnu-folding-constant -Wno-gnu-statement-expression-from-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
+// zig cc -g -std=c23 -Werror -Weverything -Wno-gnu-folding-constant -Wno-gnu-statement-expression-from-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -34,9 +34,9 @@ int main(void) {
   //static_assert_literal(c_programming);
 
   bool is_literal = is_literal("c_programming");
-  bool is_not_literal = is_literal("c_programming");
+  bool is_not_literal = is_literal(c_programming);
   // (void)is_literal;
-  // (void)is_not_literal;
+  (void)is_not_literal;
   assert(is_literal);
   assert(!is_not_literal);
 
@@ -50,7 +50,8 @@ int main(void) {
   IS_STR_LIT("test123");
 
 #if (__STDC_VERSION__ >= 201112L) // HAS_C11
-  return is_literal(c_programming) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return is_literal("c_programming") ? EXIT_SUCCESS : EXIT_FAILURE;
+  // return is_literal(c_programming) ? EXIT_SUCCESS : EXIT_FAILURE;
 #else
   return 0;
 #endif
