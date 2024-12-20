@@ -44,8 +44,8 @@
 
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
+#include <stddef.h> // size_t
+#include <stdint.h> // int32_t
 
 // instead of ssize_t use since C99 existing ptrdiff_t
 

@@ -126,7 +126,7 @@ return {
   -- (((( explicit move: van)in)al)il)
   -- cina/cila to modify fn args
   -- example: 2cina to modify 'bb' in 'f(aa, bb)'
-  -- idea: get to prev selection not possible?
+  -- or leftwards: 2cila
   { 'echasnovski/mini.ai', config = function() require('mini.ai').setup {} end },
 
   -- sa + motion/textobject + output id (to add), ie ( saiw) word -> (((word)))
@@ -241,6 +241,7 @@ return {
   -- leap: enter repeats, tab reverses the motion
   -- (unused default breaks mini.surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
+  -- TODO figure out better keymap
   { 'ggandor/leap.nvim' }, -- repeat action not yet supported
 
   -- Remote editing

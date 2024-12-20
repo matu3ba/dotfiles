@@ -194,14 +194,27 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
    * supervision (library) necessary
    * problem/design space (limitation to globally coordinate (using a local TCP/UNIX socket or something))
      https://stackoverflow.com/questions/20076916/waiting-for-grandchild-after-child-process-has-died
+     * fundamental issue is that each process only has a single process group ID. Process groups do not form a tree.
+     * Linux cgroups v2
+       => https://lwn.net/Articles/855049/
+       freezing not atomically, making it atomic would mean it would become slow
+       => https://github.com/oconnor663/duct.py/blob/master/gotchas.md#killing-grandchild-processes
      + Linux prctl with PR_SET_CHILD_SUBREAPER
+       => https://catern.com/ideas.html
+       => http://catern.com/process.html
+     + Windows just works mostly, if one gets the signaling correct enough
+     + Macos, BSDs etc very unclear likely with same problem
      + pipe to original process with descendants inheriting write end of pipe:
        closed => read-end readable for EOF
+       => most tractable for cooperating parent and child processes
      + ptrace
      + use pid 1 or implement pid 1 functionality
+     => pid does the same with cgroups v2, but from higher privileges to being permitted by kernel
+     which is less racy than kill by pid, but still racy
      + 'pid_t pid = waitpid(-1, &status, WNOHANG)' just works on non-evil children,
        but might just hang
-   * can not track processes killed via SIGKILL
+   * can not track processes killed via SIGKILL (especially grandchildren),
+   direct children work better via pidfd_send_signal
    * Solution space https://monorepo.tools
    * Proposed Solution to Job server implementation:
      + no (portable) solution exists to fix the fundamental problems of Make Jobserver protocol, see https://github.com/rust-lang/cargo/issues/14102
@@ -381,10 +394,6 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * theory/paper on bounded vs unbounded reasoning for computer systems?
   * think about design tradeoffs
 
-Interesting ideas
-* https://catern.com/ideas.html file-descriptor API for processes
-* Summary: Non-portable mess.
-
 To me unclear if solved:
 * check if linker speak has a formal model
   - https://www.cl.cam.ac.uk/~pes20/projects-2024.html
@@ -479,3 +488,27 @@ compiler backends important optimizations
   upper bound for security context etc) or possible race conditions. security
   depends on implementation details to be probably correct and sandboxing being
   sufficient.
+
+interfaces meaning
+- 1. dynamic dispatch https://en.wikipedia.org/wiki/Dynamic_dispatch
+  * works good enough
+  * how the different type is chosen
+    o comptime switch case
+    o base pointer with selection
+    o pointer to implementation
+    ..
+- 2. bounded parametric polymorphism https://en.wikipedia.org/wiki/Parametric_polymorphism#Bounded_parametric_polymorphism
+  * zig thinks static analysis is mostly not needed and running the code is sufficient for testing and satisfying invariants
+  * goal(s): composing constrains, meaning writing code to argue on relations and arithmetic
+    o constrain1: comptime evaluation order of top level decls must remain arbitrary
+    o constrain2: no blow-up of compilation times
+  * example1: type a1 can only be a type with defined equality such that it has a defined fn `equal(a1,a1) -> bool`
+  * example2: type a1 can only be a type with fancy function f1 such that it has a defined fn `f1(..) -> ..`
+  * ida: build.zig allows target based chaining of different comptime queries is_associative(ty1) is_commutative(ty1) on files
+  once zig becomes able to do type queries etc
+    o unclear use cases of generics:
+      - definition checked generics
+      - multi-builds
+  * idea: comptime declarative fns for type checks using an interface struct { data, &fn_check_on_data }
+    o testing in code or build.zig with all target + type instantiations
+    o data or functions can not be arbitrarily composed for generic checks

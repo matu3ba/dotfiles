@@ -773,6 +773,33 @@ test "switch details" {
     }
 }
 
+const Foo = struct {
+    nope: i32,
+    pub var blah = "xxx";
+    const hi = 1;
+    fn blafn() void {}
+};
+
+test "@hasDecl" {
+    try std.testing.expect(@hasDecl(Foo, "blah"));
+    // Test is in same file scope as Foo, so has decl hi.
+    // Testing in other file scope would return false.
+    try std.testing.expect(@hasDecl(Foo, "hi"));
+    try std.testing.expect(@hasDecl(Foo, "blafn"));
+
+    // @hasDecl is for declarations; not fields.
+    try std.testing.expect(!@hasDecl(Foo, "nope"));
+    try std.testing.expect(!@hasDecl(Foo, "nope1234"));
+}
+
+// SHENNANIGAN one can create trivially dependency loops without type dependency
+// -pub const BuiltinFunction = *const fn (*Vm, u64, u64, u64, u64, u64) void;
+// -
+//  pub const BuiltinProgram = struct {
+// -    functions: Registry(BuiltinFunction) = .{},
+// +    functions: Registry(*const fn (*Vm, u64, u64, u64, u64, u64) void) = .{},
+//  };
+
 // setup https://kristoff.it/blog/improving-your-zls-experience/
 
 //====keywords as of 0.14.0-dev.6323+862266514

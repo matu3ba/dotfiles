@@ -32,6 +32,7 @@ instrumented sanitizers with 2x-4x slodown vs dynamic ones with 20x-50x.
 -fsanitize=leak
 -fsanitize=thread
 -fsanitize=undefined
+-fsanitize=type
 -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common
 
 * docs https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer
@@ -59,6 +60,8 @@ Extra options
 use -O1 or higher -g for file names and line numbers
 Memory usage 5x to 10x + 1MB per thread
 Typical slowdown 5x to 15x
+* extras outside of -fsanitize=type
+TODO
 
 6. maintain debug infos in separate files
 objcopy --only-keep-debug executable_file executable_file.debug

@@ -5,9 +5,9 @@
 // zig cc -g -DSLICE_TEST -DSAFETY -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
 // zig cc -g -DSLICE_TEST -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
 // zig cc -g -DSLICE_TEST -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/util_string.c -o util_string23.exe && ./util_string23.exe
-// zig cc -g -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
-// zig cc -g -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./example/util_string.c -o util_string99.exe && ./util_string99.exe
-// zig cc -g -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/util_string.c -o util_string23.exe && ./util_string23.exe
+// zig cc -g -std=c99 -fsanitize=undefined -fsanitize-trap=undefined -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -std=c11 -fsanitize=undefined -fsanitize-trap=undefined -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./example/util_string.c -o util_string99.exe && ./util_string99.exe
+// zig cc -g -std=c23 -fsanitize=undefined -fsanitize-trap=undefined -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/util_string.c -o util_string23.exe && ./util_string23.exe
 // TODO zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
 // TODO zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
 // TODO zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
@@ -16,13 +16,14 @@
 // TODO make OOB diagnostics optional based on safety mode
 // TODO review according to https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#
 // TODO use vsnprintf, vfprintf, snprintf
+// TODO -fsanitize=type
+// TODO figure out something more type safe to print based on https://github.com/nickelca/generic-print
 
 #include "util_string.h"
-#include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> // abort
+#include <string.h> // memcpy, memmove
 
+#define PRINTING
 #define SLICE_TEST
 // #define SAFETY
 // #define TRACE
@@ -39,17 +40,23 @@
 #endif // (__STDC_VERSION__ >= 202311L) // HAS_C23
 
 #if defined(TRACE)
-#include <stdio.h>
+#define PRINTING
 #endif // TRACE
-
-#if defined(SAFETY)
-// TODO
-#endif //SAFETY
+#if defined(PRINTING)
+#include <stdio.h>
+#endif // PRINTING
 
 // ====sCharSlice routines====
 
+static size_t sCharSlice_strlen(char const cstr_ptr[]) {
+  size_t cstr_len = 0;
+  for (; cstr_ptr[cstr_len] != 0; ++cstr_len)
+    ;
+  return cstr_len;
+}
+
 struct sCharSlice sCharSlice_fromliteral(char str_ptr[]) {
-  size_t str_len = strlen(str_ptr);
+  size_t str_len = sCharSlice_strlen(str_ptr);
   struct sCharSlice res = {
       .ptr = str_ptr,
       .len = str_len,
@@ -93,18 +100,12 @@ size_t sCharSlice_tocstring_overlapping(struct sCharSlice s_char_sl, char cstr_p
 
 struct sCharSlice sCharSlice_subslice(struct sCharSlice s_char_sl, size_t start, size_t end) {
   struct sCharSlice res_slice = {.ptr = s_char_sl.ptr, .len = 0};
-  //    [  ]   reference
-  // 0 nullptr ok
-  // 1 [ ]     ruled out via start
-  // 2  [ ]    ok
-  // 3   [   ] OOB
-  // 3     [ ] ok
   if (s_char_sl.ptr == NULLPTR) {
     return res_slice;
   }
   if (start > s_char_sl.len || end > s_char_sl.len) {
-    // FIXME meaningful error message for OOB
-    abort();
+    fprintf(stderr, "OOB: start, end, s_char_sl.len: %zu, %zu, %zu\n", start, end, s_char_sl.len);
+    // TODO msg?
   }
 
   res_slice.ptr = s_char_sl.ptr + start;
@@ -114,8 +115,15 @@ struct sCharSlice sCharSlice_subslice(struct sCharSlice s_char_sl, size_t start,
 }
 
 int32_t sCharSlice_isEqual(struct sCharSlice s_char_sl1, struct sCharSlice s_char_sl2) {
-  if (s_char_sl1.ptr == NULLPTR || s_char_sl1.ptr == NULLPTR)
-    return 1;
+#if defined(SAFETY)
+  if (s_char_sl1.ptr == NULLPTR || s_char_sl1.ptr == NULLPTR) {
+#if defined(PRINTING)
+    fprintf(stderr, "NULLPTR: s_char_sl1.ptr, s_char_sl1.ptr: %d, %d", s_char_sl1.ptr == NULLPTR,
+            s_char_sl1.ptr == NULLPTR);
+#endif         // defined(PRINTING)
+    assert(0); // FILE + LINENUMBER?
+  }
+#endif // defined(SAFETY)
 
   if (s_char_sl1.len != s_char_sl2.len)
     return 1;
@@ -131,8 +139,20 @@ int32_t sCharSlice_isEqual(struct sCharSlice s_char_sl1, struct sCharSlice s_cha
 
 int32_t sCharSlice_concat(struct sCharSlice *s_charslice_dest, struct sCharSlice s_char_sl1,
                           struct sCharSlice s_char_sl2) {
-  if (s_char_sl1.ptr == NULLPTR || s_char_sl1.ptr == NULLPTR)
-    return 1;
+#if defined(SAFETY)
+  if (s_charslice_dest == NULLPTR || s_char_sl1.ptr == NULLPTR || s_char_sl2.ptr == NULLPTR) {
+#if defined(PRINTING)
+    fprintf(stderr, "NULLPTR: s_charslice_dest, s_char_sl1.ptr, s_char_sl2.ptr: %d, %d\n", s_char_sl1.ptr == NULLPTR,
+            s_charslice_dest == NULLPTR, s_char_sl1.ptr == NULLPTR);
+#endif // defined(PRINTING)
+    abort();
+  }
+  if (s_charslice_dest->ptr == NULLPTR) {
+#if defined(PRINTING)
+    fprintf(stderr, "NULLPTR: s_charslice_dest->ptr\n");
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
   if (s_charslice_dest->len < s_char_sl1.len + s_char_sl2.len) {
     return 1;
   }
@@ -146,8 +166,13 @@ int32_t sCharSlice_concat(struct sCharSlice *s_charslice_dest, struct sCharSlice
 }
 
 int32_t sCharSlice_compare(struct sCharSlice s_char_sl1, struct sCharSlice s_char_sl2) {
-  if (s_char_sl1.ptr == NULLPTR || s_char_sl1.ptr == NULLPTR)
+#if defined(SAFETY)
+  if (s_char_sl1.ptr == NULLPTR || s_char_sl1.ptr == NULLPTR) {
+#if defined(PRINTING)
     return 1;
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
 
   if (s_char_sl1.len != s_char_sl2.len)
     return 1;
@@ -163,8 +188,13 @@ int32_t sCharSlice_compare(struct sCharSlice s_char_sl1, struct sCharSlice s_cha
 }
 
 size_t sCharSlice_nonprefixlen(struct sCharSlice s_char_sl, struct sCharSlice s_char_sl_reject) {
-  if (s_char_sl.ptr == NULLPTR || s_char_sl_reject.ptr == NULLPTR)
+#if defined(SAFETY)
+  if (s_char_sl.ptr == NULLPTR || s_char_sl_reject.ptr == NULLPTR) {
+#if defined(PRINTING)
     return 0;
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
 
   if (s_char_sl_reject.len == 0)
     return s_char_sl.len;
@@ -178,8 +208,13 @@ size_t sCharSlice_nonprefixlen(struct sCharSlice s_char_sl, struct sCharSlice s_
 }
 
 size_t sCharSlice_prefixlen(struct sCharSlice s_char_sl, struct sCharSlice s_char_sl_accept) {
-  if (s_char_sl.ptr == NULLPTR || s_char_sl_accept.ptr == NULLPTR)
+#if defined(SAFETY)
+  if (s_char_sl.ptr == NULLPTR || s_char_sl_accept.ptr == NULLPTR) {
+#if defined(PRINTING)
     return 0;
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
 
   if (s_char_sl_accept.len == 0)
     return 0;
@@ -198,6 +233,13 @@ size_t sCharSlice_prefixlen(struct sCharSlice s_char_sl, struct sCharSlice s_cha
 }
 
 ptrdiff_t sCharSlice_findbytes(struct sCharSlice s_char_sl, struct sCharSlice s_charslbytes) {
+#if defined(SAFETY)
+  if (s_char_sl.ptr == NULLPTR || s_charslbytes.ptr == NULLPTR) {
+#if defined(PRINTING)
+    return 0;
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
   for (size_t sli_i = 0; sli_i < s_char_sl.len; sli_i += 1) {
     for (size_t bytes_i = 0; bytes_i < s_charslbytes.len; bytes_i += 1) {
       if (s_char_sl.ptr[sli_i] == s_charslbytes.ptr[bytes_i])
@@ -210,9 +252,11 @@ ptrdiff_t sCharSlice_findbytes(struct sCharSlice s_char_sl, struct sCharSlice s_
 ptrdiff_t sCharSlice_findbyte(struct sCharSlice s_char_sl, int ch) {
 #if defined(SAFETY)
   if (s_char_sl.ptr == NULLPTR) {
+#if defined(PRINTING)
     return -1;
+#endif // defined(PRINTING)
   }
-#endif //SAFETY
+#endif // defined(SAFETY)
 
   for (size_t i = 0; i < s_char_sl.len; i += 1) {
     if ((int)s_char_sl.ptr[i] == ch)
@@ -224,9 +268,11 @@ ptrdiff_t sCharSlice_findbyte(struct sCharSlice s_char_sl, int ch) {
 ptrdiff_t sCharSlice_reverse_findbyte(struct sCharSlice s_char_sl, int ch) {
 #if defined(SAFETY)
   if (s_char_sl.ptr == NULLPTR) {
+#if defined(PRINTING)
     return -1;
+#endif // defined(PRINTING)
   }
-#endif //SAFETY
+#endif // defined(SAFETY)
 
   size_t i = s_char_sl.len;
   while (i > 0) {
@@ -256,9 +302,12 @@ struct sCharSlice sCharSlice_findstring(struct sCharSlice buf, struct sCharSlice
 #endif // TRACE
   struct sCharSlice res_slice = {.ptr = buf.ptr, .len = 0};
 #if defined(SAFETY)
-  if (buf.ptr == NULLPTR || search.ptr == NULLPTR)
+  if (buf.ptr == NULLPTR || search.ptr == NULLPTR) {
+#if defined(PRINTING)
     return res_slice;
-#endif //SAFETY
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
 
   size_t buf_i = 0;
   if (buf.len == 0 || search.len > buf.len)
@@ -293,6 +342,14 @@ struct sCharSlice sCharSlice_findstring(struct sCharSlice buf, struct sCharSlice
 }
 
 struct sCharSlice_Interval sCharSlice_tokenize(struct sCharSlice s_char_sl, struct sCharSlice delimiter, size_t start) {
+#if defined(SAFETY)
+  if (buf.ptr == NULLPTR || search.ptr == NULLPTR) {
+#if defined(PRINTING)
+    return res_slice;
+#endif // defined(PRINTING)
+  }
+#endif // defined(SAFETY)
+
   size_t start_i = start;
 
   if (delimiter.len == 0) {
@@ -337,9 +394,9 @@ END_OMIT_PREFIXES:;
 }
 
 #if defined(SLICE_TEST)
+#include <assert.h>
 #include <inttypes.h> // PRIu64
 #include <stdio.h>
-#include <string.h>
 
 // C99 basic string literal check
 #define IS_STR_LIT(x) (void)((void)(x), &("" x ""))
@@ -681,20 +738,42 @@ static void test_sCharSlice_prefixlen(int32_t *status) {
   char print_buf[1024];
   memset(&print_buf[0], 0, 1024);
   struct sCharSlice searched_sl = sCharSlice_fromliteral("012345678");
+
   struct sCharSlice accept_sl1 = sCharSlice_fromliteral("01234");
-
-  size_t res_prefixlen = sCharSlice_prefixlen(searched_sl, accept_sl1);
-  if (res_prefixlen != 5) {
+  size_t res_prefixlen1 = sCharSlice_prefixlen(searched_sl, accept_sl1);
+  if (res_prefixlen1 != 5) {
     *status += 1;
-    fprintf(stderr, "sCharSlice_prefixlen1 res: %zu expect 5\n", res_prefixlen);
+    fprintf(stderr, "sCharSlice_prefixlen1 res: %zu expect 5\n", res_prefixlen1);
   }
-  size_t ref_strspn = strspn("012345678", "01234");
-  if (ref_strspn != 5) {
+  size_t ref_strspn1 = strspn("012345678", "01234");
+  if (ref_strspn1 != 5) {
     *status += 1;
-    fprintf(stderr, "sCharSlice_prefixlen2 ref_strspn: %zu expect 5\n", ref_strspn);
+    fprintf(stderr, "sCharSlice_prefixlen2 ref_strspn: %zu expect 5\n", ref_strspn1);
   }
 
-  // FIXME more exhaustive tests
+  struct sCharSlice accept_sl2 = sCharSlice_fromliteral("");
+  size_t res_prefixlen2 = sCharSlice_prefixlen(searched_sl, accept_sl2);
+  if (res_prefixlen2 != 0) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_prefixlen3 res: %zu expect ?\n", res_prefixlen2);
+  }
+  size_t ref_strspn2 = strspn("012345678", "");
+  if (ref_strspn2 != 0) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_prefixlen4 ref_strspn: %zu expect ?\n", ref_strspn2);
+  }
+
+  struct sCharSlice accept_sl3 = sCharSlice_fromliteral("01234567890123");
+  size_t res_prefixlen3 = sCharSlice_prefixlen(searched_sl, accept_sl3);
+  if (res_prefixlen3 != 9) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_prefixlen5 res: %zu expect 9\n", res_prefixlen3);
+  }
+  size_t ref_strspn3 = strspn("012345678", "01234567890123");
+  if (ref_strspn3 != 9) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_prefixlen6 ref_strspn: %zu expect 9\n", ref_strspn3);
+  }
 }
 
 static void test_sCharSlice_findbytes(int32_t *status) {
@@ -702,25 +781,59 @@ static void test_sCharSlice_findbytes(int32_t *status) {
   char print_buf[1024];
   memset(&print_buf[0], 0, 1024);
   struct sCharSlice searched_sl = sCharSlice_fromliteral("012345678");
-  struct sCharSlice bytes = sCharSlice_fromliteral("73");
+  char const *searched_lit = "012345678";
 
-  ptrdiff_t res_findbytes = sCharSlice_findbytes(searched_sl, bytes);
-  if (res_findbytes != 3) {
+  struct sCharSlice bytes1 = sCharSlice_fromliteral("73");
+  ptrdiff_t res_findbytes1 = sCharSlice_findbytes(searched_sl, bytes1);
+  if (res_findbytes1 != 3) {
     *status += 1;
-    fprintf(stderr, "sCharSlice_findbytes1 res: %td expect 3\n", res_findbytes);
+    fprintf(stderr, "sCharSlice_findbytes1 res: %td expect 3\n", res_findbytes1);
   }
-  char const *searched_lit1 = "012345678";
-  char *ref_strpbrk = strpbrk(searched_lit1, "73");
-  if ((size_t)(&ref_strpbrk[0] - &searched_lit1[0]) != 3) {
+  char *ref_strpbrk1 = strpbrk(searched_lit, "73");
+  if ((size_t)(&ref_strpbrk1[0] - &searched_lit[0]) != 3) {
     *status += 1;
-    fprintf(stderr, "sCharSlice_findbytes2 ref_strspn: %zu expect 3\n", strlen(searched_lit1));
+    fprintf(stderr, "sCharSlice_findbytes2 ref_strspn: %zu expect 3\n", strlen(searched_lit));
   }
 
-  // FIXME more exhaustive tests
+  struct sCharSlice bytes2 = sCharSlice_fromliteral("");
+  ptrdiff_t res_findbytes2 = sCharSlice_findbytes(searched_sl, bytes2);
+  if (res_findbytes2 != -1) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_findbytes3 res: %td expect -1\n", res_findbytes2);
+  }
+  char *ref_strpbrk2 = strpbrk(searched_lit, "");
+  if (ref_strpbrk2 != NULLPTR) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_findbytes4 ref_strspn: : not NULLPTR\n");
+  }
+
+  struct sCharSlice bytes3 = sCharSlice_fromliteral("9");
+  ptrdiff_t res_findbytes3 = sCharSlice_findbytes(searched_sl, bytes3);
+  if (res_findbytes3 != -1) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_findbytes5 res: %td expect -1\n", res_findbytes3);
+  }
+  char *ref_strpbrk3 = strpbrk(searched_lit, "9");
+  if (ref_strpbrk3 != NULLPTR) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_findbytes6 ref_strspn: : not NULLPTR\n");
+  }
+
+  struct sCharSlice bytes4 = sCharSlice_fromliteral("99999999999999999999999999");
+  ptrdiff_t res_findbytes4 = sCharSlice_findbytes(searched_sl, bytes4);
+  if (res_findbytes4 != -1) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_findbytes5 res: %td expect -1\n", res_findbytes4);
+  }
+  char *ref_strpbrk4 = strpbrk(searched_lit, "99999999999999999999999999");
+  if (ref_strpbrk4 != NULLPTR) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_findbytes6 ref_strspn: not NULLPTR\n");
+  }
 }
 
-// TODO compare with strchr
 static void test_sCharSlice_findbyte(int32_t *status) {
+  // also compares with strchr
   struct sCharSlice sl1 = sCharSlice_fromliteral("012345678");
   char const *searched_lit1 = "012345678";
   ptrdiff_t findres = sCharSlice_findbyte(sl1, '1');
@@ -732,7 +845,7 @@ static void test_sCharSlice_findbyte(int32_t *status) {
   size_t pos = (size_t)(&ref_strchr[0] - &searched_lit1[0]);
   if (pos != 1) {
     *status += 1;
-    fprintf(stderr, "sCharSlice_findbytes2 ref_strspn: %zu expect 3\n", pos);
+    fprintf(stderr, "sCharSlice_findbytes2 ref_strspn: %zu expect 1\n", pos);
   }
 
   findres = sCharSlice_findbyte(sl1, '8');
@@ -785,15 +898,70 @@ static void test_sCharSlice_findbyte(int32_t *status) {
 
 static void test_sCharSlice_reverse_findbyte(int32_t *status) {
   // also compares with strrchr
-  char print_buf[1024];
-  memset(&print_buf[0], 0, 1024);
-  (void)status;
-  // TODO
+  struct sCharSlice sl1 = sCharSlice_fromliteral("012345678");
+  char const *searched_lit1 = "012345678";
+  ptrdiff_t findres = sCharSlice_reverse_findbyte(sl1, '1');
+  if (findres != 1) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte1 res: %td expect 1\n", findres);
+  }
+  char *ref_strchr = strrchr(searched_lit1, '1');
+  size_t pos = (size_t)(&ref_strchr[0] - &searched_lit1[0]);
+  if (pos != 1) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte2 ref_strspn: %zu expect 1\n", pos);
+  }
+
+  findres = sCharSlice_reverse_findbyte(sl1, '8');
+  if (findres != 8) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte3 res: %td expect 8\n", findres);
+  }
+  ref_strchr = strrchr(searched_lit1, '8');
+  pos = (size_t)(&ref_strchr[0] - &searched_lit1[0]);
+  if (pos != 8) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte4 ref_strspn: %zu expect 8\n", pos);
+  }
+
+  findres = sCharSlice_reverse_findbyte(sl1, '9');
+  if (findres != -1) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte5 res: %td expect -1\n", findres);
+  }
+  ref_strchr = strrchr(searched_lit1, '9');
+  if (ref_strchr != NULLPTR) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte6 ref_strspn: not NULLPTR\n");
+  }
+
+  findres = sCharSlice_reverse_findbyte(sl1, '0');
+  if (findres != 0) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte7 res: %td expect 0\n", findres);
+  }
+  ref_strchr = strrchr(searched_lit1, '0');
+  pos = (size_t)(&ref_strchr[0] - &searched_lit1[0]);
+  if (pos != 0) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte8 ref_strspn: %zu expect 0\n", pos);
+  }
+
+  findres = sCharSlice_reverse_findbyte(sl1, '5');
+  if (findres != 5) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte9 res: %td expect 5\n", findres);
+  }
+  ref_strchr = strrchr(searched_lit1, '5');
+  pos = (size_t)(&ref_strchr[0] - &searched_lit1[0]);
+  if (pos != 5) {
+    *status += 1;
+    fprintf(stderr, "sCharSlice_reverse_findbyte10 ref_strspn: %zu expect 5\n", pos);
+  }
 }
 
 static void test_sCharSlice_findstring(int32_t *status) {
   // also compareas with strstr
-  // TODO
   char print_buf[1024];
   memset(&print_buf[0], 0, 1024);
 

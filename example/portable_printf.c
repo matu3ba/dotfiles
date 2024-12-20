@@ -1,6 +1,6 @@
 //! Tested with
-//! zig cc -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c
-//! zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c
+//! zig cc -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/portable_printf.c -o portable_printf99.exe && ./portable_printf99.exe
+//! zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/portable_printf.c -o portable_printf23.exe && ./portable_printf23.exe
 #include <inttypes.h> // PRIu64
 #include <stddef.h>   // ptrdiff_t
 #include <stdio.h>    // printf
@@ -9,6 +9,9 @@
 // intmax_t and uintmax_t
 
 // For embedded C, use https://github.com/mpaland/printf or https://github.com/eyalroz/printf
+// For C99 there is no type safe printing possible without extensions. Use compiler options and clangd.
+// For C11 use idea adjust https://github.com/nickelca/generic-print
+// For C23 use https://github.com/nickelca/generic-print
 
 int main(void) {
   // https://en.cppreference.com/w/cpp/types/integer

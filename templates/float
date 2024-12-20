@@ -44,7 +44,7 @@ Full table:
 Floats can store exactly all integers from [-2^(mantissa+1), +2^(mantissa+1)]:
 mantissa: 10, 23, 52, 112.
 => [-2048, 2048], [-8_388_608, 8_388_608], [-4_503_599_627_370_496, 4_503_599_627_370_496] [-big, big]
-Compare that with unsinged integers:
+Compare that with unsigned integers:
 [-32_768, 32_767], [-2147483648, 2147483647], [-9_223_372_036_854_775_808, 9_223_372_036_854_775_807], [-big, big]
 and we get for halffloat a factor of 16x, float a factor of 256 and double a factor of 2048x.
 
@@ -58,7 +58,24 @@ LLVM:
 - In contrast, gcc offers '-fsignaling-nans' and '-frounding-math' for full IEE754 compliance
   (assuming same rounding mode is in effect everywhere), see https://gcc.gnu.org/wiki/FloatingPointMath
 
-Since IEE754-2008 silent NaN must be TODO and signaling NaN must be TODO.
+"The Removal/Demotion of MinNum and MaxNum Operations from IEEE 754-2018" by Chen et al.
+* minNum, maxNum, minNumMag, and maxNumMag removed from or demoted in IEEE std 754-2018 due to non-associativity
+* "With this non-associativity, different compilations or runs on parallel processing can
+return different answers, depending on whether the sNaN is encountered last or not in a
+sequence of operations."
+* "sometimes a NaN is the most interesting part of a vector; sometimes the least"
+* fmax(x,y): qNaN as “missing data” -> result is other input x/y, sNaN “propagate” -> result is qNan
+Future, ie IEE754-2028
+* "Criteria for future min-max operations may include primitives, associativity, commutativity, treatment of signed zero, priority of NaN, and special NaN."
+* may conclude min-max as high-level routines and exclude min-max from the floating-point arithmetic standard
+* language standards may construct min-max routines by choosing 754 comparison predicates/relations and selection based on predicate/relation results
+* addition and multiplication operations are associative iff results are exact, otherwise non-associative
+* addition and multiplication operations are commutative unless both operands are NaNs
+  - at most one operand is NaN means result may not be exact; but reversing gives same result
+* min/max(+-0) could return +0/-0, so -0 may be strictly smaller than +0 and to be commutative regardless of operands order
+* recommended associativity/commutativity when both operands are NaNs
+* special NaNs without effect on computation (using unused bits of representation) may be excluded from propagation rules
+  - it remains unclear what "special NaNs" are meant hereby
 
 Subnormal numbers
 Smallest Normal Number Largest Normal Number taken from $E_{min}$, $E^{max}$.
@@ -73,3 +90,6 @@ https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-20
 
 TODO
 https://orlp.net/blog/taming-float-sums
+
+TODO summarize hardware behavior
+https://grouper.ieee.org/groups/msc/ANSI_IEEE-Std-754-2019/background/minNum_maxNum_Removal_Demotion_v3.pdf

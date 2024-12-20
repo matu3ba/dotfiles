@@ -52,3 +52,4 @@ RequiresClausePosition: WithFollowing
 RequiresExpressionIndentation: OuterScope
 SpaceAfterTemplateKeyword: false
 TabWidth: 2
+UseTab: Never

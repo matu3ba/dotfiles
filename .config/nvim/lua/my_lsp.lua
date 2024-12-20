@@ -2,6 +2,8 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+-- TODO simplify config based on 3f1d09bc94d02266d6fa588a2ccd1be1ca084cf7
+
 -- lsp protocol
 -- 1. file opened in editor -> editor supposed to inform server about changes to
 -- document. Builtin neovim client do that. How exactly file stored on disk
@@ -22,6 +24,10 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 -- pip(x) install --upgrade ruff
 -- npm install --save-dev --save-exact @biomejs/biome
+-- git clone https://github.com/biomejs/biome
+-- cargo install just
+-- just install-tools
+-- BIOME_VERSION=0.0.1 cargo build --bin biome --release
 
 -- Manual (nvim-lsp name -- mason name):
 -- 'bashls', -- 'bash-language-server'
@@ -103,7 +109,8 @@ end
 -- traverses parent dir up to find yaml file .clangd
 -- CompileFlags:
 --   Add: [-std=c++20]
---lspconfig.biome.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+
+lspconfig.biome.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 --lspconfig.gopls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
 -- lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }

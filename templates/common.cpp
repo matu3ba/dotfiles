@@ -6,6 +6,8 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 // zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
 
+// TODO use -fsanitize=type https://llvm.org/devmtg/2017-10/slides/Finkel-The%20Type%20Sanitizer.pdf
+
 // -Wunsafe-buffer-usage opt-out:
 // [[clang::unsafe_buffer_usage]]
 // void method() { .. }
@@ -2549,7 +2551,58 @@ int check_pair() {
   use_is_pair("");
   return 0;
 }
-#endif
+
+void use_map_extract();
+void use_map_extract() {
+  std::map<int, std::string> map1{{1, "mango"}, {2, "papaya"}, {3, "guava"}};
+  std::map<int, std::string> map2{{1, "banana"}, {2, "papaya"}, {3, "guava"}};
+  auto nh = map1.extract(2);
+  if (!nh.empty()) {
+    nh.key() = 4;
+    // nh.mapped() = "blabla"; mapped() showing the value is read-only
+    auto const it1 = map1.insert(std::move(nh));
+    (void)it1;
+  }
+  auto const it2 = map2.insert(map1.extract(1)); // splice from map1 into map2
+  (void)it2;
+  // we could also move the element to map2
+}
+
+void use_map_merge();
+void use_map_merge() {
+  std::map<int, std::string> ma{{1, "apple"}, {5, "pear"}, {10, "banana"}};
+  std::map<int, std::string> mb{{2, "zorro"}, {4, "batman"}, {5, "X"}, {8, "alpaca"}};
+  std::map<int, std::string> u;
+  u.merge(ma); // {1, "apple"}, {5, "pear"}, {10, "banana"}
+  u.merge(mb); // {1, "apple"}, {2, "zorro"}, {4, "batman"}, {5, "pear"}, {8, "alpaca"}, {10, "banana"}
+  (void)u;
+}
+
+void use_map_swap();
+void use_map_swap() {
+  std::map<std::string, std::string> m1{{"γ", "gamma"}, {"β", "beta"}, {"α", "alpha"}, {"γ", "gamma"}};
+  std::map<std::string, std::string> m2{{"ε", "epsilon"}, {"δ", "delta"}, {"ε", "epsilon"}};
+  m1.swap(m2);
+  (void)m1;
+  (void)m2;
+}
+
+void use_insert_or_assign();
+void use_insert_or_assign() {
+  std::map<std::string, std::string> map1;
+  auto const [it1, ec1] = map1.insert_or_assign("c", "cherry");     // pair.second = true -> inserted
+  auto const [it2, ec2] = map1.insert_or_assign("c", "clementine"); // pair.second = false -> assigned
+                                                                    // pair.first is iter with [key,value]
+  (void)map1;
+  (void)it1;
+  (void)it2;
+  (void)ec1;
+  (void)ec2;
+}
+
+// contains
+
+#endif // HAS_CPP17
 
 // TODO sort in
 // std::uniform_int_distribution<int32_t> Index(0, InclusiveEnd);
@@ -2592,6 +2645,8 @@ void use_is_stl_container() {
   printf("%d\n", is_stl_container<int>::value);
 }
 #endif
+
+// TODO reorganize and add here HAS_CPP17
 
 // SHENNANIGAN decltype declval over multiple templates requires to query the
 // public type of a child via using, because C++ is unable to infer the type
@@ -2702,6 +2757,21 @@ void use_format() {
   // SHENNANIGAN std::print not part of C++20
 }
 
+void use_contains();
+void use_contains() {
+  std::map<int, int> map1{{1, 0}, {2, 1}, {3, 1}};
+  assert(map1.contains(1));
+}
+
+void use_try_emplace();
+void use_try_emplace() {
+  std::map<int, int> map1{{1, 0}, {2, 1}, {3, 1}};
+  auto const [it, ec] = map1.try_emplace(1, 1);
+  assert(map1.contains(1));
+  (void)it;
+  (void)ec;
+}
+
 #endif // HAS_CPP20
 
 // SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const is missing
@@ -2760,6 +2830,7 @@ struct use_CustomComparator { // also known as predicate
 void use_fmt_print();
 void use_fmt_print() {
   std::print(stdout, "Hello, world!\n");
+  // std::print(stdout, "%s\n", "Hello, world!"); // %s does not substitute "Hello, world!"
   std::string s = std::format("The answer is {}.", 42);
   std::print(stdout, "{}\n", s);
   (void)s;
@@ -2770,6 +2841,25 @@ void use_string_view() {
   auto str_lit = "The answer is: 42";
   std::string_view str_view{str_lit};
   std::print(stdout, "{}\n", str_view);
+
+  std::string cstr1 = "hello world!";
+  std::string_view strview1 = std::string_view(cstr1).substr(6, 5);
+  std::cout << strview1;
+  std::cout << "\n";
+
+  char arr[] = "Hello";
+  static_assert(std::size(arr) == 6);
+  std::string_view str_view2(std::begin(arr), std::end(arr));
+  std::cout << str_view2 << " -- length: " << str_view2.length() << "\n";
+
+  std::string_view str_view3(arr);
+  std::cout << str_view3 << " -- length: " << str_view3.length() << "\n";
+
+  // SHENNANIGAN: allocation needed with std::string
+  // std::string cstr2 = "hello world!";
+  // good: clangd complains with -Wdangling-gsl
+  //                        ~~~~v~~~~~~~~~~~~~~
+  // std::string_view view2(cstr2.substr(6, 5));
 }
 
 //====CPP23string_ops
@@ -2990,6 +3080,10 @@ static_assert(enum_to_string(Color(42)) == "<unnamed>");
 // SHENNANIGAN iostream bad, successor https://github.com/ned14/llfio
 // * use std::print for formatting
 // * https://www.reddit.com/r/cpp/comments/g187t6/current_iostream_status_in_c/
+
+// SHENNANIGAN not possible to test if a type meets the Container named type requirement
+// * there are neither plans nor willingness to change that
+// * boils down to resolving circular dependency on type resolving and arcane implementation details
 #endif
 
 constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
@@ -3034,6 +3128,21 @@ int main() {
 
   // static constexpr auto val_sum = sum({5, 7, 9});
   // std::print("{}\n", val_sum);
+
+  constexpr std::string_view sv1{"Hello, world!"};
+  std::print("{}\n", sv1);                                                 // C+23
+  size_t written = fwrite(sv1.data(), sizeof(char), sv1.length(), stdout); // C++17 1.
+  assert(written == sv1.length());
+  written = fwrite("\n", sizeof(char), 1, stdout);
+  assert(written == 1);
+  static_assert(sv1.length() < std::numeric_limits<int>::max());         // slower C++17 2.
+  fprintf(stdout, "%.*s\n", static_cast<int>(sv1.length()), sv1.data()); // 2.
+
+  // SHENNANIGAN:
+  char const *cstr_lit = "Hello, world!";
+  std::print("{}\n", cstr_lit);
+
+  use_string_view();
 #endif
 
   return 0;

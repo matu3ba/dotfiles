@@ -3,6 +3,9 @@ fault-tolerance?
 consistency?
 service discovery?
 
+====problems
+debugging VMs is yet another tool to learn
+
 ====future
 https://www.macchaffee.com/blog/2024/the-next-platform/
 app needed

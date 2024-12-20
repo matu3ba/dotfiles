@@ -2,6 +2,11 @@
 #define HAS_CPP23 1
 static_assert(HAS_CPP23, "use HAS_CPP23 macro");
 #endif
+
+// TODO FIXME
+// * tag dispatch https://www.fluentcpp.com/2018/04/27/tag-dispatching/
+// * enum dispatch for vtable stuff in case of pimpl/dynamic stubbing
+
 #define ALLOW_BAD_PRACTICE 1
 
 #include <chrono>

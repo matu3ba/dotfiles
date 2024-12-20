@@ -19,4 +19,5 @@ for f in *.wma; do ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "${f%.*}.mp3"; d
 #idea cutting
 
 #screenshots
-Linux: flameshot full
+#better alternative to Spectacle, ksnip
+Linux: flameshot

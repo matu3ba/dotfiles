@@ -96,6 +96,7 @@ clang -fsanitize=hwaddress,undefined a.c
 clang -fsanitize=memory,undefined a.c
 clang -fsanitize=thread,undefined a.c
 clang -fsanitize=cfi,undefined -flto -fvisibility=hidden a.c
+clang -fsanitize=type
 
 -D_FORTIFIY_SOURCE={0,1,2}
 adds checks to memory, copy printf functions
