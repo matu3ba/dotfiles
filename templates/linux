@@ -364,3 +364,5 @@ hexdump -C dump.mem > dump_mem.hex
 dcfldd
 sudo losetup --find --read-only --partscan --show image.raw
 mount /dev/loop0p1 /mnt
+
+NFS shares have weird behavior, which may send error on close

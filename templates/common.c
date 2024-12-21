@@ -213,6 +213,7 @@ ERRDEFER_CLEANUP1:
 // see https://github.com/moehriegitt/vastringify
 
 // string handling https://github.com/skullchap/chadstr
+// 2d ui layout library https://github.com/nicbarker/clay
 
 // standard memory functions
 // search, compare, copy, copy-overlap, set
