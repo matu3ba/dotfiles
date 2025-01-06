@@ -11,7 +11,11 @@ fd-find from sharkdp https://github.com/sharkdp/fd
 fz from natecraddock https://github.com/natecraddock/zf
 jfind from jake-stewart https://github.com/jake-stewart/jfind
 qemu on iOS and macOS: https://github.com/utmapp/UTM
-reverse engineering: https://rada.re/n/
+reverse engineering:
+* https://rada.re/n/
+* static analysis via ghidra => correct, details, without breakpoints
+* dynamic analysis via debugger + JTAG => correct, checking assumptions, limited breakpoints
+* dynamic analysis in emulator (usually qemu fork for hardware) => may be wrong, general direction, unlimited breakpoitns
 ripgrep from BurntSushi https://github.com/BurntSushi/ripgrep
 rr - https://github.com/rr-debugger/rr
 znvim from LordMZTE https://mzte.de/git/LordMZTE/znvim (glpv3)

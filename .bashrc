@@ -67,7 +67,6 @@ fi
 ##==PATH
 PATH=${PATH}:"$HOME/.cargo/bin"
 PATH=${PATH}:"$HOME/.local/bin"
-PATH=${PATH}:"$HOME/go/bin"
 PATH=${PATH}:"$HOME/.local/appimages"
 PATH=${PATH}:"$HOME/.local/cerberus/bin"
 PATH=${PATH}:"$HOME/dev/zdev/zig/master/rel/bin/"
@@ -77,7 +76,6 @@ PATH=${PATH}:"$HOME/.local/nvim/bin" # neovim testing
 
 #testing www.ziglang.org
 #PATH=${PATH}:"$HOME/src/zig-doctest/zig-cache/bin"
-#PATH=${PATH}:"$HOME/src/hugo"
 
 ##==ssh
 # there is no very reliable and simple other way to have ssh agent running

@@ -1,3 +1,7 @@
+====design
+a12 cell is 6-10 times than ascii character
+scollback is however on source system, not remote
+
 ====requirements
 * permissions to access /dev/dri/*
 * permissions to access input device nodes
@@ -65,4 +69,4 @@ S: Add an overlay with the files patched:
 
 ```
 P:
-TODO finish this
+idea finish this

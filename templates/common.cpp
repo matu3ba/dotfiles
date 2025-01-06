@@ -1,10 +1,10 @@
 static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // Tested with
-// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp
+// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
+// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp20.exe && ./commoncpp20.exe
+// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
 
 // TODO use -fsanitize=type https://llvm.org/devmtg/2017-10/slides/Finkel-The%20Type%20Sanitizer.pdf
 
@@ -449,8 +449,8 @@ void tagged_union() {
 }
 
 // SHENNANIGAN: rules out C_like_aggregate_construction_
-int usage_sTemplatedTaggedUnion();
-int usage_sTemplatedTaggedUnion() {
+int32_t use_sTemplatedTaggedUnion();
+int32_t use_sTemplatedTaggedUnion() {
   sTemplatedTaggedUnion ttu0(eType::ty1);
   sTemplatedTaggedUnion ttu1(eType::ty2);
   return 0;
@@ -480,8 +480,8 @@ struct sTemplatedVariant {
   }
 };
 
-int usage_sTemplatedVariant();
-int usage_sTemplatedVariant() {
+int32_t use_sTemplatedVariant();
+int32_t use_sTemplatedVariant() {
   sTemplatedVariant tv0(eType::ty1);
   sTemplatedVariant tv1(eType::ty2);
   return 0;
@@ -698,8 +698,8 @@ class ClassWithMutex { // class with mutex
 
 // Note: Reinterpreting bytes requires reinterpret_cast instead of static_cast.
 
-int reinterpret_cast_usage();
-int reinterpret_cast_usage() {
+int use_reinterpret_cast();
+int use_reinterpret_cast() {
   // see also common.c no_reinterpret_cast
   // clang-format off
   uint8_t some_vals[9] = {0, 1, 0, 0, 0, 0, 0, 0, 0};
@@ -808,8 +808,8 @@ std::map<std::string, Variable> iterGetValues(struct struct_iter *str_iter_ptr, 
   return res;
 }
 
-void mutex_usage();
-void mutex_usage() {
+void use_mutex();
+void use_mutex() {
   std::mutex m1; // incorrect for simplification
   std::lock_guard<std::mutex> guard(m1);
   // critical section
@@ -1648,8 +1648,8 @@ void ape_itertoptr() {
 // SHENNANIGAN Error C2681 invalid expression type for dynamic_cast
 // is confusing. The type may simply not known instead of "invalid".
 
-void chrono_usage();
-void chrono_usage() {
+void use_chrono();
+void use_chrono() {
   // auto timeFromDb = std::chrono::system_clock::from_time_t(std::mktime(&dbTime));
   auto t_start = std::chrono::high_resolution_clock::now();
   // the work...
@@ -2600,7 +2600,20 @@ void use_insert_or_assign() {
   (void)ec2;
 }
 
-// contains
+#include <charconv> // std::from_chars
+void use_from_chars();
+void use_from_chars() {
+  uint32_t cnt;
+  std::string_view valid_num_sv = "1234";
+  auto [ptri1, ec1] = std::from_chars(valid_num_sv.begin(), valid_num_sv.end(), cnt);
+  assert(ec1 == std::errc{});
+  assert(cnt == 1234);
+
+  std::string_view invalid_num_sv = "zzzaaa";
+  auto [ptr2, ec2] = std::from_chars(invalid_num_sv.begin(), invalid_num_sv.end(), cnt);
+  assert(ec2 != std::errc{});
+  // assert(ec2 == std::errc{});
+}
 
 #endif // HAS_CPP17
 
@@ -2962,6 +2975,21 @@ void use_function_chaining() {
 // void use_expected() {
 //   auto [val, ec] = assume_not_max(std::numeric_limits<int32_t>::max());
 //   // static_assert(ec == TODO
+// }
+
+// https://learnmoderncpp.com/2024/01/30/exploring-c23s-flat_map/
+// purpose: omit conversion to std::vector<std::pair<K,V>> / two std::vector
+// related: std::flat_multimap and std::flat_multiset
+// #include <flat_map>
+// void use_flag_map();
+// void use_flag_map() {
+//   TODO
+// }
+
+// #include <flat_set>
+// void use_flag_set();
+// void use_flag_set() {
+//   std::flat_set
 // }
 
 // UNSOLVED

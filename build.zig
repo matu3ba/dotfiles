@@ -7,23 +7,24 @@ const OptimizeMode = std.builtin.OptimizeMode;
 // zig build test -Dno_opt_deps -Dno_cross --summary all
 pub fn build(b: *std.Build) !void {
     const optimize: std.builtin.OptimizeMode = b.standardOptimizeOption(.{});
-    // C   fmt lint analyze build
-    // Cmake
-    // Cpp fmt lint analyze build
-    // Cs
-    // Css
-    // Fish
-    // Java
-    // Js
-    // Lua fmt lint noanal  nobuild
-    // Nix
-    // Php
-    // Ps1
-    // Py
-    // Rs
-    // Sh  fmt lint noanal  nobuild
-    // Tex
-    // Zig fmt lint noanal  build
+    // lang |fmt|lint|anal|build|test
+    // C    | y | y  | y  |  y  | n
+    // Cmake| - | -  | -  |  -  | -
+    // Cpp  | y | y  | y  |  y  | n
+    // Cs   | - | -  | -  |  -  | -
+    // Css  | - | -  | -  |  -  | -
+    // Fish | - | -  | -  |  -  | -
+    // Java | - | -  | -  |  -  | -
+    // Js   | - | -  | -  |  -  | -
+    // Lua  | y | y  | n  |  n  | n
+    // Nix  | - | -  | -  |  -  | -
+    // Php  | - | -  | -  |  -  | -
+    // Ps1  | - | -  | -  |  -  | -
+    // Py   | - | -  | -  |  -  | -
+    // Rs   | - | -  | -  |  -  | -
+    // Sh   | y | y  | n  |  n  | n
+    // Tex  | n | n  | n  |  y  | n
+    // Zig  | y | y  | n  |  y  | y
 
     // unplanned dependencies in $PATH
     // * go (shfmt)
@@ -60,7 +61,9 @@ pub fn build(b: *std.Build) !void {
         const native_target = b.resolveTargetQuery(native_target_query);
         buildC(b, native_target, optimize, run_step);
         buildCpp(b, native_target, optimize, run_step);
+        buildTex(b, run_step);
         buildZig(b, native_target, optimize, run_step);
+
         testZig(b, native_target, optimize, run_step);
     }
 
@@ -96,7 +99,7 @@ fn fmtC(b: *std.Build, run_step: *std.Build.Step) void {
 fn lintC(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleCFiles[0..]) |cfile| {
         // clang-tidy clang-tidy_flags file -- clang_flags
-        const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet" });
         run_clang_tidy_check.addArg(cfile);
         run_clang_tidy_check.addArg("--");
         run_clang_tidy_check.addArgs(&c99_flags);
@@ -192,7 +195,7 @@ fn fmtCpp(b: *std.Build, run_step: *std.Build.Step) void {
 fn lintCpp(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleCppFiles[0..]) |cfile| {
         // clang-tidy clang-tidy_flags file -- clang_flags
-        const run_clang_tidy_check = b.addSystemCommand(&.{"clang-tidy"});
+        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet" });
         run_clang_tidy_check.addArg(cfile);
         run_clang_tidy_check.addArg("--");
         run_clang_tidy_check.addArgs(&cpp14_flags);
@@ -327,21 +330,44 @@ fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
     }
 }
 
-// fn checkTex() void {} // nofmt nolint nobuild noproj
+// latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
+// mkdir -p build/ && lualatex --file-line-error --synctex=1 --output-directory=build src/smartcv_example.tex
+fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
+    for (SingleTexFiles[0..]) |texfile| {
+        std.fs.cwd().makeDir("build") catch |err| {
+            if (err != error.PathAlreadyExists) @panic("could not create dir build/");
+        };
+        while (true) {
+            _ = std.fs.cwd().openDir("build", .{}) catch |err| {
+                if (err != error.FileNotFound) {
+                    @panic("could not wait for file to be created");
+                } else {
+                    continue;
+                }
+            };
+            break;
+        }
+
+        const run_lualatex = b.addSystemCommand(&.{ "lualatex", "--interaction=batchmode", "--file-line-error", "--synctex=1", "--output-directory=build" });
+        run_lualatex.addArg(texfile);
+        _ = run_lualatex.captureStdOut();
+        run_step.dependOn(&run_lualatex.step);
+    }
+}
 
 fn fmtZig(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleZigFiles[0..]) |zigfile| {
-        const run_shellcheck = b.addSystemCommand(&.{ "zig", "fmt", "--check" });
-        run_shellcheck.addArg(zigfile);
-        run_step.dependOn(&run_shellcheck.step);
+        const run_zigfmt = b.addSystemCommand(&.{ "zig", "fmt", "--check" });
+        run_zigfmt.addArg(zigfile);
+        run_step.dependOn(&run_zigfmt.step);
     }
 }
 
 fn lintZig(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleZigFiles[0..]) |zigfile| {
-        const run_shellcheck = b.addSystemCommand(&.{ "zig", "ast-check" });
-        run_shellcheck.addArg(zigfile);
-        run_step.dependOn(&run_shellcheck.step);
+        const run_zigastcheck = b.addSystemCommand(&.{ "zig", "ast-check" });
+        run_zigastcheck.addArg(zigfile);
+        run_step.dependOn(&run_zigastcheck.step);
     }
 }
 
@@ -580,6 +606,10 @@ const SingleShFiles = [_][]const u8{
     "templates/crosscompiling_zig.sh",
     "templates/gdbinit.sh",
     "templates/update_nix_nixos.sh",
+};
+
+const SingleTexFiles = [_][]const u8{
+    "src/smartcv_example.tex",
 };
 
 const SingleZigFiles = [_][]const u8{

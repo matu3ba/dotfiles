@@ -471,29 +471,62 @@ local git_show_remote_upstream_else_origin = function(cwd)
   return ''
 end
 
--- https://github.com/nvim-lua/plenary.nvim/ /blob/master/ tests/plenary/job_spec.lua
--- /blob/5129a3693c482fcbc5ab99a7706ffc4360b995a0/
-add_cmd('GHPerma', function()
+--- @return table|nil # Autocommand id (number)
+local get_relpath_inrepo = function()
   local relpath = plenary.path:new(api.nvim_buf_get_name(0)):make_relative()
   local relpathdir = vim.fs.dirname(relpath)
   local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel' } }):sync()
-  if not git_root or #git_root ~= 1 or git_root[1] == '' then return end
+  if not git_root or #git_root ~= 1 or git_root[1] == '' then return { nil, nil } end
   local relpath_inrepo = plenary.path:new(relpath):make_relative(git_root[1])
+  return { git_root, relpath_inrepo }
+end
+
+-- https://github.com/nvim-lua/plenary.nvim/ /blob/master/ tests/plenary/job_spec.lua
+-- /blob/5129a3693c482fcbc5ab99a7706ffc4360b995a0/
+add_cmd('GHPerma', function()
+  ---@diagnostic disable-next-line: deprecated, param-type-mismatch
+  local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
+  if opt_relpath_inrepo == nil then return end
+  local relpath_inrepo = opt_relpath_inrepo
 
   local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
   if not isgit or isgit[1] ~= 'true' then return end
   local remote = git_show_remote_upstream_else_origin(git_root[1])
   vim.print(remote)
   if remote == '' then return end
+
   local commitsha = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', 'HEAD' } }):sync()
   if not commitsha or #commitsha ~= 1 or commitsha[1] == '' then return end
   local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
   vim.print(relpath_inrepo_check)
+
   if not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo then return end
   local permalink = remote .. '/blob/' .. commitsha[1] .. '/' .. relpath_inrepo
   vim.print(permalink)
   setPlusAnd0Register(permalink)
 end, {})
+
+add_cmd('GHBranch', function()
+  ---@diagnostic disable-next-line: deprecated, param-type-mismatch
+  local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
+  if opt_relpath_inrepo == nil then return end
+  local relpath_inrepo = opt_relpath_inrepo
+
+  local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
+  if not isgit or isgit[1] ~= 'true' then return end
+  local remote = git_show_remote_upstream_else_origin(git_root[1])
+  vim.print(remote)
+
+  local branch = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', '--abbrev-ref', 'HEAD' } }):sync()
+  if not branch or #branch ~= 1 or branch[1] == '' then return end
+  local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
+  vim.print(relpath_inrepo_check)
+
+  local branchlink = remote .. '/blob/' .. branch[1] .. '/' .. relpath_inrepo
+  vim.print(branchlink)
+  setPlusAnd0Register(branchlink)
+end, {})
+
 -- git branch: git rev-parse --abbrev-ref HEAD
 -- add_cmd('GHLink', function()
 --   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()

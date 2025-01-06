@@ -28,7 +28,7 @@ Side-effect free means the following holds:
 * 3. no IO
 * 4. ignoring access time of memory/cache
 More intuitively: Being free of side-effect means relevant constrains can be
-derived from the code, wich allows automatic proof code generation.
+derived from the code, which allows automatic proof code generation.
 This also means that, in theory, a sufficient powerful model can also explain
 code in a side-effect free manner by capturing all allowed semantics.
 idea paper as source
@@ -63,7 +63,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   - System models (hypervisors, Kernels) ongoing work
   - PL models with C/C++ not bad, but thin air problem big problem for reasoning
     about code (in weak memory context) using relaxed atomics in arbitrary ways
-    * no clear path foward wrt tradeoffs
+    * no clear path forward wrt tradeoffs
 * "Using LKMM atomics in Rust" on lwn.net
   - https://lwn.net/Articles/993785/ TODO atomics semantics
 
@@ -96,11 +96,11 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     https://discuss.ocaml.org/t/what-sort-of-mathematical-foundations-are-required-to-contribute-to-the-research-on-modular-implicits-typed-effects-and-the-like/12926/2
     + unclear relation of koka on website https://koka-lang.github.io/koka/doc/book.html
     + apparently paper explains some more, but unclear why they are unable to explain in simple words
-      the essense
+      the essence
     + koka language
       o 1. effect types sound painful to annotate exceptions are a huge antipattern
       o 2. "deep safety guarantees backed by well-studied category theory"
-      without quote to explain sounds bogous,
+      without quote to explain sounds bogus,
       o 3. Perceus Optimized Reference Counting "With Perceus, we hope to cross
       this gap and our goal is to be within 2x of the performance of C/C++.
       Initial benchmarks are encouraging and show Koka to be close to C
@@ -383,7 +383,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * For Developing (hardware/software)
     + paper "Exploiting Reversible Computing for Verification" by Burgholzer and Wille
     + idea: Use libraries to design with reversible operations for eliminating bugs
-    + Hardare Devlopment Techniques
+    + Hardware Development Techniques
       o reversible gates
       o make fns reversible
       o use and make explicit garbage outputs
@@ -393,15 +393,38 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 21. https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/TIGER_STYLE.md
   * theory/paper on bounded vs unbounded reasoning for computer systems?
   * think about design tradeoffs
+- 22. commandment of a good file format from "Funky File Formats" by Albertini
+  1. magic at offset zero (fast identification without bypass)
+  2. clear chucnk structure (forward compat easy parsing/cleanup)
+  3. version number (forward thinking)
+  4. no duplicity (eliminating discrepancy)
+  5. no "constant" variables (hardcoding instead of ossification)
+  6. up to date specs (reflect reality)
+  7. sample set (theory not enough)
+  8. extensibility (format will evolve)
+  9. keep the spirit (no reuse for different intent without distinction)
+  10. perfect is the enemy of good (avoid over-complexity)
+- 23. model for coroutine cancellation unfeasible without constrains
+  * conditions for cancellation safety can be arbitrary complex
+  * "cancellation token"
+  * should be implemented on a per-task basis
+  * tricky to optimize and error prone
+  testing via
+    struct Work:
+      task: Task = .{ .callback = callback }
+      cancelled: Atomic(bool) = .{ .raw = false }
+      callback(task):
+        self = fieldParentPtr("task", task)
+        if self.cancelled.load(): return
+        // actual work
 
 To me unclear if solved:
 * check if linker speak has a formal model
   - https://www.cl.cam.ac.uk/~pes20/projects-2024.html
     looks like projects on DWARF debug info tests and linker speak
-    tests (or oracle for corret semantics).
+    tests (or oracle for correct semantics).
 * check, if cakeml and compcert have linker speak verified
   - no
-* Model for coroutine cancellation
 
 Austral as language with linear type system without boilerplate (might become decent DSL)
 https://borretti.me/article/introducing-austral

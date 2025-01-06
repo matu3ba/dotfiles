@@ -6,37 +6,29 @@ if not ok_lint then return end
 --== installing freestanding python
 --https://github.com/allyourcodebase/cpython
 
---==installing pip + pipx
+--==installing pip + uv
 -- python -m ensurepip --upgrade
--- pip install --user -U pipx
-
---==updating pipx
--- pip install --user -U pipx
--- pipx upgrade-all
--- on error: pipx reinstall-all
-
---==installing packages
--- pip(x) install --upgrade ruff
--- pip(x) install --upgrade uv
-
---==installing uv
+-- pip install --user uv
 -- pip install uv
--- pipx install uv
+
+--==uv usage
+-- uv tool install
+-- uv tool uninstall
+-- uv tool upgrade --all
+-- uv python install 3.12
+-- uv self update
+
+--==tools
+-- uv tool install mypy
+-- uv tool install ruff
+-- uv tool install weasyprint
+-- uv tool install yt-dlp
 
 --==installing pixi
 -- git clone 'https://github.com/prefix-dev/pixi'
 -- cargo install --locked --git https://github.com/prefix-dev/pixi.git pixi
 
---==updating uv
---uv self update
-
---== packages
--- uv tool install
--- uv tool uninstall
--- uv tool upgrade --all
--- uv python install 3.12
-
--- idea codespell
+-- idea codespell for non-english texts
 -- https://sean.fish/x/blog/codespell-ignorelists-neovim/
 
 lint.linters_by_ft = {

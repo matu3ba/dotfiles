@@ -195,6 +195,8 @@ Preventing Use-After-Free Attacks with Fast Forward Allocation
 hacktricks.xyz https://book.hacktricks.xyz
 https://github.com/carlospolop/hacktricks
 https://github.com/carlospolop/hacktricks-cloud
+https://github.com/0xsp-SRD/ZigStrike
+* missing impls for injection on all platforms
 phrack magazine
 
 ====hardware_attack

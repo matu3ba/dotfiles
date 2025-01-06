@@ -88,3 +88,20 @@ ideally something better than ssh supported on the platform
 ====databases
 idea list databases for distributed use cases
 idea list databases for not losing data by type TM
+
+====shared_memory
+??
+
+====network_queue
+Network queue implementation withvendor lock-in:
+* AMQP 0-9-1 (Advanced Message Queuing Protocol)
+* NATS
+* Pulsar - Apache Pulsar adapter
+* SQS - Amazon SQS adapter
+* Kafka - Apache Kafka adapter
+* Valkey - Valkey NoSQL data store adapter
+* Beanstalkd - Beanstalkd - simple, fast work queue adapter
+Network queue implementation without vendor lock-in:
+* develop own QUEUE API
+* provide adapters for  different network work queue protocols
+

@@ -1,3 +1,5 @@
+shadow archives (sci-hub) for papers etc https://annas-archive.org
+
 1. Hardware with CXL allows NIC to move data into main system-memory and
 participate in the CPU's cache coherency protocol. The access times for a NIC
 to cross the bus to main memory are a smidge slower than CPU->RAM access times.
@@ -6,7 +8,7 @@ Stolen from https://github.com/ziglang/zig/issues/8224#issuecomment-1296068792.
 
 2. Tracking parser state in editor for incremental compilation or verification.
 Optimal incremental compilation needs to show more breakthroughs, ie on
-feasability, portability and maintainability (Zig).
+feasibility, portability and maintainability (Zig).
 Optimal incremental verification requires a simple to parse language grammar
 for incremental parsing. This needs some degree of language support (simple to
 parse grammar like LL(1)/LL(k) etc).
@@ -17,7 +19,7 @@ example in this 3 article series https://lwn.net/Articles/411845/, from which
 clone() is unfixed, unix signals often still have no workarounds (kill is still
 racy unless via parent process or pid 1, using reaper process for reliably
 killing is hacky) and, as far as I understand, the Unix permission model blocks
-things like deeply nested overlay filesystems (to replace the semi-aweful path
+things like deeply nested overlay filesystems (to replace the semi-awful path
 hackery nix/guix uses for reproducible builds with overlays, see
 https://blog.wesleyac.com/posts/the-curse-of-nixos for inspiration blocked by
 design).
@@ -37,8 +39,8 @@ In short, clearing valid cache bits not enough, because cache has secondary
 state (state machine controlling cache-line replacement). For their example,
 they get over-head of about 0.2%, but indirect costs for applications was not
 evaluated (used L3 cache very small). Fetching is ~90ns access cost from RAM,
-but it woudl be unclear what should be fetched and out-of-order execution with
-speculative fetching was not used. The other more intersting instruction set
+but it would be unclear what should be fetched and out-of-order execution with
+speculative fetching was not used. The other more interesting instruction set
 ForwardCom (more high level without microcode) has to my knowledge neither a
 good solution to this performance problem yet.
 
@@ -70,7 +72,7 @@ and nothing important broke horribly yet.
 Realization of 2 as software motivation and 4 as more hardware-related
 motivation.
 - Design to realize and ensure quality
-  * system design (inialization, deinialization, system debugging/tracing,
+  * system design (initialization, deinialization, system debugging/tracing,
   parallelism, memory access etc)
   * test design
   * time estimations

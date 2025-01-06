@@ -316,6 +316,11 @@ Potential solution
   * non-determinism ?
   * no windows support
 
+sixos
+ownerboot (coreboot fork) -> infuse (better nix modules)  -> sixos (s6 + nix)
+infusions much simpler than overlays for overriding packages codeberg.org/amjoseph/infuse.nix
+duplicating console stuff with brain-dump.org/projets/abduco
+
 nix resources
 https://github.com/figsoda/ekalf/tree/main
 
