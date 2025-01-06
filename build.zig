@@ -61,7 +61,7 @@ pub fn build(b: *std.Build) !void {
         const native_target = b.resolveTargetQuery(native_target_query);
         buildC(b, native_target, optimize, run_step);
         buildCpp(b, native_target, optimize, run_step);
-        buildTex(b, run_step);
+        if (!no_opt_deps) buildTex(b, run_step);
         buildZig(b, native_target, optimize, run_step);
 
         testZig(b, native_target, optimize, run_step);
