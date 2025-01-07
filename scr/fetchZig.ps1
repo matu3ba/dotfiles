@@ -8,12 +8,9 @@ function CheckLastExitCode ($pwd) {
     }
     return 0
 }
-
 $PWD = Get-Location
 Write-Output "$PWD"
-
 Set-Location -Path "$HOME"
-
 if (!(Test-Path "$ZIG_TMP_DIR")) {
   New-Item -Path "$ZIG_TMP_DIR" -ItemType Directory
 }
@@ -29,7 +26,6 @@ $ZIP_TARGET_BASENAME = Split-Path -LeafBase $ZIP_TARGET
 
 $UNZIP_TARGET_ZIG = "$ZIG_TMP_DIR\$ZIP_TARGET_BASENAME\zig.exe"
 $UNZIP_TARGET_LIB = "$ZIG_TMP_DIR\$ZIP_TARGET_BASENAME\lib"
-
 Write-Output "unzip zig: $UNZIP_TARGET_ZIG"
 Write-Output "unzip lib: $UNZIP_TARGET_LIB"
 
@@ -49,7 +45,6 @@ Remove-Item -Path "$HOME\bin\lib" -Recurse -Force -ErrorAction Ignore
 CheckLastExitCode($PWD)
 
 Write-Output "Unpacking $ZIG_TMP_DIR\$ZIP_TARGET .."
-
 Add-Type -AssemblyName System.IO.Compression.FileSystem ;
 [System.IO.Compression.ZipFile]::ExtractToDirectory("$ZIG_TMP_DIR\$ZIP_TARGET", "$ZIG_TMP_DIR\")
 CheckLastExitCode($PWD)

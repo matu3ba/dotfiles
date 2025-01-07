@@ -330,3 +330,10 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 # SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
 # https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
+
+# check for existence of processes without and with bailout
+# if (!(Get-Process -ProcessName chrome -ErrorAction SilentlyContinue)) {
+#   Start-Process chrome.exe
+# }
+# Get-Process -Name $ProcessName -IncludeUserName | Where-Object UserName -eq $UserName
+# $UserName = "$env:USERDOMAINNAME\$env:USERNAME"

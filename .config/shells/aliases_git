@@ -568,6 +568,12 @@ alias gsu='git submodule update'
 # 3. rebase and merge + push
 # git rebase master feature && git fetch . feature:master
 # git rebase master feature && git fetch . feature:master && git push upstream master:master
+# 4. git recording of resolved conflicts
+# git rerere
+# git config rerere.enabled true
+# git worktree add scratch @
+# git -C scratch merge feature
+# git worktree remove -f scratch
 
 #====checks
 #has git: git rev-parse --is-inside-work-tree

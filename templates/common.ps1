@@ -9,6 +9,12 @@
 # https://4sysops.com/archives/measure-object-computing-the-size-of-folders-and-files-in-powershell/
 # https://www.gngrninja.com/script-ninja/2016/5/24/powershell-calculating-folder-sizes
 
+# SHENNANIGAN
+# , is join operator which may silently work or break the program
+# worse, C# code calls use C# syntax ie
+# Add-Type -AssemblyName System.IO.Compression.FileSystem ;
+# [System.IO.Compression.ZipFile]::ExtractToDirectory("$NEOVIM_TMP_DIR\$zip_target", "$NEOVIM_TMP_DIR\")
+
 # ====common_paths
 # echo $profile shows powershell configuration
 # $HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1

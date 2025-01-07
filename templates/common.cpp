@@ -114,6 +114,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //   - replace #define with 'static constexpr' and 'auto lambda_fn = [](auto ..) {}'
 //   - templates instead of type params (or write out coercible types): template <typename T> T square(T n) { return n * n; }
 //   - constexpr/consteval if and SFINAE (ie std::enable_if or concepts)
+//   - TODO explain ADL
 //   - variadic templates instead of macro ellipsis/VA_ARGS
 //   template <typename... Args>
 //   void printValues(Args&&... args) {
