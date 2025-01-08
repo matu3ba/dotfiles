@@ -1,6 +1,6 @@
 /tmp/
 
-build/
+build*/
 zig-cache/
 .zig-cache/
 zig-out/
@@ -14,4 +14,5 @@ zig-out/
 *.log
 *.obj
 *.out
+*.pcm
 *.pdb

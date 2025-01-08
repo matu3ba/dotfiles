@@ -1,13 +1,18 @@
+/.clang-format
+/.clang-tidy
+/.clangd
 /.editorconfig
 /.gitattributes
 /.gitconfig
 /.gitconfig-personal
 /.gitconfig-work
 /.gitignore
+/.luacheckrc
 /Filenamesunsafe
 /LICENSE
 /POSIXunsafe
 /README.md
+/build.zig
 /checkHealth.sh
 /fileBackup.ps1
 /fileBackup.sh
@@ -18,19 +23,25 @@
 /fileRestore.sh
 /ignorefiles
 /nixsetup
+/ruff.toml
+/stylua.toml
 /symlinkInstall.sh
 /symlinkUninstall.sh
 /win_src_dest
 
 /.git/
+/.github/
+/ci/
 /crosscompiling/
 /example/
 /home-manager/
+/mustcopy/
 /nixos/
 /overlays/
 /patches/
 /sample_scr/
-/scr/
+/scr
+/src/
 /templates/
 /windows/
 
@@ -41,3 +52,4 @@ zig-out
 *.out
 *.exe
 *.o
+TODO

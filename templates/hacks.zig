@@ -16,6 +16,8 @@ const std = @import("std");
 //0 for inherit handle
 //os.windows.CreateProcessW(null, ch_n, null, null, os.windows.TRUE, 0, null, null, &si, &pi) catch |err| {
 
+// cursed ones comptime hacks https://github.com/SuperAuguste/cursed-zig-errors
+
 // FIXME
 // fn printErrorSet(comptime fun: anytype) void {
 //     const info = @typeInfo(@TypeOf(fun));
@@ -75,6 +77,17 @@ fn memcpyslice() void {
     msg = .{undefined} ** LEN;
     @memcpy(msg.?[0..src_len], "somemsg");
     std.debug.print("msg: {?s}\n", .{msg});
+}
+
+const TypeId = *const opaque {};
+inline fn typeId(comptime T: type) TypeId {
+    const S = struct {
+        var dummy: u1 = undefined;
+        comptime {
+            _ = T;
+        }
+    };
+    comptime return @ptrCast(&S.dummy);
 }
 
 pub fn main() void {}

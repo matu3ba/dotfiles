@@ -1,11 +1,12 @@
-// TODO flags
 // https://0xstubs.org/using-the-c23-std-module-with-clang-18/
 // https://clang.llvm.org/docs/StandardCPlusPlusModules.html
+// https://libcxx.llvm.org/Modules.html
+// https://clang.llvm.org/docs/Modules.html
 
-#include <cstdint>
-#if (__cplusplus >= 202302L)
-#define HAS_CPP23 1
-static_assert(HAS_CPP23, "use HAS_CPP23 macro");
-#endif
+import std; // When importing std.compat it's not needed to import std.
+import std.compat;
 
-int32_t main() { return 0; }
+int main() {
+  std::print("Hello modular world\n");
+  ::printf("Hello compat modular world\n");
+}

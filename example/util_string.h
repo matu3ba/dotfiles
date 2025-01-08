@@ -1,7 +1,8 @@
 /// String utilities for portable
 /// Inspired by https://mailund.dk/posts/cstr-slices/ and Zig,
 /// but keep things more explicit at cost of boilerplate.
-/// Another motivation is to make string handling sane https://wiki.c2.com/?NonNullTerminatedString
+/// Another motivation is to make string handling sane
+/// https://wiki.c2.com/?NonNullTerminatedString
 /// Usage
 /// struct sCharSlice sl1 = {.ptr = cstr_ptr, .len = strlen(cstr_ptr)};
 /// struct sCharSlice sl1 = sCharSlice_fromcstring(str_ptr)

@@ -56,7 +56,7 @@ if status is-interactive
     abbr -g !! $argv[1]
   end
 
-  # TODO
+  # idea
   # make completions for word, wordlist and complete line
   # https://fishshell.com/docs/current/cmds/complete.html
   # https://stackoverflow.com/questions/45439939/getting-part-of-autocomplete
@@ -72,18 +72,15 @@ if status is-interactive
   # PATH settings
   fish_add_path "$HOME/.cargo/bin"
   fish_add_path "$HOME/.local/bin"
-  fish_add_path "$HOME/go/bin"
   fish_add_path "$HOME/.local/appimages"
   fish_add_path "$HOME/.local/cerberus/bin"
   fish_add_path "$HOME/dev/zdev/zig/master/rel/bin" # zig stages 3
   fish_add_path "$HOME/.luarocks/bin"
   fish_add_path "$HOME/.local/nvim/bin" # neovim testing
-  # fish_add_path "$HOME/dev/git/zi/zigmod/zig-out/bin" # zigmod binary
   fish_add_path "$HOME/dev/git/cpp/llvm-project/build-release/bin" # llvm tooling
 
   if test "$XDG_SESSION_TYPE" = "wayland"
     set -U QT_QPA_PLATFORM "wayland"
-    # did break Electron based apps
     set -U GDK_BACKEND "wayland"
     set -U CLUTTER_BACKEND "wayland"
   end

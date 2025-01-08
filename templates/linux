@@ -19,6 +19,10 @@ $XDG_CONFIG_DIRS/autostart - /etc/xdg/autostart
 ====udev
 TODO
 
+====WM
+killall plasmashell
+dbus-run-session startplasma-wayland
+
 https://nullprogram.com/blog/2015/05/15/ how clone() works
 
 get Kernel compilation+runtime config

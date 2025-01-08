@@ -6,3 +6,6 @@ pacman -Ql pkgname
 
 # package owner of file path
 pacman -Qo FILEPATH
+
+# remove old packages
+sudo pacman -Sc
