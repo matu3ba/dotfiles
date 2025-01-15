@@ -393,11 +393,12 @@ size_t getFileSize(char const *file_path) {
   file = fopen(file_path, "rb");
   if (file == NULLPTR)
     exit(1); // could not open file, better use file handle
-  fseek(file, 0u, SEEK_END);
+  (void)fseek(file, 0u, SEEK_END);
   long file_size_or_err = ftell(file);
   if (file_size_or_err < 0)
     exit(1); // invalid file size
-  fseek(file, 0u, SEEK_SET);
+  (void)fseek(file, 0u, SEEK_SET);
+  (void)fclose(file);
   return (size_t)file_size_or_err;
 }
 
@@ -1018,8 +1019,10 @@ void ape_win_print(void) {
 #ifndef _WIN32
 void ape_print(void) {
   FILE *f1 = fopen("file1", "a+");
-  fprintf(f1, "sometext\n");
-  fclose(f1);
+  if (f1 != NULLPTR) {
+    fprintf(f1, "sometext\n");
+    fclose(f1);
+  }
 }
 #endif
 

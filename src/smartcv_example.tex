@@ -1,5 +1,9 @@
 % SPDX-License-Identifier: 0BSD
-% latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
+% dont use, breaks on %-strings in href, see https://github.com/WGUNDERWOOD/tex-fmt/issues/55
+% tex-fmt src/smartcv_example.tex
+% cargo install tex-fmt; tex-fmt src/smartcv_example.tex
+% latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1'
+% -pdf -outdir=build src/smartcv_example.tex
 % LuaTEX Reference Manual
 % https://en.wikibooks.org/wiki/TeX
 % idea: docs on internal commands like \@ifundefined \@latex@error
@@ -9,7 +13,8 @@
 \usepackage[left=1cm,top=1cm,right=1cm,bottom=1cm]{geometry} % Document margins
 \usepackage{enumitem} % \begin{itemize}[noitemsep, notopsep=0pt] \end{itemize}
 % itemize adjustments                              <<<< Adjust here
-\setlist{nosep,topsep=-\parskip} % eliminate itemize space without changing \parskip, dep enumitem
+\setlist{nosep,topsep=-\parskip} % eliminate itemize space without
+% changing \parskip, dep enumitem
 
 \name{Name Surname} % Your name
 \addrone{+phone \\ place}
@@ -19,81 +24,82 @@
   \href{https://example.invalid}{example.invalid} \\
   \href{https://github.com/invalid}{github.com/invalid}
 }  %
-%Testing, Formal Methods, Site Reliability Engineering, Observability, and Infrastructure.
+%Testing, Formal Methods, Site Reliability Engineering,
+% Observability, and Infrastructure.
 \begin{document}
 
 %OBJECTIVE
 \begin{rSection}{OBJECTIVE}
 
-Software Engineer with X+ years of work experience in something1, something2
-and something3 seeking full-time something roles focused on cool stuff to do.
+  Software Engineer with X+ years of work experience in something1, something2
+  and something3 seeking full-time something roles focused on cool stuff to do.
 
 \end{rSection}
 
 %TECHNICAL_STRENGTHS
 \begin{rSection}{SKILLS}
 
-\begin{tabular}{ @{} >{\bfseries}l @{\hspace{6ex}} l }
-  Technical Skills & BuildOps, DevOps, Some1, Some2, Some3
-\\
-Soft Skills & How character fits to the job, customer or team \\
-Low level languages & C, Some1, Some2, Some3\\
-High level languages & Some1, Some2, Various Shells\\
-\end{tabular}\\
+  \begin{tabular}{ @{} >{\bfseries}l @{\hspace{6ex}} l }
+    Technical Skills & BuildOps, DevOps, Some1, Some2, Some3
+    \\
+    Soft Skills & How character fits to the job, customer or team \\
+    Low level languages & C, Some1, Some2, Some3\\
+    High level languages & Some1, Some2, Various Shells\\
+  \end{tabular}\\
 \end{rSection}
 
 \begin{rSection}{WORK EXPERIENCE}
 
-\textbf{Software Engineer Y} \hfill Nov 20XY - present\\
-company1 \hfill \textit{place1}
-\begin{itemize}
-  % \itemsep -2pt {}
-  \item brag item1
-  \item brag item2
-  \item brag item3
-\end{itemize}
+  \textbf{Software Engineer Y} \hfill Nov 20XY - present\\
+  company1 \hfill \textit{place1}
+  \begin{itemize}
+      % \itemsep -2pt {}
+    \item brag item1
+    \item brag item2
+    \item brag item3
+  \end{itemize}
 
-\textbf{Software Engineer X} \hfill Jun 20XY - Oct 20XY\\
-company2 \hfill \textit{place2}
-\begin{itemize}
-  % \itemsep -2pt {}
-  \item brag item1
-  \item brag item2
-  \item brag item3
-\end{itemize}
+  \textbf{Software Engineer X} \hfill Jun 20XY - Oct 20XY\\
+  company2 \hfill \textit{place2}
+  \begin{itemize}
+      % \itemsep -2pt {}
+    \item brag item1
+    \item brag item2
+    \item brag item3
+  \end{itemize}
 
 \end{rSection}
 
 %====EDUCATION
 \begin{rSection}{Education}
-{\bf Master of Computer Science}, university \hfill {Oct 20XY - Apr 20XY}\\
-Master Thesis on description (tool), Focus Embedded and Medicine\\
-{\bf Bachelor of Computer Science}, university \hfill {Oct 20XY - Mar 20XY}\\
-Bachelor Thesis on description (tool)
-%Minor in Linguistics \smallskip \\
-%Member of Eta Kappa Nu \\
-%Member of Upsilon Pi Epsilon \\
+  {\bf Master of Computer Science}, university \hfill {Oct 20XY - Apr 20XY}\\
+  Master Thesis on description (tool), Focus Embedded and Medicine\\
+  {\bf Bachelor of Computer Science}, university \hfill {Oct 20XY - Mar 20XY}\\
+  Bachelor Thesis on description (tool)
+  %Minor in Linguistics \smallskip \\
+  %Member of Eta Kappa Nu \\
+  %Member of Upsilon Pi Epsilon \\
 \end{rSection}
 
 %====OPEN_SOURCE_WORK_AND_PROJECTS
 \begin{rSection}{OPEN SOURCE WORK AND PROJECTS}
-% \vspace{-1.25em}
-\begin{itemize}
-% \itemsep -2pt {}
-  \item brag item1
-  \item brag item2
-  \item brag item3
-\end{itemize}
+  % \vspace{-1.25em}
+  \begin{itemize}
+      % \itemsep -2pt {}
+    \item brag item1
+    \item brag item2
+    \item brag item3
+  \end{itemize}
 
 \end{rSection}
 
 %====TEACHING_AND_CONSULTING
 \begin{rSection}{TEACHING AND CONSULTING}
-\begin{itemize}
-  \item brag item1
-  \item brag item2
-  \item brag item3
-\end{itemize}
+  \begin{itemize}
+    \item brag item1
+    \item brag item2
+    \item brag item3
+  \end{itemize}
 
 \end{rSection}
 

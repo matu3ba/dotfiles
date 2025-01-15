@@ -24,6 +24,8 @@ if not ok_lint then return end
 -- uv tool install weasyprint
 -- uv tool install yt-dlp
 
+-- idea https://github.com/codex-semantics-library/codex
+
 --==installing pixi
 -- git clone 'https://github.com/prefix-dev/pixi'
 -- cargo install --locked --git https://github.com/prefix-dev/pixi.git pixi
@@ -54,7 +56,7 @@ lint.linters_by_ft = {
   -- // NOLINTEND
   -- // NOLINTBEGIN(errorclass)
   -- somecode // NOLINT
-  c = { 'clangtidy' },
+  c = { 'clangtidy' }, -- codex
   cpp = { 'clangtidy' },
   -- luacheck: push ignore
   -- luacheck: pop ignore

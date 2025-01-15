@@ -26,42 +26,61 @@ cc -O2 -dM -E - < /dev/null
 4. discouraged
 search paths
 
-5. sanitizers
-instrumented sanitizers with 2x-4x slodown vs dynamic ones with 20x-50x.
--fsanitize=address
--fsanitize=leak
--fsanitize=thread
--fsanitize=undefined
--fsanitize=type
--O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common
+5. Sanitizers
+Instrumented sanitizers with 2x-4x slowdown vs dynamic ones with 20x-50x.
 
+Nr | Clang usage                  | Zig usage         | Memory           | Runtime | Comments
+-- | ---------------------------- | ----------------- | ---------------- | -------- | --------
+1  | -fsanitize=address           | alloc + safety    | 1x (3x stack)    | 2x       | Clang 16+ TB of virt mem
+2  | -fsanitize=leak              | allocator         | 1x               | 1x       | on exit ?x? more mem+time
+3  | -fsanitize=memory            | unimplemented     | 2-3x             | 3x       |
+4  | -fsanitize=thread            | -fsanitize=thread | 5-10x+1MB/thread | 5-15x    | Clang ?x? ("lots of") virt mem
+5  | -fsanitize=type              | unimplemented     | ?                | ?        | not enough data
+6  | -fsanitize=undefined         | safety mode       | 1x               | ~1x      |
+7  | -fsanitize=dataflow          | unimplemented     | 1-2x?            | 1-4x?    | wip, get variable dependencies
+8  | -fsanitize=memtag            | unimplemented     | ~1.0Yx?          | ~1.0Yx?  | wip, address cheri-like ptr tagging
+9  | -fsanitize=cfi               | unimplemented     | 1x               | ~1x      | forward edge ctrl flow protection
+10 | -fsanitize=safe-stack        | unimplemented     | 1x               | ~1x      | backward edge ctrl flow protection
+11 | -fsanitize=shadow-call-stack | unimplemented     | 1x               | ~1x      | backward edge ctrl flow protection
+
+Sanitizers 1-6 are recommended for testing purpose and 7-11 for production by LLVM.
+Memory and slowdown numbers are only reported for LLVM sanitizers. Zig does not
+report own numbers yet (2025-01-11). Slowdown for dynamic sanitizer versions
+increases by a factor of 10x in contrast to the listed static usage costs..
+The leak sanitizer does only check for memory leaks, not other system resources.
+Besides various Kernel specific tools to track system resources,
+Valgrind can be used on Posix systems for non-memory resources and
+Application Verifier for Windows.
+Address and thread sanitizers can not be combined in Clang and combined usage
+of the Zig implementation is limited by virtual memory usage.
+In Zig, aliasing can currently not be sanitized against whereas in Clang only
+typed based aliasing can be sanitized without any numbers reported by LLVM yet.
+
+Address and thread sanitizers can not be combined.
+* recommended -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-common
+* overview https://doc.rust-lang.org/beta/unstable-book/compiler-flags/sanitizer.html
 * docs https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer
 * extras outside of -fsanitize=address
 use -O1 or higher, -fno-omit-frame-pointer, no TCE -fno-optimize-sibling-calls
-Typical slowdown 2x
 ASAN_OPTIONS=detect_stack_use_after_return=1/0
 ASAN_OPTIONS=check_initialization_order=1 (not supported on macOS)
 ASAN_OPTIONS=detect_leaks=1 (no support on windows)
-* extras outside of -fsanitize=leak
-minimal performance and memory overhead until end of process (leak checking phase)
+* extras Leak sanitizer (-fsanitize=leak)
 also available configurably as ASAN option: ASAN_OPTIONS=detect_leaks=1
-* extras outside of incompat to address -fsanitize=memory
-Uninitialized Memory sanitizer
+* extras Uninitialized Memory sanitizer (-fsanitize=memory)
 use -O1 or higher, -fno-omit-frame-pointer, no TCE -fno-optimize-sibling-calls
 Memory usage 2x to 3x
 Typical slowdown 3x
-* extras outside of -fsanitize=undefined
+* extras Undefined Behavior sanitizer (-fsanitize=undefined)
 Extra options
 -fsanitize=unsigned-integer-overflow
 -fsanitize=implicit-conversion
 -fsanitize=array-bounds
 -fsanitize=nullability
-* extras outside of -fsanitize=thread
+* extras Thread sanitizer -fsanitize=thread
 use -O1 or higher -g for file names and line numbers
-Memory usage 5x to 10x + 1MB per thread
-Typical slowdown 5x to 15x
 * extras outside of -fsanitize=type
-TODO
+TODO no data and docs yet
 
 6. maintain debug infos in separate files
 objcopy --only-keep-debug executable_file executable_file.debug

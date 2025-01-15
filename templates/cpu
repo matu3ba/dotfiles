@@ -127,6 +127,9 @@ effects?
 #### Segmentation
 CPU feature for sub-page access granularity
 TODO go through and test guide https://nixhacker.com/segmentation-in-intel-64-bit/
+* amd64 typically use a vestigial feature that used to be used for segmentation for tls
+but it's not segmentation anymore
+* basically just an extra register whose assigned role is 'always hold the tls base'
 
-#### file_sytems
+#### file_systems
 TODO wait for it https://blog.jandroegehoff.de/

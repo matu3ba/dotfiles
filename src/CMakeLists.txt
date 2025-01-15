@@ -5,6 +5,7 @@
 #   toolchain.  Reason:
 #
 #     Only `libc++` is supported
+# See also https://gitlab.kitware.com/cmake/cmake/-/issues/25965
 
 # set CXXFLAGS -stdlib=libc++
 # CXXFLAGS=-stdlib=libc++

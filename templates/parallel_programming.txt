@@ -1,9 +1,9 @@
 see for impls and techniques ./example/parallel_programming/README.md
 
 Based on talk by kprotty "Proficient Parallel Programming"
-paralellism: doing 2 or more things at the same time
+parallelism: doing 2 or more things at the same time
 concurrency: doing 2 things not necessary at the same time
-OS provides paralellism on top of concurrency.
+OS provides parallelism on top of concurrency.
 
 Why?
 - Getting things done faster
@@ -26,7 +26,7 @@ Use cases
 - more computation
 
 Dilemma
-- single threaded and determinstic (best for fuzzing and simulation testing)
+- single threaded and deterministic (best for fuzzing and simulation testing)
 - trace of program run as flamegraph
   * shows major blocking parts
   * problem: sorting => solution: faster, incremental
@@ -70,13 +70,13 @@ Solution Change to chained wake
 Competition
 Run as many tasks as you can
 Race to register pattern (once, CPU pipelining):
-- doing work nontheless and the first one is allowed to write
+- doing work nonetheless and the first one is allowed to write
 - minimize time in critical section
 - avoid (deferred) handoffs
   * good for fairness
   * bad for throughput
 - chennal > mutex, because its easier to mess up size of critical section
-- WaitGroup instad of multiple join(): do 1 syscall instead of N syscalls
+- WaitGroup instead of multiple join(): do 1 syscall instead of N syscalls
 - EventListener > ConditionVariable: wait for arbitrary condition without walk through mutex
 - Channels too much overhead: Prefer RwLock
   * instead of Mutex: Writers block everyone, Readers only block Writers
@@ -95,13 +95,13 @@ while true:
 ```
 - for simple instructions use the hardware primitives
 ```
-old = atmoic_fetch_add(ptr, 1)
+old = atomic_fetch_add(ptr, 1)
 ```
 - too complex operation
   * use backoff operation for ca. 2x throughput
 ```
 while true:
-  old = atmoic_load(ptr)
+  old = atomic_load(ptr)
   new = complex(old)
   _  = aomitc_cas(ptr, old, new) catch break
   backoff()
@@ -149,7 +149,7 @@ ABA_problem
 General
 * best class of algorithms is wait free (meaning waiting an as low as possible and bounded time, usually quadratic to number of threads)
 * all recent high performant algorithms use hazard pointers as vector/array of [0,MAX_THREAD_ID]
-* getting the size, if the storage is non-continous, has a perf cost
+* getting the size, if the storage is non-continuous, has a perf cost
 * reliably detect, if a pop emptied a data storage, on the same thread after the pop, has a perf cost
 * vice versa detecting that the storage ran full
 * most papers have no reference implementation with tests linked or can have

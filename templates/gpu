@@ -14,3 +14,12 @@ https://github.com/nDimensional/andromeda
 
 effortless CPU + GPU programming
 https://chapel-lang.org/
+
+2D graphics
+Skia pipeline undocumented
+most likely complex path+color operations are the latency adders, everything else should map to GPU semantics (if possible)
+https://stackoverflow.com/questions/5762727/how-do-the-pieces-of-androids-2d-canvas-drawing-pipeline-fit-together
+https://skia.org/docs/user/sksl/
+
+GPU pipeline
+vertex specification -> vertex shader -> tessellation -> geometry shader -> vertex post-processing -> primitive assembly -> rasterization -> fragment shader -> per-sample operation

@@ -9,3 +9,6 @@ TODO Train writing short mails.
 
 fish prompt, no idea how useful
 https://github.com/Realiserad/fish-ai
+
+https://haystack.deepset.ai/
+pdftotext: simplify table of content, use known keywords, use llm for synonyms

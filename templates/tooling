@@ -130,6 +130,11 @@ perf trace record
 perf script
 perf report
 
+linux perf, windows etw, macos kperf c api usage
+https://gist.github.com/mmozeiko/bd5923bcd9d20b5b9946691932ec95fa?ts=4
+macos only, no cli and gui yet
+https://gist.github.com/ibireme/173517c208c7dc333ba962c1f0d67d12
+
 gdb
 record btrace
 

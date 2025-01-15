@@ -1,5 +1,5 @@
 Overview of Kernel use case groups
-- excution environments (kernel [task, module, virtual machine], user [process, thread])
+- eexcution environments (kernel [task, module, virtual machine], user [process, thread])
 - inter process communication (pipe, io_uring?, locks, shared memory, signals, sockets, streams, wait groups, ..)
 - io management (block, io_uring, stream, virtual device access, ..)
 - memory management (kernel, stack, heap, paging [if CPU has MMU, PMU], ..)
@@ -35,7 +35,7 @@ List of fundamental and (in practice) unfixable design flaws
   * (non)cooperative scheduling could use suspension points + Kernel watchdog
     with suspension points being necessary async events and watchdog being
     updated on every scheduler iteration
-    + leaks (hardware) time informations or requires configurable timesteps over it
+    + leaks (hardware) time information or requires configurable timesteps over it
 - Unix? file permission system stores information within each file instead of file group
   * nested overlayfs has limit 6 blocking usage to make nix on Linux less path hacky
 - Linux/Unix clone forces copy of whole memory, file descriptors etc (needed on
@@ -46,3 +46,6 @@ List of fundamental and (in practice) unfixable design flaws
     ABI stable
 
 idea citations for everything
+
+mini kernel
+https://github.com/nuta/operating-system-in-1000-lines

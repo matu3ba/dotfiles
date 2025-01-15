@@ -417,6 +417,13 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
         self = fieldParentPtr("task", task)
         if self.cancelled.load(): return
         // actual work
+- 24. robust reachability as "perfect reproducibility" of violations controlled by attacker
+  * Inference of Robust Reachability Constraints by Sellami et al.
+  * paper works via satisfiability checking; looks fairly minimal
+  * taint analysis does this on input data, might be possible to do coverage based fuzzing; however not minimal
+- 25. static analysis to prove bug-free programs
+  * https://github.com/codex-semantics-library/codex not usable yet
+  * https://github.com/binsec/binsec unclear trade-offs of symbolic execution
 
 To me unclear if solved:
 * check if linker speak has a formal model

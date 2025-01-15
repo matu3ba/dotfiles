@@ -99,3 +99,27 @@
 .home_left { flex: 1; width: 300px; }
 .home_right { flex: 1; width: 300px; }
 @media screen and (max-width: 600px) { .home_page { display: block; } }
+
+/* table with auto layout */
+/* <table> */
+/*   <tr> */
+/*     <td>Ed</td> */
+/*     <td>Wood</td> */
+/*   </tr> */
+/*   <tr> */
+/*     <td>Albert</td> */
+/*     <td>Schweitzer</td> */
+/*   </tr> */
+/* </table> */
+/* table { */
+/*   table-layout: auto; */
+/*   width: 120px; */
+/*   border: 1px solid red; */
+/* } */
+/**/
+/* td { */
+/*   border: 1px solid blue; */
+/*   overflow: hidden; */
+/*   white-space: nowrap; */
+/*   text-overflow: ellipsis; */
+/* } */

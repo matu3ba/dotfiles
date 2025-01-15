@@ -1593,9 +1593,11 @@ void ape_printing_bad() {
 void ape_print();
 void ape_print() {
   FILE *f1 = fopen("file1", "a+");
-  fprintf(f1, "sometext\n");
-  fprintf(f1, "f1 ptr: %p\n", static_cast<void *>(f1));
-  fclose(f1);
+  if (f1 != nullptr) {
+    fprintf(f1, "sometext\n");
+    fprintf(f1, "f1 ptr: %p\n", static_cast<void *>(f1));
+    fclose(f1);
+  }
 }
 
 [[noreturn]] void ape_throw();

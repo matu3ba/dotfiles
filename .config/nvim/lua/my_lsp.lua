@@ -33,10 +33,10 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 -- 'bashls', -- 'bash-language-server'
 -- 'biome' -- 'biome'
 -- 'jedi_language_server', -- 'jedi-language-server' prefer ruffs server
--- 'ltex', -- 'ltex-ls'
 -- 'clangd', -- 'clangd'
 -- 'lemminx', -- 'lemminx'
 -- 'omnisharp' --  'omnisharp'
+-- 'texlab' -- 'texlab'
 --
 -- pip3 install -U --user jedi-language-server
 -- pipx install jedi-language-server
@@ -135,12 +135,12 @@ lspconfig.texlab.setup {
   on_attach = common_on_attach,
   settings = {
     texlab = {
-      auxDirectory = { 'build' },
       build = {
         --args = { '-pdflatex=lualatex', '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' }
         --args = { '-pdflatex=lualatex', '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', 'main.tex' }
-        args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', 'main.tex' },
+        args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-outdir=build', '%f' },
       },
+      latexFormatter = 'none',
     },
   },
 }

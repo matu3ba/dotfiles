@@ -17,6 +17,7 @@ if not has_conform then return end
 
 -- ruff_format: no cmd for combined linting and fmt yet https://github.com/astral-sh/ruff/issues/8232
 -- stylua: cargo install stylua --features lua52
+-- tex-fmt: cargo install tex-fmt
 local fmts_by_ft = {
   -- lsp_format = 'never(default)|fallback|prefer|first|last'
   -- cmake = { 'cmake_format' },
@@ -25,8 +26,10 @@ local fmts_by_ft = {
   lua = { 'stylua' }, -- stylua: ignore start|end
   -- python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
   rust = { 'rustfmt', lsp_format = 'prefer' },
-  sh = { 'shfmt' },
+  -- sh = { 'shfmt' }, -- go not great language
   shtml = { 'superhtml' },
+  -- https://github.com/WGUNDERWOOD/tex-fmt/issues/55
+  -- tex = { 'tex-fmt' }, -- % tex-fmt: off|on, % tex-fmt: skip
   zig = { 'zigfmt', lsp_format = 'prefer' },
   -- -- zig = { lsp_format = 'prefer' },
   ziggy = { 'ziggy' },

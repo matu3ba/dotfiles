@@ -22,7 +22,7 @@ pub fn build(b: *std.Build) !void {
     // Ps1  | - | -  | -  |  -  | -
     // Py   | - | -  | -  |  -  | -
     // Rs   | - | -  | -  |  -  | -
-    // Sh   | y | y  | n  |  n  | n
+    // Sh   | n | y  | n  |  n  | n
     // Tex  | n | n  | n  |  y  | n
     // Zig  | y | y  | n  |  y  | y
 
@@ -312,7 +312,8 @@ fn lintLua(b: *std.Build, run_step: *std.Build.Step) void {
 // fn checkRs() void {} // nofmt nolint nobuild noproj
 
 fn fmtSh(b: *std.Build, run_step: *std.Build.Step) void {
-    // shfmt has no way to disable fmt / check mode, so it is not enabled
+    // go bad
+    // shfmt has no way to disable fmt / has no check mode, so it is not enabled
     _ = b;
     _ = run_step;
     // for (SingleShFiles[0..]) |shfile| {

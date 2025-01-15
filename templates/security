@@ -110,6 +110,8 @@ which means the tracee must be in a sub-domain of the tracer."
 Unfortunately it does not say "must have".
 7. disable hyperthreading (in bios)
 8. hardened kernel?
+9. good practical usage https://blog.emilua.org/2025/01/12/software-sandboxing-basics/
+  * no comparison to Arcan yet
 
 Windows "Win32 app isolation"
 TODO list capabilities
