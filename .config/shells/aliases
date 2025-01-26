@@ -220,6 +220,7 @@ alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'
 #mv adapted-preferences.json ~/.config/google-chrome/Default/Preferences
 #
 # rsync
+# --info=progress2
 alias rsync_copy='rsync -avz --progress -h'
 alias rsync_move='rsync -avz --progress -h --remove-source-files'
 alias rsync_update='rsync -avzu --progress -h'

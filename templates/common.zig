@@ -25,6 +25,7 @@ const builtin = @import("builtin");
 // rigorous perf - https://github.com/ccurtsinger/stabilizer
 // libtree(ldd as tree) - https://github.com/haampie/libtree
 // typos-cli - https://github.com/crate-ci/typos
+// headless browser - https://github.com/lightpanda-io/browser
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger

@@ -295,13 +295,15 @@ if that does not work
 if that does not work
 - debugging inside qemu runner
 if that does not work:
-- reduce the problem + printf debugging of all intermediat artefacts
+- reduce the problem + printf debugging of all intermediate artefacts
   * we have no way to introspect the problem, so we can only try to modify
     the system behavior
 
 gdbserver localhost:2000 ./exec
 target remote localhost:2000
 
+Howto: GDB Remote Serial Protocol Writing a RSP Server Jeremy Bennett Embecosm
+https://www.embecosm.com/appnotes/ean4/embecosm-howto-rsp-server-ean4-issue-2.html#id3074175
 
 -fno-stack-protector
 -static

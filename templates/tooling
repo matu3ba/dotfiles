@@ -175,8 +175,11 @@ front-end tools          | perf
 tracing frameworks       | ftrace, perf_event, eBPF
 Back-end instrumentation | tracepoints, kprobes, uprobes
 source: https://wiki.st.com/stm32mpu/wiki/Linux_tracing,_monitoring_and_debugging
+bpf-based
+* https://github.com/grafana/beyla
+* https://github.com/gojue/ecapture https://docs.kubeshark.co/en/encrypted_traffic
 
-Embedded (mutli-partition swapping)
+Embedded (multi-partition swapping)
 https://sbabic.github.io/swupdate/swupdate.html
 
 Non-programming tools:

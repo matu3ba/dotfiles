@@ -46,6 +46,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 ====weak_memory
 * best theory overview and consequences "The One-Decade Task: Putting std::atomic in CUDA. - Olivier Giroux - CppCon 2019"
   https://www.youtube.com/watch?v=VogqOscJYvk
+* only promise theory covers all semantics, but no tooling exists
 * "Multicore Semantics: Making Sense of Relaxed Memory"
 * C/C++
   - sequential
@@ -183,6 +184,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
      PNVI-plain, and PVI semantics for C) does not cover all the edge cases from pointers
      https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
 - 8. build system parallelization relies on "Jobserver Implementation" protocol
+   * only reliable behavior is to close file descriptors and related process owned resources on process termination
    * Pain point: protocol relies on a process manually releasing resources
      before it dies, rather than relying on kernel-managed resources that are
      automatically released when the process dies
@@ -363,7 +365,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * kv cache etc
   * idea: spikes are like synaptic connection strengths and represent output of neuron
   * spikes express a sequence over time
-- 18. TLA+ as only feasibe system to formally verifiy non-deterministic
+- 18. TLA+ as only feasibe system to formally verify non-deterministic
   parallelism, states and changes over time via temporal logic
   * https://www.learntla.com/
   * TODO

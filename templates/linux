@@ -56,6 +56,21 @@ journalctl -n 200
 auditd (access monitoring framework)
 bpftrace (general tracing solution to create + run ebpf programs)
 idea: usage with monitoring, is bcc necessary?
+almost complete tracing solution for Linux, no attaching possible:
+* https://github.com/namhyung/uftrace
+
+====trace
+choices https://www.brendangregg.com/blog/2015-07-08/choosing-a-linux-tracer.html
+
+query trace language for kernel and user space Linux:
+* https://sourceware.org/systemtap/examples/keyword-index.html
+* example https://stackoverflow.com/questions/46783960/systemtap-simple-userspace-example-function-tracing-ubuntu
+* usability issues
+  - SystemTap doesn't (usually) work on kernels newer than the systemtap release due to internal kernel API changes
+  - access to your program state is very painful with bpf
+  - older kernels can't get the kernels headers and debuginfo installed
+  - SystemTap dyninst runtime requires restarting the target so it can LD_PRELOAD
+  - must configure everything like in dtrace https://blogs.oracle.com/linux/post/dtrace-for-the-application-developer-counting-function-calls
 
 cd /sys/kernel/debug/tracing
 echo 'sig==9' > events/signal/signal_generate/filter

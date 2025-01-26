@@ -227,5 +227,6 @@ kill (and wait for) parent process (group).
 Observed yesterday on 20240524 Windows in neovim terminal.
 MacOs: process becomes orphaned means it never gets cleaned up
 
-https://lewisgaul.co.uk/blog/coding/2022/05/13/cgroups-intro/
-cgroups overview
+cgroups overview https://lewisgaul.co.uk/blog/coding/2022/05/13/cgroups-intro/
+woodpecker https://woodpecker-ci.org https://github.com/woodpecker-ci/woodpecker go
+forgejo https://forgejo.org/ https://codeberg.org/forgejo/forgejo go

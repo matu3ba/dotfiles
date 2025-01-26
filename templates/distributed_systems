@@ -105,3 +105,16 @@ Network queue implementation without vendor lock-in:
 * develop own QUEUE API
 * provide adapters for  different network work queue protocols
 
+====uptime_downtime
+formula:
+
+uptime       |  downtime       | requirement
+99.00000 %   |  3d 15h 39m     |
+99.90000 %   |      8h 45m 56s | single-region, basic failover
+99.99000 %   |         52m 15s | multi-region, health checks, automatic failover
+99.99900 %   |          5m 15s | every layer redundancy, real-time monitoring, active-active deployment
+99.99990 %   |             31s | chaos engineering, automated canary deployments, sophisticated traffic management
+99.99999 %   |        3.1536ss | likely direct physical connection of limited participants necessary, static routing (estimation)
+99.999999%   |         3*10-1s | soft real-time operating kernel of involved systems (estimation)
+99.9999999%  |         3*10-2s | hard real-time operating kernel of involved systems (estimation)
+99.99999999% |         3*10-3s | hard-ware only (estimation very unclear)

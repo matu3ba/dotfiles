@@ -2847,10 +2847,27 @@ void use_fmt_print();
 void use_fmt_print() {
   std::print(stdout, "Hello, world!\n");
   // std::print(stdout, "%s\n", "Hello, world!"); // %s does not substitute "Hello, world!"
-  std::string s = std::format("The answer is {}.", 42);
-  std::print(stdout, "{}\n", s);
-  (void)s;
+  std::string s1 = std::format("The answer is {}.", 42);
+  std::print(stdout, "{}\n", s1);
+
+  // clangd being showing wrong diagnostics when using c++23
+  // std::vector<int32_t> v1 = {1, 2, 3};
+  // std::string s2 = std::format("The other answer is {}.", v1);
+  // std::print(stdout, "{}\n", s2);
+  // also works for ranges and containers
+  // std::print("{::*^5}", std::vector<int>{1, 2, 3});
+  // std::vector<int> v2 = {1, 2, 3};
+  // std::print("{}\n", v2);
 }
+
+// needs clang 20
+// #include <experimental/scope>
+// void use_scope_exit();
+// void use_scope_exit() {
+//   void *pMem1 = malloc(100);
+//   memcpy(pMem1, "abcdef", 5);
+//   auto guard = std::experimental::scope_exit{[&] { free(pMem1); }};
+// }
 
 void use_string_view();
 void use_string_view() {

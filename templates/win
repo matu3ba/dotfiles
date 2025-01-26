@@ -734,3 +734,8 @@ Tools to inspect Windows registry
 * https://github.com/strozfriedberg/notatin
 * https://github.com/ColinFinck/nt-hive
 * https://github.com/libguestfs/hivex
+
+====trace
+* dtrace
+bcdedit /set dtrace on
+idea: example usage https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/dtrace

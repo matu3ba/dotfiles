@@ -19,11 +19,14 @@ if not ok_lint then return end
 -- uv self update
 
 --==tools
+-- uv tool install cppman
 -- uv tool install mypy
 -- uv tool install ruff
 -- uv tool install weasyprint
 -- uv tool install yt-dlp
-
+--
+-- cppman -c -m true -s cppreference.com
+-- man std::thread
 -- idea https://github.com/codex-semantics-library/codex
 
 --==installing pixi

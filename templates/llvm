@@ -1,5 +1,21 @@
-Online correctness validation of transformations:
+templates/llvoOnline correctness validation of transformations:
 https://alive2.llvm.org/ce/
+
+Goal: LLVM Design is for a "simple IR" to allow simple and efficient optimizations.
+Problem1: LLVM requires user to handle target features and target abi, which
+is very error-prone; even though to reduce work, having one implementation would
+offset costs.
+Problem2: No way, in general, to retain all the high level information in LLVM without
+flavoring the LLVM IR with target info (C type system and every other lang).
+Solution0: Make it a lib.
+Solution1: Make a (0BSD) target feature library with exhaustive tests.
+Solution2: Make a (0BSD) target abi library with exhaustive tests.
+Problem1.1 and Problem2.1: Design without compromising Goal ("simple IR")?
+-> indirection + callbacks necessary
+-> no fine-tuning feasible without exhaustive tests, logical model, validators
+and formal verification etc
+https://discourse.llvm.org/t/passing-structs-to-c-functions/83938/9
+https://github.com/lifting-bits/anvill
 
 Instructions to bring up cmake and llvm on very old systems with cmake.
 Note: Using `-DLLVM_ENABLE_PROJECTS="all" \` might break, so use minimal necessary output.

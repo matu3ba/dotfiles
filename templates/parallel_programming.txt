@@ -180,3 +180,6 @@ Simple
 * "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms" by Maged M. Michael and Michael L. Scott.
   https://github.com/Qarterd/Honeycomb/blob/master/src/common/Honey/Thread/LockFree/Queue.h
   https://www.cs.rochester.edu/research/synchronization/pseudocode/queues.html
+
+"FIFO can be Better than LRU: the Power of Lazy Promotion and Quick Demotion" by Yang et al.
+LP-FIFO (e.g., FIFO-Reinsertion)/CLOCK N’th Chance (2 bits) can be faster, more scalable and have better miss ration than LRU.

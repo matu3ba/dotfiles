@@ -2,6 +2,10 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 
+-- "Syntax highlighting is a waste of an information channel" by Hill Wayne
+-- tldr; what to highlight should be switchable since colors have high
+-- information density to detect patterns
+
 --====ziggy
 --====config
 
