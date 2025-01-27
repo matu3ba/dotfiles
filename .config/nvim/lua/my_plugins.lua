@@ -226,12 +226,24 @@ return {
   },
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   -- USAGE
-  --:DiffviewOpen origin/HEAD...HEAD --imply-local
-  --:DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges
-  --:DiffviewFileHistory -g --range=stash
-  -- https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md
-  -- np, nextprev file tab,s-tab cycle
-  -- cycle through diffs for modified files and git rev
+  -- view
+  -- * :DiffviewOpen origin/HEAD...HEAD --imply-local
+  -- * :DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges
+  -- * :DiffviewFileHistory -g --range=stash
+  -- * https://github.com/sindrets/diffview.nvim/blob/main/USAGE.md
+  -- * np, nextprev file tab,s-tab cycle
+  -- * cycle through diffs for modified files and git rev
+  -- merge tools
+  -- * :DiffviewOpen during rebase/merge
+  -- * :h copy-diffs, :h diffview-conflict-versions, :h diffview-actions-conflict_choose
+  -- * target branch's version (OURS, left), to be merged branch (THEIRS, right).
+  -- * unclear usage 2do OURS, 3do THEIRS, 1do BASE
+  -- * hunk usage
+  --   <leader>co: Choose OURS version of conflict.
+  --   <leader>ct: Choose THEIRS version of conflict.
+  --   <leader>cb: Choose BASE version of conflict.
+  --   <leader>ca: Choose all versions of conflict (deletes markers leaving content)
+  --   dx: Choose none of versions of conflict (delete conflict region).
   { 'sindrets/diffview.nvim' },
 
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
@@ -286,7 +298,7 @@ return {
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- { 'ThePrimeagen/harpoon' }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- use instead track.nvim?
-  { 'matu3ba/libbuf.nvim', dev = true },
+  -- { 'matu3ba/libbuf.nvim', dev = false }, TODO fixup
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- git clone https://github.com/jake-stewart/jfind && cd jfind && cmake -S . -B build && cd build && make -j$(nproc) && sudo make install
@@ -324,7 +336,7 @@ return {
   -- https://www.baeldung.com/linux/vim-drawit-ascii-diagrams
   -- TODO open source ascii editor, ideally within neovim
   -- inspiration https://monodraw.helftone.com/
-  { 'jbyuki/venn.nvim', dev = true },
+  -- { 'jbyuki/venn.nvim', dev = false }, TODO fixup
   -- idea { 'simnalamburt/vim-mundo' } to search undotree
 
   -- TODO replacement with search

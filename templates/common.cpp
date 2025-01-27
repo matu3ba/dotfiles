@@ -2788,6 +2788,22 @@ void use_try_emplace() {
   (void)ec;
 }
 
+
+// template<typename Ty1>
+// IWritableInterface<Ty1>* CreateNewWritableInterface(const std::string& sname) {
+//   using ObjInternalTy = typename CRegisterObj<Ty1>::InternalTy;
+//   auto * pNextFreeRegSlot = GetNextFreeSlot();
+//   return CRegisterObj<_ValueType>::template CreateRegisterObj<CWritableExtRegObj>(
+//     sname
+//     , reinterpret_cast<ObjInternalTy*>(pNextFreeRegSlot)
+//   );
+// }
+
+void use_template_template();
+void use_template_template() {
+  // CreateNewWritableInterface<std::string>("test123");
+}
+
 #endif // HAS_CPP20
 
 // SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const is missing

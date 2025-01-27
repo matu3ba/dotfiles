@@ -117,8 +117,10 @@ IfExistDelDir "$HOME\.local\share\locale" $PWD
 IfExistDelDir "$HOME\.local\share\man" $PWD
 IfExistDelDir "$HOME\.local\share\nvim" $PWD
 
-$zip_target = "nvim-windows-x86_64-0.12.0-e27f7125d66f6026adacbbad00bbf6e66a6ba883.zip"
-$unzip_target = "nvim-windows-x86_64-0.12.0-e27f7125d66f6026adacbbad00bbf6e66a6ba883"
+#testing
+#$zip_target = "nvim-windows-x86_64-0.12.0-e27f7125d66f6026adacbbad00bbf6e66a6ba883.zip"
+#$unzip_target = "nvim-windows-x86_64-0.12.0-e27f7125d66f6026adacbbad00bbf6e66a6ba883"
+
 Write-Output "Unpacking $NEOVIM_TMP_DIR\$zip_target .."
 New-Item -Path "$NEOVIM_TMP_DIR\$unzip_target" -ItemType Directory
 CheckLastExitCode($PWD)

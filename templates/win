@@ -8,6 +8,7 @@ fd link.exe 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community'
 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\link.exe'
 VS2015 x64 Native Tools Command Prompt
 x64 Native Tools Command Prompt for VS2019
+notepad++ with HEX-Editor
 
 ====MSVC_build_system
 .sln file contains 1. build modes (Debug/Release;x64 etc), 2. dependencies and

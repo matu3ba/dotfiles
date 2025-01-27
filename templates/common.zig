@@ -843,5 +843,26 @@ test "@hasDecl" {
 // @workItemId
 // 23*5+1 => 116 builtins
 
+// unreachable can be anything
+// test {
+//    unreachable[0..5];
+//    unreachable[0..5] ** 3;
+//    unreachable(1, true, "foo");
+//    unreachable(1, true, "foo")[0..5];
+//    try unreachable(1, true, "foo");
+//    unreachable.*;
+//    unreachable.?;
+//    !unreachable;
+//    unreachable.enumField;
+//    unreachable.method();
+//    unreachable.field.method();
+//    for (unreachable) |_| {}
+//    while (unreachable) {}
+//    if (unreachable) {}
+//    switch (unreachable) {}
+//    defer unreachable;
+//    unreachable;
+// }
+
 // https://github.com/CTSRD-CHERI/qemu/tree/qemu-cheri
 // nice comptime usage https://bur.gy/2024/08/31/why-not-zig.html

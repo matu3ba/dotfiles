@@ -21,8 +21,9 @@ if not has_conform then return end
 local fmts_by_ft = {
   -- lsp_format = 'never(default)|fallback|prefer|first|last'
   -- cmake = { 'cmake_format' },
-  c = { 'clang-format' }, -- // clang-format off|on
-  cpp = { 'clang-format' }, -- // clang-format off|on
+  -- FIXME: looks broken on windows, so check yourself for .clang-format file
+  -- c = { 'clang-format' }, -- // clang-format off|on
+  -- cpp = { 'clang-format' }, -- // clang-format off|on
   lua = { 'stylua' }, -- stylua: ignore start|end
   -- python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
   rust = { 'rustfmt', lsp_format = 'prefer' },

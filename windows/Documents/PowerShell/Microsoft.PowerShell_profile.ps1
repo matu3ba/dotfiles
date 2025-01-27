@@ -38,7 +38,7 @@ $env:Editor = "nvim"
 # https://github.com/wez/wezterm/releases
 # winget install wez.wezterm
 
-# Installing new version of powershell called pwsh.exe to fix utf8:
+# Install/update of powershell called pwsh.exe to fix utf8:
 # function GitDiff { & git diff --no-color $args }
 # winget search Microsoft.PowerShell
 # winget install --id Microsoft.Powershell --source winget

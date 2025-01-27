@@ -1,6 +1,7 @@
 https://lwn.net/Articles/995276/#Comments
 todo summarize
 https://mutants.rs/
+https://www.fuzzingbook.org
 
 Best Practice taken from "Large Scale Architecture: The Unreasonable
 Effectiveness of Simplicity - Randy Shoup" and extended by personal experience.
@@ -203,7 +204,6 @@ TODO best practice
 
 https://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html
 fuzzing ideas + process semantics
-
 https://skia.org/docs/dev/testing/automated_testing/
 https://github.com/luci/luci-py/blob/main/appengine/swarming/doc/Design.md
 https://github.com/luci/luci-py/blob/main/appengine/swarming/doc/Detailed-Design.md

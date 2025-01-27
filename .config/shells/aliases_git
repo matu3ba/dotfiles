@@ -269,6 +269,7 @@ alias gcs='git rebase -i --autosquash'
 # To ignore indentation changes in git diff, add -w
 alias gd='git diff'
 alias gdc='git diff --cached'
+# Check for conflict markers: git diff --check
 alias gdn='git --no-pager diff --name-only'
 alias gdcn='git --no-pager diff --cached'
 alias gds='git --no-pager diff --shortstat'
