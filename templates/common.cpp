@@ -1392,11 +1392,11 @@ void printGetLastError() {
 //   // prefer in class definition:
 //   static_assert( std::is_same<_Integral, int64_t>::value || std::is_same<_Integral, double>::value );
 //   if constexpr (std::is_same<_Integral, int64_t>::type_id) {
-//     std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
+//     std::shared_ptr<const CIntVal> out_data = ClassRef->GetTypedData();
 //     TEST_EQUAL(out_data->ToInt64(), expected);
 //   }
 //   else if constexpr (std::is_same<_Integral, double>) {
-//     std::shared_ptr<const CPxIntegerValue> out_data = ClassRef->GetTypedData();
+//     std::shared_ptr<const CIntVal> out_data = ClassRef->GetTypedData();
 //     TEST_EQUAL(out_data->ToDouble(), expected);
 //   } else {
 //     static_assert(!std::is_same<_Integral, _Integral>::value); // template error

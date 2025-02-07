@@ -11,6 +11,8 @@
 ====hardware_attack
 ====encryption
 ====hashing
+====ipc
+====hardware_token
 
 https://www.youtube.com/@stacksmashing
 
@@ -112,6 +114,15 @@ Unfortunately it does not say "must have".
 8. hardened kernel?
 9. good practical usage https://blog.emilua.org/2025/01/12/software-sandboxing-basics/
   * no comparison to Arcan yet
+
+https://gitlab.exherbo.org/sydbox/sydbox
+https://crates.io/crates/syd
+https://git.sr.ht/~alip/syd/tree/main/item/doc/toctou-or-gtfo.md
+https://gitlab.exherbo.org/sydbox/sydbox/-/blob/main/doc/talks/2025-Syd-FOSDEM/Syd-FOSDEM.pdf?ref_type=heads
+application kernel
+sydbox-3
+requires libseccomp
+cargo install --locked syd
 
 Windows "Win32 app isolation"
 TODO list capabilities
@@ -255,4 +266,12 @@ def inv_leftxorshift(x: int, k: int, w: int) -> int:
 
 and right shift has with orthogonal logic.
 
+====ipc
 https://arcan-fe.com/2024/11/21/a-deeper-dive-into-the-shmif-ipc-system/
+
+====hardware_token
+Tillitis TKey flexible USB security token
+ Unique Device Secret (UDS), which together with the application measurement,
+ and an optional user-provided seed, is used to derive key material unique to
+ each application
+ as RiscV usb micro computer

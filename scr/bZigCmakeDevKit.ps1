@@ -5,7 +5,7 @@
 # addStandaloneTests
 #
 # idea: parse pip show output
-# $env:Path += ';C:\Users\hafer\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\ninja'
+# $env:Path += ';C:\Users\USER\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\ninja'
 #         (idea)
 #         4. powershell scripts executable (execution in shell):
 #         Get-Content bZig.ps1 | PowerShell.exe -noprofile -

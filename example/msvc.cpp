@@ -27,7 +27,7 @@
 // parse build.log for cl.exe and retrieve flags
 // adjust compile_commands.json with content
 // {
-//   "directory": "C:/Users/hafer/SolutionDir/",
+//   "directory": "C:/Users/USER/SolutionDir/",
 //   "command": "\"C:/Program Files/LLVM/bin/clang++.exe\" -x c++ \"ABSOLUTE_PATH_TO_FILE\" -std=c++14 -Wall -fms-compatibility-version=19.10 -Wmicrosoft -Wno-invalid-token-paste -Wno-unknown-pragmas -Wno-unused-value -m32 -fsyntax-only \"-D_MT\" \"-D_DLL\"
 //   \"-D_USING_V110_SDK71_\" \"-DSOMEMACRO\" \"-DWIN32\" \"-D_DEBUG\" ..
 //   -isystem\"ABS_PATH_TO_PROJECT_DIR\"
@@ -35,7 +35,7 @@
 //   -isystem\"C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/atlmfc/include\"
 //   -isystem\"C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/Auxiliary/VS/include\"
 //   -isystem\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.10240.0/ucrt\"
-//   -isystem\"C:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Include\" -I\"PxLibrary\" -I\"C:/Users/hafer/pix/SolutionDir/ProjectDir\"",
+//   -isystem\"C:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Include\" -I\"LibDir\" -I\"C:/Users/USER/SolutionDir/ProjectDir\"",
 //   "file": "ABSOLUTE_PATH_TO_FILE"
 // }
 // via

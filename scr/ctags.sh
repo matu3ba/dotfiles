@@ -13,7 +13,7 @@ fi
 
 trap 'rm -f "${PID}tags"' EXIT
 #powershell: cd repo
-#powershell: FILES=$(fd 'Px.*' -t d --max-depth=1 --relative-path | TODO strip last / or \ of local dirs)
+#powershell: FILES=$(fd 'prefix.*' -t d --max-depth=1 --relative-path | TODO strip last / or \ of local dirs)
 #powershell: ctags --recurse=yes --kinds-c++=+p --extras=+fq --sort=foldcase --c++-kinds=+p --fields=+iaS --extras=+q relativepath
 ctags --recurse=yes --kinds-c++=+p -f "${PID}tags" --extras=+fq --sort=foldcase --c++-kinds=+p --fields=+iaS --extras=+q "$@"
 mv "${PID}tags" "tags"

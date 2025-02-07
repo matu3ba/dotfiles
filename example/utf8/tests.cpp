@@ -47,9 +47,9 @@ static std::wstring ConvertAnsiToWide(std::string const &str) {
 
 static int32_t test_utf8comparison() {
 
-  std::string Biiru1 = u8"<PixUTF8>生ビールBier"_SC;
-  std::string Biiru2 = u8"<PixUTF8>Bier生ビール"_SC;
-  std::string Biiru3 = u8"<PixUTF8>Bier生ビール"_SC;
+  std::string Biiru1 = u8"<MyUTF8>生ビールBier"_SC;
+  std::string Biiru2 = u8"<MyUTF8>Bier生ビール"_SC;
+  std::string Biiru3 = u8"<MyUTF8>Bier生ビール"_SC;
 
   // TEST_EQUAL(Biiru1, Biiru2);
   TEST_EQUAL(Biiru2, Biiru2);

@@ -27,6 +27,10 @@ const builtin = @import("builtin");
 // typos-cli - https://github.com/crate-ci/typos
 // headless browser - https://github.com/lightpanda-io/browser
 
+// Zig specific
+// aliasing checking prototype - https://github.com/ityonemo/clr
+// ebpf based runtime checks - https://github.com/Sobeston/lifetime-debugger
+
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger
 // windbg - http://windbg.info/doc/1-common-cmds.html

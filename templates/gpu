@@ -21,5 +21,23 @@ most likely complex path+color operations are the latency adders, everything els
 https://stackoverflow.com/questions/5762727/how-do-the-pieces-of-androids-2d-canvas-drawing-pipeline-fit-together
 https://skia.org/docs/user/sksl/
 
+Vulkan drivers buggy
+* projects like skia complain and dont recommend Vulkan for anything portable
+* make own vulkan driver, then make custom extensions for anything that is silly
+  - needs to be in active development, can not move on
+  - vulkan sucks because driver writers not actively doing good job
+* no portable GPU API, because "kernel contains [..] graphics UAPI update, [..] must reboot after updating to restore graphics acceleration."
+* cause are failings in the egl-dri stack
+  - current abstractions suck for devs, can't write good code
+  - suck for driver devs as clients provide bad code, need to find patterns to try and squeeze
+    it into something GPU can tolerate
+  - API that biased towards driver devs
+  - devs get to reason same as driver devs
+    o Khronos did not (from start) provide sane API from dev angle translating well to driver API
+* trade-off 1: use egl-dri opengl with known and documented quirks, no point in
+  chasing features for the sake of features (with lower efficiency)
+* trade-off 2: NVK project with https://www.collabora.com/news-and-blog/news-and-events/introducing-nvk.html
+  and track whatever Vulkan is doing and track upstream or maintain
+
 GPU pipeline
 vertex specification -> vertex shader -> tessellation -> geometry shader -> vertex post-processing -> primitive assembly -> rasterization -> fragment shader -> per-sample operation

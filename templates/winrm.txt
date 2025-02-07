@@ -109,3 +109,6 @@ Set-Service -Name winrm -StartupType Disabled
 winrm enumerate winrm/config/listener
 winrm get winrm/config
 winrm quickconfig -transport:https
+
+does not work due to not being in trusted host list
+winrs -r:http://192.168.1.24:5985/wsman -u:user -p:userpw ipconfig

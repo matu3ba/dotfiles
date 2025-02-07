@@ -1,10 +1,10 @@
 ```zsh
 #!/usr/local_rwth/bin/zsh
 # test.sh
-#SBATCH --account=thes0766            # thesis number
-#SBATCH --job-name=preparation      # Job name
+#SBATCH --account=thes0123           # thesis number
+#SBATCH --job-name=preparation       # Job name
 #SBATCH --mail-type=END,FAIL         # Mail events (NONE, BEGIN, END, FAIL, ALL)
-#SBATCH --mail-user=jan.hafer@rwth-aachen.de    # Where to send mail
+#SBATCH --mail-user=user@mail.de     # Where to send mail
 #SBATCH --nodes=1                    # Run all processes on a single node
 #SBATCH --ntasks=1                   # Run a single task
 #SBATCH --cpus-per-task=4            # Number of CPU cores per task

@@ -15,6 +15,7 @@
 
 // https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclib_tc2_system/3622991755.html&id=
 // https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/2525041803.html&id=
+// c:\TwinCAT\AdsApi\TcAdsDll\Include\TcAdsDef.h
 
 PROGRAM MAIN
 VAR

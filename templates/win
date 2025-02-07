@@ -77,8 +77,8 @@ On incremental build slowdown search in verbose build output:
 - Creating "TARGET_DIR\PROJECT\PROJECT.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
   fix: use newer VS2022 version
 - fix custom build step dependency changing in tree files
-  * replicate behavior of PxVersionDefinition.h
-  * fix behavior of PxVersionDefinition.h
+  * replicate behavior of File.h
+  * fix behavior of File.h
 
 unfixable
 - lock on project, if project opened graphically and building
@@ -294,9 +294,9 @@ datatype dt
 sizeof sizeof()
 .writemem FileName Range
 SHENNANIGAN writemem does not detect hex length, so 0x30 would be 30 bytes
-.writemem C:\Users\hafer\Stack.bin 0x00000165e21c46f0 L48
-.writemem C:\Users\hafer\Stack.bin 0x00000165e21c46f0 0x30
-Larger chunks needs L?: .writemem C:\Users\hafer\Stack.bin 0x00000165e21c46f0 L?0x30
+.writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L48
+.writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 0x30
+Larger chunks needs L?: .writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L?0x30
 .readmem myfile 1000 10
 
 Graphical usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
@@ -375,7 +375,7 @@ VS2015
 next/prev tab              Ctrl-f6/Ctrl-Shift-f6
 only compile current file  Ctrl-f7
 search
-  TODO                     Ctrl-,
+  keyword                  Ctrl-,
   TODO                     Ctrl-t
   TODO                     Ctrl-f12
   symbol results           Shift-f12
@@ -740,3 +740,15 @@ Tools to inspect Windows registry
 * dtrace
 bcdedit /set dtrace on
 idea: example usage https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/dtrace
+
+https://github.com/nix-community/NixOS-WSL/releases/tag/23.5.5.2
+wsl --import NixOS .\NixOS\ nixos-wsl.tar.gz --version 2
+wsl -d NixOS
+wsl -s NixOS
+wsl -d NixOS --system --user root -- /mnt/wslg/distro/bin/nixos-wsl-recovery
+choose older versions with:
+wsl -d NixOS --system --user root -- /mnt/wslg/distro/bin/nixos-wsl-recovery --system /nix/var/nix/profiles/system-42-link
+
+C:\Users\USER\AppDir\buildBatch.bat
+fd -uu -e tlog -x shasum.bat -a 512 {}
+Get-ChildItem .\SDK\ -Recurse | Get-FileHash -Algorithm MD5

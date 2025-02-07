@@ -1,6 +1,11 @@
 ====systemd
 ====autostart
 ====udev
+====WM
+====sandboxing
+====Linux forensics
+====ebpf
+====scheduler
 
 ====systemd
 Unusable to grep, useless path complexity:
@@ -181,6 +186,7 @@ echo 0 > /proc/sys/vm/compaction_proactiveness
 sudo sh -c 'echo 0 > /proc/sys/vm/compaction_proactiveness'
 
 Sandboxing
+application kernel for containers: https://github.com/google/gvisor
 Fixing Desktop GPU + IPC design problems (for example making dbus superfluous): aracan-fe
 Desktop sandboxing to reduce gigantic attack vector: firejail
 Tight sandboxing: bubblewrap
@@ -387,3 +393,18 @@ mount /dev/loop0p1 /mnt
 NFS shares have weird behavior, which may send error on close
 
 tty/pty layer in the kernel is abandoned since 2009 yet everyone uses and relies on it
+
+====ebpf
+using scheduler api with bpf https://github.com/sched-ext/scx/wiki
+bpftrace most simple solution to get into BPF and for system-runtime-debugging
+makes OOM visible (SIGKILL non-catchable, non-ignorable, can not handle in user-space), for example using
+https://github.com/facebookincubator/oomd with something like
+  tracepoint::syscalls::sys_enter_kill {
+    if(args.pid == @args[SCUBA_PID] && args.sig == 9 && strcontains(comm, "fb-oomd")) {
+      // logging
+    }
+  }
+and aggregating using folly static tracing
+
+====scheduler
+https://github.com/sched-ext/fosdem25
