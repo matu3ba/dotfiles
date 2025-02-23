@@ -32,7 +32,7 @@
 // gcc -shared  -fPIC -Wl,-init,init  -ldl comm.c -o comm.so
 // https://stackoverflow.com/questions/49226864/why-is-library-loaded-via-ld-preload-operating-before-initialization
 
-#ifndef USE_SIGNAL
+#if !defined(USE_SIGNAL)
 #include <inttypes.h> // PRIu64, uint64_t (stdint.h not needed)
 #include <stdbool.h>  // bool
 #include <stdio.h>    // printf
@@ -48,7 +48,7 @@ int main() {
   }
   return 0;
 }
-#else
+#else // defined(USE_SIGNAL)
 #include <stdio.h>
 #include <stdlib.h>
 int main() {
@@ -56,4 +56,4 @@ int main() {
   int i = *(int *)0;
   return 0;
 }
-#endif
+#endif // !defined(USE_SIGNAL)

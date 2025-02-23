@@ -5,8 +5,8 @@
 #if (__cplusplus >= 201703L)
 #define HAS_CPP17 1
 static_assert(HAS_CPP17, "use HAS_CPP17 macro");
-#endif
-#ifdef HAS_CPP17
+#endif // (__cplusplus >= 201703L)
+#if defined(HAS_CPP17)
 
 #include <cstdint>
 #include <iostream>
@@ -75,7 +75,7 @@ static int32_t test_string_construction() {
   return 0;
 }
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <cstdio>
 #include <fcntl.h>
 #include <io.h>
@@ -115,16 +115,16 @@ static int32_t test_wstring_construction() {
 
   return 0;
 }
-#endif
+#endif // defined(_WIN32)
 
 int main() {
   test_string_construction();
-#ifdef _WIN32
+#if defined(_WIN32)
   test_wstring_construction();
-#endif
+#endif // defined(_WIN32)
   return 0;
 }
 
-#else // HAS_CPP17
+#else  // !defined(HAS_CPP17)
 int main() { return 0; }
-#endif
+#endif // defined(HAS_CPP17)

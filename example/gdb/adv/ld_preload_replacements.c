@@ -2,7 +2,7 @@
 //! Stolen from https://www.themetabytes.com/2017/11/25/ld_preload-hacks/
 // Tested with
 
-#ifdef USAGE
+#if defined(USAGE)
 #include <stdio.h>
 
 #if USAGE == 1
@@ -49,4 +49,4 @@ void _init(void) {
   signal(SIGSEGV, handler);
 }
 #endif
-#endif
+#endif // defined(USAGE)

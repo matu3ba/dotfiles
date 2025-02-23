@@ -228,12 +228,12 @@ static_assert(HAS_CPP23, "use HAS_CPP23 macro");
 static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #define _CRT_SECURE_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN
 #include <process.h>
 #include <windows.h>
-#endif // _WIN32
+#endif // defined(_WIN32)
 
 #include <cassert>
 // #include <cmath> // nan
@@ -261,31 +261,31 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <utility> // std::true_type
 #include <vector>
 
-#ifdef HAS_CPP17
+#if defined(HAS_CPP17)
 #include <string_view>
-#endif
-#ifdef HAS_CPP20
+#endif // defined(HAS_CPP17)
+#if defined(HAS_CPP20)
 #include <concepts> // NOLINT
 // https://stackoverflow.com/questions/57402464/is-c20-char8-t-the-same-as-our-old-char
 static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not distinct type; has C semantics");
-#endif
-#ifdef HAS_CPP23
+#endif // defined(HAS_CPP20)
+#if defined(HAS_CPP23)
 #include <print>
-#endif
+#endif // defined(HAS_CPP23)
 
-// #ifdef HAS_CPP23
+// #if defined(HAS_CPP23)
 // #include <optional>
-// #endif
+// #endif // defined(HAS_CPP23)
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 #include <variant>
-#endif
+#endif // ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 
 // posix only
-#ifndef _WIN32
+#if !defined(_WIN32)
 #include <sys/mman.h> // mmap flags
 #include <unistd.h>   // execve in libc
-#endif
+#endif                // !defined(_WIN32)
 
 /// logging (better would be test based and scoped macros)
 // #define DEBUG_FN_ENTER(message)                                \
@@ -329,7 +329,7 @@ inline void hash_combine(unsigned long &seed, unsigned long const &value) {
 // FNV hash algorithm ?
 
 // Macros for creating enum + string for lookup up to 256 values from https://stackoverflow.com/a/5094430
-#ifdef BOOST_VERSION
+#if defined(BOOST_VERSION)
 #define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem) \
   case elem:                                                               \
     return BOOST_PP_STRINGIZE(elem);
@@ -351,7 +351,7 @@ void enum_to_string_example() {
   OS_type t = Windows;
   fprintf(stdout, "%s %s\n", ToString(t), ToString(Apple));
 }
-#endif
+#endif // defined(BOOST_VERSION)
 
 // better enums via enum class
 void enum_class_example();
@@ -444,9 +444,9 @@ void tagged_union() {
   fprintf(stdout, "v.index = %zu\n", v.index());
   v = {};
   fprintf(stdout, "v.index = %zu\n", v.index());
-#else
+#else  // !((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
   // accessing union by index in a stable way requires compiler support
-#endif
+#endif // ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 }
 
 // SHENNANIGAN: rules out C_like_aggregate_construction_
@@ -487,10 +487,10 @@ int32_t use_sTemplatedVariant() {
   sTemplatedVariant tv1(eType::ty2);
   return 0;
 }
-#endif
+#endif // ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 
 // defer-like behavior in C++
-// #ifndef _WIN32
+// #if !defined(_WIN32)
 // #include <openssl/err.h>
 // #include <openssl/evp.h>
 // using EVP_CIPHER_CTX_free_ptr = std::unique_ptr<EVP_CIPHER_CTX, decltype(&::EVP_CIPHER_CTX_free)>;
@@ -513,7 +513,7 @@ int32_t use_sTemplatedVariant() {
 //   // other problem: we cant only defer on error to provide ctx to another function
 //   return NULL;
 // }
-// #endif
+// #endif // !defined(_WIN32)
 
 // SHENNANIGAN: default values prevent the class from being an aggregate, so
 // list initialization breaks with a very unhelpful message like:
@@ -581,8 +581,19 @@ void simpleCAS() {
 
 void vector_reserve_capacity();
 void vector_reserve_capacity() {
-  std::vector<int> someints;
-  someints.reserve(20);
+  std::vector<int> someints1;
+  someints1.reserve(20); //basic reserve for fast push_back/insert etc
+
+  std::vector<int> someints2(20); // ctor with resize
+
+  std::vector<int> someints3{1, 2, 3}; // ctor with list initializer
+
+  std::vector<int> someints4;
+  // fill + back_inserter
+  // std::fill_n(std::back_inserter(phone_book), n, entry);
+
+  // execute code on insertion via lambda
+  // std::generate_n(std::back_inserter(phone_book), n, [] { return entry_generator(); });
 }
 
 void always_emplace_back();
@@ -644,7 +655,7 @@ public:
 // SHENNANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
 // more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html
 
-#ifndef _WIN32
+#if !defined(_WIN32)
 // Also does split string.
 void stringRawDataAccess(std::string &comp);
 void stringRawDataAccess(std::string &comp) {
@@ -676,7 +687,7 @@ ACTIONEXIT:
   // This requires usage of errno, so pick your poison.
   // alternative: use find with substring
 }
-#endif
+#endif // !defined(_WIN32)
 
 class ClassWithMutex { // class with mutex
   std::string s1;
@@ -1256,7 +1267,7 @@ static_assert(!is_string_class<std::vector<char>>);
 // Solution: Only use 'auto' for well-known iterators and status tuples, **never**
 // for objects.
 
-#ifdef _POSIX
+#if defined(_POSIX)
 // IPC over shared process memory
 enum ProcState { IDLE, STOPPING, RUNNING };
 static void *some_memregion = nullptr; // c++ only
@@ -1299,7 +1310,7 @@ void ipc_read() {
     }
   }
 }
-#endif
+#endif // defined(_POSIX)
 
 // SHENNANIGAN
 // interoperating type safe with c strings is very cumbersome
@@ -1309,15 +1320,15 @@ void cstring_interop_annoying() {
   char const *buffer[] = {"ls", "-l", nullptr};
   char *const *argv = const_cast<char *const *>(buffer);
   // Posix name is deprecated, use _execve
-#ifdef _WIN32
+#if defined(_WIN32)
   intptr_t execed = _execve(cmd, argv, nullptr);
-#else
+#else  // !defined(_WIN32)
   intptr_t execed = execve(cmd, argv, nullptr);
-#endif
+#endif // defined(_WIN32)
   (void)execed;
 }
 
-#ifdef _WIN32
+#if defined(_WIN32)
 // unique_ptr pattern to handle file handles and cleanup via RAII
 void raii_filehandles();
 void raii_filehandles() {
@@ -1380,7 +1391,7 @@ void printGetLastError() {
   std::string message = std::system_category().message(static_cast<int32_t>(error));
   fprintf(stdout, "ERROR: %s\n", message.c_str());
 }
-#endif
+#endif // defined(_WIN32)
 
 /// Prefer 'if constexpr' over 'enable_if' over SFINAE to keep things readable.
 /// Prefer template type specialization, if possible ('template <int T>').
@@ -1527,7 +1538,7 @@ int testEq(int a, int b) {
   return 0;
 }
 
-#ifdef CPP20
+#if defined(CPP20)
 template<class TVAL, class TEXP, class TEPS>
 requires std::convertible_to<TVAL, double> && std::convertible_to<TEXP, double>
 bool testApprox(const TVAL &Val, const TEXP &Expect, const TEPS &Eps) {
@@ -1552,7 +1563,7 @@ void test_isNan() {
   bool is_nan = isNan(c);
   (void)is_nan;
 }
-#endif
+#endif // defined(CPP20)
 
 void someLambda(bool bVal, std::string const &sName);
 void someLambda(bool bVal, std::string const &sName) {
@@ -1572,7 +1583,7 @@ void someLambda(bool bVal, std::string const &sName) {
 // SHENNANIGAN
 // C++ does not capture C type problems, especially memcpy, memset etc
 // Prefer ape_printing, not ape_printing_bad
-#ifdef _WIN32
+#if defined(_WIN32)
 void ape_printing_bad();
 void ape_printing_bad() {
   std::fstream fs;
@@ -1580,16 +1591,16 @@ void ape_printing_bad() {
   fs << "somestuff\n";
   fs.close();
 }
-#endif
+#endif // defined(_WIN32)
 
-#ifdef _WIN32
+#if defined(_WIN32)
 // make msvc not complain about fopen
 // to be used in first lines of .cpp file
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 // #define _CRT_SECURE_NO_WARNINGS
 // #define _CRT_SECURE_NO_DEPRECATE
-#endif
-#endif
+#endif // defined(_MSC_VER)
+#endif // defined(_WIN32)
 void ape_print();
 void ape_print() {
   FILE *f1 = fopen("file1", "a+");
@@ -1651,17 +1662,20 @@ void ape_itertoptr() {
 // SHENNANIGAN Error C2681 invalid expression type for dynamic_cast
 // is confusing. The type may simply not known instead of "invalid".
 
+// SHENNANIGAN: high_resolution_clock not implemented across libstds;
+// use steady_clock for measurements, system_clock for wall-clock time
 void use_chrono();
 void use_chrono() {
   // auto timeFromDb = std::chrono::system_clock::from_time_t(std::mktime(&dbTime));
-  auto t_start = std::chrono::high_resolution_clock::now();
+
+  auto t_start = std::chrono::steady_clock::now();
   // the work...
-  auto t_end = std::chrono::high_resolution_clock::now();
+  auto t_end = std::chrono::steady_clock::now();
   double elapsed_time = std::chrono::duration<double, std::milli>(t_end - t_start).count();
   int64_t elapsed_time_ms_cast = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
 
   double elapsed_time_ms =
-      std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - t_start).count();
+      std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t_start).count();
   (void)elapsed_time;
   (void)elapsed_time_ms_cast;
   (void)elapsed_time_ms;
@@ -1983,7 +1997,7 @@ template<typename T> void test() { fprintf(stdout, "testing type %s\n", typeid(T
 #include <type_traits>
 namespace CHECK {
 
-#ifdef HAS_CPP20
+#if defined(HAS_CPP20)
 template<typename T1, typename T2>
 concept CanMultiply = requires(T1 &a, T2 &b) { a *b; };
 template<typename T1, typename T2>
@@ -2010,7 +2024,7 @@ requires requires(T x) { x + x; } T add(T a, T b) {
   return a + b;
 }
 
-#else // < CPP20
+#else  // !defined(HAS_CPP20)
 // check whether operator exists for identical types up to including C++17
 struct No {};
 template<typename T, typename Arg> No operator==(T const &, Arg const &);
@@ -2025,7 +2039,7 @@ template<typename T1, typename T2> No operator*(const T1 &, const T2 &);
 template<typename T1, typename T2> struct MulExists {
   enum { value = !std::is_same<decltype(*static_cast<T1 *>(nullptr) * *static_cast<T2 *>(nullptr)), No>::value };
 };
-#endif
+#endif // defined(HAS_CPP20)
 
 } // namespace CHECK
 
@@ -2044,8 +2058,8 @@ struct D {
 
 int test_OperatorExistence();
 int test_OperatorExistence() {
-#ifndef HAS_CPP20
-#ifdef HAS_CPP14
+#if !defined(HAS_CPP20)
+#if defined(HAS_CPP14)
   std::cout << "A::operator== () exists: " << CHECK::EqualExists<A>::value << std::endl;
   std::cout << "B::operator== () exists: " << CHECK::EqualExists<B>::value << std::endl;
   std::cout << "C::operator== () exists: " << CHECK::EqualExists<C>::value << std::endl;
@@ -2053,15 +2067,15 @@ int test_OperatorExistence() {
 
   std::cout << "A::operator* () exists: " << CHECK::MulExists<A, int>::value << std::endl;
   // std::cout<< "B::operator* () exists: " << CHECK::MulExists<B, double>::value << std::endl; // fails with bogus errors
-#endif // HAS_CPP14
-#endif // HAS_CPP20
+#endif // defined(HAS_CPP14)
+#endif // !defined(HAS_CPP20)
 
-#ifdef HAS_CPP20
+#if defined(HAS_CPP20)
   A a = {2};
   int b = 10;
   CHECK::mul(a, b);
   fprintf(stdout, "a: %d\n", a.m);
-#endif // HAS_CPP20
+#endif // defined(HAS_CPP20)
 
   return 0;
 }
@@ -2070,7 +2084,7 @@ int test_OperatorExistence() {
 // inside template class
 
 // typeAt from https://stackoverflow.com/questions/72643091/how-to-get-an-element-of-type-list-by-index
-#ifdef HAS_CPP20
+#if defined(HAS_CPP20)
 template<typename...> struct type_list {};
 template<std::size_t I, typename T> struct typeAt;
 template<std::size_t I, typename... Args>
@@ -2080,7 +2094,7 @@ using R = typename typeAt<0, L>::type;
 using T = typename typeAt<2, L>::type;
 static_assert(std::is_same_v<R, int>, "");
 static_assert(std::is_same_v<T, float>, "");
-#endif
+#endif // defined(HAS_CPP20)
 
 // class Functor {
 // public:
@@ -2181,7 +2195,7 @@ private:
 // [*this] use copy of this (since C++17)
 
 // SHENNANIGAN workaround char8_t from given char8_t string literals (u8"", u8R"")
-#ifdef HAS_CPP20
+#if defined(HAS_CPP20)
 inline char const *operator""_SC(char8_t const *str, std::size_t) { return reinterpret_cast<char const *>(str); }
 // Unfortunately string literals are not constexpr in C++20:
 // constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
@@ -2314,7 +2328,7 @@ void test_ostream() {
 static_assert(!has_ostream<S_test_bound_ostream>, "S_test_bound_ostream has a usable ostream");
 static_assert(has_ostream<S_test_free_ostream>, "S_test_free_ostream has no ostream");
 
-#ifdef _WIN32
+#if defined(_WIN32)
 inline std::string ConvertWideToUtf8(std::wstring const &wstr) {
   int count =
       WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int32_t>(wstr.length()), nullptr, 0, nullptr, nullptr);
@@ -2332,7 +2346,7 @@ inline std::wstring ConvertUtf8ToWide(std::string const &str) {
   MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
   return wstr;
 }
-#endif // _WIN32
+#endif // defined(_WIN32)
 
 struct ValRefStr {
   std::string val;
@@ -2379,13 +2393,13 @@ template<class Ty1, class Ty2> static constexpr ValRefStr ConvertToString(Ty1 co
     static_assert(can_create_string_from<Ty2>);
     return {std::string(value), std::string(reference)};
   }
-#ifdef _WIN32
+#if defined(_WIN32)
   else if constexpr (can_create_wstring_from<Ty1>) {
     static_assert(can_create_wstring_from<Ty2>);
     // convert wstring -> string for utf8 encoded output
     return {ConvertWideToUtf8(std::wstring(value)), ConvertWideToUtf8(std::wstring(reference))};
   }
-#endif // WIN32
+#endif // defined(_WIN32)
   else {
     return {value.toString(), reference.toString()};
   }
@@ -2398,7 +2412,7 @@ void test_ConvertToString() {
   ValRefStr vals_refstr = ConvertToString(s1, s2);
   (void)vals_refstr;
 }
-#endif // HAS_CPP20
+#endif // defined(HAS_CPP20)
 
 // SHENNANIGAN MSVC C++20 freaks out on std::is_pod
 // replace with std::is_standard_layout and/or std::is_trivial
@@ -2498,7 +2512,14 @@ class ChildClass : ParentClass {
 template<typename> struct is_pair : std::false_type {};
 template<typename T, typename U> struct is_pair<std::pair<T, U>> : std::true_type {};
 
-#ifdef HAS_CPP17
+#if defined(HAS_CPP17)
+// TODO ideally have perf numbers
+// TODO move std::variant here for cleaner overview
+// - TODO static dispatch via struct
+// - TODO move dynamic dispatch via std::variant here
+// - TODO dynamic dispatch via double vtable or something like that
+//     https://iamsorush.com/posts/cpp-tag-dispatch/
+//     https://gieseanw.wordpress.com/2018/12/29/stop-reimplementing-the-virtual-table-and-start-using-double-dispatch/
 static_assert(std::is_unsigned_v<size_t>);
 
 void map_insert();
@@ -2618,7 +2639,7 @@ void use_from_chars() {
   // assert(ec2 == std::errc{});
 }
 
-#endif // HAS_CPP17
+#endif // defined(HAS_CPP17)
 
 // TODO sort in
 // std::uniform_int_distribution<int32_t> Index(0, InclusiveEnd);
@@ -2636,7 +2657,7 @@ void use_from_chars() {
 
 //====version_changes
 
-#ifdef HAS_CPP14
+#if defined(HAS_CPP14)
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time
 // SHENNANIGAN core guidelines have nothing on pattern matching std things
 // type for STL containers. Reflection on (std) scope elements is not possible.
@@ -2660,7 +2681,7 @@ void use_is_stl_container() {
   printf("%d\n", is_stl_container<std::vector<int> const &>::value);
   printf("%d\n", is_stl_container<int>::value);
 }
-#endif
+#endif // defined(HAS_CPP14)
 
 // TODO reorganize and add here HAS_CPP17
 
@@ -2672,7 +2693,7 @@ void use_is_stl_container() {
 // 1. static
 // 2. class can access private members
 
-#ifdef HAS_CPP20
+#if defined(HAS_CPP20)
 // * added "constinit" to force static initilaization + offer mutability
 // instead of constant `constexpr static`
 // * improving readability of templates via concepts
@@ -2761,9 +2782,9 @@ void use_comptime() {
   fprintf(stdout, "%d\n", res0 + res1 + res2 + res3 + res4 + res5 + res6 + res7 + res8);
 }
 
-#ifndef __has_include
+#if !defined(__has_include)
 #error "C++20 should have __has_include"
-#endif // __has_include
+#endif // !defined(__has_include)
 
 #include <numbers>
 void use_format();
@@ -2788,7 +2809,6 @@ void use_try_emplace() {
   (void)ec;
 }
 
-
 // template<typename Ty1>
 // IWritableInterface<Ty1>* CreateNewWritableInterface(const std::string& sname) {
 //   using ObjInternalTy = typename CRegisterObj<Ty1>::InternalTy;
@@ -2804,7 +2824,7 @@ void use_template_template() {
   // CreateNewWritableInterface<std::string>("test123");
 }
 
-#endif // HAS_CPP20
+#endif // defined(HAS_CPP20)
 
 // SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const is missing
 // std::multiset
@@ -2849,7 +2869,7 @@ struct use_CustomComparator { // also known as predicate
 //   4. implicit coercion types (ambiguous selection)
 // EXCEPT if user-provided function given (conflict or no conflict)
 
-#ifdef HAS_CPP23
+#if defined(HAS_CPP23)
 // most of cmath with constexpr except trigonometrics, for those consider to use "gcem"
 // has if constexpr
 // #include <numeric>
@@ -3074,9 +3094,9 @@ void use_function_chaining() {
 //   std::string concat = concatStrLiterals(buf, strlit1, strlit2);
 // }
 
-#endif
+#endif // defined(HAS_CPP23)
 
-#ifdef HAS_CPP26
+#if defined(HAS_CPP26)
 //====keywords as of C++26
 // alignas alignof and and_eq asm
 // atomic_cancel atomic_commit atomic_noexcept auto bitand
@@ -3105,8 +3125,8 @@ void use_function_chaining() {
 // final override transaction_safe transaction_safe_dynamic import
 // module
 // * macro keywords
-// if elif else endif ifdef
-// ifndef elifdef elifndef define undef
+// if elif else endif ifdef (better: #if defined(..))
+// ifndef (better: #if !defined(..)) elifdef elifndef define undef
 // include [NO_EMBED] line error warning pragma
 // defined __has_include [NO__has_embed] [NO__HAS_c_attribute] __has_cpp_attribute
 // export import module
@@ -3148,7 +3168,7 @@ static_assert(enum_to_string(Color(42)) == "<unnamed>");
 // SHENNANIGAN not possible to test if a type meets the Container named type requirement
 // * there are neither plans nor willingness to change that
 // * boils down to resolving circular dependency on type resolving and arcane implementation details
-#endif
+#endif // defined(HAS_CPP26)
 
 constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
 
@@ -3166,11 +3186,11 @@ constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
 
 int main() {
   // sane output encoding, use additional flag /utf-8
-#ifdef _WIN32
+#if defined(_WIN32)
   SetConsoleOutputCP(CP_UTF8); // consoleapi2.h, winnls.h
-#endif
+#endif                         // defined(_WIN32)
 
-#ifdef HAS_CPP23
+#if defined(HAS_CPP23)
   // res1 is allowed to have exit-time destructors for global objects
   static constexpr std::string res1 = []() {
     std::string str = "Hello world!";
@@ -3207,7 +3227,7 @@ int main() {
   std::print("{}\n", cstr_lit);
 
   use_string_view();
-#endif
+#endif // defined(HAS_CPP23)
 
   return 0;
 }

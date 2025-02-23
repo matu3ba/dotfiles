@@ -17,6 +17,7 @@ All actions in the following scripts are performed according to structure of dot
 - fd-find: https://github.com/sharkdp/fd (cargo install fd-find) for convenient ignorelist
   * fd returns relative paths prefixed with ./ to prevent -files from modifying shell behavior
 - POSIX-compatible shell, but should work on most other shells
+  * loops need adjustments for POSIX shell
 
 ### Usage
 

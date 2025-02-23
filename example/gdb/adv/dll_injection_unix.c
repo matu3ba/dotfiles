@@ -20,9 +20,9 @@
 
 // https://stackoverflow.com/a/24356162/9306292
 // TODO: missing library usage/payload insertion, ie process_vm_writev memory to execute
-#ifndef _GNU_SOURCE
+#if !defined(_GNU_SOURCE)
 #error "requires dynamic linking for loading adjusting via LD_PRELOAD"
-#endif
+#endif // !defined(_GNU_SOURCE)
 
 #include <errno.h>
 #include <stdio.h>

@@ -54,12 +54,12 @@ function MoveUnpackedNeovim {
   )
   Write-Output "$unzip_target, $target_path"
   Write-Output "bin\cat.exe $pwd"
-  MoveNvimItem $unzip_target $target_path 'bin\cat.exe' $pwd
+  # MoveNvimItem $unzip_target $target_path 'bin\cat.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\dbghelp.dll' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\lua51.dll' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\nvim.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\nvim.pdb' $pwd
-  MoveNvimItem $unzip_target $target_path 'bin\tee.exe' $pwd
+  # MoveNvimItem $unzip_target $target_path 'bin\tee.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\win32yank.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\xxd.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'lib\nvim' $pwd
@@ -103,12 +103,12 @@ if (Test-Path "$NEOVIM_TMP_DIR\$zip_target") {
 }
 
 Write-Output "Deleting old Neovim instance.."
-IfExistDelFile "$HOME\.local\bin\cat.exe" $PWD
+# IfExistDelFile "$HOME\.local\bin\cat.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\dbghelp.dll" $PWD
 IfExistDelFile "$HOME\.local\bin\lua51.dll" $PWD
 IfExistDelFile "$HOME\.local\bin\nvim.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\nvim.pdb" $PWD
-IfExistDelFile "$HOME\.local\bin\tee.exe" $PWD
+# IfExistDelFile "$HOME\.local\bin\tee.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\win32yank.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\xxd.exe" $PWD
 IfExistDelDir "$HOME\.local\lib\nvim" $PWD
@@ -133,6 +133,6 @@ CheckLastExitCode($PWD)
 
 MoveUnpackedNeovim $unzip_target "$HOME\.local" $PWD
 
-Write-Output "Unpacking finished, Zig was updated."
+Write-Output "Unpacking finished, Neovim was updated."
 Set-Location -Path "$PWD"
 exit 0

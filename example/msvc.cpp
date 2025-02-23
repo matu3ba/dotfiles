@@ -150,18 +150,21 @@ static_assert(std::is_unsigned_v<char8_t>, "invalid char8_t sign");
 static_assert(std::is_unsigned_v<char16_t>, "invalid char16_t sign");
 static_assert(std::is_unsigned_v<wchar_t>, "invalid wchar_t sign");
 static_assert(std::is_unsigned_v<char32_t>, "invalid char32_t sign");
-#endif
+#endif // (__cplusplus == 202302L)
 
 // file Stdafx.h
+
 // TODO C++26 use WideCharToMultiByte(CP_UTF8 ..), MultiBytetoWideChar
 // and remove following macro to ignore deprecation
-#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
-// TODO C++23 use std::atomic<std::shared_ptr<>> for atomic shared_ptr
-// and remove following macro to ignore deprecation
-#define _SILENCE_CXX20_OLD_SHARED_PTR_ATOMIC_SUPPORT_DEPRECATION_WARNING
+// #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
+// C++23 use std::atomic<std::shared_ptr<>> for atomic shared_ptr
+// and **never** use following macro to ignore deprecation, because it may silently
+// miscompile code
+// #define _SILENCE_CXX20_OLD_SHARED_PTR_ATOMIC_SUPPORT_DEPRECATION_WARNING
 // #include "Stdafx.h"
 
-#endif
+#endif // defined(_WIN32) && defined(_MSC_VER)
 
 #include <stdint.h>
 #include <stdio.h>

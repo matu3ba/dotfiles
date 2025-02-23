@@ -28,8 +28,11 @@ const builtin = @import("builtin");
 // headless browser - https://github.com/lightpanda-io/browser
 
 // Zig specific
+// dependency as dot file - https://codeberg.org/Der_Teufel/depz
+// dependency visual - https://github.com/haze/zigbo
 // aliasing checking prototype - https://github.com/ityonemo/clr
 // ebpf based runtime checks - https://github.com/Sobeston/lifetime-debugger
+// Unicode text processing-  https://codeberg.org/atman/zg
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger

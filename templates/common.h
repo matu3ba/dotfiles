@@ -1,15 +1,16 @@
-#ifndef __cplusplus // disable clang complains
+#if !defined(__cplusplus) // disable clang complains
 #pragma once
 #include <stdint.h> // abi: uint32_t, uint8_t
 #include <stdlib.h> // assert: exit
 #include <stdio.h>  // assert: fprintf
 
-#ifdef SANECATMACRO
+#if defined(SANECATMACRO)
 // Maro expansion once for validity yields in slightly more ugly code and unused
 // value warning, so omit it. See link for discussion.
 #define STRINGIFY(A) ((A),STRINGIFY_INTERN(A))
 #define PPCAT(A) ((A),(B),PPCAT_INTERN(A,B))
-#else // and do instead
+#else // !defined(SANECATMACRO)
+// and do instead
 #define STRINGIFY_INTERN(A) (#A)
 #define STRINGIFY(A) STRINGIFY_INTERN(A)
 #define PPCAT_INTERN(A,B) A ## B
@@ -20,7 +21,7 @@
 #define RESULT COMBINE(test0, test1)
 #define emptystr ""
 #define test2 testme2
-#endif
+#endif // defined(SANECATMACRO)
 
 void printbanana(const char* str) {
     printf("t2: %s\n", str);
@@ -35,17 +36,17 @@ int usage_ppcat() {
 }
 // see also https://stackoverflow.com/questions/1644868/define-macro-for-debug-printing-in-c/1644898#1644898
 
-#ifdef TRUE
+#if defined(TRUE)
 #error "TRUE already defined"
-#else
+#else // !defined(TRUE)
 #define TRUE (1==1)
-#endif
+#endif // defined(TRUE)
 
-#ifdef FALSE
+#if defined(FALSE)
 #error "False already defined"
-#else
+#else // !defined(FALSE)
 #define FALSE (!TRUE)
-#endif
+#endif // defined(FALSE)
 
 // existence of typedefs can not be checked within macros
 //#define _TYPEDEF_
@@ -62,17 +63,17 @@ typedef enum { false = FALSE, true } bool;
 }                                                         \
 _Static_assert(true, "")
 
-#ifdef static_assert
+#if defined(static_assert)
 #error "static_assert already defined"
-#else
+#else // !defined(static_assert)
 #define static_assert _Static_assert // since C11
-#endif
+#endif // defined(static_assert)
 
-#ifdef IS_SIGNED
+#if defined(IS_SIGNED)
 #error "IS_SIGNED already defined"
-#else
+#else // !defined(IS_SIGNED)
 #define IS_SIGNED(Type) (((Type)-1) < 0)
-#endif
+#endif // defined(IS_SIGNED)
 
 
 _Static_assert(IS_SIGNED(char),   "err: char is unsigned");
@@ -125,9 +126,9 @@ int add_typesafe_generic_selection_c11 (void) {
 int add2 (int a, int b) { return a + b; }
 int add3 (int a, int b, int c) { return a + b + c; }
 
-#endif // __cplusplus
+#endif // !defined(__cplusplus)
 
-// idea ifdef error else define macro to make macros shorter
+// idea if defined(..) error else define macro to make macros shorter
 // use typedef, if possible: prevents `short SHORTINT test = 1;` shennanigans.
 
 // figure out default symbols of host

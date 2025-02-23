@@ -15,7 +15,7 @@ static_assert(HAS_CPP23, "use HAS_CPP23 macro");
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 inline std::string ConvertWideToUtf8(std::wstring const &wstr) {
@@ -36,7 +36,7 @@ inline std::wstring ConvertUtf8ToWide(std::string const &str) {
   MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int32_t>(str.length()), &wstr[0], count);
   return wstr;
 }
-#endif
+#endif // defined(_WIN32)
 
 template<typename Ty>
 concept can_create_string_from = requires(Ty t1) { static_cast<std::string>(t1); };
@@ -44,7 +44,7 @@ concept can_create_string_from = requires(Ty t1) { static_cast<std::string>(t1);
 template<typename Ty>
 concept can_create_wstring_from = requires(Ty t1) { static_cast<std::wstring>(t1); };
 
-#ifdef ALLOW_BAD_PRACTICE
+#if defined(ALLOW_BAD_PRACTICE)
 // template <typename T>
 // concept Stream = std::is_convertible_v<T, std::ostream &>;
 
@@ -75,7 +75,7 @@ concept can_create_wstring_from = requires(Ty t1) { static_cast<std::wstring>(t1
 // };
 // static_assert(is_streamable<STestStreamable>, "can not use stream");
 // static_assert(Streamable<STestStreamable>, "can not use stream");
-#endif
+#endif // defined(ALLOW_BAD_PRACTICE)
 
 inline char const *operator""_SC(char8_t const *str, std::size_t) { return reinterpret_cast<char const *>(str); }
 
@@ -169,14 +169,14 @@ struct TestClass {
       static_assert(can_create_string_from<Ty2>);
       return {std::string(value), std::string(reference)};
     }
-#ifdef _WIN32
+#if defined(_WIN32)
     else if constexpr (can_create_wstring_from<Ty1>) {
       static_assert(can_create_wstring_from<Ty2>);
       // convert wstring -> string for utf8 encoded output
       return {ConvertWideToUtf8(std::wstring(value)), ConvertWideToUtf8(std::wstring(reference))};
     }
-// #ifdef ALLOW_BAD_PRACTICE
-// #ifdef HAS_CPP23
+// #if defined(ALLOW_BAD_PRACTICE)
+// #if defined(HAS_CPP23)
 //     else if constexpr (can_use_stream<Ty1>) {
 //       static_assert(can_use_stream<Ty2>);
 //       std::stringstream stream_val;
@@ -185,9 +185,9 @@ struct TestClass {
 //       stream_ref << value;
 //       return { stream_val.str(), stream_ref.str() };
 //     }
-// #endif // HAS_CPP23
-// #endif // ALLOW_BAD_PRACTICE
-#endif
+// #endif // defined(HAS_CPP23)
+// #endif // defined(ALLOW_BAD_PRACTICE)
+#endif // defined(_WIN32)
     else {
       return {value.toString(), reference.toString()};
     }

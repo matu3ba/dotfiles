@@ -195,9 +195,9 @@ require 'my_keymaps'
 -- :set termencoding - show and set the encoding to use to display characters to your terminal
 
 -- stylua: ignore start
-local aucmds_graphics = vim.api.nvim_create_augroup('aucmds_graphics',  {clear = true})
--- extend highlighting time
-vim.api.nvim_create_autocmd('TextYankPost', {group = aucmds_graphics, pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
+-- local aucmds_graphics = vim.api.nvim_create_augroup('aucmds_graphics',  {clear = true})
+-- -- extend highlighting time
+-- vim.api.nvim_create_autocmd('TextYankPost', {group = aucmds_graphics, pattern = '*', callback = function() require'vim.highlight'.on_yank({timeout = 100}) end})
 -- stylua: ignore end
 
 -- keywords (capitalized): hack,todo,fixme

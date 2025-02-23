@@ -3,7 +3,7 @@ const zine = @import("zine");
 const ResolvedTarget = std.Build.ResolvedTarget;
 const OptimizeMode = std.builtin.OptimizeMode;
 
-// zig build test_all --summary all
+// zig build test --summary all
 // zig build test -Dno_opt_deps -Dno_cross --summary all
 pub fn build(b: *std.Build) !void {
     const optimize: std.builtin.OptimizeMode = b.standardOptimizeOption(.{});
@@ -118,7 +118,7 @@ fn buildC(
     var c11flags: []const []const u8 = &c11_flags;
     var c17flags: []const []const u8 = &c17_flags;
     var c23flags: []const []const u8 = &c23_flags;
-    if (target.result.isMusl()) {
+    if (target.result.abi.isMusl()) {
         c89flags = &(c89_flags ++ cmusl_flag);
         c99flags = &(c99_flags ++ cmusl_flag);
         c11flags = &(c11_flags ++ cmusl_flag);
@@ -214,7 +214,7 @@ fn buildCpp(
     var cpp20flags: []const []const u8 = &cpp20_flags;
     var cpp23flags: []const []const u8 = &cpp23_flags;
     var cpp26flags: []const []const u8 = &cpp26_flags;
-    if (target.result.isMusl()) {
+    if (target.result.abi.isMusl()) {
         cpp14flags = &(cpp14_flags ++ cppmusl_flag);
         cpp17flags = &(cpp17_flags ++ cppmusl_flag);
         cpp20flags = &(cpp20_flags ++ cppmusl_flag);

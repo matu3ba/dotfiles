@@ -264,7 +264,10 @@ alias gcn='git commit -v' # nosign
 alias gcmsg='git commit -m'
 alias gca='git commit --amend'
 alias gcf='git commit --fixup'
+# commit messages starting with 1. fixup! or 2. squash! are squashed
 alias gcs='git rebase -i --autosquash'
+# To fixup first commit with word 'second'
+# git commit --fixup :/second
 
 # To ignore indentation changes in git diff, add -w
 alias gd='git diff'
@@ -468,9 +471,6 @@ alias gsu='git submodule update'
 
 # SHENNANIGAN
 # fixup has no option to check, if the fixup can be cleanly applied via autosquash
-
-# To fixup first commit with word 'second'
-# git commit --fixup :/second
 
 # git blame -L 2,5:pathtofile
 # git log -L 2,5:pathtofile

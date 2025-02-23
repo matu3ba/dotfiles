@@ -12,7 +12,7 @@
 // us with "a pointer to opaque".
 // So the second option is unnecessary annoying.
 // C++26 should fix this
-#ifndef _WIN32
+#if !defined(_WIN32)
 long GetFileSize(std::string filename);
 long GetFileSize(std::string filename) {
   struct stat stat_buf;
@@ -26,7 +26,7 @@ long FdGetFileSize(int fd) {
   int rc = fstat(fd, &stat_buf);
   return rc == 0 ? stat_buf.st_size : -1;
 }
-#endif
+#endif // !defined(_WIN32)
 
 void read(std::string &path);
 void read(std::string &path) {

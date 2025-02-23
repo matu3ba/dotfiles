@@ -10,7 +10,7 @@ static_assert(HAS_CPP20, "use HAS_CPP20 macro");
 #include <sstream>
 
 // #include <iostream>
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <fcntl.h>
 #include <io.h>
 // #include <wchar.h>
@@ -20,7 +20,7 @@ static_assert(HAS_CPP20, "use HAS_CPP20 macro");
 // #include <iostream>
 // #include <codecvt>
 // #include <locale>
-#endif
+#endif // defined(_WIN32)
 
 // https://vitaut.net/posts/2023/print-in-cpp23/
 // #include <print> // C++23 sane utf8 encoding without locale influence
@@ -56,21 +56,21 @@ static int32_t test_utf8comparison() {
   return 0; // ok
 }
 
-#ifdef _WIN32
-#ifndef HAS_CPP20
+#if defined(_WIN32)
+#if !defined(HAS_CPP20)
 static int32_t deprecated_test_utf8utf32conversion() {
   std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> utf32conv;
   auto utf32 = utf32conv.from_bytes("The quick brown fox jumped over the lazy dog.");
   // use reinterpret_cast<const char32_t *>(utf32.c_str())
 }
-#endif
+#endif // !defined(HAS_CPP20)
 
 static int32_t test_utf8uf16conversion() {
   (void)ConvertWideToANSI;
   (void)ConvertAnsiToWide;
-#ifndef HAS_CPP20
+#if !defined(HAS_CPP20)
   (void)deprecated_test_utf8utf32conversion;
-#endif
+#endif // !defined(HAS_CPP20)
 
   // \x00C4
   std::wstring HelloUTF16Str = L"  HelloÄ   ";
@@ -99,7 +99,7 @@ static int32_t test_utf8uf16conversion() {
   // wchar_t ru[] = L"Привет"; //Russian language
   // std::wcout << ru << std::endl << en << std::endl;
 }
-#endif
+#endif // defined(_WIN32)
 
 // struct SPoint1 {
 //   int32_t x;
@@ -150,7 +150,7 @@ int main(int argc, char const *argv[]) {
   // std::wcerr.imbue(std::locale(""));
   (void)argc;
   (void)argv;
-#ifdef _WIN32
+#if defined(_WIN32)
   // comparable to _setmode(_fileno(stdout), _O_U8TEXT);
   SetConsoleOutputCP(CP_UTF8);
   // no buffering to prevent interference in unfinished UTF8 byte sequences
@@ -161,13 +161,13 @@ int main(int argc, char const *argv[]) {
   // _O_U8TEXT is 0x00040000
   // _setmode(_fileno(stdout), _O_U8TEXT);
   // _setmode(_fileno(stdout), _O_U16TEXT);
-#endif
+#endif // defined(_WIN32)
 
   TestClass tc;
   tc.AddTestFn("test_utf8comparison", test_utf8comparison, TestType::UnitTest);
-#ifdef _WIN32
+#if defined(_WIN32)
   tc.AddTestFn("test_utf8uf16conversion", test_utf8uf16conversion, TestType::UnitTest);
-#endif
+#endif // defined(_WIN32)
   // tc.AddTestFn("test_streamingoperator", test_streamingoperator, TestType::UnitTest);
   tc.AddTestFn("test_localestreamop", test_localestreamop, TestType::UnitTest);
   int32_t st = tc.RunTests();

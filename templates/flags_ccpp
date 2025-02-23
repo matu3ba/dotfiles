@@ -193,3 +193,9 @@ Advices
 
 Clang >= 6.0.0
 -Wextra-semi
+
+-Wstrict-aliasing=3
+-Wstrict-overflow=3
+-Wchar-subscripts
+-Warray-bounds=2
+-Wno-unused-parameter

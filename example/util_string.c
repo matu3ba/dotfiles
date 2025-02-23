@@ -23,6 +23,9 @@
 #include <stdlib.h> // abort
 #include <string.h> // memcpy, memmove
 
+// Keep -Weverything happy
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 #define PRINTING
 #define SLICE_TEST
 // #define SAFETY

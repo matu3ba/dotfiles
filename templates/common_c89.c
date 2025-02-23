@@ -36,16 +36,16 @@ SHENNANIGAN checking if c89 or c90 has no macro
 /* time.h       date and time */
 
 /* C89 check macro */
-#ifdef __STDC__
-#ifdef __STDC_VERSION__
+#if defined(__STDC__)
+#if defined(__STDC_VERSION__)
 #if (__STDC_VERSION__ >= 199409L)
 /* SHENNANIGAN: clangd complains about "not C89 compatible" even though __STDC_VERSION__ is undefined */
 #error "not C89 compatible"
-#endif
-#endif
-#else
+#endif // (__STDC_VERSION__ >= 199409L)
+#endif // defined(__STDC_VERSION__)
+#else // !defined(__STDC__)
 #error "not C89 compatible"
-#endif
+#endif // defined(__STDC__)
 
 #if 0
 SHENNANIGAN There are no fixed typed integers.

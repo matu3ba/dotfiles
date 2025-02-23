@@ -4,8 +4,13 @@
 // TODO
 #include <inttypes.h> // PRIu64, uint64_t (stdint.h not needed)
 #include <stdbool.h>  // bool
-#include <stdio.h>    // printf
-#include <unistd.h>   // sleep
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else               // !defined(_WIN32)
+#include <unistd.h> // sleep
+#endif              // defined(_WIN32)
+#include <stdio.h>  // printf
 
 // To fix permission problems, see PERMISSIONS in ../../templates/gdb
 // Usage:
@@ -45,7 +50,11 @@ int main(void) {
   uint32_t sleeptime = 1;
 
   while (true) {
+#if defined(_WIN32)
+    Sleep(sleeptime);
+#else  // !defined(_WIN32)
     sleep(sleeptime);
+#endif // defined(_WIN32)
     runtime += sleeptime;
     printf("%" PRIu64 "\n", runtime);
   }

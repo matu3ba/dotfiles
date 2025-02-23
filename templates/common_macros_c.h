@@ -51,7 +51,7 @@
 #endif
 
 /* https://sourceforge.net/p/predef/wiki/Compilers/ */
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #define VISUAL_STUDIO 1
 #define MIN_VS2015 (VISUAL_STUDIO && (_MSC_VER >= 1900)) // Visual Studio 2013
 #define MIN_VS2013 (VISUAL_STUDIO && (_MSC_VER >= 1800)) // Visual Studio 2013

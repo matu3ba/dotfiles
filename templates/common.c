@@ -4,8 +4,8 @@
 //! zig cc -std=c17 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c -o commonc17.exe && ./commonc17.exe
 //! zig cc -std=c23 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c -o commonc23.exe && ./commonc23.exe
 #include <assert.h>
+#include <stdint.h>
 
-// TODO list
 // GNU function attributes and storage class information
 // function attributes
 // C99
@@ -20,51 +20,55 @@
 // * [[unsequenced]]
 #if (__STDC_VERSION__ >= 199901L)
 #define HAS_C99 1
-#endif
+#endif // (__STDC_VERSION__ >= 199901L)
 #if (__STDC_VERSION__ >= 201112L)
 #define HAS_C11 1
 static_assert(HAS_C11, "use HAS_C11 macro");
-#endif
+#endif // (__STDC_VERSION__ >= 201112L)
 #if (__STDC_VERSION__ >= 201710L)
 #define HAS_C17 1
 static_assert(HAS_C17, "use HAS_C17 macro");
-#endif
+#endif // (__STDC_VERSION__ >= 201710L)
 #if (__STDC_VERSION__ >= 202311L)
 #define HAS_C23 1
 static_assert(HAS_C23, "use HAS_C23 macro");
-#endif
-#ifndef HAS_C99
+#endif // (__STDC_VERSION__ >= 202311L)
+#if !defined(HAS_C99)
 #error "requires C99 for sanity"
-#endif
+#endif // !defined(HAS_C99)
 
 // null ptr compat
-#ifdef HAS_C23
+#if defined(HAS_C23)
 #define NULLPTR nullptr
-#else
-#if defined(_MSC_VER) || defined(__cplusplus)
+#else // !defined(HAS_C23)
+#if (defined(_MSC_VER) || defined(__cplusplus))
 #define NULLPTR 0
-#else
+#else // !(defined(_MSC_VER) || defined(__cplusplus))
 #define NULLPTR ((void *)0)
-#endif
-#endif
+#endif // (defined(_MSC_VER) || defined(__cplusplus))
+#endif // defined(HAS_C23)
 
 #include <errno.h>    // errno
 #include <inttypes.h> // PRIXPTR and other portable printf formatter
 #include <limits.h>   // limit
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <malloc.h> // not standard conform in stdlib.h and fn names with _ prefix
-#endif
+#endif              // defined(_WIN32)
 #include <stddef.h>
 #include <stdint.h> // uint32_t, uint8_t
 #include <stdio.h>  // fprintf, fseek, FILE
 #include <stdlib.h> // exit
 #include <string.h> // memcpy
 
+// Keep -Weverything happy
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 //====tooling
 //====version
 //====macros
 //====lto
 //====pointers
+//====encoding
 //====signaling_unix
 //====signaling_win
 //====printf_formatter
@@ -106,7 +110,7 @@ _Static_assert(2 + 2 * 2 == 6, "Lucky guess!?");
 outscope_assert(2 + 2 * 2 == 6);
 #define comptime_assert(expr, msg) _Static_assert(expr, msg)
 comptime_assert((2 + 2) % 3 == 1, "Whoa dude, you knew!");
-#else
+#else // (!defined(HAS_C23) && !defined(HAS_C11))
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
@@ -134,7 +138,7 @@ void prevent_error(void) {
   inscope_assert(sizeof(buf) == 10);
 }
 #pragma clang diagnostic pop
-#endif
+#endif // defined(HAS_C23), defined(HAS_C11), else
 
 int32_t defer_in_c(void);
 int32_t defer_in_c(void) {
@@ -200,7 +204,6 @@ ERRDEFER_CLEANUP1:
 // cppcheck
 // frama-c
 // DWARF and ELF verified spec impl + model usable as test oracle https://github.com/rems-project/linksem
-// TODO more checks
 // psyche-e incomplete file completer and compiler https://github.com/ltcmelo/psychec http://cuda.dcc.ufmg.br/psyche-c/
 // clang -fsanitize=address -g -O1 -fno-omit-frame-pointer main.cpp
 // * wiki with info
@@ -338,17 +341,17 @@ struct wide_pointer_datalayout {
 #pragma clang diagnostic ignored "-Wbuiltin-macro-redefined"
 #pragma clang diagnostic ignored "-Wmacro-redefined"
 #pragma clang diagnostic ignored "-Wreserved-identifier"
-#if defined(__has_feature) && __has_feature(bounds_safety)
+#if (defined(__has_feature) && __has_feature(bounds_safety))
 #define __counted_by(T) __attribute__((__counted_by__(T)))
 // ... other bounds annotations
-#else
+#else                   // !(defined(__has_feature) && __has_feature(bounds_safety))
 #define __counted_by(T) // defined as nothing
 // ... other bounds annotations
 #endif
 #pragma clang diagnostic pop
-#endif
+#endif // (defined(__clang__) && defined(HAS_C23))
 
-#if defined(__clang__) && defined(HAS_C23)
+#if (defined(__clang__) && defined(HAS_C23))
 size_t use_counted_by(char *__counted_by(len) ptr, size_t len);
 size_t use_counted_by(char *__counted_by(len) ptr, size_t len) {
   size_t str_len = 0;
@@ -359,12 +362,12 @@ size_t use_counted_by(char *__counted_by(len) ptr, size_t len) {
   }
   return str_len;
 }
-#endif
+#endif // (defined(__clang__) && defined(HAS_C23))
 
 // https://faultlore.com/blah/tower-of-weakenings/#the-tower-of-weakenings
 // https://lwn.net/Articles/990273/
 // https://www.cs.cornell.edu/courses/cs6120/2019fa/blog/tbaa/
-// TODO explain tbaa
+// idea explain typed based aliasing analysis
 
 // Exceptions:
 // - posix extension/Windows: casting pointers to functions (and back) also use for dynamic linking etc
@@ -405,12 +408,12 @@ size_t getFileSize(char const *file_path) {
 static void memset_16aligned(void *ptr, char byte, size_t size_bytes, uint16_t alignment) {
   assert((size_bytes & (alignment - 1)) == 0);     // Size aligned
   assert(((uintptr_t)ptr & (alignment - 1)) == 0); // Pointer aligned
-                                                   // #ifdef HAS_C23
-  //     // make sensitive information stored in the object inaccessible
-  //     memset_explicit(ptr, byte, size_bytes);
-  // #else
+  // #if defined(HAS_C23)
+  // // make sensitive information stored in the object inaccessible
+  //   memset_explicit(ptr, byte, size_bytes);
+  // #else // !defined(HAS_C23)
   memset(ptr, byte, size_bytes);
-  // #endif
+  // #endif // defined(HAS_C23)
 }
 // 1. Careful with segmented address spaces: lookup uintptr_t semantics
 // 2. Careful with long standing existing optimization compiler bugs pointer to
@@ -464,9 +467,9 @@ void standard_namespacing(void) {
   U64.u64 = 12;
   sNamespace1.eMode = Undefined;
   sNamespace1.uRepr.u64 = 12;
-#ifdef HAS_C11
+#if defined(HAS_C11)
   static_assert(sizeof(sNamespace1.eMode) == 4, "eMode has no size of 4 byte");
-#endif
+#endif // defined(HAS_C11)
 
   switch (sNamespace1.eMode) {
     case Undefined:
@@ -521,9 +524,9 @@ int32_t c_enum(uint32_t in) {
     EX0 = 0,
     EX1,
   };
-#ifdef HAS_C11
+#if defined(HAS_C11)
   static_assert(sizeof(enum Example) == 4, "eMode has no size of 4 byte");
-#endif
+#endif // defined(HAS_C11)
   enum Example ex = in;
   switch (ex) {
     case EX0: {
@@ -538,19 +541,19 @@ int32_t c_enum(uint32_t in) {
 }
 
 // Superfluous with C23.
-#ifndef GENERATE_ENUM_STRINGS
+#if !defined(GENERATE_ENUM_STRINGS)
 #define DECL_ENUM_ELEMENT(element) element
 #define BEGIN_ENUM(ENUM_NAME) typedef enum tag##ENUM_NAME
 #define END_ENUM(ENUM_NAME) \
   ENUM_NAME;                \
   char *getString##ENUM_NAME(enum tag##ENUM_NAME index);
-#else
+#else // defined(GENERATE_ENUM_STRINGS)
 #define DECL_ENUM_ELEMENT(element) #element
 #define BEGIN_ENUM(ENUM_NAME) char *gs_##ENUM_NAME[] =
 #define END_ENUM(ENUM_NAME) \
   ;                         \
   char *getString##ENUM_NAME(enum tag##ENUM_NAME index) { return gs_##ENUM_NAME[index]; }
-#endif
+#endif // !defined(GENERATE_ENUM_STRINGS)
 // enum definition
 BEGIN_ENUM(OsType){
     DECL_ENUM_ELEMENT(WINBLOWS),
@@ -581,7 +584,7 @@ inline void hash_combine(unsigned long *seed, unsigned long const value) {
 //     return((void)(h = h*r+len), (void)(h ^= h>>31), (void)(h *= r), (void)(h ^= h>>31), (void)(h *= r), (void)(h ^= h>>31), (void)(h *= r), h);
 // }
 
-// TODO siphash for better performance
+// idea siphash for better performance
 // https://gitlab.com/fwojcik/smhasher3
 // https://github.com/rui314/mold/commit/fa8e95a289f911c0c47409d5848c993cb50c8862
 
@@ -790,13 +793,13 @@ void convert_string_to_int_simple(char const *buff) {
 
 // SHENNANIGAN
 // create a list data structure implies 3 options:
-// * Make it generic using preprocessor directives (boils down to reimplementing or using TODO)
+// * Make it generic using preprocessor directives (boils down to reimplementing or using C11 or generators)
 // * Make it generic using 'void *' instead of actual types
 // * Not making generic and reimplement for each type.
 
 // SHENNANIGAN
 // `malloc(sizeof(MyType) * count)` breaks, if count is not given
-// TODO strongly typed C solution
+// strongly typed C solution requires (C99 generators or C11 generics)
 // C++ solution:
 // template<typename T>
 // __attribute__((malloc)) static inline T * allocate(size_t count) {
@@ -953,12 +956,12 @@ void use_voidptr(void) {
 // silently removes deprecated code
 
 // standard approach
-// #ifdef _WIN32
+// #if defined(_WIN32)
 // #define NOMINMAX
 // #define WIN32_LEAN_AND_MEAN
 // #include <windows.h>
-// #else
-// #endif
+// #else // !defined(_WIN32)
+// #endif // defined(_WIN32)
 
 // Very awful, if used within stdafx.h:
 //   #pragma once
@@ -968,7 +971,7 @@ void use_voidptr(void) {
 //   // Windows Header Files:
 //   #include <windows.h>
 
-#ifdef _WIN32
+#if defined(_WIN32)
 void ape_win_incompat_fileprint(void);
 // different semantics of "secure fns" and not portable
 void ape_win_incompat_fileprint(void) {
@@ -984,10 +987,10 @@ void ape_win_incompat_fileprint(void) {
     fclose(f1);
   }
 }
-#endif
+#endif // defined(_WIN32)
 
 // silence clangd warnings
-#ifndef _WIN32
+#if !defined(_WIN32)
 void ape_fileprint(void);
 void ape_print(void);
 void ape_fileprint(void) {
@@ -1000,13 +1003,13 @@ void ape_fileprint(void) {
     fclose(f1);
   }
 }
-#endif
+#endif // !defined(_WIN32)
 
-#ifdef _WIN32
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_DEPRECATE
-#endif
+#if defined(_WIN32)
+#if defined(_MSC_VER)
+// #define _CRT_SECURE_NO_WARNINGS
+// #define _CRT_SECURE_NO_DEPRECATE
+#endif // defined(_MSC_VER)
 void ape_win_print(void);
 void ape_win_print(void) {
   FILE *f1;
@@ -1014,9 +1017,9 @@ void ape_win_print(void) {
   fprintf(f1, "sometext\n");
   fclose(f1);
 }
-#endif
+#endif // defined(_WIN32)
 
-#ifndef _WIN32
+#if !defined(_WIN32)
 void ape_print(void) {
   FILE *f1 = fopen("file1", "a+");
   if (f1 != NULLPTR) {
@@ -1024,7 +1027,7 @@ void ape_print(void) {
     fclose(f1);
   }
 }
-#endif
+#endif // !defined(_WIN32)
 
 // Less known/arcane/cursed C based on https://jorenar.com/blog/less-known-c
 // -Wvla-larger-than=0
@@ -1186,20 +1189,20 @@ void imaginary_cursor_position_in_printf(void) {
   fprintf(stdout, "%*s", pos1 + 1, " ");
 }
 
-// TODO finish up https://jorenar.com/blog/less-known-c
+// idea finish up https://jorenar.com/blog/less-known-c
 
-#ifdef _linux
+#if defined(_linux)
 void safe_debugging_on_unix() {
   // To see prints, run strace
   write(-1, "writes to non-existing file descriptors are still visible in strace");
 }
-#endif
+#endif // defined(_linux)
 
 // based on https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html
-// TODO motivation
+// idea motivation
 // Duffs device inspired (case statement is legal within a sub-block
 // of its matching switch statement
-// TODO
+// [missing_content]
 
 // https://cdacamar.github.io/data%20structures/algorithms/benchmarking/text%20editors/c++/editor-data-structures/
 // * gpa buffer
@@ -1210,8 +1213,8 @@ void safe_debugging_on_unix() {
 // Create debug utilities for data structures very early on
 // Immutable RB deletion is hard
 //
-// TODO https://bitbashing.io/gc-for-systems-programmers.html
-// basic RCU implementation
+// https://bitbashing.io/gc-for-systems-programmers.html
+// idea basic RCU implementation
 
 // C99 and later, you can have a (one-dimensional) flexible array member (FAM)
 // at the end of a structure which is a Variable Length Array.
@@ -1242,7 +1245,13 @@ struct ImageVLA {
 };
 extern struct ImageVLA ImageVLA;
 struct ImageVLA ImageVLA;
-// TODO align cast in C
+// C11 alignas for correct storage alignment
+// align cast does not exist in contrast to C++ and scope-based
+// type aliasing prevention does neither exist
+// C11 alignas(struct foo)
+// see also
+// * __attribute__((aligned(128)))
+// * _Alignas(128)
 
 // Corresponding zig code:
 // const Pixel = externs struct {
@@ -1308,7 +1317,7 @@ int FG_Init(char *errmsg_ptr, int *errmsg_len) {
   return 1;
 }
 
-// TODO pointer alignment in C
+//
 //https://blog.quarkslab.com/unaligned-accesses-in-cc-what-why-and-solutions-to-do-it-properly.html
 //#include <inttypes.h>
 // static inline void * please_align(void * ptr){
@@ -1320,9 +1329,9 @@ int FG_Init(char *errmsg_ptr, int *errmsg_len) {
 // _mm_alloc, _mm_free
 
 //====signaling_win
-// TODO better writeup than this
 // 3 signal types:
 // * APC like IO completion ports which are just things to communicate
+// see also my stackoverflow post
 // * SEH exceptions first handled by debugger, then VEH exceptions, then SEH exceptions, then frame handler
 // * async things which should be only SIGINT and exececuted by passing another thread
 // https://www.osronline.com/article.cfm%5earticle=469.htm
@@ -1357,7 +1366,7 @@ int FG_Init(char *errmsg_ptr, int *errmsg_len) {
 // https://learn.microsoft.com/en-us/windows/win32/debug/structured-exception-handling
 // https://stackoverflow.com/questions/28544768/vectored-exception-handling-process-wide
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 void deinitTimer(void);
@@ -1392,7 +1401,7 @@ LONG __stdcall Exception_Reset(struct _EXCEPTION_POINTERS *ExceptionInfo) {
   // overview of VEH: https://dimitrifourny.github.io/2020/06/11/dumping-veh-win10.html
   // https://dimitrifourny.github.io/2020/06/11/dumping-veh-win10.html
   // https://doar-e.github.io/blog/2013/10/12/having-a-look-at-the-windows-userkernel-exceptions-dispatcher/
-  // TODO: when is the exception executed in each thread?
+  // Windows exceptions bubbled up per thread, so each thread can handle it individually
 }
 
 void veh_example(void) {
@@ -1401,9 +1410,8 @@ void veh_example(void) {
   PVOID exception_h = AddVectoredExceptionHandler(prepend, Exception_Reset);
   (void)exception_h;
   // local exception handler executed per thread
-  // TODO
 }
-#endif
+#endif // defined(_WIN32)
 
 //====printf_formatter
 // * use clangd for quick non-portable advice
@@ -1429,7 +1437,7 @@ void veh_example(void) {
 //https://www.codeproject.com/articles/207464/exception-handling-in-visual-cplusplus
 //https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence
 
-#ifdef _WIN32
+#if defined(_WIN32)
 BOOL WINAPI ConsoleHandler(DWORD);
 int setup_SIGINT_handler(void);
 void getFullPathNameUsage(void);
@@ -1468,7 +1476,112 @@ void getFullPathNameUsage(void) {
   printf("Full path: %s\nFilename: %s", szDir, fileExt);
 }
 
-#endif
+#endif // defined(_WIN32)
+
+//====encoding
+// general solution https://github.com/Davipb/utf8-utf16-converter
+// no good portable solution taking minimal space https://thephd.dev/cuneicode-and-the-future-of-text-in-c
+// prefer fwrite over fprintf to prevent locale effects
+// formatters without local effects are yet unsolved in C, C++ has std::fmt for this
+// use a modern language or set locale/codepage, context https://github.com/mpv-player/mpv/commit/1e70e82baa91
+
+size_t utf8_to_utf16_buflen(uint8_t const *input, size_t input_len);
+size_t utf8_to_utf16_buflen(uint8_t const *input, size_t input_len) {
+  (void)input;
+  (void)input_len;
+  // TODO port the zig code
+  return 0;
+}
+size_t utf8_to_utf16(uint8_t const *input, size_t input_len, uint16_t *output, size_t output_len);
+size_t utf8_to_utf16(uint8_t const *input, size_t input_len, uint16_t *output, size_t output_len) {
+  // TODO port the zig code
+  (void)input;
+  (void)input_len;
+  (void)output;
+  (void)output_len;
+  return 0;
+}
+
+void use_utf8_to_utf16_static(void);
+void use_utf8_to_utf16_static(void) {
+  utf8_to_utf16_buflen(NULLPTR, 0);
+  utf8_to_utf16(NULLPTR, 0, NULLPTR, 0);
+  // TODO
+}
+void use_utf8_to_utf16_dynamic(void);
+void use_utf8_to_utf16_dynamic(void) {
+  // TODO
+}
+
+#if defined(_WIN32)
+// TODO FIXUP of content into something usable uint8_t, uint16_t instead of char/WCHAR
+// ideally usable with size_t but Windows appears to have nothing for this
+
+#if !defined(WIN32_LEAN_AND_MEAN)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif // !defined(WIN32_LEAN_AND_MEAN)
+
+// returns on success res >= 0
+// * needed utf16 buffer len for utf8 to utf16 encoding
+//         on failure res < 0
+// * invalid unicode found in string
+int win_utf8_to_utf16_buflen(char const *input, size_t input_len);
+int win_utf8_to_utf16_buflen(char const *input, size_t input_len) {
+  int needed_len = MultiByteToWideChar(CP_UTF8, 0, input, (int)input_len, NULL, 0);
+  if (input_len == 0) {
+    assert(needed_len == 0);
+    return 0;
+  }
+  if (needed_len == 0)
+    return -1; // ERROR_NO_UNICODE_TRANSLATION
+  return needed_len;
+}
+
+// returns res < 0, iff error occured during conversion
+//         res >=0, iff no error occured as number of bytes written including sentinel
+//         * res == 0 implies that neither a sentinel was written
+int win_utf8_to_utf16(char const *input, size_t input_len, WCHAR *output, size_t output_len);
+int win_utf8_to_utf16(char const *input, size_t input_len, WCHAR *output, size_t output_len) {
+  // idea: write yourself or use https://github.com/Davipb/utf8-utf16-converter
+  int needed_len = win_utf8_to_utf16_buflen(&input[0], input_len);
+  if (input_len == 0 && needed_len == 0)
+    return 0;
+  if (needed_len < 0)
+    return -1; // utf8 or utf16 encoding issue
+  if (output_len < (size_t)needed_len)
+    return -2; // insufficient buffer size
+
+  int bytes_written = MultiByteToWideChar(CP_UTF8, 0, input, -1, output, needed_len);
+  if (bytes_written == 0) {
+    // ERROR_INSUFFICIENT_BUFFER: supplied buffer size not large enough or incorrectly NULL.
+    // ERROR_INVALID_FLAGS: values supplied for flags not valid.
+    // ERROR_INVALID_PARAMETER: Any of param values was invalid.
+    // ERROR_NO_UNICODE_TRANSLATION: Invalid Unicode found in a string.
+    return -3; // should be unreachable but keep it for diagnostic
+  }
+  return bytes_written;
+}
+
+void use_win_utf8_to_utf16(void);
+void use_win_utf8_to_utf16(void) {
+  // setlocale(LC_ALL,"");
+  char in[256] = "x0123456789ABCDEF";
+  WCHAR out[256] = L"";
+
+  // FILE* file = fopen("data.txt", "r");
+  // fgets(in, 255, file);
+  // fclose(file);
+
+  int bytes_or_err = win_utf8_to_utf16(&in[0], strlen(in), &out[0], sizeof(out));
+  if (bytes_or_err < 0) {
+    (void)fprintf(stderr, "error utf8 to utf16 conversion: %s\n", &in[0]);
+    return;
+  }
+  (void)fprintf(stdout, "written bytes into utf16 buf: %d\n", bytes_or_err);
+}
+
+#endif // defined(_WIN32)
 
 //====signaling_unix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
@@ -1482,10 +1595,10 @@ void getFullPathNameUsage(void) {
 // #include<unistd.h>
 // Sleep/sleep
 
-// TODO
 // https://gustedt.wordpress.com/2021/10/18/type-safe-parametric-polymorphism/
 // C23 attributes
-// TODO likely identical functionality to macro library
+// idea Agni? started this with type-safe printing via C23 generic selection
+// could use something similar
 
 // NOLINTBEGIN(clang-diagnostic-padded)
 struct TaggedUnion {
@@ -1505,13 +1618,15 @@ struct TaggedUnion {
 void tagged_union(void);
 void tagged_union(void) {
 
-  // TODO std::variant equivalent
-  // TODO enum class equivalent
+  // idea std::variant equivalent
+  // idea enum class equivalent
+  // idea could abuse macros to namespace a struct integer and make
+  // associated integers
 }
 
 void enum_class(void);
 void enum_class(void) {
-  // TODO enum class equivalent
+  // idea enum class equivalent
 }
 
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2809r3.html
@@ -1529,8 +1644,9 @@ void enum_class(void) {
 // for ( expressionopt ; expressionopt ; expressionopt ) statement
 // for ( declaration expressionopt ; expressionopt ) statement
 
-// TODO https://github.com/gritzko/librdx/blob/master/ABC.md
+// https://github.com/gritzko/librdx/blob/master/ABC.md
 // scalable high perf code requirements
+// idea look into this for parallel programming
 
 // GENERAL
 
@@ -1574,7 +1690,7 @@ void enum_class(void) {
 // Prefer to use new statements, if possible to remove evaluation order ambiguity.
 // See also ./example/operator_precedence.c
 
-#ifdef HAS_C11
+#if defined(HAS_C11)
 static _Thread_local uint32_t threadloc_var = 0;
 struct C11_alignment_struct {
   uint8_t first;
@@ -1591,13 +1707,13 @@ void C11_alignment_control(void) {
   (void)mutex;
   (void)threadloc_var;
   // SHENNANIGAN allocation fns
-#ifdef _WIN32
+#if defined(_WIN32)
   uint8_t *ptr_aligned_mem = _aligned_malloc(1024, 1024);
   _aligned_free(ptr_aligned_mem);
-#else
+#else  // !defined(_WIN32)
   uint8_t *ptr_aligned_mem = aligned_alloc(1024, 1024);
   free(ptr_aligned_mem);
-#endif
+#endif // defined(_WIN32)
 }
 
 // #include <stdnoreturn.h> void C11_noreturn() {} deprecated
@@ -1637,14 +1753,14 @@ int32_t immut_get(struct No_Immutable_in_C_i64 *obj, int64_t *val) {
   }
   return 1;
 }
-#endif
+#endif // defined(HAS_C11)
 
-#ifdef HAS_C17
+#if defined(HAS_C17)
 // only fixed defects
 // supports realloc with size = 0
-#endif
+#endif // defined(HAS_C17)
 
-#ifdef HAS_C23
+#if defined(HAS_C23)
 // breaking changes
 // * _Thread_local -> thread_local
 #if __has_include(<stdckdint.h>)
@@ -1766,7 +1882,7 @@ void C23_stdbit() {
 //     str2[i] = str[i];
 // }
 // #pragma clang diagnostic pop
-// #endif
+// #endif // defined(__clang__)
 
 // memset_explicit
 
@@ -1783,8 +1899,8 @@ void C23_stdbit() {
 // _Atomic _BitInt _Complex _Decimal32 _Decimal64
 // _Decimal128, _Generic _Imaginary
 // * macro keywords
-// if elif else endif ifdef
-// ifndef elifdef elifndef define undef
+// if elif else endif ifdef (better: #if defined(..))
+// ifndef (better: #if !defined(..)) elif defined(elifndef define undef)
 // include embed line error warning
 // pragma defined __has_include __has_embed __has_c_attribute
 // * tokens outside of preprocessor
@@ -1794,20 +1910,20 @@ void C23_stdbit() {
 // => 53 + 20 + 3 = 76
 //====builtins
 // compiler specific and not guaranteed to be stable across versions
-#endif
+#endif // defined(HAS_C23)
 
 // 1. flag -msse2
-//#ifdef __SSE2__
+//#if defined(__SSE2__)
 //  #include <emmintrin.h>
-//#else
+//#else // !defined(__SSE2__)
 //  #error SSE2 not supported.
-//#endif
+//#endif // defined(__SSE2__)
 // 2. flag -mavx
-//#ifdef __AVX__
+//#if defined(__AVX__)
 //  #include <immintrin.h>
-//#else
+//#else // !defined(__AVX__)
 //  #error AVX not supported.
-//#endif
+//#endif // defined(__AVX__)
 // 3. flag -fopenmp-simd
 // Intel-portable SIMD via #include <immintrin.h>
 // Windows SIMD via #include <intrin.h>
