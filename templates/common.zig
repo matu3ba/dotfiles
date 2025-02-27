@@ -850,6 +850,20 @@ test "@hasDecl" {
 // @workItemId
 // 23*5+1 => 116 builtins
 
+// cpu model detection as of 0.14.0-dev.3388+e0a955afb
+//           | freestanding | Linux | Darwin  | Windows  | Wasi
+// --------- | -----------  | ------| ------- | -------- | ----
+// x86_64    |     ?        |   ?   |    ?    |    ?     |  ?
+// x86       |     ?        |   ?   |    ?    |    ?     |  ?
+// aarch64   |     ?        |   ?   |    ?    |    ?     |  ?
+// arm       |     ?        |   ?   |    ?    |    ?     |  ?
+// mips64    |     ?        |   ?   |    ?    |    ?     |  ?
+// mips      |     ?        |   ?   |    ?    |    ?     |  ?
+// risc64    |     ?        |   ?   |    ?    |    ?     |  ?
+// powerpc32 |     ?        |   ?   |    ?    |    ?     |  ?
+// powerpc64 |     ?        |   ?   |    ?    |    ?     |  ?
+// wasm32    |     ?        |   ?   |    ?    |    ?     |  ?
+
 // unreachable can be anything
 // test {
 //    unreachable[0..5];

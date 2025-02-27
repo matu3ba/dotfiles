@@ -34,13 +34,19 @@
 #  Pull all elements into top level destination scope via '-Container:$false'
 #  rsync equivalent via robocopy
 
-# mount directory as drive
+#local persistent drives from dirs
+# if exist Z: net use Z: /delete /yes
+# net use Z: \\$dns_name\mailbox /persistent:yes
+#mount drive from dirs
 # net use R: /delete
 # subst R: $HOME\somedir
 # subst R: /d
-# check logical disks of system
+#check logical disks of system
 # wmic logicaldisk get name
+#more common with $path as "\\$ip\.."
 # net use D: /delete /yes
+# net use /d $path
+# net use $path "$pw" /USER:"$user"
 # subst D: /d
 # subst D: $HOME\somedir
 
@@ -91,6 +97,23 @@
 # Probably flushing/dropping stdout works to use simple integers for fn returns.
 function GetLastExitCode {
   return !$?
+}
+
+# for msbuild step use exit code 0 or 1
+# if needed, use global param to script:
+# param(
+#   [switch] $in_msbuild = $false
+# )
+function msbuild_CheckExitCode {
+  $last_exit_code = GetLastExitCode
+  if ($last_exit_code -ne 0) {
+    if ($in_msbuild) {
+      Write-Host "error $last_exit_code, exiting.."
+      exit 1
+    } else {
+      exit $last_exit_code
+    }
+  }
 }
 
 function CheckExitCode {
@@ -232,5 +255,84 @@ param (
   }
   finally {
       Pop-Location
+  }
+}
+
+function basic_FileOperations {
+param (
+  [string] git_dir = "."
+)
+  #
+  if (-not (Test-Path "$git_dir\.git\")) {
+    [string[]] $files =  @("file1", "file2")
+    $git_dir_files = $files.ForEach({"${git_dir}\$_"})
+
+    $content = Get-Content -Path ".\GitCommit.txt"
+    if (Test-Path "$git_dir\..\bakgit\") { throw "found existing path $git_dir\..\bakgit\" }
+    Move-Item -Path "$git_dir" "$git_dir\..\bakgit\"
+    Remove-Item -Path "$git_dir" -Recurse -Force -ErrorAction Ignore
+    git clone "some_repo.git" "$git_dir"
+    CheckExitCode
+    git clean -f -X -d
+    CheckExitCode
+}
+
+function basic_7z {
+param (
+  [string] $7zpath = "",
+  [string] $destpath = "",
+  [string[]] $pa_files = @("")
+)
+  if (-not (Test-Path "$7zpath")) {
+    Write-Host "ERROR: Abort, no 7z path $7zpath"
+    return 1
+  }
+
+  $zipname = "${version}_Name.zip"
+  # $zipname = "${version}_NamePdb.zip"
+  # $pdbpw = "123456"
+  $zippath = "$destpath\$zipname"
+  if (-not (Test-Path "$zippath")) {
+    Write-Host "# 1: zip files into $zipname .."
+    $tmp_7zargs = @("a", "-bsp1", "-mx5", "$zippath")
+    # $tmp_7zargs = @("a", "-bsp1", "-mx5", "-p$pdbpw", "$zippath")
+    [string[]] $7zargs = $tmp_7zargs + $pa_files
+    Write-Host "# 2: 7z args: $7zargs"
+    $st = sane_StartProcess $7z $7zargs
+    if ($st -ne 0) { return $st }
+  }
+}
+
+function basic_wixinstaller {
+  # TODO
+}
+
+function basic_stringops {
+  # concat
+  [string[]] $files1 = @("t1", "t2")
+  [string[]] $files2 = @("t3", "t4")
+  $files = $files1 + $files2
+  for ($i=0; $i -lt $files.Length; $i+=1) {
+    Write-Host "$($files[$i])"
+  }
+
+  # parse
+  # see ResolveMsBuild
+  [string]$gitcommit = [string]$(git rev-parse HEAD)
+  [int] $year = [int]$($msvc_version -replace "[^0-9]" , '')
+  [string] $filepath = "README.md"
+  [string] $verified = "unknown"
+  $sigcheck_output = sigcheck.exe -accepteula -q $filepath
+  # or foreach ($mixed_line_str in (sigcheck.exe -accepteula -q $filepath))
+  foreach ($mixed_line_str in $sigcheck_output) {
+    # searching for line with 'Verified:   ...'
+    $line_str = $mixed_line_str -replace ("`t", " ")
+    $line = $line_str -split " "
+    # Write-Debug "${line_str}, length: $($line.Length)"
+    if (($line.Length -eq 2) -and ($line[1] -eq "Verified:")) {
+      # Write-Debug " >>>> ${line_str} 1 $($line[1])"
+      $verified = [string]$line[2]
+      Write-Debug "${verified}"
+    }
   }
 }

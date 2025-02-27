@@ -3,6 +3,9 @@ fault-tolerance?
 consistency?
 service discovery?
 
+====sources
+https://github.com/basilysf1709/distributed-systems
+
 ====problems
 debugging VMs is yet another tool to learn
 

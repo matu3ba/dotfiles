@@ -615,7 +615,13 @@ alias gsu='git submodule update'
 # git checkout -b feature commit
 # git push remote feature
 
-# TODO https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/
+# undo things with git
+# git reflog, git reset, git checkout
+# git commit --squash EARLIERCOMMIT; git commit --fixup EARLIERCOMMIT;
+# git rebase --autosquash -i
+# git rm --cached app.log
+# force overwrite to ignore .gitignore: git add -f app.log
+
 # TODO split commits in arbitrary commit range
 
 # TODO fast and intuitive git log search?

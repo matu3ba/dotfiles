@@ -1,6 +1,14 @@
 Motivation
 https://utf8everywhere.org/
 
+git ls-files '.[h|c]' '.cpp' | xargs -n1 file > formats
+to workaround spaces in paths
+Use dos2unix to remove bom and git add --renormalize .
+Git is not nice, because it does not check if file needs bom
+UTF-16LE is used, but Git suggests to try to use the BOM.
+Test via push to remote and local checkout, complete build and
+running all unit tests.
+
 Detect unknown encodings based on
 https://unix.stackexchange.com/questions/304177/convert-binary-encoding-that-head-and-notepad-can-read-to-utf-8
 file unix_filepath

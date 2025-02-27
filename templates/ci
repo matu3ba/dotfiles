@@ -110,6 +110,8 @@ The ideal solution:
 - Mutual exclusive locks on pipelines (for sharing ressouces via network)
 - Atomiticity of artifact cache access (per node)
 - Process limitation of harware usage
+- provides code review integration with reviewer control over actions
+  * https://gerrit.googlesource.com/gerrit
 
 => build DSL from source + DSL has automatic sandboxing checked via Linter, such
 that one only needs to review non-sandboxed parts (authentication cache etc).

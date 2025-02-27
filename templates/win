@@ -316,6 +316,8 @@ reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Executi
 ====injection
 Hooking in Windows
 https://github.com/TsudaKageyu/minhook
+https://github.com/microsoft/Detours
+https://github.com/Hpmason/retour-rs
 
 ====perf_trace
 https://github.com/google/UIforETW

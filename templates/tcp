@@ -47,4 +47,6 @@ shutdown wr    |   ?   |    ?    |    ?     |  ?
 shutdown both  |   ?   |    ?    |    ?     |  ?
 close          |   ?   |    ?    |    ?     |  ?
 
+close: default graceful (data send before immediate close up to timeout), wait time x before hard reset, wait time x
+
 TODO

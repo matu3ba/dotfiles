@@ -239,10 +239,11 @@ index 6283be8..5da6ff0 100644
 +# robocopy $src $dest /s /compress /xd $excl_dirs /xf $excl_files /eta /j
 +
 +# src dest files expect
++# based on https://ss64.com/nt/robocopy-exit.html
 +# expect: no_error([0-7]), no_copy (0/4), all_copy(1/5), never_copy(8/16)
 +# never_copy tests for things like access denied or no connection to remote
 +# returns 0 (ok), 1 (error), 2 (connection,access), 3 (invalid args)
-+function complete_robocopy {
++function sane_robocopy {
 +  param(
 +    [string] $src,
 +    [string] $dest,
@@ -278,6 +279,19 @@ index 6283be8..5da6ff0 100644
 +  } elseif ($expect -eq "never_copy") {
 +    if ($proc.ExitCode -ge 8) { return 0 } else { return 1 }
 +  }
++}
++
++function sane_checkFileTreeEndingEncoding {
++  param (
++    # expect_eol: {lf, cllf, ..}
++    [string] $expect_eol,
++    # expect_encoding: {}
++    [string] $expect_encoding,
++    # exclude_file_endings: {}
++    [string[]] $exclude_file_endings
++  )
++
++  # idea
 +}
 +
 +# invoke rcopy, wait for termination and return result handle

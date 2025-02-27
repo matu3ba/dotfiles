@@ -1,4 +1,6 @@
 # EditorConfig: https://EditorConfig.org
+# Projects can be checked with https://github.com/editorconfig-checker/editorconfig-checker
+# ec-windows-amd64.exe  > ec_errors
 # git stores version tracked information as utf-8 and with lf
 # tools, languages and compilers may or may not be able to convert or use other
 # formats.

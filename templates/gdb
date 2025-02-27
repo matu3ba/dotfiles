@@ -119,6 +119,7 @@ shell ps
 
 Debugging on Windows:
 https://remedybg.itch.io/remedybg
+https://github.com/EpicGamesExt/raddebugger
 
 # breakpoints and commands
 save breakpoints COMMAND_FILE

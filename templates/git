@@ -92,3 +92,17 @@ https://paperless.blog/git-bisect-run-techniques
 TODO git absorb
 https://github.com/tummychow/git-absorb
 https://github.com/mfontani/los-opinionated-git-tools/blob/master/git-fixup
+
+official guides
+https://github.com/git/git/blob/08bdfd453584e489d5a551aecbdcb77584e1b958/Documentation/howto/coordinate-embargoed-releases.adoc
+git help
+https://github.com/git/git/blob/08bdfd453584e489d5a551aecbdcb77584e1b958/Documentation/git-add.adoc
+
+Best practice on squash/rebase/commit
+* prefer merge commit as summary to use easily `git revert -mN`
+* more commits make bisect better as long as every commit builds
+  o +2000/-500 change not good, +500/-500 worst complexity to aim for
+  o unless easily reproducible via tooling / low risk commit
+* provide infrastructure (merge bots etc) and expect to keep every commit buildable
+* squash wip commits
+* try gui (only) for large interactive rebase, macos has Tower

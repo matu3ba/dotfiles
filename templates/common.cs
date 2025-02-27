@@ -142,3 +142,22 @@ protected:
 };
 
 // https://stackoverflow.com/questions/16135490/visual-studio-2010-c-cli-in-static-library-mode-could-not-find-assembly-msco
+
+// Basic Keypress event handler
+CancelButton->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &KeypressNamespace::OnKeyPress);
+System::Void KeypressNamespace::OnKeyPress(System::Object ^ sender, System::Windows::Forms::KeyPressEventArgs ^ e)
+{
+       auto sendername = sender->ToString();
+
+       ContentPanel->Focus();
+       if (e->KeyChar == 27)   //ESC-key
+               CancelButton_Click(sender, e);
+       // MS does not make overwriting some control characters easy, so we do not use tab key.
+       //else if (e->KeyChar == 9)     //TAB-key
+       //      TabButton_Click(sender, e);
+       //else
+       //{
+       //      auto InputString = AppendCharacterToString(InputTextBox->Text, e->KeyChar);
+       //      Update(InputString);
+       //}
+}

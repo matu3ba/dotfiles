@@ -6,7 +6,22 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
 // zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
 
-// TODO use -fsanitize=type https://llvm.org/devmtg/2017-10/slides/Finkel-The%20Type%20Sanitizer.pdf
+//====tooling
+//====best_practice_compilers
+//====best_practice_compilation_times
+//====potential_tradeoffs_memory_improvements
+//====literals
+//====trait_helpers
+//====code_patterns
+//====code_version_changes
+
+// rest are code examples for standard things and changes
+
+//====tooling
+// hot restart as feature - https://github.com/proximafusion/vmecpp
+
+//====best_practice_compilers
+// idea use -fsanitize=type https://llvm.org/devmtg/2017-10/slides/Finkel-The%20Type%20Sanitizer.pdf
 
 // -Wunsafe-buffer-usage opt-out:
 // [[clang::unsafe_buffer_usage]]
@@ -59,25 +74,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // * no fix for temporal memory problems, sanitizers with hopefully enough coverage only options
 // * ~1% queries per second, ~2.5% latency regression
 
-// profiles
-// * most likely catchy name for "integrate control into the language" for ASAN,
-// different types of assertions etc to make usage uniform/simple
-// * Why no "safe c++": Even with reference implementation, realistically would take very long time to hash out details in standard,
-// even longer for all the mainstream compilers to have ok support, so something that can be achieved in the near(er) future
-// was prioritized. Convert/Inter-op with legacy code unclear and rewrite of code bases likely simpler in Rust.
-//   - pessimistic time needed 15-20 years
-// * spatial memory problems: spatial means all arithmetic-related things
-// * temporal memory problems: temporal means if there is a timing when stuff is used in an potentially undesired way or underlying bits in an potentially undefined way
-//   - undesired would be, if one messes up synchronization by incorrect usage annotation
-//   - bear in mind one can also do memory accesses intentionally racy if only visiting memory
-//   - pointer chasing hard, because identifying overlapping sets on arithmetic is hard and over-approximation tricky
-//     o rust chose to just miscompile stuff in unsafe, if one does not satisfy
-//     the requirements to have no third "unoptimized unsafe mode"
-//   - graph annotations for sync problems require solver framework with applying wlp,
-//   but advantage would be to have immediate options for better sync perf once weak memory gets solved/becomes usable
-// * deadlock/livelock problems: typestate programming (encode allowed and disallowed automata over fns)
-
-// best practice compilation times
+//====best_practice_compilation_times
 // * https://codingnest.com/the-little-things-speeding-up-c-compilation/
 //   - include less, ideally IWYU https://include-what-you-use.org/
 //   - forward decls
@@ -144,6 +141,25 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // best practice custom allocator
 // https://johnfarrier.com/custom-allocators-in-c-high-performance-memory-management/
 
+//====potential_tradeoffs_memory_improvements
+// potential future C++ memory improvements (profiles etc)
+// * most likely catchy name for "integrate control into the language" for ASAN,
+// different types of assertions etc to make usage uniform/simple
+// * Why no "safe c++": Even with reference implementation, realistically would take very long time to hash out details in standard,
+// even longer for all the mainstream compilers to have ok support, so something that can be achieved in the near(er) future
+// was prioritized. Convert/Inter-op with legacy code unclear and rewrite of code bases likely simpler in Rust.
+//   - pessimistic time needed 15-20 years
+// * spatial memory problems: spatial means all arithmetic-related things
+// * temporal memory problems: temporal means if there is a timing when stuff is used in an potentially undesired way or underlying bits in an potentially undefined way
+//   - undesired would be, if one messes up synchronization by incorrect usage annotation
+//   - bear in mind one can also do memory accesses intentionally racy if only visiting or only writing memory
+//   - pointer chasing hard, because identifying overlapping sets on arithmetic is hard and over-approximation tricky
+//     o rust chose to just miscompile stuff in unsafe, if one does not satisfy
+//     the requirements to have no third "unoptimized unsafe mode"
+//   - graph annotations for sync problems require solver framework with applying wlp,
+//   but advantage would be to have immediate options for better sync perf once weak memory gets solved/becomes usable
+// * deadlock/livelock problems: typestate programming (encode allowed and disallowed automata over fns)
+
 // list of undefined behavior https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1705r1.html
 // partial program correctness (yet unused) https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p1494r4.html
 
@@ -170,6 +186,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // https://safecpp.org/draft-lifetimes.html https://github.com/cplusplus/papers/issues/2045
 // lifetimes https://safecpp.org/draft.html https://github.com/cplusplus/papers/issues/2108
 
+//====literals
 // https://en.cppreference.com/w/cpp/language/string_literal
 // https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
 // (1,2) | ordinary string literal | const char[N]             | ordinary literal encoding
@@ -182,12 +199,13 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // (1)"", (2)R"", (3)L"", (4)LR"", (5)u8"", (6)u8R"", (7)u"", (8)uR"", (9)U"", (10)UR""
 // s-char only in "", L"", u8"", u"", U""
 // d-char (r-char) d-char in R"", LR"", u8R"", uR"", UR""
-//
+
 // C++20 overview https://www.scs.stanford.edu/~dm/blog/param-pack.html
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
 // more: https://oleksandrkvl.github.io/2021/04/02/cpp-20-overview.html
 
+//====trait_helpers
 // type_traits helpers
 // std::remove_reference
 // std::add_lvalue_reference
@@ -203,9 +221,6 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //     glvalue  |  rvalue
 // lvalue |  xvalue  | prvalue
 // xvalue can be reused, meaning location arbitrary
-
-//====version_changes
-//====CPP20string_ops
 
 #if (__cplusplus >= 201402L)
 #define HAS_CPP14 1
@@ -280,6 +295,8 @@ static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not dist
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 #include <variant>
 #endif // ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+
+//====code_patterns
 
 // posix only
 #if !defined(_WIN32)
@@ -2639,6 +2656,17 @@ void use_from_chars() {
   // assert(ec2 == std::errc{});
 }
 
+void use_for_each();
+void use_for_each() {
+  std::map<uint32_t, uint64_t *> m_indPtrLookup;
+  uint64_t val = 1;
+  auto pair1 = std::make_pair<uint32_t, uint64_t *>(1, &val);
+  auto const [it, success] = m_indPtrLookup.insert(pair1);
+  (void)it;
+  auto print = [](auto const &pair) { fprintf(stdout, "%u, %p\n", pair.first, static_cast<void *>(pair.second)); };
+  std::for_each(m_indPtrLookup.begin(), m_indPtrLookup.end(), print);
+}
+
 #endif // defined(HAS_CPP17)
 
 // TODO sort in
@@ -2655,7 +2683,7 @@ void use_from_chars() {
 // run all tests with ASAN
 // run both Debug and Release with ASAN with tests
 
-//====version_changes
+//====code_version_changes
 
 #if defined(HAS_CPP14)
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time
@@ -2822,6 +2850,16 @@ void use_try_emplace() {
 void use_template_template();
 void use_template_template() {
   // CreateNewWritableInterface<std::string>("test123");
+}
+
+void use_thread();
+void use_thread() {
+  // TODO
+}
+
+void use_jthread();
+void use_jthread() {
+  // TODO std::jthread
 }
 
 #endif // defined(HAS_CPP20)

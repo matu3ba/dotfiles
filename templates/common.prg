@@ -17,6 +17,9 @@
 // https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/2525041803.html&id=
 // c:\TwinCAT\AdsApi\TcAdsDll\Include\TcAdsDef.h
 
+// TwinCAT IO system Windows Kernel process needs >5 seconds to restart
+// Master Devices need even longer
+
 PROGRAM MAIN
 VAR
   u32Counter0 AT %I*: UDINT;
@@ -58,7 +61,7 @@ IF bResetWatchdog THEN
   bResetWatchdog := false;
   u64TimestampWatchdog := u64TmpTimestamp;
 END_IF
-IF u64TmpTimestamp - u64TmpTimestamp < u64TimeoutWatchdog THEN
+IF u64TmpTimestamp - u64TimestampWatchdog < u64TimeoutWatchdog THEN
   // timeout action
 END_IF
 

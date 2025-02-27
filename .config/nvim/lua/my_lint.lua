@@ -19,6 +19,7 @@ if not ok_lint then return end
 -- uv self update
 
 --==tools
+-- uv tool install chardet
 -- uv tool install cppman
 -- uv tool install mypy
 -- uv tool install ruff

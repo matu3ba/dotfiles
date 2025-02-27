@@ -35,6 +35,8 @@ $env:Editor = "nvim"
 # [System.Environment]::OSVersion.Version
 
 # Installing Wezterm
+# uses more memory and feels slower than Windows-Terminal (wezterm 20240203-110809-5046fc22, Windows-Terminal Version: 1.21.10351.0)
+# missing comparison to ghostty
 # https://github.com/wez/wezterm/releases
 # winget install wez.wezterm
 
