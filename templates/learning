@@ -1,2 +1,52 @@
+====general
+====algorithm
+====design
+====hardware
+
+====general
 https://ankiweb.net/about
 https://github.com/ankitects/anki
+
+latent learning period -> no immediate reinforcement [learning <-> feedback]
+
+TODO
+
+stages
+1 relevance
+2 awareness
+3 i
+4 l
+
+
+1. Prefix Sum
+2. Two Pointers
+3. Sliding Window
+4. Fast & Slow Pointers
+5. LinkedList In-place Reversal
+6. Monotonic Stack
+7. Top ‘K’ Elements
+8. Overlapping Intervals
+9. Modified Binary Search
+10. Binary Tree Traversal
+11. Depth-First Search (DFS)
+12. Breadth-First Search (BFS)
+13. Matrix Traversal
+14. Backtracking
+15. Dynamic Programming Patterns
+
+====algo
+algorithm golden references
+Numerical Recipes in C: The Art of Scientific Computing, Second Edition
+Numerical Recipes in C++: The Art of Scientific Computing
+https://algo.monster/flowchart
+* algo monster has great quiz questions
+https://www.dailycodingproblem.com/
+https://algomaster.io/
+
+====design
+https://systemdesignschool.io/
+* algo monster has great quiz questions
+
+====hardware
+hardware
+asic course https://www.zerotoasiccourse.com/

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 ## check if this script is in $HOME/dotfiles for correct system configuration as per XDGBDS
 ## search sub-folder paths and test symlinks of un-ignored files
 ## requires fd (Rust program), because find does not support an ignore list
@@ -9,7 +9,6 @@
 set -o errexit         # abort on nonzero exitstatus
 set -o nounset         # abort on unbound variable
 set -o pipefail        # don't hide errors within pipes
-IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
 FAIL="FALSE"
 dotfilePaths=""
@@ -28,9 +27,8 @@ if test "${dotfilePaths}" = ""; then
   echo "no paths"
   exit 2
 else
-  while IFS= read -r dfPath; do
+  for dfPath in $dotfilePaths; do
     printf '%-40s' "$dfPath"
-    #echo "$dfPath"
     dfabsPath="${HOME}/dotfiles/${dfPath}"
     canonpath=$(realpath "${dfabsPath}")
     symlinkAbsPath="${HOME}/${dfPath}"
@@ -53,7 +51,8 @@ else
     else
       printf '%-20s' "user profile: found no file"
     fi
-    echo -en "\n"
-  done <<<"$dotfilePaths"
+    printf "\n"
+  done
+  # done <<<"$dotfilePaths"
   echo "failure occurred: $FAIL"
 fi

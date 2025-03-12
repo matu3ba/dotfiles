@@ -454,7 +454,8 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 
 --==lspconfig
 -- looks like deleting one default keybinding deletes all of them
-vim.keymap.del('n', 'gO') -- '<leader>O'
+--workaround for version 10.4
+--vim.keymap.del('n', 'gO') -- '<leader>O'
 -- see :CLsp .config/nvim/lua/my_lsp.lua LspAttach
 
 -- see also echasnovski/mini.bracketed

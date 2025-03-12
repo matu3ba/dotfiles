@@ -23,3 +23,6 @@ small but nice:
 3. compare list of sections
 4. for each section compare the section content
 5. optionally print the section
+
+https://github.com/dtolnay/dissimilar
+* diff with semantic cleanups

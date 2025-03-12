@@ -483,6 +483,9 @@ end
 
 -- https://github.com/nvim-lua/plenary.nvim/ /blob/master/ tests/plenary/job_spec.lua
 -- /blob/5129a3693c482fcbc5ab99a7706ffc4360b995a0/
+-- TODO bug, must replace : with /
+-- example
+-- github.com:matu3ba/simpaSRG/blob/a38ef23973e15053414c7c8b4cdf61c09aa26bf1/src/simpleSRG.h
 add_cmd('GHPerma', function()
   ---@diagnostic disable-next-line: deprecated, param-type-mismatch
   local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
@@ -506,6 +509,11 @@ add_cmd('GHPerma', function()
   setPlusAnd0Register(permalink)
 end, {})
 
+-- TODO bug, must replace : with /
+-- /home/misterspoon/dev/git/studienarbeit_SRG/simpaSRG/tools/main.cpp
+--:GHBranch
+--git@github.com:matu3ba/simpaSRG.git
+--github.com:matu3ba/simpaSRG/blob/main/tools/main.cpp
 add_cmd('GHBranch', function()
   ---@diagnostic disable-next-line: deprecated, param-type-mismatch
   local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())

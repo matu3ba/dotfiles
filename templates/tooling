@@ -40,11 +40,12 @@ fdupes or fork jdupes - finding duplicates
 fdupes -qdN -r /ops/backup/
 
 xpack for windows reproducible build framework (https://xpack.github.io/)
-rizin - reverse debugging
+rizin - reverse engineering and debugging
+qiling - binary emulation framework https://github.com/qilingframework/qiling
 grafana - visualization
 windirstat for directory overview - https://windirstat.net/
 
-browser firefox, ladybird?
+browser firefox, ladybird
 browser with vim keybindings lynx, qutebrowser?
 
 xml parser: yxml https://code.blicky.net/yorhel/yxml

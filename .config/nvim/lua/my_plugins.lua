@@ -422,6 +422,7 @@ return {
   -- nvim-treesitter-textobjects (https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
   -- nvim-treesitter-textsubjects
   --==treesitter
+  -- .config/nvim/lua/my_treesitter.lua
   -- replacement without perf issues for context.vim would be great
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith

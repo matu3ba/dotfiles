@@ -333,3 +333,10 @@ Workarounds
   * https://github.com/NixOS/nixpkgs/issues/9415
   * https://ryantm.github.io/nixpkgs/builders/packages/opengl/
 - 3. integrate it as part of the package for the system build
+
+Use case constrains of package managers
+1. Buildroot and yocto or whatever else is used to create a read-only system and user-land for overlays + A/B upgrades.
+2. git-versioned declarative dev systems like nix (just copies whatever dep exists to patch it locally, if wanted)
+3. regular linux distros with global dep graph (may break without easy rollback)
+4. systemd/dbus/pipewire as one size fits all thing competing with pkg manager, takes over everything (see systemd-boot) making the whole thing harder
+5. build server: own build server and packager things are easy again

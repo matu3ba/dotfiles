@@ -30,6 +30,18 @@ foreground= ffffff
 ##==default_commands
 # reset terminal state    reset
 
+# idea font troubleshooting guide, but very much unclear where things are going wrong
+# and there are no guides with image examples how to debug font problems
+# https://quitesimple.org/page/fontconfig-linux-what-they-didnt-tell-you
+# https://pandasauce.org/post/linux-fonts/
+# https://wiki.archlinux.org/title/Font_configuration
+# https://faultlore.com/blah/text-hates-you/
+# default font should be: fc-match --verbose
+# font-family = "DejaVu Sans"
+# font-family = "monospace"
+# font-family = "Hack"
+# font-family = "Noto Sans Mono"
+
 # black
 palette = 0=#1d2021
 palette = 8=#7c6f64

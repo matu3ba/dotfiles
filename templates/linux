@@ -1,3 +1,4 @@
+====dinit
 ====systemd
 ====autostart
 ====udev
@@ -6,6 +7,25 @@
 ====Linux forensics
 ====ebpf
 ====scheduler
+====io_uring
+
+
+====dinit
+man dinit
+Dinit reads service descriptions from files located in a service description directory, normally
+when run as sys instance in
+  /etc/dinit.d
+  /run/dinit.d
+  /usr/local/lib/dinit.d
+  /lib/dinit.d
+when run as user instance in
+  $XDG_CONFIG_HOME/dinit.d
+  $HOME/.config/dinit.d
+  /etc/dinit.d/user
+  /usr/lib/dinit.d/user
+  /usr/local/lib/dinit.d/user
+  SERVICE DESCRIPTION FILES
+  description format.
 
 ====systemd
 Unusable to grep, useless path complexity:
@@ -408,3 +428,12 @@ and aggregating using folly static tracing
 
 ====scheduler
 https://github.com/sched-ext/fosdem25
+
+====io_uring
+benchmarks
+* have to measure workloads to identify, if its worth it
+* idea: rule of thumb articles on performance
+* https://github.com/frevib/io_uring-echo-server/blob/master/benchmarks/benchmarks.md
+* https://github.com/CarterLi/io_uring-echo-server
+* https://github.com/hnes/libaco
+* https://github.com/axboe/liburing/issues/427

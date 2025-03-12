@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 ## search sub-folder paths and create symlinks of un-ignored files
 ## example: ln -s $HOME/dotfiles/.bashrc $HOME/.bashrc
 
@@ -7,7 +7,6 @@
 set -o errexit         # abort on nonzero exitstatus
 set -o nounset         # abort on unbound variable
 set -o pipefail        # don't hide errors within pipes
-IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
 FAIL="TRUE"
 cd "${HOME}/dotfiles"
@@ -17,7 +16,7 @@ DATETIME=$(date +"%Y%m%d_%H%M%S")
 BACK_FOLDER="${HOME}/back/${DATETIME}_backconfig/"
 #mkdir -p "$BACK_FOLDER"
 
-while IFS= read -r dfPath; do
+for dfPath in $dotfilePaths; do
   printf '%-40s' "$dfPath"
   #dfabsPath="${HOME}/dotfiles/${dfPath}"
   backupAbsPath="${BACK_FOLDER}/${dfPath}"
@@ -39,8 +38,8 @@ while IFS= read -r dfPath; do
   else
     printf '%-20s' "found no file"
   fi
-  echo -en "\n"
-done <<<"$dotfilePaths"
+  printf "\n"
+done
 if test "$FAIL" = "FALSE"; then
   echo "backup created at ${BACK_FOLDER}"
 fi

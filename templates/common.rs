@@ -1,4 +1,72 @@
-#
+//====use_cases
+//====tooling
+//====design_flaws
+//====setup
+
+
+//====use_cases
+//Small to medium sized projects with well-known kinda fixed semantics/problem space, since huge
+//refactorings and explorative coding is slow in Rust. Besides that, one here wants the benefits of
+//memory safety (and typestate programming ie preventing api misuse like deadlocking) without needing
+//optimal performance (given by things like nonsequential atomics, opaque memory, non-tree like
+//memory lifetimes) or have existing libraries handling that for you (or be very limited in scope).
+
+//====tooling
+// SHENNANIGAN cargo packages depend on dynamic gcc libraries during linking,
+// which may not be provided
+//  cargo install du-dust
+//  ld: error: unable to find library -lgcc_s
+//
+//du-dust ripgrep sd tokei
+// exa https://the.exa.website/ https://github.com/ogham/exa
+// gisht https://github.com/Xion/gisht
+// just https://github.com/casey/just
+// mdBook https://github.com/rust-lang-nursery/mdBook
+// ripgrep - ripgrep
+// tokei https://github.com/XAMPPRocky/tokei
+// uutils/coreutils https://github.com/uutils/coreutils
+// xsv https://github.com/BurntSushi/xsv
+//
+// often breaking: asuran gitoxide gitui
+// cli name                    | cargo package name | links
+// bat                         | -                  |
+// btm                         | -                  |
+// cargo-config                | -                  |
+// cargo-install-update        | -                  |
+// cargo-install-update-config | -                  |
+// cargo-make                  | -                  |
+// dust                        | -                  |
+// emulsion                    | -                  |
+// exa                         | -                  |
+// fd                          | fd-find            | https://github.com/sharkdp/fd
+// hexyl                       | -                  |
+// hx                          | -                  |
+// hyperfine                   | hyperfine          |
+// inferno-collapse-dtrace     | -                  |
+// inferno-collapse-guess      | -                  |
+// inferno-collapse-perf       | -                  |
+// inferno-collapse-sample     | -                  |
+// inferno-collapse-vtune      | -                  |
+// inferno-diff-folded         | -                  |
+// inferno-flamegraph          | -                  |
+// interactive-rebase-tool     | -                  |
+// kalk                        | -                  |
+// makers                      | -                  |
+// mandown                     | -                  |
+// procs                       | -                  |
+// rg                          | ripgrep            | https://github.com/BurntSushi/ripgrep
+// rustinstalled               | -                  |
+// rusty-man                   | -                  |
+// sd                          | -                  |
+// tcount                      | -                  |
+// tokei                       | -                  |
+// watchexec                   | -                  |
+// xargo                       | -                  |
+// xargo-check                 | -                  |
+// zellij                      | -                  |
+// zoxide                      | -                  |
+
+//====design_flaws
 // SHENNANIGANs
 // * still not possible to write your own smart pointer which would work with dyn traits, including
 // coercions
@@ -30,3 +98,6 @@
 //     }
 //     unsafe fn raw(&self) -> *mut i32 { self.0.get() }
 // }
+
+//====setup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs

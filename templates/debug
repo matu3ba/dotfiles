@@ -1,4 +1,17 @@
-==Processes
+====hardware
+====kernel
+====processes
+
+====hardware
+debugging hardware probes TODO
+debugging cpu https://zipcpu.com/zipcpu/2022/12/03/no-boot.html
+debugging hardware https://zipcpu.com/blog/2024/11/06/not-axi.html
+debugging the hard hardware stuff (FFT, crypto, ECC, compression) https://zipcpu.com/blog/2023/02/13/eccdbg.html
+debugging best practice https://zipcpu.com/zipcpu/2022/08/30/not-my-fault.html
+hardware verification https://github.com/YosysHQ/sby
+* zipcpu has great quiz questions
+
+====processes
 Linux: /proc
 FreeBSD: procstat
 ==Files
@@ -54,6 +67,19 @@ https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tuto
 rad debugger
 https://github.com/EpicGamesExt/raddebugger/
 
+gdb process record
+https://sourceware.org/gdb/wiki/ProcessRecord
+
+https://docs.undo.io/ThreadFuzzing.html
+logic based thread fuzzing for freezes (livelock, progress starvation etc)
+* motivation not to use TSan https://undo.io/resources/gdb-watchpoint/using-threadsanitizer-to-debug-data-races/
+
+process fuzzing based on linux scheduler?
+unclear
+
+hypervisor based debugging
+Antithesis
+
 would be very neat, if there would be either incremental object update over
 network and/or linking both on source and target and use it for debugging.
 unfortunately it does not look like rad debugger provides instructions how to
@@ -73,7 +99,7 @@ reference impl
 > probably didn't seem as high priority at first - had to get something working
 > I think what can work though is establishing cycle of hacking together a tool
 > that helps work better, create a better tool with the crufty tool, bootstrap
-> the better tool back to the lower level that made it nescessary to create the
+> the better tool back to the lower level that made it necessary to create the
 > hacky tool in the first place. Kind of like lift to higher abstraction, work
 > there, the lower back and improve the base layer so next time you already
 > started at higher, better designed level

@@ -15,6 +15,8 @@
 --- Remove externally installed broken treesitter parsers---
 --- rm ~/.local/nvim/lib/nvim/parser/c.so
 --- rm ~/.local/nvim/lib/nvim/parser/cpp.so
+--- rm ~/.local/share/nvim/site/parser
+--- rm ~/.local/share/nvim/lazy/nvim-treesitter/parser/
 
 --- Show current infos :Inspect, :InspectTree
 

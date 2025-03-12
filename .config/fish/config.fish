@@ -77,7 +77,15 @@ if status is-interactive
   fish_add_path "$HOME/dev/zdev/zig/master/rel/bin" # zig stages 3
   fish_add_path "$HOME/.luarocks/bin"
   fish_add_path "$HOME/.local/nvim/bin" # neovim testing
+  # scr/bLLVM.sh
   fish_add_path "$HOME/dev/git/cpp/llvm-project/build-release/bin" # llvm tooling
+
+  # download as instructed by https://tug.org/texlive/quickinstall.html
+  if test -e "$HOME/texlive_path"
+    cat "$HOME/texlive_path" | read -l texlive_path
+    # echo $texlive_path
+    fish_add_path "$texlive_path"
+  end
 
   if test "$XDG_SESSION_TYPE" = "wayland"
     set -U QT_QPA_PLATFORM "wayland"
@@ -228,35 +236,65 @@ if status is-interactive
   #   end
   # end
 
-  function falketh -d "sandboxing falkon + whitelist download dir"
-    set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
-  end
-  function falkwlan -d "sandboxing falkon + whitelist download dir"
-    set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
-  end
-  function sfalketh -d "sandboxing falkon + whitelist download dir"
-    set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--private=$TMP" falkon && rmtmpdir "$TMP"
-  end
-  function sfalkwlan -d "sandboxing falkon + whitelist download dir"
-    set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=wlan0 "--private=$TMP" falkon && rmtmpdir "$TMP"
-  end
+  #function falketh -d "sandboxing falkon + whitelist download dir"
+  #  set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
+  #end
+  #function falkwlan -d "sandboxing falkon + whitelist download dir"
+  #  set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
+  #end
+  #function sfalketh -d "sandboxing falkon + whitelist download dir"
+  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--private=$TMP" falkon && rmtmpdir "$TMP"
+  #end
+  #function sfalkwlan -d "sandboxing falkon + whitelist download dir"
+  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=wlan0 "--private=$TMP" falkon && rmtmpdir "$TMP"
+  #end
   function foxeth -d "sandboxing firefox + whitelist download dir (default profile) "
-    set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=enp4s0 "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
+    if test -e "$HOME/eth_device"
+      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/eth_device"
+    end
   end
   function foxwlan -d "sandboxing firefox + whitelist download dir (default profile) "
-    set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
+    if test -e "$HOME/wlan_device"
+      cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/wlan_device"
+    end
   end
   function sfoxeth -d "sandboxing firefox + private download dir (no profile) "
-    set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=enp4s0 "--private=$TMP" firefox && rmtmpdir "$TMP"
+    if test -e "$HOME/eth_device"
+      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--private=$TMP" firefox && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/eth_device"
+    end
   end
   function sfoxwlan -d "sandboxing firefox + private download dir (no profile) "
-    set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=wlan0 "--private=$TMP" firefox && rmtmpdir "$TMP"
+    if test -e "$HOME/wlan_device"
+      cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--private=$TMP" firefox && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/wlan_device"
+    end
   end
   function tbirdeth -d "sandboxing thunderbird + private download dir (no profile) "
-    set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=enp4s0 "--whitelist=$TMP" thunderbird && rmtmpdir "$TMP"
+    if test -e "$HOME/eth_device"
+      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" thunderbird && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/eth_device"
+    end
   end
   function tbirdwlan -d "sandboxing thunderbird + private download dir (no profile) "
-    set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" thunderbird && rmtmpdir "$TMP"
+    if test -e "$HOME/wlan_device"
+      cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" thunderbird && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/wlan_device"
+    end
   end
   alias  schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
   alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'

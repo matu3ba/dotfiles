@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 ## search sub-folder paths and create symlinks of un-ignored files
 ## example: ln -s $HOME/dotfiles/.bashrc $HOME/.bashrc
 
@@ -7,13 +7,12 @@
 set -o errexit         # abort on nonzero exitstatus
 set -o nounset         # abort on unbound variable
 set -o pipefail        # don't hide errors within pipes
-IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
 FAIL="FALSE" # will be filled with defaults
 cd "${HOME}/dotfiles"
 dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
-while IFS= read -r dfPath; do
+for dfPath in $dotfilePaths; do
   printf '%-40s' "${dfPath}"
   #echo "${dfPath}"
   dfabsPath="${HOME}/dotfiles/${dfPath}"
@@ -42,6 +41,6 @@ while IFS= read -r dfPath; do
     ln -s "${canonpath}" "${symlinkAbsPath}"
     printf '%-20s' "user profile: created symlink"
   fi
-  echo -en "\n"
-done <<<"${dotfilePaths}"
+  printf "\n"
+done
 echo "failure occurred: ${FAIL}"

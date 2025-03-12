@@ -1,9 +1,16 @@
+====general
+====attack_vectors
+
+
+
+====general
+* thread implementation very wonky and tricky to understand according to nyx author(s)
+
 https://gitlab.com/qemu-project/qemu
 ====build_system
 https://www.qemu.org/docs/master/devel/build-system.html
 
 ====attack_vectors
-
 * reasonable secure implementation:
   - accept certain timing side channels
   - neglect hardware defects [no secrets on VM and VM should be reset]
@@ -13,3 +20,7 @@ https://www.qemu.org/docs/master/devel/build-system.html
   - mapping to native devices to get acceptable dispatch rate (timing, perf)
   - cheat and JIT for performance
   - resulting slowdown: 2.?x
+
+idea explain design of PT-based breakpoints and address translation + decoding overhead
+PT-decoder fuzzing virtual address translation https://github.com/nyx-fuzz/libxdc/issues/4
+

@@ -1,0 +1,45 @@
+====cv_and_intro
+* summarizes skills and brag list to show how good you are
+idea
+
+====experience
+fundamental technical trade-offs
+* hard time, accuracy, location requirements, model, process, automation,
+homogenity between customers or homogenization process
+* time accuracy based on (light) distances, locations
+* max clockspeed CPUs vs real-timeness
+* max (clock)speed, frequency for signal/data conversion vs effects of conversions
+  - mechanical, eltrical, magnetical and other physical ones
+* calibration understandability vs complexity and methods
+  - linear interpolation ... neural networks, see Proxima Fusion, ASML with optimization models
+* system complexity in numbers of parts, hardware testing, control complexity
+* process automation state
+  - production, sell, etc processes
+  - see my debugging article
+  - hardware debugging: formal methods, methology (testing concepts),
+  tooling (needle adapter, robots, oscillators etc)
+  - software debugging: formal methods, methology (testing concepts),
+  tooling (build sys, binary, code, compiler, platforms, VM etc)
+  - combined hw/sw debugging: formal methods, methology (testing concepts),
+  tooling (hw/sw mocking, hardware trace-probes)
+* redundancy, fault-tolerance of hw/sw and related planning, failure behavior
+
+windows kernel security knowledge
+* ntdll APIs
+* injection techniques for kernel access
+  - time measurable on target?
+  - functionality related to ebpf/tracers?
+* non-dubious communities, probably security and reverse engineers?
+* deployment mitigations vs antivirus and user-mitigation (custom drivers etc)
+* userspace/kernle share?
+  - network driver kernel
+  - tracing/logging kernel
+  - c&c userspace or kernel space?
+* attack surface of solutions?
+* sandbox supervision (win10 pro)?
+* Ke + Wmi prefix for kernel space methods
+* DACL in driver space
+
+====deepdive
+* how things work in detail
+* idea

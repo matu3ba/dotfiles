@@ -30,6 +30,7 @@ xor edi,[rbp-0x57]    xor edi,[rbp-0x57]
 #### Assembly
 - Integer operations are usually faster than the same-sized float number
 - Integer division is slower than the respective float due to higher precision
+  algo for constant runtime divisor https://stackoverflow.com/questions/73646834/fast-integer-division-and-modulo-with-a-const-runtime-divisor
 - There are no SIMD routines for integer division
   * one can use conversion to float instead
   * most of the time one can workaround division

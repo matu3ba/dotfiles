@@ -3,6 +3,7 @@
 ====debugging
 
 ====general
+* cpu/gpu news https://semiwiki.com/
 * avoid or mitigate Common-Mode Noise (CMN) / Gleichtaktstörung
   + measurable +SRC or -SRC against GND
   + can be up to ~100V AC CMR for 12V USB laptop charger
@@ -15,6 +16,9 @@
   + problematic with laptops, no problem with grounded desktop pc
   + correct hardware design more complex/expensive, simpler to provide GND
   see also https://electronics.stackexchange.com/questions/79752/what-is-common-mode-noise
+
+https://www.infoq.com/presentations/computing-interaction-technology/
+TODO summarize future hardware
 
 ====computing
 TODO performance classification from yt talk from zig discord

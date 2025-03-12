@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 ## search sub-folder paths and remove symlinks of un-ignored files
 ## example: if .bashrc is symlink -> rm $HOME/.bashrc
 
@@ -13,7 +13,7 @@ FAIL="FALSE" # will be filled with defaults
 cd "${HOME}/dotfiles"
 dotfilePaths="$(fd -uu --type f --ignore-file "$HOME/dotfiles/ignorefiles" --ignore-file "$HOME/dotfiles/.gitignore")"
 
-while IFS= read -r dfPath; do
+for dfPath in $dotfilePaths; do
   printf '%-40s' "${dfPath}"
   #echo "${dfPath}"
   dfabsPath="${HOME}/dotfiles/${dfPath}"
@@ -39,6 +39,6 @@ while IFS= read -r dfPath; do
   else
     printf '%-20s' "user profile: found no symlink"
   fi
-  echo -en "\n"
-done <<<"${dotfilePaths}"
+  printf "\n"
+done
 echo "failure occurred: $FAIL"

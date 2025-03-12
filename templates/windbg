@@ -5,3 +5,7 @@ https://github.com/hugsy/defcon_27_windbg_workshop/blob/main/windbg_cheatsheet.m
 TODO
 * use this including how to figure out symbol hidden by indirection and in stack
 * reproduce problem with minimal programs
+
+https://www.apriorit.com/dev-blog/kernel-driver-debugging-with-windbg
+https://www.apriorit.com/dev-blog/675-driver-windows-minifilter-driver-development-tutorial
+TODO

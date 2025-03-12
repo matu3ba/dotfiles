@@ -1,5 +1,10 @@
 see for impls and techniques ./example/parallel_programming/README.md
 
+nontemporal stores "cache-bypassing” or “non-allocating” stores or “Non-globally-ordered store”
+* transaction bypass the cache(s)
+* “store buffer”, a “write buffer”, or a “write-combining buffer”
+* NGO store might appear in a different order (relative to ordinary stores or to other NGO stores) on other processors.
+
 Based on talk by kprotty "Proficient Parallel Programming"
 parallelism: doing 2 or more things at the same time
 concurrency: doing 2 things not necessary at the same time
@@ -183,3 +188,7 @@ Simple
 
 "FIFO can be Better than LRU: the Power of Lazy Promotion and Quick Demotion" by Yang et al.
 LP-FIFO (e.g., FIFO-Reinsertion)/CLOCK N’th Chance (2 bits) can be faster, more scalable and have better miss ration than LRU.
+
+https://www.cse.wustl.edu/%7Eangelee/archive/cse341/fall14/handouts/recitation03.pdf
+https://en.wikipedia.org/wiki/Cache-oblivious_algorithm
+not sure where this belongs

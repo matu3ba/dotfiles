@@ -1,0 +1,264 @@
+====general
+* add keyboard language german in kde
+* doas apk add firefox neovim
+* https://chimera-linux.org/docs/installation
+
+====media_preparation
+idea
+
+====partitioning
+* simple setup (no LVM, 2 partitions)
+  - idea
+* simple cryptsetup (LVM+dm-crypt 2 partitions)
+  - 300MB efi vfat for bootloader + linux
+  - rest luks encrypted ext4 for root file system and data
+  - idea
+
+====filesystems
+* idea
+
+====installation
+* login into luks system
+  - rule out errors by wrong hash from graphical login external encrypted device connected by manual mounting
+  lsblk --fs
+  cryptsetup luksOpen /dev/sda sda_root
+  # returns /dev/mapper/sda_root
+  on error: dmsetup remove /dev/mapper/luks-UUID
+* mounting
+  mkdir /media/sda_root
+  ls -lha /dev/disk/by-uuid/
+  mount /dev/mapper/sda_root /media/sda_root
+  # mount /dev/disk/by-uuid/CORRECT_UUID /media/sda_root
+  chmod 755 /media/sda_root
+* uefi
+  - option 1 dedicated /boot partition sda3
+    mkdir /media/sda_root/boot
+    mount /dev/sda3 /media/sda_root/boot
+    mkdir -p /media/sda_root/boot/efi
+    mount /dev/sda1 /media/sda_root/boot/efi
+  - option 2 for merged /boot and ESP
+    mkdir /media/sda_root/boot
+    security hole complain by bootctl install: mount /dev/sda1 /media/sda_root/boot
+    mount -o uid=0,gid=0,fmask=0077,dmask=0077 /dev/sda1 /media/sda_root/boot
+    # should be chmod 700 /media/sda_root/boot
+* prefer network installation
+  - may be broken: chimera-bootstrap -l /media/sda_root
+  - chimera-bootstrap /media/sda_root
+* prepare system
+  - chimera-chroot /media/sda_root
+  - apk update
+  - apk upgrade --available
+  - date YYYYMMDDHHmm
+  - apk fix
+  - apk upgrade --available
+  - apk del base-live
+* device base package
+  - apk add base-PLATFORM
+  BEFORE KERNEL INSTALLATION
+* Kernel installation
+  - apk add linux-stable
+* Fstab (fstab (5))
+  - recommended for mount flags and fsck behavior, ie mounting read-only
+  - within chroot: genfstab / >> /etc/fstab
+  - outside chroot: genfstab /media/root >> /media/root/etc/fstab
+  - format: 1 device, 2 mount point, 3 fs, 4 fs mount options, 5 dump(8), 6 order for fsck
+  - best practice: 1 use UUID=../PARTUUID=.. /dev/disk/by-partuuid or uuid, /dev/mapper/crypt-root;
+    2 order should ensure that parent mounts comes first; 3 vfat/ext4; 4 defaults; 5 0;
+    6 root 1, other 2
+  - example (in mounting order with root fs first)
+    UUID=... / ext4 defaults,noatime,discard 0 1
+    UUID=... /boot/efi vfat defaults 0 2
+* LUKS and crypttab (cryptsetup adjustments)
+  - apk add cryptsetup-scripts lvm2
+  - crypttab device lines with 4 fields
+  1 name as in luksOpen /dev/device_name, 2 device, 3 key file path, comma-sep options
+  - figure out correct device: ls -lha /dev/disk/by-uuid/
+  - echo device_name /dev/disk/by-uuid/UUID none luks,discard > /etc/crypttab
+  - update-initramfs -c -k all
+* other packages
+  - apk add neovim
+* Root password
+  - passwd root
+* Initramfs refresh
+  - bootable system needs initramfs image bootloader must be aware of
+  - update-initramfs -c -k all
+* systemd-boot
+  - apk add systemd-boot
+  - bootctl install
+  - modify as needed /boot/efi/loader/loader.cnf
+  - chimerea has hook to generate boot entry, but first time needed
+  gen-systemd-boot
+  - tweak generator behavior in /etc/default/systemd-boot
+    o unclear what tweaks are necessary for cryptsetup
+* Serial login prompt (getty)
+  - normally serial console detected automatically
+  - kernel command line modification may be needed (depends on bootloader used)
+    o idea extend to bootloaders
+  - when kernel parameter detection fails use /etc/default/getty
+    o EXTRA_GETTYS="/dev/ttyS0"
+    o GETTY_TERM=vt100
+    o GETTY_BAUD=115200
+
+====postinstallation
+* create user
+  - useradd myuser
+  - passwd myuser
+  - groups: wheel (admins), kvm (virt_machines), plugdev (pluggable_devices),
+  - non-necessary access groups (handled via elogind): audio,video
+  - usermod -a -G wheel,kvm,plugdev
+* set hostname
+  - echo chimera > /etc/hostname
+* set time zone
+  - default is UTC
+  - time zones are in /usr/share/zoneinfo
+  - setting default by symlinking it to /etc/localtime
+  - ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+* hardware clock
+  - stored in UTC, only relevant when dualbooting with Windows (which can also be made to use UTC)
+  - example: echo localtime > /etc/hwclock
+* console setup
+  - most users should not need to tweak these
+  - interesting files /etc/default/console-setup (configure console like font)
+  /etc/default/keyboard (configure keyboard like keymap)
+  - man 5 console-setup, man 5 keyboard
+* system logging
+  - default logging system is syslog-ng being part of base-full
+  - enable syslog daemon: dinictl enable syslog-ng
+  - default logs written to /var/logs/messages
+* switch console language (german standard keyboard):
+  - Keymap: de-latin1-nodeadkeys
+  - testing in tty2 (ctrl-shift-f2): login + loadkeys de-latin1-nodeadkeys
+  - nvim /etc/default/keyboard
+      KMAP=de-latin1-nodeadkeys
+
+====packages
+* basic usage
+  - apk update
+  - apk upgrade
+  - apk fix
+  - apk search firefox
+  - apk del firefox
+  - list installed pkgs: apk info
+  - check if pkg installed: apk -e info firefox
+  - apk info --who-owns /usr/bin/firefox
+  - list pkgs that pkg depends on: apk -R info firefox
+  - list pkgs depending on pkg: apk info -r firefox
+  - pkg size: apk info -s firefox
+  - pkg description/all infos: apk info -d/a firefox
+  - repo policy for pkgs: apk policy firefox
+  - statistics: apk stats
+* virtual packages
+  - install by virtual name
+  - prefixes cmd:,so:,pc: with usage: apk add cmd:foo
+* base packages
+  - base-bootstrap (containers)
+  - base-full (full system)
+  - read templates in cport: apk search -r -e base-full
+  - unless knowing what doing, dont use base-minimal
+  - masking: apk add base-full '!base-full-net'
+  - list of packages in /etc/apk/world
+  - ensure firefo is never installed (adds entry to /etc/apk/world): apk add !firefox
+* repositories
+  - default is main, extra packages are in repo user
+  - to add user repo: apk add chimera-repo-user
+* debug packages
+  - debug symbols in separate repo
+  - apk add chimera-repo-main-debug
+  - apk add chimera-repo-user-debug
+* cache and interactive mode
+  - default config set to interactive, asks about changes, caches packages
+  - default location of cache is /var/cache/apk
+  - disable caching via creating file /etc/apk/config based on /usr/lib/apk/config
+  - change cache location by symlinking /etc/apk/cache to desired location
+
+====network
+dinitctl enable iwd
+/etc/iwd/main.conf
+[General]
+EnableNetworkConfiguration=true
+
+iwctl
+device list
+station wl.. get-networks
+====network
+* enable and configure iwd
+  dinitctl enable iwd
+  /etc/iwd/main.conf
+  [General]
+  EnableNetworkConfiguration=true
+* connect via iwctl
+  device list
+  station STATION get-networks
+  station STATION connect NETWORK
+
+====plasma
+startplasma-wayland
+
+====custom
+* firejail: apk add libseccomp linux-headers libbpf-tools iptables
+  - adjust config dirs: nvim ~/.config/user-dirs.dirs
+    to $HOME/fun/Videos/ etc
+  - testing: xdg-user-dir
+* ghostty (fonts broken): apk add gtk4-devel pkgconf libadwaita-devel gettext blueprint-compiler
+* manual texlive installation
+  https://tug.org/texlive/quickinstall.html
+  - tl;dr: Unix(ish)
+  - perl install-tl, then press P and edit /etc/local/ to ~/.local/
+  - perl install-tl --profile=profile
+  - https://tug.org/texlive/doc/tlmgr.html#EXAMPLES
+* enable printer service: dinitctl -s enable cupsd
+  unclear if needed: apk add cups-devel
+  - cups and hp printer drivers: apk add cups hplip cups-filters
+  - hp tooling for setup is broken
+  - 'apk add nmap' and scan network: nmap -sn 192.168.178.0/24
+  - manually adding network printer (hostname/ip taken from nmap scan): ipp://hostname/ipp/print
+  https://developers.hp.com/hp-linux-imaging-and-printing/install/step4/cups/net
+  ipp://HPD269F0.fritz.box/ipp/print
+  ie HPD269F0.fritz.box for
+  HP Officejet Pro 6230
+  HP_Officejet_Pro_6230
+    Description: HP Officejet Pro 6230
+    Location: office
+    Driver: HP Officejet Pro 6230, hpcups 3.24.4 (color, 2-sided printing)
+    Connection: ipp://HPD269F0.fritz.box/ipp/print
+    Defaults: job-sheets={job_sheets_default} media=iso_a4_210x297mm sides=two-sided-long-edge
+* scanner support (brother ADS-1700W)
+  - scanner packages and conversion tool: apk add sane-backends sane-airscan sane-backends-devel imagemagick
+  - scanner detection: scanimage -L
+  - routine ./scan.sh 20250312_scan_file.pdf
+    #!/usr/bin/env sh
+    set -e
+    if [ -z "$1" ]; then
+      echo 'output file name not set, exiting..'
+      exit 0
+    fi
+    # time_now=$(date +%Y%m%d_%H%M%S)
+    DIR=$(mktemp -d)
+    CUR=$PWD
+    cd "$DIR"
+    echo "$DIR"
+    DEVICE="airscan:w2:Brother"
+    MODE="Gray"
+    #a4 => -x 210 -y 297
+    # scanimage -b --format tiff --device-name=$DEVICE --resolution 300 --mode $MODE --source 'ADF' -x 210 -y 297
+    scanimage -b --format tiff --device-name=$DEVICE --resolution 300 --mode $MODE --source 'ADF' -x 210 -y 297
+    #a5 => l=(210-148)/2
+    # scanimage -b --format tiff --device-name=$DEVICE --resolution 300 --mode $MODE --source 'ADF' -l 31 -x 148 -y 210
+    # --version-sort requires gnu coreutils
+    FILES=$(find ./ -type f | sort --version-sort | cut -sd / -f 2-)
+    magick convert $FILES -quality 10 -compress jpeg "$CUR/$1"
+
+====shortcomings
+1. appimages are not usable, a troubleshooting guide from appimages does not exist
+2. cargo installations with c deps not work: no instructions for installation and search with apk has no results
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: ld: error: unable to find library -lgcc_s
+          cc: error: linker command failed with exit code 1 (use -v to see invocation)
+3. no qt meta-package and no instructions what package to use for installing qt
+- qt[5/6]-[base/devel] do not exist
+4. fonts may not be installed, so for example deutsche bahn pdfs or ghostty default font are incorrectly rendered
+- apk add poppler
+- pdffonts deutsche_bahn_ticket.pdf
+
+idea bootloader signing and other tamper prevention mechanisms
+see https://wiki.archlinux.org/title/Security#Secure_Boot

@@ -1,5 +1,6 @@
 #====basics
 # best overview I found so far https://cliutils.gitlab.io/modern-cmake/chapters/intro/dodonot.html
+# https://cliutils.gitlab.io/modern-cmake/README.html
 
 #====cpp_modules
 

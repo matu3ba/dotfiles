@@ -129,7 +129,8 @@ int add3 (int a, int b, int c) { return a + b + c; }
 #endif // !defined(__cplusplus)
 
 // idea if defined(..) error else define macro to make macros shorter
-// use typedef, if possible: prevents `short SHORTINT test = 1;` shennanigans.
+// use typedef, if possible: prevents `short SHORTINT test = 1;`
+// SHENNANIGAN preprocessor always searches current dir first for quote includes.
 
 // figure out default symbols of host
 // echo | gcc -dM -E -

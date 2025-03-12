@@ -73,6 +73,7 @@ Incomplete list of intrusion prevention and detection:
 * strict firewall rules, port forwarding etc
 * correct file permissions
 * secure backup copies of system software and data
+  for example using https://www.tarsnap.com/index.html
 * sys bootstrapping from local storage until hardening applied
 * write down attack vectors and plan etc
 

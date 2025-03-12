@@ -142,6 +142,11 @@ https://learn.microsoft.com/en-us/sysinternals/downloads/procmon
 https://www.x86matthew.com/view_post?id=lognt32
 http://jacquelin.potier.free.fr/winapioverride32/
 
+hooking for instrumentation
+https://github.com/microsoft/detours
+https://github.com/TsudaKageyu/minhook
+https://github.com/Xenely14/zig-minhook
+
 Debugging methods
 msvs monitor (remote debugger server): msvsmon.exe
 Remote Debugger Port Assignments from Remote Debugger Port Assignments - Visual Studio (Windows)

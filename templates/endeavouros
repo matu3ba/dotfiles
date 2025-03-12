@@ -1,0 +1,41 @@
+====general
+* update mirrors via
+  - system installer
+  - if package dependency not avaiable, use sudo pacman -Suy
+
+TODO
+* before kernel_shell
+* kernel_shell
+* efi_shell
+* repair_grub
+* repair_systemd-boot
+
+* boot_nongraphical emergency rescue mode (using system on disk)
+  - systemd-boot
+    o press e on boot menu
+    o press end to reach end of bootline seperate with space and add 1
+    o press enter to boot into rescue shell
+      x 1 is for "Boot into emergency rescue mode (single user mode)"
+  - grub
+    o press e when grub-boot menu appears
+    o use arrow keys to find line 'linux /vmlinux root=UUID=... rw quiet resume... (long snake of numbers)
+    o change to 'rw systemd.unit=multi-user.target resume=..'
+    o for more diagnostics remove (temporarily) option quiet
+    o press Ctrl-X to boot with these parameters
+* boot_chroot via rescue system (using external system, ie on usb)
+  - TODO: does this require login to work?
+  - sudo lsblk -f
+  - unlock encryption:
+    o "cryptsetup list" via entries crypto_LUKS: lsblk --fs
+    o cryptsetup open /dev/sda root
+      returns /dev/mapper/root
+  - mount data partition (add mapper, if necessary): sudo mount /dev/sda2 /mnt
+    o if necessary sudo mount /dev/mapper/root/part2 /mnt
+  - check mount points fo ESP: sudo cat /mnt/etc/fstab
+  - mount system partition: sudo mount /dev/sda1 /mnt/efi
+    o or use /mnt/boot/efi
+    o if necessary sudo mount /dev/mapper/root/part1 /mnt/efi
+  - login into installed system
+    o arch/endeavour: sudo arch-chroot /mnt
+  - check for workable user: whoami && ls /home
+  - rerun failed update, rebuild kernel images, reinstall uninstalled packages, fix configs, etc

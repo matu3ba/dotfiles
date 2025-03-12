@@ -14,3 +14,7 @@ Do not use openSSL on
 => phone
 => laptop running other programs not trusted to be bug-free
 => car
+
+system encryption
+- linux: dm-crypt, cryptsetup --help, lsblk --fs, cryptsetup open /dev/sda1 root, cryptsetup close root
+https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system

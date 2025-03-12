@@ -1,4 +1,26 @@
 static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
+
+// tldr;
+// Purpose of C++ is linear types, operator overloading and kernels for the
+// functional parts. Constrains like concepts, templates etc are all
+// fancy/somewhat more structured CTFE without advantage of verification or
+// logical deduced completeness. OOP with vtable is one of many composition +
+// abstraction patterns.
+//
+// So existing features are too complex (only 1 constructor + destructor necessary
+// selecting functionality via tagged union) or have poor external integration (no
+// lib abi to invoke external kernels) and wanted ones like CTFE dont get
+// implemented due to legacy. OOP not being optional to use std functionality,
+// especially allocator stuff, is an antipattern.
+
+//====perf
+//====tooling
+//====changes
+//C++ exception performance numbers https://youtu.be/bY2FlayomlE?t=4336
+// fn depth  | std::expected  | gcc & libunwind | perf-optimized impl
+//  6(multi) |  556(1x)       |  15344(27x)     |  2652(4.77x)
+// 96(multi) | 8556(1x)       | 184454(21.5x)   | 22102(2.6x)
+
 // Tested with
 // zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
 // zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
@@ -3206,6 +3228,12 @@ static_assert(enum_to_string(Color(42)) == "<unnamed>");
 // SHENNANIGAN not possible to test if a type meets the Container named type requirement
 // * there are neither plans nor willingness to change that
 // * boils down to resolving circular dependency on type resolving and arcane implementation details
+
+void use_reflection() {
+  // TODO reflection blog post c++ channel
+  // hackernews roasting
+}
+
 #endif // defined(HAS_CPP26)
 
 constexpr void appendBlabla(std::string &str) { str.append("blabla"); }

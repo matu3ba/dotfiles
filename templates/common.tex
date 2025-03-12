@@ -3,6 +3,9 @@
 % https://github.com/WGUNDERWOOD/tex-fmt
 % https://github.com/mcopik/latex-tools
 
+
+%====spacing
+
 % tex-fmt: off
 \textrm{<text>}       \textrm{roman} text         Roman text
 \textsf{<text>}       \textsf{sans serif} text    sans serif text
@@ -15,6 +18,58 @@
 \textsc{<text>}       \textsc{Small Caps} text    Small Caps text
 \emph{<text>}         \emph{emphasized} text      emphasized text
 \textnormal{<text>}   \textnormal{default} text   default text
+% tex-fmt: on
+
+%====spacing
+% tex-fmt: off
+\begin{tabular}{lp{5cm}}
+  \verb|a\,b|                     & a\,b \quad $a\, b$ \\
+  \verb|a\thinspace b|            & a\thinspace b \quad $a\thinspace b$ \\
+  \verb|a\!b|                     & a\!b \quad $a\!b$ \\
+  \verb|a\negthinspace b|         & a\negthinspace b \quad $a\negthinspace b$ \\
+  \verb|a\:b|                     & a\:b \quad $a\:b$ \\
+  \verb|a\>b|                     & a\>b \quad $a\>b$ \\
+  \verb|a\medspace b|             & a\medspace b \quad $a\medspace b$ \\
+  \verb|a\negmedspace b|          & a\negmedspace b \quad $a\negmedspace b$ \\
+  \verb|a\;b|                     & a\;b \quad $a\;b$ \\
+  \verb|a\thickspace b|           & a\thickspace b \quad $a\thickspace b$ \\
+  \verb|a\negthickspace b|        & a\negthickspace b \quad $a\negthickspace b$ \\
+  \verb|$a\mkern\thinmuskip b$|   & $a\mkern\thinmuskip b$ (similar to \verb|\,|) \\
+  \verb|$a\mkern-\thinmuskip b$|  & $a\mkern-\thinmuskip b$ (similar to \verb|\!|) \\
+  \verb|$a\mkern\medmuskip b$|    & $a\mkern\medmuskip b$ (similar to \verb|\:| or \verb|\>|) \\
+  \verb|$a\mkern-\medmuskip b$|   & $a\mkern-\medmuskip b$ (similar to \verb|\negmedspace|) \\
+  \verb|$a\mkern\thickmuskip b$|  & $a\mkern\thickmuskip b$ (similar to \verb|\;|) \\
+  \verb|$a\mkern-\thickmuskip b$| & $a\mkern-\thickmuskip b$ (similar to \verb|\negthickspace|) \\
+  \verb|a\enspace b|              & a\enspace b \\
+  \verb|$a\enspace b$|            & $a\enspace b$ \\
+  \verb|a\quad b|                 & a\quad b \\
+  \verb|$a\quad b$|               & $a\quad b$ \\
+  \verb|a\qquad b|                & a\qquad b \\
+  \verb|$a\qquad b$|              & $a\qquad b$ \\
+  \verb|a\hskip 1em b|            & a\hskip 1em b \\
+  \verb|$a\hskip 1em b$|          & $a\hskip 1em b$ \\
+  \verb|a\kern 1pc b|             & a\kern 1pc b \\
+  \verb|$a\kern 1pc b$|           & $a\kern 1pc b$ \\
+  \verb|$a\mkern 17mu b$|         & $a\mkern 17mu b$ \\
+  \verb|a\hspace{35pt}b|          & a\hspace{35pt}b \\
+  \verb|$a\hspace{35pt}b$|        & $a\hspace{35pt}b$ \\
+  \verb|axyzb|                    & axyzb \\
+  \verb|a\hphantom{xyz}b|         & a\hphantom{xyz}b (or just \verb|\phantom|) \\
+  \verb|$axyzb$|                  & $axyzb$ \\
+  \verb|$a\hphantom{xyz}b$|       & $a\hphantom{xyz}b$ (or just \verb|\phantom|) \\
+  \verb|a b|                      & a b \\
+  \verb|$a b$|                    & $a b$ \\
+  \verb|a\space b|                & a\space b \\
+  \verb|$a\space b$|              & $a\space b$ \\
+  \verb|a\ b|                     & a\ b \\
+  \verb|$a\ b$|                   & $a\ b$ \\
+  \verb|a{ }b|                    & a{ }b \\
+  \verb|$a{ }b$|                  & $a{ }b$ \\
+  \verb|a~b|                      & a~b \\
+  \verb|$a~b$|                    & $a~b$ \\
+  \verb|a\hfill b|                & a\hfill b \\
+  \verb|$a\hfill b$|              & $a\hfill b$
+\end{tabular}
 % tex-fmt: on
 
 SHENNANIGAN

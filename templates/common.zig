@@ -33,6 +33,7 @@ const builtin = @import("builtin");
 // aliasing checking prototype - https://github.com/ityonemo/clr
 // ebpf based runtime checks - https://github.com/Sobeston/lifetime-debugger
 // Unicode text processing-  https://codeberg.org/atman/zg
+// Zig to Nix converter - https://github.com/Cloudef/zig2nix
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger
@@ -60,6 +61,7 @@ const builtin = @import("builtin");
 // Crosscompiling: templates/crosscompiling_zig.sh
 // decentish intro: https://pedropark99.github.io/zig-book/
 // regex https://github.com/mnemnion/mvzr
+// network perf https://www.openmymind.net/
 
 test "beware_endianness" {
     // const content_len: [4]u8 = .{ 0, 0, 0, 4 }; // wrong for little endian 4
@@ -288,6 +290,8 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
 
 // SHENNANIGAN Bootstrapping and checking methods is very time consuming
+// -DCMAKE_C_LINKER_DEPFILE_SUPPORTED=false
+// -DCMAKE_CXX_LINKER_DEPFILE_SUPPORTED=false
 // cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows"
 // cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows" -DZIG_TARGET_MCPU=baseline
 // cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows-gnu"

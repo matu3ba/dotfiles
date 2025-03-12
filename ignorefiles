@@ -52,4 +52,5 @@ zig-out
 *.out
 *.exe
 *.o
-TODO
+TODO*
+build*/

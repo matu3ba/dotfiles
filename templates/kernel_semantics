@@ -49,3 +49,18 @@ idea citations for everything
 
 mini kernel
 https://github.com/nuta/operating-system-in-1000-lines
+
+TODO better wrapup why Zig not ready for kernel stuff yet
+getting requirements in numbers very tricky
+
+I may be very wrong, because I did no kernel stuff with zig, but afaiu Zig has
+no way to 1. specify each safety rule behavior to 2. recover from behavior like
+out of bounds via resetting state. Crashing in kernel space unless on before
+specified security rules xor predetermined integrity violations is simply no
+option. Banning certain overflow behaviors (in release) would be another thing,
+but that could also be solved via linter. However, I do also very much
+understand the position of core team, for example why it is very bad for
+development speed to get faster to 1.0 and aiming for superior user space
+development is the better option. Besides there being no complete list of
+unsafe behavior yet and aiming for half solutions being very bad. and not let
+people make weird stuff easily.

@@ -127,6 +127,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
      Theory with associated aliases)
    * instead of "update the value", "update the value for all associated
      aliases"
+   * https://github.com/rust-lang/rust/issues/129010 address 64bit leaves out
+     question on who can use what bits of a ptr
+   * top byte is not part of the address on aarch64, x86_64; compilers rely on it though for optimizations
    * pointer provenance semantics for provenance based aliasing analysis and optimizations
      + "Zapping pointers out of thin air" on lwn.net https://lwn.net/Articles/993484/
        very informative article and discussions regarding 1. atomics, 2. pointer semantics

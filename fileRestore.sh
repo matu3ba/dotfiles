@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 ## delete regular files only depending on structure of dotfiles
 ## example: if $1 is a path leading to $HOME/back/FOLDER, we restore
 ## restoring only works, if there is currently no file
@@ -8,7 +8,6 @@
 set -o errexit         # abort on nonzero exitstatus
 set -o nounset         # abort on unbound variable
 set -o pipefail        # don't hide errors within pipes
-IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
 FAIL="TRUE" # will be filled with defaults
 cd "${HOME}/dotfiles"
@@ -30,7 +29,7 @@ if ! test -d "$rootbackupFolderPath"; then
   echo "usage: ./fileRestore.sh $HOME/back/FOLDER"
 fi
 
-while IFS= read -r dfPath; do
+for dfPath in $dotfilePaths; do
   printf '%-40s' "$dfPath"
   dfabsPath="${HOME}/dotfiles/${dfPath}"
   backupAbsPath="${ROOT_BACK_FOLDER}/${dfPath}"
@@ -53,7 +52,7 @@ while IFS= read -r dfPath; do
     printf '%-20s' "FATAL: fix fd or ignorefiles"
   fi
   echo -en "\n"
-done <<<"$dotfilePaths"
+done
 if test "$FAIL" = "FALSE"; then
   echo "restored from ${ROOT_BACK_FOLDER}"
 else

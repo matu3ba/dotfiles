@@ -6,6 +6,31 @@
 #include <assert.h>
 #include <stdint.h>
 
+// TODO write examples pkg-config flags for compilation based on https://ariadne.space/2025/02/08/c-sboms-and-how-pkgconf.html
+// gcc -o main main.c `pkg-config --cflags --libs glib-2.0`
+// see C SBOMs
+
+//====tldr;
+// TODO content summaries
+
+//====tldr;
+// string handling with C standard functions is error prone, absence of hashing
+// annoying and then there is no reliable enough clangd strict mode or other fast
+// analyzer to prevent type issues and unhandled cases without pile of false
+// positives due to too few control over the to be used algebra.
+//
+// Missing alignment in type system and language allowing stack spills left and right is the cherry on top.
+// So while later C standards describe no family of simple bootstrappable
+// languages, they provide not sufficient strictness to write reliably high
+// performance code in fundamental unsafe areas either. This starts with no type
+// safe way to format strings.
+
+// ugly rules initialization rules:
+// 1. struct stat x = { .field = 7 };
+//    without empty initializer padding and various union members can be left uninitialized
+//    workaround: -fzero-init-padding-bits=all
+
+// TODO list
 // GNU function attributes and storage class information
 // function attributes
 // C99
@@ -539,6 +564,8 @@ int32_t c_enum(uint32_t in) {
     }
   }
 }
+
+// getting enum strings is related to https://stackoverflow.com/questions/18070763/get-enum-value-by-name
 
 // Superfluous with C23.
 #if !defined(GENERATE_ENUM_STRINGS)

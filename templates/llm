@@ -1,5 +1,6 @@
 ====llms
 ====artifacts
+====known_to_work_use_cases
 
 ====llms
 * Gemini
@@ -21,3 +22,13 @@ https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of
   - no intelligence involved, query machine with context for processing
 
 TODO https://news.ycombinator.com/item?id=42100560
+
+====known_to_work_use_cases
+given known probability distribution(s) and sufficient handling of edge cases (controlled environment or enumeratable enough)
+* 1. copy-paste/use common optimal learned goal
+* 2. automate calibration-like tasks
+* 3. basic overview stuff not to be trusted/needs validation
+
+any automation system can only be as good as the (formal) semantics encoding
+it, so dont expect much without (formal) encoding of meanings or copy-paste
+solution.
