@@ -1,0 +1,45 @@
+====freecad
+====gcode
+====kicad
+====openscad
+====tooling
+
+====freecad
+incredibly complex that learning it requires a tutorial for each subtool
+automatic constraint deletion option name??
+deps:
+- chimera:
+  * qt6-qttools-devel
+  * yaml-cpp-devel
+  * python-devel
+  * python-pybind11-devel
+  * XercesC (old/low quality code)
+    git clone https://gitbox.apache.org/repos/asf/xerces-c.git
+    git checkout v3.3.0
+    cmake -DCMAKE_BUILD_TYPE=Release -B build -G Ninja
+    cmake --build build -j $(nproc)
+    build failure with Clang 19.1.7
+    => huge number of warnings including many implicit on master
+git clone --recurse-submodules https://github.com/FreeCAD/FreeCAD.git
+
+cmake -DFREECAD_USE_PCL=false -DCMAKE_BUILD_TYPE=Release -B build -G Ninja
+cmake --build build -j $(nproc)
+
+====gcode
+https://github.com/prusa3d/PrusaSlicer
+
+====kicad
+https://www.kicad.org/
+Electronic design automation (EDA) / electronic computer-aided design (ECAD)
+* can import EAGLE and Altium
+
+====openscad
+https://openscad.org/
+OpenSCAD is the TeX of CAD software
+https://openscad.org/cheatsheet/index.html
+
+====tooling
+minifying
+* Synthesizing Structured CAD Models with Equality Saturation and Inverse Transformations
+* https://github.com/uwplse/szalinski.git
+removing constrains??

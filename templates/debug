@@ -1,6 +1,10 @@
+====model
 ====hardware
 ====kernel
 ====processes
+
+====model
+TODO
 
 ====hardware
 debugging hardware probes TODO
@@ -11,6 +15,15 @@ debugging best practice https://zipcpu.com/zipcpu/2022/08/30/not-my-fault.html
 hardware verification https://github.com/YosysHQ/sby
 * zipcpu has great quiz questions
 
+====hardware/software
+https://embeddedcomputing.com/technology/debug-and-test/debugging-at-the-hardware-software-interface
+https://www.elektronikpraxis.de/hug-the-debug-bevor-es-zu-spaet-ist-a-1084581/
+https://www.concept.de/products.html
+https://www.einfochips.com/blog/debugging-of-mixed-signal-soc-in-an-effective-and-efficient-way-to-save-multi-billion-dollar-loss/
+options:
+* hardware sniffer / debug module
+* SPICE with RNM blocks as mixed signal simulator
+
 ====processes
 Linux: /proc
 FreeBSD: procstat
@@ -19,6 +32,10 @@ procstat -f, fstat
 ==Network
 FreeBSD: sockstat
 Linux: ss
+
+====kernel
+idea https://shape.host/resources/advanced-kernel-debugging-techniques-on-linux
+https://github.com/0voice/kernel_memory_management/blob/main/%E2%9C%8D%20%E6%96%87%E7%AB%A0/5%20useful%20tools%20to%20detect%20memory%20leaks%20with%20examples.md
 
 TODO summarize methods mentioned in
 https://www.brendangregg.com/blog/2024-03-17/the-return-of-the-frame-pointers.html

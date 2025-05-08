@@ -243,15 +243,15 @@ if status is-interactive
   #  set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
   #end
   #function sfalketh -d "sandboxing falkon + whitelist download dir"
-  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--private=$TMP" falkon && rmtmpdir "$TMP"
+  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=enp4s0 --private=$TMP falkon && rmtmpdir "$TMP"
   #end
   #function sfalkwlan -d "sandboxing falkon + whitelist download dir"
-  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=wlan0 "--private=$TMP" falkon && rmtmpdir "$TMP"
+  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=wlan0 --private=$TMP falkon && rmtmpdir "$TMP"
   #end
   function foxeth -d "sandboxing firefox + whitelist download dir (default profile) "
     if test -e "$HOME/eth_device"
       cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/eth_device"
     end
@@ -259,7 +259,7 @@ if status is-interactive
   function foxwlan -d "sandboxing firefox + whitelist download dir (default profile) "
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" firefox -P default && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
@@ -267,7 +267,7 @@ if status is-interactive
   function sfoxeth -d "sandboxing firefox + private download dir (no profile) "
     if test -e "$HOME/eth_device"
       cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--private=$TMP" firefox && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/eth_device"
     end
@@ -275,7 +275,7 @@ if status is-interactive
   function sfoxwlan -d "sandboxing firefox + private download dir (no profile) "
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name "--private=$TMP" firefox && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
@@ -283,7 +283,7 @@ if status is-interactive
   function tbirdeth -d "sandboxing thunderbird + private download dir (no profile) "
     if test -e "$HOME/eth_device"
       cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" thunderbird && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/eth_device"
     end
@@ -291,7 +291,7 @@ if status is-interactive
   function tbirdwlan -d "sandboxing thunderbird + private download dir (no profile) "
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name "--whitelist=$TMP" thunderbird && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end

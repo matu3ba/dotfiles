@@ -29,6 +29,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
 
 //====tooling
+//====libraries
 //====best_practice_compilers
 //====best_practice_compilation_times
 //====potential_tradeoffs_memory_improvements
@@ -41,6 +42,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 
 //====tooling
 // hot restart as feature - https://github.com/proximafusion/vmecpp
+// comparing lib std and compilers by c++ versions - https://build-bench.com/
 
 //====best_practice_compilers
 // idea use -fsanitize=type https://llvm.org/devmtg/2017-10/slides/Finkel-The%20Type%20Sanitizer.pdf
@@ -1106,6 +1108,7 @@ class FriendOfVariable2 {
 // NOLINTBEGIN(clang-diagnostic-padded)
 class ExampleClass {
   int mValue;
+  uint8_t _pad1[4] __attribute__((unused)); // not portable, gcc convention
   std::mutex mMut;
   // move constructor (move means much (2) ampersand arg)
   // ExampleClass ex2 = std::move(ex1); // or ExampleClass ex2 = &&ex1;
@@ -2038,7 +2041,7 @@ namespace CHECK {
 
 #if defined(HAS_CPP20)
 template<typename T1, typename T2>
-concept CanMultiply = requires(T1 &a, T2 &b) { a *b; };
+concept CanMultiply = requires(T1 &a, T2 &b) { a * b; };
 template<typename T1, typename T2>
 requires CanMultiply<T1, T2> void mul(T1 &t1, T2 &t2) {
   t1.m = t1 * t2;
@@ -2580,8 +2583,9 @@ void use_transform() {
 // hardware_constructive_interference_size (1x, 2x, ..), but the compile-time
 // or runtime detection of hardware might not be sufficient.
 // see also https://igoro.com/archive/gallery-of-processor-cache-effects/
-static_assert(std::hardware_constructive_interference_size <= std::hardware_destructive_interference_size,
-              "likely promote true-sharing size not lower equals likely avoid false-sharing size");
+// not supported by clang libcpp yet
+// static_assert(std::hardware_constructive_interference_size <= std::hardware_destructive_interference_size,
+//               "likely promote true-sharing size not lower equals likely avoid false-sharing size");
 
 template<class ITR> void use_is_pair(ITR &&itr) {
   // access of itr->second ok.

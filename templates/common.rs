@@ -3,7 +3,6 @@
 //====design_flaws
 //====setup
 
-
 //====use_cases
 //Small to medium sized projects with well-known kinda fixed semantics/problem space, since huge
 //refactorings and explorative coding is slow in Rust. Besides that, one here wants the benefits of
@@ -79,6 +78,16 @@
 //
 // https://model-checking.github.io/verify-rust-std/
 
+// SHENNANIGANs cargo and rustc:
+// * dynamic linking to musl is broken since a very long time https://github.com/rust-lang/rust/issues/135244 and
+// https://github.com/rust-lang/rust/issues/95926 and filing issues / ask how to disable proc macro and other stuff
+// depending on dynamic linking is the only solution aside of rewriting
+// * force static linking: set -x RUSTFLAGS "-C target-feature=+crt-static"
+// * ignored on cross-compilation: cargo install stylua --features lua52 --target x86_64-unknown-linux-musl
+// * proc-macro/clap needs dynamic linking: set -x RUSTFLAGS "-C target-feature=-crt-static"
+// * dynamic linking on musl systems needs libc path, which should be supported by Rust,
+// but not necessary on the target system
+
 // SHENNANIGANs
 // * intentionally racy reads and writes (like for parallel seeded region growing) are not
 // expressible currently in Rust
@@ -100,4 +109,4 @@
 // }
 
 //====setup
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+//curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs

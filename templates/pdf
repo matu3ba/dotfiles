@@ -1,5 +1,5 @@
-merging pdf files:
-pdftk *_flatten.pdf cat output merged.pdf
+merging pdf files: pdftk *_flatten.pdf cat output merged.pdf
+splitting pdf files:
 
 flattening annotated pdfs:
 pdftocairo -pdf input.pdf output.pdf
@@ -22,3 +22,9 @@ xournalpp
 
 Editors
 Adobe Reader or simple editing programs
+
+https://gist.github.com/josue/dc6a60d9a8054f94b7f6
+Using ImageMagick to easily: Split, Merge, Remove a page from PDF.
+lossy split: magick convert LargeSample.pdf split/page-%0d.jpg
+remove page: rm split/page-2.jpg
+lossy merge: convert split/*.jpg merged/full.pdf

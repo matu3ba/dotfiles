@@ -42,6 +42,8 @@ git commit -m "Introduce end-of-line normalization"
 ====diff
 1. Installling a tool to read binary files and output text files
   * pandoc, pdftotext, pdftostdout
+  * https://github.com/jgm/pandoc
+  * https://tigerbeetle.com/blog/2025-02-27-why-we-designed-tigerbeetles-docs-from-scratch/
 2. Add conversion handlers to git
 git config --global diff.docx.textconv pandoc --to=rst
 git config --global diff.odt.textconv pandoc --to=rst

@@ -113,6 +113,8 @@ vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
   group = aucmds_lint,
   callback = function()
     lint.try_lint()
-    lint.try_lint 'typos'
+    if vim.fn.executable('typos') == 1 then
+      lint.try_lint 'typos'
+    end
   end,
 })

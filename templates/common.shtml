@@ -1,4 +1,10 @@
+====comments
+====simple_example
+
+====comments
 <!-- page.shtml -->
+
+====simple_example
 <div id="attribution" class="centered">
   Written by
   <ctx :text=$page.author></ctx>

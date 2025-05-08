@@ -21,6 +21,7 @@ file unix_filepath
 - 2. result without UTF-8 BOM: use iconv step in 1.
 - 3. result with UTF-8 BOM
   * sed -i 's/\xef\xbb\xbf//' /tmp/textFile
+  * BSD sed: sed -i '' ..
 
 show file encodings detected by editor
 * vim/nvim: :set fileencoding

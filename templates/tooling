@@ -18,6 +18,7 @@ reverse engineering:
 * dynamic analysis in emulator (usually qemu fork for hardware) => may be wrong, general direction, unlimited breakpoitns
 ripgrep from BurntSushi https://github.com/BurntSushi/ripgrep
 rr - https://github.com/rr-debugger/rr
+* https://github.com/sidkshatriya/me/blob/master/008-rr-everywhere.md
 znvim from LordMZTE https://mzte.de/git/LordMZTE/znvim (glpv3)
 zellij: s-e (scrollback-edit)
 yazi as file manager https://github.com/sxyazi/yazi

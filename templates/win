@@ -567,6 +567,9 @@ Replace thread with process.
 * If target thread is manipulating global state of a shared DLL, state of the DLL could be destroyed, affecting other users of the DLL.
 * On some platforms (such as Microsoft Windows XP and Microsoft Windows Server 2003), the thread's initial stack is not freed, causing resource leaks.
 
+https://www.jeremyong.com/winapi/io/2024/11/03/windows-memory-mapped-file-io/
+* memory mapped files
+
 System libraries: Kernel mode debugging
 C:\Windows\SysWOW64
 

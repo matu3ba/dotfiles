@@ -1,5 +1,9 @@
 https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html
 
+"Exploiting Undefined Behavior in C/C++ Programs for Optimization: A Study on the Performance Impact"
+* perf impact of optimized programs <10 % with higher impact on ARM and lower on non-ARM
+* unclear impact of SIMD and non-SIMD usage with latter harder to optimize
+
 1. tldr; flags
 1.1 opt
 -O2

@@ -1,0 +1,8 @@
+====spectec
+
+====spectec
+SpecTec to check
+* formal specification (latex)
+* prose specification (reST)
+* reference interpreter (OCaml)
+* test suite (wast)

@@ -98,6 +98,10 @@ nftable watchdog https://wiki.nftables.org/wiki-nftables/index.php/Element_timeo
 Get all responding ips:
 arp -[a|e]
 
+Resolve ARP
+arp-scan -l --resolve --format='${ip} ${Name} ${Vendor}'
+arp-scan -l --format='${ip} ${Vendor}'
+
 Print hostname entries via working DNS:
 host -t a DNS
 dig +short DNS

@@ -2,6 +2,16 @@
 # best overview I found so far https://cliutils.gitlab.io/modern-cmake/chapters/intro/dodonot.html
 # https://cliutils.gitlab.io/modern-cmake/README.html
 
+# https://dane-bulat.medium.com/cmake-how-to-inspect-and-configure-the-compiler-877e6cb0317f
+# git clone https://github.com/danebulat/cmake-compiler-flags.git
+# ccmake .
+# cmake --system-information information.txt
+
+#====cross_compilation
+# https://github.com/Rodiii/cmake_crosscompiling_template
+# https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html
+# https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html
+
 #====cpp_modules
 
 # TODO summarize techniques from https://izzys.casa/

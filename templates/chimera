@@ -206,11 +206,12 @@ startplasma-wayland
   - perl install-tl, then press P and edit /etc/local/ to ~/.local/
   - perl install-tl --profile=profile
   - https://tug.org/texlive/doc/tlmgr.html#EXAMPLES
+* setup printer according to manual, for example using wifi direct and accessing http://192.168.223.1
 * enable printer service: dinitctl -s enable cupsd
   unclear if needed: apk add cups-devel
   - cups and hp printer drivers: apk add cups hplip cups-filters
   - hp tooling for setup is broken
-  - 'apk add nmap' and scan network: nmap -sn 192.168.178.0/24
+  - 'apk add nmap' and scan network: nmap -sn 192.168.0.0/24
   - manually adding network printer (hostname/ip taken from nmap scan): ipp://hostname/ipp/print
   https://developers.hp.com/hp-linux-imaging-and-printing/install/step4/cups/net
   ipp://HPD269F0.fritz.box/ipp/print
@@ -247,13 +248,20 @@ startplasma-wayland
     # --version-sort requires gnu coreutils
     FILES=$(find ./ -type f | sort --version-sort | cut -sd / -f 2-)
     magick convert $FILES -quality 10 -compress jpeg "$CUR/$1"
+* bind-progs
+  - internet lookup things
+* arp-scan
+  - local network scans via ARP
 
 ====shortcomings
 1. appimages are not usable, a troubleshooting guide from appimages does not exist
+- likely issue with something from exclude list not shipped https://github.com/AppImageCommunity/pkg2appimage/blob/master/excludelist
+  see also https://ludditus.com/2024/10/31/appimage/
 2. cargo installations with c deps not work: no instructions for installation and search with apk has no results
   = note: some arguments are omitted. use `--verbose` to show all linker arguments
   = note: ld: error: unable to find library -lgcc_s
           cc: error: linker command failed with exit code 1 (use -v to see invocation)
+  reason is Rust compiler does not handle clang based systems yet
 3. no qt meta-package and no instructions what package to use for installing qt
 - qt[5/6]-[base/devel] do not exist
 4. fonts may not be installed, so for example deutsche bahn pdfs or ghostty default font are incorrectly rendered

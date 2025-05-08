@@ -17,6 +17,13 @@ and formal verification etc
 https://discourse.llvm.org/t/passing-structs-to-c-functions/83938/9
 https://github.com/lifting-bits/anvill
 
+Equality Saturation as algo to efficiently explore program space defined by rules
+http://effect.systems/
+* many application domains
+* search problem, NP-hard without simplifications
+* Datalog most interesting data representation
+"Saturated Knowledge of Equality Saturation"
+
 Instructions to bring up cmake and llvm on very old systems with cmake.
 Note: Using `-DLLVM_ENABLE_PROJECTS="all" \` might break, so use minimal necessary output.
 libc and compiler-rt are other common options, but also not necessary.

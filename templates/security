@@ -104,6 +104,8 @@ Linux
 4. coredump + stack trace obtainable,
 5. reaper pid to kill child processes
 6. restricting ptrace to only 1 process required selinux policy
+https://github.com/SELinuxProject/selinux-notebook
+- unclear security integrity checks in overview
 https://serverfault.com/questions/933205/selinux-policy-for-cap-sys-ptrace-by-invoking-process-name,
 but should work now in landlock:
 https://docs.kernel.org/userspace-api/landlock.html#ptrace-restrictions
@@ -145,6 +147,7 @@ bwrap --unshare-user --uid $(id -u) --gid $(id -g) --proc /proc --dev /dev --tmp
         --bind ./mynixroot /nix \
         ./nix build 'nixpkgs#'
 https://sandstorm.io/
+https://www.ralfj.de/projects/bubblebox/ https://github.com/RalfJung/bubblebox
 
 ====virtualization
 
@@ -191,6 +194,9 @@ Preventing Use-After-Free Attacks with Fast Forward Allocation
   - congestion window adjusting for handling many domains, solution: do scheduling yourself, bad: externalize as attack vector
   - header data duplication due to being stateless, solution: better defaults, bad: save more state for compression
   - there is no formal model (state automaton) of HTTP2.0, not even from the client
+
+====virtual_machine
+Windows User Space Emulator - https://github.com/momo5502/emulator/
 
 ====state_stateless_splitting
 * handling non-software state

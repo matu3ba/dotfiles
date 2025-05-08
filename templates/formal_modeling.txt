@@ -1,10 +1,24 @@
 ====theory
-* Promise theory
-* Integer arithmetics
-* Floating point arithmetics
-* TODO pointer theory
-
+====tools
 ====idioms
+====weak_memory
+====formal_problems
+====optimality
+====state_of_art
+====correctness_implementation
+====interfaces
+and misc
+
+====theory
+* Promise theory
+  * synchronization
+  * Temporal logic as (discrete) schedule? more concrete relation?
+* Integer arithmetic, Modular arithmetic, Saturation arithmetic
+* Floating point arithmetic
+* Separation logic as pointer theory (to optimize pointer accesses)
+* memory logics for functional+time behavior of cache, RAM and other storage?
+  * state automata known for synchronization of cache lines, but the rest?
+* SIMD logic?, Ralf Jung's group had a paper for common SIMD things
 
 List of dedicated formally proved languages
 - Simulink idea explanation
@@ -14,11 +28,13 @@ List of dedicated formally proved languages
   * import
   * codegen
     + PLC has codegen from ladder diagrams and other graphical methods
+- P language based on actor model (without message loss)
 
 ====tools
 * https://dagitty.net/
 * venn.nvim
 * Gephi
+* SysML (extension of UML): Eclipse Capella https://mbse-capella.org https://github.com/eclipse-capella/capella
 
 ====verification_costs
 Proof effort is quadratic to code size, if code is not side-effect free.
@@ -42,6 +58,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   and runtime semantics for most parts.
 * High-level code to simplify problem to simplify memory, strings, atomics not
   possible in Zig
+* unclear mapping of CSP/parallelism to actor model ie used by https://github.com/p-org/P
 
 ====weak_memory
 * best theory overview and consequences "The One-Decade Task: Putting std::atomic in CUDA. - Olivier Giroux - CppCon 2019"
@@ -373,6 +390,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * https://www.learntla.com/
   * TODO
   * https://softwareengineering.stackexchange.com/questions/270674/which-language-has-most-advanced-support-for-proof-based-programming
+  * actor based languages for distributed systems simplify implementation details significantly
+    o P language to apply formal methods https://github.com/p-org/P
+  * alternative should be based on CSP todo long form
 - 19. Reversible computation
   * For Real Hardware
     + CPU schedulers are hardware-based and thus relative simple. You can think
@@ -409,6 +429,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   8. extensibility (format will evolve)
   9. keep the spirit (no reuse for different intent without distinction)
   10. perfect is the enemy of good (avoid over-complexity)
+  * examples for good and simple formats
+    o quite okay audio
+    o quite okay image
 - 23. model for coroutine cancellation unfeasible without constrains
   * conditions for cancellation safety can be arbitrary complex
   * "cancellation token"
@@ -429,6 +452,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 25. static analysis to prove bug-free programs
   * https://github.com/codex-semantics-library/codex not usable yet
   * https://github.com/binsec/binsec unclear trade-offs of symbolic execution
+- 26. definitions of memory safety is omitting wanted use cases, which renders it
+  semi-useless
+  * good links for tooling https://memorysafety.openssf.org/memory-safety-continuum/
 
 To me unclear if solved:
 * check if linker speak has a formal model
@@ -438,14 +464,8 @@ To me unclear if solved:
 * check, if cakeml and compcert have linker speak verified
   - no
 
-Austral as language with linear type system without boilerplate (might become decent DSL)
-https://borretti.me/article/introducing-austral
-https://austral-lang.org/spec/spec.html#linearity
-- cogent uses also a linear type system https://trustworthy.systems/projects/TS/cogent.pml.
-Note: There are other more domain-specific fully verified languages, ie for message passing
-compiling to C code or for signal processing etc (Simulink).
-
-Thoughts on a theoretical optimal language:
+====optimality
+Theoretical optimal language:
 ```
 Consider a language being bootstrapped (in multiple steps) from assembly.
 Such language needs to have a freestanding build, link and dependency resolving
@@ -457,6 +477,11 @@ tool to impregnate every system for multiplying the fragments.
 5.    no hotswapping and REPL for debugging: broken
 6.    no usable async: broken
 7.    no formal correctness proof of spec and parts: unfinished
+Theoretical optimal proof language
+1. compositional semantics
+2. unbounded loops
+3. intuitive proof rules
+4. concurrency
 
 One possible strategy:
 1.    Have super simple to use + expressive + portable language
@@ -471,7 +496,7 @@ One possible strategy:
 6.    Formal analysis interface to compiler (API to extract ASTs + PIE for analysis).
 7.    World domination. Build a temple or something.
 
-State of art:
+====state_of_art
 - (Partially) verifiable are static and more simple language like 'Structured Text',
   'CompCert C' up to pure functional languages (io restricted) like TODO
 - Hotswapping and/or with REPL are interpreted languages like Julia, Python, R
@@ -480,7 +505,47 @@ State of art:
 - Wrapup of midori as operating system for reduction of errors (without taking
   into account performance)
   https://joeduffyblog.com/2016/02/07/the-error-model/
+- "Program logics à la carte" by Vistrup et al. to compose program logics and
+  make use of language-agnostics program logic to build language-specific program
+  logic (mixed demonic/angelic choice)
+  * TODO understand effect systems and their limitations
+- ReLinChe as tool for verifying relaxed linearizability via bounded model checking
+  * found ordering violation of https://libcds.sourceforge.net/
+  * model checking, partial lock for specification
+  * verfying MPCs with 7-9 threads with up to 9 calls below 15 minutes
+  * most time spent in enumeration (not refinement)
+  * see https://en.wikipedia.org/wiki/Linearizability
+- "Relaxed Memory Concurrency Re-executed" by Moiseenko et al. with XMM to possibly fix C memory model
+  * https://www.youtube.com/watch?v=Jff0pIbj8PM&t=14362s
+  * XMM - novel (almost) per-execution axiomatic-operational semantic framework
+    for relaxed concurrency with XC20 as instantation of XMM for the C20 memory model
+  * 1 No Out of Thin Air, 2 efficient compilation, 3 local program transformations,
+  * 4 thread sequentialization is sound, 5 amendable to model checking
+  * not good: promising semantics, Wkmo and others because no support for
+  thread sequentialization; C20 has OOTA and can not be model checked
+  * thread sequentialization is based on graph reconstruction
+  * XMM and RC20 have those properties, so has proposed XC20 model
+  * XMC as sound model checker implemented on top of GenMC
+  * missing: ROCQ mechanization, sequentially-consistent accesses,
+  archive completeness of model checking algorithm
+- MIXER: DPOR for MSA
+  * stateless model checking can not handle mixed size accesses in general
+  * factorial state explosion
+  * dynamic partial order reduction, explore partial-ordered traces
+  (execution graphs as only necessary graphs)
+  Multi-Write Revisits to revisit a read, so how to guarantee optimality?
+    - tie-breaking like which steps are allowed
+    - unique choice for each visit
+  * GenMC to verify lockref clients, #threads up to 4 threads with executions
+  reaching more than 100_000 for 5 threads
+  * factor <2 overhead for non-MSA benchmarks
+- Advanced Weakest Precondition Calculi for Probabilistic Programs
+  * calculus specifically tailored to the task of reasoning about expected runtimes
+  * use cases: randomized algorithms, describing complex probability distributions
 
+"quantified verification" as verification of quantified properties instead of general/basic ones
+
+====correctness_implementation
 System implementation details towards correctness:
 - 1. Correctness requires to simplify data representation and handling (both
      serialized and unserialized)
@@ -522,9 +587,16 @@ compiler backends important optimizations
 - typical OS permissions model: eventual consistency (signaling, no scheduler
   upper bound for security context etc) or possible race conditions. security
   depends on implementation details to be probably correct and sandboxing being
-  sufficient.
+  sufficient. see also PAC theorem for why
 
-interfaces meaning
+Austral as language with linear type system without boilerplate (might become decent DSL)
+https://borretti.me/article/introducing-austral
+https://austral-lang.org/spec/spec.html#linearity
+- cogent uses also a linear type system https://trustworthy.systems/projects/TS/cogent.pml.
+Note: There are other more domain-specific fully verified languages, ie for message passing
+compiling to C code or for signal processing etc (Simulink).
+
+====interfaces
 - 1. dynamic dispatch https://en.wikipedia.org/wiki/Dynamic_dispatch
   * works good enough
   * how the different type is chosen

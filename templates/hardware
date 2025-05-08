@@ -1,6 +1,19 @@
 ====general
+====specification_langs
 ====computing
 ====debugging
+====tooling
+====nvm
+
+====specification_langs
+* VHDL
+* Verilog
+* SystemC
+* meta langs for VHDL/Verilog codegen
+  - Spinal
+  - Chisel
+  - Bluespec
+  - Spade
 
 ====general
 * cpu/gpu news https://semiwiki.com/
@@ -128,3 +141,14 @@ Debug/Test Infra
     * how firmware engineer attaches debugger to board? soldering usually bad answer
     * non-essential helpful GPIOs exposed for debugger (ie SWO or ETM)?
     * existing test points for power rails, analog signals, busses?
+
+====tooling
+glibc-hwcaps
+
+====nvm
+NVM (non-volatile memory)
+* opportunity to rethink the entire system stack
+* Twizzler as Data-centric OS for Non-volatile Memory
+  - most persistent pointer operations <0.5 ns added latency
+  - ops up to 13x faster than Unix, SQLite queries up to ~4x faster than on PMDK
+  - YCSB workloads ran ~1-3x faster than on native and NVM-optimized SQLite backends

@@ -1,2 +1,43 @@
-vector data bases - https://grski.pl/vdb
-tigerbeetle - distributed double accounting database
+====dataflow_systems
+====distributed_double_accounting_databases
+====query_compilation
+====relational_database
+====replication
+====usability
+====vector_databases
+
+====dataflow_systems
+* aqualang as language designed to be compositional, safe, fast, easy to use
+  - uses equality saturation for optimizations
+
+====distributed_double_accounting_databases
+tigerbeetle
+
+====query_compilation
+Database query compilation: our journey Thomas Neumann & Viktor Leis
+* trade-offs on query execution
+
+====relational_database
+* structured query language (sql)
+  - bigquery, zetasql, etc (pipe syntax for composability)
+  - prql (pipelined relational query language) as "modern sql replacement" for composability
+    o transforms, orthogonalisms, invariants, few primitives, fns, ergonomics
+    o clickhouse, duckdb, glaredb, mysql, postgres, sqlite, ansi, bigqueue, mssql, snowflake
+
+====replication
+"Enough with all the Raft" by Alex Miller
+* Blob Storage
+* Quorum
+* Raft
+* Reconfiguration
+
+====usability_shortcomings
+"DB usability as if" by Jonathan Edwards
+* displaying relationships
+* interactive schema evolution (DSLs in research, but no interactivity)
+* version control for data and schema
+
+====vector_databases
+https://grski.pl/vdb
+
+unclear use cases of http://www.logicblox.com/learn.html

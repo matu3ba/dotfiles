@@ -1,0 +1,18 @@
+// Multiple packages with same name called "zig" on Guix:
+// When defining them in Scheme, naturally they get unique symbols.
+// (define-public zig-0.13
+//  (package
+//    (name "zig")
+//    ...))
+// (define-public zig-0.14
+//  (package
+//    (name "zig")
+//    ...))
+// (define-public zig zig-0.14)
+// When you name a package though, like on the command line, zig resolves to the most recent version.
+// You can specify like zig@0.13. You can also perform this lookup from Scheme
+// if you don't want to figure out what module zig-0.13 would come from, like so:
+// (specification->package "zig@0.13")
+// Otherwise it's a simple import of (gnu packages zig) in this case.
+
+// explicit module imports

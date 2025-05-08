@@ -1064,16 +1064,16 @@ void array_pointers(void) {
   int arr[10];
   int *ap0 = arr;
   ap0[0] = 5;
-  int(*ap1)[10] = &arr;
+  int (*ap1)[10] = &arr;
   (*ap1)[1] = 10;
 
   // multi-dimensional array on heap
-  int(*ap3)[9000][9000] = malloc(sizeof(*ap3));
+  int (*ap3)[9000][9000] = malloc(sizeof(*ap3));
   if (ap3 != NULLPTR)
     free(ap3);
 
   // Variable Length Array (on stack)
-  int(*ap4)[1000][1000] = malloc(sizeof(*ap4));
+  int (*ap4)[1000][1000] = malloc(sizeof(*ap4));
   if (ap4 != NULLPTR) {
     // (*arr)[i][j]
     free(ap4);

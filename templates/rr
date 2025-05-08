@@ -37,3 +37,5 @@ p sizeof array
 
 pgrep -lf exec
 live-record -p PID
+
+# https://github.com/sidkshatriya/me/blob/master/008-rr-everywhere.md

@@ -14,13 +14,21 @@ win_src_dest, nixos/configuration.nix and hardware-configuration.nix
 
 ### Dependencies
 
-- coreutils: http://git.savannah.gnu.org/gitweb/?p=coreutils.git (untested for other utils)
-  * readlink to follow symbolic links
-  * realpath to resolve non-canonical paths provided by fd-find
+- readlink to follow symbolic links
+- realpath to resolve non-canonical paths provided by fd-find
 - fd-find: https://github.com/sharkdp/fd (cargo install fd-find) for convenient ignorelist
   * fd returns relative paths prefixed with ./ to prevent -files from modifying shell behavior
-- POSIX-compatible shell, but should work on most other shells
-  * loops need adjustments for POSIX shell
+- POSIX-compatible shell
+- zig build
+  * cross compilation `zig build test -Dno_cross`
+    o zig
+  * mandatory dependencies `zig build test -Dno_opt_deps`
+    o zig
+  * optional dependencies `zig build test -Dno_opt_deps`
+    o stylua: `cargo install stylua --features lua52`
+    o haskell (shellcheck)
+    o llvm-tools (clang-format, clang-tidy)
+    o luacheck
 
 ### Usage
 
@@ -32,7 +40,7 @@ Keep a copy of your distro and files around on your first try to restore things.
 
 ### Path handling and file names
 
-To set an example for proper handling, we use readlink and realpath from coreutils.
+To set an example for proper handling, we use readlink and realpath.
 This is a fundamental limitation of any program printing folder and file names,
 since `-filenames` are not considered as special.
 However they can break programs.

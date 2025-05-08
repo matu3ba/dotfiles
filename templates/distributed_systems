@@ -1,3 +1,4 @@
+====databases
 
 fault-tolerance?
 consistency?
@@ -91,6 +92,7 @@ ideally something better than ssh supported on the platform
 ====databases
 idea list databases for distributed use cases
 idea list databases for not losing data by type TM
+"Use of Time in Distributed Databases - don't fall behind the times" by Murate Demirbas
 
 ====shared_memory
 ??
@@ -121,3 +123,6 @@ uptime       |  downtime       | requirement
 99.999999%   |         3*10-1s | soft real-time operating kernel of involved systems (estimation)
 99.9999999%  |         3*10-2s | hard real-time operating kernel of involved systems (estimation)
 99.99999999% |         3*10-3s | hard-ware only (estimation very unclear)
+
+https://github.com/palvaro/CSE232-Spring23
+* Graduate Distributed Systems

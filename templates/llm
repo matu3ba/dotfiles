@@ -5,6 +5,7 @@
 ====llms
 * Gemini
 * ChatGPT
+* reasoning about llms https://transformer-circuits.pub/2025/attribution-graphs/methods.html
 
 ====artifacts
 https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of-the-kind/

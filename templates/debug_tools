@@ -22,6 +22,9 @@ tldr;
 IDA Pro
 - Hex-Rays decompilers
 
+====libdebug
+https://github.com/libdebug/libdebug
+
 ====gdb_design problem
 Core problem of abstraction in gdb:
 - tui without any stability guarantee
@@ -38,6 +41,8 @@ Core problem of abstraction in gdb:
 
 ====gdb
 - posix gdb frontend https://github.com/nakst/gf
+- server impl https://github.com/blackmagic-debug/blackmagic/blob/main/src/gdb_packet.c
+- ARM microcontrollers https://github.com/blackmagic-debug/blackmagic
 
 ====MSan, TSan
 - bug discovery, crash deduplication, root cause analysis

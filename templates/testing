@@ -4,6 +4,8 @@
 ====integration
 ====e2e
 
+====determinstic_simulation
+
 ====general
 ====unit
 ====component
@@ -134,6 +136,7 @@ Meetings
 - slides with short talk, if understanding is important
 - in doubt, unless it is about business/money idea, YAGNI (You aren't gonna need it.)
 - separate informative from non-informative parts
+- if mostly words, use AI tools to generate the transcription
 
 Materials
 - ssh has >0.2s delay per key press, virtual machine is worse
@@ -148,6 +151,7 @@ Ideas for the ideal cli test system for non-timing and timing based testing:
 - design rules for making a multi-threaded/process tool (piecewise) deterministically
   to write test queries for the collected data of the behavior
 - test system for multi-threaded/process time based test collection and human output
+- idea: use declarative language like dtrace for integration and e2e testing
 
 - Query system options for test behavior: You are basically writing a RAM database
   best TODO intro
@@ -228,3 +232,10 @@ fuzzing ideas + process semantics
 https://skia.org/docs/dev/testing/automated_testing/
 https://github.com/luci/luci-py/blob/main/appengine/swarming/doc/Design.md
 https://github.com/luci/luci-py/blob/main/appengine/swarming/doc/Detailed-Design.md
+
+====determinstic_simulation
+Execution – Single-threaded to eliminate scheduler noise
+Entropy – All RNGs should have a known seed
+Time – No physical clocks
+I/O – No deps on external IO with components not part of the simulation,
+and subject to all the same constraints
