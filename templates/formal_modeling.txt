@@ -10,12 +10,11 @@
 and misc
 
 ====theory
-* Promise theory
-  * synchronization
-  * Temporal logic as (discrete) schedule? more concrete relation?
+* synchronization (XMM general model, XC20 model for C as candidates)
 * Integer arithmetic, Modular arithmetic, Saturation arithmetic
 * Floating point arithmetic
 * Separation logic as pointer theory (to optimize pointer accesses)
+  - can/should be extended with synchronization model
 * memory logics for functional+time behavior of cache, RAM and other storage?
   * state automata known for synchronization of cache lines, but the rest?
 * SIMD logic?, Ralf Jung's group had a paper for common SIMD things
@@ -463,6 +462,10 @@ To me unclear if solved:
     tests (or oracle for correct semantics).
 * check, if cakeml and compcert have linker speak verified
   - no
+* As I understand it, LTO collects "live symbols" and strips the rest besides
+doing allowed bitcode optimizations (for strong LTO), but for example the LLVM
+docs do not clarify how "symbol is live" is detected
+https://www.llvm.org/docs/LinkTimeOptimization.html
 
 ====optimality
 Theoretical optimal language:
@@ -560,11 +563,11 @@ System implementation details towards correctness:
 
 Candidates for an optimal language (independent of domain) working on at least 3 points:
 - Compcert C is working on frontend verification and semantics of linker speak (3+4+7 solved, 3+5 unclear)
-  * requires manual modeling with costly (manual) existential variables solving
+  * requires manual modeling with costly (manual) existential variables solving TODO what are existential variables used for?
 - Rust satisfies 3, 4 for safe Rust and is kinda working on 6 (no completion
   model), but it is not simple, so it can not be optimal (no realistic chance
   to prove correctness or to reduce bug count to 0)
-- Zig's strategy is currently to working on 1-3 for version1_0, 4 is missing PRO and RVO)
+- Zig's strategy is currently to working on 1-3 for version1_0, 4 has PRO, RVO but no model)
 ```
 
 The claim of memory safe software is that the checker helps you and that the

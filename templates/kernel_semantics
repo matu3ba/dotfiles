@@ -64,3 +64,15 @@ development speed to get faster to 1.0 and aiming for superior user space
 development is the better option. Besides there being no complete list of
 unsafe behavior yet and aiming for half solutions being very bad. and not let
 people make weird stuff easily.
+
+https://ziggit.dev/t/stack-probe-puzzle/10291
+stack puzzle
+* https://stackoverflow.com/questions/46790666/how-is-stack-memory-allocated-when-using-push-or-sub-x86-instructions/46791370#46791370
+* https://github.com/rust-lang/rust/issues/43052
+  => Skip the main thread's manual stack guard on Linux, https://github.com/rust-lang/rust/pull/43072
+
+https://matklad.github.io/2025/05/19/profiling-challenge-results.html
+profiling:
+* windows + linux: https://github.com/pierricgimmig/orbit
+* best: https://github.com/KDAB/hotspot
+* https://perfwiki.github.io/main/

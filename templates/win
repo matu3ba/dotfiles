@@ -1,3 +1,11 @@
+====MSVC_build_system
+====MSVC_msbuild
+====kernel
+====debug
+====build_problems
+====debugging_timetravel
+TODO cleanup
+
 Get installation location of msvc c, c++ compiler and linker with batch file:
 cd %ProgramFiles(x86)%\Microsoft Visual Studio\Installer\
 vswhere
@@ -762,3 +770,7 @@ wsl -d NixOS --system --user root -- /mnt/wslg/distro/bin/nixos-wsl-recovery --s
 C:\Users\USER\AppDir\buildBatch.bat
 fd -uu -e tlog -x shasum.bat -a 512 {}
 Get-ChildItem .\SDK\ -Recurse | Get-FileHash -Algorithm MD5
+
+====kernel
+https://learn.microsoft.com/en-us/archive/blogs/wsl/pico-process-overview
+pico-process as foundation for WSL1

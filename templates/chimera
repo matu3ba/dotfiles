@@ -248,6 +248,7 @@ startplasma-wayland
     # --version-sort requires gnu coreutils
     FILES=$(find ./ -type f | sort --version-sort | cut -sd / -f 2-)
     magick convert $FILES -quality 10 -compress jpeg "$CUR/$1"
+* development man pages: apk add man-pages-devel
 * bind-progs
   - internet lookup things
 * arp-scan

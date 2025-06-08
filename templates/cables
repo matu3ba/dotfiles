@@ -1,0 +1,23 @@
+====terms
+====measure
+====work
+
+====terms
+L/L1/L2/L3: live, de Phase (conducting electricity)            [old: UVW]
+N:          neutral, de Masse/Neutralleiter (no electricity)   [old: M]
+PE:         protective earth, de Erde/Erdung/Schutzleiter      [old: N]
+GDN/N+PE:   ground, de Null/Nullleiter                         [old: grounding symbol]
+missing PE requires
+
+====measure
+* black cable for COM, red for other
+* dont use any connection hole with "DC" in name for AC
+different systems common:
+* good GND when L-N == L-PE ,
+  since N-GND == 0 with GND=N+PE
+  <=> N-(N+PE) == 0 iff PE == 0
+* TT-System, IT-System, TN-C-S-System (TN-C and TN-S System)
+
+====work
+laying GND cable (PE with N connected)
+* when L-N != L-PE

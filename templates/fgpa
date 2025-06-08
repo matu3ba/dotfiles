@@ -1,0 +1,22 @@
+https://vhdlwhiz.com/terminology/
+
+1 Basics FGPA and Zynq SoC
+Start with HDLs like Verlog, VHDL or SystemC. Understand unique architecture
+of Zynq SoC — ARM processor + FPGA fabric.
+* https://www.fpga4student.com/
+* Project F — Tutorials Vivado + Verilog https://projectf.io
+* ZipCPU Blog, logic design and bus protocols https://zipcpu.com
+2 Deep dive
+* lean Processing System (PS) and Programmable Logic (PL) interaction with Zynq
+* Xilinx / AMD Blogs — Vitis, Vivado and Zynq-specific projects
+  - https://www.xilinx.com/blog
+  - Tutorials focused on Zynq boards https://digilent.com/blog/
+3 Get comforable with key communication protocols
+* UART, SPI, I2C for peripheral communication, AXI for PS-PL data exchange
+* Ethernet and AXI DMA next as you advance
+4 Explore real projects and community repos
+* ADI EngineerZone — Zynq designs with SPI, JESD204, and more
+  - ADI GitHub — Real FPGA communication systems https://ez.analog.com
+  - https://github.com/analogdevicesinc
+  - Hackster.io — Community-driven DIY projects https://hackster.io
+* begin with UART, SPI for example starting with zynq nano board

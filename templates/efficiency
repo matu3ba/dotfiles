@@ -1,0 +1,52 @@
+====time to market efficiency
+====cost efficiency
+
+====time to market efficiency
+https://titoma.com/blog/speed-up-time-to-market-electronics/
+* TODO process efficiency rules
+* TODO how to design in such a way that you avoid harmful radio-emissions
+* cost: PIC better for low quantity, or STM for high quantity
+* STM offers better development tools in terms of IDE support, HAL, and libraries
+* assume: development and manufacturing in the West costs a lot more, sells slowly
+* go for steady small orders, share sales forecast
+* offer more money to get things faster
+* consolidate suppliers for better negotiation power
+* resort to second-hand component distributors
+* consider a PCB design that allows for 2 or more alternatives for "dangerous"
+positions
+* tooling
+  - review CAD models with 1 SolidWorks, 2 Fusion 360 with multiple team members editing
+  - simulate designs digitally with 1 Ansys 2 COMSOL
+  - projet tracking jira, monday.com, etc
+  - rapid prototyping with 3erp for hands-on insight within hours
+  - communication zoom, miro, slack
+  - Collaborative DFM
+  - https://titoma.com/blog/collaborative-hardware-development/
+  - Real-time dashboards and version control prevents duplication, confusion, keeping everyone aligned and informed
+
+====cost efficiency
+1. NDA
+2. Development in copyright abiding market
+3. Own full IP
+Many IP problems we have seen arise when development or tooling was offered
+free or far below cost, and the client’s sales numbers did not meet rosy
+forecasts. Since the client was not able to sell, the manufacturer feels
+morally justified in making back his investment by doing the selling himself.
+4. Divide and Conquer
+allocate PCB assembly, molding, and final assembly to different factories
+5. off-the-shelf solutions (for hardware), involve factory suggested components early on
+6. same need, same solution
+7. material up to 60% costs (of hardware)
+8. remove or no undesired features, reduce complexity
+9. trust-based relationships with suppliers
+10. try to find bargains (as short-term solution)
+11. eletronics:
+  * try to integrate components on same side of printed boards
+  * standard size -> dont design enclosure yourself
+  * reduce BOM cost
+  * start with factory ASAP after first BOM so they see and validate component selection
+  * purchase 10 or more competitor products and learn from their design decision,
+  architecture, materials, etc. competitive benchmarking is good way to find solutions
+  to reduce your production cost and understand what competitor does
+  * call on hardware experts, because designing most affordable PCB needs lots
+  of expertise

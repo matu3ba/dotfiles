@@ -23,6 +23,12 @@ Database query compilation: our journey Thomas Neumann & Viktor Leis
   - prql (pipelined relational query language) as "modern sql replacement" for composability
     o transforms, orthogonalisms, invariants, few primitives, fns, ergonomics
     o clickhouse, duckdb, glaredb, mysql, postgres, sqlite, ansi, bigqueue, mssql, snowflake
+* performance tuning
+  - reduce table size
+  - simplify and omit if possible joins
+  - (postgresql) to get runtime of query prefix it with EXPLAIN
+  - TODO many more things
+* https://dikmenonur.medium.com/sql-performance-tuning-a-comprehensive-guide-0e8a0b0b8aa9
 
 ====replication
 "Enough with all the Raft" by Alex Miller

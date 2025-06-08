@@ -22,11 +22,11 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // 96(multi) | 8556(1x)       | 184454(21.5x)   | 22102(2.6x)
 
 // Tested with
-// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
-// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp20.exe && ./commoncpp20.exe
-// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
+// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
+// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp20.exe && ./commoncpp20.exe
+// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
 
 //====tooling
 //====libraries
@@ -293,6 +293,7 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 #include <memory> // unique_ptr, shared_ptr
 #include <mutex>
 #include <ostream> // std::ostream for stream operator
+#include <queue>
 #include <set>
 #include <sstream>   // std::stringstream
 #include <stdexcept> // std::runtime_error
@@ -355,7 +356,29 @@ static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not dist
 
 void default_init_vector();
 void default_init_vector() {
-  std::vector<int32_t> vect(20); // default initialize vector
+  int const num_elems = 20;
+  int const default_val = 10;
+  std::vector<int32_t> vect(num_elems, default_val); // default initialize vector
+}
+
+void custom_search();
+void custom_search() {
+  std::vector<int> v1 = {1, 2, 3, 4, 5};
+  auto cmp1 = [](int a, int b) { return a < b; };
+  assert(std::binary_search(v1.begin(), v1.end(), 1, cmp1));
+
+  // since C++17
+  // auto const quote = "bla___abcdef___bla";
+  // auto const word = "abcdef";
+  // std::boyer_moore_searcher const searcher(word.begin(), word.end());
+  // auto const it = std::search(quote.begin(), quote.end(), searcher);
+}
+
+void use_queue();
+void use_queue() {
+  int const some = 10;
+  std::queue<int32_t> q;
+  q.push(some);
 }
 
 /// taken from boost hash_combine, only ok for <10% of used range, optimized for performance

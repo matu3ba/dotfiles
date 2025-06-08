@@ -1,0 +1,277 @@
+====status
+====links
+====expectations
+====understanding
+
+====status
+
+leetcode.com _matu3ba_
+
+https://leetcodethehardway.com/roadmap
+
+* common ones
+ [ ] Tries & Strings: Concatenated words, Longest substring without repeats, Interleaving string
+ [ ] Searching & Sorting: Min in rotated sorted array, 132 pattern, Largest divisible subset, Search a 2D matrix
+ [ ] Hashing: 4Sum, Rabbits in forest, Min window substring, Count nice pairs
+ [ ] Stacks & Queues: IPO, Longest valid parentheses, Sliding window median, Sliding window max
+ [ ] Greedy: Maximize the topmost element after K moves
+ [ ] DP: Longest common subsequence, Longest consecutive sequence, Max strength of k disjoint subarrays
+ [ ] Two Pointers: Boats to save people, 2Sum, Container with most water, Trapping rain water
+ [ ] Graphs & Trees: Cheapest flight within K stops, Satisfiability of equality equations, Unique paths, Collect coins in a tree
+
+                                 c cpp py rs zig
+* [ ] Programming Skills wip     n n   n  n  n
+  Basic Implementation  n
+  Built-In Functions    n
+  Simulation            n
+  Matrix                n
+  Math                  n
+  Linked List           n
+  costs: binary tree, design, tricky impls
+* [ ] Data Structures            n n   n  n  n
+* [ ] Heap                       n n   n  n  n
+* [ ] Backtracking               n n   n  n  n
+* [ ] Dynamic Programming        n n   n  n  n
+* [ ] Leetcode Summer Intensive  n n   n  n  n
+
+https://algomaster.io/practice/dsa-patterns
+                                 c cpp py rs zig
+* [ ] AlgoMaster75 wip           n n   n  n  n
+  Array / String        y
+  Two Pointers:         y
+  Sliding Window        y
+  Prefix Sum            y
+  Hash Map / Set        y
+  Stack                 y
+  Queue                 y
+  Linked List           y
+  Binary Tree - DFS/BFS y
+  Binary Search Tree    y
+  Graphs DFS/BFS        y
+  Heap/Priority Queue   y
+  Binary Search         y
+  Backtracking          y
+  DP 1D                 y
+  DP Multidimensional   y
+  Bit manipulation      y
+  Trie                  y
+  Intervals             y
+  Monotonic Stack       y
+* [ ] AlgoMaster150              n n   n  n  n
+* [ ] AlgoMaster300              n n   n  n  n
+* [ ] tags
+  Array                         n
+  String                        n
+  Hash Table                    n
+  Dynamic Programming           n
+  Math                          n
+  Sorting                       n
+  Greedy                        n
+  Depth-First Search            n
+  Binary Search                 n
+  Database                      n
+  Matrix                        n
+  Tree                          n
+  Breadth-First Search          n
+  Bit Manipulation              n
+  Two Pointers                  n
+  Prefix Sum                    n
+  Heap (Priority Queue)         n
+  Simulation                    n
+  Binary Tree                   n
+  Stack                         n
+  Graph                         n
+  Counting                      n
+  Sliding Window                n
+  Design                        n
+  Enumeration                   n
+  Backtracking                  n
+  Union Find                    n
+  Linked List                   n
+  Ordered Set                   n
+  Number Theory                 n
+  Monotonic Stack               n
+  Segment Tree                  n
+  Trie                          n
+  Combinatorics                 n
+  Bitmask                       n
+  Queue                         n
+  Divide and Conquer            n
+  Recursion                     n
+  Binary Indexed Tree           n
+  Memoization                   n
+  Hash Function                 n
+  Geometry                      n
+  Binary Search Tree            n
+  String Matching               n
+  Topological Sort              n
+  Shortest Path                 n
+  Rolling Hash                  n
+  Game Theory                   n
+  Interactive                   n
+  Data Stream                   n
+  Monotonic Queue               n
+  Brainteaser                   n
+  Doubly-Linked List            n
+  Randomized                    n
+  Merge Sort                    n
+  Counting Sort                 n
+  Iterator                      n
+  Concurrency                   n
+  Probability and Statistics    n
+  Quickselect                   n
+  Suffix Array                  n
+  Line Sweep                    n
+  Bucket Sort                   n
+  Minimum Spanning Tree         n
+  Shell                         n
+  Reservoir Sampling            n
+  Strongly Connected Component  n
+  Eulerian Circuit              n
+  Radix Sort                    n
+  Rejection Samples             n
+  Biconnected Component         n
+
+====links
+leetcode.com/problems
+algo.monster
+https://leetcodethehardway.com/templates/two-pointers
+https://blog.algomaster.io/p/15-leetcode-patterns
+https://algo.monster/liteproblems/238
+languag learning https://exercism.org/tracks
+https://devcookies.medium.com/10-leetcode-articles-to-crack-any-coding-interview-675874393103
+https://github.com/ashishps1/awesome-leetcode-resources
+
+01 Sliding Window Patterns
+https://leetcode.com/problems/frequency-of-the-most-frequent-element/solutions/1175088/C++-Maximum-Sliding-Window-Cheatsheet-Template/
+02 Two Pointers Patterns
+https://leetcode.com/discuss/post/1688903/solved-all-two-pointers-problems-in-100-z56cn/
+03 Substring Problems Patterns
+04 Dynamic Programming-1 Patterns
+05 Dynamic Programming-2 Patterns
+06 Binary Search Patterns
+07 Backtracking Patterns
+08 Tree Patterns
+09 Graph Patterns
+10 Greedy Algorithms Patterns
+
+====expectations
+fast algo prototyping
+https://habr.com/en/articles/716768/ experience from LeetCode platform
+(leetcode.com)
+recursive algos
+divide & conquer
+dynamic programming
+greedy algos
+brute force algos
+backtracking algos
+time estimate:
+* noob to beginner 25-40 hours (beginner 50-100 solved problems)
+* beginner to amateur 25-40 hours (amateur 100-300 solved problems)
+* amateur to expert 150-200 hours (300-1000 solved problems)
+* expert to god 300-600 hours (more then 10000 solved problems)
+goal:
+1 algorithms beginning without writing code explain how solving with data structures
+and algos, time and memory complexity, first brute force; if multiple ones offer
+all of them
+2 coding code state previous choices through code, write highly readable code with
+well-named variables, methods etc; code should cover all edge cases
+3 communication comment on every line your write, why writing it and where
+it will lead; talk about general and professional topics during interview;
+here soft skills can be checked before behavioral stage
+4 problem solving put the conditions of the problem on the shelves and ask
+clarification questions with what edge cases can be; during writing code,
+divide tasks into subtasks; algorithm should be 100% understandable by
+interviewee
+=> 10 to 50 mock interviews to automate this skill
+
+https://gist.github.com/pervognsen/218ea17743e1442e59bb60d29b1aa725
+table based DFA
+* slower, but simpler
+shift based DFA
+* 4-5x faster
+* each row is 64 bits and hence with BITS_PER_STATE = 6 you can only accommodate up to 10 states
+* enough for UTF-8 validation, needle-in-haystack pattern matching, skip lexing etc
+* helpful to use "state of interest" to hoist state-based branches out of inner-most loop
+* 1 byte/cycle sweet spot
+
+====understanding
+
+https://blog.algomaster.io/p/15-leetcode-patterns
+https://blog.algomaster.io/p/20-patterns-to-master-dynamic-programming
+1. Prefix Sum
+* create new array NARR, where each element el[i] represents \sum_{0..i}ARR
+* use to perform multiple sum queries on subarrays to calculate cumulative sum
+* \sum_{i,j}ARR = NARR[j] - NARR[j-1]
+2. Two Pointers
+* iterate through array or list with pointer LEFT and RIGHT
+* use to find pairs or elements that match specific criteria
+3. Sliding Window
+* use to find subarray or substring matching specific condition by maintaining
+window of elements
+* use when dealing with problems involving contiguous subarrays or subtrings
+4. Fast & Slow Pointers
+* one pointer moves faster than the other, possibly meeting the other
+* use when dealing with linked lists or similar structures
+5. LinkedList In-place Reversal
+* reverses parts of linked list without extra space
+* use when reversing section of list
+6. Monotonic Stack
+* stack to maintain sequence of elements in specific order (in/decreasing)
+* use for finding next greater or smaller element
+7. Top ‘K’ Elements
+* finds top k largest or smallest elements in array/data stream using heaps or sorting
+8. Overlapping Intervals
+* merge or handle overlapping intervals in array
+* intervals sorted by start time, [a,b] [c,d] overlap if (b >= c)
+9. Modified Binary Search
+* adapts binary search to solve wider range of problems
+* use to find specific element in sorted or rotated array
+10. Binary Tree Traversal
+* visiting nodes in binary tree in specified order (pre-,in-,post-order)
+11. Depth-First Search (DFS)
+* traversal technique to explore paths far down branch before backtracking
+* use to explore all paths or branches in graphs or trees
+* iterative (stack), recursive (fn calls) and set/hashmap/table for visited nodes
+  - add node, if not visited yet
+12. Breadth-First Search (BFS)
+* traversal technique to explore nodes level by level in tree or graph
+* use to find shortest path in unweighted graphs or level-order traversal
+* iterative (queue), recursive (fn calls) and set/hashmap/table for visited nodes
+  - add node, if not visited yet
+in trees
+13. Matrix Traversal
+* traversing elements in matrix using different techniques (DFS,BFS,..)
+* use for 2D grids or matrices horizontally,vertically or diagonally
+14. Backtracking
+* explores all possible solutions and backtracks when solution path fails
+* use to find all (or some) solutions to problem under given constrains, ie
+combinatorial problems, permutations, combinations or subsets
+15. Dynamic Programming Patterns
+* breaking down problems into smaller subproblems and solving them using bottom-up
+or top-down approach
+* use for problems with overlapping subproblems and optimal substructure
+* has multiple sub-patterns like with most relevant ones being **
+ - **Fibonacci Sequence
+ - Kadane's Algorithm
+ - **0/1 Knapsack
+ - Unbounded Knapsack
+ - **Longest Common Subsequence (LCS)
+ - **Longest Increasing Subsequence (LIS)
+ - Palindromic Subsequence
+ - Edit Distance
+ - **Subset Sum
+ - String Partition
+ - Catalan Numbers
+ - **Matrix Chain Multiplication
+ - Count Distinct Ways
+ - DP on Grids
+ - DP on Trees
+ - DP on Graphs
+ - Digit DP
+ - Bitmasking DP
+ - Probability DP
+ - State Machine DP
+
+Algorithms for Competitive Programming https://cp-algorithms.com/
+https://github.com/cp-algorithms/cp-algorithms

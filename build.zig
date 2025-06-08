@@ -615,8 +615,10 @@ const SingleTexFiles = [_][]const u8{
 
 const SingleZigFiles = [_][]const u8{
     // "build.zig", // build file
+    "example/comptime_allocator.zig",
     // "example/copyhound.zig", // missing dep
     "example/sudo/sudo_shell.zig",
+    "example/twoway_typeid.zig",
     // "example/zigpkg/build.zig",
     // "example/zigpkg/src/main.zig",
     // "example/zigpkg/src/root.zig", // zigpkg project

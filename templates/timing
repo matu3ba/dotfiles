@@ -1,0 +1,18 @@
+====cycle_time
+====latency
+
+====cycle_time
+* Beckhoff devices can go down to 50us
+* FGPA cycle time typically goes down to 10us, but is only constrained by hardware and clock speed (up to 1.5 GHz)
+* ASIC allow more routing optimizations and only have physical constrains besides hardware (3GHz or more possible)
+
+====latency
+* wifi typically >1ms
+  - Wi-Fi 6 OFDMA
+    o roundtripping latency ~2-3ms with one AP, one client and no interference
+    o <4ms for bidirectional VoIP
+    o testing two-hop multi-AP showed 4-5ms
+  - wifi 7 OFDMA
+    o no numbers yet
+* 5G network latency with ~100us
+* cheap hardware numbers indicate >3ms https://electricui.com/blog/latency-comparison

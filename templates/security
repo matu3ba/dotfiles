@@ -1,4 +1,5 @@
 ====basics
+====models
 ====general
 ====applied_basics
 ====bubblewrap
@@ -59,6 +60,13 @@ Timing channels in protocols are a huge problem
 * Interact and try to identify differences (patterns etc).
 
 idea examples or tools to for time analysis (io, network etc)
+
+====models
+* Bell-Lapuda
+* Biba
+* Clark-Wilson
+* Brewer-Nash
+* Harrison-Ruzzo-Ullman
 
 ====general
 Incomplete list of intrusion prevention and detection:

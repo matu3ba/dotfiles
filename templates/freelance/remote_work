@@ -1,0 +1,6 @@
+cloud
+* cloud infra & deployment processes
+* usually via cloud vendors AWS, Azure, GCP
+* fast scaling (with using Venture Capital) instead of owning & optimizing infra
+* focus on product
+* dependency on cloud maintenance and infra as (soft) tax on business

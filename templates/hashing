@@ -1,1 +1,16 @@
 http://0x80.pl/notesen/2023-04-30-lookup-in-strings.html
+
+1 <= n <= 200
+1 <= grid[i][j] <= 10^5
+=> min = 1, max = 200*10^5 = 2*10^7
+2**31-1 approx. 10^9,
+2**30 >= 10**9 >= 2**29
+2**20 >= 10**6 >= 2**19
+2**10 >= 10**3 >= 2**9
+roughly 2*10**9(4*10**9) values fit into int32(uint32).
+
+cheap and crappy hash would be
+grid[i][j] * (j+2) % 100_000
+
+TODO criteria of hash quality for algo design
+TODO good hash collection for various ranges

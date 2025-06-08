@@ -13,7 +13,7 @@ one to do something (slightly) different
 ====CAAS
 Example: Ethercat Product purpose is to have simple to extend electrical connections
 with realtime characteristics in close to millisecond range down to 10-100us,
-which is sufficient for many simple control applications.
+which is sufficient for most (simple) control applications.
 
 However, developer experience is not great for REPL = fast debug cycles, which
 may be typical or representative for "configuration as a service" products due

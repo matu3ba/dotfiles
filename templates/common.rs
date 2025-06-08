@@ -81,7 +81,7 @@
 // SHENNANIGANs cargo and rustc:
 // * dynamic linking to musl is broken since a very long time https://github.com/rust-lang/rust/issues/135244 and
 // https://github.com/rust-lang/rust/issues/95926 and filing issues / ask how to disable proc macro and other stuff
-// depending on dynamic linking is the only solution aside of rewriting
+// depending on dynamic linking is the only solution aside of rewriting or patching rust compiler
 // * force static linking: set -x RUSTFLAGS "-C target-feature=+crt-static"
 // * ignored on cross-compilation: cargo install stylua --features lua52 --target x86_64-unknown-linux-musl
 // * proc-macro/clap needs dynamic linking: set -x RUSTFLAGS "-C target-feature=-crt-static"

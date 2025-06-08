@@ -28,3 +28,6 @@ Using ImageMagick to easily: Split, Merge, Remove a page from PDF.
 lossy split: magick convert LargeSample.pdf split/page-%0d.jpg
 remove page: rm split/page-2.jpg
 lossy merge: convert split/*.jpg merged/full.pdf
+
+List used fonts
+pdffonts file.pdf

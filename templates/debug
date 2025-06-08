@@ -6,6 +6,11 @@
 ====model
 TODO
 
+====float
+https://github.com/Traxar/various-number-types
+would be cool to have some insight into what would be feasible for
+semi-automatic debugging without full analysis
+
 ====hardware
 debugging hardware probes TODO
 debugging cpu https://zipcpu.com/zipcpu/2022/12/03/no-boot.html
@@ -15,6 +20,8 @@ debugging best practice https://zipcpu.com/zipcpu/2022/08/30/not-my-fault.html
 hardware verification https://github.com/YosysHQ/sby
 * zipcpu has great quiz questions
 
+https://intmainreturn0.com/notes/stacktrace-is-finally-cheap.html
+
 ====hardware/software
 https://embeddedcomputing.com/technology/debug-and-test/debugging-at-the-hardware-software-interface
 https://www.elektronikpraxis.de/hug-the-debug-bevor-es-zu-spaet-ist-a-1084581/
@@ -23,6 +30,10 @@ https://www.einfochips.com/blog/debugging-of-mixed-signal-soc-in-an-effective-an
 options:
 * hardware sniffer / debug module
 * SPICE with RNM blocks as mixed signal simulator
+  - Ngspice (open source, todo look into features)
+  - LTspice (good perf and features)
+  - QSPICE (best perf and features)
+  - todo look into debugging options
 
 ====processes
 Linux: /proc
