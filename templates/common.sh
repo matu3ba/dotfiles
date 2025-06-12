@@ -20,6 +20,10 @@ set +e
 # and reset
 set -e
 
+# debugging
+set -x
+set +x
+
 # see https://unix.stackexchange.com/questions/520035/exit-trap-with-posix
 # Using signal numbers as complete solution is not portable and listing all signal
 # names is ugly/unreadable

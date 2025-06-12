@@ -303,18 +303,20 @@ Potential solution
 * easyos?
   * https://easyos.org/tech/how-easy-works.html
   * TODO difference on internals, looks very similar
-=> zb as very strong contender https://www.zombiezen.com/blog/2024/09/zb-early-stage-build-system/
+=> zb as usability contender https://www.zombiezen.com/blog/2024/09/zb-early-stage-build-system/
   * lua for config
   * more powerful build features, eg supports content-addressed derivations
   * support for non-determinism
   * nix compatible file formats
   * windows support
   * no nix dependency
+  * drawback: written in go known for garbage collection and huge binaries
 => lix as nix fork does not fix language problem, aims for better usability
   * same language
   * unclear path for content-addressed derivations
-  * non-determinism ?
+  * support non-determinism unclear
   * no windows support
+  * written in C++ and soon Rust
 
 sixos
 ownerboot (coreboot fork) -> infuse (better nix modules)  -> sixos (s6 + nix)

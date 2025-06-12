@@ -29,6 +29,19 @@
   + problematic with laptops, no problem with grounded desktop pc
   + correct hardware design more complex/expensive, simpler to provide GND
   see also https://electronics.stackexchange.com/questions/79752/what-is-common-mode-noise
+* VLSI design flow
+  + rtl design via hdl
+  + "functional verification" (simulate + verify rtl design)
+  + synthesis (transform rtl to gate-level netlist)
+  + design for test (insert scan chains and test logic)
+  + foorplanning & placement (place blocks, macros, standard cells)
+  + clock tree syntehsis (build clock distribution network)
+  + routing (connect components with wires)
+  + static time analysis (ensure design meets timing requirements)
+  + "physical verification" (check layout design rules, compare layout and netlist)
+  + gdsii file send to foundry for chip fabrication
+* VLSI fgpa flow
+  + TODO
 
 https://www.infoq.com/presentations/computing-interaction-technology/
 TODO summarize future hardware

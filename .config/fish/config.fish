@@ -1,3 +1,6 @@
+## Fish may use global cache $HOME/.config/fish/fish_variables, so adjustments
+## may require deletion of that file.
+
 if status is-interactive
   # Commands to run in interactive sessions can go here
   # export variables
@@ -78,7 +81,9 @@ if status is-interactive
   fish_add_path "$HOME/.luarocks/bin"
   fish_add_path "$HOME/.local/nvim/bin" # neovim testing
   # scr/bLLVM.sh
-  fish_add_path "$HOME/dev/git/cpp/llvm-project/build-release/bin" # llvm tooling
+  # Default LLVM installation uses incorrect shared libs on Chimera Linux,
+  # so for simplicity use system LLVM tooling.
+  # fish_add_path "$HOME/dev/git/cpp/llvm-project/build-release/bin" # llvm tooling
 
   # download as instructed by https://tug.org/texlive/quickinstall.html
   if test -e "$HOME/texlive_path"
@@ -203,6 +208,15 @@ if status is-interactive
 
   abbr --add -g  rmzigallcache ' rm -fr ./.zig-cache/ ./zig-cache/ ./zig-out/ "$HOME"/.cache/zig/'
   abbr --add -g  rmzigcacherec ' fd -t d -u "zig-out|zig-cache|.zig-cache" -x rm -fr {};'
+  # abbr --add -g  duzigallcache "dust -e './zig-cache/|./.zig-cache/|./zig-out/|$HOME/.cache/zig/'"
+  # abbr --add -g  duzigcacherec "dust -e 'zig-out|zig-cache|.zig-cache'"
+
+  # SHENNANIGAN du-dust can not apply filters to only 1 PATH leading to unnecessary complexity
+  # for combined recursive + global searches.
+  # for example dust -e './zig-cache/|./.zig-cache/|./zig-out/' '$HOME/.cache/zig/'
+  # would always apply the recursive filter to the list of PATHs
+  abbr --add -g  duzigallcache 'dust ./zig-cache/ ./.zig-cache/ ./zig-out/ $HOME/.cache/zig/'
+  abbr --add -g  duzigcacherec 'dust -e "zig-out|zig-cache|\.zig-cache" .'
 
   # firejail
   abbr --add -g   nojail  ' firejail --noprofile'

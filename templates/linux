@@ -384,6 +384,7 @@ sudo pacman -Suy
 naive and incomplete
 * chroot
 * /proc hiding via hidepid=1 or 2
+https://blog.cloudflare.com/sandboxing-in-linux-with-zero-lines-of-code/
 
 proper one works via clone flags
 * new pid namespace CLONE_NEWPID

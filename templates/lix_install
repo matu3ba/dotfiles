@@ -1,0 +1,10 @@
+for Chimera Linux (no systemd)
+----
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.lix.systems/lix > ./lix_install.sh
+chmod +x ./lix_install.sh
+./lix_install.sh install linux --init none
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+# Make Single-User Mode convenient to use (must be able to modify /nix/var/nix, /nix/store/)
+chown -hR $(whoami) /nix/
+
+see example/lix_projectdev/instructions

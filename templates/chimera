@@ -139,7 +139,7 @@ idea
   - apk search firefox
   - apk del firefox
   - list installed pkgs: apk info
-  - check if pkg installed: apk -e info firefox
+  - check if pkg installed: apk info -e firefox
   - apk info --who-owns /usr/bin/firefox
   - list pkgs that pkg depends on: apk -R info firefox
   - list pkgs depending on pkg: apk info -r firefox
@@ -195,6 +195,7 @@ station wl.. get-networks
 startplasma-wayland
 
 ====custom
+* tlp: apk add tlp
 * firejail: apk add libseccomp linux-headers libbpf-tools iptables
   - adjust config dirs: nvim ~/.config/user-dirs.dirs
     to $HOME/fun/Videos/ etc

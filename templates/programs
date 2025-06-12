@@ -108,3 +108,5 @@ extracting music: yt-dlp -x
 extracting video+sound: yt-dlp --max-filesize 1000m
 
 Cross platform capturing video + sound: OBS
+
+wine + discord https://github.com/DiscordMessenger/dm

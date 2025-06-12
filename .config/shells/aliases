@@ -188,6 +188,8 @@ alias  zigstd='${HOME}/.local/appimages/nvim.appimage ${HOME}/dev/git/zi/zig/mas
 #alias zig2test='./zig-out/bin/zig test ../test/behavior.zig -fLLVM -I ../test'
 alias rmzigallcache='rm -fr ./zig-cache/ ./.zig-cache/ ./zig-out/ "${HOME}"/.cache/zig/'
 alias rmzigcacherec='fd -t d -u "zig-out|zig-cache|.zig-cache" -x rm -fr {};'
+alias duzigallcache='dust ./zig-cache/ ./.zig-cache/ ./zig-out/ $HOME/.cache/zig/'
+alias duzigcacherec='dust zig-out zig-cache .zig-cache'
 #rm -fr zig-cache/ zig-out/'
 #find -type d "zig-out|zig-cache" -exec rm -fr {} \;
 
