@@ -1,4 +1,17 @@
 ====general
+====media_preparation
+====partitioning
+====filesystems
+====installation
+====postinstallation
+====packages
+====network
+====plasma
+====custom
+====shortcomings
+====packaging
+
+====general
 * add keyboard language german in kde
 * doas apk add firefox neovim
 * https://chimera-linux.org/docs/installation
@@ -180,7 +193,7 @@ EnableNetworkConfiguration=true
 iwctl
 device list
 station wl.. get-networks
-====network
+
 * enable and configure iwd
   dinitctl enable iwd
   /etc/iwd/main.conf
@@ -192,6 +205,7 @@ station wl.. get-networks
   station STATION connect NETWORK
 
 ====plasma
+balooctl6 disable
 startplasma-wayland
 
 ====custom
@@ -259,6 +273,7 @@ startplasma-wayland
 1. appimages are not usable, a troubleshooting guide from appimages does not exist
 - likely issue with something from exclude list not shipped https://github.com/AppImageCommunity/pkg2appimage/blob/master/excludelist
   see also https://ludditus.com/2024/10/31/appimage/
+  * appimages should now ship everything
 2. cargo installations with c deps not work: no instructions for installation and search with apk has no results
   = note: some arguments are omitted. use `--verbose` to show all linker arguments
   = note: ld: error: unable to find library -lgcc_s
@@ -269,6 +284,11 @@ startplasma-wayland
 4. fonts may not be installed, so for example deutsche bahn pdfs or ghostty default font are incorrectly rendered
 - apk add poppler
 - pdffonts deutsche_bahn_ticket.pdf
+5. Python issues with yt-dlp and error message "extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)"
+- pip install -U yt-dlp
 
 idea bootloader signing and other tamper prevention mechanisms
 see https://wiki.archlinux.org/title/Security#Secure_Boot
+
+====packaging
+TODO libVLC

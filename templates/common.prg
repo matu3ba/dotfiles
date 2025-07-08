@@ -20,6 +20,27 @@
 // TwinCAT IO system Windows Kernel process needs >5 seconds to restart
 // Master Devices need even longer
 
+// general
+// - Codesys OEM product/tool for controls manufacturer
+// - 3S provides software (IEC 61131 editor) + runtime C code
+// - Some companies customize software + change name (Beckhoff, Bosch, Elau, etc)
+// - how factual is this?
+
+// IEC 61131-3 (PLC, Structured Text, etc)
+// - does not address communication
+
+// IEC 61499
+// - provides generic model for distributed systems
+// - editors: FBDK, 4diac IDE, and nxtSTUDIO
+// - runtimes: FORTE Runtime
+// - (new) Event driven systems vs (old) state machines with potential callback hell inclusive
+// - formal connection to semantics of programming language P ?
+// - gateway tooling for connecting SPS
+
+The development software compiles the user program directly into the machine code of the target system (motorola, intel, etc) and it is downloaded directly into RAM of the controller.
+3S provides base C runtime code to work with many RTOSs with hooks to customize into product specific motion, IO systems etc.
+The cool thing about it is that for instance you could open a TwinCat project in the Wago software and get almost the entire project (minus the IO config).
+
 PROGRAM MAIN
 VAR
   u32Counter0 AT %I*: UDINT;

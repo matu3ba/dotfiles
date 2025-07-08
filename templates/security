@@ -2,6 +2,7 @@
 ====models
 ====general
 ====applied_basics
+====apparmor
 ====bubblewrap
 ====virtualization
 ====allocators
@@ -14,6 +15,8 @@
 ====hashing
 ====ipc
 ====hardware_token
+====crypto
+====protocols
 
 https://www.youtube.com/@stacksmashing
 
@@ -85,6 +88,10 @@ Incomplete list of intrusion prevention and detection:
 * sys bootstrapping from local storage until hardening applied
 * write down attack vectors and plan etc
 
+https://discussion.fedoraproject.org/t/security-problems-with-flatpak-browsers-firefox-chromium-bubblejail-seccomp-user-namespaces/121109/6
+* zygote for fork server forwarding or in-place (posixy spawn) spawn
+* fork server missing in firefox
+
 ====applied_basics
 
 basics https://phoenixnap.com/kb/server-security-tips
@@ -94,7 +101,6 @@ basics https://phoenixnap.com/kb/server-security-tips
 Linux
 1. wireguard + ssh (on another port)
   * (dynamic) port forwarding and all those things
-  * TODO
 2. sandboxed environment (jails, zones, containers)
   * seccomp (whitelist of Kernel calls)
   * file system overlay
@@ -141,6 +147,10 @@ TODO list capabilities
 Microkernel/no OS: Single security boundary
 sel4 : specific individual capabilities
 
+====apparmor
+https://apparmor.pujol.io/
+https://github.com/roddhjav/apparmor.d
+
 ====bubblewrap
 bwrap --unshare-user --uid $(id -u) --gid $(id -g) --proc /proc --dev /dev --tmpfs /tmp \
         --ro-bind /bin/ /bin/ \
@@ -156,6 +166,14 @@ bwrap --unshare-user --uid $(id -u) --gid $(id -g) --proc /proc --dev /dev --tmp
         ./nix build 'nixpkgs#'
 https://sandstorm.io/
 https://www.ralfj.de/projects/bubblebox/ https://github.com/RalfJung/bubblebox
+https://superuser.com/questions/1709227/open-new-tab-in-bubblewraped-firefox-from-outside-the-sandbox
+* brwap can only create new namespaces, but not enter existing ones
+* only workaround: job dispatcher in the sandbox that can receive the commands
+* bwrap only allows passing through the DBus socket as a whole (security risk)
+* simple workaround: xdg-dbus-proxy to expose filtered DBus Unix socket
+* everything should terminate together, how?
+* fix: idea
+https://wiki.alpinelinux.org/wiki/Bubblewrap/Examples
 
 ====virtualization
 
@@ -165,7 +183,6 @@ from the guest OS.
 * qemu qmp (or use qemus gdb stub) to read the vm's memory
 * attach serial channel to qemu machine and write stuff to that (treat the read bytes as plain and potentially malicious data)
 
-TODO talk on youtube on VMs
 Advancements for seL4 Virtualization Support
 CAmkES and seL4cp Microkit
 IOMMU Solutions for seL4
@@ -182,6 +199,8 @@ https://www.openbsd.org/faq/faq16.html
 
 https://patchwork.kernel.org/project/qemu-devel/patch/20190701144705.102615-5-slp@redhat.com/hw/i386
 Introduce the microvm machine type
+
+Linux vsyscalls https://github.com/danteu/novdso/
 
 ====allocators
 
@@ -290,3 +309,15 @@ Tillitis TKey flexible USB security token
  and an optional user-provided seed, is used to derive key material unique to
  each application
  as RiscV usb micro computer
+
+====crypto
+functional correct code without constant time guarantees or checks
+* placeholder
+code with constant time guarantees checks
+* https://github.com/pq-code-package/mlkem-native has
+* valgrind should have options to do that
+functional correct code without constant time guarantees open research problem
+* At LLVM IR level this is possible with https://github.com/Neo-Outis/CT-LLVM-Artifact
+
+====protocols
+* prover for protocols: https://tamarin-prover.com/book/

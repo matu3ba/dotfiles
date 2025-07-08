@@ -110,6 +110,8 @@ https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visu
 https://learn.microsoft.com/en-us/visualstudio/ide/walkthrough-building-an-application?view=vs-2022
 https://stackoverflow.com/questions/37785991/where-to-add-the-directory-for-def-file-in-visual-studio
 
+lldb debugger with vscode: https://github.com/vadimcn/codelldb
+
 Visual Studio Plugins
 - editorconfig
 https://learn.microsoft.com/en-us/visualstudio/ide/cpp-editorconfig-properties?view=vs-2019&viewFallbackFrom=vs-2022
@@ -519,7 +521,8 @@ gpedit.msc -> Computer Configuration > Windows Settings > Scripts (Startup/Shutd
 https://www.mdsec.co.uk/2020/12/bypassing-user-mode-hooks-and-direct-invocation-of-system-calls-for-red-teams/
 https://devblogs.microsoft.com/oldnewthing/20230926-00/?p=108824
 https://www.ired.team/offensive-security/code-injection-process-injection/finding-kernel32-base-and-function-addresses-in-shellcode
-https://chadaustin.me/2009/03/disabling-functions/ TODO
+https://chadaustin.me/2009/03/disabling-functions/
+TODO disable kernel functions in Windows process
 https://www.geoffchappell.com/studies/windows/win32/kernel32/api/index.htm
 https://blog.improsec.com/tech-blog/win32k-system-call-filtering-deep-dive
 
@@ -726,7 +729,6 @@ get processor timestamp
 
 https://stackoverflow.com/questions/19292655/c1189-error-no-target-architecture
 use alignment in macros
-TODO cleanup
 #if defined(_AMD64_) || defined(_X86_)
 #define PROBE_ALIGNMENT( _s ) TYPE_ALIGNMENT( DWORD )
 #elif defined(_IA64_) || defined(_ARM_)

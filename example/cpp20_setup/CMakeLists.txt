@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.6)
 project(test)
 
 # TODO distinguish profile clang|gcc|msvc dev|release
-# TODO test if -g is implicit or what ReleaseDebug and Debug imply
 
 add_executable(dev_gcc.exe)
 target_sources(dev_gcc.exe PRIVATE use_gcc.cpp)

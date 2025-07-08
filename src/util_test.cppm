@@ -14,7 +14,7 @@ export int test123() {
 }
 } // namespace example_name
 
-// TODO
+// idea once dev tooling works with modules
 // - named module usage
 // - std::print
 // - stacktraces

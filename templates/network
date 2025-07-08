@@ -1,5 +1,10 @@
+====protocols
 ====tools
 ====usage
+
+====protocols
+NearLink/Sparlink as potential bluetooth successor
+* no proper security analysis yet
 
 ====tools
 websocket tcp bridge https://github.com/novnc/websockify

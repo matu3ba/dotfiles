@@ -1,7 +1,7 @@
 //! Infinity loop to examplify gdb and VS Debugger usage and entry point
 //! into adv/ for advanced point 4. and expert exp/ point 5.
 // Tested with
-// TODO
+// TODO tests
 #include <inttypes.h> // PRIu64, uint64_t (stdint.h not needed)
 #include <stdbool.h>  // bool
 #if defined(_WIN32)
@@ -35,14 +35,13 @@
 //   * 4.1 LD_PRELOAD
 //   * 4.2 catching things, ie '5.4 Signals' in gdb manual
 //   * 4.3 dll injection
-//   * 4.4 function instrumentation hooks TODO
+//   * 4.4 function instrumentation hooks idea
 //   * 4.5 replace function of panic handler at runtime
 // - 6. reproducible execution debugging design
 //   * hardware and Kernel limitations (Kernel profiler or record and replay like tools)
 //   * runtime patching for hardware timer things
 //   * synchronization points, entries and exits
 
-// TODO basics how gdb works
 // https://sysdig.com/blog/sysdig-vs-dtrace-vs-strace-a-technical-discussion/
 
 int main(void) {

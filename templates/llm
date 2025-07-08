@@ -22,8 +22,6 @@ https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of
     true summarizing
   - no intelligence involved, query machine with context for processing
 
-TODO https://news.ycombinator.com/item?id=42100560
-
 ====known_to_work_use_cases
 given known probability distribution(s) and sufficient handling of edge cases (controlled environment or enumeratable enough)
 * 1. copy-paste/use common optimal learned goal

@@ -1,0 +1,67 @@
+Kernel development setup with qemu and yocto
+* apk add qemu-system-x86_64
+* apk add flex
+* apk add bison
+* apk add ncurses-devel
+* apk add elfutils-devel
+* apk add bash
+* apk add wget unzip patchutils
+
+==cleaning
+bitbake -fc cleanall
+bitbake -c cleanall -f core-image-minimal
+
+==building
+git clone git://git.yoctoproject.org/poky
+cd poky
+if shell.nix used for deps: nix-shell --impure
+source oe-init-build-env
+nvim conf/local.conf
+16GB system, building gcc, llvm, linux uses up all memory with 4 threads
+BB_NUMBER_THREADS=4 bitbake core-image-minimal
+bitbake core-image-minimal
+not working: runqemu-gen-tapdevs
+runqemu qemux86-64
+unclear influence: unset DISPLAY
+
+====shell.nix problem of https://github.com/nix-community/nix-environments
+(ins)yocto-fhs-fhsenv:user@chimera:~/dev/git/yocto/poky/build$ runqemu qemux86-64
+runqemu - INFO - Running MACHINE=qemux86-64 bitbake -e  ...
+runqemu - INFO - Continuing with the following parameters:
+KERNEL: [/home/user/dev/git/yocto/poky/build/tmp/deploy/images/qemux86-64/bzImage]
+MACHINE: [qemux86-64]
+FSTYPE: [ext4]
+ROOTFS: [/home/user/dev/git/yocto/poky/build/tmp/deploy/images/qemux86-64/core-image-minimal-qem
+ux86-64.rootfs-20250612204429.ext4]
+CONFFILE: [/home/user/dev/git/yocto/poky/build/tmp/deploy/images/qemux86-64/core-image-minimal-q
+emux86-64.rootfs-20250612204429.qemuboot.conf]
+
+runqemu - ERROR - runqemu-ifup: /home/user/dev/git/yocto/poky/scripts/runqemu-ifup
+runqemu - ERROR - runqemu-ifdown: /home/user/dev/git/yocto/poky/scripts/runqemu-ifdown
+runqemu - ERROR - ip: None
+runqemu - ERROR - In order for this script to dynamically infer paths
+ kernels or filesystem images, you either need bitbake in your PATH
+ or to source oe-init-build-env before running this script.
+
+ Dynamic path inference can be avoided by passing a *.qemuboot.conf to
+ runqemu, i.e. `runqemu /path/to/my-image-name.qemuboot.conf`
+
+ runqemu-ifup, runqemu-ifdown or ip not found
+runqemu - INFO - Cleaning up
+runqemu - INFO - Host uptime: 229125.33
+
+1. suggestion https://stackoverflow.com/questions/73275580/getting-error-while-running-to-runqemu-qemux86-64
+Change
+PACKAGECONFIG_append_pn-qemu-system-native = " sdl"
+to
+PACKAGECONFIG_append_pn-qemu-system-native = " gtk+"
+in conf/local.conf
+does not work
+
+2. https://gist.github.com/Jayman2000/366d389f5d54cc3ea762e0a7b142dfe9 does not work
+
+3. solutions
+- 1. dont use shell.nix with pkgs.buildFHSEnvBubblewrap, but comments of
+  solutions indicate that it is necessary
+- 2. install packages for qemu + run it on host system
+- 3. do not use nix

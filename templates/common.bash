@@ -10,9 +10,10 @@ set -eou
 trap 'cd ${CWD}' EXIT HUP INT QUIT SIGSEGV TERM
 CWD=$(pwd)
 
-# TODO is_in_array
-# TODO validate_args
-# TODO print help
+# TODO
+# * is_in_array
+# * validate_args
+# * print help
 
 # loop array by index
 SIZES=(

@@ -1,5 +1,30 @@
-https://vhdlwhiz.com/terminology/
+https://www.fpga-conference.eu
+https://vhdlwhiz.com/terminology
 
+====standards
+====tooling
+====learning
+
+====standards
+* UVVM as fastest growing HDL verification methodology
+  - includes requirement tracking for VHDL testbenches
+* microcontrollers with security features: Cyber Resilience Act (CRA) class I
+  - wip standard
+* Harmonized FPGA Module (HFM) as open standard for FPGA and SoC-FPGA System-on-Module (SoM) designs
+* Precision Time Protocol (PTP) software stacks down to sub-nonsecond time alignment
+  - via dedicated semiconductor timing devices
+
+====tooling
+vunit
+hog (hdl-ongit) as set ot tcl/shell scripts
+Open Source VHDL Verification Methodology (OSVVM): https://github.com/OSVVM/OsvvmLibraries
+Open Logic as fastest-growing open-source HDL standard library: https://github.com/open-logic/open-logic
+Co-Simulation environments: Cocotb
+UVVM provides a structured approach with powerful testbench utilities and
+verification components, while VUnit enhances automation,  advanced test
+management, and continuous integration support.
+
+====learning
 1 Basics FGPA and Zynq SoC
 Start with HDLs like Verlog, VHDL or SystemC. Understand unique architecture
 of Zynq SoC — ARM processor + FPGA fabric.

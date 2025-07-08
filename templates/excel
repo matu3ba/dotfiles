@@ -24,3 +24,10 @@ Ctrl+9
 
 SHENNANIGAN
 plot values with gaps (does not work)
+
+removing non-printable characters
+ascii CLEAN()
+utf8 idea
+
+removing leading and trailing spaces
+TRIM()

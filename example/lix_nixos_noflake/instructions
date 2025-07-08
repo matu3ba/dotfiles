@@ -1,0 +1,6 @@
+add channels github, nixos, nixpkgs
+nix-shell -p npins --run "npins init --bare; npins add github nixos nixpkgs --branch nixos-23.11"
+add nixpkgs channel nixos-unstable:
+nix-shell -p npins --run "npins init --bare; npins add --name nixpkgs channel nixos-unstable"
+
+nix-shell --pure

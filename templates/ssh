@@ -20,6 +20,11 @@ ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -f $HOME/.ssh/PRIVATEKEYNAME
 Note: ssh keys have no concept like expiry date, so the server needs to
 accept or reject the key.
 
+On Windows (Powershell):
+mkdir ~/.ssh
+mv KEYS* ~/.ssh
+mkdir ~/.ssh/config
+
 General format:
 ssh user@domain@ip
 First, add credentials to your ssh client.

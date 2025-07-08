@@ -20,7 +20,6 @@
 #include <stdio.h>
 int main(void) {
   {
-    // TODO write this in a better way
     // The evaluation order in this example is ambiguous, because both operators
     // () and ++ have identical precedence and associativity only describes
     // evaluation in case of conflicts.

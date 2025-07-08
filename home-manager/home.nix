@@ -20,8 +20,8 @@
 # home-manager switch
 # (nix-channel --update)
 
-# TODO flakes
-# https://nix-community.github.io/home-manager/index.html#ch-nix-flakes
+# TODO setup with https://jade.fyi/blog/flakes-arent-real/
+# example/lix_projectdev/instructions
 
 # Rollback
 # home-manager generations

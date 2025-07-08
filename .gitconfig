@@ -11,7 +11,7 @@
 [user]
   email = anon_1plus1equals3@mailbox.org
   name = Jan Philipp Hafer
-  signingkey = D8DB74E70EFE1E21!
+  signingkey = 52726CA5A7E56E41!
 
 #git mr branch issuenumber
 # [alias]

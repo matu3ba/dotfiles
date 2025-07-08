@@ -1,0 +1,45 @@
+Kernel development setup with qemu and yocto
+* apk add qemu-system-x86_64
+* apk add flex
+* apk add bison
+* apk add ncurses-devel
+* apk add elfutils-devel
+* apk add bash
+* apk add wget unzip patchutils
+
+git clone git://git.yoctoproject.org/poky
+cd poky
+mkdir build && source oe-init-build-env build
+bitbake-layers create-layer ../meta-tutorial
+bitbake-layers add-layer ../meta-tutorial
+bitbake-layers show-layers
+
+nvim poky/meta-tutorial/recipe-example/hello/files/hello.c
+//Simple Hello World Program
+#include<stdio.h>
+int main() {
+printf("Hello World , Created Bitbake recipe successfully\n");
+return 0;
+}
+
+nvim poky/meta-tutorial/recipe-example/hello/hello_1.0.bb
+DESCRIPTION = "Simple helloworld application"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
+SRC_URI = "file://hello.c"
+S = "${WORKDIR}"
+do_compile() {
+        ${CC} hello.c ${LDFLAGS} -o hello
+}
+
+do_install() {
+        install -d ${D}${bindir}
+        install -m 0755 hello ${D}${bindir}
+}
+
+nvim conf/local.conf
+MACHINE ??= "qemux86_64"
+IMAGE_INSTALL_APPEND = "hello"
+
+bitbake core-image-minimal
+runqemu qemux86-64

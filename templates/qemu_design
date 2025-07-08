@@ -1,7 +1,218 @@
 ====general
 ====attack_vectors
 
+====general
+Stefan Hajnoczi
+__QEMU Internals__: Big picture overview https://blog.vmsplice.net/2011/03/qemu-internals-big-picture-overview.html
+* qemu (with kvm) as own process on host kernel (with according scheduling) and
+guest ram allocated on qemu startup
+* kvm allows "safe" execution of guest code directly on host CPU via hardware
+virtualization extensions found on modern CPUs
+* qemu system full virtual machine -> details of what things running in guest not
+directly visible from host
+  - qemu provides slab of guest RAM, so any OS (or none) can run inside guest
+  - no ability for host to peek inside arbitrary guest
+* guests have so-called vcpu thread per virtual CPU
+  - dedicated iothread runs select event loop to process io like network, disk
 
+__QEMU Internals__: Overall architecture and threading model https://blog.vmsplice.net/2011/03/qemu-internals-overall-architecture-and.html
+* qemu is a parallel and event driven (hybrid) architecture
+* qemu main event loop is main_loop_wait():
+  - 1. wait for file descriptors to become readable/writable (events)
+  - 2. run expired timers
+  - 3. run bottom-halves (like timers expiring immediately to avoid
+  reentrancy and overflowing call stack)
+  - constraint about callback invoked by event loop:
+    * 1 no other core code executing at same time, so synchronization not necessary
+    Callbacks execute sequentially and atomically wrt other core code.
+    * 2 No blocking system calls or long-running computations should be performed.
+    Reason is that event loop waits for callback to return.
+* offloading specific tasks to worker threads
+  System calls without non-blocking equivalent or long-running computations hog CPU
+  and are difficult to breakup into callbacks. Solution: use worker threads
+  - example posix-aio-compat.c for async file io
+  - worker threads take requests off queue and execute them outside of core qemu
+  - impl takes care to perform necessary sync and communication between worker threads
+  and core qemu
+  - other example: ui/vnc-jobs-async.c for intensive image compression and encoding
+  - worker threads cannot call into core qemu core except for simple utils
+    * pipe or qemu_eventfd() fd added to event loop to notify core qemu
+    and worker thread writes to fd with callback being invoked by event loop when
+    fd becomes readable
+    * in addition, signal must be used to ensure event loop able to run under
+    all circumstances
+* executing guest code
+  - 2 mechanisms for guest code: tiny code generator (TCG) and KVM
+    * TCG emulates guest using dynamic binary translation (JIT) compilation
+    * KVM takes advantage of hw virtualization extensions of modern CPUs to
+    safely execute guest code directly on host CPU
+  - jumping into guest code takes host control of execution away and gives it
+  to guest
+    * thread runnig guest code cannot simultaneaously be in event loop, since
+    guest has (safe) control of CPU
+    * amount of time spent in guest code is limited, because reads and writes
+    to emulated device registers and other exceptions cause CPU to leave
+    guest and give control back to qemu
+      - in extreme cases a guest can spend unbounded amount of time without
+      giving up control and this would make qemu unresponsive
+  - to solve problem of guest code hogging qemu's thread of control signals
+  are used to break out of guest: unix signal yanks control away of current
+  flow of execution and invokes signal handler fn.
+  This allows qemu to take steps to leave guest code and return to man loop.
+    * upshot is that new events may not be detected immediately if qemu is in
+    guest code. Most of time qemu eventually processes events, but additional
+    latency is perf problem.
+    * therefore timers, io completion, notifcations from worker threads to core
+    qemu use signals to ensure that event loop will be run immediately
+* iothread and non-iothread architecture
+  - traditional architecture: single qemu thread executing guest code and
+  event loop, also called "non-iothread" or !CONFIG_IOTHREAD and is(was?) default
+  ./configure && make
+  qemu thread executes guest code until exeception or signal yields back control
+  then it runs one iteration of event loop without blocking in select.
+  then it dives back into guest code and repeats until qemu is shut down
+    * if guest started with multiple vcpus, like using -smp 2, no additional
+    qemu threads will be created. instead single qemu thread mulitplexes between
+    2 vcpus executing guest code and event loop.
+    * there may be 0 or more temp or permanent worker threads despite 1 qemu
+    thread, since they perform specialized tasks and do not execute guest code
+    or process events.
+  - newer architecture: single qemu thread per vcpu plus dedicated event loop
+  thread, also called "iothread" or CONFIG_IOTHREAD, ./configure --enable-io-thread
+  each vcpu thread can execute guest code in parallel, offering true SMP support,
+  while iothread runs event loop. rule that core qemu code never runs simultaneaously
+  maintained through global mutex to synchronize core qemu code across vcpus
+  and iothread. Most of time vcpus execute guest code and do not need to hold
+  global mutex. Most of time iothread is blocked in select and does not need
+  to hold global mutex.
+    * TCG is not thread-safe, so even under iothread model it multiplexes
+    vcpus across single qemu thread. Only KVM can take advantage of per-vcpu
+    threads.
+
+TODO missing:
+* what exactly virtualized Linux executes on setup/teardown, since it does not
+have hw control and how things are accelerated
+* kvm architecture with micro-kernel ideas/impl status/usage and debugging
+options (specifically record replay mode and/or other modes with sync/clock and
+system mode debugging [aside of slow remote debugger]) are missing
+
+__QEMU Internals__: Architecture of KVM own summary based on
+* 1 KVM Architecture Overview 2015 Edition https://vmsplice.net/~stefan/qemu-kvm-architecture-2015.pdf
+* 2 __QEMU Internals__: vhost architecture https://blog.vmsplice.net/2011/09/qemu-internals-vhost-architecture.html
+* 3 __QEMU Internals__: Event loops https://blog.vmsplice.net/2020/08/qemu-internals-event-loops.html
+* 4 Requirements for out-of-process device emulation https://blog.vmsplice.net/2020/10/requirements-for-out-of-process-device.html
+* 5 https://www.redhat.com/en/blog/virtio-devices-and-drivers-overview-headjack-and-phone
+* 6 Future
+
+TODO contextualize https://stackoverflow.com/questions/10307323/whats-the-differences-between-xen-qemu-and-kvm
+* question: security isolation?
+* what stuff exactly is run?
+* what is an hypervisor?
+https://en.wikipedia.org/wiki/Virtualization#Paravirtualization
+https://en.wikipedia.org/wiki/Hypervisor
+https://en.wikipedia.org/wiki/OS-level_virtualization
+https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine
+* means what exactly is an hypervisor?
+* how does qemu enable https://en.wikipedia.org/wiki/Hot_swapping or https://en.wikipedia.org/wiki/Live_migration?
+
+Stefan Hajnoczi has decent qemu architecture overviews
+https://blog.vmsplice.net/2011/03/qemu-internals-overall-architecture-and.html,
+https://blog.vmsplice.net/2011/03/qemu-internals-big-picture-overview.html,
+https://blog.vmsplice.net/2011/09/qemu-internals-vhost-architecture.html,
+https://blog.vmsplice.net/2020/08/qemu-internals-event-loops.html,
+https://blog.vmsplice.net/2020/10/requirements-for-out-of-process-device.html
+but (current) kvm architecture with micro-kernel ideas/impl status/usage and
+debugging options (specifically record replay mode and/or other modes with
+sync/clock and system mode debugging [aside of slow remote debugger]) are
+missing.
+
+If you wish to implement a new hardware model you will want to read through the
+The QEMU Object Model (QOM) documentation to understand how QEMU’s object model
+works. https://www.qemu.org/docs/master/devel/qom.html#qom
+Those wishing to enhance or add new CPU emulation capabilities will want to
+read our TCG Emulation documentation, especially the overview of the Translator
+Internals.
+- https://www.qemu.org/docs/master/devel/tcg.html#tcg-internals
+- https://www.qemu.org/docs/master/devel/index-tcg.html#tcg
+- https://www.qemu.org/docs/master/devel/tcg-ops.html#tcg-ops-ref
+- testing: https://www.qemu.org/docs/master/devel/testing/index.html
+
+Dear Stefan Hajnoczi,
+with interest I was reading qemu design overview blog posts and presentation.
+
+Since qemu is now-adays an essential development tool and others use(d) it for
+eletronic system modelling via SystemC (QBox), I was wondering if or where
+- 1. there exists more in-depth overviews on the used scheduler for "record and
+replay mode" or generally user control on schedulers and influence on tasks/threads/processes
+- 2. there is a clock model with accuracy, timing, etc or debugging infra to derive behavior at runtime
+- 3. there is now-adays debugging infrastructure for validation, testing, scheduler access
+or stepping/classical debugger options for system qemu.
+As far as I am aware, there are instructions on how to do remote debugging, but no overview guide
+similar to the one I am writing https://matu3ba.github.io/articles/optimal_debugging/.
+Any info or pointers would be appreciated, but I do understand your time being precious.
+Sincerely,
+Jan
+
+TODO rephrase questions
+https://vmsplice.net/~stefan/stefanha-kvm-forum-2024.pdf
+https://kvm-forum.qemu.org/2023/Multiqueue_in_the_block_layer_wLom4Bt.pdf
+https://blog.vmsplice.net/search/label/kvm
+
+an overview of all possible debugging techniques.
+
+Context and Goals: Understand different "qemu modes", sync, clocks, task/thread/process
+emulation and debugging options to 1. estimate as accurate as possible timings
+and 2. list all debugging options for system reduction, bisection, etc
+for example with core pinning etc.
+Qemu is often used due to its performance as simulation toolkit up to complex
+hardware simulation (QBox with SystemC), so the natural question is
+1. how accurate timing is and 2. how accurate clocks can be simulated or the
+used/implemented clock model/timing be debugged.
+
+virtio-fs: A Shared File System for Virtual Machines to access host page cache
+eliminating need to copy file contents into guest RAM.
+
+* https://tuxcare.com/blog/qemu-system/
+* https://airbus-seclab.github.io/qemu_blog/
+* https://en.wikipedia.org/wiki/QEMU
+* https://qemu-project.gitlab.io/qemu/system/qemu-cpu-models.html
+* https://www.qemu.org/docs/master/system/images.html#snapshot-mode
+* https://www.qemu.org/docs/master/about/index.html
+* https://wiki.gentoo.org/wiki/QEMU/Options
+
+https://en.wikipedia.org/wiki/Virtualization
+https://en.wikipedia.org/wiki/Hypervisor aka Virtual Machine Monitor (VMM)
+TODO how are the following modeled and simulated?
+* 1. system/hardware clocks (different IO speeds)
+* 2. threads, execution contexts, hardware device contexts
+* 3. synchronization, memory and pointer lookups
+* 4. static security, permissions and dynamic changes
+* 5. hotplug, CPU throttling, scheduling etc
+* 6. SystemC Fast Models for CPU and GIC etc
+- QEMU based model definition ???
+- QEMU-SC [4] and QBox (QEMU in a Box). Th
+cadence paper "QEMU CPU virtualization with SystemC and Palladium" by Monish et al
+
+QEMU
+* communication between a CPU emulator and the emulated devices is done via
+  registered callback functions for each memory region of the system bus
+* QEMU devices respond immediately to devices accesses, and do not account
+  for any processing time in the device or any bus occupancy.
+SystemC
+* general simulation kernel designed for models from cycle-accurate and
+  pin-accurate modeling of hardware behavior all the way up to abstract
+  bandwidth and behavior models.
+* unlike QEMU, SystemC allows for device models to contain active threads
+  (SC_THREAD) as well as purely event-driven objects (SC_METHOD). This is
+  very similar to the process concept of VHDL
+* looks like it has no quantizied realtime behavior on threads
+* event-based simulator with potentially multiple active simulation context
+* kernel finds the top event on its event queue and executes or resumes the
+  thread or method sensible to that event
+* individual TLM models written in SystemC, C models and RTL models of the design.
+* can be extended to integrate smart memories and cache coherency solutions
+https://qemu.eu/doc/5.2/devel/multi-thread-tcg.html#memory-consistency
+https://qemu.eu/doc/5.2/devel/clocks.html
 
 ====general
 * thread implementation very wonky and tricky to understand according to nyx author(s)

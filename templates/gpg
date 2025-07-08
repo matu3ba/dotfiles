@@ -20,6 +20,7 @@ gpg --list-keys --with-subkey-fingerprints --keyid-format LONG
 gpg --list-secret-keys --with-subkey-fingerprints --keyid-format LONG
 
 export KEYFP=keyfingerprint
+fish: set KEYFP 'keyfingerprint'
 // subkeys for sign, encrypt, authenticate
 gpg --quick-add-key $KEYFP ed25519 sign 1y
 gpg --quick-add-key $KEYFP cv25519 encr 1y

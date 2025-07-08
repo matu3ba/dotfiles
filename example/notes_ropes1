@@ -37,8 +37,6 @@ is more readable as matrix than
 const matrix = {{1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
 ```
 
-idea: improve end of section
-
 #### Code formatting as layout change
 
 However, the user expects an input without `zig fmt: off` and `on` lines to
@@ -72,8 +70,6 @@ if (condition) {
   runFunction();
 }
 ```
-
-TODO: improve end of section
 
 #### Special in Zig
 Zig specifically has one design aspect, which makes it very nice to use, but

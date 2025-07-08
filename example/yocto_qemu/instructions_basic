@@ -1,0 +1,19 @@
+Kernel development setup with qemu and yocto on chimera
+* apk add qemu-system-x86_64
+* apk add flex
+* apk add bison
+* apk add ncurses-devel
+* apk add elfutils-devel
+* apk add bash
+* apk add wget unzip patchutils
+(above unchecked)
+missing: chrpath diffstat rpcgen
+with latter being in libevent-2.1.12-r0 and rpcsvc-proto-1.4.4-r0
+
+git clone git://git.yoctoproject.org/poky
+cd poky
+mkdir build_min
+source oe-init-build-env build_min
+nvim conf/local.conf
+bitbake core-image-minimal
+runqemu qemux86-64

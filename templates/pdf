@@ -1,5 +1,12 @@
-merging pdf files: pdftk *_flatten.pdf cat output merged.pdf
+tools https://bitsgalore.org/2021/09/06/pdf-processing-and-analysis-with-open-source-tools.html
+
+merging pdf files:
+pdftk *_flatten.pdf cat output merged.pdf
+pdfunite src-1..src-n dest.pdf
+
 splitting pdf files:
+pdftk idea
+pdfseparate -f 1 -l 3 src.pdf dest%d.pdf
 
 flattening annotated pdfs:
 pdftocairo -pdf input.pdf output.pdf

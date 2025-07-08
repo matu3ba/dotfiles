@@ -1,4 +1,4 @@
-irc instructions
+hexchat instructions
 
 - 1. Open the Network List (Ctrl + S)
 - 2. If the Libera.Chat network exists in the list, then click on Edit and skip ahead to step 5
@@ -7,3 +7,11 @@ irc instructions
 - 5. In the User name field, enter your primary nick
 - 6. Select SASL (username + password) for the Login method field
 - 7. In the Password field, enter your NickServ password
+
+https://libera.chat/guides/
+
+/nick laurent
+
+/msg NickServ info
+/msg NickServ register password email-address
+/msg NickServ VERIFY REGISTER nickname secret-password

@@ -8,16 +8,16 @@
 // zig cc -g -std=c99 -fsanitize=undefined -fsanitize-trap=undefined -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/util_string.c -o util_string99.exe && ./util_string99.exe
 // zig cc -g -std=c11 -fsanitize=undefined -fsanitize-trap=undefined -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./example/util_string.c -o util_string99.exe && ./util_string99.exe
 // zig cc -g -std=c23 -fsanitize=undefined -fsanitize-trap=undefined -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/util_string.c -o util_string23.exe && ./util_string23.exe
-// TODO zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
-// TODO zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
-// TODO zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
-// TODO zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
-// TODO zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
-// TODO make OOB diagnostics optional based on safety mode
-// TODO review according to https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#
-// TODO use vsnprintf, vfprintf, snprintf
-// TODO -fsanitize=type
-// TODO figure out something more type safe to print based on https://github.com/nickelca/generic-print
+// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default ./example/util_string.c
+// 1. error: designated initializers are a C++20 extension [-Werror,-Wc++20-designator]
+// 2. error: use of old-style cast [-Werror,-Wold-style-cast]
+// 3. clang++: error: treating 'c' input as 'c++' when in C++ mode, this behavior is deprecated [-Werror,-Wdeprecated]
+// TODO
+// * make OOB diagnostics optional based on safety mode
+// * review according to https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#
+// * use vsnprintf, vfprintf, snprintf
+// * -fsanitize=type
+// * figure out something more type safe to print based on https://github.com/nickelca/generic-print
 
 #include "util_string.h"
 #include <stdlib.h> // abort

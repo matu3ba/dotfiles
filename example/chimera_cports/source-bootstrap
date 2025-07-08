@@ -1,0 +1,5 @@
+git clone //github.com/chimera-linux/cports
+cd cports
+apk add base-cbuild-bootstrap
+./cbuild keygen
+./cbuild source-bootstrap

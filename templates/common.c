@@ -1,3 +1,20 @@
+#if (__STDC_VERSION__ < 199901L)
+#error "requires C99 for sanity"
+#endif
+
+//====tldr;
+// string handling with C standard functions is error prone, absence of hashing
+// annoying and then there is no reliable enough clangd strict mode or other fast
+// analyzer to prevent type issues and unhandled cases without pile of false
+// positives due to too few control over the to be used algebra.
+//
+// Missing alignment in type system and language allowing stack spills left and
+// right is the cherry on top.
+// So while later C standards describe no family of simple bootstrappable
+// languages, they provide not sufficient strictness to write reliably high
+// performance code in fundamental unsafe areas either. This starts with no type
+// safe way to format strings.
+
 //! Tested with
 //! zig cc -std=c99 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c -o commonc99.exe && ./commonc99.exe
 //! zig cc -std=c11 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c -o commonc11.exe && ./commonc11.exe
@@ -6,12 +23,13 @@
 #include <assert.h>
 #include <stdint.h>
 
+//====hacks
+// "exceptions" https://gist.github.com/mlugg/eea73b7795d2282ca5d6d825e67c5f07
+// * beware that setjmp and longjmp dont clean up anything and do straight jumps
+
 // TODO write examples pkg-config flags for compilation based on https://ariadne.space/2025/02/08/c-sboms-and-how-pkgconf.html
 // gcc -o main main.c `pkg-config --cflags --libs glib-2.0`
 // see C SBOMs
-
-//====tldr;
-// TODO content summaries
 
 //====tldr;
 // string handling with C standard functions is error prone, absence of hashing
@@ -19,7 +37,8 @@
 // analyzer to prevent type issues and unhandled cases without pile of false
 // positives due to too few control over the to be used algebra.
 //
-// Missing alignment in type system and language allowing stack spills left and right is the cherry on top.
+// Missing alignment in type system and language allowing stack spills left and
+// right is the cherry on top.
 // So while later C standards describe no family of simple bootstrappable
 // languages, they provide not sufficient strictness to write reliably high
 // performance code in fundamental unsafe areas either. This starts with no type
@@ -1877,10 +1896,13 @@ void C23_constexpr() {
 }
 void C23_typecoercion();
 void C23_typecoercion() {
+  // turn clang-format off, because it breaks 1'000'000
+  // clang-format off
   auto x = 0b1111;         // new binary integer constants
   typeof(x) y = 1'000'000; // new separators
   printf("%d\n", x);       // prints 15
   printf("%d\n", y);       // prints 1000000
+  // clang-format on
 }
 void C23_constexpr_to_prevent_VLA();
 void C23_constexpr_to_prevent_VLA() {

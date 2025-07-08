@@ -1,0 +1,6 @@
+git clone git://git.yoctoproject.org/poky
+cd poky
+git checkout tags/yocto-4.0.6 -b yocto-4.0.6-local
+
+source oe-init-build-env build-qemu-arm64
+sed -i '/qemuarm64/s/^#//g' conf/local.conf

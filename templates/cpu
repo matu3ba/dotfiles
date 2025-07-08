@@ -74,7 +74,7 @@ It even has an instruction for flushing the complete cache + clear internal stat
 
 Interesting ideas
 'Efficient virtual cache coherency for multicore systems and accelerators' by Xuan Guo
-* TODO
+* idea
 
 'Branch prediction' by Dan Luu https://danluu.com/branch-prediction/
 with hints on state of art speculative branch predictors
@@ -131,6 +131,3 @@ TODO go through and test guide https://nixhacker.com/segmentation-in-intel-64-bi
 * amd64 typically use a vestigial feature that used to be used for segmentation for tls
 but it's not segmentation anymore
 * basically just an extra register whose assigned role is 'always hold the tls base'
-
-#### file_systems
-TODO wait for it https://blog.jandroegehoff.de/

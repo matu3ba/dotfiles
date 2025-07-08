@@ -16,18 +16,6 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //====perf
 //====tooling
 //====changes
-//C++ exception performance numbers https://youtu.be/bY2FlayomlE?t=4336
-// fn depth  | std::expected  | gcc & libunwind | perf-optimized impl
-//  6(multi) |  556(1x)       |  15344(27x)     |  2652(4.77x)
-// 96(multi) | 8556(1x)       | 184454(21.5x)   | 22102(2.6x)
-
-// Tested with
-// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
-// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp20.exe && ./commoncpp20.exe
-// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
-
 //====tooling
 //====libraries
 //====best_practice_compilers
@@ -38,7 +26,18 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //====code_patterns
 //====code_version_changes
 
-// rest are code examples for standard things and changes
+// Tested with
+// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
+// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp20.exe && ./commoncpp20.exe
+// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
+
+//====perf
+//C++ exception performance numbers https://youtu.be/bY2FlayomlE?t=4336
+// fn depth  | std::expected  | gcc & libunwind | perf-optimized impl
+//  6(multi) |  556(1x)       |  15344(27x)     |  2652(4.77x)
+// 96(multi) | 8556(1x)       | 184454(21.5x)   | 22102(2.6x)
 
 //====tooling
 // hot restart as feature - https://github.com/proximafusion/vmecpp

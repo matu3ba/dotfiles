@@ -26,6 +26,7 @@ const builtin = @import("builtin");
 // libtree(ldd as tree) - https://github.com/haampie/libtree
 // typos-cli - https://github.com/crate-ci/typos
 // headless browser - https://github.com/lightpanda-io/browser
+// composable finite state machines - https://github.com/sdzx-1/polystate
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz
@@ -62,6 +63,9 @@ const builtin = @import("builtin");
 // decentish intro: https://pedropark99.github.io/zig-book/
 // regex https://github.com/mnemnion/mvzr
 // network perf https://www.openmymind.net/
+
+// excellent VM memory handling
+// https://github.com/Syndica/sig/blob/79ea0a9f9b4bfb77b5c021b426819ee272a3b85f/src/vm/memory.zig#L25
 
 test "beware_endianness" {
     // const content_len: [4]u8 = .{ 0, 0, 0, 4 }; // wrong for little endian 4
@@ -285,6 +289,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig test lib/compiler_rt/udivmoddi4_test.zig -target arm-linux --test-cmd qemu-arm --test-cmd -g --test-cmd 4242 --test-cmd-bin
 // time zig test lib/std/std.zig -fno-lld -fno-llvm --zig-lib-dir lib --test-filter "tls client and server handshake"
 // time zig test lib/std/std.zig -fno-lld -fno-llvm --zig-lib-dir lib --test-filter "tls client and server handshake" --test-cmd 'gdb' --test-cmd-bin
+// macos workaround docker run -it --rm -v "$(pwd)":/work zig-riscv zig build -Dtarget=riscv32-linux -fqemu test
 
 // Testing with wasm+wasmtime:
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin

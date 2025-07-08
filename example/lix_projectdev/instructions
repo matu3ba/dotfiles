@@ -1,0 +1,23 @@
+basic
+git clone https://github.com/nix-community/nix-environments
+
+https://jade.fyi/blog/flakes-arent-real/
+https://jade.fyi/blog/pinning-nixos-with-npins/
+https://nix.dev/guides/recipes/sharing-dependencies
+https://nix.dev/guides/recipes/dependency-management.html
+https://ryantm.github.io/nixpkgs/builders/special/fhs-environments/
+
+add channels github, nixos, nixpkgs
+nix-shell -p npins --run "npins init --bare; npins add github nixos nixpkgs --branch nixos-23.11"
+add nixpkgs channel nixos-unstable:
+nix-shell -p npins --run "npins init --bare; npins add --name nixpkgs channel nixos-unstable"
+
+# nix-build calls top-level fn of default.nix with empty attribute set {}
+# or attributes passed via --arg and --argstr.
+
+# nix-shell --pure
+
+# note that 'inputsFrom' is about input usage, not available 'packages'
+
+https://gist.github.com/stammw/d55958fc7ac6185e3446ccf637e53683#file-yocto-nix-L54
+https://github.com/mayl/buildroot_flake/blob/master/flake.nix

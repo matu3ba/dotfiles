@@ -1,4 +1,13 @@
 ====design
+====requirements
+====source_deps
+====source_build
+====source_run
+====reset_configuration
+====running
+====FAQ
+
+====design
 a12 cell is 6-10 times than ascii character
 scollback is however on source system, not remote
 
@@ -10,9 +19,19 @@ scollback is however on source system, not remote
 ====source_deps
 sqlite3, openal-soft, sdl2, opengl, luajit, gbm, kms, freetype, harfbuzz, libxkbcommon
 libvlc-core, ffmpeg suite, leptonica, tesseract (ocr), libvncserver libusb1, v4l2-loopback, mupdf
+xcb-util-devel imagemagick-devel file-devel
+
+on chimera:
+* apk add sqlite-devel openal-soft-devel sdl2-devel mesa-devel luajit-devel
+* apk add mesa-gbm-devel freetype-devel harfbuzz-devel libxkbcommon-devel
+* apk add ffmpeg-devel leptonica-devel tesseract-devel
+* apk add libvncserver-devel libusb-devel v4l2loopback-devel
+TODO package libvlc-core
+missing: apk add kms?? libvlc-core?? v4l2loopback-devel mupdf??
 
 idea shell file
 
+fossil clone https://chiselapp.com/user/letoram/repository/arcan
 git clone https://github.com/letoram/arcan.git
 cd arcan/external/git
 ./clone.sh
@@ -20,9 +39,9 @@ cd ../../
 
 ====source_build
 mkdir -p build && cd build
-cmake -DBUILD_PRESET="everything" ../src
-cmake -DBUILD_PRESET="everything" -DCMAKE_BUILD=Debug ../src
-make -j $(nproc)
+cmake -DBUILD_PRESET="everything" src/ -B build/
+cmake -DBUILD_PRESET="everything" -DCMAKE_BUILD=Debug src/ -B build/
+cmake --build build/
 sudo make install
 
 ====source_run
@@ -52,11 +71,10 @@ Keyboard setup can be very annoying. Especially so, if browser + clipboard does
 not work yet.
 
 SHENNANIGAN
-Reading and writing config via arcan
-TODO complete this
+Guide with examples for reading and writing config via arcan missing.
 
 SHENNANIGAN
-No "it just works" feeling, so
+No "it just works" feeling for basic stuff (browsers, irc, discord to get help).
 
 ====FAQ
 P: keyboard does not work

@@ -134,7 +134,7 @@ if status is-interactive
   abbr --add -g rp ' realpath'
 
   abbr --add -g           via ' {$HOME}/.local/appimages/nvim.appimage'
-  abbr --add -g          jvia ' firejail {$HOME}/.local/appimages/nvim.appimage'
+  # abbr --add -g          jvia ' firejail {$HOME}/.local/appimages/nvim.appimage'
   abbr --add -g          cvia ' {$HOME}/.local/appimages/nvim.appimage -u NONE'
   abbr --add -g          dvia ' {$HOME}/.local/appimages/nvim.appimage -u DEFAULT'
   abbr --add -g       histupa ' {$HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
@@ -149,7 +149,7 @@ if status is-interactive
   #abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
   abbr --add -g             v ' nvim'
   abbr --add -g            vi ' nvim'
-  abbr --add -g           jvi ' firejail nvim'
+  # abbr --add -g           jvi ' firejail nvim'
   abbr --add -g           cvi ' nvim -u NONE'
   abbr --add -g           dvi ' nvim -u DEFAULT'
   abbr --add -g        histup ' nvim "/var/log/"' # pacman.log or apt/
@@ -164,8 +164,8 @@ if status is-interactive
   # rm ~/.local/nvim/lib/nvim/parser/c.so
   # rm ~/.local/nvim/lib/nvim/parser/cpp.so
   abbr --add -g          nb ' {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-  abbr --add -g        nbnj ' firejail --noprofile {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-  abbr --add -g      nbnjnm ' firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+  # abbr --add -g        nbnj ' firejail --noprofile {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+  # abbr --add -g      nbnjnm ' firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   abbr --add -g        nbnm ' make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   # abbr --add -g         nbz ' CC="zcc.sh" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim DEPS_CMAKE_FLAGS="-DCMAKE_CC_COMPILER=zig\ cc" install'
 
@@ -219,9 +219,9 @@ if status is-interactive
   abbr --add -g  duzigcacherec 'dust -e "zig-out|zig-cache|\.zig-cache" .'
 
   # firejail
-  abbr --add -g   nojail  ' firejail --noprofile'
-  abbr --add -g   njfoxPM ' firejail --noprofile firefox --ProfileManager'
-  abbr --add -g ffoxnoprofile ' firejail --noprofile firefox --profileManager'
+  # abbr --add -g   nojail  ' firejail --noprofile'
+  # abbr --add -g   njfoxPM ' firejail --noprofile firefox --ProfileManager'
+  # abbr --add -g ffoxnoprofile ' firejail --noprofile firefox --profileManager'
 
   function mktmpdir -d "create tmp dir, if not existing"
     if test (count $argv) -eq 1
@@ -250,27 +250,49 @@ if status is-interactive
   #   end
   # end
 
-  #function falketh -d "sandboxing falkon + whitelist download dir"
-  #  set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=enp4s0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
-  #end
-  #function falkwlan -d "sandboxing falkon + whitelist download dir"
-  #  set TMP "$HOME/tmpf/falk" && mktmpdir "$TMP" && firejail --net=wlan0 "--whitelist=$TMP" falkon && rmtmpdir "$TMP"
-  #end
-  #function sfalketh -d "sandboxing falkon + whitelist download dir"
-  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=enp4s0 --private=$TMP falkon && rmtmpdir "$TMP"
-  #end
-  #function sfalkwlan -d "sandboxing falkon + whitelist download dir"
-  #  set TMP "$HOME/tmpf/sfalk" && mktmpdir "$TMP" && firejail --net=wlan0 --private=$TMP falkon && rmtmpdir "$TMP"
-  #end
-  function foxeth -d "sandboxing firefox + whitelist download dir (default profile) "
-    if test -e "$HOME/eth_device"
-      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
-    else
-      echo "no adapter_name in $HOME/eth_device"
-    end
-  end
-  function foxwlan -d "sandboxing firefox + whitelist download dir (default profile) "
+  # function foxeth -d "sandboxing firefox + whitelist download dir"
+  #   if test -e "$HOME/eth_device"
+  #     cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+  #     set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
+  #   else
+  #     echo "no adapter_name in $HOME/eth_device"
+  #   end
+  # end
+  # function sfoxeth -d "sandboxing firefox + private download dir"
+  #   if test -e "$HOME/eth_device"
+  #     cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+  #     set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
+  #   else
+  #     echo "no adapter_name in $HOME/eth_device"
+  #   end
+  # end
+  # function sfoxwlan -d "sandboxing firefox + private download dir"
+  #   if test -e "$HOME/wlan_device"
+  #     cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+  #     set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
+  #   else
+  #     echo "no adapter_name in $HOME/wlan_device"
+  #   end
+  # end
+  # function tbirdeth -d "sandboxing thunderbird + private download dir"
+  #   if test -e "$HOME/eth_device"
+  #     cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+  #     set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
+  #   else
+  #     echo "no adapter_name in $HOME/eth_device"
+  #   end
+  # end
+  # function tbirdwlan -d "sandboxing thunderbird + private download dir"
+  #   if test -e "$HOME/wlan_device"
+  #     cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+  #     set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
+  #   else
+  #     echo "no adapter_name in $HOME/wlan_device"
+  #   end
+  # end
+  # alias  schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
+  # alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'
+  function foxwlan -d "sandboxing firefox + whitelist download dir"
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
       set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
@@ -278,40 +300,24 @@ if status is-interactive
       echo "no adapter_name in $HOME/wlan_device"
     end
   end
-  function sfoxeth -d "sandboxing firefox + private download dir (no profile) "
-    if test -e "$HOME/eth_device"
-      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
-    else
-      echo "no adapter_name in $HOME/eth_device"
-    end
-  end
-  function sfoxwlan -d "sandboxing firefox + private download dir (no profile) "
+  function sfoxwlan -d "sandboxing firefox + private download dir"
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+      # set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
       set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
   end
-  function tbirdeth -d "sandboxing thunderbird + private download dir (no profile) "
-    if test -e "$HOME/eth_device"
-      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
-    else
-      echo "no adapter_name in $HOME/eth_device"
-    end
-  end
-  function tbirdwlan -d "sandboxing thunderbird + private download dir (no profile) "
+  function tbirdwlan -d "sandboxing thunderbird + private download dir"
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
+      # set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
       set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
   end
-  alias  schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
-  alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'
 
   # rsync
   # --info=progress2

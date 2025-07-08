@@ -29,17 +29,55 @@
   + problematic with laptops, no problem with grounded desktop pc
   + correct hardware design more complex/expensive, simpler to provide GND
   see also https://electronics.stackexchange.com/questions/79752/what-is-common-mode-noise
-* VLSI design flow
-  + rtl design via hdl
-  + "functional verification" (simulate + verify rtl design)
-  + synthesis (transform rtl to gate-level netlist)
-  + design for test (insert scan chains and test logic)
-  + foorplanning & placement (place blocks, macros, standard cells)
-  + clock tree syntehsis (build clock distribution network)
-  + routing (connect components with wires)
-  + static time analysis (ensure design meets timing requirements)
-  + "physical verification" (check layout design rules, compare layout and netlist)
-  + gdsii file send to foundry for chip fabrication
+* fault injection at HDL source, netlist, physical database, bitstream
+  other debugging techniques?
+* hardware/VLSI design lvls (https://www.guvi.in/blog/5-levels-in-vlsi-design/)
+  https://www.guvi.in/mlp/VLSI-design-and-verification
+  * 1 architecture (process with goals)
+    - process/high level system simulation via Matlab, Simulink, SystemC
+    - defines functionality, perf, power constrains, etc
+    - includes decisions on memory, processing units, protocols, timing, caches,
+      testing, validation, debugging, etc
+  * 2 functional (HDL)
+    - Verilog, VHDL (hardware) simulators like ModelSim, Xilinx, Vivado, Synopsys VCS
+    - simulation via testbenches and assertion-based validation
+  * 3 logic/gate (netlist)
+    - netlist synthesized from tools like Synopsys Design Compiler, Cadence Genus
+      * FSM for sequential logic
+      * HDL is optimized according to speed, perf, area
+    - gate-level simulations to validate correctness of logic cirtuits
+    - Register Transfer Level (RTL) code written to define how data flows through system
+  * 4 circuit (schematics)
+    - logical gates are converted to cirtuit schematics using transistors
+    - transistor level simulation with SPICE
+    - schematic entry and layout simulation with tools like Cadence Virtuoso, Synopsys Custom Designer
+    - power dissipation, signal integrity, voltage levels, circuit operations are analyzed
+  * 5 physical
+    - floorplanning, placing, routing (connect components with wires), clock
+      tree synthesis (build clock distribution network), power planning
+      via place blocks, macros, standard cells
+    - layout design tools like Cadence Innovus, Synopsys IC Compiler
+    - Design Rule Check, Layout vs. Schematic (LVS) tools like ?
+    - fabrication process specific tools and adjustments
+  * 6 production tooling, coordination, process, assembly, packaging, tracking, etc
+  * 7 hardware bringup, checks, testing, validation, tracking, etc
+  * 8 software, product, customer coordination, integration
+* debugging questions
+  * what tools exist to do simulate/validate 1+2,1+3, etc?
+  * best practice overview for design for test (insert scan chains and test logic)?
+  * where does static time analysis (STA) to ensure design meets timing requirements
+    fit in? each step?
+  * best practice overview "physical verification" (check layout design rules,
+    compare layout and netlist)
+
+https://teramesh.tech/Resources/Knowledge-Base/Signal-Integrity-Analysis-Methodology-for-Printed-Circuit-Boards/
+https://teramesh.tech/Resources/#FAQ
+* Cadence Sigrity Aurora/Clarity
+* Siemens HyperLynx (excellent at prelayout modeling + topology design, excellent breakdown of transmission line loss)
+* ANSYS HFSS (benchmark for 3D optimizations)
+* Keysight ADS (great at complex topology analysis, monte Carlo, etc)
+* Simulink/MATLAB
+
 * VLSI fgpa flow
   + TODO
 
@@ -47,7 +85,6 @@ https://www.infoq.com/presentations/computing-interaction-technology/
 TODO summarize future hardware
 
 ====computing
-TODO performance classification from yt talk from zig discord
 classical CPUs are hardware based instruction interpreters
 
 ====debugging

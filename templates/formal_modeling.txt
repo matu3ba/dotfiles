@@ -18,6 +18,7 @@ and misc
 * memory logics for functional+time behavior of cache, RAM and other storage?
   * state automata known for synchronization of cache lines, but the rest?
 * SIMD logic?, Ralf Jung's group had a paper for common SIMD things
+* segmentation of depedendencies for ASIL/safety
 
 List of dedicated formally proved languages
 - Simulink idea explanation

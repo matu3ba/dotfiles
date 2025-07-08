@@ -9,6 +9,7 @@
 ====scheduler
 ====io_uring
 
+https://venam.net/blog/unix/2021/02/07/audio-stack.html
 
 ====dinit
 man dinit
@@ -42,7 +43,10 @@ $XDG_CONFIG_HOME/autostart - ~/.config/autostart/
 $XDG_CONFIG_DIRS/autostart - /etc/xdg/autostart
 
 ====udev
-TODO
+* avoid it, if possible to understand kernel behavior
+* has hardware support logic to do event catching and event based execution of configurable actions
+* alternative is static configuration xor (stuid binaries ior service daemons
+  for access control and privilege separation)
 
 ====WM
 killall plasmashell
@@ -124,6 +128,14 @@ Track by specific system call group
     -e trace=%desc - Trace descriptor related system calls
     -yy, --decode-fds=all - Print all available information associated with file descriptors
 
+https://rrampage.github.io/2025/06/13/strace-tips-for-better-debugging/
+strace -fintrCDTYyy -o strace.log -v -s128 ./binary
+-k, -e t=%net, -e t=%mem
+strace -f -P /usr/bin/ls sh -c ls
+strace -e inject=%file:error=ENOENT:when=3+ ls
+openat(AT_FDCWD, "/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such
+file or directory) (INJECTED)
+
 To trace file descriptor info, use
 strace -f -e trace=%desc -yy CMD
 strace -f -e trace=%desc -yy ./build/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone &> debug.strace
@@ -154,11 +166,15 @@ valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log CMD
 valgrind -s --trace-children=yes --track-fds=all --log-file=debug_%n.log ./build/stage3/bin/zig build -Dtest-filter=test/standalone/child_process/build.zig test-standalone
 
 Accurate Performance measuring:
+set power mode:
+  sudo cpupower frequency-set -g performance
+change affinity of process:
+  taskset -c 0 ./zig-out/bin/exe
+alternative: TODO
 sudo perf stat -r 10 -d alacritty -e false
 Less noise with:
 https://github.com/andrewrk/poop/issues/39
 https://github.com/lpechacek/cpuset
-TODO commands
 Estimations:
 https://www.uops.info/
 better: https://uica.uops.info/
@@ -196,7 +212,7 @@ valgrind --tool=callgrind --help
 
 Determine cache hierachy and line size on CPU with 'lstopo', ie with
 * lstopo - -v --no-io
-* TODO Intel Performance guides says cache lines are loaded and stored in 128B chunks
+* Intel Performance guides says cache lines are loaded and stored in 128B chunks
 
 Workaround hugepage Kernel bug:
 https://unix.stackexchange.com/questions/679706/kcompacd0-using-100-cpu-with-vmware-workstation-16
@@ -208,8 +224,8 @@ sudo sh -c 'echo 0 > /proc/sys/vm/compaction_proactiveness'
 Sandboxing
 application kernel for containers: https://github.com/google/gvisor
 Fixing Desktop GPU + IPC design problems (for example making dbus superfluous): aracan-fe
-Desktop sandboxing to reduce gigantic attack vector: firejail
-Tight sandboxing: bubblewrap
+Desktop sandboxing to reduce gigantic attack vector: firejail (no great debug tooling)
+Tight sandboxing: bubblewrap (no good documentation or profile for diy)
 firejail:
 configs in /etc/firejail/, /usr/local/etc/firejail, ~/.config/firejail
 tools in /usr/lib/firejail, /usr/local/lib/firejail
@@ -254,7 +270,7 @@ getent groups|passwd
 sudo usermod -a -G input video gdm
 
 https://en.wikipedia.org/wiki/Setgid
-TODO brief access explanations
+setuid, setgid to run executables with elevated/user/group privileges in contrast to user
 
 Windows fileserver (samba) mounting
 UID=$(id -u)

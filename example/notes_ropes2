@@ -111,15 +111,15 @@ pub fn main() !u8 {
 }
 ```
 
-TODO
+idea
 1. indentation level
 2. space and perf implications
 
 Summary
 1. Undo files/Git has the lowest implementation complexity, if custom formatted code
 is moved around.
-2. Storing the complete layout TODO
-3. Storing only the difference to what the formatter would output TODO
+2. Storing the complete layout idea
+3. Storing only the difference to what the formatter would output idea
 
 The next article will discuss possible data structures for storing the layout.
 This is a prequisite to understand, if patching the layout of the AST
