@@ -1,0 +1,38 @@
+https://www.youtube.com/watch?v=YPAaUFGrlEE
+authors, devs, business
+* features, labor, (many langs no) healthy work environment
+* adoption
+  - CTO not final boss
+  - non-technical business person is final boss
+    o often not visionaries, but pragmatists => incremental improvements
+    o social proof
+    o low risk
+types of langs
+* platform language: language built into specific marketplace
+  - goal: 1 largets possible marketplace, 2 accomodate all businesses
+  - tendencies: add many features, companies use prefer subset; better to have complex lang than
+  business switch to alternate marketplace
+* productivity language: language makes dev more efficient tha underlying platform lang directly
+  - goal: make dev more efficient
+  - communication: "deliver features 20% faster", "spend 60% less time on bug fixes", "retain devs 15% longer"
+business character of langs
+* platform lang
+  - 1 app store commissioning
+    o businesses just pay
+    o cost does not appear in budget
+    o business success correlated to lang success
+  - 2 price appears in budget
+    o question: risk?
+  - 3 organization
+    o productivity tools as part of eng
+    o question : value?
+
+Confession of pricing man
+* some consumers use price as indicator of product's quality
+  => higher price => higher quality
+* also occurs in b2b
+  => larger companies think price too low
+* strategic financial decisions may require high baseline to be deemed worth being looked at
+  => part of paying high price is to shift blame, if something goes wrong
+  => may access risk vs benefit only from cost point
+* may summarize decisions as efficient, because has no (technical) knowledge to quantify technological decisions

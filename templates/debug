@@ -20,9 +20,31 @@ debugging best practice https://zipcpu.com/zipcpu/2022/08/30/not-my-fault.html
 hardware verification https://github.com/YosysHQ/sby
 * zipcpu has great quiz questions
 
+scope probes
+
+UART
+* MCU, RX, TX, GND, cheap dongle
+* uses printf which increases code size
+* CPU or DMA setup cost
+GDB/JTAG/SWD
+* debug probe from affordable to thousands of dollar/euro
+* dedicated JTAG/SWD pins without using up other pins: SWDIO, SWCLK, GND, JTAG/SWD debugger, usb
+RTT
+* dedicated JTAG/SWD pins without using up other pins: SWDIO, SWCLK, GND, JTAG/SWD debugger, usb
+* uses printf which increases code size
+* no peripherals from MCU, marginal CPU overhead due to using circular buffer in RAM
+TODO other protocol trade-offs
+
+
+oscilloscope + roboter for probing test points: Robotic Scope Probe
+* unclear trade-offs and scalability
+
+best practice:
+* net-centric control of your DUT
+
 https://intmainreturn0.com/notes/stacktrace-is-finally-cheap.html
 
-====hardware/software
+====hardware_software
 https://embeddedcomputing.com/technology/debug-and-test/debugging-at-the-hardware-software-interface
 https://www.elektronikpraxis.de/hug-the-debug-bevor-es-zu-spaet-ist-a-1084581/
 https://www.concept.de/products.html
@@ -34,6 +56,8 @@ options:
   - LTspice (good perf and features)
   - QSPICE (best perf and features)
   - todo look into debugging options
+
+TODO summarize techniques in "Scalable Debugging for Data Centers: Ensuring Reliability from Design to Operations"
 
 ====processes
 Linux: /proc

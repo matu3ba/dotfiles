@@ -108,3 +108,11 @@ Best practice on squash/rebase/commit
 * provide infrastructure (merge bots etc) and expect to keep every commit buildable
 * squash wip commits
 * try gui (only) for large interactive rebase, macos has Tower
+
+====versioning
+git tag 0.0.1
+git push --tags
+
+$git describe --tag --always --dirty="+"
+on dirty (non-tagged commit after 0.0.1): 0.0.1-4-gdeadbeef
+on clean (tagged commit 0.0.1): 0.0.1

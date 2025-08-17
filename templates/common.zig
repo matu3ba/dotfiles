@@ -35,6 +35,7 @@ const builtin = @import("builtin");
 // ebpf based runtime checks - https://github.com/Sobeston/lifetime-debugger
 // Unicode text processing-  https://codeberg.org/atman/zg
 // Zig to Nix converter - https://github.com/Cloudef/zig2nix
+// excellent hard realtime allocator - https://github.com/Justus2308/zuballoc
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger

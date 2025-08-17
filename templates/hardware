@@ -14,6 +14,8 @@
   - Chisel
   - Bluespec
   - Spade
+* atopile https://github.com/atopile/atopile
+  - small scale hardware dev suite
 
 ====general
 * cpu/gpu news https://semiwiki.com/
