@@ -1,9 +1,13 @@
 ====cycle_time
 ====latency
+====course
 
 ====cycle_time
 * Beckhoff devices can go down to 50us
 * FGPA cycle time typically goes down to 10us, but is only constrained by hardware and clock speed (up to 1.5 GHz)
+  * CERN gets it down to 5us for data selection and 12.5us total latency with complex algorithms
+  * 1m parameter 2 layer LLM with 1k fgpas possibly has 1us latency (bandwidth limiting factor, no real-world data yet)
+    using Keras, TensorFlow etc
 * ASIC allow more routing optimizations and only have physical constrains besides hardware (3GHz or more possible)
 
 ====latency
@@ -16,3 +20,7 @@
     o no numbers yet
 * 5G network latency with ~100us
 * cheap hardware numbers indicate >3ms https://electricui.com/blog/latency-comparison
+
+====course
+compress and synthesise your own TensorFlow model, as well as implement it on a Xilinx FPGA on the Amazon cloud
+* https://github.com/FPGA4HEP/course_material

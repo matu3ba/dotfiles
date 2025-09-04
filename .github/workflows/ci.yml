@@ -12,62 +12,24 @@ permissions:
   # Sets permission policy for `GITHUB_TOKEN`
   contents: read
 
-# not needed here https://github.com/actions/cache
 jobs:
-  aarch64-macos:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
-    runs-on: "macos-latest"
-    env:
-      ARCH: "aarch64"
     steps:
-      - name: Checkout
+      - name: Checkout action
         uses: actions/checkout@v4
       - name: Setup Zig
-        uses: mlugg/setup-zig@v1
+        uses: mlugg/setup-zig@v2
         with:
           version: master
           mirror: 'https://pkg.machengine.org/zig'
-      - name: Build and Test
-        run: ci/aarch64-macos.sh
-  x86_64-linux:
-    timeout-minutes: 20
-    runs-on: "ubuntu-latest"
-    env:
-      ARCH: "x86_64"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Zig
-        uses: mlugg/setup-zig@v1
-        with:
-          version: master
-          mirror: 'https://pkg.machengine.org/zig'
-      - name: Get pwd
-        run: pwd
-      - name: Get tree
-        run: tree
-      - name: Get dirs
-        run: ls .
-      - name: Get git rel path to git root
-        run: git rev-parse --show-cdup
-      - name: Get normal git HEAD
-        run: git rev-parse HEAD
-      - name: Get fancy git HEAD
-        run: git rev-parse HEAD^{}
-      - name: Build and Test
-        run: ci/x86_64-linux.sh
-  x86_64-windows:
-    timeout-minutes: 20
-    runs-on: "windows-latest"
-    env:
-      ARCH: "x86_64"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Zig
-        uses: mlugg/setup-zig@v1
-        with:
-          version: master
-          mirror: 'https://pkg.machengine.org/zig'
-      - name: Build and Test
-        run: ci/x86_64-windows.ps1
+      - name: Run zig fmt
+        if: matrix.os == 'ubuntu-latest'
+        run: zig fmt --check .
+      - name: Build and test without optional deps and without cross builds
+        run: zig build -Dno_opt_deps -Dno_cross test --summary all

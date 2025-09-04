@@ -315,8 +315,11 @@ struct sCharSlice sCharSlice_findstring(struct sCharSlice buf, struct sCharSlice
   size_t buf_i = 0;
   if (buf.len == 0 || search.len > buf.len)
     return res_slice;
-  if (search.len == 0)
-    return buf;
+  if (search.len == 0) {
+    res_slice.ptr = buf.ptr;
+    res_slice.len = buf.len;
+    return res_slice;
+  }
 
   while (buf_i <= buf.len - search.len) {
     size_t match_cnt = 0;

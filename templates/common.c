@@ -189,7 +189,7 @@ int32_t defer_in_c(void);
 int32_t defer_in_c(void) {
   int32_t st = 0;
 
-  int32_t *var1 = malloc(sizeof(int32_t));
+  int32_t *var1 = (int32_t *)malloc(sizeof(int32_t)); // (int32_t *) for c++ compat
   *var1 = 10;
   int32_t wr_st1 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
   if (wr_st1 <= 0) {
@@ -197,7 +197,7 @@ int32_t defer_in_c(void) {
     goto DEFER_CLEANUP1;
   }
 
-  int32_t *var2 = malloc(sizeof(int32_t));
+  int32_t *var2 = (int32_t *)malloc(sizeof(int32_t)); // (int32_t *) for c++ compat
   *var2 = 20;
   int32_t wr_st2 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
   if (wr_st2 <= 0) {
@@ -213,10 +213,12 @@ DEFER_CLEANUP1:
   return st;
 }
 // * errdefer pattern with jump labels
+// SHENNANIGAN clang c++-compat: Cannot jump from this goto statement to its label [goto_into_protected_scope]
+//    goto ERRDEFER_CLEANUP1;
 int32_t *errdefer_in_c(void);
 int32_t *errdefer_in_c(void) {
   int32_t st = 0;
-  int32_t *var1 = malloc(sizeof(int32_t));
+  int32_t *var1 = (int32_t *)malloc(sizeof(int32_t)); // (int32_t *) for c++ compat
   *var1 = 10;
   int32_t wr_st1 = fprintf(stdout, "var1: %" PRIi32 "\n", *var1);
   if (wr_st1 <= 0) {
@@ -508,6 +510,7 @@ void standard_namespacing(void) {
     } uRepr;
   } sNamespace1;
   // struct Namespace1 sNamespace1;
+  // SHENNANIGAN clang c++-compat Variable has incomplete type 'union Repr' [typecheck_decl_incomplete_type]
   union Repr U64;
   U64.u64 = 12;
   sNamespace1.eMode = Undefined;
@@ -897,7 +900,7 @@ struct sStruct1 {
 int32_t padding(void);
 // Ensure correct storage and padding size for pointers via sizeof.
 int32_t padding(void) {
-  struct sStruct1 *str1 = malloc(sizeof(struct sStruct1));
+  struct sStruct1 *str1 = (struct sStruct1 *)malloc(sizeof(struct sStruct1)); // (struct sStruct1 *) for c++ compat
   if (str1 == NULLPTR)
     return 1;
   str1->a1 = 5;
@@ -1100,7 +1103,7 @@ void array_pointers(void) {
   }
 
   // alternative (worse to use): 1d array with offsets, piecewise allocation or big fixed array
-  int *arr_1D = malloc(1000 * 1000 * (sizeof(*arr)));
+  int *arr_1D = (int *)malloc(1000 * 1000 * (sizeof(*arr)));
   if (arr_1D != NULLPTR) {
     // arr_1D[1000*i + j] = 10;
     // ..
@@ -1158,7 +1161,8 @@ void compound_literal_by_addr(struct ComLit1 *cl1) { fprintf(stdout, "%d, %d\n",
 void compound_literal_usage(void) {
   // fun fact: red brackets by clangd show that this is cursed
   compound_literal((struct ComLit1){1, 2});
-  compound_literal_by_addr(&(struct ComLit1){1, 2});
+  struct ComLit1 comlit1 = {1, 2};
+  compound_literal_by_addr(&comlit1);
 }
 
 // SHENNANIGAN one can escape shadowing potentially resulting in weird errors
@@ -1192,20 +1196,22 @@ void bitfields(void) {
   };
 }
 
-void zero_bitfield(void);
-// SHENNANIGAN 0 bit field
-void zero_bitfield(void) {
-  struct ZeroBitField1 {
-    unsigned char x : 5;
-    unsigned short : 0;
-    unsigned char y : 7;
-  };
-  // in memory:
-  // char pad          short  b►undary
-  // v    v            v
-  // xxxxx000 00000000 yyyyyyy0
-  // zero-length field causes position to move to next short boundary
-}
+// ./templates/common.c:1200:5: error: bit-field '' of type 'unsigned short' has a different storage size than the preceding bit-field (2 vs 1 bytes) and will not be packed
+//       under the Microsoft ABI [-Werror,-Wms-bitfield-padding]
+// void zero_bitfield(void);
+// // SHENNANIGAN 0 bit field
+// void zero_bitfield(void) {
+//   struct ZeroBitField1 {
+//     unsigned char x : 5;
+//     unsigned short : 0;
+//     unsigned char y : 7;
+//   };
+//   // in memory:
+//   // char pad          short  b►undary
+//   // v    v            v
+//   // xxxxx000 00000000 yyyyyyy0
+//   // zero-length field causes position to move to next short boundary
+// }
 
 int32_t flexible_array_member(void);
 // Introduced with C99, few usage example
@@ -1216,7 +1222,8 @@ int32_t flexible_array_member(void) {
     double arr[]; // flexible array member must be last
     // potential padding
   };
-  struct FlexibleArrayMember *flex_arr_mem = malloc(5 * sizeof(struct FlexibleArrayMember));
+  struct FlexibleArrayMember *flex_arr_mem =
+      (struct FlexibleArrayMember *)malloc(5 * sizeof(struct FlexibleArrayMember)); // c++ compat
   if (flex_arr_mem == NULLPTR)
     return 1;
   flex_arr_mem->len = 5;

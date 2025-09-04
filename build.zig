@@ -125,59 +125,79 @@ fn buildC(
         c17flags = &(c17_flags ++ cmusl_flag);
         c23flags = &(c23_flags ++ cmusl_flag);
     }
-    const exe_c89 = b.addExecutable(.{
-        .name = "common_c89",
+    const exe_c89_mod = b.createModule(.{
+        // C files have root_source_file = null
         .target = target,
+        .link_libc = true,
         .optimize = optimize,
     });
-    exe_c89.addCSourceFile(.{ .file = b.path("templates/common_c89.c"), .flags = c89flags });
-    exe_c89.linkLibC();
+    exe_c89_mod.addCSourceFile(.{ .file = b.path("templates/common_c89.c"), .flags = c89flags });
+
+    const exe_c89 = b.addExecutable(.{
+        .root_module = exe_c89_mod,
+        .name = "common_c89",
+    });
     run_step.dependOn(&exe_c89.step);
 
     for (SingleCFiles[0..]) |cfile| {
+        const exe_cdefault_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+        });
+        exe_cdefault_mod.addCSourceFile(.{ .file = b.path(cfile) });
         const exe_cdefault = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_cdefault_mod,
         });
-        exe_cdefault.addCSourceFile(.{ .file = b.path(cfile) });
-        exe_cdefault.linkLibC();
         run_step.dependOn(&exe_cdefault.step);
 
+        const exe_c99_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+        });
+        exe_c99_mod.addCSourceFile(.{ .file = b.path(cfile), .flags = c99flags });
         const exe_c99 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_c99_mod,
         });
-        exe_c99.addCSourceFile(.{ .file = b.path(cfile), .flags = c99flags });
-        exe_c99.linkLibC();
         run_step.dependOn(&exe_c99.step);
 
+        const exe_c11_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+        });
+        exe_c11_mod.addCSourceFile(.{ .file = b.path(cfile), .flags = c11flags });
         const exe_c11 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_c11_mod,
         });
-        exe_c11.addCSourceFile(.{ .file = b.path(cfile), .flags = c11flags });
-        exe_c11.linkLibC();
         run_step.dependOn(&exe_c11.step);
 
+        const exe_c17_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+        });
+        exe_c17_mod.addCSourceFile(.{ .file = b.path(cfile), .flags = c17flags });
         const exe_c17 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_c17_mod,
         });
-        exe_c17.addCSourceFile(.{ .file = b.path(cfile), .flags = c17flags });
-        exe_c17.linkLibC();
         run_step.dependOn(&exe_c17.step);
 
-        const exe_c23 = b.addExecutable(.{
-            .name = std.fs.path.stem(std.fs.path.basename(cfile)),
+        const exe_c23_mod = b.createModule(.{
             .target = target,
             .optimize = optimize,
+            .link_libc = true,
         });
-        exe_c23.addCSourceFile(.{ .file = b.path(cfile), .flags = c23flags });
-        exe_c23.linkLibC();
+        exe_c23_mod.addCSourceFile(.{ .file = b.path(cfile), .flags = c23flags });
+        const exe_c23 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cfile)),
+            .root_module = exe_c23_mod,
+        });
         run_step.dependOn(&exe_c23.step);
     }
 }
@@ -222,58 +242,76 @@ fn buildCpp(
         cpp26flags = &(cpp26_flags ++ cppmusl_flag);
     }
     for (SingleCppFiles[0..]) |cppfile| {
+        const exe_cppdefault_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libcpp = true,
+        });
+        exe_cppdefault_mod.addCSourceFile(.{ .file = b.path(cppfile) });
         const exe_cppdefault = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_cppdefault_mod,
         });
-        exe_cppdefault.addCSourceFile(.{ .file = b.path(cppfile) });
-        exe_cppdefault.linkLibCpp();
         run_step.dependOn(&exe_cppdefault.step);
 
+        const exe_cpp14_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libcpp = true,
+        });
+        exe_cpp14_mod.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp14flags });
         const exe_cpp14 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_cpp14_mod,
         });
-        exe_cpp14.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp14flags });
-        exe_cpp14.linkLibCpp();
         run_step.dependOn(&exe_cpp14.step);
 
+        const exe_cpp17_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libcpp = true,
+        });
+        exe_cpp17_mod.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp17flags });
         const exe_cpp17 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_cpp17_mod,
         });
-        exe_cpp17.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp17flags });
-        exe_cpp17.linkLibCpp();
         run_step.dependOn(&exe_cpp17.step);
 
+        const exe_cpp20_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libcpp = true,
+        });
+        exe_cpp20_mod.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp20flags });
         const exe_cpp20 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_cpp20_mod,
         });
-        exe_cpp20.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp20flags });
-        exe_cpp20.linkLibCpp();
         run_step.dependOn(&exe_cpp20.step);
 
+        const exe_cpp23_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libcpp = true,
+        });
+        exe_cpp23_mod.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp23flags });
         const exe_cpp23 = b.addExecutable(.{
             .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
-            .target = target,
-            .optimize = optimize,
+            .root_module = exe_cpp23_mod,
         });
-        exe_cpp23.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp23flags });
-        exe_cpp23.linkLibCpp();
         run_step.dependOn(&exe_cpp23.step);
 
-        const exe_cpp26 = b.addExecutable(.{
-            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+        const exe_cpp26_mod = b.createModule(.{
             .target = target,
             .optimize = optimize,
+            .link_libcpp = true,
         });
-        exe_cpp26.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp26flags });
-        exe_cpp26.linkLibCpp();
+        exe_cpp26_mod.addCSourceFile(.{ .file = b.path(cppfile), .flags = cpp26flags });
+        const exe_cpp26 = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(cppfile)),
+            .root_module = exe_cpp26_mod,
+        });
         run_step.dependOn(&exe_cpp26.step);
     }
 }
@@ -379,11 +417,14 @@ fn buildZig(
     run_step: *std.Build.Step,
 ) void {
     for (SingleZigFiles[0..]) |zigfile| {
-        const exe_zigfile = b.addExecutable(.{
-            .name = std.fs.path.stem(std.fs.path.basename(zigfile)),
+        const exe_zigfile_mod = b.createModule(.{
             .root_source_file = b.path(zigfile),
             .target = target,
             .optimize = optimize,
+        });
+        const exe_zigfile = b.addExecutable(.{
+            .name = std.fs.path.stem(std.fs.path.basename(zigfile)),
+            .root_module = exe_zigfile_mod,
         });
         run_step.dependOn(&exe_zigfile.step);
     }
@@ -396,10 +437,13 @@ fn testZig(
     run_step: *std.Build.Step,
 ) void {
     for (SingleZigFiles[0..]) |zigfile| {
-        const zigfile_unit_tests = b.addTest(.{
+        const zigfile_unit_tests_mod = b.createModule(.{
             .root_source_file = b.path(zigfile),
             .target = target,
             .optimize = optimize,
+        });
+        const zigfile_unit_tests = b.addTest(.{
+            .root_module = zigfile_unit_tests_mod,
         });
         const run_zigfile_unit_tests = b.addRunArtifact(zigfile_unit_tests);
         run_step.dependOn(&run_zigfile_unit_tests.step);
@@ -468,10 +512,10 @@ fn fetch(b: *std.Build, options: struct {
 // zig cc flags
 const cmusl_flag = [_][]const u8{"-Wno-disabled-macro-expansion"};
 const c89_flags = [_][]const u8{ "-std=c89", "-Werror", "-Weverything" };
-const c99_flags = [_][]const u8{ "-std=c99", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default" };
-const c11_flags = [_][]const u8{ "-std=c11", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
-const c17_flags = [_][]const u8{ "-std=c17", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
-const c23_flags = [_][]const u8{ "-std=c23", "-Werror", "-Weverything", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-c++98-compat", "-Wno-pre-c11-compat", "-Wno-pre-c23-compat" };
+const c99_flags = [_][]const u8{ "-std=c99", "-Werror", "-Weverything", "-Wno-c++-compat", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default" };
+const c11_flags = [_][]const u8{ "-std=c11", "-Werror", "-Weverything", "-Wno-c++-compat", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
+const c17_flags = [_][]const u8{ "-std=c17", "-Werror", "-Weverything", "-Wno-c++-compat", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-pre-c11-compat" };
+const c23_flags = [_][]const u8{ "-std=c23", "-Werror", "-Weverything", "-Wno-c++-compat", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-c++98-compat", "-Wno-pre-c11-compat", "-Wno-pre-c23-compat" };
 
 const SingleCFiles = [_][]const u8{
     // "example/gdb/adv/catch.c",
