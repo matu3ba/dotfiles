@@ -27,6 +27,7 @@ const builtin = @import("builtin");
 // typos-cli - https://github.com/crate-ci/typos
 // headless browser - https://github.com/lightpanda-io/browser
 // composable finite state machines - https://github.com/sdzx-1/polystate
+// xit (simple database git with excellent goodies) - https://github.com/radarroark/xit
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz
@@ -36,6 +37,7 @@ const builtin = @import("builtin");
 // Unicode text processing-  https://codeberg.org/atman/zg
 // Zig to Nix converter - https://github.com/Cloudef/zig2nix
 // excellent hard realtime allocator - https://github.com/Justus2308/zuballoc
+// luajit zig bindings https://github.com/sackosoft/zig-luajit
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger

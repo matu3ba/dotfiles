@@ -455,3 +455,19 @@ benchmarks
 * https://github.com/CarterLi/io_uring-echo-server
 * https://github.com/hnes/libaco
 * https://github.com/axboe/liburing/issues/427
+
+https://blog.habets.se/2025/04/io-uring-ktls-and-rust-for-zero-syscall-https-server.html
+* old poll/select or epoll/kqueue, new io_uring
+* sendfile(), splice()
+* 1 thread per core with binding and dont share any read-write structure
+* NUMA optimizations talk
+"FreeBSD optimizations used by Netflix serving at 800Gb/s - Drew Gallatin - EuroBSDcon 2022"
+* userspace: preallocate chunk for every connection
+* kernelspace: for later
+* kTLS: hand off en/decryption, only handshake in application
+  - sendfile() can be used
+  - network card can do crypto instead of CPU, when supported
+* descriptorless files
+  - fd numbers are just integers not showing up in /proc/pid/fd 
+  - fds can only be used with io_uring, but are capped by ulimit
+  - debugging experience??

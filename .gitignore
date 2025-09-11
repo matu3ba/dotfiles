@@ -17,3 +17,7 @@ zig-out/
 *.out
 *.pcm
 *.pdb
+
+# backup files
+/.swp
+/.tmp

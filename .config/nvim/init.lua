@@ -324,7 +324,7 @@ require 'my_keymaps'
 -- convert linux line ending to windows:
 -- :%s//\r/g
 -- convert tabs to spaces:
--- :retab
+-- :retab, does not work in mingw64 vim
 -- Convert '\n's to newline characters
 -- %s/\\n/\r/g
 -- Convert newline characters to '\n's:

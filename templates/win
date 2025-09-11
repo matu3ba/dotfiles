@@ -406,6 +406,19 @@ rename                     Ctrl-r,Ctrl-r
 go
 find                       Ctrl-f
   find next/prev           f3/Shift-f3
+  toggle full screen          f11
+  toggle side bar             ctrl-b
+  show explorer/toggle focus  Ctrl-shift-e
+  show search                 Ctrl-shift-f
+  show source control         Ctrl-shift-g
+  show debug                  Ctrl-shift-d
+  show extensions             Ctrl-shift-x
+  replace in files            Ctrl-shift-h
+  toggle search details       Ctrl-shift-j
+  shown output panel          Ctrl-shift-u
+  open markdown preview       Ctrl-shift-v
+  Ctrl-k-v
+  Ctrl-k-z
 comment/uncomment          Ctrl-k Ctrl-c/Ctrl-k Ctrl-u
 format
   file                     Ctrl-k Ctrl-d
@@ -776,5 +789,6 @@ fd -uu -e tlog -x shasum.bat -a 512 {}
 Get-ChildItem .\SDK\ -Recurse | Get-FileHash -Algorithm MD5
 
 ====kernel
+driver examples https://github.com/microsoft/Windows-driver-samples
 https://learn.microsoft.com/en-us/archive/blogs/wsl/pico-process-overview
 pico-process as foundation for WSL1

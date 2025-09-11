@@ -317,6 +317,9 @@ add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of 
 add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 
 ---- Quickfixlist ----
+-- nvim -q <(rg --vimgrep "BufReadPre") '+copen'
+-- alternative: :grep /pattern/ **
+-- :cdo s/Before/After/
 -- nvim -q
 -- :cexpr getline(1, '$')
 -- TODO parsing bare paths of buffer and use in qflist with :h setqflist()

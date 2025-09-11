@@ -5,6 +5,7 @@
 ====replication
 ====usability
 ====vector_databases
+====performance
 
 ====dataflow_systems
 * aqualang as language designed to be compositional, safe, fast, easy to use
@@ -47,3 +48,9 @@ Database query compilation: our journey Thomas Neumann & Viktor Leis
 https://grski.pl/vdb
 
 unclear use cases of http://www.logicblox.com/learn.html
+
+====performance
+data bases restrict data flexibility (ie opc-ua) for better perf + synced storage
+* ACID
+* BASE/non-ACID (dont care that data is trustable) like get latest value asap
+TODO

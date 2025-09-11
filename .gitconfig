@@ -1,3 +1,5 @@
+#[includeIf "gitdir:D:/GIT/"]
+#  path = ~/.gitconfig-work
 #[includeIf "gitdir:~/workdir/"]
 #  path = ~/.gitconfig-work
 #[includeIf "gitdir:~/dotfiles/"]

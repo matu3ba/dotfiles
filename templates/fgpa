@@ -45,3 +45,21 @@ of Zynq SoC — ARM processor + FPGA fabric.
   - https://github.com/analogdevicesinc
   - Hackster.io — Community-driven DIY projects https://hackster.io
 * begin with UART, SPI for example starting with zynq nano board
+
+====trade-offs
+* ASIC
+  - same as FGPA but very high compilation time and initial production tooling costs
+* FGPA
+  - self-made cache
+  - high synthesis time, no wrong code accepted (solving worse than exponential time due to many constrains and synthesis choices)
+  - performance, area, and power for cycle-perfect timing
+  - configurable gate synthesis
+    o 1 not worth complexity
+    o 2 emulation/simulation/verification etc with ASIC mindset of RTL much faster
+    o 3 libraries usage etc advised
+    o Background https://semiengineering.com/fpga-design-tradeoffs-getting-more-difficult/
+    and https://www.ansys.com/de-de/simulation-topics/what-is-register-transfer-level-design
+* CPU
+  - given fixed cache
+  - low compilation time (compiler take shortcuts potentially creating broken instructions, no slow to fullfill constrains)
+  - estimation- + env-based perf, flexible power, in some areas no; others fewer timing guarantees

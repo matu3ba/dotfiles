@@ -1,6 +1,7 @@
 ====llms
 ====artifacts
 ====known_to_work_use_cases
+====visualization
 
 ====llms
 * Gemini
@@ -31,3 +32,6 @@ given known probability distribution(s) and sufficient handling of edge cases (c
 any automation system can only be as good as the (formal) semantics encoding
 it, so dont expect much without (formal) encoding of meanings or copy-paste
 solution.
+
+====visualization
+https://bbycroft.net/llm

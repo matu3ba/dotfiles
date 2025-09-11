@@ -321,3 +321,12 @@ functional correct code without constant time guarantees open research problem
 
 ====protocols
 * prover for protocols: https://tamarin-prover.com/book/
+
+====standards
+Common Criteria Certification for Integrated Circuits and Smart cards
+requires Evaluation Assurance Level 6/7 (highest).
+
+TODO move to verification
+bottom-up approach:
+* impl -traceability-> sec+funct_mechanisms -compliance-> sec policy
+* impl -verification-> specification

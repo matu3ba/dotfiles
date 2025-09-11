@@ -13,3 +13,9 @@
     <ctx :text="$if.format('January 02, 2006')"></ctx></ctx>.
 </div>
 <div id="page" :html="$page.content()"></div>
+
+<!--
+{LASTMODIFIED}
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+-->

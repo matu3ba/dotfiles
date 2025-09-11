@@ -737,3 +737,23 @@ def sendHtml(self, ip: str, port: int, msg: str) -> int:
     print(f"No connection to ip {ip} on port {port}")
     return 1
   return 0
+
+# TODO proper example
+#    def __enter__(self) -> "Connection":
+#        """Open on entering with-block."""
+#        self.open()
+#        return self
+#
+#    def __exit__(self, _type: Type, _val: Any, _traceback: Any) -> None:
+#        """Close on leaving with-block."""
+#        self.close()
+#
+#    def __del__(self) -> None:
+#        """Class destructor.
+#
+#        Make sure to close the connection when an instance runs out of scope.
+#        """
+#        # If the connection is already closed, nothing new will happen
+#        self.close()
+# @property, @property_instance.setter/getter
+#

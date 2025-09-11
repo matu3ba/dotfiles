@@ -12,6 +12,20 @@
 # https://4sysops.com/archives/measure-object-computing-the-size-of-folders-and-files-in-powershell/
 # https://www.gngrninja.com/script-ninja/2016/5/24/powershell-calculating-folder-sizes
 
+https://devblogs.microsoft.com/scripting/category/windows-powershell/
+https://devblogs.microsoft.com/powershell-community/
+module handling (distributed profiles) https://devblogs.microsoft.com/powershell-community/creating-a-scalable-customised-running-environment/
+misc tweaks tab completion, keybinds, $profile, https://devblogs.microsoft.com/powershell-community/cheat-sheet-console-experience/
+$host.Name, $PROFILE, $PROFILE | Get-Member -MemberType NoteProperty, VSCode profile https://devblogs.microsoft.com/powershell-community/how-to-make-use-of-powershell-profile-files/
+Get-NetAdapter, Rename-NetAdapter
+dir | clip
+echo "123" | Set-Clipboard, Get-Clipboard
+// beware of encoding horrors in PS5, for example by Get-ChildItem truncating content on piping
+file event watcher https://devblogs.microsoft.com/powershell-community/a-reusable-file-system-event-watcher-for-powershell/
+
+Time measurements: Measure-Command
+Get PowerShell version: echo $PSVersionTable
+
 # SHENNANIGAN
 # , is join operator which may silently work or break the program
 # worse, C# code calls use C# syntax ie

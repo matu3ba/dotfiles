@@ -263,7 +263,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # list all sections of an elf file sorted by change time
 # find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
 
-# busybox find
+# busybox find (also used in git bash)
 # find ./ -regex '.*lighttpd.*'
 
 
@@ -298,7 +298,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # busybox grep (very slow)
 # grep -r regex .
 
-# ripgrep
+#====ripgrep
 # usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 # {n}(exactly),{n,m}(at least n, no more than m),
 # rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
@@ -316,6 +316,15 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # rg --files
 # only search for file type: -t, --type TY from --type-list
 
+#====grep
+# patterns: extended regex -E, fixed string -F, basic regex -G, perl regex -P
+# ignore binary -I, recursive without/with following symlinks -r/-R, default nonregex pattern
+# grep -I -r 'nonregex_pattern' .
+# suppress output and count -c, suppress messages about nonexisting or unreadable files -s
+# print 1 with filename -H, 2 with line numbers -n, 3 before/after context -B/-A,
+#       4 only file names with/without match -l/-L, 5 only matched parts -o
+#       6 quiet mode only setting status -q
+# process binary file as text -a
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

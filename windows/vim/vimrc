@@ -1,0 +1,27 @@
+" :h vimfiles, vimrc
+"
+" TODO
+" * options
+" * directory
+" * backupdir
+" * runtimepath
+"
+" set directory=$XDG_CACHE_HOME/vim/swap,~/,/tmp
+" set backupdir=$XDG_CACHE_HOME/vim/backup,~/,/tmp
+" set undodir=$XDG_CACHE_HOME/vim/undo,~/,/tmp
+" ' set viminfo+=$XDG_CACHE_HOME/vim/viminfo
+" set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME"
+" TODO better cursor for git bash
+let mapleader = ' '
+let backup = false
+set lazyredraw
+set smartindent
+let undodir = ""
+let scrollback = 100000
+set directory
+set swapfile
+let colorcolumn = "80,120,150"
+set number
+set relativenumber
+set signcolumn
+let wrap = false
