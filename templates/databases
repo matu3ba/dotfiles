@@ -17,6 +17,8 @@ tigerbeetle
 ====query_compilation
 Database query compilation: our journey Thomas Neumann & Viktor Leis
 * trade-offs on query execution
+Simpler alternative to use REST on postgresql https://github.com/PostgREST/postgrest
+* likely slower, uses haskell
 
 ====relational_database
 * structured query language (sql)
@@ -51,6 +53,12 @@ unclear use cases of http://www.logicblox.com/learn.html
 
 ====performance
 data bases restrict data flexibility (ie opc-ua) for better perf + synced storage
+general rule: must measure
 * ACID
 * BASE/non-ACID (dont care that data is trustable) like get latest value asap
-TODO
+  - key/value stores 
+  - time series dbs
+  - TODO what more?
+  - only useful in distributed cases to sidestep costly locking
+  - Early Mongo was shiny JSON-shaped memcached (key-value store)
+  - time spent in app: postgres: first needs deserialize db response, then deserialize jsonb seperately

@@ -154,6 +154,10 @@ require 'my_keymaps'
 -- * until the end of the file: :.,$norm! @a
 -- * for every line of a paragraph: :g/.+/norm! @a
 
+-- Problem: nvim/vim defaults to not expanding tabs
+-- Solution: :set tabstop, shiftwidth, softtabstop, expandtab
+-- vim :set ts=4 sw=4 sts=4 et :
+
 -- Problem: Macros are slow.something slows down macro execution
 -- Solutions:
 -- :TSDisable wxyz,
