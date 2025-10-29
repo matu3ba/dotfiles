@@ -1,0 +1,35 @@
+====isas
+====AT&T_syntax_bad
+
+====isas
+intel x86 > 5k isa with 400 pages unofficial reference
+call it Intel SIB
+
+====x86
+* way too complex ISA
+5k guide Intel® 64 and IA-32 Architectures Software Developer’s Manual
+AMD 3k developer guide
+https://www.agner.org/optimize/
+Optimizing subroutines in assembly language: An optimization guide for x86 platforms
+The microarchitecture of Intel, AMD and VIA CPUs: An optimization guide for assembly programmers and compiler makers
+* https://app.x64.halb.it/
+* https://pwn.college/
+* https://github.com/robalb/custom-vm-emulator
+* https://halb.it/posts/x64-moving-data/
+* https://pwn.college/fundamentals/
+
+====AT&T_syntax_bad
+AT & T syntax is very bad, dont use it
+https://outerproduct.net/2021-02-13_att-asm.html
+
+AT&T syntax is broken:
+movl  28, %eax     ; (3) same as (2)
+movl  ($28), %eax  ; (4) load one long from the memory location indicated by symbol ‘$28’ and store it in the EAX register
+
+Suffixes are very annoying
+movq    ......
+movl    ......
+movsbl  ......
+movzbl  ......
+movb    ......
+movl    ......

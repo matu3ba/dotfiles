@@ -250,46 +250,30 @@ if status is-interactive
   #   end
   # end
 
-  # function foxeth -d "sandboxing firefox + whitelist download dir"
-  #   if test -e "$HOME/eth_device"
-  #     cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-  #     set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
-  #   else
-  #     echo "no adapter_name in $HOME/eth_device"
-  #   end
-  # end
-  # function sfoxeth -d "sandboxing firefox + private download dir"
-  #   if test -e "$HOME/eth_device"
-  #     cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-  #     set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
-  #   else
-  #     echo "no adapter_name in $HOME/eth_device"
-  #   end
-  # end
-  # function sfoxwlan -d "sandboxing firefox + private download dir"
-  #   if test -e "$HOME/wlan_device"
-  #     cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-  #     set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
-  #   else
-  #     echo "no adapter_name in $HOME/wlan_device"
-  #   end
-  # end
-  # function tbirdeth -d "sandboxing thunderbird + private download dir"
-  #   if test -e "$HOME/eth_device"
-  #     cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-  #     set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
-  #   else
-  #     echo "no adapter_name in $HOME/eth_device"
-  #   end
-  # end
-  # function tbirdwlan -d "sandboxing thunderbird + private download dir"
-  #   if test -e "$HOME/wlan_device"
-  #     cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-  #     set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
-  #   else
-  #     echo "no adapter_name in $HOME/wlan_device"
-  #   end
-  # end
+  function foxeth -d "sandboxing firefox + whitelist download dir"
+    if test -e "$HOME/eth_device"
+      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox -P default && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/eth_device"
+    end
+  end
+  function sfoxeth -d "sandboxing firefox + private download dir"
+    if test -e "$HOME/eth_device"
+      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/eth_device"
+    end
+  end
+  function tbirdeth -d "sandboxing thunderbird + private download dir"
+    if test -e "$HOME/eth_device"
+      cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
+    else
+      echo "no adapter_name in $HOME/eth_device"
+    end
+  end
   # alias  schrometh='firejail --net=enp4s0 --private chromium duckduckgo.com'
   # alias schromwlan='firejail --net=wlan0 --private chromium duckduckgo.com'
   function foxwlan -d "sandboxing firefox + whitelist download dir"

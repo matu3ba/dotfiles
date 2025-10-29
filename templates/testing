@@ -16,6 +16,16 @@ snapshot-testing
 * minimal examples git versioned and check 'git diff' or compute the
   diff on the fly to list all diffs
 * ignore internal logic
+integration test pyramid (for clouds)
+    LH
+    E2E
+    perf
+    example
+    SDK integration
+    component certification
+    runtime integration tests
+    component conformance tests
+    unit tests
 
 https://www.sqlite.org/testing.html
 
@@ -25,6 +35,7 @@ https://lwn.net/Articles/995276/#Comments
 todo summarize
 https://mutants.rs/
 https://www.fuzzingbook.org
+https://www.debuggingbook.org
 
 Best Practice taken from "Large Scale Architecture: The Unreasonable
 Effectiveness of Simplicity - Randy Shoup" and extended by personal experience.

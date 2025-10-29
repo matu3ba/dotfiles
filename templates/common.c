@@ -117,6 +117,7 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 //====signaling_unix
 //====signaling_win
 //====printf_formatter
+//====extensions
 
 // best practice compilation time
 // * https://codingnest.com/the-little-things-speeding-up-c-compilation/
@@ -1637,11 +1638,13 @@ void use_win_utf8_to_utf16(void) {
 
 #endif // defined(_WIN32)
 
-//====signaling_unix
-// signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
-
+//====extensions
 // https://maskray.me/blog/2024-05-12-exploring-gnu-extensions-in-linux-kernel
 // funny kernel macros and flags to workaround standard issues due to type based aliasing analysis
+// TODO scoped locks and allocations
+
+//====signaling_unix
+// signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard
 
 // delayed loaded via explicit calls to LoadLibrary and GetProcAddress
 

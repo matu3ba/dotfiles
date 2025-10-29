@@ -4,6 +4,7 @@
 ====debugging
 ====tooling
 ====nvm
+====bad_designs
 
 ====specification_langs
 * VHDL
@@ -204,3 +205,36 @@ NVM (non-volatile memory)
   - most persistent pointer operations <0.5 ns added latency
   - ops up to 13x faster than Unix, SQLite queries up to ~4x faster than on PMDK
   - YCSB workloads ran ~1-3x faster than on native and NVM-optimized SQLite backends
+
+====bad_designs
+(according to Linus)
+* big endian (things like PCIe fundamentally little-endian)
+* virtually tagged caches (Virtually indexed, virtually tagged (VIVT))
+  - cache alias issues, flushing caches on context switches
+  => VMSAv7 has IVIPT extension; base ARMv7 uses VIVT; so much fun
+* only do aligned memory access
+  - bonus when not faulting (loading and storing garbage instead)
+  => slow on mips, sparc, xtensa, hexagon, maybe slow on riscv, arm5/6, loongarch;
+  need to check which archs do not fault and load/store garbage
+* expose pipeline details in ISA
+  - delayed branch slots (RISC-V bruh), explicit instruction grouping (Itanium bundles)
+* extended memory windows
+  - HIGHMEM (DOS)
+* register windows (extended memory for register) (SPARC, IA64)
+  - filling, spilling (limited) for software dealing with faults (nesting exceptions)
+  - bonus when rotating and overflowing silently
+  => see RISC-V windowing/register renaming/register rotation experiments
+  "Clockhands: Rename-free Instruction Set Architecture for Out-of-order Processors";
+  4 hands/register groups handled purely in sw and without the mentioned drawbacks
+  need to check if it is also chunked to prevent writes into same
+* require sw fallbacks for anything unusual
+  - make TLB fills fault to sw impl (not common with like 10-20 instructions)
+  - denormals or FP precision problems left to sw
+  => not sure about TLB fills faults, f80 has "nice" FP precision problems
+* make exceptions asynchronous
+  - allow machine check exceptions in any context
+  => need to check maybe
+  - take non-maskability of NMI to heart to make sure sw cannot write atomic code
+  => some DSPs or ARM versions need slow software-emulated atomics
+  - make sure special cases not dealt in hw are delayed for extra fun
+  => need to check maybe

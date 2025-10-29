@@ -1,10 +1,17 @@
+==dtrace
+==strace
+==bpftrace
+==Performance analysis profiler
+==FAQ
+
 Mostly taken from https://klarasystems.com/articles/freebsd-vs-linux-tracing-and-troubleshooting/
 From portable and widely used to non-portable
 
 ==dtrace
 idea: document, if necessary
+https://tylerhillery.com/blog/tyler-tries-dtrace/
 
-==strace in a nutshell
+==strace
 strace<--2.ptrace  traced process
    |     \------+          |1.open(file.txt)   user
 ---|------------|----------|-------
@@ -24,7 +31,6 @@ https://github.com/iovisor/bpftrace
 - uses BCC to interact with BPF system, kprobes, uprobes and tracepoints
 
 ==Performance analysis profiler
-
 "Coz: Causal Profiling"
 https://github.com/plasma-umass/coz
 * TODO explain advantage

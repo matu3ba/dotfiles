@@ -175,7 +175,7 @@ sudo perf stat -r 10 -d alacritty -e false
 Less noise with:
 https://github.com/andrewrk/poop/issues/39
 https://github.com/lpechacek/cpuset
-Estimations:
+Code Performance Analysis for cycle accurate behavior estimations:
 https://www.uops.info/
 better: https://uica.uops.info/
 pile of assembly manuals
@@ -468,6 +468,6 @@ https://blog.habets.se/2025/04/io-uring-ktls-and-rust-for-zero-syscall-https-ser
   - sendfile() can be used
   - network card can do crypto instead of CPU, when supported
 * descriptorless files
-  - fd numbers are just integers not showing up in /proc/pid/fd 
+  - fd numbers are just integers not showing up in /proc/pid/fd
   - fds can only be used with io_uring, but are capped by ulimit
   - debugging experience??

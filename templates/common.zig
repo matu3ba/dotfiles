@@ -36,8 +36,16 @@ const builtin = @import("builtin");
 // ebpf based runtime checks - https://github.com/Sobeston/lifetime-debugger
 // Unicode text processing-  https://codeberg.org/atman/zg
 // Zig to Nix converter - https://github.com/Cloudef/zig2nix
+// Nix parser https://clevor.neocities.org/narser/
 // excellent hard realtime allocator - https://github.com/Justus2308/zuballoc
 // luajit zig bindings https://github.com/sackosoft/zig-luajit
+// type-1 hypervisor in zig https://hv.smallkirby.com/en
+// simple file (tree) encryption https://github.com/jedisct1/turbocrypt
+
+// https://github.com/david-vanderson/dvui
+// https://codeberg.org/ssmid/zeppelin
+// https://github.com/vancluever/z2d
+// https://github.com/srmadrid/zml
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger

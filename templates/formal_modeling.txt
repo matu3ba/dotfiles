@@ -35,6 +35,8 @@ List of dedicated formally proved languages
 * venn.nvim
 * Gephi
 * SysML (extension of UML): Eclipse Capella https://mbse-capella.org https://github.com/eclipse-capella/capella
+* EPK, BPMN
+* Alloy (consistency)
 
 ====verification_costs
 Proof effort is quadratic to code size, if code is not side-effect free.
@@ -178,6 +180,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
      + gcc      nothing
        o https://rust-lang.github.io/rfcs/3559-rust-has-provenance.html#drawbacks
        o buggy and no plan how to move forward
+   * TODO https://fil-c.org/ https://github.com/pizlonator/fil-c/ model + perf numbers
    * CHERI example usage (mixed tagged pointer capabilities)
      one implementation may choose
      | perms | padding | ot    | bounds |
@@ -455,6 +458,21 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 26. definitions of memory safety is omitting wanted use cases, which renders it
   semi-useless
   * good links for tooling https://memorysafety.openssf.org/memory-safety-continuum/
+- 27. discussion with goodchild on (fundamental) compiler shortcomings regarding synchronization primitives and core idea of
+  expressing Consistency Models without constrains/relations based on graphical input/call-site information
+  Q: naive questions:
+  are atomics just a hack for expressing memory relations, which are just graphs?
+  what would a (fancy) graph annotation system bring, which could be stuffed into whatever model solver one can think of?
+  at least my naive understanding is that expressing load and store without the intend where it should be applied to is very wasteful on logical correctness, readability and compiler performance.
+  A: now you are getting enlightened!  the first thing is that everything you wrote in this message applies to everything in modern pls, not just load and store
+  another thing to observe is: suppose you have a program written using weakly ordered memory ops.  and then you go in and replace them all with seqcst ordering.  the externally visible behaviour of the program shouldn't change.  which means the compiler would be totally within its rights to go back in and change all your memory orderings back to weak orderings
+  (hop, skip, and a jump from here to full-on transactions, which i think is ideal)
+  all of this business with atomics is compensating for the fact that extant compilers and cpus are stupid and can't actually reason about concurrent algorithms (cpus will never be able to; compilers maybe).  so don't try to let them do that, but give them something with some local properties that can be reasoned about a little bit locally
+  'stuffed into whatever model solver one can think of'  state-space explodes very quickly, formal reasoning about concurrent algorithms is v hard without lots of explicit guiding.  https://www.youtube.com/watch?v=VogqOscJYvk  not exactly the same, but giroux talks about something similar here, enumerating all the executions with up to n events, where n caps out very low
+  flip side of this though is actually maybe you actually want to have nondeterminism in externally visible behaviour.  classic example is serialising a hash table; you probably don't care what order the keys go in.  in that case you don't want to overconstrain that nondeterminism.  so that might be closer to an application of what you're talking about, i'm not sure what the best way to express that would be
+  definitely declarative is good
+  A2: Maybe a dumb primitive is "good enough" and external solver/bespoke tool can provide reordering information to compiler
+  after user has fuzzed etc memory reordings for desired use cases
 
 To me unclear if solved:
 * check if linker speak has a formal model
@@ -579,6 +597,82 @@ compilation time. This argument falls apart on big scale, specific performance
 the alternative is to use sel4/micro kernel approach of capabilities, but even
 those assume you can not access all memory and/or code is trusted.
 https://en.wikipedia.org/wiki/Object-capability_model
+* sel4 has proofs on worst cast execution time, confidentialy and non-interference
+TODO check extent of confidentially proof interaction with measured architectural side-channels on hardware
+TODO check model
+
+ making C and C++ pointers more sim-
+ilar to true capabilities—that is unforgeable and unguessable
+
+"Path to components" and talks by Luke Wagner
+tldr; posix process model fix suggestions via component model layered on top of WebAssembly Core
+=> Wyvern for capabilities + parametric linking
+1 parametric linking
+  1.1 distingish units of code from instances of that code
+  1.2 unit of code declares imports that must be supplied when code is instantiated
+  1.3 allow units of code to instantiate other units of code by supplying their imports
+  => enables mocking, local testing (no dependency injection framework)
+  => dependency resolution (without lockfiles at runtime)
+  => service chaining (without network stack)
+2 high-levle value types
+  2.1 value types include strings, lists, records, variants with subtyping
+  2.2 make read/write values in/out of memory configurable yet optimizable
+  2.3 allow value types to contain opaque handles
+  - file descriptor??
+3 resource and handle types
+  3.1 decouple
+  - resources: are non-copyable things with lifetimes
+  - handles: values that point to resources
+  - functions: take/return handles, operate on resources
+  3.2 resources/handles have resource/handles type to specify resource type
+  3.3 resource types are runtime type-tags to be imported/created/exported
+  => Layer 7 interfaces that avoid sidecar protocol parsing overhead
+  => Resources directly usable without manual glue code
+  => Virtual platform layering
+4 future and stream types
+  4.1 calls between instances can share stack, but can also be suspended
+  allowing caller to progress
+  4.2 future and stream types for passing and returning handles to in-progress
+  tasks
+  4.3 low-level control-flow protocols for futures and streams that language runtimes
+  can integrate with
+  => efficient bulk data streaming into/out of wasm linear memory
+  => asnyc interfaces directly usable without manual glue code
+  => defining and enforcing cross-language "structured concurrency"
+5 putting everything together
+  => IO with outside world via WASI (logging, config, fs, sockets, http, grpc, mq, pubsub, kv, sql,..)
+  WASI
+  ---
+  Component Model
+  ---
+  WebAssembly Core
+6 Clarifications
+  6.1 Distributed computing is out of scope (including partial failure, persistence,
+  live upgrade, scalability, availability)
+  6.2 Leave these problems to platform or future higher-level specs
+7 Worlds
+  * are subsets to expose and to work on (when needed)
+  * can be imported or exported
+  * can do extensions, union, intersections
+  * platform vendor supports world, when implementing imports and calls exports
+  * component author targets world by calling imports, implementing exports
+  world (embedding made easy, SDKs made easy)
+  - wit-bindgen
+    - host bindings
+      - wasmtime to run things
+    - guest bindings (what language)
+      - compiler to create things
+      - wit-component to create component.wasm
+8 Virtualization tooling
+  * Virtual Platform Layering
+  TODO https://youtu.be/phodPLY8zNE?t=1282
+
+"Components, WebAssembly’s Docker’s Moment - Bailey Hayes, Cosmonic" https://www.youtube.com/watch?v=wttN69wciSM
+* sounds like capabilities without being explicit on them
+* Erlang model as suggestion
+TODO summarize capabilities semantically
+
+"Threading the needle with concurrency and parallelism in the Component Model" by Luke Wagner
 
 idea:
 does alpha, beta, eta reduction also work for type checking in semantic analysis?

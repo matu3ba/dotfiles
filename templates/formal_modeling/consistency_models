@@ -1,0 +1,53 @@
+Cache coherency
+  TODO
+
+Relation to cache coherency
+  TODO
+Strong consistency models
+  Strict consistency/Strong consistency
+  Sequential consistency
+  Causal consistency
+  Processor consistency
+  PRAM/Pipelined RAM consistency, or FIFO consistency
+  Cache consistency
+  Slow consistency
+Weak memory consistency models
+  Weak ordering
+  Release consistency
+  Entry consistency
+  Local consistency
+  General consistency
+  Eventual consistency
+Relaxed memory consistency models
+  * programmer responsible
+  Relaxation
+  Synchronizing vs. non-synchronizing
+  Issue vs. view-based
+  Relative model strength
+  --
+  Relaxed write to read
+  Relaxed write to read and write to write
+  Relaxing read and read to write program orders: Alpha, RMO, and PowerPC
+
+Network/data transmission failures
+  TODO
+
+Relation to progress models
+  TODO
+
+RISC-V MEMORY MODEL SPECIFICATION
+* https://github.com/daniellustig/riscv-memory-model
+* https://github.com/riscv/riscv-isa-manual
+* https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154769/RISC-V+Technical+Specifications
+* https://riscv.github.io/riscv-isa-manual/snapshot/unprivileged/
+* https://github.com/riscv/sail-riscv
+* https://five-embeddev.com/riscv-user-isa-manual/Priv-v1.12/rvwmo.html
+Chapter 6: RISC-V Weak Memory Ordering (“RVWMO”)
+Chapter 20: “Zam” Std. Extension for Misaligned AMOs
+Chapter 21: “Ztso” Std. Extension for Total Store Ordering
+Appendix A: Explanatory Material and Litmus Tests
+Appendix B: Formal Memory Model Specifications
+
+https://discord.com/channels/605571803288698900/1023625686327492761/1423060247643422720
+https://jepsen.io/consistency/models
+https://en.wikipedia.org/wiki/Consistency_model

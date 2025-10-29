@@ -96,17 +96,17 @@ return {
   { 'NStefan002/screenkey.nvim', config = function() require('screenkey').setup { clear_after = 300 } end },
 
   -- default mappings: textobjects: ii, ai, goto: [i,]i
-  -- no color support yet: https://github.com/echasnovski/mini.nvim/issues/99
-  { 'echasnovski/mini.indentscope', config = function() require('mini.indentscope').setup {} end },
+  -- no color support yet: https://github.com/nvim-mini/mini.nvim/issues/99
+  { 'nvim-mini/mini.indentscope', config = function() require('mini.indentscope').setup {} end },
 
   -- gS
-  { 'echasnovski/mini.splitjoin', config = function() require('mini.splitjoin').setup {} end },
+  { 'nvim-mini/mini.splitjoin', config = function() require('mini.splitjoin').setup {} end },
 
   -- idea, if annoying: lazy loads + mini config
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L11
   -- https://github.com/nikfp/nvim-config/blob/d4ae8c4f5cfe21df2f2146a9769db76490b7e76c/lua/plugins/lspconfig.lua#L232-L260
   -- ga no preview, gA preview
-  { 'echasnovski/mini.align', config = function() require('mini.align').setup {} end },
+  { 'nvim-mini/mini.align', config = function() require('mini.align').setup {} end },
 
   -- text editing concepts
   -- :h text-objects
@@ -127,7 +127,7 @@ return {
   -- cina/cila to modify fn args
   -- example: 2cina to modify 'bb' in 'f(aa, bb)'
   -- or leftwards: 2cila
-  { 'echasnovski/mini.ai', config = function() require('mini.ai').setup {} end },
+  { 'nvim-mini/mini.ai', config = function() require('mini.ai').setup {} end },
 
   -- sa + motion/textobject + output id (to add), ie ( saiw) word -> (((word)))
   -- sd + input id (to find and delete), ie ( sd) ( ( ( word ) ) ) -> ( word )
@@ -141,7 +141,7 @@ return {
   -- adjust inner padding srn{{   }}: { a ={ b = {c} } }
   -- sf/F to find left/right surrounding, sh to highlight left/right surrounding
   -- selection + sa/sd/sr + key also works!
-  { 'echasnovski/mini.surround', config = function() require('mini.surround').setup() end },
+  { 'nvim-mini/mini.surround', config = function() require('mini.surround').setup() end },
 
   -- idea gm,gx,gsi conflicts
   -- g+<key> for operator
@@ -155,7 +155,7 @@ return {
   -- g== vim.lsp.get_clients({bufnr = 0}) -> content of vim.lsp.get_clients({bufnr = 0})
   -- ( gsin) (bb, dd, aa, cc) -> (aa, bb, cc, dd)
   -- gspi for sorting paragraph (same as :sort on paragraph selection vip)
-  { 'echasnovski/mini.operators', config = function() require('mini.operators').setup {} end },
+  { 'nvim-mini/mini.operators', config = function() require('mini.operators').setup {} end },
 
   -- |[q|, |]q|, |[Q|, |]Q|, |[CTRL-Q|, |]CTRL-Q| mappings
   --   • brackets                     { :h ]}
@@ -181,7 +181,7 @@ return {
   --   • |[b|, |]b|, |[B|, |]B| navigate through the |buffer-list|
   {
     -- debug problem
-    'echasnovski/mini.bracketed',
+    'nvim-mini/mini.bracketed',
     config = function()
       require('mini.bracketed').setup {
         comment = { suffix = 'v' }, -- verbose comment
@@ -191,7 +191,7 @@ return {
   },
 
   -- usage in my_hydra.lua
-  { 'echasnovski/mini.move' },
+  { 'nvim-mini/mini.move' },
 
   -- :Neogit
   -- TODO :Neogit diffsplit
@@ -292,7 +292,9 @@ return {
   -- idea handroll debugger control for gdb via server and pipe stuff to buffer
   -- idea command to extract debug points out of gdb (visualize should work fine)
   -- buffer manipulation + project search
+
   --==bufferactions
+  --TODO think about using mini-visits + add terminal functionality based on now numerous tutorials, if stuff breaks
   -- blockers of harpoon2 mentioned in my_harpoon.lua
   -- { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
@@ -324,7 +326,7 @@ return {
   -- ideas
   -- - ascii boxing
   -- - dot repetition
-  -- - mini.move box movements https://github.com/echasnovski/mini.nvim/issues/838
+  -- - mini.move box movements https://github.com/nvim-mini/mini.nvim/issues/838
   -- * ascii mode, see https://github.com/jbyuki/venn.nvim/issues/27
   -- * inline text spacing adjustments
   -- hydra venn extended: <l>ve

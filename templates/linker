@@ -194,3 +194,14 @@ Tentative definitions aka common symbols
 
 
 https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
+
+Check for -fPIC on most platforms: readelf --relocs foo.o | egrep '(GOT|PLT|JU?MP_SLOT)'
+otherwise: file foo.o
+hardening-check foo.o
+checksec --file=foo.o
+
+test.o:     file format elf32-i386
+RELOCATION RECORDS FOR [.text]:
+OFFSET   TYPE              VALUE
+00000007 R_386_PC32        __i686.get_pc_thunk.cx
+0000000d R_386_GOTPC       _GLOBAL_OFFSET_TABLE_

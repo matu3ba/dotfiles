@@ -189,6 +189,21 @@ State of Art
   - "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms" by Maged M. Michael and Michael L. Scott.
     https://github.com/Qarterd/Honeycomb/blob/master/src/common/Honey/Thread/LockFree/Queue.h
     https://www.cs.rochester.edu/research/synchronization/pseudocode/queues.html
+* MPSC design space
+  https://github.com/npc1054657282/mpsc
+  - "fetch_add with overrun" scheme https://kprotty.me/2022/11/04/simple-scalable-unbounded-queue.html
+  - Are there scheduler-aware implementations/algos or design trade-offs?
+  - More of a completeness nit: how to get to wait-free design not mentioned.
+    o queue doesnt do any thread blocking so its not scheduler-aware (thats left up to the user if they need it).
+    But a design trade-off is that it supports some maximum amount of threads
+    doing a send() at any given point:
+    o In the code at the bottom, the buffer is aligned to 4096 so at most 4096
+    - buffer_size - 1 threads are allowed to call send() at the same time,
+    which should be quite reasonable
+    o For the wait-free part, the consumer is wait-free but the producer isnt. The
+    fetch-add usage here is more like an optimistic CAS, but they still race to
+    install the next buffer (given its an unbounded queue with a linked list of
+    buffers) to try again.
 
 "FIFO can be Better than LRU: the Power of Lazy Promotion and Quick Demotion" by Yang et al.
 LP-FIFO (e.g., FIFO-Reinsertion)/CLOCK N’th Chance (2 bits) can be faster, more scalable and have better miss ration than LRU.

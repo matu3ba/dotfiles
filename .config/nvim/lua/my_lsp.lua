@@ -54,7 +54,7 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 --==PluginChecks
 
-local has_lspconfig, lspconfig = pcall(require, 'lspconfig')
+local has_lspconfig, _ = pcall(require, 'lspconfig')
 if not has_lspconfig then
   print 'Please install neovim/nvim-lspconfig'
   return
@@ -102,7 +102,6 @@ local common_on_attach = function(client, bufnr)
   if client.server_capabilities.documentSymbolProvider then navic.attach(client, bufnr) end
 end
 
--- stylua: ignore start
 -- TODO https://www.reddit.com/r/neovim/comments/17j0p58/clangd_lsp_for_header_files_as_well_as_source_code/
 -- SHENNANIGAN clang-fmt header reordering enabled by default in the LLVM and Chromium styles
 -- clang-tidy background index clang-fmt? cross file rename
@@ -110,17 +109,25 @@ end
 -- CompileFlags:
 --   Add: [-std=c++20]
 
-lspconfig.biome.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.clangd.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
---lspconfig.gopls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
--- lspconfig.jedi_language_server.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.julials.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.omnisharp.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.ruff.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.rust_analyzer.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
-lspconfig.superhtml.setup{ capabilities = common_capabilities, on_attach = common_on_attach, }
+vim.lsp.config('biome', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('clangd', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('julials', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('omnisharp', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('ruff', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('rust_analyzer', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('superhtml', { capabilities = common_capabilities, on_attach = common_on_attach })
 -- .config/zls.json https://raw.githubusercontent.com/zigtools/zls/master/schema.json
-lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_attach, }
+vim.lsp.config('zls', { capabilities = common_capabilities, on_attach = common_on_attach })
+
+vim.lsp.enable 'biome'
+vim.lsp.enable 'clangd'
+vim.lsp.enable 'julials'
+vim.lsp.enable 'omnisharp'
+vim.lsp.enable 'ruff'
+vim.lsp.enable 'rust_analyzer'
+vim.lsp.enable 'superhtml'
+vim.lsp.enable 'zls'
+
 -- https://sookocheff.com/post/vim/neovim-java-ide/
 -- https://javadev.org/devtools/ide/neovim/lsp/
 -- https://github.com/neovim/nvim-lspconfig/issues/2386
@@ -128,9 +135,8 @@ lspconfig.zls.setup { capabilities = common_capabilities, on_attach = common_on_
 -- https://github.com/mfussenegger/nvim-jdtls
 -- https://www.reddit.com/r/neovim/comments/12ki16d/java_lsp_for_jdk_11/
 -- https://langserver.org/, only support one https://github.com/eclipse-jdtls/eclipse.jdt.ls
--- stylua: ignore end
 
-lspconfig.texlab.setup {
+vim.lsp.config('texlab', {
   capabilities = common_capabilities,
   on_attach = common_on_attach,
   settings = {
@@ -143,9 +149,11 @@ lspconfig.texlab.setup {
       latexFormatter = 'none',
     },
   },
-}
+})
+vim.lsp.enable 'texlab'
 
-lspconfig.lua_ls.setup {
+-- lspconfig.lua_ls.setup {
+vim.lsp.config('lua_ls', {
   on_attach = common_on_attach,
   on_init = function(client)
     if client.workspace_folders == nil or client.workspace_folders[1] == nil then return false end
@@ -180,7 +188,8 @@ lspconfig.lua_ls.setup {
     end
     return true
   end,
-}
+})
+vim.lsp.enable 'lua_ls'
 
 --==Keybindings
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -282,31 +291,31 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-  group = aucmd_lsp,
-  pattern = 'ziggy',
-  callback = function()
-    vim.lsp.start {
-      name = 'Ziggy LSP',
-      cmd = { 'ziggy', 'lsp' },
-      root_dir = vim.uv.cwd(),
-      flags = { exit_timeout = 1000, debounce_text_changes = 150 },
-    }
-  end,
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+--   group = aucmd_lsp,
+--   pattern = 'ziggy',
+--   callback = function()
+--     vim.lsp.start {
+--       name = 'Ziggy LSP',
+--       cmd = { 'ziggy', 'lsp' },
+--       root_dir = vim.uv.cwd(),
+--       flags = { exit_timeout = 1000, debounce_text_changes = 150 },
+--     }
+--   end,
+-- })
 
-vim.api.nvim_create_autocmd('FileType', {
-  group = aucmd_lsp,
-  pattern = 'ziggy_schema',
-  callback = function()
-    vim.lsp.start {
-      name = 'Ziggy LSP',
-      cmd = { 'ziggy', 'lsp', '--schema' },
-      root_dir = vim.uv.cwd(),
-      flags = { exit_timeout = 1000, debounce_text_changes = 150 },
-    }
-  end,
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+--   group = aucmd_lsp,
+--   pattern = 'ziggy_schema',
+--   callback = function()
+--     vim.lsp.start {
+--       name = 'Ziggy LSP',
+--       cmd = { 'ziggy', 'lsp', '--schema' },
+--       root_dir = vim.uv.cwd(),
+--       flags = { exit_timeout = 1000, debounce_text_changes = 150 },
+--     }
+--   end,
+-- })
 
 -- vim.api.nvim_create_autocmd('FileType', {
 --   group = aucmd_lsp,

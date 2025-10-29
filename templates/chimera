@@ -185,6 +185,7 @@ idea
   - change cache location by symlinking /etc/apk/cache to desired location
 
 ====network
+==wifi
 dinitctl enable iwd
 /etc/iwd/main.conf
 [General]
@@ -203,6 +204,15 @@ station wl.. get-networks
   device list
   station STATION get-networks
   station STATION connect NETWORK
+==cable
+dinitctl enable dhcpcd
+or
+/etc/dhcpcd.conf
+interface INTERFACE
+static ip_address=192.168.1.XX/24
+static routers=192.168.1.1
+static domain_name_servers=DNS1 DNS2
+* check via ip a
 
 ====plasma
 balooctl6 disable
@@ -222,6 +232,8 @@ startplasma-wayland
   - perl install-tl --profile=profile
   - https://tug.org/texlive/doc/tlmgr.html#EXAMPLES
 * setup printer according to manual, for example using wifi direct and accessing http://192.168.223.1
+  - old(er) printers may only support WPA2 (WPA2/WPA3 mixed mode may fail)
+  - infrastructure network: use 802.11b/g behavior means behavior downgrade excluding n behavior
 * enable printer service: dinitctl -s enable cupsd
   unclear if needed: apk add cups-devel
   - cups and hp printer drivers: apk add cups hplip cups-filters

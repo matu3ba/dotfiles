@@ -6,3 +6,37 @@ SpecTec to check
 * prose specification (reST)
 * reference interpreter (OCaml)
 * test suite (wast)
+
+https://github.com/WebAssembly/design/issues/1340#issuecomment-1708522889
+no stack walking proposal that
+* performs significantly better than a shadow stack,
+* can handle stacks with intermixed host frames,
+* is compatible with threads,
+* is compatible with stack switching,
+* does not break security-relevant abstraction boundaries (e.g., allowing to inspect somebody else's stack frames without permission).
+
+* does not allow thread boosting, scheduler hints and alike for battery optimizations
+  and other improvements on mobile (fingerprinting, security concerns etc)
+https://github.com/WebAssembly/design/issues/1356
+* stack-walking API simpler: applications can just use a shadow stack in memory
+  Wasm engines do not currently support deoptimization in top tiers, which would be
+  necessary to support inspection and update of (reference) locals.
+
+interrupt handling
+
+https://en.wikipedia.org/wiki/Object-capability_model
+https://www.chikuwa.it/blog/2023/capability/
+
+The object-capability model is a computer security model. A capability describes a transferable right to perform one (or more) operations on a given object. It can be obtained by the following combination:
+        An unforgeable reference (in the sense of object references or protected pointers) that can be sent in messages.
+        A message that specifies the operation to be performed.
+The security model relies on not being able to forge references.
+        Objects can interact only by sending messages on references.
+        A reference can be obtained by:
+            Initial conditions: In the initial state of the computational world being described, object A may already have a reference to object B.
+            Parenthood: If A creates B, at that moment A obtains the only reference to the newly created B.
+            Endowment: If A creates B, B is born with that subset of A's references with which A chose to endow it.
+            Introduction: If A has references to both B and C, A can send to B a message containing a reference to C. B can retain that reference for subsequent use.
+In the object-capability model, all computation is performed following the above rules.
+
+Stackful Coroutine Made Fast?

@@ -4,8 +4,7 @@
 ====visualization
 
 ====llms
-* Gemini
-* ChatGPT
+* fast selection of models via https://github.com/jedisct1/inferswitch
 * reasoning about llms https://transformer-circuits.pub/2025/attribution-graphs/methods.html
 
 ====artifacts
@@ -26,8 +25,12 @@ https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of
 ====known_to_work_use_cases
 given known probability distribution(s) and sufficient handling of edge cases (controlled environment or enumeratable enough)
 * 1. copy-paste/use common optimal learned goal
+  - claude for more brute-force like editing and local simplifications
+  - coderabbitai for context-aware/learned analysis to review code
 * 2. automate calibration-like tasks
+  - diy llms (+ textual frontend, progress etc)
 * 3. basic overview stuff not to be trusted/needs validation
+  - deepseek, chatgpt, gemini
 
 any automation system can only be as good as the (formal) semantics encoding
 it, so dont expect much without (formal) encoding of meanings or copy-paste

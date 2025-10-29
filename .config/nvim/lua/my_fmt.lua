@@ -40,27 +40,14 @@ local fmts_by_ft = {
 }
 
 conform.setup {
-  -- additional / custom formatter
-  formatters = {
-    superhtml = {
-      inherit = false,
-      command = 'superhtml',
-      stdin = true,
-      args = { 'fmt', '--stdin' },
-    },
-    ziggy = {
-      inherit = false,
-      command = 'ziggy',
-      stdin = true,
-      args = { 'fmt', '--stdin' },
-    },
-    ziggy_schema = {
-      inherit = false,
-      command = 'ziggy',
-      stdin = true,
-      args = { 'fmt', '--stdin-schema' },
-    },
-  },
+  -- formatters = {
+  --   name = {
+  --     inherit = false,
+  --     command = 'cmd',
+  --     stdin = true,
+  --     args = { 'fmt', '--stdin' },
+  --   },
+  -- },
 
   formatters_by_ft = fmts_by_ft,
 }

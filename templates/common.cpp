@@ -3246,6 +3246,7 @@ static_assert(enum_to_string(Color::red) == "red");
 static_assert(enum_to_string(Color(42)) == "<unnamed>");
 
 // TODO reflexpr https://en.cppreference.com/w/cpp/keyword/reflexpr
+// TODO struct of array https://brevzin.github.io/c++/2025/05/02/soa/
 
 // SHENNANIGAN iostream bad, successor https://github.com/ned14/llfio
 // * use std::print for formatting

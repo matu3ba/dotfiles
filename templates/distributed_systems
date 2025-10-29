@@ -1,8 +1,14 @@
 ====databases
+====properties
+====debugging
 
-fault-tolerance?
-consistency?
-service discovery?
+====properties
+1 idempotency
+2 consistency
+3 backpressure
+4 observability
+5 fault-tolerance
+6 service discovery
 
 ====sources
 https://github.com/basilysf1709/distributed-systems
@@ -61,6 +67,7 @@ TODO
 + diagnostics
 + lxc containers
 https://github.com/omissis/zho/
+* kubernetes 1 million nodes active nodes challenge https://bchess.github.io/k8s-1m/
 
 ====nix/lix for linux kernel experiments/stuff
 ====how to attach debugger over network over kubernetes
@@ -126,3 +133,8 @@ uptime       |  downtime       | requirement
 
 https://github.com/palvaro/CSE232-Spring23
 * Graduate Distributed Systems
+
+====debugging
+=concurrency
+https://www.youtube.com/watch?v=_9B__0S21y8
+https://videopundits.com/watch/shared/tackling-concurrency-bugs-with-tla-by-hillel-wayne

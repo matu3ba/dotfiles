@@ -1,3 +1,4 @@
+====methods
 ====basics
 ====models
 ====general
@@ -17,6 +18,26 @@
 ====hardware_token
 ====crypto
 ====protocols
+
+====methods
+to ensure security based on "How to Secure Existing C and C++ Software without Memory Safety" by Erlingsson
+- hardware instructions for tag manipulation (for stack and heap tagging)
+- formal verification of possible run-time code according to model
+- platform security/integrity checks
+- stack integrity
+  - to prevent args, vars, return sites of fns (using cfi) cannot be changed
+- control-flow integrity (cfi)
+  - to ensure fn call site will only direct execution to
+  start of compatible fn (type signature or (virt) member fn of class matching source code
+  of call site)
+- heap data integrity
+  - stack and heap tagging
+  - additional partitioning for isolation of heap fragments
+- pointer integrity and unforgeability
+  - make C/C++ pointers more similar to true capabilities (unforgeable and unguessable)
+  => randomly-generated secrets
+  => randomizing memory layout
+  => does not discuss why (not) true capabilities (in numbers)
 
 https://www.youtube.com/@stacksmashing
 
@@ -70,6 +91,8 @@ idea examples or tools to for time analysis (io, network etc)
 * Clark-Wilson
 * Brewer-Nash
 * Harrison-Ruzzo-Ullman
+* newer kernels use capabilities
+  - see sel4
 
 ====general
 Incomplete list of intrusion prevention and detection:
@@ -146,6 +169,9 @@ TODO list capabilities
 
 Microkernel/no OS: Single security boundary
 sel4 : specific individual capabilities
+
+https://github.com/dckc/awesome-ocap
+TODO explain capabilities and how regular OS lack and their trade-offs
 
 ====apparmor
 https://apparmor.pujol.io/

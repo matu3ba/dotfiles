@@ -2,6 +2,7 @@
 ====hardware
 ====kernel
 ====processes
+====stack_unwinding_formats
 
 ====model
 TODO list of formal models
@@ -130,7 +131,7 @@ process fuzzing based on linux scheduler?
 unclear
 
 hypervisor based debugging
-Antithesis
+* deterministic execution via Antithesis
 
 would be very neat, if there would be either incremental object update over
 network and/or linking both on source and target and use it for debugging.
@@ -167,3 +168,12 @@ http://www.drchip.org/astronaut/drchipdbg/index.html
 Charles Champbell also author of DrawIt vim plugin
 inline debugger to filter collect traced code strings and print code
 in sections or at statement level
+
+====stack_unwinding_formats
+https://maskray.me/blog/2025-09-28-remarks-on-sframe
+* .sframe as lightweight alternative to .eh_frame and .eh_frame_hdr
+* primary value proposition: enable frame pointer omission while preserving unwinding capabilities
+  but only 1-2% size savings at cost of (without benchmarks) worse frame pointer unwinding perf
+* future: getting irrelevant due to hardware-assisted unwinding like x86 Shadow Stack
+  and AArch63 Guarded Control Stack
+  TODO how do these work and what perf/size difference do they make?

@@ -1,6 +1,8 @@
 ====cycle_time
 ====latency
 ====course
+====simulation_example
+====leak
 
 ====cycle_time
 * Beckhoff devices can go down to 50us
@@ -24,3 +26,43 @@
 ====course
 compress and synthesise your own TensorFlow model, as well as implement it on a Xilinx FPGA on the Amazon cloud
 * https://github.com/FPGA4HEP/course_material
+
+====simulation_example
+"Clockhands: Rename-free Instruction Set Architecture for Out-of-order Processors"
+Table 2: The parameters of the processors used in the simulation.
+                 4-fetch 6-fetch 8-fetch 12-fetch 16-fetch
+Front-end width: 4 6 8 12 16
+Front-end latency: fetch(3) + decode(1) + [rename(2) +] dispatch(1)
+                   RISC-V: 7 cycles
+                   STRAIGHT, Clockhands: 5 cycles
+Issue width:     8 16 16 16
+Issue latency: 4 cycles (payload RAM read + register read)
+Execution units: 1/2x->, Intx8, Floatx4, Loadx3, Storex2, iMulx2, iDivx1, fDivx1
+Reorder buffer (𝑅): 256 640 1024 2048 4096
+Register width: 64 bits
+Logical registers RISC-V: Intx31, FPx32, STRAIGHT: Unif.x127
+Clockhands: sx15, tx16, ux16,vx16
+Physical registers: RISC-V: Unifiedx𝑅
+                    STRAIGHT, Clockhands: Unifiedx(128 + 𝑅)
+                    1/2 x ->  27-read, 14-write
+Physical register    s×(32 + 2𝑅/64), t×(32 + 48𝑅/64),
+quota for each hand: u×(32 + 9𝑅/64), v×(32 + 5𝑅/64)
+Scheduler (𝑆):      128 192 256 384 512
+Load-store queue Load capacity: 𝑆/2, Store capacity: 3𝑆/8
+Branch predictor: 8-component TAGE [33], 130-bit history, 8 KiB
+Branch target buffer: 4-way, 8192 entries
+Return address stack: 16 entries
+Mem. dep. predictor Store set: [7], 512 producers, 4096 store IDs
+Load lat. predictor Optimistic: (always assumes L1D cache hit)
+L1I cache: 128 KiB, 8-way, 64B line, 3 cycles
+L1D cache: 128 KiB, 8-way, 64B line, 3 cycles
+L2 cache: 8 MiB, 16-way, 64B line, 12 cycles;
+          Stream prefetcher [39], distance 8, degree 2
+Main memory: 80 cycles
+
+====leak
+Prevention: do not allow program access to source of nondeterminism. Referentially
+transparent programs meet bar, but you can go much lower. If a program's
+behaviour is completely determined by its inputs, there's no way it can detect
+a timing descrepency.
+TODO think and rephrase

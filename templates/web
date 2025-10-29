@@ -70,3 +70,14 @@ Get currrently used web ports:
 sudo netstat -pltu
 Get currrently used ttys
 ls /dev/tty*
+
+Hetzner setup website
+https://news.ycombinator.com/item?id=45480506
+https://bhargav.dev/blog/VPS_Setup_and_Security_Checklist_A_Complete_Self_Hosting_Guide
+
+Diy cloud
+https://news.ycombinator.com/item?id=44915164
+https://github.com/coollabsio/coolify
+
+Network firewall rules
+https://utcc.utoronto.ca/~cks/space/blog/linux/NftablesImplementingAPflog

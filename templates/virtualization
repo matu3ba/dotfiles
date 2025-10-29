@@ -8,3 +8,37 @@ TODO definition
 TODO components of qemu
 
 TODO attack surface of qemu
+
+https://www.openeuler.org/en/blog/yorifang/2020-10-24-arm-virtualization-overview.html
+https://github.com/riscv/riscv-aia/releases
+https://en.wikipedia.org/wiki/RISC-V_ecosystem
+https://en.wikipedia.org/wiki/Comparison_of_platform_virtualization_software
+https://lobste.rs/s/hydvux/we_have_outgrown_process_model#c_qduook
+https://sidhion.com/blog/process_model_outgrown/
+https://embeddedinn.com/articles/tutorial/exploring_virtualization_in_riscv_machines/
+CVA6 RISC-V Virtualization: Architecture, Microarchitecture, and Design Space Exploration
+The RISC-V Advanced Interrupt Architecture
+https://en.wikipedia.org/wiki/X86_virtualization
+https://en.wikipedia.org/wiki/Processor_consistency
+https://developer.arm.com/Architectures/A-Profile%20Architecture
+https://aws.amazon.com/compare/the-difference-between-type-1-and-type-2-hypervisors/
+
+tldr;
+  * bare metal/type 1 hypervisor lib for custom hypervisor functionality
+  * use this hypervisor for interrupt/cooperative/programmatic scheduling control interface
+    + interrupt/cooperative/programmatic hardware access permission management interface = hardware security
+    + interrupt/cooperative/programmatic execution context interface
+  * think of SPS configurability + security model:
+      hypervisor provides 1 scheduling, 2 hardware access interfaces,
+      which implementations must satisfy to be used by the hypervisor for barebone
+      or hosted environments/Kernels.
+    unclear:
+    + good performance requires
+    1 delegation of permissions, for example for interrupt delegation to OS/between OSes
+    2 security passthrough of memory (RAM), ideally between different OS userspace
+    via remapping pages on MMU and adjusting in-Kernel data/notifying it/using fast(er)
+    interfaces without breaking Kernel
+    3 adding hardware driver functionality to the hypervisor
+    + interface for adjusting the type 1 hypervisor
+  * reuse existing monolithic Kernels (drivers + IO support), add zero-copy data transmissions
+  * multi-use cases with smallish overhead

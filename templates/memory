@@ -24,6 +24,7 @@ special:
 RDMA   TODO                                      TODO
 HBM    TODO                                      TODO
 * only full ASIL compliant solution?
+see also templates/timing
 
 0-write optimizations analysis (not used due to introducing CVEs)
 - which cache the filled regions fit in

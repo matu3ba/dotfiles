@@ -1,0 +1,2 @@
+https://gist.github.com/jedisct1/ba2b26991d8ca5accfdda5df985f9299
+iterative EGCD algorithm implemented in egcd.zig correctly computes the GCD and Bezout coefficients for all inputs.

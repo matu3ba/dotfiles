@@ -1,3 +1,4 @@
+====types
 ====dataflow_systems
 ====distributed_double_accounting_databases
 ====query_compilation
@@ -6,6 +7,12 @@
 ====usability
 ====vector_databases
 ====performance
+====consistency
+
+====types
+Datomic - temporal Entity-Attribute-Value OLTP database https://jepsen.io/analyses/datomic-pro-1.0.7075
+* Keeping CALM: When Distributed Consistency is Easy
+* https://dtornow.substack.com/p/jepsen-and-tigerbeetle
 
 ====dataflow_systems
 * aqualang as language designed to be compositional, safe, fast, easy to use
@@ -56,9 +63,41 @@ data bases restrict data flexibility (ie opc-ua) for better perf + synced storag
 general rule: must measure
 * ACID
 * BASE/non-ACID (dont care that data is trustable) like get latest value asap
-  - key/value stores 
+  - key/value stores
   - time series dbs
   - TODO what more?
   - only useful in distributed cases to sidestep costly locking
   - Early Mongo was shiny JSON-shaped memcached (key-value store)
   - time spent in app: postgres: first needs deserialize db response, then deserialize jsonb seperately
+
+====consistency_models
+* should simpler than CPU consistency models, but I am unaware of any reasoning
+https://en.wikipedia.org/wiki/Consistency_model
+https://jepsen.io/consistency/models
+for concurrent/distributed systems
+* no justification why only these properties were chosen, probably because simpler and applicable to distributed systems
+read uncommitted -> read commited -> monotonic atomic view
+  (total available: available on every non-faulty node, even when network completely down)
+cursor stability -> repeatable read -> serialize -> strict serializable/consistency
+                    ^                                 ^
+snapshot isolation /                    linearizable /
+                                           ^
+                               sequential /
+  (unavailable: not available during some type of network failures, some or all nodes must pause operations)
+read your writes -> PRAM -> causal
+  (sticky available: available on every non-faulty node, as long as clients talk to same server instead of switching to new)
+
+  * CPU also has: PRAM -> processor -> sequential
+  * CPU also has: cache -> processor, incomparable with PRAM
+  * CPU also has: slow -> cache | processor
+
+Coherence deals with maintaining a global order in which writes to a single
+location or single variable are seen by all processors. Consistency deals with
+the ordering of operations to multiple locations with respect to all
+processors.
+
+https://jepsen.io/consistency/models is interesting, because it omits many CPU
+synchronization models without elaborating and does the same for distributed
+system models, when one reads the analysis reports (which is quite a bit
+frustrating). https://en.wikipedia.org/wiki/Consistency_model is similar
+chaotic. Does there exist any non-chaotic collection of CPU sync models?

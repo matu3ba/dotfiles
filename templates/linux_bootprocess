@@ -48,3 +48,7 @@ On ARM the layout looks like the following (see sw-description and swupdate-upda
 Note: Bootloader (u-boot) needs to satisfy necessary offset for the Master Boot Record (MBR),
 which contains the partition table.
 Output via `sudo fdisk -l`, which should show /dev/mmcblkX.
+
+### some more details ###
+https://www.0xkato.xyz/linux-boot/
+https://blog.davidv.dev/posts/booting-x86-64/#fnref-cleanup
