@@ -8,6 +8,9 @@
 ====ebpf
 ====scheduler
 ====io_uring
+====architecutre
+====Ghost_of_Unix
+====kernel_dev
 
 https://venam.net/blog/unix/2021/02/07/audio-stack.html
 
@@ -51,6 +54,14 @@ $XDG_CONFIG_DIRS/autostart - /etc/xdg/autostart
 ====WM
 killall plasmashell
 dbus-run-session startplasma-wayland
+remote wayland session: waypipe ssh user@server weston-terminal
+* local and remote socket + buffer sync + waypipe installed on local and remote
+* WSL2 https://github.com/microsoft/wslg for Weston + RDP backend
+* wl-app<-waypipe-server-socket [on remote]-> waypipe-client-socket [in WSL]<-weston&rdp-backend [in WSL]-> mstsc.exe [on windows host]
+* or use https://github.com/Xpra-org/xpra/wiki/Platforms
+  - allows multiple clients at same time
+  - [de|a]tach with --sharing
+  - can be combined with wslg, but not necessary due to windows-native application
 
 https://nullprogram.com/blog/2015/05/15/ how clone() works
 
@@ -127,6 +138,7 @@ Track by specific system call group
     -e trace=%file – Track file related syscalls
     -e trace=%desc - Trace descriptor related system calls
     -yy, --decode-fds=all - Print all available information associated with file descriptors
+    -k - Get fd+stack trace for every syscall, including the offending open/close on debugging
 
 https://rrampage.github.io/2025/06/13/strace-tips-for-better-debugging/
 strace -fintrCDTYyy -o strace.log -v -s128 ./binary
@@ -231,6 +243,8 @@ configs in /etc/firejail/, /usr/local/etc/firejail, ~/.config/firejail
 tools in /usr/lib/firejail, /usr/local/lib/firejail
 Landlock LSM: kernel documentation, Landlock: unprivileged access control
 * scoped access-control (i.e. sandboxing)
+* https://blog.prizrak.me/post/landlock/
+looking very similar to bubblewrap
 Storage (block and flash) device troubleshooting
 Parted
 sudo parted
@@ -471,3 +485,24 @@ https://blog.habets.se/2025/04/io-uring-ktls-and-rust-for-zero-syscall-https-ser
   - fd numbers are just integers not showing up in /proc/pid/fd
   - fds can only be used with io_uring, but are capped by ulimit
   - debugging experience??
+
+====architecutre
+https://deepwiki.com/torvalds/linux
+
+====Ghost_of_Unix
+Part 1: Full exploitation - https://lwn.net/Articles/411845/
+Part 2: Conflated designs - https://lwn.net/Articles/412131/
+Part 3: Unfixable designs - https://lwn.net/Articles/414618/
+Part 4: High-maintenance designs - https://lwn.net/Articles/416494/
+
+====kernel_dev
+kprobes - place debugging code
+wprobes - trigger when jiffies variable is modified
+/sys/kernel/tracing/dynamic_events
+w:[GRP/][EVENT] [r|w|rw]@<ADDRESS|SYMBOL[+OFFS]> [FETCHARGS]
+KStackWatch - sets up trap and prints info when memory is altered
+/proc/kstackwatch
+function+ip_offset[+depth] [local_var_offset:local_var_len]
+* writes to syslog or may be configured to panic via 'panic_on_catch'
+KFuzzTest - fuzz kernel from kernel space
+* complex setup utilizing KASAN

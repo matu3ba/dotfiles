@@ -1,6 +1,8 @@
 Overview of Kernel use case groups
 - eexcution environments (kernel [task, module, virtual machine], user [process, thread])
 - inter process communication (pipe, io_uring?, locks, shared memory, signals, sockets, streams, wait groups, ..)
+  * https://windows-internals.com/ioring-vs-io_uring-a-comparison-of-windows-and-linux-implementations/
+  * https://github.com/Mulling/io-uring-ipc
 - io management (block, io_uring, stream, virtual device access, ..)
 - memory management (kernel, stack, heap, paging [if CPU has MMU, PMU], ..)
 - permission and access management

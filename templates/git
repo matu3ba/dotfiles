@@ -61,9 +61,50 @@ Diff marker behavior
 TODO
 #*.sln       merge=binary
 
+Show root commits:
+git log --max-parents=0
+Get number of commits:
+git log --oneline --all | wc -l
+Get graph
+git log --oneline --graph --decorate
+Get less than 7 char commit msg:
+git log --format '%h %s' | grep -E '^[a-f0-9]+ .{1,7}$'
+Get merge commits:
+git log --merges --oneline
+git log --format '%h %s' | grep -E '^[a-f0-9]+ .{1,7}$'
+Show commit as file:
+git cat-file commit HASH
+
+Clean up useless commits by squashing them all:
+virtualenv venv
+. venv/bin/activate
+pip install git-filter-repo
+git-filter-repo
+cleanup-repo-script.sh:
+git-filter-repo --commit-callback '
+  if not commit.message.startswith(b"Merge pull request "):
+    return commit
+  else:
+    assert len(commit.parents) == 2, vars(commit)
+    del commit.parents[1]
+    return commit
+'
+
+Note: squash merge or rebase merge removes root commits
+* normal merge: garbage commits stay in repo,
+  - git merge BRANCH
+* fast-forward: commits are replayed on top of main, so different from original
+  - git merge --ff-only BRANCH
+* squash: commits are converted into single commit, problem on bisecting
+  - git merge --squash BRANCH
+
 ====sparse checkout
 https://stackoverflow.com/questions/74072901/how-to-make-git-ignore-files-during-clone/74077699#74077699
 https://blog.gitbutler.com/git-tips-and-tricks/
+Do not bring all the blobs:
+git clone --non-checkout REMOTE --filter tree:0
+git clone REMOTE --reference ~/path_to_repo/ --dissociate
+without --dissociate it uses REPO/.git/objects/info/alternates witht he filepath
 
 based on so you think you know git by gitbutler founder
 TODO apply changes to git config

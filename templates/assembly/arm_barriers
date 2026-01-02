@@ -1,0 +1,15 @@
+general: every cache implementation varies, but there are common modes and
+structures used by all designs
+
+https://duetorun.com/blog/20231007/a64-memory-barrier/
+https://duetorun.com/blog/20231007/a64-oneway-barrier/
+https://developer.arm.com/documentation/100941/0101/Barriers
+
+dma
+https://en.wikipedia.org/wiki/Direct_memory_access
+https://edk2.groups.io/g/devel/topic/102310377
+https://forum.osdev.org/viewtopic.php?t=32232
+https://medium.com/@om.nara/aarch64-device-memory-attributes-744fd0aea02
+
+dpdk optimizations
+https://developer.arm.com/community/arm-community-blogs/b/tools-software-ides-blog/posts/dpdk-optimization-on-arm

@@ -98,3 +98,5 @@ https://grouper.ieee.org/groups/msc/ANSI_IEEE-Std-754-2019/background/minNum_max
 * unbounded slowness making them unreliable for practical applications
 * "Design and Implementation of a Takum Arithmetic Hardware Codec in VHDL" by Laslo Hunhold suggest system
 with bounded exponent for more reliable performance, but does not have fine-tuned reliable benchmark numbers yet
+* appears than practical implementations given by https://vividsparks.tech
+  - afaiu no experience report with realistic numbers by user companies with products yet

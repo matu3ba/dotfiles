@@ -5,6 +5,8 @@
 ====e2e
 
 ====determinstic_simulation
+====reasons_bad_platform_code
+====hardware_testing
 
 ====general
 ====unit
@@ -30,6 +32,8 @@ integration test pyramid (for clouds)
 https://www.sqlite.org/testing.html
 
 ====e2e
+simple ones https://github.com/robotframework/robotframework
+* includes library to use for example selenium
 
 https://lwn.net/Articles/995276/#Comments
 todo summarize
@@ -250,3 +254,31 @@ Entropy – All RNGs should have a known seed
 Time – No physical clocks
 I/O – No deps on external IO with components not part of the simulation,
 and subject to all the same constraints
+
+====reasons_bad_platform_code
+have hacks and workarounds for
+* 1 platform stability despite bad user code, usage etc
+* 2 missing debugging infra to test bad user code or dependency behavior (qemu setup, too complex dependency etc)
+  - okish: usually project documentation of platforms like Linux, Zephyr only cover simple setup
+  and have no overview on what debugging options are possible
+  - best: overview on global and per-subsystem debugging options; possible generated via some tooling
+* 3 or (posix, etc) compatibility
+
+====hardware_testing
+* 1 functional testing with timing at message boundary
+  - renode:  (or taken from external models systemc/hdl, Verilator)
+    + https://renode.readthedocs.io/en/latest/tutorials/co-simulating-custom-hdl.html#creating-a-verilated-peripheral
+    + Direct Programming Interface (DPI)
+      https://antmicro.com/blog/2023/09/dpi-support-in-renode-for-hdl-co-simulation-with-verilator-and-questa#automated-hdl-peripheral-testing
+    + SystemC/TLM usage
+      https://renode.io/news/systemc-co-simulation-in-renode/
+      https://github.com/antmicro/renode-systemc-examples
+https://github.com/prdktntwcklr/renode-example/blob/main/tests/test-button.robot
+    + HDL execution tools (RTL-based) with debugging
+    + unclear, if fgpa integration possible
+* 2 temporal testing
+  - systemc/tlm
+  - fgpa: for example synopsis HAPS-100 with unified incremental compiler that spans
+    formal verification, simulation, emulation and prototyping,
+    * mapping to FPGAs includes constraint-driven partitioning, high-speed
+    time-division multiplexing of I/O pins, and system-level routing

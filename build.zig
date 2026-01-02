@@ -99,7 +99,8 @@ fn fmtC(b: *std.Build, run_step: *std.Build.Step) void {
 fn lintC(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleCFiles[0..]) |cfile| {
         // clang-tidy clang-tidy_flags file -- clang_flags
-        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet" });
+        // somehow "--warnings-as-errors='*'" is incorrectly escaped as "--warnings-as-errors='*'"
+        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet", "--warnings-as-errors=*" });
         run_clang_tidy_check.addArg(cfile);
         run_clang_tidy_check.addArg("--");
         run_clang_tidy_check.addArgs(&c99_flags);
@@ -536,7 +537,7 @@ const SingleCFiles = [_][]const u8{
     // "example/provenance_miscompilation/extern.c",
     // "example/provenance_miscompilation/ptr_provenance_miscompilation.c",
     "example/sequence_points.c",
-    "example/util_string.c",
+    // "example/util_string.c", // clang-diagnostics security failure
     "example/why_clang_tidy.c",
     "templates/colors.c",
     "templates/common.c",
@@ -555,15 +556,17 @@ const cpp23_flags = [_][]const u8{ "-std=c++23", "-Werror", "-Weverything", "-Wn
 const cpp26_flags = [_][]const u8{ "-std=c++26", "-Werror", "-Weverything", "-Wno-c++98-compat-pedantic", "-Wno-c++20-compat", "-Wno-unsafe-buffer-usage", "-Wno-switch-default" };
 
 const SingleCppFiles = [_][]const u8{
+    "example/allocator.cpp",
     "example/common.cpp",
-    // "example/cpp23_modules/main_clang.cpp", C++23
-    // "example/cpp23_modules/main_msvc.cpp", C++23
+    // "example/cpp23_modules/main_clang.cpp", // >=C++23
+    // "example/cpp23_modules/main_msvc.cpp", // >=C++23
     // "example/implicit_string_conversion.cpp", // additional flags show problem
     "example/minimal_cpp.cpp",
     "example/msvc.cpp",
     "example/utf8/stringable.cpp",
-    // "example/utf8/tests.cpp", C++20
+    // "example/utf8/tests.cpp", // >=C++20, windows-only
     "templates/common.cpp",
+    // "templates/dod.cpp", // >=C++26 std::print, std::underlying_type
     // "templates/flags.cpp", flag collection, no code
     "templates/hacks.cpp",
 };

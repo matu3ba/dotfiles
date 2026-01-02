@@ -64,7 +64,7 @@ xargs -p -n 2 mv
 SHENNANIGAN find
 only supports '-path RELATIVEPATH' forcing more typing
 
-SHENNANGIAN
+SHENNANIGAN
 "Weaponizing Plain Text: ANSI Escape Sequences as a Forensic Nightmare" STÖK, Hacker
 TODO summarize solutions
 https://forum.defcon.org/node/245741
@@ -91,7 +91,7 @@ session persistence:
 - 2. use a private one to other ghostty sessions like wezterm
 - 3. use a separate communication channel other than shell (https://goteleport.com/blog/ssh-restricted-shells/)
 
-SHENNANGIAN
+SHENNANIGAN
 Terminfo data base: infocmp
 Currently used storage paths: infocmp -D
 Copy terminfo to remote:

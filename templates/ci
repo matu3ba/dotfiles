@@ -1,3 +1,7 @@
+====ci
+====packages
+
+====ci
 Purpose of Continous Integration [CI]: Remote execution service of configurable
 runtime environments[1] with the option to do problem debugging[2] and access
 control to prevent, restrict and/or detect hostile takeover (attempts) of
@@ -232,3 +236,23 @@ MacOs: process becomes orphaned means it never gets cleaned up
 cgroups overview https://lewisgaul.co.uk/blog/coding/2022/05/13/cgroups-intro/
 woodpecker https://woodpecker-ci.org https://github.com/woodpecker-ci/woodpecker go
 forgejo https://forgejo.org/ https://codeberg.org/forgejo/forgejo go
+
+====packages
+https://nesbitt.io/2025/12/06/github-actions-package-manager.html tldr; github actions very bad
+security needs
+1 Lockfile
+2 Transitive pinning
+3 Integrity hashes
+4 Dependency tree visibility
+5 Resolution specification
+CI/CD systems need
+1 admittance control
+2 execution control
+3 code control
+4 access to secrets
+> transitive dependencies as primary attack vector
+
+Github pitifalls
+https://ashishb.net/programming/common-pitfalls-of-github-actions/
+Github static analysis
+https://github.com/zizmorcore/zizmor

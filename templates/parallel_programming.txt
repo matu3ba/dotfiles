@@ -170,6 +170,10 @@ win
   idea ntdll call from zig
 posix
 
+https://news.ycombinator.com/item?id=46288286
+https://h4x0r.org/ring/
+lock-free MPMC ring buffer, wait-free?
+
 State of Art
 * fundamental techniques
   - "NBR: Neutralization Based Reclamation" by Singh et al
@@ -204,6 +208,7 @@ State of Art
     fetch-add usage here is more like an optimistic CAS, but they still race to
     install the next buffer (given its an unbounded queue with a linked list of
     buffers) to try again.
+* https://github.com/google/nsync
 
 "FIFO can be Better than LRU: the Power of Lazy Promotion and Quick Demotion" by Yang et al.
 LP-FIFO (e.g., FIFO-Reinsertion)/CLOCK N’th Chance (2 bits) can be faster, more scalable and have better miss ration than LRU.

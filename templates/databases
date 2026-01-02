@@ -69,6 +69,9 @@ general rule: must measure
   - only useful in distributed cases to sidestep costly locking
   - Early Mongo was shiny JSON-shaped memcached (key-value store)
   - time spent in app: postgres: first needs deserialize db response, then deserialize jsonb seperately
+* data points
+  - uncontended/no locks
+    + mongo db 50k samples/s
 
 ====consistency_models
 * should simpler than CPU consistency models, but I am unaware of any reasoning

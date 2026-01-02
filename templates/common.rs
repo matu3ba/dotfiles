@@ -101,6 +101,7 @@
 // pointer-heavy default containers
 
 //====design_flaws
+//unfair Rust https://this.quiz.is.fckn.gay/
 // SHENNANIGAN
 // * still not possible to write your own smart pointer which would work with dyn traits, including
 // coercions
@@ -145,6 +146,17 @@
 
 // SHENNANIGAN async canceling has affine semantics (cancels whole tree)
 // https://sunshowers.io/posts/cancelling-async-rust/
+// workarounds from https://lwn.net/Articles/1036924/
+// * cancel-safe: safely dropping Future
+// * cancel-correct
+//   - 1 cancel-unsafe Future exists
+//   - 2 cancel-unsafe Future gets canceled at some point
+//   - 3 cancellation must violate a system property
+// * techniques to avoid problems
+//   * break potential dangerous ops into small pieces
+//   * use APIs that track partial progress
+//   * use threads to emulate Go/JS approach
+//   * future: Async drop, Unforgettable types (linear types), etc https://without.boats/blog/asynchronous-clean-up/
 
 // SHENNANIGAN not good on: buffer reuse, self-referential structs, compile-time generics (versioned generics)
 // https://databento.com/blog/why-we-didnt-rewrite-our-feed-handler-in-rust

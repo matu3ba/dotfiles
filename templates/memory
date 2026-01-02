@@ -2,6 +2,8 @@
 ====human
 ====hardware_transactional_memory
 
+"What Every Programmer Should Know About Memory" by Ulrich Drepper
+
 Memory, from basic to complex.
 
 ====access_latencies

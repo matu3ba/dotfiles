@@ -1,2 +1,15 @@
+* tailored to formal verification
+* coq historical significant in sense that it introduced tactics
 https://gist.github.com/jedisct1/ba2b26991d8ca5accfdda5df985f9299
 iterative EGCD algorithm implemented in egcd.zig correctly computes the GCD and Bezout coefficients for all inputs.
+
+"Comparison of Two Theorem Provers: Isabelle/HOL and Coq"
+
+According to my understanding relevant are Coq and Isabelle for formal
+verification of code and Lean is not tailored to that domain and offers no
+tooling for it. The best comparison I've found so far between Coq and Isabelle
+is "Comparison of Two Theorem Provers: Isabelle/HOL and Coq" by Yushkovskiy. To
+me the biggest difference between Isabelle and Coq sounds like that the
+implementation of Coq is less trustworthy: From "Correct and Complete Type
+Checking and Certified Erasure for Coq, in Coq" by Sozeau et al "Therefore, on
+average, one critical bug has been found every year in Coq."

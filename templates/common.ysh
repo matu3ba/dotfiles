@@ -1,0 +1,4 @@
+# Run with bin/ysh
+# No treesitter grammar upstream for syntax highlighting yet.
+# Performance comparison unclear, likely 10-15% slower than bash/dash by own benchmarks.
+# Works probably best with lots of error-prone bash scripts.

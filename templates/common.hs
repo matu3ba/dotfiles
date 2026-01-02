@@ -1,0 +1,8 @@
+-- Unison uses .hs for Haskell.
+-- Debugging Unison: https://share.unison-lang.org/@pchiusano/stepwise
+-- * Pause running programs, examine values, and go backwards and forwards.
+-- Cloud Security
+-- * (planned/intended) security model (object capability model) for cloud/deployments (kubernetes has none/relies on ACLs and hacks) and how unison contributes to get there
+--   - no reply yet
+-- * language semantics with guarantees (consensus, consistency, etc)
+--   - no reply yet

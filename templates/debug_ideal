@@ -130,3 +130,21 @@ https://github.com/rr-debugger/rr/blob/ca36c98ab63f54f777cac4f962c5c9e059022d41/
 * how should non-determinism detection work?
 * Debugging, like programming, has fundamental tradeoffs between determinism, performance, memory and synchronization speed/observability.
 * stochastic events like race conditions depending on memory access + speed.
+* rewrite binaries to trap syscalls via qemu libc + stack swapping
+  https://lobste.rs/s/wujuzj/think_you_can_t_interpose_static_binaries
+  - x86-64 with 2 bytes syscall instruction, using
+    + lazypoline based on paper "System Call Interposition Without Compromise"
+    + zpoline based on paper "zpoline: a system call hook mechanism based on binary rewriting"
+    because
+    + reliable disassembling binaries being hard "An In-Depth Analysis of Disassembly on Full-Scale x86/x64 Binaries"
+    + ptrace requires jumping between kernel and user space up to 5 times
+* system-theoretic process analysis (stpa), CAST (Causal Analysis based on System Theory)
+  https://psas.scripts.mit.edu/home/books-and-handbooks/
+  https://entropicthoughts.com/aws-dynamodb-outage-stpa
+  - STPA
+    + 1 Define purpose of analysis.
+    + 2 Model the control structure.
+    + 3 Identify unsafe control actions.
+    + 4 Develop loss scenarios.
+  - CAST
+    + TODO

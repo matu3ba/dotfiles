@@ -1,3 +1,8 @@
+#====tooling
+#====code_examples
+#====tooling_examples
+
+#====tooling
 # fast and sane python tooling
 # https://github.com/astral-sh/uv instead of pipx etc
 # https://github.com/astral-sh/ruff as linter, formatter, fixer
@@ -6,6 +11,7 @@
 # and not even the PEP is following the guide
 # https://docs.python.org/3/library/pdb.html debugger
 
+#====code_examples
 # import sys
 # import threading
 # import _thread
@@ -757,3 +763,110 @@ def sendHtml(self, ip: str, port: int, msg: str) -> int:
 #        self.close()
 # @property, @property_instance.setter/getter
 #
+
+# access is expensive in Python
+# 1. data-descriptors
+# 2. dictionary backed class access self.__dict['d']
+# 3. non-data-descriptors
+
+# TODO getaddr
+
+class example_special_methods(self):
+  def __init__(self):
+    print(f'__init__')
+
+  # hint name of attribute
+  def __set_name__(self, owner, name):
+    print(f'__set_name__')
+    self.d_name = name
+
+  # data descriptor set (when defined, bypasses __dict__)
+  def __set__(self, inst, val):
+    print(f'got __set__ with {val}')
+    setattr(int, f'_{self.d_name}', val)
+    # int.secret_val = val
+  # data descriptor delete (when defined, bypasses __dict__)
+  def __delete__(self, inst):
+    print(f'__delete__')
+    delattr(int, f'_{self.d_name}', val)
+    # del inst.secret_val
+
+  #C.d => inst=<class C>, owner=None
+  #C().d => inst=<C object>, owner=<class C>
+
+  # accessor
+  def __get__(self, inst, owner=None):
+    if owner is None:
+      return self
+
+    print(f'__get__')
+    return getattr(inst, 'f_{self.d_name}', 5)
+    # return getattr(inst, 'secret_val', 5)
+    # return inst.secret_val
+
+class example_call:
+  d = example_special_methods()
+
+  @property
+  def f(self):
+    return 9001
+
+  def __init__(self):
+    sel.__dict__['d'] = 9
+
+# print(C().d)
+#property c=C(); c.f > 9001
+#C.f.__get__ > method-wrapper '__get__' of property objects
+
+# C.__init__         is fn C.__init__
+# C.__init__.__get__ is method-wrapper '__get__'
+# C().__init__       is bound method C.__init__ of __main__.C
+
+# efficient caching porperty
+# functool.cache_property
+class cached_property:
+  def __init(self, fn):
+    self.fn = fn
+    self.name = fn.__name__
+
+  def __set_name__(self, owner, name).
+    self.name = name
+  def __get__(self, inst, owner=None):
+    if owner is None:
+      return self
+    ret = inst.__dict__[self.name] = self.fn(int)
+    # more explicit
+    ret = inst.__dict__[self.name] = self.fn.__get__(int, owner)()
+    return ret
+class cached_class:
+  @cached_property
+  def f(self):
+    print(f'computing f')
+    return 9001
+
+# q = Q()
+# q.f
+# q.f
+
+#====immortal objects
+# python -c 'import sys; print(sys.getrefcount(""))'
+# python -c 'import sys; print(sys.getrefcount(0))'
+# python -c 'import sys; print(sys.getrefcount(256))'
+# python -c 'import sys; print(sys.getrefcount(b""))'
+# python -c 'import sys; print(sys.getrefcount(""))'
+# python -c 'import sys; print(sys.getrefcount(''))'
+
+#====tooling_examples
+#* python debugger via gdb plugin/extension
+# needs: gdb plugin/extension for python
+# $ virtualenv venv
+# $ . venv/bin/activate
+# $ coverage -m run -m ./t.py
+# $ ps -ef | grep coverage
+# $ pstree -help 22151
+# $ strace -p 22151
+# $ strace -p 22158 futex (lock)
+# $ gdb venv/bin/python -p 22151
+# $ (gdb) bt
+# $ (gdb) py-bt[-full]|py-list|py-locals|py-print
+#         py-down|py-up|python-interactive|python

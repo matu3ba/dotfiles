@@ -60,6 +60,7 @@ https://ankush.dev/p/reliable-benchmarking
 * Boosted clock frequencies (Temporary boost on few cores aka "Turbo Boost")
 * Thermal throttling
 * Scheduling noise, other running processes
+https://github.com/ashvardanian/less_slow.cpp
 
 Disable SMT
 sudo cat /sys/devices/system/cpu/cpu*/topology/thread_siblings_list

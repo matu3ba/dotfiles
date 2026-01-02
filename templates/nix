@@ -248,6 +248,7 @@ Overall tradeoff:
 - system time/date
 - fs used for building (RAM must be big enough to hold TMPDIR etc)
 - Kernel parameters (ipv6, binfmt interpreters)
+- Timing behavior of the build system
 - Other global system state (GPU graphic card drivers) also not modeled
 - seed usage
 - environment variables (as global state introduced by nix versions)
@@ -274,7 +275,6 @@ flakes limitations:
 - slow for big repos (big artifacts are copied into nix store)
 - no way to add dependencies from outside git repo without git repo (fs with hashing and/or internal hashing system could be used if user space can be sufficiently trusted not to mess with output artifacts)
 see also https://discourse.nixos.org/t/experimental-does-not-mean-unstable-detsyss-perspective-on-nix-flakes/32703
-
 
 [1] https://blog.wesleyac.com/posts/the-curse-of-nixos
 

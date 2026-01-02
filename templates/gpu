@@ -1,7 +1,115 @@
+====hardware
 ====vulkan
 ====misc
+====debugger
 
+====hardware
+best article on current (2020-2025) GPU hardware
+https://www.sebastianaaltonen.com/blog/no-graphics-api
+* modern GPU archs: complete cache hierarchies with coherent last-level caches
+* CPUs can write directly to GPU memory using PCIe REBAR or UMA
+  and 64-bit GPU pointers are directly supported in shaders
+* Texture samplers are bindless to eliminate need for
+  CPU driver to configure descriptor bindings
+* Texture descriptors can be directly stored in arrays within GPU
+  memory (often called descriptor heaps)
+* design an API tailored for modern GPUs, then non need
+  for most of these persistent “retained mode” objects
+* compromises of DirectX 12.0, Metal 1 and Vulkan 1.0 are unnecessary
+  => could simplify API drastically
+* PSO permutation explosition very big problem
+  => vendors wiht massive cloud servers to store terabytes of PSO for each
+  PSOs for each different arch/driver combination
+* history: GPU hardware has evolved significantly during past
+  decade and converged to generic bindless SIMD design
+idea
+* CPU mapped GPU memory (UMA/ReBAR)
+  - 1 data fast to write for CPU
+  - 2 data fast to read for GPU
+  // Allocate GPU memory for array of 1024 uint32
+  uint32* numbers = gpuMalloc(1024 * sizeof(uint32));
+  // Directly initialize (CPU mapped GPU pointer)
+  for (int i = 0; i < 1024; i++) numbers[i] = random();
+  gpuFree(numbers);
+  - default gpuMalloc alignment is 16 bytes (vec4 alignment)
+  or use gpuMalloc(elems*sizeof(T), alignof(T))
+Writing data directly into GPU memory is optimal for small
+data like draw arguments, uniforms and descriptors. For large
+persistent data, we still want to perform a copy operation.
+GPUs store textures in a swizzled layout similar to
+Morton-order to improve cache locality.
+* copy command reads linear texture data from CPU mapped
+"upload" heap and writes to swizzled layout in private GPU heap
+* GPU copy engines can use delta color commpression(DCC)
+* DCC and Morzon swizzle are main reason to copy texture in private heap
+  - generic lossless memory compression is another reason
+    => data must be in heap for GPU to use vendor specific
+    lossless compression, because CPU does not understand it
+    => copy command must be used to compress the data
+* memory type params in GPU malloc fns to support private GPU memory
+* standard CPU mapped GPU memory (write combined CPU access)
+  - fast for GPU to read, CPU can directly write to it just like it was a CPU memory ptr
+  - GPU-only memory used for textures and big GPU-only buffers
+  - CPU cant write to these GPU pointers
+* 2 types of GPU pointers
+  - 1 CPU mapped virtual address
+  - 2 GPU virtual address
+  - GPU can only dereference GPU addresses
+*  all ptrs in GPU data structure must use GPU addresses
+* CPU mapped addresses are only used for CPU writes
+* gpuHostToDevicePointer: driver uses hash map
+  - if base address need to be translated, need tree
+  - preferably used once per allocation and cache in user land struct
+  // Load a mesh using a 3rd party library
+  auto mesh = createMesh("mesh.obj");
+  auto upload = uploadBumpAllocator.allocate(mesh.byteSize); // Custom bump allocator (wraps a gpuMalloc ptr)
+  mesh.load(upload.cpu);
+  // Allocate GPU-only memory and copy into it
+  void* meshGpu = gpuMalloc(mesh.byteSize, MEMORY_GPU);
+  gpuMemCpy(commandBuffer, meshGpu, upload.gpu);
+* third memory type, CPU-cached, for readback purposes
+  - slower for GPU to write due to cache coherency with CPU
+  - games use it seldomly, common for screenshots, virtual texturing readback
+  - GPGPU algos like AI training and inference lean on efficient comunication
+  between CPU and GPU
+data
+* 64-bit pointer semantics for load/store structs from/to
+proper aligned GPU memory location
+* compiler handles behind-the-scenes optimizations including
+wide-loads (combine), register mappings, bit extractions
+* usually free instructions modifiers for extracting 8/16 bit-portions
+of register
+  - allows compiler to pack 8-bit and 16-bit values into single register
+  - keeps shader code clean and efficient
+* load struct of 8x32-bit values => compiler likely emits 2x128-bit loads
+* wide loads are significantly faster
+* GPUs are ALU dense and have big register files, but compares to CPUs their
+memory paths are relative slow
+* CPU often has 2 load ports each doing a load per cycle
+* modern GPU: 1 SIMD load per 4 cycles
+  - wide load + unpack in shader often most efficient way to handle data
+* compact 8-16 bit data traditionally stored in text buffers
+  - raw buffer load instructinos up to 2x higher throughput and up to 3x lower
+  latency than texel buffers
+  => texel buffers no longer optimcal choice on modern GPUs
+  - texel buffers to not support structured data, so user forced to split data in
+  SoA layout in multiple texel buffers with own descriptor requiring
+  load before accessing
+  - SoA data layout also results in significantly more cache misses for non-linear
+  index lookups (material, texture, triangle, instance, bone id)
+
+=> Toward the Metal: A Technical Feasibility Study for implementing a "No Graphics API" Runtime
+* Linux: "Hard-CP" implementation via libdrm provides most faithful realization of concept.
+By generating PM4 packets directly, developers can achieve bare-metal performance,
+manual virtual memory management, and zero-overhead state changes, fulfilling the
+vision of the GPU as a raw command processor.
 Comparing GPUs
+* Windows: "Soft-CP" implementation via Work Graphs and WDDM 3.2 User Mode Submission offers
+a functionally equivalent runtime. By emulating the command processor in software (or
+hardware-accelerated graphs), this approach delivers the semantic benefits of the
+paradigm—bindless resources, pointer-based addressing, and split barriers—while
+remaining within the secure confines of the OS.
+=> complexity of modern graphics APIs is largely a software artifact
 
 * staring at generated code by mesa
 * roofline models
@@ -53,3 +161,6 @@ vertex specification -> vertex shader -> tessellation -> geometry shader -> vert
 
 ====misc
 https://iquilezles.org/
+
+====debugger
+https://thegeeko.me/blog/amd-gpu-debugging/

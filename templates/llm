@@ -6,6 +6,10 @@
 ====llms
 * fast selection of models via https://github.com/jedisct1/inferswitch
 * reasoning about llms https://transformer-circuits.pub/2025/attribution-graphs/methods.html
+* https://newsletter.semianalysis.com/p/tpuv7-google-takes-a-swing-at-the
+* https://newsletter.semianalysis.com/p/google-ai-infrastructure-supremacy
+* https://globaltechresearch.substack.com/p/the-ironwood-an-introduction-to-google
+* https://techaimint.substack.com/p/tech-talk-how-googles-tpugemini-push
 
 ====artifacts
 https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of-the-kind/
@@ -21,6 +25,21 @@ https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of
     text to summarize dominates results resulting in "text shortening", not
     true summarizing
   - no intelligence involved, query machine with context for processing
+    o Intelligence can be thought as the capability to process and formalize a
+    deterministic action from given inputs as transferable entity/medium.
+    In other words knowing how to manipulate the world directly and indirectly via
+    deterministic actions and known inputs and teach others via various mediums. As
+    example, you can be very intelligent at software programming, but socially very
+    dumb (for example unable to socially influence others).
+    As example, if you do not understand another person (in language) and neither
+    understand the person's work or it's influence, then you would have no
+    assumption on the person's intelligence outside of your context what you assume
+    how smart humans are.
+    ML/AI for text inputs is stochastic at best for context windows with language
+    or plain wrong, so it does not satisfy the definition. Well (formally)
+    specified with smaller scope tend to work well from what I've seen so far.
+    Known to me working ML/AI problems are calibration/optimization problems.
+    o I think intelligence is having at least some/any voluntary thinking.
 
 ====known_to_work_use_cases
 given known probability distribution(s) and sufficient handling of edge cases (controlled environment or enumeratable enough)

@@ -1,5 +1,10 @@
+hardened allocator
+https://llvm.org/docs/ScudoHardenedAllocator.html
 templates/llvoOnline correctness validation of transformations:
 https://alive2.llvm.org/ce/
+contributing via github to llvm
+https://github.com/spacedentist/spr
+"Towards Compiler-Guided Static Analysis" by Benjamin Mikek on semantic LLVM traces for SMT solving
 
 Goal: LLVM Design is for a "simple IR" to allow simple and efficient optimizations.
 Problem1: LLVM requires user to handle target features and target abi, which
@@ -105,7 +110,8 @@ mv /tmp/llvm $HOME/.local/llvm[bs]
 TODO runtime instrumentation for tracing / logging LLVM things.
 
 SHENNANIGAN
-1. Rewrite
+1. Rewrite blocked by missing formal semantics
+  * ebpf for LLVM for SMT solving (semantic traces over LLVM optimization passes) phd intro talk
 - 1.1 Pointer semantics (same applies for C)
 - 1.2 Memory synchronization semantics (same applies for C)
 - Justifications:
@@ -117,6 +123,7 @@ SHENNANIGAN
   * 2. Tracing optimizations and writing validation code along IR requires an
     own tracing system per optimization instead of using graph representation
   * 3. Powerful rr reverse execution for debugging and testing
+  (reversible computation + recording)
 
 SHENNANIGAN
 llvm lto takes painfully much memory (>15GB with gcc linker, docs mention up to 15GB with lld)

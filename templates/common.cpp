@@ -38,6 +38,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // fn depth  | std::expected  | gcc & libunwind | perf-optimized impl
 //  6(multi) |  556(1x)       |  15344(27x)     |  2652(4.77x)
 // 96(multi) | 8556(1x)       | 184454(21.5x)   | 22102(2.6x)
+// https://github.com/ashvardanian/less_slow.cpp
 
 //====tooling
 // hot restart as feature - https://github.com/proximafusion/vmecpp
@@ -223,6 +224,21 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // s-char only in "", L"", u8"", u"", U""
 // d-char (r-char) d-char in R"", LR"", u8R"", uR"", UR""
 
+// SHENNANIGAN allowed list very incomplete and may require dangerous downcasting
+// 1  const char*
+// 2  unsigned long long int
+// 3  long double
+// 4  char
+// 5  wchar_t
+// 6  char8_t
+// 7  char16_t
+// 8  char32_t
+// 9  const char*, std::size_t
+// 10 const wchar_t*, std::size_t
+// 11 const char8_t*, std::size_t
+// 12 const char16_t*, std::size_t
+// 13 const char32_t*, std::size_t
+
 // C++20 overview https://www.scs.stanford.edu/~dm/blog/param-pack.html
 // [-Wunused-variable]
 // [-Wimplicit-fallthrough]
@@ -309,6 +325,7 @@ static_assert(HAS_CPP26, "use HAS_CPP26 macro");
 static_assert(std::is_same_v<unsigned char, char8_t> == false, "char8_t not distinct type; has C semantics");
 #endif // defined(HAS_CPP20)
 #if defined(HAS_CPP23)
+#include <expected>
 #include <print>
 #endif // defined(HAS_CPP23)
 
@@ -1980,7 +1997,7 @@ int use_union_tmp() {
 // prevent usage of 'MyClass class = MyClass();' due to unknown type, which
 // needs to replaced by 'MyClass class();'
 
-// SHENNANIGANS implicit coercion via other class possible
+// SHENNANIGAN implicit coercion via other class possible
 // templated constexpr can coerce implicitly via other class, but it must have the direct includes.
 
 // SHENNANIGAN msvc before VS2022 also uses indirect includes for templates
@@ -2982,6 +2999,13 @@ void use_fmt_print() {
   // std::print("{}\n", v2);
 }
 
+// compilation time increasees with using ranges, so better not use it
+// void printReverse(auto cont);
+// void printReverse(auto cont) {
+//   std::ranges::for_each(cont | std::views::reverse,
+//                         [i = 0](auto const &elem) mutable { std::cout << i++ << ' ' << elem << '\n'; });
+// }
+
 // needs clang 20
 // #include <experimental/scope>
 // void use_scope_exit();
@@ -3093,10 +3117,17 @@ static auto deriveOptionalReturnType(bool is_empty) {
 }
 void use_optional();
 void use_optional() {
+  // optional<T&> uses nullptr representation for the empty optional since C++26
   std::cout << "create(false) returned " << check_empty(false).value_or("empty") << '\n';
   // optional-returning factory functions are usable as conditions of while and if
   if (auto str = deriveOptionalReturnType(true))
     fprintf(stdout, "%s%s\n", "create2(true) returned ", str->c_str());
+  auto opt_str = check_empty(true);
+  if (opt_str.has_value()) {
+    opt_str.value();
+  }
+  // best to use optional in combination with std::optional<T&> and T&
+  // and not use T* to ensure T* can or can not be nullptr
 }
 
 // SHENNANIGAN function chaining makes code unreadable
@@ -3105,19 +3136,31 @@ void use_function_chaining() {
   // TODO https://www.cppstories.com/2023/monadic-optional-ops-cpp23/
 }
 
+// https://johnfarrier.com/the-definitive-guide-to-std-expected-in-c/
+// TODO
 // #include <expected> // std::expected
-// constexpr std::expected<int32_t, std::errc> assume_not_max(int32_t number) {
-//   if (number == std::numeric_limits<int32_t>::max())
-//     return std::unexpected{std::errc::invalid_argument};
-//   else
-//     return number;
-// }
-//
-// void use_expected();
-// void use_expected() {
-//   auto [val, ec] = assume_not_max(std::numeric_limits<int32_t>::max());
-//   // static_assert(ec == TODO
-// }
+constexpr std::expected<int32_t, std::errc> check_not_max(int32_t number) {
+  if (number == std::numeric_limits<int32_t>::max())
+    return std::unexpected{std::errc::invalid_argument};
+  else
+    return number;
+}
+
+void use_expected();
+void use_expected() {
+  // auto [val, ec] = check_not_max(std::numeric_limits<int32_t>::max());
+  auto res = check_not_max(std::numeric_limits<int32_t>::max());
+  if (res.has_value()) {
+    std::cout << "is not max:" << res.value() << "\n";
+  } else {
+    std::cout << "is max:\n";
+    // enum class to string conversion needs c++26
+  }
+  static_assert(!check_not_max(std::numeric_limits<int32_t>::max()).has_value(), "");
+  static_assert(check_not_max(std::numeric_limits<int32_t>::max() - 1).has_value(), "");
+  static_assert(check_not_max(std::numeric_limits<int32_t>::min()).has_value(), "");
+  static_assert(check_not_max(std::numeric_limits<int32_t>::min() + 1).has_value(), "");
+}
 
 // https://learnmoderncpp.com/2024/01/30/exploring-c23s-flat_map/
 // purpose: omit conversion to std::vector<std::pair<K,V>> / two std::vector
@@ -3276,6 +3319,48 @@ constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
 //   }
 //   return ret;
 // }
+
+// crash handling for any signal
+//   register std::at_quick_exit handler
+//   handler: save state, possibly to new file, flush output
+//   register sigabrt handler
+//   in sigabrt handler: call std::quick_exit
+//   maybe also have terminate handler call quick_exit()
+
+// general
+// this-> for member access
+
+// https://johnfarrier.com/modern-cpp-firmware-part-02-choosing-cpp20/
+// why c++20
+// Concepts: compile-time interface contracts, great for hardware abstractions without vtables.
+// Improved constexpr and constinit: push validation and initialization to compile time.
+// std::span: safer buffer interfaces that still compile to pointer plus size.
+// * prefer .at() unless in hot path
+// std::array: fixed-capacity containers that make “no allocation” practical.
+// Designated initializers: make large tables readable and reviewable.
+// [[nodiscard]]: a simple way to make “check the return value” enforceable.
+// std::chrono: type-safe time units, fewer “was that milliseconds or ticks” bugs.
+
+// Target builds: exceptions off, RTTI off, warnings are errors.
+//   -fno-exceptions, f-no-rtti
+// Hot path: no allocation, no virtual dispatch, no std::function.
+// Buffers: own with std::array, pass with std::span.
+// Error handling: explicit returns with [[nodiscard]].
+// Code clarity: this-> for member access, consistent naming for failure and boolean queries.
+// CI: a job that fails when any of the above rules are violated.
+
+// A typical deterministic firmware policy that pairs well with choosing C++20
+// Disable exceptions and RTTI in target builds.
+// Ban dynamic allocation in hot paths (often ban it entirely in target code).
+// Ban iostreams and locale-heavy formatting on target.
+// Avoid std::function and type-erasure in hot paths.
+// Avoid coroutines and modules on target (toolchain maturity and determinism story).
+
+// why c++23
+// std::expected for explicit errors without exceptions
+// stronger constexpr
+// [[assume]] and branch predictions, see ./templates/dod.cpp
+// std::mdspan to reduce indexing bugs of multi-dimensional buffers
 
 int main() {
   // sane output encoding, use additional flag /utf-8

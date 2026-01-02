@@ -1,0 +1,36 @@
+TODO
+* differences between standards?
+* bus property aware wrt noise and other statistic etc?
+* 1 idempotency
+* 2 consistency
+* 3 backpressure
+* 4 observability
+* 5 fault-tolerance
+* 6 service discovery
+* consensus, replication?
+* safety, security?
+
+https://theautojourney.medium.com/mastering-software-components-in-autosar-the-brains-behind-the-vehicle-dcacbd23c1bd
+Application SW Component
+Interface (Sender/Receiver Port, Client/Server Port)
+RTE
+Basic Software
+
+standardized interface described in .ARXML (xml-based architecture definition)
+* interacts only with RTE, never with hw
+* interacts with RTE to talk to other SWC
+* inside SWC: ports, interfaces, runnable entities, internal behavior
+* vendors for example Vector DaVinci Developer, EB tresos Studio, AUTOSAR Builder
+
+* toolchain complexity
+* steep learning curve
+* highly modular design with runtime and memory cost
+
+complex drivers
+* loosely coupled with ECU hardware, but accessible to application layer
+* have access to hw resources without relying heavily on standard layers
+* low-level dev, custom interrupt service routines
+* often highly hardware specific
+
+"3 Challenges when Testing AUTOSAR in a MBD Process" dspace youtube
+* model based design relevant for safety modeling and coverage

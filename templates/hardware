@@ -5,20 +5,65 @@
 ====tooling
 ====nvm
 ====bad_designs
+====benchmarks
+====physics
+====ai_hardware
+====hdl_synthesis
+====timing
+====chiplet_standards
+====architecure
+
+https://github.com/MarcusCemes/advent-of-code-2025
 
 ====specification_langs
-* VHDL
-* Verilog
-* SystemC
-* meta langs for VHDL/Verilog codegen
+* classical HDLs
+  - VHDL
+  - Verilog
+* simulation langs
+  - SystemC/TLM (Verilator for hdl->c++/systemc translation for cycle-accurate model)
+    - works with rr
+  - SystemC-AMS
+* meta langs for VHDL/Verilog codegen (also HDL)
+  - ACT
+  - Amaranth
   - Spinal
-  - Chisel
+  - Chisel (from 2012)
+  - Clash (BSD2, based on Haskell, repl, targets VHDL, Verilog, or SystemVerilog)
   - Bluespec
   - Spade
+  - Hardcaml (encouraged)
+    + https://github.com/asinghani/advent-of-hardcaml-2025
+  - DFHDL
+  - Filament
+    + interfaces to specify temporal and structural constrains (not existent in VHDL etc)
+    + like chisel but with well balanced pipelines
+    + "Fearless Hardware Design" - Rachit Nigam (Latch-Up 2023)"
+    + https://github.com/cucapra/filament
 * atopile https://github.com/atopile/atopile
   - small scale hardware dev suite
 
 ====general
+* definitions
+  * HDL: lang with subset that has spec to describe synthesizable logical circuits
+    + Verilog, Chisel, VHDL, ACT
+    - C, Scala, Python, HTML
+  * RTTL: hdl only describing RTL code limited to composition of:
+    wires, combinational logic, registers, macros (black boxes)
+    + SpinalHDL, Chisel, Amaranth, Bluespec
+    - Verilog, VHDL, ACT (do not exclusively allow RTL description)
+  * DSL: leverages host syntax and ecosystem to create lib/API for specific application
+    + SpinalHDL, Chisel, Amaranth
+    - Verilog, VHDL, ACT, Bluespec
+  * HLS: tool to transform non-HDL into HW or existing HW to different HW without
+    functional changes
+    + C -> Verilog, Matlab -> Verilog
+    - Chisel
+  * HDL model essentials: time<->state, concurrency, data validity
+    * dataflow: functional
+    * register transfer: cycle accurate
+    * event driven: event based
+  * HDL full/no control vs no/full ecosystem
+  * DFHDL claims having both (for Scala 3)
 * cpu/gpu news https://semiwiki.com/
 * avoid or mitigate Common-Mode Noise (CMN) / Gleichtaktstörung
   + measurable +SRC or -SRC against GND
@@ -34,10 +79,10 @@
   see also https://electronics.stackexchange.com/questions/79752/what-is-common-mode-noise
 * fault injection at HDL source, netlist, physical database, bitstream
   other debugging techniques?
-* hardware/VLSI design lvls (https://www.guvi.in/blog/5-levels-in-vlsi-design/)
+* classical hardware/VLSI design lvls (https://www.guvi.in/blog/5-levels-in-vlsi-design/)
   https://www.guvi.in/mlp/VLSI-design-and-verification
   * 1 architecture (process with goals)
-    - process/high level system simulation via Matlab, Simulink, SystemC
+    - process/high level system simulation via Matlab, Simulink, SystemC (TLM2.0)
     - defines functionality, perf, power constrains, etc
     - includes decisions on memory, processing units, protocols, timing, caches,
       testing, validation, debugging, etc
@@ -50,6 +95,7 @@
       * HDL is optimized according to speed, perf, area
     - gate-level simulations to validate correctness of logic cirtuits
     - Register Transfer Level (RTL) code written to define how data flows through system
+    - simulation via https://github.com/emsec/hal, SPICE
   * 4 circuit (schematics)
     - logical gates are converted to cirtuit schematics using transistors
     - transistor level simulation with SPICE
@@ -173,9 +219,7 @@ Power/Battery
     * battery powered: firmware knows power level and to what accuracy (needed)?
     * how does user reset device?
 GPIOs
-    * GPIO map in spreadsheet, main fn after reset, intended fn, additional noes
-    * Microcontroller Unit (MCU) peripherals used only once?
-    * MCU in reset, are peripheral devices held in proper state? (pullup/down etc)
+    * GPIO map in spreadsheet, main fn after reset, intended fn, additional noes Microcontroller Unit (MCU) peripherals used only once? MCU in reset, are peripheral devices held in proper state? (pullup/down etc)
     * reset line with proper pullup/down
     * debug GPIO used only for debug purpose?
 Busses
@@ -196,7 +240,238 @@ Debug/Test Infra
     * existing test points for power rails, analog signals, busses?
 
 ====tooling
-glibc-hwcaps
+architecture: Control logic (Simulink), Connected Hardware (TLM2.0 at RTL )
+* tlm2.0
+  based on "A Systematic Mapping Study on SystemC/TLM Modeling Capabilities in New Research Domains"
+  - Transaction Level model (above pin=fn layer) for virtual platform models (SoC,Buses)
+    via fn calls instead of pin/cycle-accurate bus protocols (faster simulation compared to RTL designs)
+  - use cases
+    + Software dev (UT/LT) [coarsest modelling granularity]
+      => idea
+    + Architecture exploration including performance analysis (LT-CT)
+      => protocol-agnostic hw model for reasonable timing approximation (bandwidth, latency)
+      => timing approximate perf of interconnect and important peripherals (memory, accelerators)
+      => alternatives 1 instruction set simulators, 2 full-system and arch simulators
+         * 1 QEMU with binary translation
+         * 1 Spike with highly efficient caching interpreter-based ISS
+         * 2 Renode with multiple embedded system simulation within multi-node networks
+         * 2 Gem5 with models of multiple processor archs and memory hierachies and
+           cycle accurate simulation
+         * main drawbacks: integration process complex and time-consuming
+    + Power estimation (LT-RTL)
+      => classified based on dependence on input data and profiling methodologies
+      => trade-offs
+         * input-dependent
+           - dynamic simulation, signal-activity-based estimation, behavioral modeling
+         * input-agnostic
+           - static analysis, architecture-level estimation
+         * profiled
+           - run-time data/measurements from real/simulated execution (from input-dependent)
+         * non-profiled
+           - analytical models, predefined benchmarks
+      => offers instrumenting dynamic voltage and frequency scaling (DVFS)
+      => challenging task: accurate approximation of power artifacts from
+         lower abstraction levels
+      => lower abstraction levels: non-profiled RTL model cannot use info regarding
+         target standard library, implementation technology etc
+      => early design stage security heavily relies on input-dependent characteristics
+         of power consumption
+      => scaling issues arise, when subsystems or components have lot of input combinations
+    + Fault-Injection analysis (AT-RTL)
+      => IC dependability crucial as it covers security, safety and reliability attributes
+      => few SystemC-based studies address security
+      => fault injection can be done at gate level netlist, RTL or Eletronic
+         System Level (ESL)
+      => ISO 26262 considers fault injection an effective approach for validating
+         the safety requirements of safety-critical systems and accepts only
+         gate-level netlist as satisfactory level; RTL acceptable as long as correlation
+         between RTL and gate level is considered
+      => practice: Fault-injection techniques (FIT). Discovering faults in gate-level
+         netlist costly and time-consuming due to 1 enormous changes within IC design
+         that safety-related mechanism may need, 2 enormous fault space as gate-level
+         netlist provides a detailed implementation of IC design
+      => faults can occur in all stages of IC design process (spec, design, dev,
+         manufacturing, assembly, installation, operational lifetime) and non-elimination
+         decreases reliability
+      => for shorter dev time and faster simulation with fewer impl details, TLM models
+         can be used to evaluate fault propagation in IC designs
+      => Permanent faults, transient faults, intermittent faults
+      => Hardware-based FIT
+         * high time reolution, risk of permanent system damage, limit set of injectable
+           faults, require specialized hardware
+      => Simulation-based FIT
+         * vary by abstraction level; TLM up to 100x speedup compared to RTL simulation
+      => Emulation-based FIT
+         * require synthesizable, optimized hardware description model and platform
+           and like hw-based FIT effectively access fault tolerance, they typically
+           viable only later in the SoC dev cycle
+      => high-level fault injection (HLFI) for extracting critical system params
+         (computation time, parameter vars) in turn for faster simulations
+         and more effective filtering of faulty behaviors while considering
+         system specification
+    + Functional and Security Verification (LT-RTL) [verification means functionality eval, no math solving]
+      => verification is up to 50% of the overall budget in time and human resources
+      => Hardware Trojan (HT) risk increased by use of third-party IPs
+      => HLS as possible productive alternative to RTL by allowing automatic RTL
+         generation from SystemC; so more IPs are expected to be delivered as
+         SystemC HLS (high level synthesis) designs
+      => highlights importance of verifying SystemC designs against HTs
+      => many methods, but formal model construction complicated by SystemC
+         event-driven semantics/design;
+         fuzzing looks promising, so far no annotations for variable inputs
+         to combine with fuzzing (symbolic fuzzing);
+         unclear if approaches used in distributed databases could work or sync
+         issues are simply not that relevant (see Jepsen)
+    + Side-Channel Analysis (CT-RTL) [finest modelling granularity]
+      => evaluating physical phenomena (power, timing or electro-magnetic) and
+         mathematical criteria to qualify impact on leakage (Application, Kernel
+         influence not respected/information not available to app/kernel)
+      => example test vector leakage assessment (TVLA)
+      => most tooling is post-synthesis
+      => requires very accurate timing and power estimations
+      => best practice defense: compute all, choose one; introduce noise;
+         isolate device; reset on anomalies
+  - components
+    + modules
+      * TODO
+    + processes
+      * threads called once during simulation, can be halted
+      * methods called multiple times during simulation, can not be halted
+    + time and clock (sync of processes with clocks on positive/negative edge)
+    + events and sensitivity (sensitivity of process determinites if it is
+      resumed or activated to distinct collection of events)
+    + interfaces and channels for module communication
+      * interface set of method declarations how to use communication channel
+      * channel serves as container for communication functionality
+    + ports
+      * port is object through which module can access channel's interface and
+        can have 1 of 3 directions: input, output, bidirectional
+  - foundational building blocks mechanisms
+    + (non)blocking interfaces, DMI, Quantum keeper, Sockets, Generic payload, Phases,
+      Non-blocking interfaces, Extensions
+  - coding styles (guidelines as suggestions, not normative)
+    + untimed (UT)
+      => bus-based systems need concept of time to model software on SoC, means
+         models containing restricted timing information of unspecified accuracy
+    + loosely-timed (LT) => as fast as possible, sufficient timing to boot OS + multi-core system
+      => temporal decoupling by system/process runs ahead of simulation time
+      => each transaction completes in 1 fn call
+      => uses DMI gives models or simulators (CPUs or ISA simulators) bypassing
+    + loosely-timed contention-aware (LT-CA)
+      => combines simulation speed of LT with memory contention accuracy of AT models
+      => offers fast simulation and accurate memory contention monitoring
+      => further validation across memory-intensive applications necessary for
+         broader applicability
+    + approximately timed (AT) => just enough info for perf modeling, meaning
+      cycle-approximate or cycle-count-accurate; meaning differs between purpose/domains
+      => sufficient for architecture exploration
+      => processes run in lock-step in simulation time
+      => each transaction has 4 timing points (extensible)
+    + Cycle-accurate/Cycle-timed (CT)
+      => replicates behavior of hardware design at individual clock cycles,
+         updates system state with every clock cycle (when access to state is needed),
+         possible to predict model state at any given cycle at its external boundary,
+         1-to-1 correspondence between states and external observable states of
+         corresponding RTL model
+    + Register-transfer level (RTL)
+      => behavior description in terms of data flow between registers and logical ops
+         (combinational logic) on data, RTL models offer more details due to
+         structural description of the circuit (exact logic, data paths, individual
+         registers), so they are more suitable for synthesis into hardware
+  - interoperability layer
+    + allows models from different sources to play together
+    + 1. core interfaces and sockets between
+      => b_transport(TRANS&, sc_time&)
+        - completes in 1 call, fw only, used with loosely timed coding style
+      => nb_transport_fw/bw(TRANS&, PHASE&, sc_time&)
+        - allows multiple back-forth calls, used with approximately timed coding style
+      => transport_dbg(TRANS&)
+        - zero delay, no ctx switches, no side effects
+      => get/invalidate_direct_mem_ptr(TRANS&, tlm_dmi&/sc_dt::uint64 start/end_range)
+        - fw/bw path, request memory from target/invalidates memory granted from target
+      => Generic Payload
+        - tlm_command, address(uint64), data_ptr(char*), data_len(uint),
+          kbyte_enable_ptr(char*), byte_enable_len(uint), stream_width(uint),
+          dmi_hint(bool), resp_status(tlm_response_status), extensions(tlm_extension_base)
+        - generic payload: mmap buses, cmd
+    + 2. sockets
+    + 3. generic payload (cmd, address, byte enables, response status), extensions
+    + 4. base protocol (BEGIN_REQ, END_REQ, BEGIN_RESP, END_RESP)
+  - Utilities, Convenience sockets, Quantum keeper (LT), Payload event queues?
+  - "Towards a Unified Solution for SystemC Tracing and Analysis, SystemC Evolution Fika September 2023"
+    TODO
+* tlm 2.0 example COSIDE
+  THE DESIGN ENVIRONMENT FOR HETEROGENEOUS SYSTEMS
+  SystemC / SystemC AMS based Simulation and Modeling Technologies
+  - SystemC-AMS/SPICE (A), Modelica (A), Ptomely, SystemC/TLM, SystemC-AMS(A/D)c
+* https://github.com/najaeda/naja Structural Netlist API (and more) for EDA post synthesis flow development
+  * scale: should handle multi-millions of gates, potentially billions
+* glibc-hwcaps
+* uvm (environment depends on proprietary tools), architecture limitations
+* cocotb/pyuvm/verilator (incomplete simulation envs, long dev time, requires arch reinvention of tests)
+* simulators (icarus, questa) -> perf drop on large circuits
+* formal proof -> rarely applicable at large scale
+* https://github.com/The-OpenROAD-Project/OpenROAD
+* Zero ASIC FGPA company
+  * SiliconCompiler github.com/siliconcompiler/logik (open bitstream for vendor compat)
+    - OpenRoad, Yosys, Verilator, Slang, Klayout, VTR, GHDL, Xyce, Synopsis, Cadence,
+      Mentor "Invited: A Distributed approach to Silicon Compilation"
+    - not for selling
+    - Platypus: Open standard FGPA with BRAM, DSP github.com/siliconcompiler/logiklib
+    - fastest QOR FOSS FGPA synthesis github.com/zeroasiccorp/wildebeest
+  * SiP Design
+  * Switchboard github.com/zeroasiccorp/switchboard (cloud scale verification)
+  * Fennec RV CPU
+  * Emulation emulation.zeroasic.com/emulation
+  * Efabric
+  * Chiplet Links
+  * Ebrick
+  * Epiphany DSP/NoC
+* LibreLane https://github.com/librelane/librelane ASIC infrastructure library
+* DRAMSys SystemC/TLM2 library based on DRAMml (formal language based on time petri nets)
+  DRAM simulation with the simulator DRAMSys (Matthias Jung)
+  - Trace Analyzer
+* FlowSpace SRAM compiler
+* FABulous eFGPA framework https://github.com/FPGA-Research/FABulous
+* GDSFactory MEMs, photonics, quantum, RF => heavily simulation based
+  - proprietary GUI, data management, PDKs
+  - opencore solvers, plugins, PKDs
+* Dyno-SV: IR-driven RTL synthesis tool (system verilog compiler/synthesis tool
+    on top of Dyno-IR)
+  - starting as LLVM/MLIR/CIRT backend to utilize metalanguages
+  - LLVM-style compiler, every level of abstraction representable in IR, incremental lowering
+  - MLIR trade-offs for high-levle IRs, MLIR/CIRCT intended, LLVM already slow
+  - potential backend for CIRCT
+  - Thin 64bit ObjRef<T>, DynObjRef (id, custom, rtti)
+  - Fat 128bit FatObjRef<T> (ptr, custom, id), FatDynObjRef (ptr, id, cust, rtti)
+    * id 4 byte; rtti 2 byte; custom 2 byte; ptr 8 byte
+  - contrast: https://circt.llvm.org/docs/Dialects/Synth/RationaleSynth/
+    Majority-Inverter Graph (MIG) "Majority Logic Synthesis" by Amarù et al
+* Surfer (waveform and source-level debugging)
+* cocotb 2.0 (no compilation, so trade-off of how much insight needed)
+  - more TLM means better perf
+   (ai) verification tool*   | python + pkgs
+   metrics analyzer*         | python + pkgs
+   test runner*              | python + pkgs
+   scripts                   | python + pkgs
+   matlab/c/verification ip  | python + pkgs
+   sc/uvm                    | python + pkgs
+   dut(HDL)                  | dut(HDL)
+   simulator*                | simulator (any vendor/FOSS)
+   * by same vendor
+  - low perf/scalability, sw-mindset
+  - faster testbench bring-up, simulation freedom (co-verification,etc), python
+  - highly parallizable for fuzz-testing, cloud workloads etc
+* uvvm, osvvm, ovm, accelera uvm
+* antmicro/kenning-pipeline-manager, /testplanner, /topwrap IP component combination
+* antmicro/uvmdvgen generation of generic and repeatble code for agents,testbenches,envs
+* antmicro/coveview generation of coverage dashboards
+* SystemRDL/PeakRDL automating generation of register
+VLSI design flow deep dive
+https://youtu.be/9T53opxVQiY?t=600
+* more low level parts
+https://youtu.be/dIEc_nPky7U?t=81
+* low level optimization parts
 
 ====nvm
 NVM (non-volatile memory)
@@ -238,3 +513,67 @@ NVM (non-volatile memory)
   => some DSPs or ARM versions need slow software-emulated atomics
   - make sure special cases not dealt in hw are delayed for extra fun
   => need to check maybe
+
+====benchmarks
+https://github.com/philipturner/metal-benchmarks
+
+====physics
+Essential Semiconductor Physics by Mark Lundstrom
+* Unit 1: Materials properties and doping
+* Unit 2: Rudiments of quantum mechanics
+* Unit 3: Equilibrium carrier concentrations
+* Unit 4: Carrier transport, generation, and recombination
+* Unit 5: The semiconductor equations
+
+====ai_hardware
+https://semiengineering.com/why-in-memory-computation-is-so-important-for-edge-ai/
+https://semiengineering.com/memory-wall-problem-grows-with-llms/
+* hardware developments without tangible outcome yet (20251230)
+
+====hdl_synthesis
+"Behavioral Synthesis Methodology for HDL-Based Specification and Validation" by D. Knapp, T. Ly, D. MacMillen, R. Miller
+https://en.wikipedia.org/wiki/Device_driver_synthesis_and_verification#Device_driver_synthesis
+* no open source platform driver synthesis (or synthesis for multiple versions) yet
+* systemc/tlm synthesis exists
+* "Synthesizing Device Emulators" by Sepehr Noorafshan
+* "On Synthesising Linux Kernel Module Components from Coq Formalisations"
+  coq based synthesis known, but hdl<->coq relation not existing
+* Termite2 exists
+
+====timing
+Synthesis: inputs (rtl, sdc, .lib, .lef), logic synthesis (yosys), output files(netlist sdc)
+Floorplan: initialization, io placement, timing-driven mixed size placement,
+  macro placement, trapcell and wallbe insertion, PDN generation
+Placement: global placement with(out) placed IOs, io placement, resizing and buffering,
+  detailed placement
+CTS: clock time synthesis, timing optimization, filler cell insertion
+Routing: global routing, detailed routing
+Finishing: metal fil insertion, signoff timing report, gdsii gen(KLayout),
+  DRC/LVS check(KLayout)
+* more/less impact, less/more accuracy, less/more legalization
+
+====chiplet_standards
+* UCIe (used in HPC, has multiple protocols and no mechanical spec)
+* BOW, AIB only have eletrical spec
+* only HBM has mechanical, eletrical, protocol spec
+* UMI as more scalable AXI compatible with UCIe, BOW, HBM
+  - PUMI (protocol [ethernet,pci-e]), TUMI (transaction [req/resp]),
+    SUMI (signal[packet,validity, ready]), LUMI (link layer)
+    + CLINK, BOW, AIB
+  - tested with AXI, TileLink
+  - github.com/zeroascicorp/umi
+  - no cache coherency yet
+
+====architecure
+"Architecture 2.0: Toward Open Source Foundation Models and Datasets for Hardware Design"
+Technology (Moore,Dennard's scaling, dark silicon)
+Architecture(hw-support for parallelism, acceleration)
+Optimization(application-tuning, full-stack optimization, hw/sw co-design)
+Specification(domain-specific hardware)
+Future: AI-assistance/automation
+1 no datasets, 2 unclear ML algos, 3 workforce & training(no best practices),
+4 tools & infra, 5 best practice
+idea: simulators (speed vs accuracy) for data generation
+* no tangible first delivery
+* design space exploration probably first tangible goal
+* goal: reduce cost of building chips

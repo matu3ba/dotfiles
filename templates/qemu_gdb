@@ -15,3 +15,52 @@ advance pmain
 
 https://mariokartwii.com/showthread.php?tid=1998
 idea nice qemu gdb guide
+
+https://questdb.com/blog/async-profiler-kernel-bug/
+qemu-img create -f qcow2 ubuntu-25.10.qcow2 20G
+qemu-system-x86_64 \
+    -enable-kvm \
+    -m 4096 \
+    -smp 4 \
+    -drive file=ubuntu-25.10.qcow2,if=virtio \
+    -cdrom ubuntu-25.10-desktop-amd64.iso \
+    -boot d \
+    -vga qxl
+after insallation:
+qemu-system-x86_64 \
+    -enable-kvm \
+    -m 4096 \
+    -smp 4 \
+    -drive file=ubuntu-25.10.qcow2,if=virtio \
+    -netdev user,id=net0,hostfwd=tcp::9000-:9000 \
+    -device virtio-net-pci,netdev=net0 \
+    -monitor tcp:127.0.0.1:55555,server,nowait \
+    -s
+t$ echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid
+h$ gdb -e 'target remote :1234'
+get kernel symbols:
+h$ echo "deb http://ddebs.ubuntu.com questing main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ddebs.list
+h$ echo "deb http://ddebs.ubuntu.com questing-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ddebs.list
+h$ echo "deb http://ddebs.ubuntu.com questing-proposed main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ddebs.list
+sudo apt install ubuntu-dbgsym-keyring
+sudo apt update
+sudo apt install linux-image-$(uname -r)-dbgsym
+t$ vim /etc/default/grub
+# Add nokaslr to the GRUB_CMDLINE_LINUX_DEFAULT line
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nokaslr"
+t$ sudo update-grub
+t$ sudo reboot
+t$ (gdb) thread 4; frame 0; print *timer
+t$ (gdb) thread 1
+uses CSD (call function single data) ie for TLB, stop perf_event to send IPI (inter-process interrupt)
+t$ (gdb) finish
+t$ (gdb) print $eax
+t$ (gdb) set $eax = 0
+t$ (gdb) print $eax
+t$ (gdb) continue
+and for killing process via SIGKILL (signal 9, so bit 8 in signal mask):
+t$ (gdb) print event->owner
+t$ (gdb) print ((struct task_struct *)ADDRESS)->comm
+t$ (gdb) print ((struct task_struct *)ADDRESS)->pid
+t$ (gdb) set ((struct task_struct *)ADDRESS)->signal->shared_pending.signal.sig[0] = 0x100
+t$ (gdb) continue

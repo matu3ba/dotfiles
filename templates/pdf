@@ -1,5 +1,10 @@
 tools https://bitsgalore.org/2021/09/06/pdf-processing-and-analysis-with-open-source-tools.html
 
+Convert txt to pdf
+pandoc input.txt -o output.pdf
+enscript file.txt --output=- | pstopdf -o file.pdf
+soffice --convert-to pdf test.txt --outdir dest_directory/
+
 merging pdf files:
 pdftk *_flatten.pdf cat output merged.pdf
 pdfunite src-1..src-n dest.pdf

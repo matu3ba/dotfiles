@@ -1,5 +1,6 @@
-
 ====qemu
+====kvm
+====sel4
 
 ====qemu
 custom object model https://github.com/qemu/qemu/tree/master/include/qapi/qmp
@@ -42,3 +43,105 @@ tldr;
     + interface for adjusting the type 1 hypervisor
   * reuse existing monolithic Kernels (drivers + IO support), add zero-copy data transmissions
   * multi-use cases with smallish overhead
+
+====kvm
+https://www.enginyring.com/en/blog/kvm-explained-a-deep-dive-into-kernel-based-virtual-machine-technology
+https://binarydebt.wordpress.com/2018/10/14/intel-virtualisation-how-vt-x-kvm-and-qemu-work-together/
+https://www.thomas-krenn.com/en/wiki/Overview_of_the_Intel_VT_Virtualization_Features
+* type 1 hypervisor
+* only handles CPU and memory virtualization
+* instead of "trap and emulate" with slow context switching for privileged instructions
+use amd64(Intel VT-x/AMD-V) to run hypervisor in ring -1 with guest at ring 0
+  - Intel VT-x (Virtualization of CPU and memory)
+    + VMXON enters virtualisation. Immediately after entering, CPU is in root mode.
+    + VMXOFF exits virtualisation
+    + VMLAUNCH creates VM instance. After creation, enters non-root mode.
+    + VMRESUME enters non-root mode for existing VM instance.
+      o VMRESUME uses active VMCS instance to know VM and vCPU it executes
+    + VMCS (4KB Virtual Machine Control Structure) containing VM exit info.
+      o 2 infos: 1 context info (register values), 2 control info (VM behavior in non-root mode)
+      o 6 parts
+        - 1 guest state vCPU on VM exit, VMRESUME restores from here.
+        - 2 host state restored from VMLAUNCH,VMRESUME.
+        - 3 VM execution control fields for VM behavior in non-root mode
+        - 4 VM exit control fields for VM exit behavior
+        - 5 VM entry control fields for VM entry behavior
+        - 6 VM exit info for exit reason with additional info
+      o each vCPU has a VMCS (not a VM)
+      o VMREAD/VMWRITE read/write VMCS (require root mode meaning hypervisor)
+      though non-root VM can VMWRITE "shadow" VMCS
+    + VMPTRLD/VMPTRST load/store address to load/store memory address
+    with VMPTRLD marking exactly current one as active on CPU core
+    + Virtual<->physical address conversion inside VM done via VT-x Extended Page Tables (EPT)
+    TLB used to cache virtual to physical mappings to save page lookups and may change
+    to accomodate VMs.
+      o basically means Second Level Address Translation (SLAT) / nested paging
+      in RAM like regular page table
+      TODO in-memory view, mappings, assembly
+      o Mode Based Execution Control (MBEC) speeds up guest usermode unsigned code execution
+      by sharing the same page table between unsigned usermode code and signed kernelmode code
+      instead of doing costly VM entry and exit when execution context switches between unsigned user mode
+      and signed kernel mode
+      TODO explain setup instructions, should be multiple ones
+    + Advanced Programmable Interrupt Controller (APIC) on real machine
+    responsible to manage interrupts being virtualised (as virtual interrupts)
+    adjustable by control fields in VMCS.
+      o TODO explain setup instructions, should be multiple ones
+    + Virtualizing IO not covered by VT-x, it is user-space emulated or VT-d accelerated
+  - AMD-V (Virtualization of CPU and memory)
+    + own instructions arch/x86/kvm/svm.c and vmx.c
+  - Intel VT-d (Virtualization of Memory Management Unit/Direct Memory Access)
+    https://security.stackexchange.com/questions/3488/vt-d-virtualisation-and-trusted-execution-technology
+    + Intel's term to describe their Input–output memory management unit (IOMMU)
+    This prevents DMA attacks at some performance cost.
+    + allows direct access to hardware from virtual machine (DMA) to PCI device
+    + include control DMA and interrupt remapping
+    TODO setup instructions
+  - AMD-Vi (Virtualization of Memory Management Unit/Direct Memory Access)
+    TODO setup instructions
+  - Intel VT-c (Virtualization of Network Access), AMD does not make NICs
+    + NIC enhancement with VMDq, IOAT)
+    + features of Intel Ethernet Controller, so basically NIC features
+    + NIC setup by Kernel functionality
+* kvm.ko loads kvm-intel/amd.ko to expose /dev/kvm to user-space
+* 1 uses qemu for virtual hw for guest VM (virtual bios/uefi, storage, controllers, network cards,
+usb ports, peripheral devices); qmeu uses /dev/kvm to accelerate guest execution while it handles IO
+* 2 uses virtio (paravirtualization for perf, virtio-net,virtio-blk,etc) for more
+efficient communication by guest OS instead of using simulated hw
+* 3 uses libvirt to simplify managing kvm and qemu
+
+allows
+* live migrations (copy over dirty pages + millisecond pause until resume on other VM)
+* high availability via multiple physical clusters: physical cluster failure -> automatic restart host VM
+on other available nodes in cluster restoring functionality automatically within minutes
+
+best practice
+* dedicated guest kernel
+* hard RAM reservation
+* full hardware emulation (guest OS unaware of being virtualized, but that sounds bizarre)
+* security and isolation via security extensions
+  - TODO what extensions are best practice?
+  - libvirt can generate automatically unique security profile; attacker compromise
+  of guest OS can not affect hypervisor or other VMs
+* side channel mitigation TODO very unclear
+* KVM for kernel-level isolation, containers for process-level isolation
+* ideally reduce attack surface (not qemu), eliminate side channels as far as possible
+  - afaiu there is no best practice side channel elimination for Linux
+
+====sel4
+seL4 Microkernel for virtualization use-cases: Potential directions towards a standard VMM
+Performance Impacts from the seL4 Hypervisor
+Reconfigurable Computing Hypervisors: State-of-the-Art and Ways Ahead
+https://sel4.systems/Summit/2024/slides/running-certified.pdf
+* better technical breakdown of what hypervisor needs
+https://www.youtube.com/watch?v=Zw1eeNHZm6Q ??
+TODO
+
+====Single/Multi-root input/output virtualization (SR-IOV/MR-IOV)
+* used when high bandwidth/throughput and low latency is necessary (instead of SDN)
+* 1 physical PCI Express bus can be shared in a virtual environment using the SR-IOV specification
+* SR-IOV offers different virtual functions to different virtual components
+* SR-IOV uses physical and virtual functions to control or configure PCIe devices
+* MR-IOV allows I/O PCI Express to share resources among different VMs on different physical machines
+* may be facilitated by Address translation services
+TODO examples

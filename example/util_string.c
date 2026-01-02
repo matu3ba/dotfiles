@@ -13,6 +13,7 @@
 // 2. error: use of old-style cast [-Werror,-Wold-style-cast]
 // 3. clang++: error: treating 'c' input as 'c++' when in C++ mode, this behavior is deprecated [-Werror,-Wdeprecated]
 // TODO
+// * security: clang-tidy diagnostics error: Out of bound access to memory after the end of the string literal [clang-analyzer-security.ArrayBound,-warnings-as-errors]
 // * make OOB diagnostics optional based on safety mode
 // * review according to https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#
 // * use vsnprintf, vfprintf, snprintf

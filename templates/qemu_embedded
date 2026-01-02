@@ -9,7 +9,7 @@ General steps:
      * noinit for persistent data between reboots (RAM)
      * text (program code), rodata (ro-data like strings) [usually in flash]
      * data (rw-data, initialized), bss (rw-data uninitialized, typically zerod out),
-     * heap section (stack grows from top to bottem, heap from bottom to top)
+     * heap section (on non arcane platforms stack grows from top to bottem, heap from bottom to top)
 - 2. _start:
      * bss zeroing
      * stack setup

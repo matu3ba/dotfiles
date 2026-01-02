@@ -1,6 +1,41 @@
+====tradeoffs
 ====databases
 ====properties
 ====debugging
+====kubernetes
+====kubernetes_debug
+====kubernetes_monitoring_logging
+====kubernetes_deployments
+
+====incus_usage
+
+====tradeoffs
+https://www.docker.com/blog/do-you-really-need-microservices/
+from lower complexity/stricter coupling to bigger agility/harder to run
+* monolith / marco services
+  + monolithic application on app server running multiple service domains
+* service-oriented-architecture / miniservices/macroservices
+  + app server and runtimes with data store for services domains
+* ?? / microservices
+  + only runtimes with data store for each feature
+prerequisites:
+- dedicated service ownership
+- mature CI/CD
+- robust monitoring
+- scale that justifies the operational overhead
+  + operational cost of infra
+  + dev productivity drain: constantly check for partial failure (missing integrity)
+  + test + deployment complexity: integration and e2e test across service boundaries, test suite becomes bottleneck
+    o partial updated systems are difficult to recover from
+  + data consistency across service boundaries
+    o multi-step workflows with rollback logic xor eventual consistency xor extra code to undo partial failures
+    o core pain points: data duplication, correctness challenges, and transactional complexity
+  + compounding effect
+    o ripple effect of operational overhead
+alternatives:
+* modular monolith with well-interfaces
+* Service-Oriented Architecture with larger, domain-driven services
+  + communication via Enterprise Service Bus (ESB)
 
 ====properties
 1 idempotency
@@ -9,6 +44,9 @@
 4 observability
 5 fault-tolerance
 6 service discovery
+(less often)
+7 consensus
+8 replication
 
 ====sources
 https://github.com/basilysf1709/distributed-systems
@@ -55,10 +93,10 @@ unclear parts:
 * kubernetes as framework to integrate and control containers of own and hosted solutions
 
 TODO
-====Kubernetes
+====kubernetes
 * reason 1 scale vertically applications on demand
 * reason 2 reduce operator cost by declarative configuration
-* tradeoff: no hard latency or time-critical control
+* tradeoff: no hard latency or time-critical control, no security model (configs + hacks leaving open many attack vectors)
 * go code with garbage collection
 * https://medium.com/@arschles/go-experience-report-generics-in-kubernetes-25da87430301
 * https://pkg.go.dev/k8s.io/apimachinery/pkg/runtime
@@ -68,6 +106,20 @@ TODO
 + lxc containers
 https://github.com/omissis/zho/
 * kubernetes 1 million nodes active nodes challenge https://bchess.github.io/k8s-1m/
+* distributed fs https://github.com/seaweedfs/seaweedfs
+
+====kubernetes_debug
+
+
+====kubernetes_monitoring_logging
+https://kubernetes.io/docs/tasks/debug/
+https://middleware.io/blog/kubernetes-troubleshooting-techniques/
+https://kubernetes.io/docs/tasks/debug/debug-cluster/
+
+====kubernetes_deployments
+https://www.ionos.at/digitalguide/server/konfiguration/kubernetes-deployment/
+https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
 
 ====nix/lix for linux kernel experiments/stuff
 ====how to attach debugger over network over kubernetes
@@ -138,3 +190,6 @@ https://github.com/palvaro/CSE232-Spring23
 =concurrency
 https://www.youtube.com/watch?v=_9B__0S21y8
 https://videopundits.com/watch/shared/tackling-concurrency-bugs-with-tla-by-hillel-wayne
+
+====incus_usage
+TODO

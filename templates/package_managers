@@ -1,6 +1,10 @@
 fast powerful init system for embedded: https://troglobit.com/projects/finit/
 immutable network centered linux os https://kernelkit.org/about/
 
+====trade-offs
+https://nesbitt.io/2025/12/05/package-manager-tradeoffs.html
+TODO
+
 ====apkv3
 ====buildroot
 ====yocto

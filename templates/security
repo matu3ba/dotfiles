@@ -11,7 +11,7 @@
 ====virtual_machine
 ====state_stateless_splitting
 ====pentesting
-====hardware_attack
+====hardware_attack see crypto
 ====encryption
 ====hashing
 ====ipc
@@ -273,11 +273,33 @@ https://github.com/0xsp-SRD/ZigStrike
 phrack magazine
 
 ====hardware_attack
-channel https://www.youtube.com/@stacksmashing
-* Breaking Bitlocker - Bypassing the Windows Disk Encryption
-https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
-* with soldering a fire lighter is sufficient to get root
-* unclear how ECC affects this
+- channel https://www.youtube.com/@stacksmashing
+- Breaking Bitlocker - Bypassing the Windows Disk Encryption
+  https://www.da.vidbuchanan.co.uk/blog/dram-emfi.html
+  * with soldering a fire lighter is sufficient to get root
+  * unclear how ECC affects this
+- https://www.hertzbleed.com/
+  * 1 frequency side-channel leakage is problem
+  * 2 even without 1: hardware-guided scheduling due to Intel Thread Director
+    "Scheduled Disclosure: Turning Power Into Timing Without Frequency Scaling"
+    creates variations in the number of active cores—that can be observed via remote-timing analysis
+    + mitigations must consider all sources of remote power side-channel leakage
+    + AMD: masking, hiding or key-rotation
+    + ARM: flag DIT accessible by non-privileged code (query for support via march, os, hwcaps, emulated id registers)
+    => CPU vendors must provide hardware support to eliminate timing channels
+      o it remains unclear if cache behavior based attacks are feasible or only
+      "CPU timing affected ones" are sufficient and/or how invasive such support
+      would be for the hardware
+      o compiler: mark code to adjust data-dependent CPU optimizations
+      o CPU: use either 1 opcode prefix, 2 RFLAGS bit or 3 MXCSR or 4 new register
+      BUT: dont use MSR only accessible by privileged code?
+      HOWEVER: might be high-overhead if CPU conditions various predictors on it (has to flush them)
+      SO: best to keep the flag with the data; give each register extra bit (on whether it is sensitive)
+      data-dependent-timing op cant leak until data available on it (exactly when ALU finds that data is sensitive), so
+      no pipeline stalls
+- Intel "Data Operand Independent Timing Instruction Set Architecture (ISA) Guidance" bad
+  * Almost anything is better than MSR only accessible to privileged code
+  * compiler to mark code that should permit data-dependent CPU optimizations differently from code that should not
 
 ====encryption
 * authentication/trust usability only given with
@@ -344,6 +366,75 @@ code with constant time guarantees checks
 * valgrind should have options to do that
 functional correct code without constant time guarantees open research problem
 * At LLVM IR level this is possible with https://github.com/Neo-Outis/CT-LLVM-Artifact
+* List of tools for checking constant time properties: https://crocs-muni.github.io/ct-tools/
+* current
+  - side channel: any observable behavior leading to information leakage
+    * cause: different visible behavior on different inputs
+    * early detection: timing/power consumption simulation, placement analysis,
+      fault-injection/condition simulations
+    * best practice defense: compute all, choose one; introduce noise;
+      isolate device; reset on anomalies
+  - optical/accustic/fault-behavior/electromagnetic side-channels
+    * physical attack prevention need special casing and/or observation with full reset
+  - (access/computing) delay side-channels
+    * port,branch,mis-speculation,cache-line, other resource access delay
+    * CPU identification via cpuid, valid instruction identification
+    * CPU security bug in internal resource handling (often speculation related)
+  - frequency/power/thermal (timing)-side channels
+    * frequency-throttling side channel guidance (Kernel may break things here)
+    * read power/frequency/temperature of CPU/other computing component
+  - ARM with DIT and no specific instructions, Intel with DOIT and instruction list
+    * disables speculative prefetching, ie for pointer chasing
+    * constant time load/store (without latencies)
+  - "Constant-Time Code: The Pessimist Case"
+    > "In the presence of a virtual machine or an in-silicon JIT compiler, all these constant-time guarantees disappear."
+  - OpenSSL Conference 2025 - Daniel J. Bernstein - Fast, Constant-Time, Correct: Pick Three
+    * https://github.com/pq-code-package/mlkem-native and https://github.com/awslabs/s2n-bignum considered state of art
+    * unfortunately nothing on formalizing platform requirements
+* future
+  - math on system side done "System-level Non-interference for Constant-time Cryptography"
+    * work needed by cryptographers to model necessary system guarantees against time and other side channels
+    * work needed by Kernel/OS communities to ensure such guarantees
+  - compiler side is currently being worked on (LLVM)
+  - ISA/hardware extension/special hardware needed
+    * BLACKOUT : Data-Oblivious Computation with Blinded Capabilities
+      - address both memory-safety and timing side-channel resistance via
+      1. data-oblivious programming via blinding based on ISA (blinded capabilities)
+      2. "memory-safe hardware"/CHERI
+      - however, no formal proof of elimination of timing side-channels or what would be needed
+      - hw enforces blinded data can not be stored using non-BCs, capabilities can not be blinded
+      - sw enforces bounds of valid BCs and non-BCs must not overlap (compiler + heap allocator)
+      - for example eliminates Spectre
+      - from my understanding this should also eliminate cache attacks
+    * External IO/bus behavior could be another time-channel of Kernels (whitelist and traffic based timing attack)
+    * instructions guarantees xor (spatial or temporal separation meaning on different die or location independent) needed
+    * cache effects completely unclear
+      + If cache effects will become practical relevant (as well): Evicting cache with
+      running memory bound computation + parallel crypto on same CPU sounds like
+      unfeasible perf loss. If Apple perf with offloading crypto to a separate
+      "secure core" is good enough, then I think that will become the standard
+      solution.
+    * CHERI
+      The biggest downside so far looks to be for CHERI capability reclamation
+      https://lwn.net/Articles/1039851/, which sounds to me like it rules out any
+      close to real-time=low latency workloads and probably high performance ones
+      without (hw-guided?) optimization control on reclamation and/or hybrid mode for
+      those use cases. sel4 experiments should be conclusive on this hopefully
+      soonish. Funnily enough author looks like he sketches the fil-c capability
+      model (without hw-based spatial/temporal security by attacker controller
+      assembly on memory stuff including speculation safety/security).
+      > "I know that double indirection is significantly more expensive than single
+        indirection... but sweeping address space not only seems like it should be
+        similarly expensive, it gets slower the more memory we allocate (whereas
+        double indirection is a fixed cost per dereference)."
+  - Differential fault analysis attacks/introducing faults, for example via Rowhammer remain problematic
+  - Other timing attacks:
+    * network: whitelist and traffic based timing attacks depend on involved systems with data patterns
+    * Resource usage (patterns) "Private resource allocators and their applications"
+  - Data remanence
+    * Deletion by overwritng data costly, so only mark data as deleted etc
+  - Physical attacks
+    * Eletromagnetic waves, power measurements, optical, etc
 
 ====protocols
 * prover for protocols: https://tamarin-prover.com/book/

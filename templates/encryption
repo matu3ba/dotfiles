@@ -18,3 +18,7 @@ Do not use openSSL on
 system encryption
 - linux: dm-crypt, cryptsetup --help, lsblk --fs, cryptsetup open /dev/sda1 root, cryptsetup close root
 https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system
+
+https://faculty.eng.fau.edu/azarderakhsh/files/2016/11/Inscrypt2016.pdf
+
+"On Fast Calculation of Addition Chains for Isogeny-Based Cryptography" by Koziel et al

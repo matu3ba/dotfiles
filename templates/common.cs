@@ -6,6 +6,17 @@
 // - COM Interop (exposing as COM objects)
 // - Embedded Interop types (defining equivalence of types)
 // Multiplatform: .NET Core
+//
+// https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/
+// https://devblogs.microsoft.com/dotnet/how-async-await-really-works/
+// core drawback of async:
+// * viral propagation: infects all using code
+// * poor error handling
+// * no explicit state machine
+// * missing await runtime bug compiler only warns, not always picked up as warning
+// * subsequent signals and events can be missed due to some missing special io cases
+
+// comptime https://github.com/sebastienros/comptime
 
 // Still a problem: Very long build times for big code bases and unfinished (incremental) build system.
 

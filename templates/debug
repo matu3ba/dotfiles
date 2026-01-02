@@ -119,6 +119,8 @@ https://www.codeproject.com/articles/6084/windows-debuggers-part-1-a-windbg-tuto
 
 rad debugger
 https://github.com/EpicGamesExt/raddebugger/
+fast debugger partially inspired by RemedyBG, x86_64 Linux only, no ARM/macOS/fork support
+https://github.com/al13n321/nnd
 
 gdb process record
 https://sourceware.org/gdb/wiki/ProcessRecord

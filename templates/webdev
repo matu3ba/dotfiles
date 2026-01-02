@@ -1,0 +1,4 @@
+====testing frameworks
+- Playwright, Maestro oder Appium, Eggplant
+- Selenium: most features, fine-grained control, outdated tutorials, high complexity
+- feature-wise, simplicity best without LLM support: Playwright

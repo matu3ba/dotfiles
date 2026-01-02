@@ -1,5 +1,8 @@
+// Windows-only
 // clang++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\example\utf8\tests.cpp && .\a.exe
 // clang++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\example\utf8\tests.cpp && .\a.exe
+// zig cc++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\example\utf8\tests.cpp && .\a.exe
+// zig cc++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-unsafe-buffer-usage -Wno-switch-default .\example\utf8\tests.cpp && .\a.exe
 
 #if (__cplusplus >= 202002L)
 #define HAS_CPP20 1

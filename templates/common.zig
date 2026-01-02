@@ -924,6 +924,7 @@ test "@hasDecl" {
 //   which makes it basically impossible to have efficient implementation in RTOS
 //   - minimum is pointer to the owner task and linked list of locked task
 //   - better: no heap-allocated state for mutex, just store it in the type
+// std.Io too low-level for optimizations
 // * 2 not having(deriving or constructing) the explicit state machine for
 //   (async) IO is one of the problems (think of Rust sans-io)
 //   - implicit async state automaton becomes (similar to threading) complex
@@ -931,7 +932,4 @@ test "@hasDecl" {
 //   - better: Rust sans-io like debugging infra and API to derive the state automaton
 //   via static and dynamic analysis (kinda like a special IR for the user)
 //   - best: Rust sans-io like debugging infra + taint analysis similar for
-//   memory regions
-// SHENNANIGAN
-// std.Io is low-level to have API that doesn't sucks
-//   - so far without argument
+//   memory regions, see for inspiration https://wallabyjs.com/ + Rust sans-io

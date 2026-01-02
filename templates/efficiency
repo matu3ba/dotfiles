@@ -50,3 +50,23 @@ allocate PCB assembly, molding, and final assembly to different factories
   to reduce your production cost and understand what competitor does
   * call on hardware experts, because designing most affordable PCB needs lots
   of expertise
+
+====dev efficiency
+* TalonVoice & Cursorless for speach based editing
+* https://wallabyjs.com/
+  - in-editor debugging, time travel debugging and value explorer
+  - fast test execution: calculates and runs the absolute minimum set of tests affected by your code changes
+  - ai support: MCP server and tools give AI agents live access to test results, runtime values, execution paths, coverage, and dependencies
+  - live runtime vars: see results next to code
+  - inline error and code coverage: error messages, gutter indicators for failing execution paths, editor cmds + shortcuts for navigation
+  - inline code coverage: while execution update of test coverage, editor cmds + shortcuts for navigation
+  - selective test running: smart and exclusive test runs
+  - deep object inspection: complex data structures as expandable tree view with info for origin of values, Interactive Value Graphs
+  - interactive test output: failing tests listed with hyperlink, errors, diffs/snapshots, error stacks, console.log calls
+  - test execution viewer: inspect code test is executing in single logical view (without having to jump between multiple fns and files)
+  - perf profiling: test CPU usage profile including external dependencies with navigation of results
+  - diff & snapshot management: expected vs actual as compact diff, snapshot update available
+  - practical insight: overview of tests and code coverage sorted by name, duration, pass/fail, coverage
+  - no vendor, API or framework lock-in
+* https://quokkajs.com/
+  -

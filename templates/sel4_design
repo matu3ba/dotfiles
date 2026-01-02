@@ -1,2 +1,12 @@
+====usage
 ====capabilities
 ====permissions
+
+====usage
+https://docs.sel4.systems/Hardware/X64.html
+https://github.com/seL4/camkes-vm-examples
+https://github.com/seL4/seL4/blob/master/CAVEATS.md
+Makatea unmaintained
+
+TODO complete write-up on proof assumptions, guarantees from website
+and (maybe) on implementation trade-offs

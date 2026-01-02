@@ -1,4 +1,4 @@
-SHENNANIGANS
+SHENNANIGAN
 glibc 2.37 with _FILE_OFFSET_BITS=64 on embedded platforms
 lseek(fd, -4, SEEK_CUR) does not move cursor without returning -1.
 Subsequent writes then can create 4GB files due to internal overflow.

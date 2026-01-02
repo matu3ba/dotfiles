@@ -1,5 +1,7 @@
 ====theory
+====verification_techniques
 ====tools
+====verification_costs
 ====idioms
 ====weak_memory
 ====formal_problems
@@ -19,6 +21,7 @@ and misc
   * state automata known for synchronization of cache lines, but the rest?
 * SIMD logic?, Ralf Jung's group had a paper for common SIMD things
 * segmentation of depedendencies for ASIL/safety
+* "Temporal Stream Logic: Synthesis beyond the Bools"
 
 List of dedicated formally proved languages
 - Simulink idea explanation
@@ -29,6 +32,74 @@ List of dedicated formally proved languages
   * codegen
     + PLC has codegen from ladder diagrams and other graphical methods
 - P language based on actor model (without message loss)
+
+Synthesis
+* Temporal synthesis hard problem
+* Synthesis competition www.syntcomp.org
+* Synthesis from Logical Specifications
+  - LTL
+    + ltl  ->  non-det. Büchi automaton ->  determ parity autom. -> parity game          ->
+       #states: exp     #states:doubly_exp,#colors:exp  #states:doubly_exp,#colors:exp    game solving:poly-states,<exp in colors
+      => ltl synthesis 2 EPXTIME-complete
+    + same argument for CTL* without det. and non-det. automaton
+  - CTL
+    + CTL -> tree automaton EXPTIME-complete
+    + hard to specify
+  - General Reactivity(1)/GR(1)
+    + Assumptions A1 ^ A2 .. -> G1 ^ G2 ..
+      as state formulas, safety property G (phi -> X psi), liveness properties (G F phi)
+    + EXPTIME-complete
+    + problem: specification can not be expressed directly in GR(1)
+      => pre-synthesis construction of determ. monitor doubly_exp
+* Bounded Synthesis
+  - fast finding of simple solutions ("is there impl with no more than N states" instead of "is there impl sat spec)
+  - LTL
+    + synth vs bounded synth: 2 EXPTIME (in len of fomula as input) vs NP-complete/EXPTIME (in size of impl as output)
+    + ltl  ->  universal co-Büchi automaton -> constraint system    ->
+       transl:exp(in formula)           transl:poly     constraint_solving:NP(in bound)
+      => Bounded LTL synthesis NP-complete in size of impl
+    + universal co-Büchi automaton accepts a word iff all runs satisfy the co-Büchi condition.
+    + solution representation: basic SAT, input-symbolic QBF, state-symbolic DQBF, fully-symbolic DQBP
+    + solution strategies
+      * increase bound: implementation found, counterstrategy found
+      * termination: there is a impl or counterstrategy with at most doubly_exp many states
+  - Bounded cycle synthesis
+    + additionally minimizes the number of simple cycles.
+    + needs additional parameters
+    + #cycles of FSM EXP-bounded in size of FSM
+    + realizable LTL formula phi, st every impl has at least triply-EXP many cycles in size of phi
+* Distributed Synthesis
+  - multiple distributed components
+  - decidable: closed systems, open systems, pipelines, rings, weakly-ordered architectures
+  - undecidable: independent processes, architectures with information forks
+  - unclear: decidability of causal memory synthesis
+    + in general verifiable for shared memory access in SW PLs, although details for LLVM, C etc are hashed out
+    + see "What’s Decidable About Causally Consistent Shared Memory?"
+
+====computing_models
+* temporal logic (LTL, CTL, TLA+, PSL, SVA)
+* separation logic
+* first order logic
+* reachability logic
+* (relational numerical) abstract domains (ellipoids, intervals, etc)
+* various more specification languages
+
+====verification_techniques
+* model checking (systematic+exhaustive mathematical model exploration)
+  * symbolic execution
+    - input-relation based execution
+  * bounded model checking
+    - for example bounded by number of threads, loop expansions, steps
+  * abstraction
+    - for example abstract interpretation
+  * refinement
+    - for example counter-example guided refinement
+* deductive verification (solving proof obligations)
+  * proof assistants
+    - for example Isabelle
+  * theorem provers
+    - for example z3
+
 
 ====tools
 * https://dagitty.net/
@@ -54,7 +125,6 @@ idea paper as source
 ====idioms
 https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specification
 * nondeterminism idea
-
 * Idris2 dependent types alone are too low-level.
 * Zig is a systems language, which solves biformity from different compile-time
   and runtime semantics for most parts.
@@ -93,7 +163,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 3. verifying compilers with its cost
   * 2 general usable and fully verified optimizing compiler implementations
      + compcert
-     + pancake (successor to cogent)
+     + pancake (successor to cogent in sel4 project)
        o lowers to Isabelle or other proof systems or binary code as compiler backends
   * verifying the abstract machine the compiler works on
      + https://github.com/ziglang/zig-spec/issues/40
@@ -146,7 +216,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
      Theory with associated aliases)
    * instead of "update the value", "update the value for all associated
      aliases"
-   * https://github.com/rust-lang/rust/issues/129010 address 64bit leaves out
+   * https://github.com/rust-lang/rust/issues/129010 address 64 bit leaves out
      question on who can use what bits of a ptr
    * top byte is not part of the address on aarch64, x86_64; compilers rely on it though for optimizations
    * pointer provenance semantics for provenance based aliasing analysis and optimizations
@@ -278,6 +348,8 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     * https://news.ycombinator.com/item?id=40767108
     * https://trace.yshui.dev/2024-06-xorg-bug.html
 - 12. formal model for OS security and scheduling
+  * security: capability object model for (dynamic) security permissions vs ACLs for (racy to modify) static ones
+  * scheduling: still incomplete wrt timing in sel4
   * Assuming a process Pa with schedule A with deadline a and security level 2.
   * Is affecting the scheduler a security problem, because security incidents must be
     processed imminently or with what deadlines?
@@ -384,6 +456,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 16. secure speculative execution
   * "A Formal Approach to Secure Speculation" by Cheang et al.
   * idea hackernews comment
+  * can be simulated, but very hard to abstract/refine
 - 17. stateful machine learning
   * kv cache etc
   * idea: spikes are like synaptic connection strengths and represent output of neuron
@@ -395,8 +468,10 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * https://softwareengineering.stackexchange.com/questions/270674/which-language-has-most-advanced-support-for-proof-based-programming
   * actor based languages for distributed systems simplify implementation details significantly
     o P language to apply formal methods https://github.com/p-org/P
+    o https://en.wikipedia.org/wiki/Actor_model
   * alternative should be based on CSP todo long form
 - 19. Reversible computation
+  * Standard concept in computing: linear/affine types, algebraic effect with handlers, cleanups etc
   * For Real Hardware
     + CPU schedulers are hardware-based and thus relative simple. You can think
     of it as an hardware implementation of instruction interpreter programmers
@@ -455,8 +530,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 25. static analysis to prove bug-free programs
   * https://github.com/codex-semantics-library/codex not usable yet
   * https://github.com/binsec/binsec unclear trade-offs of symbolic execution
-- 26. definitions of memory safety is omitting wanted use cases, which renders it
-  semi-useless
+- 26. definitions of memory safety is omitting wanted use cases, which renders it semi-useless
   * good links for tooling https://memorysafety.openssf.org/memory-safety-continuum/
 - 27. discussion with goodchild on (fundamental) compiler shortcomings regarding synchronization primitives and core idea of
   expressing Consistency Models without constrains/relations based on graphical input/call-site information
@@ -473,6 +547,23 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   definitely declarative is good
   A2: Maybe a dumb primitive is "good enough" and external solver/bespoke tool can provide reordering information to compiler
   after user has fuzzed etc memory reordings for desired use cases
+- 28. Local system bus/IPC interfaces/system challenges
+  * 1. CIA
+  * 2. (re-)identification
+  * 3. performance requirements (latency, throughput, bandwidth)
+  * 4. semi-reliable systems schedule with sane error behavior
+  * 5. debugging concept (simulation, reversible computing, recording, tracing, stepping, validation etc)
+- 29. Distributed system bus/interface system challenges
+  same as 28, but with typical distributed properties on top
+  * 1 idempotency
+  * 2 consistency
+  * 3 backpressure
+  * (4 observability)
+  * 5 fault-tolerance
+  * (6 service discovery)
+  * (less often)
+  * 7 consensus
+  * 8 replication
 
 To me unclear if solved:
 * check if linker speak has a formal model

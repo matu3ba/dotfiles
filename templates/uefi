@@ -1,0 +1,51 @@
+====background
+====implementation
+
+* historyically grown standard for even own creates like design in practice
+* frequently suggested by OS/security reasearchers that Kernel (modules) or open source
+  software takes over tasks including address space initializations to reduce
+  trusted computing base, increase security, remove bugs etc
+  => see coreboot, libreboot (coreboot without binary blobs), u-boot (standard on embedded)
+  => alternatives support ARM, x86, RISC-V with different degree of hw initialization
+* see https://en.wikipedia.org/wiki/UEFI
+* de facto standard https://www.tianocore.org/
+* first-stage bootloader (initialization of hardware), does not load OSes
+
+0 Hardware
+1 SEC – Security Phase
+* passes handoff information to PEI (location, size of temporary memory, location, size of stack, state of platform)
+2 PEI – Pre-EFI Initialization
+* dispatches PEIMs (pre-EFI initialization modules)
+* init permanent memory (RAM)
+* handover to DXE
+* locates + passes control to DXE
+* dispatches DXE foundation through special PPI called IPL (Initial Program Load).
+3 DXE – Driver Execution Environment
+* C modules and dependency-aware dispatcher
+* main memory available => DXE + BDS initialize CPU, chipset, mainboard + other I/O devices
+* assigning EFI device paths to the hardware connected to the motherboard
+* transferring configuration data to the hardware
+  - 3.1 BDS – Boot Device Select (Boot Manager) [part of DXE]
+    * execute according to arch-specific vars in NVRAM boot devices, UEFI drivers,
+    Option ROMs of PCI devices
+4 TSL – Transient System Load
+* between boot device selection and hands-off to OS
+* one may enter UEFI shell or execute UEFI application such as OS boot loader
+5 RT – Runtime
+* UEFI hands off to OS after ExitBootServices() is executed
+* UEFI compat OS responsible for exiting oot services triggering the firmware
+  to unload all no longer needed code and data, leaving only runtime services
+  code/data like SMM and ACPI
+  - System Management Mode (SMM)
+    * Handle system events like memory or chipset errors
+    * Manage system safety fns like shutdown on high CPU temperature
+    * SMBIOS, advanced config and power interface (ACPI), TPM
+    * and much more
+* modern OS prefers to use own programs (such as kernel drivers) to control hw devices,
+  so there is likely redundancy, no updates etc
+
+https://www.happyassassin.net/posts/2014/01/25/uefi-boot-how-does-that-actually-work-then/
+
+====implementation
+entry point https://tianocore-docs.github.io/edk2-ModuleWriteGuide/draft/4_uefi_applications/42_write_uefi_application_entry_point.html
+> EFI_STATUS EFIAPI UefiMain(IN EFI_HANDLE ih,IN EFI_SYSTEM_TABLE*st) {..}

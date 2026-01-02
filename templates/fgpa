@@ -4,6 +4,7 @@ https://vhdlwhiz.com/terminology
 ====standards
 ====tooling
 ====learning
+====hardware
 
 ====standards
 * UVVM as fastest growing HDL verification methodology
@@ -63,3 +64,6 @@ of Zynq SoC — ARM processor + FPGA fabric.
   - given fixed cache
   - low compilation time (compiler take shortcuts potentially creating broken instructions, no slow to fullfill constrains)
   - estimation- + env-based perf, flexible power, in some areas no; others fewer timing guarantees
+
+====hardware
+simple and open source (tooling) fgpa: nextpr

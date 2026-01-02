@@ -1,6 +1,8 @@
 ====isas
 ====AT&T_syntax_bad
 
+https://xania.org/AoCO2025
+
 ====isas
 intel x86 > 5k isa with 400 pages unofficial reference
 call it Intel SIB

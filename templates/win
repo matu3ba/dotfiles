@@ -125,6 +125,16 @@ SHENNANIGAN Piping output of graphical applications does not work on default.
 Doing it without effort (use own stdout handle) requires arcane settings to use both console and standard handles:
 gcc -mconsole test_gdi.c -lgdi32
 
+windows-internals.com
+systeminformer https://github.com/winsiderss/systeminformer
+* monitor system resources, debug software and detect malware.
+* NtDoc https://ntdoc.m417z.com/ https://github.com/winsiderss/phnt
+* PoolViewer https://github.com/yardenshafir/PoolViewer
+
+https://ionescu007.github.io/SimpleVisor/ https://github.com/ionescu007/SimpleVisor
+* minimal virtualization based in-kernel debugging for Windows
+* related https://github.com/tandasat/HyperPlatform
+
 ====build_problems
 Build problems, ie incremental build problems:
 Tools -> Options -> Proj & Sol. -> Build & Run -> build log verbosity -> diagnostic
