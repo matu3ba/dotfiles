@@ -4,8 +4,11 @@ pub fn main() !void {
     defer arena.deinit();
     const allocator = arena.allocator();
 
-    const res = std.process.Child.run(.{
-        .allocator = allocator,
+    var threaded: std.Io.Threaded = .init(allocator, .{});
+    defer threaded.deinit();
+    const io = threaded.io();
+
+    const res = std.process.Child.run(allocator, io, .{
         .argv = &[_][]const u8{ "/usr/bin/sudo", "/usr/bin/groupadd", "test123123" },
     }) catch {
         return error.CouldNotRunShellExplicit;

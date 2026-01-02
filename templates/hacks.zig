@@ -57,13 +57,14 @@ fn range(len: usize) []const void {
 // now you need a range if you want an index
 //for (chars, 0..) |elem, idx| { ... }
 
-// switch on union field
-const Self = struct {
-    fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {
-        if (self != field) return null;
-        return @field(self, @tagName(field));
-    }
-};
+// switch on union field, TODO
+// const Self = struct {
+//     fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {
+//         if (self != field) return null;
+//         return @field(self, @tagName(field));
+//     }
+// };
+// test "switch_on_union_field" {}
 
 // workaround zig libstd bloated formatting:
 // https://github.com/FlorenceOS/Florence/blob/master/lib/output/fmt.zig

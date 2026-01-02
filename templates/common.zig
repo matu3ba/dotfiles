@@ -2,6 +2,7 @@
 // zig test ./templates/common.zig
 const std = @import("std");
 const builtin = @import("builtin");
+const testing = std.testing;
 
 //====cmds
 //====packages
@@ -32,7 +33,8 @@ const builtin = @import("builtin");
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz
 // dependency visual - https://github.com/haze/zigbo
-// aliasing checking prototype - https://github.com/ityonemo/clr
+// borrow checker/aliasing checking prototype - https://github.com/ityonemo/clr
+// * planned thread-local abstract interpretation, no concept for thread-sync (or process sync)
 // ebpf based runtime checks - https://github.com/Sobeston/lifetime-debugger
 // Unicode text processing-  https://codeberg.org/atman/zg
 // Zig to Nix converter - https://github.com/Cloudef/zig2nix
@@ -493,22 +495,29 @@ const windows_utf16_string_literal = struct {
 //     _ = res2;
 // }
 
-test "100 clients connect to server" {
-    if (builtin.os.tag == .wasi) return error.SkipZigTest;
-    const localhost = try std.net.Address.parseIp("127.0.0.1", 0);
-    var server = try localhost.listen(.{ .force_nonblocking = true });
-    defer server.deinit();
-
-    const accept_err = server.accept();
-    try std.testing.expectError(error.WouldBlock, accept_err);
-
-    var client_streams: [100]std.net.Stream = undefined;
-    for (client_streams, 0..) |_, i| {
-        errdefer for (client_streams[0..i]) |cleanup_stream| cleanup_stream.close();
-        client_streams[i] = try std.net.tcpConnectToAddress(server.listen_address);
-    }
-    defer for (client_streams) |cleanup_stream| cleanup_stream.close();
-}
+// TODO regressed in 0.16.0-dev.11078+53ebfde6b, see https://github.com/ziglang/zig/issues/26056
+// test "100 clients connect to server" {
+//     if (builtin.os.tag == .wasi) return error.SkipZigTest;
+//     const localhost: std.Io.net.IpAddress = try .parseIp4("127.0.0.1", 0);
+//     const io = testing.io;
+//
+//     // wanted
+//     // var server = try localhost.listen(io, .{ .force_nonblocking = true });
+//
+//     var server = try localhost.listen(io, .{});
+//     defer server.deinit(io);
+//
+//     const accept_err = server.accept(io);
+//     try std.testing.expectError(error.WouldBlock, accept_err);
+//
+//     var client_streams: [100]std.Io.net.Stream = undefined;
+//     for (client_streams, 0..) |_, i| {
+//         errdefer for (client_streams[0..i]) |cleanup_stream| cleanup_stream.close(io);
+//         // client_streams[i] = try std.Io.net.tcpConnectToAddress(server.listen_address);
+//         client_streams[i] = try std.Io.net.connect(server.listen_address);
+//     }
+//     defer for (client_streams) |cleanup_stream| cleanup_stream.close();
+// }
 
 // test "coercion to return type example" {
 //     var gpa_state = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
@@ -907,3 +916,22 @@ test "@hasDecl" {
 
 // https://github.com/CTSRD-CHERI/qemu/tree/qemu-cheri
 // nice comptime usage https://bur.gy/2024/08/31/why-not-zig.html
+
+// SHENNANIGAN
+// std.Io too high-level for optimizations
+// * 1 generic implementation has high limits on the (in most cases) target-specific
+//   implementation for no reason, for example std.Io.Mutex can store only usize,
+//   which makes it basically impossible to have efficient implementation in RTOS
+//   - minimum is pointer to the owner task and linked list of locked task
+//   - better: no heap-allocated state for mutex, just store it in the type
+// * 2 not having(deriving or constructing) the explicit state machine for
+//   (async) IO is one of the problems (think of Rust sans-io)
+//   - implicit async state automaton becomes (similar to threading) complex
+//   without necessity
+//   - better: Rust sans-io like debugging infra and API to derive the state automaton
+//   via static and dynamic analysis (kinda like a special IR for the user)
+//   - best: Rust sans-io like debugging infra + taint analysis similar for
+//   memory regions
+// SHENNANIGAN
+// std.Io is low-level to have API that doesn't sucks
+//   - so far without argument

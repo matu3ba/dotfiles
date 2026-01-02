@@ -373,11 +373,11 @@ fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
 // mkdir -p build/ && lualatex --file-line-error --synctex=1 --output-directory=build src/smartcv_example.tex
 fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleTexFiles[0..]) |texfile| {
-        std.fs.cwd().makeDir("build") catch |err| {
+        std.Io.Dir.cwd().createDirPath(b.graph.io, "build") catch |err| {
             if (err != error.PathAlreadyExists) @panic("could not create dir build/");
         };
         while (true) {
-            _ = std.fs.cwd().openDir("build", .{}) catch |err| {
+            _ = std.Io.Dir.cwd().openDir(b.graph.io, "build", .{}) catch |err| {
                 if (err != error.FileNotFound) {
                     @panic("could not wait for file to be created");
                 } else {
@@ -389,7 +389,7 @@ fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
 
         const run_lualatex = b.addSystemCommand(&.{ "lualatex", "--interaction=batchmode", "--file-line-error", "--synctex=1", "--output-directory=build" });
         run_lualatex.addArg(texfile);
-        _ = run_lualatex.captureStdOut();
+        _ = run_lualatex.captureStdOut(.{});
         run_step.dependOn(&run_lualatex.step);
     }
 }
@@ -499,7 +499,7 @@ fn fetch(b: *std.Build, options: struct {
         b.graph.global_cache_root.join(b.allocator, &.{"p"}) catch @panic("OOM"),
     );
     copy_from_cache.addFileArg(
-        b.addSystemCommand(&.{ b.graph.zig_exe, "fetch", options.url }).captureStdOut(),
+        b.addSystemCommand(&.{ b.graph.zig_exe, "fetch", options.url }).captureStdOut(.{}),
     );
     copy_from_cache.addArg(options.file_name);
     const result = copy_from_cache.addOutputFileArg(options.file_name);
@@ -659,7 +659,7 @@ const SingleTexFiles = [_][]const u8{
 
 const SingleZigFiles = [_][]const u8{
     // "build.zig", // build file
-    "example/comptime_allocator.zig",
+    // "example/comptime_allocator.zig", regressed on 0.16.0-dev.11078+53ebfde6b
     // "example/copyhound.zig", // missing dep
     "example/sudo/sudo_shell.zig",
     "example/twoway_typeid.zig",
