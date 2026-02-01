@@ -172,6 +172,11 @@ jenkins
 - No atomiticity of artifact cache access
 - Missing process limitation of harware usage
 
+forgejo https://forgejo.org/ https://codeberg.org/forgejo/forgejo go
+- biggest supporter is Codeberg
+- easy to customize
+- mostly ok code quality
+
 - In Jenkinsfile, check out the main repository in the subdirectory using dir():
 dir('subDir') {
     checkout scm
@@ -235,7 +240,6 @@ MacOs: process becomes orphaned means it never gets cleaned up
 
 cgroups overview https://lewisgaul.co.uk/blog/coding/2022/05/13/cgroups-intro/
 woodpecker https://woodpecker-ci.org https://github.com/woodpecker-ci/woodpecker go
-forgejo https://forgejo.org/ https://codeberg.org/forgejo/forgejo go
 
 ====packages
 https://nesbitt.io/2025/12/06/github-actions-package-manager.html tldr; github actions very bad
@@ -256,3 +260,6 @@ Github pitifalls
 https://ashishb.net/programming/common-pitfalls-of-github-actions/
 Github static analysis
 https://github.com/zizmorcore/zizmor
+
+====actual_cis
+https://www.jetbrains.com/help/teamcity/teamcity-configuration-and-maintenance.html#Build+Settings

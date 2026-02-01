@@ -265,7 +265,9 @@ map('n', '<C-w><C-q>', '<cmd>tabclose<CR>', opts)
 --:bdel for buffer deletion
 --question think how to pick buffer quick: ideally fuzzy search matches in telescope to add them
 --Then assign quickjump mappings in the picker.
---Store everything in a session file.
+--session file
+--* store: mks! s1
+--* load: nvim -S s1
 --question think how to delete buffers quick
 --==navigation
 -- map('n', ']q', '<cmd>cn<CR>', opts) -- error navigation

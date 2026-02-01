@@ -1,6 +1,7 @@
 --! Main entry point, very common things and autocommands
 -- luacheck: globals vim
 -- luacheck: no max line length
+
 vim.filetype.add {
   extension = {
     smd = 'supermd',

@@ -185,6 +185,7 @@ macho headers from libunwind. For some reason this breaks every major LLVM relea
 because it appears this is not tested in the release process.
 
 echo "building llvm, clang, lld, lldb and tooling (clangd, clang-tidy etc).."
+REM HEAD very often broken on Windows, instructions for installing VS not scripted
 REM https://llvm.org/docs/GettingStarted.html#getting-the-source-code-and-building-llvm
 REM Consider using set PATH=%HOMEPATH%/dev/git/cpp/CMake/build/bin;%PATH%"
 REM Build LLVM and a bunch of projects
@@ -197,6 +198,9 @@ REM * -DCMAKE_PREFIX_PATH="%HOMEPATH%/.local/llvmbs" ^
 REM * -DCMAKE_C_COMPILER="%VS2017%/bin/HostX64/x64/cl.exe" ^
 REM * -DCMAKE_CXX_COMPILER="%VS2017%/bin/HostX64/x64/cl.exe" ^
 REM * -DCMAKE_LINKER="%VS2017%/bin/HostX64/x64/link.exe" ^
+REM * unused: -DCLANG_TOOL_ARCMT_TEST_BUILD=OFF ^
+REM * unused: -DCLANG_TOOL_C_ARCMT_TEST_BUILD=OFF ^
+REM * unused: -DLLVM_USE_CRT_RELEASE=MT ^
 set JOBS_ARG=
 mkdir "build-release"
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
@@ -205,7 +209,7 @@ if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 cmake "..\llvm" ^
   -G "Ninja" ^
   -DCMAKE_BUILD_TYPE=Release ^
-  -DLLVM_ENABLE_PROJECTS=""clang;clang-tools-extra;lld;lldb" ^
+  -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld;lldb" ^
   -DLLVM_ENABLE_LIBXML2=OFF ^
   -DLLVM_ENABLE_ZSTD=OFF ^
   -DLLVM_INCLUDE_UTILS=OFF ^
@@ -226,11 +230,9 @@ cmake "..\llvm" ^
   -DCLANG_TOOL_CLANG_IMPORT_TEST_BUILD=OFF ^
   -DCLANG_TOOL_CLANG_LINKER_WRAPPER_BUILD=OFF ^
   -DCLANG_TOOL_C_INDEX_TEST_BUILD=OFF ^
-  -DCLANG_TOOL_ARCMT_TEST_BUILD=OFF ^
-  -DCLANG_TOOL_C_ARCMT_TEST_BUILD=OFF ^
   -DCLANG_TOOL_LIBCLANG_BUILD=OFF ^
-  -DLLVM_USE_CRT_RELEASE=MT ^
   -DLLVM_BUILD_LLVM_C_DYLIB=NO
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
-cmake --build . %JOBS_ARG% --target install
+cmake --build .
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+cmake --build . %JOBS_ARG% --target install

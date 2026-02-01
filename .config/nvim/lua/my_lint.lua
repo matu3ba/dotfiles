@@ -7,7 +7,10 @@ if not ok_lint then return end
 --https://github.com/allyourcodebase/cpython
 
 --==installing pip + uv
--- python -m ensurepip --upgrade
+--Windows: py -m ensurepip --upgrade
+--         py -m pip install uv
+--         py -m uv tool install TOOl
+--Linux/Mac: python -m ensurepip --upgrade
 -- pip install --user uv
 -- pip install uv
 

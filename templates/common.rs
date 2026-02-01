@@ -35,7 +35,7 @@
 // cargo-install-update        | -                  |
 // cargo-install-update-config | -                  |
 // cargo-make                  | -                  |
-// dust                        | -                  |
+// dust                        | du-dust            |
 // emulsion                    | -                  |
 // exa                         | -                  |
 // fd                          | fd-find            | https://github.com/sharkdp/fd
@@ -60,10 +60,10 @@
 // sd                          | -                  |
 // tcount                      | -                  |
 // tokei                       | -                  |
-// watchexec                   | -                  |
+// watchexec                   | watchexec-cli      |
 // xargo                       | -                  |
 // xargo-check                 | -                  |
-// zellij                      | -                  |
+// zellij                      | -                  | not working on Windows
 // zoxide                      | -                  |
 
 //====design_better
@@ -163,3 +163,17 @@
 
 //====setup
 //curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+// Windows 11 setup sucks
+// * using mingw:
+// rustup toolchain install stable-x86_64-pc-windows-gnu
+// rustup default stable-x86_64-pc-windows-gnu
+// error: error calling dlltool 'dlltool.exe': program not found
+// * using msvc:
+// rustup toolchain install stable-x86_64-pc-windows-msvc
+// rustup default stable-x86_64-pc-windows-msvc
+// * problem error: linker `link.exe` not found
+// solution install all C++ for desktop package
+// * problem tree-sitter-cli needs libclang
+// solution build llvm from source
+//   - problem msvc: cannot open include file: 'atlbase.h': No such file or directory
+//   solution msvc installer add C++ ATL for latest build tools; also add MFC just in case

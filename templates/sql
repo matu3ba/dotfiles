@@ -1,0 +1,4 @@
+list foreign keys of table1
+EXEC sp_fkeys 'table1'
+
+https://www.baeldung.com/sql/list-table-foreign-keys

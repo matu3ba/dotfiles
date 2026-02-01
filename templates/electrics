@@ -1,7 +1,10 @@
+==cables
 ====terms
 ====measure
 ====work
+==lamps
 
+==cables
 ====terms
 L/L1/L2/L3: live, de Phase (conducting electricity)            [old: UVW]
 N:          neutral, de Masse/Neutralleiter (no electricity)   [old: M]
@@ -21,3 +24,18 @@ different systems common:
 ====work
 laying GND cable (PE with N connected)
 * when L-N != L-PE
+
+
+==lamps
+e27, 27mm diameter rotation frame
+e14, 14mm diameter rotation frame
+g9, small pluggable socket
+gu10, thick plug rotation socket
+g5/t5, 5mm diameter contact pins plug and rotation
+gu4, 4mm pin distance
+gu5.3, 5.3mm pin distance
+PL-S2 and 4 Pin, plug socket system
+gx53, 5.3cm pin distance with locking by rotation
+g53, 5.3cm pin distance with plug
+r7s, double-sided plinth
+g means plug socket, e means edison socket (rotation mount)

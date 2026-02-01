@@ -1,0 +1,65 @@
+====general
+
+====general
+plugins are called providers https://opentofu.org/docs/language/providers/
+* used to interact with cloud providers, SaaS providers, and other APIs
+Note that Opentofu/Terraform is to specify the infrastructure, but what is running
+inside the infrastructure should be specified and managed seperately.
+One can think of Opentofu as Infrastructure as Code for infrastructure setup via
+hypervisors based virtualization of computing, network and storage units with
+custom pricing.
+TODO where are constrains on hardware + service provisioning specified?
+https://www.scaleway.com/en/docs/serverless-containers/concepts/
+
+https://opentofu.org/
+https://github.com/opentofu/opentofu
+https://github.com/opentofu/registry
+https://search.opentofu.org/provider/opentofu/scaleway/latest
+https://github.com/virtualroot/awesome-opentofu
+https://github.com/virtualroot/asdf-opentofu
+
+https://www.scaleway.com/en/docs/terraform/quickstart/
+https://www.scaleway.com/en/docs/tutorials/manage-instances-with-terraform-and-functions/
+
+files/           Temporary store zip fns.
+function/        Fns.
+main.tf          Main set of cofigs for project.
+backend.tf       Each Terraform/OpenTofu configuration can specify a backend.
+                 Backend defines where state file of current infra will be stored.
+                 Terraform/OpenTofu uses this file to keep track of the managed resources.
+                 This state can be stored locally or remotely.
+                 Configuring a remote backend allows multiple people to work on same infra.
+provider.tf      Terraform/OpenTofu relies on plugins called "providers" to interact with remote systems.
+terraform.tfvars Allows to set actual value of the vars.
+variables.tf     Will contain the variable definitions for project. Since all
+                 Terraform/OpenTofu values must be defined, any variables that are not
+                 given a default value will become required arguments.
+
+terraform {
+  required_providers {
+    scaleway = {
+      source  = "scaleway/scaleway"
+      version = ">= 2.57"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = "0.13.1"
+    }
+  }
+
+  backend "http" {
+    address        = local.gitlab_http_backend_url
+    lock_address   = "${local.gitlab_http_backend_url}/lock"
+    unlock_address = "${local.gitlab_http_backend_url}/lock"
+    lock_method    = "POST"
+    unlock_method  = "DELETE"
+    retry_wait_min = 5
+  }
+}
+
+locals {
+  gitlab_http_backend_url = "https://gitlab.INSTANCE.com/api/v4/projects/PROJECT_NUMBER/PROJECT_NAME/state/zugriffsverwaltung"
+}
+
+provider "scaleway" {
+}

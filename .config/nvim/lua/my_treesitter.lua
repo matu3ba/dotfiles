@@ -23,6 +23,8 @@
 -- SHENNANIGAN DESIGN
 -- * GENERAL
 --   + https://github.com/neovim/neovim/issues/22426
+--     - Rendering long lines is inefficient
+--     - Injection queries are run too often
 --   + https://github.com/tree-sitter/tree-sitter/issues/930#issuecomment-974399515
 --     https://github.com/tree-sitter/tree-sitter/blob/master/docs/section-5-implementation.md#the-runtime
 --     no docs on runtime including query performance and query cache etc
@@ -31,90 +33,38 @@
 --     // scales logarithmically with the number of patterns in the query.
 --     However this only mentions "initial lookup step" and not overall worst case
 --     performance per pattern match or is unlucky formulated.
--- * NEOVIM
---   + treesitter can not be disabled: if it is installed, it will be loaded and
---   throw errors.
---   + pcall nvim-treesitter.configs still not supported
---   + treesitter languages may require: cargo install tree-sitter-cli
---   + TODO config: add missing pcalls/checks in treesitter and telescope-fzf-native
---   + require 'my_treesitter' -- startup time (time nvim +q) before 0.15s, after 0.165s, ubsan 2.6s
 
 -- idea: https://jdhao.github.io/2020/11/15/nvim_text_objects/
 --       and https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 
---====ziggy
-local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-
-parser_config.ziggy = {
-  install_info = {
-    url = 'https://github.com/kristoff-it/ziggy',
-    includes = { 'tree-sitter-ziggy/src' },
-    files = { 'tree-sitter-ziggy/src/parser.c' },
-    branch = 'main',
-    generate_requires_npm = false,
-    requires_generate_from_grammar = false,
-  },
-  filetype = 'ziggy',
-}
-
-parser_config.ziggy_schema = {
-  install_info = {
-    url = 'https://github.com/kristoff-it/ziggy',
-    files = { 'tree-sitter-ziggy-schema/src/parser.c' },
-    branch = 'main',
-    generate_requires_npm = false,
-    requires_generate_from_grammar = false,
-  },
-  filetype = 'ziggy-schema',
-}
-
-parser_config.supermd = {
-  install_info = {
-    url = 'https://github.com/kristoff-it/supermd',
-    includes = { 'tree-sitter/supermd/src' },
-    files = {
-      'tree-sitter/supermd/src/parser.c',
-      'tree-sitter/supermd/src/scanner.c',
-    },
-    branch = 'main',
-    generate_requires_npm = false,
-    requires_generate_from_grammar = false,
-  },
-  filetype = 'supermd',
-}
-
-parser_config.supermd_inline = {
-  install_info = {
-    url = 'https://github.com/kristoff-it/supermd',
-    includes = { 'tree-sitter/supermd-inline/src' },
-    files = {
-      'tree-sitter/supermd-inline/src/parser.c',
-      'tree-sitter/supermd-inline/src/scanner.c',
-    },
-    branch = 'main',
-    generate_requires_npm = false,
-    requires_generate_from_grammar = false,
-  },
-  filetype = 'supermd_inline',
-}
-
-parser_config.superhtml = {
-  install_info = {
-    url = 'https://github.com/kristoff-it/superhtml',
-    includes = { 'tree-sitter-superhtml/src' },
-    files = {
-      'tree-sitter-superhtml/src/parser.c',
-      'tree-sitter-superhtml/src/scanner.c',
-    },
-    branch = 'main',
-    generate_requires_npm = false,
-    requires_generate_from_grammar = false,
-  },
-  filetype = 'superhtml',
-}
+-- --====custom_parser
+-- local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+-- parser_config.ziggy = {
+--   install_info = {
+--     url = 'https://github.com/kristoff-it/ziggy',
+--     includes = { 'tree-sitter-ziggy/src' },
+--     files = { 'tree-sitter-ziggy/src/parser.c' },
+--     branch = 'main',
+--     generate_requires_npm = false,
+--     requires_generate_from_grammar = false,
+--   },
+--   filetype = 'ziggy',
+-- }
+-- like init.lua use
+-- vim.filetype.add {
+--   extension = {
+--     ziggy = 'ziggy',
+--   },
+-- }
 
 --====config
-require('nvim-treesitter.configs').setup {
+local has_ts, ts = pcall(require, 'nvim-treesitter')
+if not has_ts then
+  vim.print 'Please install nvim-treesitter/nvim-treesitter.'
+  -- cargo install --locked tree-sitter-cli
+  return
+end
+ts.setup {
   -- ensure_installed = 'maintained',
   -- ensure_installed = {
   --   'bash',

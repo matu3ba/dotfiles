@@ -1,5 +1,16 @@
 ====inspiration
 https://github.com/libdebug/libdebug
+hypervisor based debugging TODO
+each system component has own debugging methods, ideally to be stored and used from own or other functional device
+* 0 broken partition table or disk offset, encryption table
+* 1 efi stuff (if applicable)
+* 2 grub/bootloader
+* 3 user login database
+* 4 disk too full -> not being able to switch generations or use any regular binary
+* 5 broken system configuration
+* nixos/guix etc: N system configuration snapshots (not kernel+gpu driver!)
+  - guix still slow, incoherent, less support/maintenance than nix for hardware
+* nix store artifacts binary cache != manually built ones
 
 ====optimal_repl
 * hot reload https://zig.news/perky/hot-reloading-with-raylib-4bf9

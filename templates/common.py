@@ -2,6 +2,11 @@
 #====code_examples
 #====tooling_examples
 
+#====setup
+# py uninstall --purge
+# py install default
+# or use virtual environments like uv, nix, guix, virtualenv
+
 #====tooling
 # fast and sane python tooling
 # https://github.com/astral-sh/uv instead of pipx etc
@@ -10,6 +15,9 @@
 # https://peps.python.org/pep-0008/#blank-lines
 # and not even the PEP is following the guide
 # https://docs.python.org/3/library/pdb.html debugger
+
+#====libs
+# mpmath
 
 #====code_examples
 # import sys

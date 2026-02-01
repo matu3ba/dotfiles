@@ -1,1 +1,29 @@
 https://blog.wesleyac.com/posts/how-i-run-my-servers
+
+Apache log4net part of Apache Logging Services project
+* Appenders
+  - responsible for delivering log events to their destination
+* Layouts
+  - appender uses a layout to encode a LogEvent into a form that meets the
+    needs of whatever will be consuming the log event
+* Filters
+  - Filters are log4net plugins that evaluate the parameters of a logging call
+    or a log event and return one of three results
+    1 ACCEPT: The filter accepts the log event. This effectively causes other
+    filters in the same filtering stage to be skipped.
+    2 DENY: The filter drops the log event.
+    3 NEUTRAL: log4net behaves as if the filter was not present. It is
+    evaluated by the next filter in the filter chain.
+
+GelfHttpAppender (using Graylog Extended Log Format) using TODO:best_solution?
+RollingLogFileAppender (using rolling log files)
+
+<?xml version="1.0" encoding="utf-8" ?>
+<log4net debug="true">
+  <root>
+    <!-- ALL, DEBUG, WARN, ERROR, INFO -->
+    <level value="ALL" />
+    <appender-ref ref="GelfHttpAppender" />
+    <appender-ref ref="RollingLogFileAppender" />
+  </root>
+</log4net>

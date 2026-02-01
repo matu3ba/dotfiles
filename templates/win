@@ -4,6 +4,7 @@
 ====debug
 ====build_problems
 ====debugging_timetravel
+====packages
 TODO cleanup
 
 Get installation location of msvc c, c++ compiler and linker with batch file:
@@ -650,6 +651,8 @@ net use DRIVE: \\IP\drive_without_colon\more_path
 net use \\192.168.1.xx\<some-share> password /USER:username
 copy \*.bak \\networklocation\sharefolder\*.bak
 robocopy .\_ReleaseRevision_x64\bin\ \\192.168.1.24\d\ *.exe
+robocopy c:\source d:\destination /s /e
+robocopy /E /XJD c:\source d:\destination /XD "`$RECYCLE.BIN" "System Volume Information"
 
 ====firewall
 netsh firewall show state
@@ -802,3 +805,7 @@ Get-ChildItem .\SDK\ -Recurse | Get-FileHash -Algorithm MD5
 driver examples https://github.com/microsoft/Windows-driver-samples
 https://learn.microsoft.com/en-us/archive/blogs/wsl/pico-process-overview
 pico-process as foundation for WSL1
+
+====packages
+Windows Package Manager
+winget install Microsoft.WinDbg

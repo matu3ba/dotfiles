@@ -106,6 +106,8 @@ pipeworld?
 markdown editor: retext
 extracting music: yt-dlp -x
 extracting video+sound: yt-dlp --max-filesize 1000m
+* winget install DenoLand.Deno
+* or something for installing on Linux
 
 Cross platform capturing video + sound: OBS
 
