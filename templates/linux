@@ -1,3 +1,4 @@
+====paths
 ====dinit
 ====systemd
 ====autostart
@@ -13,6 +14,14 @@
 ====kernel_dev
 
 https://venam.net/blog/unix/2021/02/07/audio-stack.html
+
+====paths
+path handling requires care to prevent possible attacks
+* https://github.com/cyphar/libpathrs
+* operating on a path: path component swapped with symlink/moved
+  => TOCTOU
+* Path Safety “in the Trenches”
+  =>Every pathname syscall is potentially dangerous.
 
 ====dinit
 man dinit
@@ -469,6 +478,9 @@ benchmarks
 * https://github.com/CarterLi/io_uring-echo-server
 * https://github.com/hnes/libaco
 * https://github.com/axboe/liburing/issues/427
+"io_uring for High-Performance DBMSs: When and How to Use It" by Jasny et al.
+* guideline to evaluate practical benefits and optimize
+* cloud-native data systems?
 
 https://blog.habets.se/2025/04/io-uring-ktls-and-rust-for-zero-syscall-https-server.html
 * old poll/select or epoll/kqueue, new io_uring
@@ -490,10 +502,63 @@ https://blog.habets.se/2025/04/io-uring-ktls-and-rust-for-zero-syscall-https-ser
 https://deepwiki.com/torvalds/linux
 
 ====Ghost_of_Unix
+ghost of unix
 Part 1: Full exploitation - https://lwn.net/Articles/411845/
 Part 2: Conflated designs - https://lwn.net/Articles/412131/
 Part 3: Unfixable designs - https://lwn.net/Articles/414618/
 Part 4: High-maintenance designs - https://lwn.net/Articles/416494/
+https://github.com/Ericson2314/baccumulation
+* https://github.com/Ericson2314/baccumulation/issues/7
+  critique/review on "Reforming Unix" #7
+  Thanks for your effort of writing your perspective. Here is mine from tinkering
+  for a while as part of exploring how a CI library could look like.
+  - General critique -
+  * 1. Missing tldr; how to you see things and where you want to go. Saying X bad
+  is not a good intro and may make readers question about the quality of the content.
+  * 2. Main tradeoffs of 1. performance vs 2. correctness vs 3. simplicity vs
+  4. throughput vs 5. latency unclear. This is most prevalent in clone/fork
+  semantics using on Unixes copy-on-write(COW) semantics for maximum performance of
+  complex/huge process block data. Numbers on performance differences would be
+  here relevant for reproducible simple to complex spawning of processes and
+  spawning processes from shell.
+  * 3. Try to be shorter. "Why bother?" belongs into the first or second sentence.
+  * 4. No need to use political wording like "decarbonization", if you want to
+  focus on the technical core. Making things energy efficient and less
+  error-prone to improve safety and security sounds to me better. Ideally with
+  numbers.
+  * 5. Formal models, ideally testable or verifiable reduce risks in every metric,
+  so your argument of "changing huge systems" does not hold. Currently Unix has
+  no (formal) process model, even though the process is the core abstraction data
+  structure.
+  - Now the content -
+  * 1. "file descriptors for everything" does not explain the idea of race-free
+  resource handling based on in-Kernel reference counting of each process holding
+  the resource. Try to write this more concise.
+  * 2. Definition of "global namespaces" are missing. Are you referring to Linux
+  namespaces, which are complex to setup and incomplete (kernel api and resource
+  are other attack vectors)? Do you have example programs where you tried to do that,
+  so the reader can estimate complexity vs regular setup?
+  * 3. Time/scheduling and security are global properties and as such modification can
+  be seen as mandating a global namespace, because there must be one admin, so
+  the statements are unclear to me.
+  - namespaces are not sufficient for good isolation, because api and resources
+    are attack surface
+  * 4. "Spawning processes" is way to short and does not capture 1. memory of COW,
+  2. elimination of various race conditions, 3. signaling, 4. process groups and time
+  tradeoffs Unixes took (and how slow things would get onelimination)
+  * 5. "File System" I dont understand the specialization on files and dirs, if there are already
+  generalized capapbility systems on pointers to reuse (CHERI). No use case mentioned, so YAGNI?
+  * 6. "Mounting" sounds good
+  * 7. "Temporarily temporary files" Why should tmp files persist across process group termination? Shell hacks?
+  * 8. "File system transactions" Looks like async io_uring API for file ops.
+  * 9. "Asynchronous interfaces" Looks like the case for async io_uring APIs.
+  * 10. "Networking" Does this mean lifetime of socket would be bound to process group or not?
+  My - main complain - on the article is that is leaves out some of the most horrible places:
+  * 1. process group semantics and how resources should relate to process groups (including performance tradeoffs)
+  * 2. scalable permission model (unix files have 1 owner 1 groups 1 domain)
+  which is fast but annoying to use leaving open security holes by lazy configuration
+  * 3. pty semantics, meaning what time-critical in-band protocols are in kernel
+  and performance tradeoffs of replacements (Arcan being only candidate)
 
 ====kernel_dev
 kprobes - place debugging code
@@ -506,3 +571,5 @@ function+ip_offset[+depth] [local_var_offset:local_var_len]
 * writes to syslog or may be configured to panic via 'panic_on_catch'
 KFuzzTest - fuzz kernel from kernel space
 * complex setup utilizing KASAN
+0x.tools - perf analysis tools (tracking, tracing, etc)
+* https://github.com/tanelpoder/0xtools

@@ -75,6 +75,24 @@ git log --format '%h %s' | grep -E '^[a-f0-9]+ .{1,7}$'
 Show commit as file:
 git cat-file commit HASH
 
+Get parent commit
+git cat-file -p COMMIT
+git show -p COMMIT
+Get Nth parent
+git rev-parse $commit^N
+Get all parents
+git rev-parse $commit^@
+For merge commits, we're only interested in what merge brought in:
+git show --first-parent
+and likewise
+git log -p --first-parent
+However, '-m' uses the default format, which tracks the full merge-tree,
+which may not be wanted.
+See also https://stackoverflow.com/questions/40986518/how-to-git-show-the-diffs-for-a-merge-commit.
+
+Get Nth last commit
+git show COMMIT~N
+
 Clean up useless commits by squashing them all:
 virtualenv venv
 . venv/bin/activate
@@ -135,6 +153,9 @@ https://paperless.blog/git-bisect-run-techniques
 TODO git absorb
 https://github.com/tummychow/git-absorb
 https://github.com/mfontani/los-opinionated-git-tools/blob/master/git-fixup
+
+TODO stacked diffs (since 10 years)
+TODO jujutsu => rebase working?
 
 official guides
 https://github.com/git/git/blob/08bdfd453584e489d5a551aecbdcb77584e1b958/Documentation/howto/coordinate-embargoed-releases.adoc

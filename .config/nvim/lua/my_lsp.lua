@@ -1,8 +1,6 @@
---! Lsp config with lsp-zero
+--! Lsp config
 -- luacheck: globals vim
 -- luacheck: no max line length
-
--- TODO simplify config based on 3f1d09bc94d02266d6fa588a2ccd1be1ca084cf7
 
 -- lsp protocol
 -- 1. file opened in editor -> editor supposed to inform server about changes to
@@ -37,6 +35,7 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 -- 'lemminx', -- 'lemminx'
 -- 'omnisharp' --  'omnisharp'
 -- 'texlab' -- 'texlab'
+-- 'ty' -- 'ty'
 --
 -- pip3 install -U --user jedi-language-server
 -- pipx install jedi-language-server
@@ -54,6 +53,7 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 --==PluginChecks
 
+-- :help lspconfig-all
 local has_lspconfig, _ = pcall(require, 'lspconfig')
 if not has_lspconfig then
   print 'Please install neovim/nvim-lspconfig'
@@ -90,7 +90,7 @@ lazydev.setup {
   },
   -- stylua: ignore start
   enabled = function(root_dir)
-    -- vim.print(root_dir) DEBUG
+    -- vim.print(root_dir) -- DEBUG
     return (vim.g.lazydev_enabled == nil or vim.g.lazydev_enabled)
       and (not vim.uv.fs_stat(root_dir .. '/.luarc.json'))
   end,
@@ -99,8 +99,12 @@ lazydev.setup {
 
 local common_capabilities = blink.get_lsp_capabilities()
 local common_on_attach = function(client, bufnr)
-  if client.server_capabilities.documentSymbolProvider then navic.attach(client, bufnr) end
+  if client.server_capabilities.documentSymbolProvider then
+    -- vim.print 'nav attaching..' -- DEBUG
+    navic.attach(client, bufnr)
+  end
 end
+-- vim.print('capabilities:', capabilities) -- DEBUG
 
 -- TODO https://www.reddit.com/r/neovim/comments/17j0p58/clangd_lsp_for_header_files_as_well_as_source_code/
 -- SHENNANIGAN clang-fmt header reordering enabled by default in the LLVM and Chromium styles
@@ -114,8 +118,10 @@ vim.lsp.config('clangd', { capabilities = common_capabilities, on_attach = commo
 vim.lsp.config('julials', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('omnisharp', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('ruff', { capabilities = common_capabilities, on_attach = common_on_attach })
+-- capabilities ~= nil xor error
 vim.lsp.config('rust_analyzer', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('superhtml', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('ty', { capabilities = common_capabilities, on_attach = common_on_attach })
 -- .config/zls.json https://raw.githubusercontent.com/zigtools/zls/master/schema.json
 vim.lsp.config('zls', { capabilities = common_capabilities, on_attach = common_on_attach })
 
@@ -126,6 +132,7 @@ vim.lsp.enable 'omnisharp'
 vim.lsp.enable 'ruff'
 vim.lsp.enable 'rust_analyzer'
 vim.lsp.enable 'superhtml'
+vim.lsp.enable 'ty'
 vim.lsp.enable 'zls'
 
 -- https://sookocheff.com/post/vim/neovim-java-ide/
@@ -366,6 +373,37 @@ blink.setup {
   -- experimental signatures support
   -- signature = { enabled = true },
 }
+
+--==Snippets
+-- snippets = {
+--
+--   name = 'Snippets',
+--   module = 'blink.cmp.sources.snippets',
+--   min_keyword_length = 2,
+--   score_offset = 3,
+--
+--   opts = {
+--     friendly_snippets = true,
+--     search_paths = { vim.fn.stdpath('config') .. '/snippets' },
+--     global_snippets = { 'all' },
+--     extended_filetypes = {},
+--     ignored_filetypes = {},
+--   }
+--
+-- },
+--
+-- keymap = {
+--
+--   ['<return>'] = { 'accept', 'fallback' },
+--   ['<C-d>'] = { 'show', 'show_documentation', 'hide_documentation' },
+--
+--   ['<C-p>'] = { 'select_prev', 'fallback' },
+--   ['<C-n>'] = { 'select_next', 'fallback' },
+--
+--   ['<Tab>'] = { 'snippet_forward', 'fallback' },
+--   ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+--
+-- },
 
 -- cmp.setup {
 --   mapping = {

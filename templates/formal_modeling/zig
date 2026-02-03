@@ -1,0 +1,26 @@
+main points
+1. no annotation system to patch object + lifetime semantics on top of used allocators
+   (for generics), only possible via comments or custom fn/wrappers
+   - Zig has no concept of (dynamic) object lifetime; still no spec
+   - Zig therefore does no optimizations around object lifetimes, move semantics etc
+2. other points are technical
+
+Zig challenges for implementing an optional static analyzer for lifetime checking
+1. annotation system in zig is how to keep track of annotations along comptime
+   generated code/generics
+2. strict aliasing: how would Zig checker express intended aliasing of ptrs
+   xor constrains for strict aliasing?
+3. unions: how would Zig checker express intended variable memory interpretation
+   xor constrains for un-ambiguous memory interpretation?
+4. move semantics(writable or borrowing moves/pinning?): how would Zig checker
+   express these ownership transfers?
+5. annotations: next to code or external and build system combines
+   code+annotation and tooling for semantic code changes?
+6. solver: if no forced abstractions of Zig code are wanted (safe,unsafe), then complex rules must be introduced and the solver
+   must be explicitly guided
+7. absence of annotation behavior?
+
+n. should this system also express initialization via 'uninit' ?
+n+1. should this system also express releasing resources (owning, ctor,dtor relations)?
+
+effort estimation for the solver of more complex cases, meaning axiomatic/manual?

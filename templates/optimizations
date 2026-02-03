@@ -1,6 +1,20 @@
+====constrains
 ====resources
 ====types
 ====benchmarking
+
+====constrains
+* not possible in PL, only HDL
+* PL optimizers only define relative ordering of instructions with barriers
+* ideal
+  - compiler optimization time
+  - native execution + simulation CPU+cache model type(static, simulation, hardware)
+  - floating point ops
+    + floating point operation ordering
+    + no NaNs are present, value (ranges)
+  - omit length precondition checks, value (ranges)
+  - indicate correct alignment, already exists memref.assume_alignment?
+  - reading & writing shared memory without perfect coherency?, already exists
 
 ====resources
 https://www.brendangregg.com/methodology.html
@@ -88,7 +102,7 @@ Remove Scheduler Noise
 taskset, cset https://documentation.suse.com/sle-rt/12-SP5/html/SLE-RT-all/cha-shielding-cpuset.html
 netlink/CN_PROC_IDX protocol to notify "task forks during move and its child remains in the root cpuset",
 but it's difficult to handle all events correctly to make this bulletproof (libcgroup has been using it and there were several fixups).
-dont rely on asynchronous migration in general and use configuration that starts processes with respective affinity.
+=> dont rely on asynchronous migration in general and use configuration that starts processes with respective affinity.
 
 Disable ASLR
 echo 0 | sudo tee /proc/sys/kernel/randomize_va_space

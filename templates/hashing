@@ -15,4 +15,9 @@ grid[i][j] * (j+2) % 100_000
 TODO criteria of hash quality for algo design
 TODO good hash collection for various ranges
 
-"Split block Bloom filters" by Jim Apple for core trade-offs of high-perf approximate filters.
+"Split block Bloom filters" by Jim Apple for core trade-offs of high-perf
+approximate filters.
+
+"Optimal Bounds for Open Addressing Without Reordering"
+* open-addressed hash table without reordering optimal bound
+* unclear practical influence

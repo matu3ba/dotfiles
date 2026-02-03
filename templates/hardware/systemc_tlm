@@ -1,0 +1,60 @@
+====setup
+TODO instructions
+
+keywords
+* non-thread-safe Instruction-Set Simulator (ISS)
+* async_rate: to steer frequency CPU model communicates timing annotations
+  to SystemC Kernel
+* async_dmi: asynchronous dmi access on or off
+* Asynchronous DMI pointer caching for direct + fast memory access from a CPU thread
+* 7.8x speedup for octa-core setups of two different VPs
+* b_transport: access memory
+* sc_async, sc_signals, sc_progress, sc_progress
+* SystemC’s wait
+* Virtual Components Modeling Library (VCML)
+  - https://github.com/machineware-gmbh/vcml
+* DMI in SystemC
+* SIM‑V, RISC-V simulator
+  - configurable hardware threads, platform level interrupt controller,
+    core-local interrupt controller, main memory, universal asynchronous
+    receiver/transmitter (UART)
+* AVP64
+  - comparable architecture to SIM-V with ARM-based CPU: cores,
+  generic interrupt controller, main memory, UART
+  - non-thread safety => isolation guard
+* metric: boot process of buildroot linux, NAS Parallel Benchmarks,
+  bare-metal Dhrystone executed individually for each CPU core
+
+
+delta cycle is an internal update step within a time step
+sc_signals is omitted => delta cycles are eliminated
+
+* Temporal decoupling to run ahead of simulation time to reduce #syncs
+* downside is reduced timing accuracy
+* to manage this tradeoff, use quantum parameter:
+  max simulation time a module allowed to run ahead before sync
+* Various locations for parallelization exist
+  - SystemC kernel, supplementary libs, compiler, specialized hardware
+  - common: distribute the execution of SC_THREADs and SC_METHODs
+    across multiple threads
+  - drawback: mapping both to different workers is complex task and has
+    enormous effects on perf
+    => manual handling necessary => decreases usability
+* best for compat and performance: Parallel CPU model + Quantum parallelization
+* VCML sc-during has
+  * sc_async: runs fn passes as param in separate thread
+  * sc_sync: fn, which is given as param, executed within main thread
+  * sc_progress: fn can be called from async thread to allow simu in main thread
+    to advance for specified time interval
+* instruction fetch:
+  CPU models do Direct Memory Interface (DMI) accesses from the asynchronous thread.
+* cache miss, e.g., because the address corresponds to a peripheral that does not
+  support DMI, a TLM-2.0 transaction is sent from the main thread
+* enables DMI access from async thread without added expense of transferring
+  requests to sequential main thread
+* more advanced techniques: adaption during simulation, analytical evaluation
+
+TODO what is a TLM-2.0 transaction? how can it be send from the main thread?
+TODO how is it ensured that 2 async threads dont write to the same memory region?
+     or one thread reads, the other writes?
+TODO

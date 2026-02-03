@@ -3,13 +3,14 @@
 ====usage
 
 ====protocols
-NearLink/Sparlink as potential bluetooth successor
+NearLink/Sparlink/Sparklink as potential bluetooth successor
 * no proper security analysis yet
 
 ====tools
 websocket tcp bridge https://github.com/novnc/websockify
 tools ideas https://troglobit.com/post/2025-01-05-testing-network-daemons/
 infix - immutable network centered linux os https://kernelkit.org/about/ https://github.com/kernelkit/infix
+crypto+networking lib to build arbitrary networks (py) - https://github.com/markqvist/Reticulum
 
 ====usage
 realtime browser stuff only works via WebRTC
@@ -45,7 +46,12 @@ ip -6 route show default
 
 Trace network route:
 traceroute IP
+better, but no dependency security plan: https://github.com/lance0/ttl
 tracepath -b IP
+
+https://gekk.info/articles/traceroute.htm
+* traceroute is a hack and for obvious reasons there is no replacement as control
+  of switches is not centralized and switch vendors build their own networking debug APIs
 
 tcpdump options
 -D list of devices
@@ -189,3 +195,6 @@ common firewall workarounds
 TODO
 
 Low Level access to Linux network routines: man netdevice
+
+InfiniBand has recently become cost-competitive with Ethernet
+* interesting for distributed data management systems (analytical but also transactional workloads)

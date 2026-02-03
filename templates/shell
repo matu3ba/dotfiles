@@ -1,10 +1,21 @@
-Purpose
+====terminal
+====replacements
+====purpose
+
+====purpose
 Shell is a convenience cli and arbitrary complex scripting glue for
 4 main goals:
 - 1. piping
 - 2. basic text processing
 - 3. basic job control
 - 4. path hackery.
+
+====replacements
+Purpose: ???
+https://f5n.org/blog/2026/shell-scripts/ TODO
+
+====terminal
+https://how-terminals-work.vercel.app/ TODO
 
 There is a complete wiki dedicated to the weird quirks of bash:
 https://wiki.bash-hackers.org/syntax/expansion/brace

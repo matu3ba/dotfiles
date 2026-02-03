@@ -27,11 +27,11 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //====code_version_changes
 
 // Tested with
-// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp14.exe && ./commoncpp14.exe
-// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp17.exe && ./commoncpp17.exe
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp20.exe && ./commoncpp20.exe
-// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp23.exe && ./commoncpp23.exe
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o commoncpp26.exe && ./commoncpp26.exe
+// zig c++ -std=c++14 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o ./build/commoncpp14.exe && ./build/commoncpp14.exe
+// zig c++ -std=c++17 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o ./build/commoncpp17.exe && ./build/commoncpp17.exe
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o ./build/commoncpp20.exe && ./build/commoncpp20.exe
+// zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o ./build/commoncpp23.exe && ./build/commoncpp23.exe
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/common.cpp -o ./build/commoncpp26.exe && ./build/commoncpp26.exe
 
 //====perf
 //C++ exception performance numbers https://youtu.be/bY2FlayomlE?t=4336
@@ -121,6 +121,8 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //     private module fragment changes only work with ccache. Pure CMake + Ninja combo will
 //     still attempt to rebuild the entire dependency chain.
 //   - modules work with precompiled headers
+//   - C++ modules didn't help build times and destroyed parallelism performance and thus
+//     pre-compiled headers are being considered to allow for more quickly building LLVM
 // * sccache https://github.com/mozilla/sccache
 // or distcc https://www.distcc.org/ with distcc server container
 // https://developers.redhat.com/blog/2019/05/15/2-tips-to-make-your-c-projects-compile-3-times-faster
@@ -3165,17 +3167,74 @@ void use_expected() {
 // https://learnmoderncpp.com/2024/01/30/exploring-c23s-flat_map/
 // purpose: omit conversion to std::vector<std::pair<K,V>> / two std::vector
 // related: std::flat_multimap and std::flat_multiset
-// #include <flat_map>
-// void use_flag_map();
-// void use_flag_map() {
-//   TODO
-// }
 
-// #include <flat_set>
-// void use_flag_set();
-// void use_flag_set() {
-//   std::flat_set
-// }
+// flat_map
+// * elements stored contiguously in memory instead of linked by ptrs
+// * container keeps elements in sorted order
+// + cache locality
+// + memory efficiency
+// + predictable perf
+// - slow insertion and deletion O(N) instead of std::map O(log N)
+// - iterator,reference invalidation by insertion,deletion
+// - costly relocations, when out of capacity
+// => small to medium size, where O(N) insertion,deletion ok and/or rare modification
+// => read-heavy workloads and/or memory footprint concern
+// There is no std::flat_unsorted_map!
+#include <flat_map>
+void use_flat_map();
+void use_flat_map() {
+  std::flat_map<std::string, int> config_settings;
+
+  // Initial population (can be done efficiently from sorted data)
+  config_settings.insert({"max_retries", 5});
+  config_settings.insert({"timeout_ms", 2000});
+  config_settings.insert({"log_level", 3});
+  config_settings.insert({"buffer_size", 1024});
+
+  // Frequent lookups (benefits from cache locality)
+  auto start = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < 100000; ++i) {
+    int volatile val = config_settings.at("timeout_ms"); // volatile to prevent optimization
+    (void)val;
+  }
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> duration = end - start;
+  std::print("flat_map lookup duration: {} ms\n", duration.count());
+}
+
+// flat_set
+// * block stored contiguously in memory instead of linked by ptrs
+// * container keeps elements in sorted order
+// + cache locality
+// + memory efficiency
+// + predictable perf
+// - slow insertion and deletion O(N) instead of std::map O(log N)
+// - iterator,reference invalidation by insertion,deletion
+// - costly relocations, when out of capacity
+// => small to medium size, where O(N) insertion,deletion ok and/or rare modification
+// => read-heavy workloads and/or memory footprint concern
+// There is no std::flat_unsorted_map!
+#include <flat_set>
+void use_flat_set();
+void use_flat_set() {
+  std::flat_set<int> allowed_user_ids;
+
+  // Initial population
+  allowed_user_ids.insert(101);
+  allowed_user_ids.insert(205);
+  allowed_user_ids.insert(312);
+  allowed_user_ids.insert(400);
+
+  // Frequent checks for existence
+  auto start = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < 100000; ++i) {
+    bool volatile val = allowed_user_ids.count(205); // volatile to prevent optimization
+    (void)val;
+  }
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> duration = end - start;
+  std::print("flat_set lookup duration: {} ms\n", duration.count());
+}
 
 // UNSOLVED
 // https://yongweiwu.wordpress.com/2022/06/19/compile-time-strings/

@@ -1,3 +1,13 @@
+### common sections ###
+.bss          RAM (initial value copied from flash)
+.data         RAM
+.isr_vector   flash (fixed address)
+.ram_code     RAM (useful for flash ops)
+.rodata       readonly flash/rom
+.text         flash/rom
+__attributed__((section(".Version"))) custom section, placed where linker script defines
+stack, heap
+
 ### qemu_avr ###
 https://yeah.nah.nz/embedded/qemu-avr/
 https://qemu-project.gitlab.io/qemu/system/target-avr.html

@@ -70,3 +70,10 @@ allocate PCB assembly, molding, and final assembly to different factories
   - no vendor, API or framework lock-in
 * https://quokkajs.com/
   -
+* hardware-based efficiency
+  - ISA-based profilers from computing unit vendors
+  - portable + protocol: open telemetry project low level perf event IPC channel
+    * long-term instruction set encoding/decoding becomes simpler
+      -> declarative linker/binary-patching solutions will offer this
+  - usability + front-end: tracy
+    * ideas and techniques excellent, but interface for both client and server side not clear

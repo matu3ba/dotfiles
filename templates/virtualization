@@ -1,6 +1,27 @@
+====hardware
 ====qemu
 ====kvm
 ====sel4
+
+https://github.com/quickemu-project/quickemu
+
+====hardware
+roots of the CPU + network virtualization hardware cost creation and why
+virtualization vendors mostly use x86
+* mostly SDN standards by network hardware vendors
+  - Network hardware packet processing engines not expected to be for general
+    purpose computing, so vendor is free to do own hardware ISA
+  - Hardware ecosystem with spare parts, replacements + SDN software stack
+    biggest reason
+* HSM modules for storing signed microcode for specialized stuff like how to
+  setup/teardown CPU, PCI lanes and getting info out of it
+  - Without HSM for CPU MMU areas are not upgradable leading to
+    non-compatibility across hardware and thus no ISA/hardware API for building
+    a virtualization layer.
+* thats why Qualcom has dedicated MIPS OS inside as HSM next to the ARM chip,
+  since uboot is only a collection of scripts.
+* I'm wondering what RISC5 will standardize on and if they are able to enforce
+  a HSM standard or remain mostly irrelevant for the virtualization ecosystem.
 
 ====qemu
 custom object model https://github.com/qemu/qemu/tree/master/include/qapi/qmp

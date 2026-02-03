@@ -285,7 +285,9 @@ startplasma-wayland
 1. appimages are not usable, a troubleshooting guide from appimages does not exist
 - likely issue with something from exclude list not shipped https://github.com/AppImageCommunity/pkg2appimage/blob/master/excludelist
   see also https://ludditus.com/2024/10/31/appimage/
-  * appimages should now ship everything
+  * appimages should now ship everything, but chimera needs TODO
+  * unless appimages are built using glibc (for perf); check ldd path.appimage
+  * see ./example/create_appimage/README.md
 2. cargo installations with c deps not work: no instructions for installation and search with apk has no results
   = note: some arguments are omitted. use `--verbose` to show all linker arguments
   = note: ld: error: unable to find library -lgcc_s

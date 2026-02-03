@@ -53,7 +53,7 @@ https://www.einfochips.com/blog/debugging-of-mixed-signal-soc-in-an-effective-an
 options:
 * hardware sniffer / debug module
 * SPICE with RNM blocks as mixed signal simulator
-  - Ngspice (open source, todo look into features)
+  - Ngspice (open source, todo look into features), ngspice
   - LTspice (good perf and features)
   - QSPICE (best perf and features)
   - todo look into debugging options

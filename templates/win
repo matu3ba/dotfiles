@@ -168,6 +168,9 @@ https://github.com/microsoft/detours
 https://github.com/TsudaKageyu/minhook
 https://github.com/Xenely14/zig-minhook
 
+Enabling Windows services
+https://github.com/winsw/winsw
+
 Debugging methods
 msvs monitor (remote debugger server): msvsmon.exe
 Remote Debugger Port Assignments from Remote Debugger Port Assignments - Visual Studio (Windows)

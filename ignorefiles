@@ -46,7 +46,6 @@
 /windows/
 
 .luarc.json
-.mypy_cache
 .zig-cache
 zig-out
 *.out

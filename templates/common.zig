@@ -3,6 +3,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const testing = std.testing;
+const process = std.process;
 
 //====cmds
 //====packages
@@ -62,6 +63,33 @@ const testing = std.testing;
 // * powerful and simple https://github.com/joadnacer/jdz_allocator
 // * decent simple and usable in C https://github.com/mjansson/rpmalloc
 // * more complex https://github.com/microsoft/mimalloc
+// linker
+// * https://gamesbymason.com/blog/2025/statically-linking-pipewire/
+//   replacing dynamic linkage with static https://github.com/allyourcodebase/pipewire
+
+//====dod
+// * DOD means cache-effective computing techniques
+// * how to compress and operate on compressed data and when not
+// * memory-bound code (most code execution-bound) aka CPU-bound workloads.
+// - CppCon 2014: Mike Acton "Data-Oriented Design and C++"
+// - Andrew Kelley: A Practical Guide to Applying Data Oriented Design (DoD)
+// - Data-Oriented Design Revisited: Type Safety in the Zig Compiler
+// - Programming without pointers
+
+//====cpu_bound_workloads
+// * parallel processing, multi-threading, SIMD
+// * efficient algos and data structures
+// * offload to hardware (GPU etc)
+// * optimize loops and repititive tasks
+// * vertical scaling can be effective and/or parallelization across machines
+
+//====io_bound_workloads
+// * async I/O, caching, batching, connection pooling, minimize network latency, etc
+// * horizontal scaling can be effective
+// * domains: networking, databases, HFT
+// * latency vs throughput vs bandwidth vs memory usage optimizations
+// based on schedule of execution and io
+//   - C++ design patterns for low-latency applications including high-frequency trading
 
 // typesafe version of (u16*)codepoint with codepoint type u8*
 // codepoint created from Utf8View which is [_]u8
@@ -145,14 +173,14 @@ fn CreateStructType(comptime T: type) type {
     }
 }
 
-pub fn main() !void {
+pub fn main(init: process.Init.Minimal) !void {
     var path_buffer: [1000]u8 = undefined;
     var n_pbuf: u64 = 0; // next free position
     var arena_instance = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena_instance.deinit();
     const arena = arena_instance.allocator();
-    const args: [][:0]u8 = try std.process.argsAlloc(arena);
-    defer std.process.argsFree(arena, args);
+    const args = try init.args.toSlice(arena);
+    defer arena.free(args);
     for (args) |arg| {
         std.debug.print("{s}\n", .{arg});
     }
@@ -160,7 +188,7 @@ pub fn main() !void {
     n_pbuf += args[1].len;
 
     // alternative:
-    var it = try std.process.argsWithAllocator(arena);
+    var it = try std.process.Args.iterateAllocator(init.args, arena);
     defer it.deinit(); // no-op unless WASI or Windows
     _ = it.next(); // ignore binary name
     const str_ip = it.next().?;
@@ -470,7 +498,7 @@ const windows_utf16_string_literal = struct {
 //     try argv.append("/usr/bin/sleep");
 //     try argv.appendSlice(&[_][]const u8{ "--help", "'not read anymore'" });
 //
-//     const res0 = std.process.Child.run(.{
+//     const res0 = std.process.run(.{
 //         .allocator = allocator,
 //         .argv = argv.items,
 //     }) catch {
@@ -478,7 +506,7 @@ const windows_utf16_string_literal = struct {
 //     };
 //     _ = res0;
 //
-//     const res1 = std.process.Child.run(.{
+//     const res1 = std.process.run(.{
 //         .allocator = allocator,
 //         .argv = &[_][]const u8{ "/usr/bin/sleep", "1" },
 //     }) catch {
@@ -486,7 +514,7 @@ const windows_utf16_string_literal = struct {
 //     };
 //     _ = res1;
 //
-//     const res2 = std.process.Child.run(.{
+//     const res2 = std.process.run(.{
 //         .allocator = allocator,
 //         .argv = &[_][]const u8{ "/usr/bin/bash", "-c", "'sleep 1'" },
 //     }) catch {
@@ -525,7 +553,7 @@ const windows_utf16_string_literal = struct {
 //         @panic("found memory leaks");
 //     };
 //     const gpa = gpa_state.allocator();
-//     var child = std.process.Child.init(&.{ "/usr/bin/sleep", "1" }, gpa);
+//     var child = std.process.init(&.{ "/usr/bin/sleep", "1" }, gpa);
 //     child.stdin_behavior = .Close;
 //     child.stdout_behavior = .Pipe;
 //     child.stderr_behavior = .Pipe;
@@ -839,18 +867,18 @@ test "@hasDecl" {
 
 // setup https://kristoff.it/blog/improving-your-zls-experience/
 
-//====keywords as of 0.14.0-dev.6323+862266514
+//====keywords as of 0.16.0-dev.11462+c857fce05
 // addrspace align allowzero and anyframe
-// anytype asm async await break
-// callconv catch comptime const continue
-// defer else enum errdefer error
-// export extern fn for if
-// inline noalias nosuspend noinline opaque
-// or orelse packed pub resume
-// return linksection struct suspend switch
-// test threadlocal try union unreachable
-// usingnamespace var volatile while
-// => 53 keywords
+// anytype asm async break callconv
+// catch comptime const continue defer
+// else enum errdefer error export
+// extern fn for if inline
+// noalias noinline opaque or orelse
+// (bit)packed pub return linksection struct
+// suspend switch test threadlocal try
+// union unreachable usingnamespace var volatile
+// while
+// => 51 keywords; async keywords (await, nosuspend, resume) removed for now
 
 //====builtins as of 0.14.0-dev.6323+862266514
 // @addrSpaceCast @addWithOverflow @alignCast @alignOf @as
@@ -874,10 +902,12 @@ test "@hasDecl" {
 // @tan @exp @exp2 @log @log2
 // @log10 @abs @floor @ceil @trunc
 // @round @subWithOverflow @tagName @This @trap
-// @truncate @Type @typeInfo @typeName @TypeOf
-// @unionInit @Vector @volatileCast @workGroupId @workGroupSize
-// @workItemId
-// 23*5+1 => 116 builtins
+// @truncate @EnumLiteral @Int @Tuple @Pointer
+// @Fn @Struct @Union @Enum @typeInfo
+// @typeName @TypeOf @unionInit @Vector @volatileCast
+// @workGroupId @workGroupSize @workItemId
+// 24*5+3 => 123 builtins; async maybe gets
+//   @asyncFrame @asyncInit @asyncResume @asyncSuspend
 
 // cpu model detection as of 0.14.0-dev.3388+e0a955afb
 //           | freestanding | Linux | Darwin  | Windows  | Wasi
@@ -933,3 +963,15 @@ test "@hasDecl" {
 //   via static and dynamic analysis (kinda like a special IR for the user)
 //   - best: Rust sans-io like debugging infra + taint analysis similar for
 //   memory regions, see for inspiration https://wallabyjs.com/ + Rust sans-io
+// * 3 yet unclear configuration and debugging concept
+//   - buffer misconfiguration/incorrect usage possible https://www.openmymind.net/Is-Zigs-New-Io-Unsafe/
+//   - no guides on how to debug inter-component perf (under hostile kernel) etc
+
+// bug
+// jan@chimera ~/d/e/create_appimage (master) [1]> zig cc -target x86_64-linux-musl --static hello
+// -world.c -o ./hello_world.exe
+// hello-world.c:1:1: error: CacheCheckFailed
+// jan@chimera ~/d/e/create_appimage (master) [1]> clang -target x86_64-linux-musl --static hello-
+// world.c -o ./hello_world.exe
+// clang: error: no such file or directory: 'hello-world.c'
+// clang: error: no input files

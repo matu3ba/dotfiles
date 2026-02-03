@@ -1,4 +1,4 @@
-// zig cc -g -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
+// zig cc -g -std=c99 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./example/assert_literal.c -o ./build/assert_literal.exe && ./build/assert_literal.exe
 // zig cc -g -std=c11 -Werror -Weverything -Wno-gnu-folding-constant -Wno-gnu-statement-expression-from-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
 // zig cc -g -std=c23 -Werror -Weverything -Wno-gnu-folding-constant -Wno-gnu-statement-expression-from-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./example/assert_literal.c -o assert_literal.exe && ./assert_literal.exe
 #include <assert.h>

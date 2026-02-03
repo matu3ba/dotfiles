@@ -1,5 +1,5 @@
 // minimal bloat-free allocator usage for C++
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/allocator.cpp -o allocator.exe && ./allocator.exe
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/allocator.cpp -o ./build/allocator.exe && ./build/allocator.exe
 // https://badlydrawnrod.github.io/posts/2021/12/30/monotonic_buffer_resource/
 // https://gist.github.com/louis-langholtz/c6f6759366fa384b9f01d7f06545fc0c
 // https://gist.github.com/louis-langholtz/f780eacc762e53fccd52a0db33e3db01

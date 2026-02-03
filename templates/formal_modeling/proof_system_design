@@ -1,0 +1,147 @@
+TODO summarize this
+
+1 Does this mean that Sledgehammer and Coqhammer offer concolic testing based
+on an input framework (say some computing/math system formalization) for some
+sort of system execution/evaluation or does this only work for hand-rolled
+systems/mathematical expressions?
+
+Sorry for my probably senseless questions, as I'm trying to map the computing
+model of math solvers to common PL semantics. Probably there is better overview
+literature. I'd like to get an overview of proof system runtime semantics for
+later usage. 2 Is there an equivalent of fuzz testing (of computing systems) in
+math, say to construct the general proof framework? 3 Or how are proof
+frameworks (based on ideas how the proof could work) constructed? 4 Do I
+understand it correct, that math in proof systems works with term rewrite
+systems + used theory/logic as computing model of valid representation and
+operations? How is then the step semantic formally defined?
+
+1. Sledgehammer/CoqHammer are automated proof-search/assistant tools that
+bridge interactive proof assistants (Isabelle/Coq) to external SMT provers,
+they aren't about concolic testing in a PL sense. They translate goals and
+context to formats the external provers understand, call those provers, and
+replay/translate returned proofs or proof fragments back into the ITP, that's
+search and translation of a complete proof, not running concrete+symbolic
+program executions like concolic testing.
+
+2. there is no exact analogue of fuzz-testing bytecode for "theorem fuzzing",
+but arguably the closest match is counterexample generators - model finders,
+finite-model search, SMT instantiation with concrete valuations, all serve a
+role similar to fuzzers by finding invalid conjectures quickly.
+
+these are weaker than fuzzing for finding execution bugs because mathematical
+statements are higher-level and provers operate symbolically.
+
+3. here's how proof frameworks are constructed, at the high-level:
+
+a. start by picking a logical foundation: e.g., first-order logic (FOL),
+higher-order logic (HOL), dependent type theory (Martin-Löf/CIC).
+
+b. define syntax (terms, types, formulas) and typing/judgment rules (inference
+rules or typing rules).
+
+c. define proof objects or proof rules: natural deduction, sequent calculus,
+Hilbert-style axioms, or type-as-proofs (Curry-Howard).
+
+d. pick or design the kernel: small, trusted inference engine that checks proof
+objects (reduction rules, conversion, rule admissibility).
+
+e. add automation layers: tactics, decision procedures, external ATP/SMT,
+rewriting engines.
+
+f. provide libraries of axioms/definitions and extraction/interpretation
+mechanisms (code extraction, models).
+
+g. implement proof search strategies and heuristics (backtracking, heuristics,
+lemma databases, proof-producing solvers).
+
+this is the standard engineering pipeline behind modern ITPs and automated
+systems.
+
+4. yes, many proof assistants and automated provers treat computation inside
+proofs as:
+
+a. term rewriting / reduction (beta-reduction, delta-unfolding, normalization)
+for computation oriented parts; this is the "computation" layer.
+
+b. a separate deductive/logic layer for reasoning (inference rules, quantifier
+instantiation, congruence closure).
+
+the combined model is: terms represent data/computation; rewriting gives
+deterministic computation semantics; logical rules govern valid inference about
+those terms. Dependent type theories conflate computation and proof via
+conversion (definitional equality) in the kernel.
+
+5. here's how a proof step's semantics is defined:
+
+proof steps are applications of inference rules transforming
+sequents/judgments. formally:
+
+a. a judgment form J (e.g., Γ ⊢ t : T or Γ ⊢ φ) is defined.
+
+b. inference rules are of the form: from premises J1,...,Jn infer J, written as
+(J1 ... Jn) / J.
+
+c. a proof is a finite tree whose nodes are judgments; leaves are axioms or
+assumptions; each internal node follows an inference rule.
+
+d. for systems with computation, a reduction relation → on terms defines
+definitional equality; many rules use conversion: if t →* t' and t' has form
+required by rule, the rule applies.
+
+e. in type-theoretic kernels, the step semantics is checking that a proof
+object reduces/normalizes and that constructors/eliminators are used respecting
+typing/conversion; the kernel checks a small set of primitive steps (e.g.,
+beta, iota reductions, rule applications).
+
+operationally: a single proof step = instantiate a rule schema with
+substitutions for metavariables, perform any required reductions/conversions,
+and check side conditions (freshness, well-formedness).
+
+equational reasoning and rewriting: a rewrite rule l → r can be applied to a
+term t at a position p if the subterm at p matches l under some substitution σ;
+result is t with that subterm replaced by σ(r). Confluence/termination
+properties determine global behavior.
+
+higher-level tactics encode sequences of such primitive steps (rule
+applications + rewrites + searches) but are not part of kernel semantics; only
+the kernel rules determine validity.
+
+relevant concise implications for mapping to PL semantics:
+
+treat proof state as a machine state (context Γ, goal G, local proof term),
+tactics as programs that transform state; kernel inference rules are the atomic
+instruction set; rewriting/normalization are deterministic evaluation semantics
+used inside checks.
+
+automation ≈ search processes over nondeterministic tactic/program choices;
+model finders/SMTs act as external oracles producing either counterexamples
+(concrete) or proof certificates (symbolic).
+
+These questions are hard to understand.
+
+1. Yes, the Sledgehammer suite contains three testing systems that I believe
+are concolic (quickcheck, nitpick, nunchaku), but they only work due to
+hand-coded support for the mathematical constructs in question. They'd be
+really inefficient for a formalised software environment, because they'd be
+operating at a much lower-level than the abstractions of the software
+environment, unless dedicated support for that software environment were
+provided.
+
+2. Quickcheck is a fuzz-testing framework, but it doesn't help to construct
+anything (except as far as it constructs examples / counterexamples). Are you
+thinking of something that automatically finds and defines intermediary lemmas
+for arbitrary areas of mathematics? Because I'm not aware of any particular
+  work in that direction: if computers could do that, there'd be little need
+  for mathematicians.
+
+3. By thinking really hard, then writing down the mathematics. Same way you
+write computer programs, really, except there's a lot more architectural work.
+(Most of the time, the computer can brute-force a proof for you, so you need
+only choose appropriate intermediary lemmas.)
+
+4. I can't parse the question, but I suspect you're thinking of the meta-logic
+/ object-logic distinction. The actual steps in the term rewriting are not
+represented in the object logic: the meta-logic simply asserts that it's valid
+to perform these steps. (Not even that: it just does them, accountable to none
+other than itself.) Isabelle's meta-logic is software, written in a programming
+language called ML.

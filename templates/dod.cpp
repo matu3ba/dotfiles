@@ -1,8 +1,8 @@
 // data oriented design strategies for C++
-// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o dod.exe && ./dod.exe
-// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o dod.exe && ./dod.exe
-// clang++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o dod.exe && ./dod.exe
-// clang++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o dod.exe && ./dod.exe
+// zig c++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o ./build/dod.exe && ./build/dod.exe
+// zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o ./build/dod.exe && ./build/dod.exe
+// clang++ -std=c++20 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o ./build/dod.exe && ./build/dod.exe
+// clang++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./templates/dod.cpp -o ./build/dod.exe && ./build/dod.exe
 
 // https://johnnysswlab.com/memory-subsystem-optimizations/
 // https://johnnysswlab.com/the-true-price-of-virtual-functions-in-c/
@@ -13,6 +13,7 @@
 // std::set (binary search tree), std::unordered_set (hash table)
 // std::vector (unsorted->linear search), std::vector (sorted->binary search)
 // CPU cache effect dominate for small size N, so binary search in continuous memory fast
+// unfortunately no numbers on std::flat_map and std::flat_set
 
 // M1 costs (2020)
 // L1 64-128        KB 3 cycles
@@ -75,7 +76,7 @@ requires(sizeof(T) == 1) void pointer_aliasing(std::vector<T> &data) {
 
 // classical reordering of members
 // alignment = sum up consecutive elements until biggest element of struct
-// internal and tail padding used, simpler to use -Wpadding
+// internal and tail padding used, simpler to use -Wpadded
 enum class State : uint8_t { A, B, C };
 struct Widget {
   bool is_enabled : 1;
@@ -118,7 +119,9 @@ static_assert(sizeof(ContainerOrText) == 8, "size of Widget != 1 byte");
 
 // cache friendly:
 // * std::vector<T>
+// * C++23 std::flat_map<K,V> and std::flat_set<K,V>
 // * hash tables with open addressing(vector as data) like absl::flat_hash_map/flat_hash_set
+//   Open Address Hash Map (not std::unsorted_map)
 // * some implementations of std::deque<T>
 // maybe cash friendly: std::deque<T, BLK_SIZE> (BLK_SIZE must be high enough)
 // no cache friendly: std::list<T>/(unordered_)map<K,V>/(unordered_)set<T>
@@ -329,6 +332,9 @@ public:
 //     problem
 
 // TODO check out c++ libraries offering destructive moves how to implement it
+// https://0xghost.dev/blog/std-move-deep-dive/
+// https://0xghost.dev/blog/template-parameter-deduction/
+// TODO use code for this https://lobste.rs/s/n9tev4/who_owns_memory_part_2_who_calls_free#c_863kc6
 class DestrMoves {
   char expensive_resource;
 
@@ -424,6 +430,7 @@ public:
 //     - perf (Linux)
 //     - VTune (Intel)
 //     - Callgrind (Valgrind)
+//     - IACA(Intel Architecture Code Analyzer)
 //   * track branch miss-rate alongside latencies in production, automate alerts, if
 //     misprediciton rate cross acceptable thresholds
 //   * use celero or other for targeted microbenchmarking of specific branches or logic blocks
@@ -442,6 +449,18 @@ public:
 
 // https://johnfarrier.com/branch-prediction-the-definitive-guide-for-high-performance-c/
 // TODO branch predictions
+
+// https://johnnysswlab.com/vectorization-dependencies-and-outer-loop-vectorization-if-you-cant-beat-them-join-them/
+// https://johnnysswlab.com/decreasing-the-number-of-memory-accesses-1-2/
+// https://johnnysswlab.com/decreasing-the-number-of-memory-accesses-the-compilers-secret-life-2-2/
+// https://johnnysswlab.com/horrible-code-clean-performance/
+
+// C++: Some Assembly Required - Matt Godbolt - CppCon 2025 https://www.youtube.com/watch?v=zoYT7R94S3c
+// Building Secure C++ Applications: A Practical End-to-End Approach - CppCon 2025  https://www.youtube.com/watch?v=GtYD-AIXBHk
+// More Speed & Simplicity: Practical Data-Oriented Design in C++ - Vittorio Romeo - CppCon 2025 https://www.youtube.com/watch?v=SzjJfKHygaQ
+// Microarchitecture: What Happens Beneath https://www.youtube.com/watch?v=BVVNtG5dgks
+// Deep dive into training performance https://www.youtube.com/watch?v=pHqcHzxx6I8
+// https://xania.org/Coding
 
 //spinlock
 static std::atomic_flag spinlock = ATOMIC_FLAG_INIT;

@@ -1,3 +1,4 @@
+//rustc templates/common.rs -o ./build/commonrs.exe && ./build/commonrs.exe
 //====use_cases
 //====tooling
 //====design_better
@@ -109,10 +110,14 @@
 // project)
 // * borrow-checker very dumb, simple things like x(&mut self.a, &mut self.b) don't work and
 // require destructures, inners and other mumbo-jumbos.
+//   - pin, own not possible yet for accurate results
 // * often solution is to write macro, so lots of macros pile up and they feel like an entirely
 // different language
 //
 // https://model-checking.github.io/verify-rust-std/
+
+// https://ohadravid.github.io/posts/2026-01-09-fourteen-ref/
+// 14 & break the compiler, 13 & are fine
 
 // SHENNANIGAN cargo and rustc:
 // * dynamic linking to musl is broken since a very long time https://github.com/rust-lang/rust/issues/135244 and
@@ -163,6 +168,12 @@
 
 //====setup
 //curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+//..
+//rustc --print target-list
+//SHENNANIGAN rust-analyzer assumes Cargo.toml to exist,
+//so PATH hacks may be needed:
+//~/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rust-analyzer --help
+
 // Windows 11 setup sucks
 // * using mingw:
 // rustup toolchain install stable-x86_64-pc-windows-gnu
@@ -177,3 +188,22 @@
 // solution build llvm from source
 //   - problem msvc: cannot open include file: 'atlbase.h': No such file or directory
 //   solution msvc installer add C++ ATL for latest build tools; also add MFC just in case
+
+fn calculate_length(s: String) -> (String, usize) {
+    let length = s.len();
+    (s, length)
+}
+fn calculate_length_nocopy(s: &String) -> usize {
+    s.len()
+}
+
+fn main() {
+    let mut s1 = String::from("hello");
+    s1.push_str(", world!"); // push_str() appends a literal to a String
+    println!("{s1}");
+    let s2 = s1.clone();
+    let (s3, len3) = calculate_length(s2.clone());
+    println!("str {s3}, len {len3}");
+    let len4 = calculate_length_nocopy(&s2);
+    println!("str {s3}, len {len4}");
+}

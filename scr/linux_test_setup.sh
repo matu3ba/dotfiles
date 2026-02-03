@@ -18,5 +18,5 @@
 #https://www.kernel.org/doc/html/latest/dev-tools/kgdb.html
 #https://cirosantilli.com/linux-kernel-module-cheat/#baremetal-linker-script
 #https://cirosantilli.com/linux-kernel-module-cheat/#semihosting
-#
+
 #https://github.com/quickemu-project/quickemu

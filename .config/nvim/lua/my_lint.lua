@@ -24,8 +24,8 @@ if not ok_lint then return end
 --==tools
 -- uv tool install chardet
 -- uv tool install cppman
--- uv tool install mypy
 -- uv tool install ruff
+-- uv tool install ty
 -- uv tool install weasyprint
 -- uv tool install yt-dlp
 --
@@ -47,16 +47,15 @@ lint.linters_by_ft = {
   -- # ruff: noqa: E501 E701
   -- # ignore ruff lints with at end eof line:
   -- # noqa: F821
-  -- # ignore mypy lints with at end eof line:
+  -- # ignore ty lints with at end eof line:
   -- # type: ignore
   -- older systems and installing libs: pip install pipx
   -- To adjust system PATH, use python -m pipx ensurepath
-  -- pipx install mypy
   -- pipx install ruff
   -- Converting to pipx might require to rm ~/.local/bin/deps
   -- fd -e py --max-depth=1 -x ruff check {}
   -- fd -e py --max-depth=1 -x ruff check --fix {}
-  python = { 'mypy', 'ruff' },
+  python = { 'ruff' },
   -- TODO clangd ignore lsp msg
   -- clang14 introduced:
   -- // NOLINTBEGIN

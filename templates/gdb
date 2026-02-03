@@ -377,3 +377,10 @@ Manually mapping Windows dll https://www.youtube.com/watch?v=qzZTXcBu3cE
 
 debugger tricks
 * keep line numbers correct (+ while editing) https://nullprogram.com/blog/2024/01/28/
+
+https://undo.io/resources/
+* gdb-watchpoint
+* and a pile of more info
+
+"Getting the Most Out of GDB - Mark Williamson & Greg Law - C++ on Sea 2022"
+* pile of hints not very approachable in gdb due to missing guides

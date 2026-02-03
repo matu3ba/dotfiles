@@ -191,6 +191,7 @@ TODO from bare to CI:
 
 TODO web part of CI:
 * container? isolation? seccomp?
+  - OCIv2 Images, github.com/opencontainers/image-spec
 * ip/ports, nftables, dns
 * advanced isolation (seccomp etc)
 

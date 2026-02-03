@@ -6,8 +6,13 @@
 ====kubernetes_debug
 ====kubernetes_monitoring_logging
 ====kubernetes_deployments
+====storage
 
 ====incus_usage
+====Infrastructure_as_Code
+====opentofu
+
+https://github.com/donlon/cloudflare-error-page
 
 ====tradeoffs
 https://www.docker.com/blog/do-you-really-need-microservices/
@@ -70,10 +75,19 @@ infra needed
 * affordable at scale
 unclear parts:
 * core use cases of Kubernetes
-  - 1. gobble together unreliable applications
-  - 2. do on-demand scaling
-    2.1 without performance optimizations of an application or
-    2.2 buying/scaling infrastructure
+  - 1. make reasonably stateless applications more reliable
+    - reasonble stateless means not many database accesses needed for state (data+checkpoints,recovery)
+      to make kubernetes logic happy (requires stateless applications/state being external)
+    - handles hardware/software outage
+  - 2. workaround poor/insufficient infrastructure maintenance
+  - 3. do on-demand scaling
+    3.1 without performance optimizations of an application or
+    3.2 buying/scaling infrastructure
+    => user control of hypervisor library + state handling libraries + orchestration library
+    + security handling library needed. tooling unification and APIs needed to
+    offer/write inter-operable library.
+    => cheap and easy to use local hardware needed to build local clusters.
+
 * reasonable implementation and configuration complexity?
 * few advantages of self-hosting for optimizing cross-pod 1. bandwidth or 2. latency guarantees
   - less often used/likely: hard real-time capable control solutions
@@ -92,11 +106,25 @@ unclear parts:
 ====scheduler_control
 * kubernetes as framework to integrate and control containers of own and hosted solutions
 
-TODO
 ====kubernetes
+* good at handling relative stateless applications
+* bad at handling (very) stateful applications
+  - every state recovery [backtrack, checkpoint restore] needs database pass
+  - default/optimized to handle stateless applications, so no user-provided state management system
+* security: runs in own VPN and applications in pods are isolated; nodes share same security context
+  - easy to take over cluster, if pods are compromised
+  - there are hard to maintain security solutions on top
+  - no custom Kernel/OS architecture enforcing a modern security model, k8 builds on Linux primitives
 * reason 1 scale vertically applications on demand
-* reason 2 reduce operator cost by declarative configuration
-* tradeoff: no hard latency or time-critical control, no security model (configs + hacks leaving open many attack vectors)
+* reason 2 reduce operator cost by declarative configuration and execution
+* tradeoff: no hard latency or time-critical control
+  - https://research.checkpoint.com/2026/voidlink-the-cloud-native-malware-framework/
+  - looks like bad things might happen with kubernetes, docker
+    => dependency attacks very common
+    => point of security tools to prevent access escalation (and follow-up)
+    and communication to web (with follow-up)
+    => Kubernetes/docker have weak tools to do that,
+    so attack frameworks might become very lucrative.
 * go code with garbage collection
 * https://medium.com/@arschles/go-experience-report-generics-in-kubernetes-25da87430301
 * https://pkg.go.dev/k8s.io/apimachinery/pkg/runtime
@@ -108,8 +136,32 @@ https://github.com/omissis/zho/
 * kubernetes 1 million nodes active nodes challenge https://bchess.github.io/k8s-1m/
 * distributed fs https://github.com/seaweedfs/seaweedfs
 
-====kubernetes_debug
+Pod Security Admission (PSA) model
+* verifies whether pods comply with namespace security requirements
+  - baseline, restricted, privileged
+  - warning/audit/enforce mode
+  - production workloads should be always restricted (except for system services)
+Custom Resource Definitions (CRDs)
+* automation, security compliance, mapping industriy+business logic
 
+https://www.qovery.com/blog/northflank-alternatives
+* Mirantis Kubernetes Engine uses https://github.com/k0sproject/rig, which is
+  a Kubernetes vendor-specific infra tool.
+  + trade-offs sound good, few superflous complexity in practice
+  + instead: vendor lockin
+* everything in Kubernetes wants yaml or a yaml generator (helm or alternatives)
+
+====kubernetes_debug
+* no direct hardware access (sitting atop of hypervisor talking to management API,
+  not controlling hardware) makes debugging low level problems tricky
+* complexity makes debugging tricky
+* troubleshooting network or (more rarely) hardware problems without hardware access
+  of course tricky
+* debugging based on cheap metrics, not heavy string log indexing + searches, see Grafana stack
+* problematic:
+  - 1 offers unbounded complexity
+  - 2 no unified (remote debugging) tooling
+  - 3 no best practices for vendor + security + cost deployment validation / monitoring
 
 ====kubernetes_monitoring_logging
 https://kubernetes.io/docs/tasks/debug/
@@ -120,6 +172,15 @@ https://kubernetes.io/docs/tasks/debug/debug-cluster/
 https://www.ionos.at/digitalguide/server/konfiguration/kubernetes-deployment/
 https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
+====storage
+MinIO replacement options
+* S3Proxy
+* RustFS (alpha)
+* SeaweedFS
+* Zenko CloudServer (okish)
+* Garage (complex config)
+* Apache Ozone (complex config)
+* Ceph Object Gateway (heavy dependency)
 
 ====nix/lix for linux kernel experiments/stuff
 ====how to attach debugger over network over kubernetes
@@ -193,3 +254,38 @@ https://videopundits.com/watch/shared/tackling-concurrency-bugs-with-tla-by-hill
 
 ====incus_usage
 TODO
+
+"Redbench: Workload Synthesis From Cloud Traces"
+* https://github.com/DataManagementLab/Redbench
+"PystachIO: Efficient Distributed GPU Query Processing with PyTorch over Fast Networks & Fast Storage"
+* Tensor computation runtimes (TCRs), such as PyTorch, accelerate analytical workloads
+* distributed GPU-based query processing
+
+====Infrastructure_as_Code
+Infrastructure_as_Code (IaC)
+https://spacelift.io/blog/infrastructure-as-code-tools
+aka config for VMs and sandboxes across platforms with behavior integration
+* Spacelift
+* Terraform
+* OpenTofu
+* Terragrunt
+* Pulumi
+* AWS CloudFormation
+* Azure ARM
+* Google CDM
+* Kubernetes Operators
+* Crossplane
+* Ansible
+* Chef
+* Salt
+* Puppet
+* Vagrant
+* AWS CDK
+
+====opentofu
+https://www.scaleway.com/en/docs/terraform/quickstart/
+https://search.opentofu.org/provider/opentofu/scaleway/latest
+https://www.scaleway.com/en/docs/tutorials/manage-instances-with-terraform-and-functions/
+https://www.scaleway.com/en/docs/tutorials/use-cockpit-with-terraform/
+https://www.scaleway.com/en/docs/cockpit/concepts/#cockpit
+https://controlmonkey.io/resource/opentofu-errors-guide/

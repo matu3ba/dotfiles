@@ -1,5 +1,5 @@
-// zig cc -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./src/slice1.c -o slice1.exe && ./slice1.exe
-// zig cc -std=c11 -Werror -Weverything -Wno-unused-macros -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./src/slice1.c -o slice1.exe && ./slice1.exe
+// zig cc -std=c11 -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./src/slice1.c -o ./build/slice1.exe && ./build/slice1.exe
+// zig cc -std=c11 -Werror -Weverything -Wno-unused-macros -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./src/slice1.c -o ./build/slice1.exe && ./build/slice1.exe
 // clang -E src/slice1.c
 // clang src/slice1.c -o slice.exe && ./slice1.exe
 

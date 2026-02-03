@@ -1,3 +1,4 @@
+====cpu
 ====general
 ====specification_langs
 ====computing
@@ -14,6 +15,42 @@
 ====architecure
 
 https://github.com/MarcusCemes/advent-of-code-2025
+
+Hard questions
+2. Explain verification process of safety-critical product + design trade-offs.
+How does safety level affect effort+costs?
+Related
+Overview of safety-critical product requirements for different safety levels of different domains
+with tooling+product certification process.
+
+====cpu
+https://www.ccbp.in/blog/articles/bus-structure-in-computer-architecture
+* internal CPU bus is a Parallel Bus
+
+NUMA Architecture
+* lscpu | grep "NUMA"
+* chiplets distributed on NUMA-nodes
+  - L1, L2 cache local
+  - L3 cache likely remote/higher latency
+* interconnect
+  - UCIe throughput, BMI for low latency, low throughput (heat)
+  => "RCAS: Adaptive Runtime System for Chiplet-Aware Scheduling"
+  => "Optimizing Sorting for Chiplet-Based CPUs"
+  => "A Performance Analysis of Chiplet-Based Systems"
+     - "may give away over a 30% of the monolithic performance"
+  => "MEMPLEX: A Memory System with Replication and Migration of Data for Multi-Chiplet NUMA Architectures"
+     - +10%
+  - alternatives: Infinity Fabric (AMD), InfiniBand (HPC)
+
+* "Design of hierarchical cache coherence protocol based on Chiplet architecture"
+* intel a few years ago: meshes with centeral chiplets be l3, outer be cores;
+  mesh between everything, connections for chiplets was on corner (would be
+  mirrored/flipped as needed); bus can send in any cardinal direction, which
+  would go to l3 or core
+  - connection with mesh broken => rotate the cores if needed
+  - before mesh buses: ring buses, where you have inner part of the ring is l3 and outer
+    is chiplets
+  - each chiplet has NIC for mesh bus
 
 ====specification_langs
 * classical HDLs
@@ -577,3 +614,60 @@ idea: simulators (speed vs accuracy) for data generation
 * no tangible first delivery
 * design space exploration probably first tangible goal
 * goal: reduce cost of building chips
+
+====bus
+Datapath (internal CPU/data bus)
+  https://en.wikipedia.org/wiki/Datapath
+  https://en.wikipedia.org/wiki/Microarchitecture
+* pipelined datapath most commonly use
+* CPU has mutliple datapaths
+* simplest design: common internal bus
+* courses teach design via finite-state machine with data path (FSMD)
+  - use variables or arithmetic operations/conditions
+  - equivalent to a Turing machine in expressiveness
+  => "Stacked FSMD: A Power Efficient Micro-Architecture for High Level Synthesis"
+  => very inefficient in comparison to propriey EDA tooling vendors offering processor
+  description languages + graphical/top-bottom exploration
+* Datapath Blueprint shows resulting CPU
+* courses
+  - Designing a Multicycle RISC-V Processor Datapath on Artix-7 FPGA
+  - https://cca.informatik.uni-freiburg.de/riscv-simulator/
+  - example with calculations https://www.doc.ic.ac.uk/~wl/teachlocal/arch/HP05/multi-cycle-datapath.pdf
+* hazards
+  - Structural Hazards
+  - Data Hazards
+  - Control Hazards
+https://stackoverflow.com/questions/63234968/width-of-bus-betwen-cpu-cache-and-cpu
+
+1. Explain a modern internal CPU bus/internal data bus of an out of order CPU + design trade-offs.
+* efficient data shuffling with multiple CPU cores (very) hard
+  - heavily depends on the state machine (algorithm) and data being processed
+  - simpler state machines are rather short loops easily handled by the instruction cache
+  - most internal states will be carried by registers
+    * code like any other software
+* info on architecture functionality hidden sparsely in manuals and reverse engineered,
+  for example via benchmarks; patents only provide hints
+  - Mill architecture dev: I will explain in detail how this works
+    architecturally on the hardware level, but for all of you who already have
+    knowledge in the field will know that this is oversimplified to the point
+    that I am lying."
+  - many CPUs to mask their internal bus timing and randomize it
+    (likely to mask which cores are actually disabled on the die)
+  - benchmarks to determine disabled cores by measuring latency between cores
+    across bus operations (l3 hits/cores on other side of chip)
+    * reverse engineering for high perf like HFT
+
+https://stackoverflow.com/questions/35258524/why-arent-out-of-order-cpus-troublesome
+* reorder buffer which allows instructions to issue out of order but commit in order
+  - interrupt (instruction/page fault) => consistent state where all earlier
+    instructions have fully executed, and no effects of later instructions have
+    happened (to memory or registers), other than populating caches
+
+System Bus
+  * only used in embedded, otherwise too slow
+  * Data Bus: actual data
+  * Address Bus: points to where data lives
+  * Control Bus: manages timing, coordination, direction of signals
+
+https://en.wikipedia.org/wiki/Out-of-order_execution
+https://en.wikipedia.org/wiki/Dataflow_architecture

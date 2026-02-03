@@ -1,6 +1,7 @@
 ====access_latencies
 ====human
 ====hardware_transactional_memory
+====memory_in_languages
 
 "What Every Programmer Should Know About Memory" by Ulrich Drepper
 
@@ -464,3 +465,7 @@ C: 0 (ish) bytes are still memory mapped. maxrss=0 (ish)
 * advantage: get more performance when having poor design based on locking
 * disadvantage: 1. non-determinism and 2. big slow-down, when contention occurs
 * worse disadvantage: fighting the symptom instead of fixing it via (re)design
+
+====memory_in_languages
+https://lukefleed.xyz/posts/who-owns-the-memory-pt1/
+* good overview, but many edge cases not described

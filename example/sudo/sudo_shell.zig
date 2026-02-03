@@ -1,14 +1,17 @@
 const std = @import("std");
-pub fn main() !void {
+const process = std.process;
+pub fn main(init: process.Init.Minimal) !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     const allocator = arena.allocator();
 
-    var threaded: std.Io.Threaded = .init(allocator, .{});
+    var threaded: std.Io.Threaded = .init(allocator, .{
+        .environ = init.environ,
+    });
     defer threaded.deinit();
     const io = threaded.io();
 
-    const res = std.process.Child.run(allocator, io, .{
+    const res = std.process.run(allocator, io, .{
         .argv = &[_][]const u8{ "/usr/bin/sudo", "/usr/bin/groupadd", "test123123" },
     }) catch {
         return error.CouldNotRunShellExplicit;

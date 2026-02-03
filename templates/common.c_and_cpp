@@ -1,4 +1,6 @@
 https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html
+https://blog.quarkslab.com/clang-hardening-cheat-sheet-ten-years-later.html
+TODO
 
 "Exploiting Undefined Behavior in C/C++ Programs for Optimization: A Study on the Performance Impact"
 * perf impact of optimized programs <10 % with higher impact on ARM and lower on non-ARM

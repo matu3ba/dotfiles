@@ -6,10 +6,19 @@
 ====reset_configuration
 ====running
 ====FAQ
+====protocol
 
 ====design
 a12 cell is 6-10 times than ascii character
 scollback is however on source system, not remote
+https://www.divergent-desktop.org/blog/2026/01/26/a12web/
+* outermost one takes on the responsibilities of window management and display control, becoming the ‘desktop’
+* Document browsing is compilation step through separate tools that generates a signed, shareable application package.
+* recursive (app can embed others including itself) and compose + interact with allow-listed local sw
+* Media decoding, media transforms, network communication and system
+  integration are all delegated to per-instance sets of interchangeable
+  privilege-separated programs.
+=> essentially a browser take on a microkernel architecture
 
 ====requirements
 * permissions to access /dev/dri/*
@@ -88,3 +97,8 @@ S: Add an overlay with the files patched:
 ```
 P:
 idea finish this
+
+====protocol
+https://github.com/letoram/arcan/blob/master/doc/a12.md
+TODO this will take lots of time to properly understand and model
+=> start when reverse engineering suceeded to have actual hardware

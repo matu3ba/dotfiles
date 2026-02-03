@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Hello World
+Exec=hello_world
+Icon=hello_world
+Categories=Utility;

@@ -358,10 +358,11 @@ alias gke='gitk --all $(git log -g --pretty=%h)'
 
 alias gur='git pull --rebase'
 alias gu='git pull --no-rebase --ff-only'
-alias glgs='git log -G' # git log search 'regex' -- file (Gitsearch the content)
-alias glgr='git log --grep=' # git log grep (grep the log)
+# alias glgs='git log -G' # git log search 'regex' -- file (Gitsearch the content), only useful with --first-parent
+# alias glgr='git log --grep=' # git log grep (grep the log), only useful with --first-parent
 #git log --grep|--invert-grep
-#git grep 'regexp' $(git rev-list --all)
+#git log -S 'argsAlloc' --first-parent # search for removed code
+#git grep 'regexp' $(git rev-list --all) # (useless) search commit content
 
 #--stat --shortstat --numstat --graph --oneline
 # git rev-list HEAD --count
@@ -416,14 +417,14 @@ alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 # git log --graph --decorate --pretty=oneline --abbrev-commit
 
 # merge without forward (less reliable)
-# alias gm='git merge --no-ff'
+# alias gm='git merge --no-ff' # recommendation to create a commit
 alias gmce='git merge --edit --no-ff --commit'
 alias gmse='git merge --squash -e --commit'
 # merge with forward
 alias gm='git merge --ff-only'
-# dont forward and dont commit (most reliable)
+# dont forward and dont do commit msg (most reliable)
 alias gmn='git merge --no-ff --no-commit'
-# dont forward, do commit (less reliable)
+# dont forward, do commit msg (less reliable)
 alias gmc='git merge --no-ff --commit'
 alias gmom='git merge downstream/master'
 alias gmt='git mergetool --no-prompt'

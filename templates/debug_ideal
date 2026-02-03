@@ -1,4 +1,13 @@
 ====inspiration
+====optimal_repl
+====system_abi
+====debugging_definition
+====library_framework
+====interested_discussion
+
+====ideas
+
+====inspiration
 https://github.com/libdebug/libdebug
 hypervisor based debugging TODO
 each system component has own debugging methods, ideally to be stored and used from own or other functional device
@@ -159,3 +168,87 @@ https://github.com/rr-debugger/rr/blob/ca36c98ab63f54f777cac4f962c5c9e059022d41/
     + 4 Develop loss scenarios.
   - CAST
     + TODO
+* semi-crazy opinion(s)
+  - windbg has no sane library api, which makes it by construction unsuitable
+    for automation and inspection.
+  - I'd personally prefer, if we would have the options of multiple time-travel
+  debugging sessions based on synchronization points (if needed) being overlapped
+  to single out bugs in interesting areas (not covered by static or dynamic
+  analysis). Debugger would be essentially a virtual program slicer being able to
+  hide unnecessary program parts or reduce it. However, so far we neither have
+  the options for piece-wise time-accurate multi-threading recording, nor slicing
+  overlays nor in-memory reducers (ideally also reducing AST). I may be mistaken
+  on "piece-wise time-accurate multi-threading", since I've not checked what is
+  possible with hardware yet.
+  - Heck, we dont even have overview data for common bug classes and cost for
+    verification or runtime-checking in academia etc.
+* Q: What kind/class of issues are caused by "thread interleaving on the scale
+  of nanoseconds"? Faulty CPU bit flips due to radiation/quantum effects or what are
+  you referring to? Just curious.
+  A: Not doing things atomically when they should be (incl. missing locks around
+  tiny ops) would be a pretty large class.
+  With native multithreading data can pass from thread to thread millions of
+  times per second, and you're much less likely to hit obscure interactions when
+  limited instead to maybe a hundred to a thousand context switches per second.
+* crazy opinion(s)/ideas I'd like to have somebody solve at some point and
+  likely should not be attempted without simpelr ISAs
+  - inspired by "Distributed Order Recording Techniques for Efficient Record-and-Replay of
+  Multi-threaded Programs" ideas, but elimination of huge state and timing space
+  to find bugs in multi-threaded/distributed programs:
+  - afaiu LLVM is unable to express relative ordering relations for optimizations,
+  see https://llvm.org/docs/Atomics.html
+  volatile means "dont optimize this instruction/access out" in thread
+  atomic means "dont reorder across to these rules" between threads
+  i can not express if some section should be intentionally racy or how memory
+  orderings between different code sections should work as a graph
+  and instead have to reason on each small code section
+  I'd like to express memory relations as graph for better debugging
+  capabilities and to workaround atomic model limitations.
+  - yeah, I'd like to have no shadow memory on every access and log each access
+  instead for later rerunning/minimizing overhead. the algo description does not
+  allow static generation of the possible runs or any sort of recording
+  https://github.com/google/sanitizers/wiki/threadsanitizeralgorithm
+  "Finding races and memory errors with compiler instrumentation."
+  AddressSanitizer, ThreadSanitizer. by Konstantin Serebryany, Dmitry Vyukov
+  "A Binary-level Thread Sanitizer or Why Sanitizing on the Binary Level is Hard"
+  by Schilling et al.
+  "ThreadSanitizer – data race detection in practice" by Konstantin Serebryany and
+  Timur Iskhodzhanov
+  - tsan terminates the program when the state machine runs into a race, so there's
+  only one possible program run under it. but i guess if you were to remove that
+  restriction, yes
+  - it does allow recording though, shadow words describe a pseudo-timestamp, and
+  you could just record those timestamps to build up a model of the accesses that
+  happened. or do you mean something else when you say recording?
+  - yes, I'd like to 1. record the multi-threading program itself. recording the
+  memory accesses may not necessary reproduce in a long-living program with tsan.
+  also, I'd like to 2. be more explicit in what stuff to sanitize, but the only
+  quick example for now that comes to my mind are intentional race conditions.
+  further, I'd like to be able to 3. simulate program execution and program
+  fragments via 4. dumping parts only accessed by one thread or a group of
+  threads. Ideally, I'd be able to 5. reset the program state and continue
+  different thread schedules like fuzzing.
+  - My understanding is that 5 is not feasible without programmer input of how
+  things should relate to another in graph form, same for 4. 3 may be possible, 2
+  might be seen as acceptable trade-of. Any opinion?
+  - an interesting idea. this sounds a lot like deterministic simulation testing,
+  but in this case for races. antithesis is working on a deterministic hypervisor
+  for running general programs and then rolling back the state to reproduce bugs,
+  but their's works in a single-threaded fashion, there's no true parallel
+  execution in it, afaik. how would you "force" a race to happen in this
+  scenario? in the case where you have two operations racing in a single point
+  in time, how do you tell the simulation who's input to consider first. not
+  only that, but another problem you'll have is defining values after the data
+  races happens. by definition right now, the value after it is unspecified,
+  and tsan doesn't need to deal with that problem either because it just halts.
+   > how would you "force" a race to happen in this scenario?
+  for the "race check": i think its ok to assume correct aliasing and bounds.
+  the programmer would need to define what memory regions would be accessed by which thread group and in what relation.
+  checks would then start from a a 1.program state, 2.input sequence, 3. thread choice sequence, 4. timeout and history be compared
+  another approach would be to abstract away memory and only fuzz check logical access, but that would go into proof area
+  - ah ok, so you're manually defining the thread choice sequence in who wins the race correct?
+  I'd do it semi-automatic, but yes.
+  - my main concern was that they dont provide a brief overview of perf cost and race condition detection.
+  so it felt like some "do something with vm stuff", which is often too slow to detect race conditions
+  be it in kernel or in user space unless you have a slower language like go
+  https://antithesis.com/docs/

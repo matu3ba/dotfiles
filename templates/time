@@ -73,3 +73,75 @@ Floating point compression:
 * XOR-based compression
 Data-agnostic compression:
 * Dictionary compression
+
+NTP notsoprecise time protocol
+* millisecond accuracy
+PTP precision time protocol
+* used in video,
+* nanosecond accuracy
+* V1,V2,V2.1, gPTP
+* time transmitter, leader(master) and time receiver, follower(slave)
+* global time source(s) of transmitter
+  - GNSS (GPS, Galileo, GLONASS, BeiDou)
+* time: TAI (Temps Atomic International)
+  - UTC+37s (2025)
+  - leap day february 29
+  - lep seconds with last 2016-12-31
+* 2/3c for cupper cable speed of electricity
+  - 0-650ns offset to actual time
+* messages compute the delay from round-trip time
+* time jumps must not occur
+* 5 challenges
+  - jitter
+    + solution: PTP hardware support in switches: knows latency of passing packets and updates
+      correction field of PTP messages
+      => 20-90ns offset
+      => follow-up message/field for switch packet processing time
+    + AVB Milan mandates PTP in switches, Dante, AES67, SMPTE 2110 not, but can benefit
+  - asymmetries
+    + solution1: dispersion compensation units (only in WANs)
+      - dont work well
+    + solution2: no asymmetric links, manual asymmetry compensation in switches
+      - depends on layer 1 topology, not implemented by many vendors
+  - scalability
+    + every time receiver communicates with time transmitter
+      - delay request and respone => lots of messages => lots of work for time transmitter
+      - can even cost licenses
+    + solution: PTP boundary clock (BC)
+      - give switches option to act as time transmitter to other devices
+      => scalable
+  - who's time transmitter?
+    + every potential grandmaster sends advertisement for itself and devices listen to
+      each other
+    + priority is set on device itself and vendor hardcores priority, so device
+      can take over internet leading to packet drops, when being connected
+    + solution1: generate message with priority 0
+    + solution2: PTP role master
+      - primary time transmitter to block messages
+  - security
+    + every device can send announce messages
+    + some bounary clock switches have static interface roles implemented (port role=master)
+    + no announce & sync messages are accepted on that port
+    => follow-up message can be attacked
+* problems
+   * bugs like behavior on reboot
+   * pre/post queue hw timestamping (jitter stability)
+   * oscillator quality (stability and precision of clock)
+   * interface (support across all interfaces or only some)
+   * security features (port role master etc)
+   * scalability (max msg handling capacity)
+   * PTPv1 support (legacy compatibility)
+   * VLAN limitations (eg only works on single VLAN)
+   * MLAG/vPC (compat with multi-chassis link aggregation)
+   * special conditions
+   * end devices (jitter tolerances, bmca across multiple interfaces, PTPv1)
+   * GNSS (jamming by transmitting interferences, spoofing via counterfeit GNNS signals appearing valid)
+   * PTP profiles (unicast/multicast, layer2/3, message rates)
+* large scale possible, hw support essential, precise time => must verify + monitor
+* normal version +-20ns, but can be done to last digit ns
+* Linux has PTP stack to read out packets timestamps before processing in Linux
+  * Intel 2-10 can do this
+  * DIXP needs it?
+* crypto PTP for timestamps going on
+* human observable time difference of sound: nanoseconds area
+=> processing time addition in switch works like field-bus techniques

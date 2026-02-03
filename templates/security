@@ -428,6 +428,27 @@ functional correct code without constant time guarantees open research problem
         similarly expensive, it gets slower the more memory we allocate (whereas
         double indirection is a fixed cost per dereference)."
   - Differential fault analysis attacks/introducing faults, for example via Rowhammer remain problematic
+    * Target Row Refresher (TRR) does not work/is attacked
+    * bit-lines to neighboring arrays are also disturbed
+    * row hammer attacks also work on GDDR6
+    * fingerprinting in <5s
+    * row hammer also works on DDR4 ECC (hynix trr sampler), undetectable
+      - harder to do on ECC, because multiple bit flips are needed
+    * DDR4 postponing refresh attack
+    * on-die ecc (ODECC)
+    * TRR on DDR5 samples memory acccess and misses acccesses, exploited
+    * FlippyRAM to crowd-fund checks: DDR3+4 attacks work, DDR5 not yet
+      - rowhammer can be weaponized today by 12.5% of systems, ~50% look feasible
+    * defense
+      - increase refresh rate, TRR, memory band-aid: vendors dont publish algos for TRR
+        + memory band-aid: set memory bandwidth limit in OS per bank, process
+          * no overhead for trusted process
+          * requires hardware changes
+        + TRR: Target Row Refresher worst mitigation
+      - CSI, Chipkill
+        + CSI:Rowhammer: crypto hash on seperate bank
+          * ideal solution
+    * embedded systems should work, if processor fast enough compared ot memory
   - Other timing attacks:
     * network: whitelist and traffic based timing attacks depend on involved systems with data patterns
     * Resource usage (patterns) "Private resource allocators and their applications"
@@ -447,3 +468,5 @@ TODO move to verification
 bottom-up approach:
 * impl -traceability-> sec+funct_mechanisms -compliance-> sec policy
 * impl -verification-> specification
+
+https://phrack.org/issues/68/9#article

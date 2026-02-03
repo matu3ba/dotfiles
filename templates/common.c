@@ -16,10 +16,10 @@
 // safe way to format strings.
 
 //! Tested with
-//! zig cc -std=c99 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c -o commonc99.exe && ./commonc99.exe
-//! zig cc -std=c11 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c -o commonc11.exe && ./commonc11.exe
-//! zig cc -std=c17 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c -o commonc17.exe && ./commonc17.exe
-//! zig cc -std=c23 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c -o commonc23.exe && ./commonc23.exe
+//! zig cc -std=c99 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default ./templates/common.c -o ./build/commonc99.exe && ./build/commonc99.exe
+//! zig cc -std=c11 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c -o ./build/commonc11.exe && ./build/commonc11.exe
+//! zig cc -std=c17 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-pre-c11-compat ./templates/common.c -o ./build/commonc17.exe && ./build/commonc17.exe
+//! zig cc -std=c23 -Werror -Weverything -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-switch-default -Wno-c++98-compat -Wno-pre-c11-compat -Wno-pre-c23-compat ./templates/common.c -o ./build/commonc23.exe && ./build/commonc23.exe
 #include <assert.h>
 #include <stdint.h>
 
@@ -135,6 +135,9 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 //   - 3. some sort of arena, where a bunch of resources have a single owner, users dont bother cleaning
 //     up their resources, and instead the owner does it once at the end
 // * defer pattern with jump labels
+
+// best practice type safety
+// "Andrew Reece – Assuming as Much as Possible – BSC 2025"
 
 // best practice compile time checks
 // * macro hacks like these for static_assert https://stackoverflow.com/questions/3385515/static-assert-in-c
@@ -841,6 +844,11 @@ void convert_string_to_int_simple(char const *buff) {
     // ..
   }
 }
+
+// SHENNANIGAN
+// The preprocessor always searches the current directory first for quote includes
+// and this behavior can not be changed to include another_path/putc.h instead of
+// local dir putc.h
 
 // SHENNANIGAN
 // create a list data structure implies 3 options:

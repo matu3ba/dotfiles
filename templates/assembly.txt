@@ -35,3 +35,20 @@ movsbl  ......
 movzbl  ......
 movb    ......
 movl    ......
+
+https://armasm.com/docs/arithmetic/errors-and-tests/
+
+====forth
+book: starting forth
+pieces
+* Forth processor
+* Code generator
+* Interpreter
+* Translator
+use cases
+* extreme space-constrained systems
+* programming from scratch
+* hardware bringup
+* assembler testing
+* assembly testing?
+* TODO check more use cases

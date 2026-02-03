@@ -1,23 +1,127 @@
 Cache coherency
   TODO
 
-Relation to cache coherency
-  TODO
-Strong consistency models
-  Strict consistency/Strong consistency
-  Sequential consistency
-  Causal consistency
-  Processor consistency
-  PRAM/Pipelined RAM consistency, or FIFO consistency
-  Cache consistency
-  Slow consistency
-Weak memory consistency models
+Background CAP theorem: system can not have more than 2 at the same time
+of consistency, availability, partition tolerance; only applies to bus or data base,
+not CPU cache.
+
+Consistency model specifies a contract between the programmer and a system:
+system data kept at different places do match and results of reading, writing,
+updating memory will be predictable.
+
+Properties of the system
+TODO
+
+Basic overview
+  - Linearizability: CS + real-time constraint
+    * two operations’ time spans do not overlap => they are linearizable
+  https://www.cs.virginia.edu/~cr4bd/3130/S2023/readings/consistency.html
+  - Strict consistency (idealized)
+    > All accesses (read and write) are seen instantly by all processors.
+    * information cannot travel faster than the speed of light
+  - Strong consistency (atomics)
+    > All accesses (read and write) are seen by all parallel processors in the same
+      sequential order.
+    * only the ordering, not the time, or accesses that all processors agree upon
+    * example: using only atomic operations and memory barriers between every memory access
+      would lead to strong consistency
+  - Weak consistency
+    > All accesses (read and write) to synchronization variables are seen by all
+      parallel processors in the same sequential order.
+    * relaxation of strong consistency to apply to only a few special memory locations
+    * provided by for example correctly used pthread_mutex_lock(&m) – m is one such
+    "synchronization variable."
+  - Sequential consistency (SC)
+    > The result of execution is the same as if each process was interleaved in some
+      order on a single sequential processor.
+    * based on result, not event
+    * being about the result (instead of each result)
+    * requires Eventual consistency
+  - Eventual consistency
+    > There exists a time after the last write to each address when all
+      processors will receive the same value when reading from that address.
+    * not make any guarantees about what will be seen in that address, only
+      that every process will agree
+  * if no update occur for long time, all replicas eventually become consistent
+
+Common notation "stronger < weaker" Figure 3.1: Hierarchy of weak memory models
+"Verification with Memory Models as Input" by Florian Furbach
+SC < GAO < CC
+SC < PC-D < GPO+GDO < PRAM
+SC < PC-G < GPO+GDO < PRAM
+SC < TSO < PSO < CC
+SC < CAUSAL
+TSO < PRAM-M < PRAM
+---
+PRAM < SLOW < LOCAL
+CC < SLOW < LOCAL
+CAUSAL < GWO < LOCAL
+
+Many weak models can be combined by combination from GAO, GWO, GDO, GPO
+see "A Unified Theory of Shared Memory Consistency" p.35
+- Global Anti Order (GAO) [only used in SC, GAO => GDO]
+  * global agreement on order of any two writes, when a process can prove it
+    has read one before the other.
+- Global Process Order (GPO)
+  * there is global agreement on the order of operations from each proces
+- Global Data Order (GDO)
+  * there is global agreement on the order of operations to each variable
+- Global Write Order (GWO)
+  * there is global agreement on the order of potentially causally related writes
+- Sequential consistency (SC)
+  * see above
+  * alternative: Each processor issues memory requests in the order specified
+    by its program. Memory requests from all processors issued to an individual
+    memory module are serviced from a single FIFO queue. Issuing a memory
+    request consists of entering the request on this queue.
+  * GPO+GWO+GAO
+- Causal consistency (CAUSAL)
+  * for each process the operations of that process plus all writes known to that
+    process appear to that process to occur in a total order that respects
+    potential causality. Potential causality is as defined by Lamport with
+    writes interpreted as sends and reads interpreted as receives.
+  * GPO+GWO
+- Processor consistency (PC-D,PC-G)
+  * PRAM consistent and writes to the same memory location are seen in the same
+    sequential order by all processes.
+  * combination of PRAM and CC
+  * GPO+GDO
+- PRAM/Pipelined RAM consistency (PRAM)
+  * writes performed by a single process are seen by all other processes in the
+    order in which they were issued, but writes from different processes may be
+    seen in different orders by different processes.
+  =>each process see a view that is consistent with the process order for all
+    processes, but not all processes must see the same view
+  * GPO
+- Cache consistency (CC)
+  * all write operations to same memory location are performed in some sequential order
+  * GDO
+- Local consistency (LOCAL)
+  * each process’ own operations appear to occur in the order specified by its
+    program. There is no restriction on the order in which writes by other
+    processes appear to occur, and different processes may see different orders.
+  * none
+- Slow consistency (SLOW) [no practical relevance besides defining synchronized models]
+  * reads must return some value that has been previously written to the location
+    being read. Once a value has been read, no earlier writes to that location (by
+    the processor that wrote the value read) can be returned. Writes by a process
+    must be immediately visible to itself.
+  * consistency enforced by writes being after time x propagated to other caches,
+    if process reads value previously written to memory location, subsequent reads
+    can not read any earlier value from that location?
+    => what CPU caches do???
+  * non-HDL compilers offer no time model with time-constraint programming
+  * global process data order GPDO (weaker than GPO+GDO)
+  * only valuable in defining synchronized models, perhaps useful with transition theory
+    for higher consistency operations in between
+
+- TSO unclear
+- PSO unclear
+
   Weak ordering
-  Release consistency
-  Entry consistency
-  Local consistency
-  General consistency
-  Eventual consistency
+  Release consistency?
+  Entry consistency?
+  General consistency?
 Relaxed memory consistency models
   * programmer responsible
   Relaxation
@@ -28,6 +132,9 @@ Relaxed memory consistency models
   Relaxed write to read
   Relaxed write to read and write to write
   Relaxing read and read to write program orders: Alpha, RMO, and PowerPC
+
+Relation to cache coherency
+  TODO
 
 Network/data transmission failures
   TODO
@@ -51,3 +158,9 @@ Appendix B: Formal Memory Model Specifications
 https://discord.com/channels/605571803288698900/1023625686327492761/1423060247643422720
 https://jepsen.io/consistency/models
 https://en.wikipedia.org/wiki/Consistency_model
+
+RISC5:
+ARM <= v7: may or may not have memory model
+ARMv7 with extension:
+ARM > v7:
+Aarch64:

@@ -1,3 +1,7 @@
+TODO summary, this reads semi-aweful
+
+TODO list out the edge cases where the atomics model of C fails to generate decent code
+
 The (concurrrency/synchronization) memory model is a model of the underlying
 hardware synchronization primitives how the optimizing compiler is allowed to
 interpret source code semantics on the hardware platform (config/family).

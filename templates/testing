@@ -9,6 +9,12 @@
 ====hardware_testing
 
 ====general
+https://mathieu.fenniak.net/testtrim-2025-01-nested-syscall-tracing/
+https://codeberg.org/testtrim/testtrim/
+* automated tests for execution based upon previous code-coverage data and git changes
+  - on-average 90% of tests can be safely skipped with this strategy
+  - TODO what kind of tests?
+
 ====unit
 ====component
 

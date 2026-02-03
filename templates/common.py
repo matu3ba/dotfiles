@@ -471,18 +471,17 @@ def strlen(s: Optional[str]) -> Optional[int]:
   return len(s)
 
 
-# open mypy issue to annotate module info
+# open ty issue to annotate module info
 def getModuleInfo(module: object):
   return getattr(module, "runTest")
 
 
-# use mypy and charliermarsh/ruff + editor integration
+# use ty and ruff + editor integration
 # for ruff: --line-length 120
-# for mypy: just works
+# for ty: just works
 
 # https://stackoverflow.com/questions/65747247/how-to-print-file-path-and-line-number-while-program-execution
 # https://note.nkmk.me/en/python-script-file-path/
-
 
 # function to wait for event 12 ms
 def waitForEvent() -> int:
@@ -543,7 +542,7 @@ def print_ms(dt_in: dt.datetime) -> str:
 
 # ignore ruff lints with at end eof line:
 # noqa: F821
-# ignore mypy lints with at end eof line:
+# ignore ty lints with at end eof line:
 # type: ignore
 
 
@@ -701,7 +700,7 @@ def isLocalHost(arg: str) -> bool:
 
 
 # SHENNANIGAN Generic module annotation not allowed
-# Also, mypy has no explicit docs for this.
+# Also, ty has no explicit docs for this.
 # possible error messages + solution patterns. The following does not work:
 #   from typing import ModuleType
 #   def check_fn(module: ModuleType) -> int:

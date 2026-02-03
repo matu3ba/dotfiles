@@ -1,22 +1,25 @@
 /tmp/
 
 TODO*
+AppDir/
 build*/
-zig-cache/
 .zig-cache/
 zig-out/
 
 .luarc.json
-.mypy_cache
 
 # binaries
+*.AppImage
 *.exe
 *.lib
 *.log
+*.o
 *.obj
 *.out
 *.pcm
 *.pdb
+*.png
+*.so
 
 # backup files
 /.swp

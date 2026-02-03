@@ -1,3 +1,8 @@
+"Don’t Look UB: Exposing Sanitizer-Eliding Compiler Optimizations"
+* use mutational fuzzing pipeline to generate programs susceptible to UB
+* perf overhead of 4% for not having those problematic conditions
+* sanitizers looks very under-tested
+
 hardened allocator
 https://llvm.org/docs/ScudoHardenedAllocator.html
 templates/llvoOnline correctness validation of transformations:

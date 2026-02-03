@@ -9,9 +9,11 @@
 ====state_of_art
 ====correctness_implementation
 ====interfaces
+====specification
 and misc
 
 ====theory
+see also section ====computing_models
 * synchronization (XMM general model, XC20 model for C as candidates)
 * Integer arithmetic, Modular arithmetic, Saturation arithmetic
 * Floating point arithmetic
@@ -32,6 +34,13 @@ List of dedicated formally proved languages
   * codegen
     + PLC has codegen from ladder diagrams and other graphical methods
 - P language based on actor model (without message loss)
+  * "communicating state machines"
+  * PObserve - take structured logs from execution of distributed systems and validate
+    post-hoc if behaviors are matching allowed by the formal P specification of the system
+  * practice: property-based testing, developer-provided correctness specs, coverage-guided fuzzing,
+    fault injection, minimization counterexamples automatically reduced to aid human-guided debugging
+    determinism simulation, build-time testing of thread ordering + systems failures
+    Metastability + emergent behavior are research area.
 
 Synthesis
 * Temporal synthesis hard problem
@@ -77,8 +86,8 @@ Synthesis
     + see "What’s Decidable About Causally Consistent Shared Memory?"
 
 ====computing_models
-* temporal logic (LTL, CTL, TLA+, PSL, SVA)
-* separation logic
+* temporal logic (LTL, CTL, TLA+, PSL, SVA) (time)
+* separation logic (memory + pointers)
 * first order logic
 * reachability logic
 * (relational numerical) abstract domains (ellipoids, intervals, etc)
@@ -461,7 +470,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * kv cache etc
   * idea: spikes are like synaptic connection strengths and represent output of neuron
   * spikes express a sequence over time
-- 18. TLA+ as only feasibe system to formally verify non-deterministic
+- 18. TLA+ as only feasibe system to formally verify complex non-deterministic
   parallelism, states and changes over time via temporal logic
   * https://www.learntla.com/
   * TODO
@@ -469,6 +478,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * actor based languages for distributed systems simplify implementation details significantly
     o P language to apply formal methods https://github.com/p-org/P
     o https://en.wikipedia.org/wiki/Actor_model
+  * "Interactive Symbolic Testing of TFTP with TLA+ and Apalache"
+    https://protocols-made-fun.com/tlaplus/2025/12/15/tftp-symbolic-testing.html with
+    TLA+, symbolic testing, SMT, AI/LLM based on error-fuzzed testing framework; not yet paper, reproducer, scaling
   * alternative should be based on CSP todo long form
 - 19. Reversible computation
   * Standard concept in computing: linear/affine types, algebraic effect with handlers, cleanups etc
@@ -564,12 +576,37 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * (less often)
   * 7 consensus
   * 8 replication
+- 30. Integration of Formal Verification tools with Large Language Models (LLMs)
+  * The 4/δ Bound: Designing Predictable LLM-Verifier Systems for Formal Method Guarantee
+    - code generation -> compilation -> invariant synthesis -> SMT solving
+    - how to manage drift on theorem prover, coding agent and testing agent for autonomous solution search
+- 31. Verified memory allocator https://github.com/verus-lang/verified-memory-allocator
+    - not sure if that special
+- 32. Safety-critical systems
+  * general: derivation (and classification) of safety class/integrity level/etc
+    takes place comparative by technical state (of art) based on
+    safety class, use cases, safety model, software, hardware, experience on
+    what works based on studies etc in dialogue with responsible authorities
+    => safety class increase for cars means ca. 10x cost increase
+    => there are no shortcuts and one has to understand the problem domain
+    => problems of EDA tooling apply, as safety is a property of the complete
+    system and goes from safety model down to hardware (physics)
+    => formal verification not mainstream and neither mainstream for EDA,
+    so additional reason to each formal proof still necessary besides vendors
+    not providing formal models for hardware (behavior)
+    - IEC 62443-4-2
+Anscheinend erfolgt die Ableitung komparativ nach technischem Stand
+(Sicherheitsklasse, Use Cases, Safety Model, Software, Hardware, Erfahrung was
+funktioniert aus Studien etc, ..) im Dialog mit den zuständigen Behörden, so
+wie Jan Henrik das in etwa formuliert hat und ich es aus dem Pharmabereich
+meiner Partnerin bisher mitbekommen habe.
 
 To me unclear if solved:
 * check if linker speak has a formal model
   - https://www.cl.cam.ac.uk/~pes20/projects-2024.html
     looks like projects on DWARF debug info tests and linker speak
     tests (or oracle for correct semantics).
+    https://github.com/rems-project/linksem
 * check, if cakeml and compcert have linker speak verified
   - no
 * As I understand it, LTO collects "live symbols" and strips the rest besides
@@ -641,6 +678,10 @@ One possible strategy:
   * XMC as sound model checker implemented on top of GenMC
   * missing: ROCQ mechanization, sequentially-consistent accesses,
   archive completeness of model checking algorithm
+- alternative: "D3692R1: How to Avoid OOTA Without Really Trying"
+  "P3064R2: How to Avoid OOTA Without Really Trying"
+  * idea: semantic time dependency on store-load order
+  * TODO good summary
 - MIXER: DPOR for MSA
   * stateless model checking can not handle mixed size accesses in general
   * factorial state explosion
@@ -808,3 +849,16 @@ compiling to C code or for signal processing etc (Simulink).
   * idea: comptime declarative fns for type checks using an interface struct { data, &fn_check_on_data }
     o testing in code or build.zig with all target + type instantiations
     o data or functions can not be arbitrarily composed for generic checks
+
+====specification
+https://diataxis.fr/
+tutorials (learning) - how? simplified example for learning
+* [used for small simple tasks or learning (complex) systems]
+guides (reaching goals) - steps? instructions to get started/up to speed
+* [defines how fast on-boarding works]
+explanation (understanding) - why? derivable from use cases and design
+* [know-how, could be outlined in design]
+reference (information) - system semantics? specification, code docs, manual, wikis, etc
+* [information distribution across colleagues,
+   support works; information distribution is the critical bottleneck of every company]
+Think how to navigate, simplify and explani complex problems and systems like companies!

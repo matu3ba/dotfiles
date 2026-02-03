@@ -2,6 +2,7 @@
 ====artifacts
 ====known_to_work_use_cases
 ====visualization
+====frameworks
 
 ====llms
 * fast selection of models via https://github.com/jedisct1/inferswitch
@@ -50,6 +51,8 @@ given known probability distribution(s) and sufficient handling of edge cases (c
   - diy llms (+ textual frontend, progress etc)
 * 3. basic overview stuff not to be trusted/needs validation
   - deepseek, chatgpt, gemini
+* 4. derived formal system by given system traces via SMT or concolic testing
+=> pattern detection (like word contextualization) + optimization problems (like calibration)
 
 any automation system can only be as good as the (formal) semantics encoding
 it, so dont expect much without (formal) encoding of meanings or copy-paste
@@ -57,3 +60,20 @@ solution.
 
 ====visualization
 https://bbycroft.net/llm
+
+====security
+LLM context security very problematic
+- context files given to LLMs are not cryptographically signed leading to easy exploitations
+- state filtering and extraction probabilistic at best, not deterministic
+
+====frameworks
+https://github.com/Open-Model-Initiative/Omni-RLM
+* very early
+* no ideas on security model yet
+* plan to build RLM planner
+* planner is in the sense of agent task planning, not really k8s style of
+  things, but it does depend upon how you deploy the agent/llm cluster
+* Kubernetes execution model with the very involved configuration complexity?
+* preventing bad configuration language design and proper debuggability of system?
+* zig test quickstart.zig
+

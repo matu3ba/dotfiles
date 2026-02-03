@@ -3,6 +3,10 @@
 -- luacheck: no max line length
 local utils = require 'my_utils'
 
+-- all vim options
+-- https://codeberg.org/EvanHahn/dotfiles/src/commit/91685f0a629b584eb99ba715c441b918b9565ff0/home/vim/.config/nvim/init.vim
+-- toggle lsp loclist,quickfixlist https://erock-git-dotfiles.pgs.sh/tree/main/item/dot_config/nvim/init.lua.html
+
 -- Most often used toggle options
 -- :set binary nobinary
 -- :setlocal display=uhex
