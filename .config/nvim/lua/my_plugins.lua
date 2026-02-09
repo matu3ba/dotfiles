@@ -254,7 +254,8 @@ return {
   -- (unused default breaks mini.surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   -- TODO figure out better keymap
-  { 'ggandor/leap.nvim' }, -- repeat action not yet supported
+  { url = "https://codeberg.org/andyg/leap.nvim" },
+  -- repeat action not yet supported
 
   -- Remote editing
   -- nvim oil-ssh://[username@]hostname[:port]/[path]
@@ -348,10 +349,10 @@ return {
   { 'folke/which-key.nvim', config = function() require('which-key').setup() end },
 
   -- markdown live preview via :Glow[!] [path]
-  -- {
-  --   'ellisonleao/glow.nvim',
-  --   config = function() require('glow').setup() end,
-  -- },
+  {
+    'ellisonleao/glow.nvim',
+    config = function() require('glow').setup() end,
+  },
   -- TODO figure out which markdown viewer to use
   -- markdown OXY2DEV/markview.nvim
   -- markdown MeangeringProgrammer/render-markdown.nvim

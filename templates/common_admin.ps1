@@ -2,6 +2,7 @@
 
 #====process_list
 #====iis
+#====hyper-v
 
 
 #====process_list
@@ -66,3 +67,14 @@ wmic process list
 #appcmd list backup
 #appcmd restore backup srviis1-backup-2019
 # Windows Server 2019, Powershell > 7.0.x IIS backup: Export-IISConfiguration
+
+#====hyper-v
+##setup as admin
+# Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+##fixup permissions
+# get-LocalGroup | ft Name, SID
+# $loggedInUser =  (get-wmiobject  win32_computersystem).username
+# Add-LocalGroupMember -group "Hyper-V-Administrators" -member $loggedInUser
+# Add-LocalGroupMember -group "Hyper-V-Administratoren" -member $loggedInUser
+# log out and in to validate explicit+implicit groups membership: whoami /groups
+# for explicit network groups: net user /domain username

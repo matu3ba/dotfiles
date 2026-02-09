@@ -1,5 +1,9 @@
+====definition
 ====ci
 ====packages
+
+====definition
+* simplified workload orchestrator with user-provided platform control API
 
 ====ci
 Purpose of Continous Integration [CI]: Remote execution service of configurable

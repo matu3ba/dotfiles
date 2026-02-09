@@ -136,6 +136,19 @@ https://ionescu007.github.io/SimpleVisor/ https://github.com/ionescu007/SimpleVi
 * minimal virtualization based in-kernel debugging for Windows
 * related https://github.com/tandasat/HyperPlatform
 
+Configuring Automatic Debugging https://learn.microsoft.com/en-us/windows/win32/debug/configuring-automatic-debugging
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl
+* debug a crash dump with a kernel-mode debugger, such as WinDbg or KD
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+* set a debugger as the postmortem debugger
+REG_SZ string "C:\debuggers\windbg.exe" -p %ld -e %ld -g
+
+Monitoring Silent Process Exit https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/registry-entries-for-silent-process-exit
+* Self termination
+* The monitored process terminates itself by calling ExitProcess.
+* Cross-process termination
+* A second process terminates the monitored process by calling TerminateProcess.
+
 ====build_problems
 Build problems, ie incremental build problems:
 Tools -> Options -> Proj & Sol. -> Build & Run -> build log verbosity -> diagnostic

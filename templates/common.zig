@@ -30,6 +30,8 @@ const process = std.process;
 // headless browser - https://github.com/lightpanda-io/browser
 // composable finite state machines - https://github.com/sdzx-1/polystate
 // xit (simple database git with excellent goodies) - https://github.com/radarroark/xit
+// High-Performance Recursive Language Model Framework https://github.com/Open-Model-Initiative/Omni-RLM
+// read/write memory from running process and grab basic network information on linux https://codeberg.org/jmatth11/plunder
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz
@@ -49,6 +51,7 @@ const process = std.process;
 // https://codeberg.org/ssmid/zeppelin
 // https://github.com/vancluever/z2d
 // https://github.com/srmadrid/zml
+// https://zsf.zulipchat.com/
 
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger

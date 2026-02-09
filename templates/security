@@ -154,6 +154,9 @@ Unfortunately it does not say "must have".
 8. hardened kernel?
 9. good practical usage https://blog.emilua.org/2025/01/12/software-sandboxing-basics/
   * no comparison to Arcan yet
+* https://www.youtube.com/watch?v=40SnEd1RWUU
+  "Interview with a ‘Just use a VPS’ bro (OpenClaw version)"
+  - basically a guide, but likely very incomplete
 
 https://gitlab.exherbo.org/sydbox/sydbox
 https://crates.io/crates/syd

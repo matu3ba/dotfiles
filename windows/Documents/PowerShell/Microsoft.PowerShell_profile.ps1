@@ -55,6 +55,7 @@ $env:Editor = "nvim"
 # SHENNANIGAN unix line endings need
 # gdNo > some.diff
 # git apply --ignore-whitespace some.diff
+# Find windows line endings: find . -name "*.php" | xargs file | grep "CRLF"
 
 # DevShell to be used from Powershell
 # https://intellitect.com/blog/enter-vsdevshell-powershell/
@@ -228,6 +229,9 @@ function ZigCrossRelease { & ..\master\rel\zig.exe build -p rel --search-prefix 
 filter fgrep($keyword) { if ( ($_ | Out-String) -like “*$keyword*”) { $_ } }
 filter fsed($before,$after) { %{$_ -replace $before,$after} }
 filter xargs { & $args[0] ($args[1..$args.length] + $_) }
+
+# compare two files
+# compare-object (get-content one.txt) (get-content two.txt)
 
 #====whereis
 # gcm pwsh.exe

@@ -251,6 +251,11 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # sed does not include line endings unless told so, which is not POSIX conform
 # sed -i -z 's|\n|\\\n|g' file.txt
 # sed -i -z 's|\\\n|\n|g' file.txt
+# find windows line endings
+# find . -name "*.php" | xargs file | grep "CRLF"
+# rg -l '\r' -g '*.md'
+# grep -l -r -U $'\015' --include="*.md" .
+# replace windows line endings: find . -name "*.php" -type f -exec dos2unix {} \;
 
 # find
 # find ./ -maxdepth 1 -type f -exec SED_PATTERN {} \;
@@ -291,6 +296,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # fd --type f -x sed -i -e 's/apple/orange/g'
 # fd --type f -x sed -i 's;Ether;Twin;g'
 # fd --type f -x sd -F Ether Twin
+# fd -e md -e txt .
 # To batch process results, use -X
 # Get relative path to all files in dirs matching pattern and run command per line
 # fd 'Release' -t d -x realpath --relative-to=. {}/* | xargs -n1 sha256sum

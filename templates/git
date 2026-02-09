@@ -178,3 +178,6 @@ git push --tags
 $git describe --tag --always --dirty="+"
 on dirty (non-tagged commit after 0.0.1): 0.0.1-4-gdeadbeef
 on clean (tagged commit 0.0.1): 0.0.1
+
+beautiful commit messages: https://github.com/rocketraman/gitworkflow
+* trade-off being more complicated

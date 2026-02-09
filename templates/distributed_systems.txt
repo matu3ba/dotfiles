@@ -115,9 +115,10 @@ unclear parts:
   - easy to take over cluster, if pods are compromised
   - there are hard to maintain security solutions on top
   - no custom Kernel/OS architecture enforcing a modern security model, k8 builds on Linux primitives
-* reason 1 scale vertically applications on demand
-* reason 2 reduce operator cost by declarative configuration and execution
-* tradeoff: no hard latency or time-critical control
+* reason 1 on demand vertical and horizontal scaling of applications
+* reason 2 reduce operator cost by declarative configuration
+* tradeoff: no hard latency or time-critical control, no security model (configs + hacks leaving open many attack vectors)
+  - security model: each cluster has its own VPN, default Linux containers, no VM
   - https://research.checkpoint.com/2026/voidlink-the-cloud-native-malware-framework/
   - looks like bad things might happen with kubernetes, docker
     => dependency attacks very common
@@ -162,6 +163,9 @@ https://www.qovery.com/blog/northflank-alternatives
   - 1 offers unbounded complexity
   - 2 no unified (remote debugging) tooling
   - 3 no best practices for vendor + security + cost deployment validation / monitoring
+
+====kubernetes_debug
+TODO
 
 ====kubernetes_monitoring_logging
 https://kubernetes.io/docs/tasks/debug/

@@ -18,3 +18,18 @@ curl http://example.com -d {}
 
 GET: curl -X GET 'http://IP:PORT/get-status'
 POST: curl http://IP:PORT/set-state?key1=val1;key2=val2
+
+-d without -G is a POST request
+curl -G -d "param1=value1" -d "param2=value2" http://httpbin.org/get
+curl 'http://httpbin.org/get?param1=value1&param2=value2'
+
+-Headers             	-I 	--head       	Retrieves HTTP headers only.
+Include Headers      	-i 	--include    	Includes the HTTP response headers in the output.
+User Agent           	-A 	--user-agent 	Specifies the User-Agent string to send to the server.
+Request Type         	-X 	--request    	Specifies the request type to use (GET, POST, PUT, DELETE, etc.)
+Follow Redirects     	-L 	--location   	Follows redirects in the server's response.
+Send Cookies         	-b 	--cookie     	Sends cookies from a string or file. Format of string should be NAME=VALUE; another=anotherval.
+Verbose Mode         	-v 	--verbose    	Provides more information (debug info).
+Silent Mode          	-s 	--silent     	Silent mode. Don't output anything.
+Output to File       	-o 	--output     	Writes output to instead of stdout.
+Pass a Custom Header 	-H 	--header     	Passes a custom header to the server. To get JSON, use -H "Accept: application/json".

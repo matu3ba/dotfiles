@@ -16,6 +16,18 @@ ffmpeg -i input.wav -vn -ar 44100 -ac 2 -b:a 192k output.mp3
 --b:a bitrate, alternative: -q:a 2 for variable bitrate (average 192KB/s)
 for f in *.wma; do ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "${f%.*}.mp3"; done
 
+# Converting to opus
+# streaming
+ffmpeg -i input.mp4 -c:a libopus -b:a 96K output.opus
+# music
+ffmpeg -i input.mp4 -c:a libopus -b:a 128K output.opus
+# Bitrate adjustment via -b:a BITRATE
+# podcasts and audiobooks: 24K
+# streaming: 96K
+# quality stereo music: 128K
+# 5.1 surround: 256K
+# 7.1 surround: 450K
+
 #idea cutting
 
 #screenshots

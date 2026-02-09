@@ -318,6 +318,8 @@ require 'my_keymaps'
 -- :%s/.*/"&",
 -- verbatim replace (snomagic)
 -- :sno/search/replace/g
+-- find windows line endings
+-- find . -name "*.php" | xargs file | grep "CRLF"
 -- remove trailing carriage returns (^M), ie of windows
 --:e ++ff=dos
 --:set ff=unix

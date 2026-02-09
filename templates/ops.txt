@@ -1,0 +1,97 @@
+====technical_ops
+====Documentation
+====CI_CD_goals
+====buzzwords
+
+Personally I'd phrase Xops as acronym for common and internal IT processes with
+fancy and very overloaded descriptions usually presented without best practices.
+
+====technical_ops
+Operations usually means "internal tasks"/invisible tasks. Internal tools and
+infrastructure are not visible to the customer, but products, sales, service/support,
+marketing are and thus not part of "Ops".
+The phrase ops is usually only used in IT contexts, since for example verification
+engineers of CPUs are internal but usually not called like that and likewise QA
+in manufacturing companies.
+
+General ones are
+* 1 SysOps(admins) aka systems maintenance (updates, supervision, on-call standby, sys debug tooling)
+* 2 DevOps(devs) aka systems creation (design, creation, app debug tooling, less maintenance)
+
+However, separation between 1+2 makes often no sense, because
+1 administration mandates automation including integration of debug tooling and
+2 permission delegation for subsystems for debugging is often required or results
+  in hard block of development progress and unnecessary slow information sharing.
+
+In practice devs 1 must be establish trust xor 2 they must demonstrate necessity
+for access and 3 must be no strong incentives to block access by admins (possibly
+handled via management, ideally via shared team responsibilities) if the deployment
+is product related, under control and dev responsible for product.
+The alternate path of the admin holds for code access from the admin perspective
+to have an overview on current and future demands for task prioritization via
+understanding of the existing workflows.
+* realistically this only happens in small or shared teams or if devs=admins
+
+Hereby IP security, security and trust must be weighed to mitigate information
+islands forming preventing a coherent system overview and vision.
+* there are various ways to do this depending on company culture
+
+Ideally, each team provides
+* 1 system + debugging + infra overview
+* 2 system vision
+* 3 use case group overview
+* 4 design with trade-offs
+* 5 devops cycle (building, testing, deploying) workflow guidelines for fast
+  onboarding, deep dives and collaboration (assuming testing includes
+  end-to-end testing and deployments).
+
+====Documentation
+from higher to lower priority:
+* Provide overviews on relevant teams, projects with individual system overview infos.
+  - see section technical_ops
+* Frequent copy-paste dev operations belong into git next to code, complex ones
+  into links (to wiki).
+* Keep relevant parts structured, up to date and add explicit notes (when
+  something smells wrong).
+* Do not keep the same data in 2 places, unless important to keep context.
+* Wiki: Keep it as short as reasonable for usage, strive for seperation into
+  high-quality workflow guidelines, reference manual info, contextual notes.
+  Do not create tutorials, they tend to be low-quality workflow guidelines.
+* Prefer quality over quantity for workflow guidelines and keep amount reasonable.
+  - Simple or less important things do not need a workflow guideline.
+* Prefer fast/automation instructions of workflows (scripts, shortcuts, etc)
+  with corresponding path notations (in case of menus) over screenshots.
+  - Screenshots take more time and may not be needed.
+
+====CI_CD_goals
+from higher to lower priority:
+* use real or close to real data (customer/product)
+* make deployments, rollbacks data available in a centralized place and allow
+  simple to setup reasonably reproducible systems
+  - keep CI as close to dev setup as reasonably possible
+* version everything, if reasonably possible - especially code and data - and
+  automate system data retrieval if reasonable
+  - keep data on stable branches with related data for code and data bisecting, searches
+* automate everything, especially testing, integration, deployment/release
+  - offer reasonable control over the process for full/semi-automatic deployments
+  and debugging (bisecting etc)
+
+====buzzwords
+Specialized ones being combination or (extension with) focus on specific fields
+or activities are
+* AIOps (AI related)
+* BizDevOps (management/CEO for business+other in loop based on metrics)
+  - sounds ideal for non-hw products, but very unclear user experience concept
+    and consequences
+* CloudOps (cloud related)
+* DataOps (data related)
+* DevSecOps (system security [of dev+management])
+* FinOps (accounting system for cloud)
+* GitOps (git tracking of of infra, mrs, ci/cd)
+* MLOps (ML+data eng+DevOps)
+* ModelOps (dev+sys for AI workflows)
+* NetDevOps (networking + devops, background SDN for WAN)
+* NoOps (buzzword for ideal operation state as goal)
+* SecDevOps (prio on security over DevSecOps)
+* TwinOps (dev+sys for digital twin model)
+The buzzwords, like "DevOps" are acronyms.

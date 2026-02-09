@@ -1,3 +1,8 @@
+tldr; server is group concept
+server implies server environment (layer 1-7), services and applications
+* terminology is flawed, so better use applicationm, platform and infrastructure
+  context
+
 https://blog.wesleyac.com/posts/how-i-run-my-servers
 
 Apache log4net part of Apache Logging Services project

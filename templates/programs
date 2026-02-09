@@ -107,7 +107,10 @@ markdown editor: retext
 extracting music: yt-dlp -x
 extracting video+sound: yt-dlp --max-filesize 1000m
 * winget install DenoLand.Deno
+* winget install ffmpeg
 * or something for installing on Linux
+* yt-dlp --list-formats URL
+* yt-dlp -f FORMAT_ID URL
 
 Cross platform capturing video + sound: OBS
 
