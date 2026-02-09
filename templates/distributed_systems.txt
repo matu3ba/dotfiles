@@ -151,6 +151,7 @@ https://www.qovery.com/blog/northflank-alternatives
   + trade-offs sound good, few superflous complexity in practice
   + instead: vendor lockin
 * everything in Kubernetes wants yaml or a yaml generator (helm or alternatives)
+  - kustomize is alternative, but too stupid
 
 ====kubernetes_debug
 * no direct hardware access (sitting atop of hypervisor talking to management API,
@@ -175,6 +176,20 @@ https://kubernetes.io/docs/tasks/debug/debug-cluster/
 ====kubernetes_deployments
 https://www.ionos.at/digitalguide/server/konfiguration/kubernetes-deployment/
 https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+default kubernetes has no
+* 1 ingress/gateway [kong, envoy]
+* 2 secret management+rolling
+* 3 external DNS [TODO]
+* 4 gitlab agent
+* 5 grafana/cockpit(mimi+tempo+loki)+alloy for metrics; Graylog(legacy applications)
+* 6 kube state matrix (scaleway has cluster monitoring für pods und deployments)
+* 7 version checker [argo can replace that]
+* 8 egress [kong maybe can do wireguard]
+* 9 alert manager (complex setup) [by vendor like scaleway]
+* 10 managed postgresql; postgresql operator [by vendor like scaleway]
+  - when to do migrations
+  - rollbacks argo rollouts<->k8 glue code
+  - rollbacks/checkpoints
 
 ====storage
 MinIO replacement options
