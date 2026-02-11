@@ -113,5 +113,6 @@ extracting video+sound: yt-dlp --max-filesize 1000m
 * yt-dlp -f FORMAT_ID URL
 
 Cross platform capturing video + sound: OBS
+Disk usage analyzer: https://gitlab.gnome.org/GNOME/baobab
 
 wine + discord https://github.com/DiscordMessenger/dm

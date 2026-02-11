@@ -1,4 +1,5 @@
 ====software_systems
+====software_architectures
 
 ====software_systems
 https://github.com/ashishps1/awesome-system-design-resources
@@ -7,3 +8,102 @@ https://github.com/ashishps1/awesome-low-level-design
 https://algomaster.io/learn/lld
 
 small, (very) simple DIY GUI https://pontus.granstrom.me/scrappy/
+
+====software_architectures
+"The Only Unbreakable Law" by Casey
+
+Semi laws
+* Pareto principle: 20% effort 80% outcome
+* Single responsibility: module responsible to exactly one actor
+* Open-closed: sw entities should be open for extension, but closed for modification
+* Liskov substitution (meh)
+* Interface segregation: no code should be forced to depend on methods it does not use
+* Dendency inversion: Use interfaces instead of objects. Close to Composition over inheritance.
+* Postel's law/robustness principle: (meh) be conservative what you do, liberal in what you accept from others.
+* Brook's law: Adding manpower to a late software project makes it later. (same as Amdahl's law, it depends)
+
+Actual laws
+* Amdahl's law (expectation from parallization)
+  => execution speedup ("execution")
+* Brook's law mentioned by "the mythical man month" (expectation from schedule)
+  - no communication needed
+  - only sequential possible,
+  - natural communication cost/communication barrier
+  - communication cost scales by number of people
+  => completion ("getting project done", what to expect from schedule)
+  => looks like Amdahl's law
+* Conway's law based on paper "How committees invent?"
+  (expectation on sw architecture from team- and communication structures)
+  - 1 understanding boundaries on design activity, system to be designed,
+    placed by sponsor and by world realities
+  - 2 archievement of preliminary notion of system orga so that design task
+    groups can be meaningful assigned
+  * Thus: need a company => coordination problem is created
+  - once orga of design team is chosen, it is possible to delegate activities
+    to the subgroups of orga. every time delegation is made and somebody's scope
+    of inquiry is narrowed, class of possbible design alternatives is narrowed
+  * Thus: design of thing to be made does not need high-bandwidth communication
+    between those 2 areas (hence delegation to subgroup of orga), for example
+    tire vs engine team
+  * Hence: structure-preserving relationship between two sets of things is
+    called homomorphism (linear graph of system <-> linear graph of design organization)
+  * Therefore: hypothesis that organizations which design systems are constrained
+    to produce designs which are copies of communication structure of these organizations
+        Microsoft example
+             DirectX
+          x             x
+        XAudio  Direct2D Direct3D
+  * The org chart is the asymptote for what the best you can do.
+  => structure
+=> The why is more important than the what: Communication between team is more
+   costly than communication inside teams.
+=> Limitation on design iteration speed (about shared design).
+* Conway's nightmare (aka technical debt)
+  - Contract research organization had 8 people producing COBOL and ALGOL compiler
+  - after initial estimation of difficulty and time, 5 people were assigned to
+    COBOL job and 3 to ALGOL. Resulting COBOL compiler ran in 5 phases, ALGOL
+    compiler ran in 3.
+  - System hardware -> system software    -> application program
+            machine language  programming language
+       Engineers    |  System programmers | user's programmers
+  - Windows, WindowsNT with massive lifespan 1985-2022+ => 40 year code base
+  - Legacy code base means previous + next codebase merged
+  - delegation now includes time travel
+    => 5 volume sliders from different Windows versions
+  => different teams at different past times created different product
+     so it is an amalgamation of features
+  => programmers now think delegation is separately good
+     - class diagram of LLVM operator class, only boilerplate to specify
+       as code org within code to artificially constraint how code works
+       => org chart within org chart as artificial constraint
+       => unable to keep entire complexity in their head and they are taught that
+       this is good design
+       => sign that you are underarchiving, because you can not manage the complexity
+  - if designer phased with problem too complex for designer to solve:
+    - often artificial breaking up problem, but no necessary able to break up
+      the pieces correctly
+    - in order to start programming, they eliminated problem in the design space
+
+Important to recognize that these are bad
+* libraries
+* engines
+* package managers
+* containers
+* virtual machines
+* microservices
+because we have a priori decided what we want not to work, optimize and merge together.
+Still necessary due to brain capacity, but crucial to keep in mind that these are bad
+(worse design, worse efficiency).
+
+A manager msut subcract a crucial and difficult design task. 2 contractors: small
+new org propositing intuitively appealing approach for less money than budgeted
+and established but conventional outfit asking more "realistic" fee.
+Knowing bright young orga fails to produce adequate results means mismanagement whereas
+established product failure means "problem is indeed a difficult one".
+=> Unless wanting to be trailblazor for new things, take safe choice.
+=> Ways must be found to reward design managers to keep orga lean and flexible. Need
+for philosophy of system design management not based on assumption that adding manpower
+simply adds productivity. Development of such philosophy promises to unearth basic
+questions about value of resources and techniques of communication which will need to
+be answered before out system-building technology can proceed with confidence.
+=> Must be as __lean__ and __flexible__ as possible.

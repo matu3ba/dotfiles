@@ -4,6 +4,7 @@ TODO*
 AppDir/
 build*/
 .zig-cache/
+zig-pkg/
 zig-out/
 
 .luarc.json

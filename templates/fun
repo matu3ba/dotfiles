@@ -1,1 +1,4 @@
 Burritos for the Hungry Mathematician
+
+Filenames are the best interpreted language
+char main[] __attribute__((section(".text"))) = __FILE__;

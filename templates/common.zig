@@ -32,6 +32,8 @@ const process = std.process;
 // xit (simple database git with excellent goodies) - https://github.com/radarroark/xit
 // High-Performance Recursive Language Model Framework https://github.com/Open-Model-Initiative/Omni-RLM
 // read/write memory from running process and grab basic network information on linux https://codeberg.org/jmatth11/plunder
+// fetch and (cross-)compile msvc tools - https://github.com/marler8997/msvcup
+// chat application - https://codeberg.org/awebo-chat/awebo
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz
@@ -415,6 +417,7 @@ test "perf array assignment" {
 // Parameter Reference Optimization
 // examples from @SpexGuy's talk
 // https://www.youtube.com/watch?v=dEIsJPpCZYg
+// * should be fixed now
 
 const BigStruct = struct {
     vals: [4]u128,
