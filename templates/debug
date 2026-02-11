@@ -179,3 +179,5 @@ https://maskray.me/blog/2025-09-28-remarks-on-sframe
 * future: getting irrelevant due to hardware-assisted unwinding like x86 Shadow Stack
   and AArch63 Guarded Control Stack
   TODO how do these work and what perf/size difference do they make?
+
+TODO retrieve interesting debugging tooling https://blog.nelhage.com/post/computers-can-be-understood/

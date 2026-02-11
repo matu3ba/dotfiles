@@ -1,0 +1,54 @@
+processes:
+* business
+* product
+* ops/internal
+
+teams may be responsible horizontal or vertical
+* vertical means business<->product<->ops focus (allrounder)
+  - keep system tight to business requirements, eliminates overhead for team
+  - less centralized power
+  - pushing changes like restructuring becomes harder
+  - much more negotiation over money chains/sharing maintenance
+  - less to no independence of product+internal personal from business
+    => pushing company-wide changes as single-person/mini team independent of
+    business much more efficient
+* horizontal means on ops/internal|product|business level
+  - more independence from business may lead to more trying out ideas and sharing
+  - centralized power simplifies keeping overviews
+  - pushing changes like restructuring are simplified
+  - less negotiation over money chains/sharing maintenance
+  - more independence of product+internal personal from business
+    => pushing company-wide changes as single-person/mini team independent of
+    business much more efficient
+
+
+CI/CD, shipping, debugging mandates often end-to-end control over product, so
+dedicated Ops has often restricted tasks or is non-existent/external (sole
+admin role becomes more and more rare).
+
+* product<->ops/internal restrictions often creates significant unnecessary burdens
+* business<->product restrictions can shield IP and increase company negotiation
+  power, but often lowers understanding of business side of product
+                _
+* business     | |
+    |          |t|
+    v          |e|
+* product      |a|
+    |          |m|
+    v          |s|
+* ops/internal |_|
+
+* Identifying goals
+  - quantify current status with example numbers (metrics)
+  - quantify wanted state with example numbers (metrics)
+  - collect opinions of devs, support, testing of current product (user experience)
+  - collect opinions of devs, support, testing of best practice product (user experience)
+
+* Iterative Workflow and (path) dependency modeling
+  - clarify possible responsibilities by experience
+  - write down SMART goals of team with necessary SMART steps
+  - identify least effort biggest gain, strategy goals, make model with (path)
+    dependencies
+  - make tickets with (path) dependencies; focus on a few big things per person
+    and small things + clarify actual responsibilities by experience
+  - iterate
