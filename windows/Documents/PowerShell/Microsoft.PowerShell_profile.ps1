@@ -334,6 +334,9 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # SHENNANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
 
+# SHENNANIGAN piping broken, must use tmp file; pipe
+# $SEARCH='RepoName.csproj'; rg -l "${SEARCH}" > tmp; rg -F 'sln' .\tmp
+
 # SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
 # https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
 

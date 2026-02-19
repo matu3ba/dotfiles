@@ -162,11 +162,24 @@ https://www.qovery.com/blog/northflank-alternatives
 * debugging based on cheap metrics, not heavy string log indexing + searches, see Grafana stack
 * problematic:
   - 1 offers unbounded complexity
+    guideline: https://sanj.dev/post/why-simple-architecture-wins
+    https://yusufaytas.com/check-first-then-use/
   - 2 no unified (remote debugging) tooling
   - 3 no best practices for vendor + security + cost deployment validation / monitoring
-
-====kubernetes_debug
-TODO
+* local setup
+  - https://sanj.dev/post/2025-12-11-ultimate-local-kubernetes-showdown-2025
+    * k0s security, purist, multi-platform, hate deps more than complexity
+      - "pure+simple", very fast
+    * k3d if devop eng, cicd pipeline, "time is money"
+      - "I need it now" (compromise between pure+simple + correct)
+    * kind k8 contributor, platform teams, correctness > convenience
+      - "technically perfect"/correct
+    * MicroK8s enterprise, windows dev, ubuntu enthusiast, someone to call
+      - "enterprise needs everything"
+    * Minikube k8 students, feature exploration, "complete experience"
+      - "I'm learning and want all the features"
+* Expert/Best Practice: Talos Linux
+  - very similar to how Embedded/Edge Devices should be managed
 
 ====kubernetes_monitoring_logging
 https://kubernetes.io/docs/tasks/debug/

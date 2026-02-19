@@ -68,6 +68,9 @@ alias gke='gitk --all $(git log -g --pretty=%h)'
 
 alias gur='git pull --rebase'
 alias gu='git pull --no-rebase --ff-only'
+# ff fetch-merge without checkout: git fetch upstream master:master
+# same principle to fetch FROM TO: git fetch . FROM:TO
+# ie to merge into master without checkout: git fetch . FROM:master
 abbr --add -g glgs 'git log -S' # git log search 'regex' -- file
 
 alias glg='git log --stat'

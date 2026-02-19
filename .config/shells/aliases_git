@@ -358,6 +358,9 @@ alias gke='gitk --all $(git log -g --pretty=%h)'
 
 alias gur='git pull --rebase'
 alias gu='git pull --no-rebase --ff-only'
+# ff fetch-merge without checkout: git fetch upstream master:master
+# same principle to fetch FROM TO: git fetch . FROM:TO
+# ie to merge into master without checkout: git fetch . FROM:master
 # alias glgs='git log -G' # git log search 'regex' -- file (Gitsearch the content), only useful with --first-parent
 # alias glgr='git log --grep=' # git log grep (grep the log), only useful with --first-parent
 #git log --grep|--invert-grep
@@ -625,7 +628,7 @@ alias gsu='git submodule update'
 
 # TODO split commits in arbitrary commit range
 
-# TODO fast and intuitive git log search?
+# idea fast and intuitive git log search?
 # git log -G 'PxProfilControlGui:'
 
 #====plumbing commands (may break git repo)
