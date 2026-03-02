@@ -116,3 +116,18 @@ Cross platform capturing/recording video + sound: OBS, https://obsproject.com/
 Disk usage analyzer: https://gitlab.gnome.org/GNOME/baobab
 
 wine + discord https://github.com/DiscordMessenger/dm
+There is no good alternative to Discord (yet?)
+There is no alternative which offers:
+  (group) voice chat, (group) text chat, live screen sharing, permission system
+  easy selfhosting with docker
+  open source
+  respects privacy (looking at you matrix)
+  decentralized at best
+  costs nothing
+Checked:
+  XMPP based services
+  Matrix
+  Stoat
+  Mattermost
+* unfinished: https://codeberg.org/awebo-chat/awebo
+* copypaste+ai: fluxer

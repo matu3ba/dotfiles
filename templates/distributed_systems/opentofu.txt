@@ -1,4 +1,103 @@
+====best_practice
 ====general
+
+====best_practice
+https://dixken.de/blog/terraform-best-practices
+Terraform Best Practices
+1. State Management
+  Never store Terraform state locally in production. Always use remote backends with state locking.
+  terraform {
+    backend "s3" {
+      bucket         = "terraform-state-prod"
+      key            = "infrastructure/terraform.tfstate"
+      region         = "us-east-1"
+      encrypt        = true
+      dynamodb_table = "terraform-locks"
+    }
+  }
+2. Module Structure
+  Organize your code into reusable modules for consistency and maintainability.
+  .
+  ├── modules/
+  │   ├── vpc/
+  │   │   ├── main.tf
+  │   │   ├── variables.tf
+  │   │   └── outputs.tf
+  │   └── eks/
+  │       ├── main.tf
+  │       ├── variables.tf
+  │       └── outputs.tf
+  └── environments/
+      ├── dev/
+      ├── staging/
+      └── prod/
+3. Variable Validation
+  Use variable validation to catch configuration errors early.
+  variable "environment" {
+    type        = string
+    description = "Environment name"
+
+    validation {
+      condition     = contains(["dev", "staging", "prod"], var.environment)
+      error_message = "Environment must be dev, staging, or prod."
+    }
+  }
+4. Output Sensitive Data Carefully
+  Mark sensitive outputs appropriately to prevent accidental exposure.
+  output "database_password" {
+    value       = aws_db_instance.main.password
+    sensitive   = true
+    description = "Database master password"
+  }
+5. Use Data Sources
+  Leverage data sources to reference existing infrastructure instead of hardcoding values.
+  data "aws_ami" "amazon_linux" {
+    most_recent = true
+    owners      = ["amazon"]
+    filter {
+      name   = "name"
+      values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    }
+  }
+6. Implement Proper Tagging
+  Consistent tagging enables cost tracking, resource management, and automation.
+  locals {
+    common_tags = {
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+      Project     = var.project_name
+      CostCenter  = var.cost_center
+    }
+  }
+  resource "aws_instance" "app" {
+    # ... other configuration ...
+    tags = merge(local.common_tags, {
+      Name = "app-server-${var.environment}"
+    })
+  }
+7. Use Workspaces for Environments
+  Terraform workspaces can simplify multi-environment management.
+  terraform workspace new staging
+  terraform workspace select production
+  terraform plan -var-file="prod.tfvars"
+8. Automate with CI/CD
+  Integrate Terraform into your CI/CD pipeline for consistent deployments.
+  # .gitlab-ci.yml
+  terraform_plan:
+    stage: plan
+    script:
+      - terraform init
+      - terraform plan -out=tfplan
+    artifacts:
+      paths:
+        - tfplan
+  terraform_apply:
+    stage: apply
+    script:
+      - terraform apply tfplan
+    when: manual
+    only:
+      - main
 
 ====general
 plugins are called providers https://opentofu.org/docs/language/providers/

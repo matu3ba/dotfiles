@@ -471,6 +471,9 @@ static void spinlock_acquire() {
 }
 static void spinlock_release() { spinlock.clear(std::memory_order_release); }
 
+// https://tuanhiep.github.io/posts/2.stock-exchange-1-order-book/
+// idea
+
 int main() {
   // Second s{42};
   Second sec{42.0};

@@ -204,6 +204,18 @@ default kubernetes has no
   - rollbacks argo rollouts<->k8 glue code
   - rollbacks/checkpoints
 
+Zero-downtime deployments https://dixken.de/blog/kubernetes-deployment-strategies
+1. Rolling Updates, created above desired count(maxSurge),
+   unavailable during update(maxUnavailable)
+2. Blue-Green Deployments to switch traffic from old(blue) to new(green) version
+   after validation
+3. Canary Releases, gradually rollout to users before available to everyone
+Best Practices
+1. Health Checks: Readiness and liveness probes.
+2. Resource Limits: Resource exhaustion prevention.
+3. Monitor Rollouts: Progress tracking and automate rollbacks.
+4. Test Thoroughly: Staging validation before production.
+
 ====storage
 MinIO replacement options
 * S3Proxy
@@ -283,6 +295,28 @@ https://github.com/palvaro/CSE232-Spring23
 =concurrency
 https://www.youtube.com/watch?v=_9B__0S21y8
 https://videopundits.com/watch/shared/tackling-concurrency-bugs-with-tla-by-hillel-wayne
+
+https://dixken.de/blog/monitoring-observability-patterns
+The Three Pillars
+1. Metrics (Prometheus)
+2. Logs (Loki)
+3. Traces (Jaeger/Tempo)
+Golden Signals (SRE)
+1. Latency: Response time
+2. Traffic: Request volume
+3. Errors: Failure rate
+4. Saturation: Resource utilization
+Grafana Dashboard Best Practices
+* Dashboard Variables for Flexibility
+* Define meaningful alerts that require action.
+Implementation checklist
+[ ] Deploy Prometheus for metrics collection
+[ ] Set up Grafana for visualization
+[ ] Configure Loki for log aggregation
+[ ] Implement distributed tracing
+[ ] Define SLIs/SLOs for your services
+[ ] Create runbooks for common alerts
+[ ] Test alert routing and escalation
 
 ====incus_usage
 TODO
