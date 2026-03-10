@@ -4,6 +4,100 @@
 ====visualization
 ====frameworks
 
+====trade-offs
+excellent overview guide on methods for LLM design with practical trade-offs?
+Afaiu from my naive understanding so far the big picture on the work-flow is to
+make simplified models and iterate from intuition with various trade-offs on
+data quantization and throwing compute + reduce at the problem (training
+faster, inference more accurate/model size reduction etc) based on reasoning
+and accuracy demands of intermediate steps. Am I missing some big pieces on
+(efficienctly) composing LLMs based on common data etc?
+
+Great question. Your intuition is already quite solid.
+
+Many people focus on scaling compute, quantization, and training tricks. Those
+matter, but in production systems the bigger trade-offs usually happen around
+the model rather than inside it.
+
+A few commonly missed pieces: ・System design often matters more than model
+size. Orchestration, routing, memory, and tool use have huge impact. ・Task
+decomposition improves reliability. Planner --> executor --> verifier patterns
+can outperform a single large model call. ・Retrieval quality drives reasoning
+quality. In RAG systems, bad context cannot be fixed by a bigger model.
+・Evaluation loops are critical. Without structured evaluation, iteration
+becomes guesswork.
+
+Efficient composition is mostly about architecture, feedback loops, and control
+mechanisms, not just more compute. What kind of system are you currently
+designing?
+I'm kinda learning and preparing to make/contribute to a system composing
+language and/or helper for https://arcan-fe.com/, since it is complex and
+complicated to use and to end up with ideally a composable formal model. No
+idea, if it pans out. Arcan can be thought as microkernel-like architecture for
+personal (distributed) OS.
+
+Ah, thanks a lot. That sounds reasonable to me. Are you aware about typical
+trade-offs on "around the model" setups? I've designed and reviewed quite a few
+end-to-end test systems and looked through various system trade-offs, so I'm
+curious what matters on the hardware side constraining the design options, on
+the processing and on the data management side. From control systems I'm aware
+that extrapolation (for planning) requires certain system shapes, but I have no
+mental model how planning is possible and done for LLMs.
+
+Great question. The main trade-offs around the model usually fall into three
+areas. On the hardwre side, GPU memory limits context size and batching.
+Latency requirements limit how many model calls you can chain. Throughput and
+cost constraints often push you toward smaller models with smarter routing
+instead of on large model.
+
+On the data side, retrieval precision versus recall is critical. More context
+increases coverage but also noise. You also need to balance index size,
+freshness and latency. Planning in LLM system is usually implemented as
+structured decomposition. The model generates a plan in text. The system parses
+it into steps and executes them sequentially. Sometimes another model verifies
+the result. It is less like control-theory extrapolation and more like
+probabilistic reasoning wrapped in deterministic scaffolding.
+
+Are you exploring this from a theoretical angle, or are you designing a
+specific system?
+
+My bad for being inaccurate. I was trying to express how to plan the
+construction of an LLM with first evaluation and/or necessary iterations for
+concept etc.
+
+I'm first looking at theory and practical constrains and input from practice.
+Also in principle this works, but I'd be interested what it would take to
+shrink the necessary LLM and how useful it would be.
+This sounds like the routing of smaller models comparable to internal bus
+architecture of CPU/GPU/etc is where the IP/value is, when ignoring data
+curation.
+
+Makes sense.
+You are essentially asking how to plan the development of LLM system before committing to large models and heavy iteration.
+In practice, the process usually starts with defining evaluation first.
+You define concrete tasks, success metrics and filure modes.
+Then you prototype with existing strong model to establish a performance ceiling.
+After that you progressively constrain the system.
+You reduce model size, narrow context or introduce structure and measure the drop in quality versus gains in cost and latency.
+
+Sharinking the necessary LLM is ofen possible if you add structure around it .
+Task decomposition, retrieval grounding, tool use and constrained outputs can allow smaller models to perform well.
+In many production systems, a smaller model plus good scaffolding outperforms a large model used naively.
+
+The usefulness of shringking depens on your constraints.
+If cost, latency or deployment on limited hardware matters it is very valuable.
+If the task is highly open-ended reaoning, the gains may be limited.
+
+Are you thinking about training a model from scratch, fine-tuning or optimizing system architecture around base model?
+I'm thinking about from scratch and/or reusing an existing one. I'm not sure,
+what the best decisions helper are.
+
+I guess I'd have to test input/output behavior of LLM/ML models vs from scratch
+based on what people say works. Then make code design and hardware trade-offs
+decisions via some graph tooling. My biggest problem is to estimate essential
+complexity and model size, but I guess hearsay might do.
+TODO summarize properly
+
 ====llms
 * fast selection of models via https://github.com/jedisct1/inferswitch
 * reasoning about llms https://transformer-circuits.pub/2025/attribution-graphs/methods.html

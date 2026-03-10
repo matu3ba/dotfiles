@@ -1,3 +1,4 @@
+====rent_models
 ====tradeoffs
 ====databases
 ====properties
@@ -13,6 +14,13 @@
 ====opentofu
 
 https://github.com/donlon/cloudflare-error-page
+
+====rent_models
+Infrastructure (IaaS) - You pay for the server time, CPU, RAM, disk etc. You manage everything from the OS up.
+Platform (PaaS) - You pay for a software stack, OS and servers are managed for you. Things like hosted wordpress.
+Software (SaaS) - You simply consume the software, everything else is managed for you. E.g. office365.
+* many more associated buzzwords with naming of functionality often depending who is
+  viewing at what parts
 
 ====tradeoffs
 https://www.docker.com/blog/do-you-really-need-microservices/
@@ -118,7 +126,7 @@ unclear parts:
 * reason 1 on demand vertical and horizontal scaling of applications
 * reason 2 reduce operator cost by declarative configuration
 * tradeoff: no hard latency or time-critical control, no security model (configs + hacks leaving open many attack vectors)
-  - security model: each cluster has its own VPN, default Linux containers, no VM
+  - security model: each cluster assumes it has its own PN, default Linux containers, no VM
   - https://research.checkpoint.com/2026/voidlink-the-cloud-native-malware-framework/
   - looks like bad things might happen with kubernetes, docker
     => dependency attacks very common

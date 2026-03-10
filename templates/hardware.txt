@@ -22,6 +22,10 @@ How does safety level affect effort+costs?
 Related
 Overview of safety-critical product requirements for different safety levels of different domains
 with tooling+product certification process.
+Explain internal bus design trade-offs of cpus, gpus, tpus, sdn routers and bus design trade-offs of llms.
+Explain hyperscalar/cloud bus design trade-offs based on the Oxide design documentation.
+Can you give examples in numbers to show intuition into the design space?
+TODO what is hard in FGPA design?
 
 ====cpu
 https://www.ccbp.in/blog/articles/bus-structure-in-computer-architecture

@@ -363,7 +363,7 @@ Tillitis TKey flexible USB security token
 
 ====crypto
 functional correct code without constant time guarantees or checks
-* placeholder
+* https://github.com/lambdaclass/amo-lean
 code with constant time guarantees checks
 * https://github.com/pq-code-package/mlkem-native has
 * valgrind should have options to do that

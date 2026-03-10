@@ -16,6 +16,8 @@
 // * missing await runtime bug compiler only warns, not always picked up as warning
 // * subsequent signals and events can be missed due to some missing special io cases
 
+// https://github.com/neogeek/csharp_editorconfig
+
 // comptime https://github.com/sebastienros/comptime
 
 // Still a problem: Very long build times for big code bases and unfinished (incremental) build system.

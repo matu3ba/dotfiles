@@ -1,0 +1,14 @@
+====towards_general_computing_theory
+Naive goal is to generalize the pieces of all hard as in physical hard
+questions to optimize physical based computing systems and/or understand
+trade-offs.
+
+Systmems to optimze.
+Internal bus design trade-offs of cpus, gpus, tpus, sdn routers and bus design
+trade-offs of llms. Hyperscalar/Cloud bus design might be possible to figure
+out of the Oxide design docs, when staring long enough.
+Unclear what is hard in FGPA.
+
+Goals+Constrains
+TODO summarize conversation with cipharus
+

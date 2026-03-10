@@ -1,5 +1,6 @@
 ====best_practice
 ====general
+====install
 
 ====best_practice
 https://dixken.de/blog/terraform-best-practices
@@ -162,3 +163,6 @@ locals {
 
 provider "scaleway" {
 }
+
+====install
+winget install --exact --id=OpenTofu.Tofu

@@ -93,6 +93,9 @@ alias gshn='git --no-pager show --name-only'
 #{ git --no-pager diff; gdnew } > ../all.diff
 # TODO: combined diff for fish vs posix shell
 
+# https://stackoverflow.com/questions/8382019/how-do-i-git-diff-on-a-certain-directory
+# TODO diff on certain dir
+
 #get diffed file to unindexed file
 #https://stackoverflow.com/questions/855767/can-i-use-git-diff-on-untracked-files
 #git diff --no-index indexed unindexed

@@ -17,6 +17,7 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 -- ziggy     https://github.com/kristoff-it/ziggy
 -- supermd   https://github.com/kristoff-it/supermd
 -- superhtml https://github.com/kristoff-it/superhtml
+-- tofu-ls   https://github.com/opentofu/tofu-ls
 
 --==LspInstallationsAndUsage
 
@@ -35,6 +36,7 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 -- 'lemminx', -- 'lemminx'
 -- 'omnisharp' --  'omnisharp'
 -- 'texlab' -- 'texlab'
+-- 'tofu_ls' --  'tofu-ls'
 -- 'ty' -- 'ty'
 --
 -- pip3 install -U --user jedi-language-server
@@ -121,6 +123,7 @@ vim.lsp.config('ruff', { capabilities = common_capabilities, on_attach = common_
 -- capabilities ~= nil xor error
 vim.lsp.config('rust_analyzer', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('superhtml', { capabilities = common_capabilities, on_attach = common_on_attach })
+vim.lsp.config('tofu_ls', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('ty', { capabilities = common_capabilities, on_attach = common_on_attach })
 -- .config/zls.json https://raw.githubusercontent.com/zigtools/zls/master/schema.json
 vim.lsp.config('zls', { capabilities = common_capabilities, on_attach = common_on_attach })
@@ -132,6 +135,7 @@ vim.lsp.enable 'omnisharp'
 vim.lsp.enable 'ruff'
 vim.lsp.enable 'rust_analyzer'
 vim.lsp.enable 'superhtml'
+vim.lsp.enable 'tofu_ls'
 vim.lsp.enable 'ty'
 vim.lsp.enable 'zls'
 

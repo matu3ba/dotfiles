@@ -1,0 +1,23 @@
+wsl --install --no-distribution
+
+cd ~\Documents
+
+curl -JLO https://github.com/nix-community/NixOS-WSL/releases/download/2505.7.0/nixos.wsl
+curl -JLO https://github.com/nix-community/NixOS-WSL/releases/download/2505.7.0/nixos.wsl.sha256
+
+sha256sum -c nixos.wsl.sha256
+
+.\nixos.wsl
+or wsl --install --from-file nixos.wsl
+
+same system:
+sudo nix-channel --add https://nixos.org/channels/nixos-25.05 nixos
+sudo nix-channel --add https://github.com/nix-community/NixOS-WSL/archive/refs/heads/release-25.05.tar.gz nixos-wsl
+
+git clone github.com/matu3ba/dotfiles/
+TODO setup rebuild source
+
+sudo nix-channel --update
+sudo nixos-rebuild switch
+
+wsl -s NixOS

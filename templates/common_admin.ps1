@@ -68,6 +68,9 @@ wmic process list
 #appcmd restore backup srviis1-backup-2019
 # Windows Server 2019, Powershell > 7.0.x IIS backup: Export-IISConfiguration
 
+# https://andrewlock.net/setting-environment-variables-in-iis-and-avoiding-app-pool-restarts/
+# TLDR;
+
 #====hyper-v
 ##setup as admin
 # Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
@@ -162,3 +165,6 @@ function setupWindowsTask {
 #====setup_kubenetes
 # see TODO
 # best instructions?
+
+# TODO sql administration
+# https://dbatools.io/
