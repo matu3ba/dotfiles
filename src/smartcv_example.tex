@@ -4,6 +4,8 @@
 % cargo install tex-fmt; tex-fmt src/smartcv_example.tex
 % latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1'
 % -pdf -outdir=build src/smartcv_example.tex
+% latexmk -interaction=batchmode -Werror -pdflatex='lualatex -halt-on-error --file-line-error --synctex=1'
+% -pdf -outdir=build src/smartcv_example.tex
 % LuaTEX Reference Manual
 % https://en.wikibooks.org/wiki/TeX
 % idea: docs on internal commands like \@ifundefined \@latex@error

@@ -1,0 +1,5 @@
+looks interesting, https://aerynos.com/about/
+* Linux distribution using atomic updates
+* LLVM tooling
+* very fast (in contrast to NixOS)
+* declarative and stateless/immutable

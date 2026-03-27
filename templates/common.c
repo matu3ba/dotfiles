@@ -265,6 +265,12 @@ ERRDEFER_CLEANUP1:
 // no zero-runtime cost type-safe printf possible without adding more powerful
 // meta-programming (or stack-based macros for iterating),
 // see https://github.com/moehriegitt/vastringify
+// https://github.com/OpenSourceSourceTrail/Sourcetrail
+// * Free and open-source cross-platform source explorer
+// * C, C++, Java, Python
+// * dependency exploration
+// * https://archdia.com/pages/knowledge-base ???
+// sandbox https://github.com/ringtailsoftware/uvm32 using https://github.com/cnlohr/mini-rv32ima
 
 // string handling https://github.com/skullchap/chadstr
 // 2d ui layout library https://github.com/nicbarker/clay

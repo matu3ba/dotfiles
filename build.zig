@@ -371,6 +371,7 @@ fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
 }
 
 // latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
+// latexmk -interaction=batchmode -Werror -pdflatex='lualatex -halt-on-error --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
 // mkdir -p build/ && lualatex --file-line-error --synctex=1 --output-directory=build src/smartcv_example.tex
 fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleTexFiles[0..]) |texfile| {

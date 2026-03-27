@@ -285,6 +285,21 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
    * A Provenance-aware Memory Object Model for C (PNVI-ae-udi, PNVI-ae,
      PNVI-plain, and PVI semantics for C) does not cover all the edge cases from pointers
      https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
+   * Handles are the better pointers => formal modle of handles would simplify a lot
+     https://floooh.github.io/2018/06/17/handles-vs-pointers.html
+     - data-oriented architecture: central systems work on arrays of data items
+       packed tightly in memory
+     - move all memory management into centralized systems (like rendering,
+       physics, animation, …), with the systems being the sole owner of their
+       memory allocations
+     - group items of the same type into arrays, and treat the array base
+       pointer as system-private
+     - when creating an item, only return an ‘index-handle’ to the outside
+       world, not a pointer to the item
+     - in the index-handles, only use as many bits as needed for the array
+       index, and use the remaining bits for additional memory safety checks
+     - only convert a handle to a pointer when absolutely needed, and don’t
+       store the pointer anywhere
 - 8. build system parallelization relies on "Jobserver Implementation" protocol
    * only reliable behavior is to close file descriptors and related process owned resources on process termination
    * Pain point: protocol relies on a process manually releasing resources
@@ -357,6 +372,16 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     * https://news.ycombinator.com/item?id=40767108
     * https://trace.yshui.dev/2024-06-xorg-bug.html
 - 12. formal model for OS security and scheduling
+  * background: How did process management get so complex? I guess it all boils
+    down to IPC - it's hard or outright impossible to manage something you
+    can't properly communicate with nobody has a complete overview (formal
+    model of scheduling + security), there are no proper tests (intended and unintended edge cases it
+    breaks) and (I suspect) you cant fuzz the state space to fix it
+    Example Posix: Signaling prevents any kind of hard real-time, since external
+    processes/process groups can fire continuously signals without the scheduler
+    being aware of that. 2 processes can continuously change security settings.
+    there is no API to control exact kernel behavior how to spawn processes, handle
+    signals etc for fuzzing
   * security: capability object model for (dynamic) security permissions vs ACLs for (racy to modify) static ones
   * scheduling: still incomplete wrt timing in sel4
   * Assuming a process Pa with schedule A with deadline a and security level 2.
@@ -559,6 +584,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   definitely declarative is good
   A2: Maybe a dumb primitive is "good enough" and external solver/bespoke tool can provide reordering information to compiler
   after user has fuzzed etc memory reordings for desired use cases
+  see solver-aided programming language Rosette https://emina.github.io/rosette/
 - 28. Local system bus/IPC interfaces/system challenges
   * 1. CIA
   * 2. (re-)identification
@@ -595,11 +621,15 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     so additional reason to each formal proof still necessary besides vendors
     not providing formal models for hardware (behavior)
     - IEC 62443-4-2
-Anscheinend erfolgt die Ableitung komparativ nach technischem Stand
-(Sicherheitsklasse, Use Cases, Safety Model, Software, Hardware, Erfahrung was
-funktioniert aus Studien etc, ..) im Dialog mit den zuständigen Behörden, so
-wie Jan Henrik das in etwa formuliert hat und ich es aus dem Pharmabereich
-meiner Partnerin bisher mitbekommen habe.
+- 33. Security-critical systems
+  * FIPS only relevant standard group for full system
+  * creative commons other for sw
+  * Server building/renting, shared hw/sw renting not covered by standards
+  * Only general quality standards and best effort tooling without formal
+  modeling etc of systems
+  * 32+33 Derivation follows comparatively technical state (safety/security class,
+  use cases, safety/security model, sw, hw, experience on what works by studies,
+  etc) in dialoge with responsible authorities based on personal experience
 
 To me unclear if solved:
 * check if linker speak has a formal model

@@ -99,14 +99,15 @@ ts.setup {
     -- disable = { 'zig' },
   },
   -- Note, that vib also works for blocks (symbols might be desirable)
+  -- default incremental_selection v_an, v_in, v_]n, v_[n
   incremental_selection = {
     enable = true,
-    keymaps = {
-      init_selection = '<leader>vs',
-      node_decremental = 'gsN',
-      node_incremental = 'gsn',
-      scope_incremental = 'gss',
-    },
+    -- keymaps = {
+    --   init_selection = '<leader>vs',
+    --   node_decremental = 'gsN',
+    --   node_incremental = 'gsn',
+    --   scope_incremental = 'gss',
+    -- },
     -- disable = { 'zig' }, -- slow, so opt-in
   },
   indent = {

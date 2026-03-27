@@ -280,4 +280,5 @@ https://cp-algorithms.com/algebra/montgomery_multiplication.html
 
 ====dynamic_array_structures
 https://azmr.uk/dyn/
-*
+Weak AVL trees are replacements for AVL trees and red-black trees.
+* https://maskray.me/blog/2025-12-14-weak-avl-tree

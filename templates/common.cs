@@ -44,6 +44,9 @@
 
 // https://learn.microsoft.com/de-de/dotnet/framework/interop/how-to-implement-callback-functions
 
+// symbol packages (.snupkg) https://learn.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg
+// debugging nuget libs https://www.damirscorner.com/blog/posts/20250411-DebuggingLibrariesFromNuGet.html
+
 // SHENNANIGAN
 // NET is C# with some different syntax to make stack and garbage collected
 // heap explicit, which does not include memory managed by C and C++.

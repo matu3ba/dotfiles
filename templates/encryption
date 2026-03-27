@@ -20,5 +20,17 @@ system encryption
 https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system
 
 https://faculty.eng.fau.edu/azarderakhsh/files/2016/11/Inscrypt2016.pdf
-
 "On Fast Calculation of Addition Chains for Isogeny-Based Cryptography" by Koziel et al
+
+Hardware token project idea based on https://github.com/trezor/trezor-firmware
+to store some tokens cryptographically and do CT formal proofs on code etc.
+
+Some C++ crypto https://github.com/ladnir/cryptoTools unfortunately using Boost
+for networking.
+
+Keycloak for system modeling.
+
+https://github.com/pq-code-package/mlkem-native/blob/main/SOUNDNESS.md
+* how are platform attack vectors (side channels) evaluated in practice? best effort?
+
+https://github.com/pq-code-package/mlkem-native

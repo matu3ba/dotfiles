@@ -1,0 +1,6 @@
+https://merelinux.org/
+* Linux distro, musl, s6
+* minimal, understandable system
+* packages are immutable, upgrades atomic, multiple versions coexist cleanly
+  using plain directories, symlinks, and user namespaces rather than heavy abstractions
+* package manager in Zig, busybox for core utils, llvm+clang as toolchain

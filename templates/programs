@@ -26,6 +26,10 @@ git clone https://github.com/WerWolv/ImHex
 Editors
 https://github.com/neurocyte/flow unclear hackability
 
+Terminal Explorer
+https://github.com/sxyazi/yazi
+https://github.com/sxyazi/yazi/blob/7c445cef1fd9ff9d41314d3d2b02cbc74250c6bf/yazi-config/preset/keymap.toml
+
 Install CMake from source to workaround to old versions:
 cd ~/dev/git/cpp
 git clone https://github.com/Kitware/CMake

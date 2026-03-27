@@ -671,3 +671,6 @@ System Bus
 
 https://en.wikipedia.org/wiki/Out-of-order_execution
 https://en.wikipedia.org/wiki/Dataflow_architecture
+
+https://safari.ethz.ch/architecture/fall2025/doku.php?id=schedule
+very nice course on Computer Architecture – Fall 2025
