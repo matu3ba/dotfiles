@@ -100,8 +100,10 @@ add_cmd('Templates', df_edit .. sep .. 'templates', {})
 add_cmd('Zigstd', 'edit ' .. home .. sep .. 'dev' .. sep .. 'zdev' .. sep .. 'zig' .. sep .. 'master' .. sep .. 'lib' .. sep .. 'std', {})
 add_cmd('ZigFmtAll', '! zig fmt .', {})
 
+-- PowerShell <= 6
 local ps_config_edit = df_edit_win_docs .. sep .. 'WindowsPowerShell' .. sep .. 'Microsoft.PowerShell_profile.ps1'
 add_cmd('PSConf', ps_config_edit, {})
+-- PowerShell > 7
 local pws_config_edit = df_edit_win_docs .. sep .. 'PowerShell' .. sep .. 'Microsoft.PowerShell_profile.ps1'
 add_cmd('PWConf', pws_config_edit, {})
 

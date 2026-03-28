@@ -146,6 +146,17 @@ function CheckExitCode {
   }
 }
 
+# Assumes VSSetup installed, for example via
+# Install-Module VSSetup -Scope CurrentUser
+function GetMsbuildPath {
+  $msbuild_root = Get-VSSetupInstance -All | Select-VSSetupInstance -Require 'Microsoft.VisualStudio.Workload.ManagedDesktop' -Latest
+  if (($msbuild_root.installationPath -eq $Null) -or ($msbuild_root.installationPath -eq "")) {
+    return ""
+  }
+  return $msbuild_root.installationPath + '/MSBuild/Current/Bin/MSBuild.exe'
+}
+
+#see GetMsbuildPath
 function ResolveMsBuild2015 {
   #& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe" .\Solution.sln
   $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
@@ -181,7 +192,8 @@ function runMsbuild2015 {
   return sane_StartProcess $msBuild $build_args $at
 }
 
-function ResolveMsBuild {
+#see GetMsbuildPath
+function ResolveMsBuild_old {
   param (
     # version[e|p|c] for enterprise, professional, community
     [string] $msvc_version
@@ -218,7 +230,7 @@ function runMsbuild {
     # version[e|p|c] for enterprise, professional, community
     [string] $msvc_version = "2022e"
   )
-  [string] $msBuild = ResolveMsBuild $msvc_version
+  [string] $msBuild = ResolveMsBuild_old $msvc_version
   Write-Host "Start-Process $msBuild -ArgumentList $build_args -NoNewWindow -PassThru"
   $proc = Start-Process "$msBuild" -ArgumentList $build_args -NoNewWindow -PassThru
   $handle = $proc.Handle # cache proc.Handle to fix ExitCode to work correctly
@@ -340,7 +352,7 @@ function basic_stringops {
   }
 
   # parse
-  # see ResolveMsBuild
+  # see ResolveMsBuild_old
   [string]$gitcommit = [string]$(git rev-parse HEAD)
   [int] $year = [int]$($msvc_version -replace "[^0-9]" , '')
   [string] $filepath = "README.md"
@@ -372,6 +384,11 @@ function rename_files_for_manual_checks {
   Get-ChildItem *.txt -ReadOnly |
     Rename-Item -NewName {$_.BaseName + "-ro.txt"} -PassThru |
     Select-Object -First 5 -Wait
+}
+
+function filter_childitems {
+  Get-ChildItem .\* -Include "MyProject.Data*.dll", "EntityFramework*.dll"
+  Get-ChildItem -Filter "*.dll" .\* | Where-Object { $_.Name -match '^MyProject.Data.*|^EntityFramework.*' }
 }
 
 function show_object_properties {

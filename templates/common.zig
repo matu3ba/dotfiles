@@ -48,6 +48,7 @@ const process = std.process;
 // luajit zig bindings https://github.com/sackosoft/zig-luajit
 // type-1 hypervisor in zig https://hv.smallkirby.com/en
 // simple file (tree) encryption https://github.com/jedisct1/turbocrypt
+// Static + Dynamic analysis tool for Zig projects https://bitbucket.org/rhyoslabs/ephor.git
 
 // https://github.com/david-vanderson/dvui
 // https://codeberg.org/ssmid/zeppelin

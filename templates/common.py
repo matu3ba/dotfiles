@@ -6,6 +6,8 @@
 # py uninstall --purge
 # py install default
 # or use virtual environments like uv, nix, guix, virtualenv
+# windows may need: py -m pip install pandas
+# since virtualenv within virtualenv often does not work, ie py -m tool install pandas
 
 #====tooling
 # fast and sane python tooling

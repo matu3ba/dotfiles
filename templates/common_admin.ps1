@@ -56,6 +56,10 @@ wmic process list
 #   </configSections>
 # <configuration>
 
+Import-Module Webadministration
+Get-Website
+Get-WebBinding
+(Get-WebBinding).bindingInformation
 
 # registry:
 # HKLM\Software\Microsoft\InetStp\Components
@@ -83,6 +87,7 @@ wmic process list
 # for explicit network groups: net user /domain username
 
 #====vm_usage
+# https://www.faq-o-matic.net/2017/01/30/hyper-v-die-konfigurationsdatei-einer-vm-finden/
 # https://learn.microsoft.com/en-us/powershell/module/hyper-v/import-vm
 # https://learn.microsoft.com/en-us/powershell/module/hyper-v/remove-vm
 # https://learn.microsoft.com/en-us/archive/technet-wiki/1350.hyper-v-export-vm-config-only-using-powershell
@@ -98,6 +103,8 @@ Rename-VM PCName -NewName W10-Dev-VM
 Export-VM -Name W10-Dev-VM -Path $HOME\VMBackups\
 # delete snapshots after merging
 # https://learn.microsoft.com/en-us/troubleshoot/windows-server/virtualization/hyper-v-snapshots-checkpoints-differencing-disks
+$VMData = Get-VM $VMName -ErrorAction SilentlyContinue
+$VMData.ConfigurationLocation
 Get-VM | Get-VMSnapshot | Remove-VMSnapshot
 Get-VMSnapshot -VMName W10-Test-VM | Remove-VMSnapshot
 $hvnodes = get-clusternode | select name -expandproperty name
@@ -108,6 +115,8 @@ Start-VM -Name W10-Dev-VM
 Start-VM -Name W10-Test-VM
 Stop-VM -Name W10-Dev-VM
 Stop-VM -Name W10-Test-VM
+# To copy files from host into VM: Copy-VMFile
+# Get file out of running VM: idea
 
 ##port forwarding
 #WSL

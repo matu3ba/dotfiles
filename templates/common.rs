@@ -51,6 +51,7 @@
 // inferno-diff-folded         | -                  |
 // inferno-flamegraph          | -                  |
 // interactive-rebase-tool     | -                  |
+// jujutsu                     | jj jj-cli          | cargo install --locked --bin jj jj-cli
 // kalk                        | -                  |
 // makers                      | -                  |
 // mandown                     | -                  |
@@ -64,7 +65,8 @@
 // watchexec                   | watchexec-cli      |
 // xargo                       | -                  |
 // xargo-check                 | -                  |
-// zellij                      | -                  | not working on Windows
+// yazi                        | yazi-cli           | cargo install --force yazi-build
+// zellij                      | -                  | (non-win) cargo install --locked zellij
 // zoxide                      | -                  |
 
 //====design_better

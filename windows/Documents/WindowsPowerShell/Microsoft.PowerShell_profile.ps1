@@ -1,13 +1,33 @@
+# Old Powershell default available on Windows 10.
+# $profile | Select-Object -Property *
+# $PSVersionTable.PSVersion
+
 $env:Path += ";$($env:USERPROFILE)\bin"
 $env:Path += ";$HOME\.local\bin"
 $env:Path += ";C:\Program Files\Mozilla Firefox"
+$env:POWERSHELL_CLI_TELEMETRY_OPTOUT = $true
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
+$env:POWERSHELL_UPDATECHECK = "Off"
+$env:POWERSHELL_UPDATECHECK_OPTOUT = $true
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = $true
+$env:DOTNET_TELEMETRY_OPTOUT = $true
+# affecting debugging, so on doubt do not set $env:COMPlus_EnableDiagnostics = $false
+
 # PowerShell v6+ has BOM-less UTF-8 as default. Versions below break for
 # example git diff/apply due to not using BOM-less UTF-8.
 # $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 # $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 # Versions below powershell6+ require to change the system configuration. For
 # these cases, it is better to use git bash instead.
+
+# sane defaults
+# ENV POWERSHELL_CLI_TELEMETRY_OPTOUT=1 \
+#         POWERSHELL_TELEMETRY_OPTOUT=1 \
+#         POWERSHELL_UPDATECHECK=Off \
+#         POWERSHELL_UPDATECHECK_OPTOUT=1 \
+#         DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+#         DOTNET_TELEMETRY_OPTOUT=1 \
+#         COMPlus_EnableDiagnostics=0
 
 # Installing new version of powershell called pwsh.exe to fix utf8:
 # function GitDiff { & git diff --no-color $args }
@@ -17,6 +37,7 @@ $env:POWERSHELL_TELEMETRY_OPTOUT = $true
 
 # SHENNANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
+# pipe: powershell -command "& c:\scripts\scheduled_task.ps1 *> %LOG%"
 
 New-Alias -Name .. -Value CdUp -Force -Option AllScope
 New-Alias -Name ... -Value CdUp2 -Force -Option AllScope

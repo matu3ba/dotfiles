@@ -605,20 +605,6 @@ Finishing: metal fil insertion, signoff timing report, gdsii gen(KLayout),
   - github.com/zeroascicorp/umi
   - no cache coherency yet
 
-====architecure
-"Architecture 2.0: Toward Open Source Foundation Models and Datasets for Hardware Design"
-Technology (Moore,Dennard's scaling, dark silicon)
-Architecture(hw-support for parallelism, acceleration)
-Optimization(application-tuning, full-stack optimization, hw/sw co-design)
-Specification(domain-specific hardware)
-Future: AI-assistance/automation
-1 no datasets, 2 unclear ML algos, 3 workforce & training(no best practices),
-4 tools & infra, 5 best practice
-idea: simulators (speed vs accuracy) for data generation
-* no tangible first delivery
-* design space exploration probably first tangible goal
-* goal: reduce cost of building chips
-
 ====bus
 Datapath (internal CPU/data bus)
   https://en.wikipedia.org/wiki/Datapath
@@ -676,5 +662,3 @@ System Bus
 https://en.wikipedia.org/wiki/Out-of-order_execution
 https://en.wikipedia.org/wiki/Dataflow_architecture
 
-https://safari.ethz.ch/architecture/fall2025/doku.php?id=schedule
-very nice course on Computer Architecture – Fall 2025

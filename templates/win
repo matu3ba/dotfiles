@@ -122,6 +122,7 @@ Debugging macros
 "Project + Properties, C/C++, Preprocessor, Preprocess to a File = Yes.
 /E, /P, /EP
 cl /I C:\Test\ /EP C:\Test\main.cpp > C:\Test\macro.txt
+cl /I..\lib /W3 /Z7 behavior-x86_64-windows-msvc.c compiler_rt-x86_64-windows-msvc.c /link /nologo /debug /subsystem:console kernel32.lib ntdll.lib libcmt.lib
 idea cl set out dir
 
 specify object file name
@@ -196,6 +197,7 @@ Look into the ci scripts for windows https://github.com/ziglang/zig/tree/master/
 and get https://ziglang.org/deps/zig+llvm+lld+clang-x86_64-windows-gnu-$VERSION.zip
 
 Getting ntdll (and win32) calls
+(also reasons for access denied after checking anti-virus)
 https://learn.microsoft.com/en-us/sysinternals/downloads/procmon
 https://www.x86matthew.com/view_post?id=lognt32
 http://jacquelin.potier.free.fr/winapioverride32/
@@ -225,6 +227,7 @@ Name also shown in console log of msvsmon.exe
     Copy-Item  -LiteralPath Z:\$name  -Destination I:\Dat\SomePath\ss/ -Force
     results in "Access to the path [..] is denied"
   https://serverfault.com/questions/666192/writing-unc-path-names-to-a-different-drive
+* mount path: subst D: "C:\Folder1"
 
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/choosing-the-best-remote-debugging-method
 https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/remote-debugging-through-the-debugger

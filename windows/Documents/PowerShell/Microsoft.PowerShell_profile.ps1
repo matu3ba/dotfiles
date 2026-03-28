@@ -1,3 +1,7 @@
+# New Powershell 7 possibly needs installation on Windows 10.
+# $profile | Select-Object -Property *
+# $PSVersionTable.PSVersion
+
 $env:Path += ";$($env:USERPROFILE)\bin"
 $env:Path += ";$HOME\.local\bin"
 # $env:Path += ";$HOME\llvm\bin"
@@ -6,9 +10,35 @@ $env:Path += ";C:\Program Files\Mozilla Firefox"
 $env:Path += ";C:\Program Files\Python312\Scripts\pip.exe"
 $env:Path += ";C:\Program Files\Wireshark"
 $env:Path += ";C:\Program Files\7-Zip"
+$env:POWERSHELL_CLI_TELEMETRY_OPTOUT = $true
 $env:POWERSHELL_TELEMETRY_OPTOUT = $true
+$env:POWERSHELL_UPDATECHECK = "Off"
+$env:POWERSHELL_UPDATECHECK_OPTOUT = $true
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = $true
+$env:DOTNET_TELEMETRY_OPTOUT = $true
+# affecting debugging, so on doubt do not set $env:COMPlus_EnableDiagnostics = $false
 $EDITOR = "nvim"
 $env:Editor = "nvim"
+
+#====common_cli
+#====shortcuts
+#====aliases
+#====utils
+#====common_fns
+#====filter
+#====whereis
+#====setup
+#====problem_bootstrap_zig
+#====SHENNANIGAN
+
+# sane defaults
+# ENV POWERSHELL_CLI_TELEMETRY_OPTOUT=1 \
+#         POWERSHELL_TELEMETRY_OPTOUT=1 \
+#         POWERSHELL_UPDATECHECK=Off \
+#         POWERSHELL_UPDATECHECK_OPTOUT=1 \
+#         DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+#         DOTNET_TELEMETRY_OPTOUT=1 \
+#         COMPlus_EnableDiagnostics=0
 
 # help Start-Process
 #Start-Process

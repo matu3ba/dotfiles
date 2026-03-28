@@ -1,0 +1,85 @@
+====architecure
+https://safari.ethz.ch/architecture/fall2025/doku.php?id=schedule
+very nice course on Computer Architecture – Fall 2025
+* has most general trade-offs besides internal computing bus design
+  where I'd expect something along optimizing each phase of computing operations
+
+"Architecture 2.0: Toward Open Source Foundation Models and Datasets for Hardware Design"
+Technology (Moore,Dennard's scaling, dark silicon)
+Architecture(hw-support for parallelism, acceleration)
+Optimization(application-tuning, full-stack optimization, hw/sw co-design)
+Specification(domain-specific hardware)
+Future: AI-assistance/automation
+1 no datasets, 2 unclear ML algos, 3 workforce & training(no best practices),
+4 tools & infra, 5 best practice
+idea: simulators (speed vs accuracy) for data generation
+* no tangible first delivery
+* design space exploration probably first tangible goal
+* goal: reduce cost of building chips
+
+====practical_design_iteration_architecture
+in theory problem can be formulated as search problem and thus different strategies be applied
+in practice one is then tackling a different issue all together
+
+example instruction reordering in OoO archs with some aspects:
+* Returning data (catch the ball in flight, don't wait for it to land on the ground,
+  doing this is "fun", because one wants to allocate an execution unit the moment
+  the ball is thrown such that it is thrown into the next instruction on the same cycle,
+  and some pitchers are sporadic like division, memory reads, etc)
+* Prioritizing instruction calls (I focus on trimming branches, but avoiding hotspots is
+  also a concern so don't hammer the same execution units for too many cycles)
+* Registers. (How many? Task specific registers or general ones? A neat array in a corner,
+  or spread throughout core? Register renaming or not? Is decoded ordering important for write
+  back or do we let the programmer experience the wobble? And how to quickly check their
+  availability since else execution can't even happen. In a way register layout is more
+  important for OoO design than instruction calls themselves, moving data is the challenge)
+* Queue depth? (Some designs scales exponentially with added queue positions (or added registers),
+  others more linearly but with other downsides)
+* Thread/Context switching. (Can the next thread start now or do we need to wait for the
+  prior to properly clear the area?)
+* Optionally include SIMD instructions into the design. (moving register data and quickly
+  finding dependencies is more or less The challenge, SIMD makes it harder)
+* Optionally sprinkle Simultaneous Multi Threading on top for added complexity.
+  (so I understand why Intel says "no SMT on Efficiency cores!" because SMT really isn't a
+  free lunch, even if it is great for a lot of reasons. I however go with 8x SMT in my design,
+  because I am crazy....)
+* How many instructions are we dealing with per cycle?
+  if core with 1 decoder giving 1 instruction/cycle, then we won't need a queuing system
+  able to handle dozens of instructions in parallel. (this is not the same as low queue depth,
+  just low parallel access. bandwidth vs capacity)
+  We could rather have a simpler instruction reordering scheme that checks rather basic
+  dependencies and allows us to speed up average instruction rate closer to 1 per cycle.
+  Now slower instructions will end up providing a result alongside the faster ones, so
+  some parallelism for the returns can be logical, but technically not a requirement. Since
+  every time we get a multi cycle instruction, our return gets some "bubbles" that it can
+  use to catch up, this does however mean that we have some additional latency for all
+  returns to the register file, not ideal since it drastically impacts serial instruction
+  throughput. (in a heavily SMTed core this doesn't matter.) One can complicate things here
+  by adding priority for the return system, but making it able to handle 2 returns in parallel
+  is easier.
+  most modern archs: decoders spits out more than 1 instruction per cycle on average.
+  Since parallel decoding is rather trivial and code at times is ripe with parallel operations
+  that out of order will quickly churn through, so execution will catch up rather quickly at
+  small queue depths and with a slow decoder.
+  And stalling on decoding is inept. (barring the branching problem, bizarre jumps,
+  unknown pointers, cache misses and other prefetch hindrances)
+
+example register files
+* can be implemented in a whole bunch of different ways
+* interacting with it is another can of worms
+* lot of people regard it as if all architectures are doing it like a 386, or 6502 (Which rarely is the case)
+
+====comparison_HDL_to_PL
+wondering how that actually works in practice wrt documentation, data secrecy
+etc and how they prevent bus factors. I guess they have lots of custom tooling
+to store that knowledge, because keeping docs secret and up to date often does
+not work.
+* much stricter boundaries of what is and isn't possible depending on impl
+* CPU is a complex beast: nope, simplicity takes a lot of thinking to properly formulate
+* CPU core is comparable to a rather small software project in terms of overall complexity
+* example: buffer overflow is physically unable to rewire the logic of the CPU
+* counter-example: side-channels like timing variations does spill data
+  speculative execution for increased serial performance more important than memory security checks
+* fault in a specific instruction breaks that instruction, not the whole CPU
+* security only applicable at certain points in an architecture
+* there is points in hardware where security is far more important, but that is the exception rather than the rule.

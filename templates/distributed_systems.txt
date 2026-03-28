@@ -244,8 +244,8 @@ for understanding what those things are and how
 * minikube (simple test environment)
 * nginx
 * docker
-* terraform
-* kafka
+* terraform vs pulumi
+* kafka implementation bad, use redpanda instead
 * prometheus
 * app monitoring 4 golden signals
 
