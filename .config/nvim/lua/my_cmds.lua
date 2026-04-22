@@ -1,9 +1,6 @@
 --! Commands not part of hydra or closely related derived ones
 -- luacheck: globals vim
 -- luacheck: no max line length
---==Dependencies
-local has_plenary, plenary = pcall(require, 'plenary')
-if not has_plenary then vim.print 'Please install plenary for all features.' end
 
 -- run commands
 -- :! {cmd}, !% {cmd}
@@ -18,10 +15,8 @@ if not has_plenary then vim.print 'Please install plenary for all features.' end
 -- local obj = vim.system({'echo', 'hello'}, { text=true }):wait()
 -- { code = 0, signal = 0, stdout = '..', stderr = '' }
 
--- local obj = vim.system(exec curl)
--- local decoded = vim.json.decode(obj)
+-- :h vim.json.encode() for usage of vim.split, vim.json.encode, vim.json.decode
 
---TODO steal commands to run find into quickfix list from
 --vim.fn.setloclist(winnr, {}, ' ', { items = items })
 --vim.fn.setqflist({}, " ", {nr = "$", items = entries})
 --open qf/ll :copen|close,lopen|lclose (cope|ccl,lop|lcl) + height for open cmds
@@ -32,12 +27,9 @@ if not has_plenary then vim.print 'Please install plenary for all features.' end
 
 -- TODO make fn for :!mkdir -p %:h
 -- TODO nvim +':w ++p' /path/to/file
-
--- TODO
--- * lua code to get selection
--- * :Frel to copy selected path as relative path trimming file ending,
--- if needed
--- * vice versa as absolute path
+--
+-- TODO :Frel to copy selected path as relative path trimming file ending,
+-- TODO vice versa as absolute path
 
 --==Globals
 local api = vim.api
@@ -57,7 +49,7 @@ local add_cmd = api.nvim_create_user_command -- NOTE: lua does not follow symlin
 local config_edit = 'edit ' .. home .. sep .. 'dotfiles' .. sep .. '.config' .. sep .. 'nvim'
 -- local config_edit = vim.fn.stdpath 'config' -- does not work on nix
 -- add_cmd('CDv', config_edit .. sep .. 'lua' .. sep .. 'my_diffview.lua', {})
-add_cmd('CAer', config_edit .. sep .. 'lua' .. sep .. 'my_aerial.lua', {})
+add_cmd('CAer', config_edit .. sep .. 'lua' .. sep .. 'my_aerial.lua', { desc = 'Aerial/lsp info' })
 add_cmd('CBuf', config_edit .. sep .. 'lua' .. sep .. 'my_buf.lua', {})
 add_cmd('CCmd', config_edit .. sep .. 'lua' .. sep .. 'my_cmds.lua', {})
 add_cmd('CDap', config_edit .. sep .. 'lua' .. sep .. 'my_dap.lua', {})
@@ -318,13 +310,12 @@ add_cmd('RmBufDebug', [[execute 'g/.*DEBUG$/del']], {}) -- non-greedy search of 
 -- send all quickfixlist files to harpoon
 add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 
----- Quickfixlist ----
+--==quickfix
 -- nvim -q <(rg --vimgrep "BufReadPre") '+copen'
 -- alternative: :grep /pattern/ **
 -- :cdo s/Before/After/
 -- nvim -q
 -- :cexpr getline(1, '$')
--- TODO parsing bare paths of buffer and use in qflist with :h setqflist()
 -- Press <C-q> to add telescope results to quickfixlist
 -- :copen opens, :ccl closes quickfixlist, C-w K moves qf list to top.
 -- See :h :cdo for more help
@@ -332,14 +323,69 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- add to harpoon
 -- Review changes with diff before writing file
 -- :w !diff % -
+-- workaround diffput/diffget not working(in all visible windows) :bufdo diffoff
+
+-- Usage
+--:'<,'>QFsetRange
+-- :5,12QFsetRange
+-- :7QFsetRange
+local QFsetRange = function (l1, l2)
+  -- No range provided: do nothing or default to whole file
+  -- other option: if selection off (+ start cursor == end cursor),
+  -- default to whole file
+  -- lines = vim.fn.getline(1, '$')
+  assert(l1 ~= 0)
+  assert(l2 ~= 0)
+  local lines = vim.fn.getline(l1, l2)
+  local fname = vim.fn.expand("%")
+  local items = {}
+  for i, l in ipairs(lines) do
+    table.insert(items, {
+      filename = fname,
+      lnum = l1 + i - 1,
+      text = l,
+    })
+  end
+  vim.fn.setqflist(items, "r")
+end
+add_cmd('QFsetRange', function(opts) QFsetRange(opts.line1, opts.line2) end, { range=true, desc = '\'<,\'>QFsetRange5,12QFsetRange,7QFsetRange' })
+
+local QFsetValidPaths = function (l1, l2)
+  -- No range provided: do nothing or default to whole file
+  -- other option: if selection off (+ start cursor == end cursor),
+  -- default to whole file
+  -- lines = vim.fn.getline(1, '$')
+  assert(l1 ~= 0)
+  assert(l2 ~= 0)
+  local lines = vim.fn.getline(l1, l2)
+  for i, l in ipairs(lines) do
+    if (not vim.uv.fs_stat(l)) then
+      vim.print(i, relpath, "not existing")
+      return
+    end
+  end
+
+  local cwd = vim.uv.cwd()
+  local items = {}
+  for i, l in ipairs(lines) do
+    local normrelpath = utils.pathNormRel(cwd, l)
+    -- vim.fs.relpath(cwd, l, {})
+    -- if (relpath == nil) then relpath = l; end
+    table.insert(items, {
+      filename = normrelpath,
+      lnum = 1,
+      text = l,
+    })
+  end
+  vim.fn.setqflist(items, "r")
+end
+add_cmd('QFsetValidPaths', function(opts) QFsetValidPaths(opts.line1, opts.line2) end, { range=true, desc = '\'<,\'>QFsetRange5,12QFsetRange,7QFsetRange' })
 
 ---- Scripting ----
 -- copy path under cursor: yiW
 -- pull current filename into where you are: Ctrl+R %
 -- vimscript register assignment: :let @+ = expand("%:p")
--- Note: Relative paths are only respected until cwd. If the path goes via parent dir, the absolute path is returned.
--- TODO setup copy file + dir path for oil with harpoon
--- https://github.com/stevearc/oil.nvim/issues/50
+-- Note: Relative paths are only respected until cwd. If path goes via parent dir, absolute path is returned.
 
 local setPlusAnd0Register = function(content)
   vim.fn.setreg('0', content)
@@ -367,9 +413,9 @@ local has_myoil, myoil = pcall(require, 'my_oil')
 if has_oil then
   assert(has_myoil)
   add_cmd('ODabs', function() setPlusAnd0Register(oil.get_current_dir()) end, {})
-  add_cmd('ODrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. sep) end, {})
+  add_cmd('ODrel', function() setPlusAnd0Register('.' .. sep .. utils.pathNormRelOnCwd(oil.get_current_dir()) .. sep) end, {})
   add_cmd('OFabs', function() setPlusAnd0Register(oil.get_current_dir() .. oil.get_cursor_entry().parsed_name) end, {})
-  add_cmd('OFrel', function() setPlusAnd0Register('.' .. sep .. plenary.path:new(oil.get_current_dir()):make_relative() .. sep .. oil.get_cursor_entry().parsed_name) end, {})
+  add_cmd('OFrel', function() setPlusAnd0Register('.' .. sep .. utils.pathNormRelOnCwd(oil.get_current_dir()) .. sep .. oil.get_cursor_entry().parsed_name) end, {})
   if utils.is_windows then
     add_cmd('OExec', function() setPlusAnd0Register(myoil.pwshExec()) end, {})
     add_cmd('OCec', function() setPlusAnd0Register(myoil.pwshCdExec()) end, {})
@@ -383,16 +429,16 @@ if has_oil then
 end
 
 -- Functions with suffix U and W do not do special case handling or validation.
-add_cmd('Frel', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()) end, {})
-add_cmd('FrelU', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative():gsub('\\', '/')) end, {})
-add_cmd('FrelW', function() setPlusAnd0Register(plenary.path:new(api.nvim_buf_get_name(0)):make_relative():gsub('/', '\\')) end, {})
-add_cmd('FrelDir', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative())) end, {})
-add_cmd('FrelDirU', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()):gsub('\\', '/')) end, {})
-add_cmd('FrelDirW', function() setPlusAnd0Register(vim.fs.dirname(plenary.path:new(api.nvim_buf_get_name(0)):make_relative()):gsub('/', '\\')) end, {})
-add_cmd('FrelLine', function() setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), api.nvim_win_get_cursor(0)[1], nil) end, {})
+add_cmd('Frel', function() setPlusAnd0Register(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0))) end, {})
+add_cmd('FrelU', function() setPlusAnd0Register(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0)):gsub('\\','/')) end, {})
+add_cmd('FrelW', function() setPlusAnd0Register(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0)):gsub('/', '\\')) end, {})
+add_cmd('FrelDir', function() setPlusAnd0Register(vim.fs.dirname(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0)))) end, {})
+add_cmd('FrelDirU', function() setPlusAnd0Register(vim.fs.dirname(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0))):gsub('\\', '/')) end, {})
+add_cmd('FrelDirW', function() setPlusAnd0Register(vim.fs.dirname(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0))):gsub('/', '\\')) end, {})
+add_cmd('FrelLine', function() setCursorInfo(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0)), api.nvim_win_get_cursor(0)[1], nil) end, {})
 add_cmd('FrelCol', function()
   local line_col_pair = api.nvim_win_get_cursor(0)
-  setCursorInfo(plenary.path:new(api.nvim_buf_get_name(0)):make_relative(), line_col_pair[1], line_col_pair[2])
+  setCursorInfo(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0)), line_col_pair[1], line_col_pair[2])
 end, {})
 add_cmd('FabsU', function() setPlusAnd0Register('/' .. api.nvim_buf_get_name(0):gsub(':',''):gsub('\\', '/')) end, {})
 add_cmd('FabsW', function() setPlusAnd0Register(api.nvim_buf_get_name(0):gsub('/', '\\')) end, {})
@@ -446,18 +492,22 @@ add_cmd('ShDate', function() utils.printOrReplaceOsDate("") end, { range=true })
 -- ]], false)
 -- FILES=$(fd '.*.zig' src/ lib/std/)
 -- ztags -a -r $FILES
-add_cmd('RetagZigComp', function()
-  -- if vim.bo.filetype == 'zig' then
-  -- FILES=$(fd -e zig . 'src/' 'lib/std/') && ztags -a -r $FILES
-  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src', 'lib' .. sep .. 'std' } }):sync()
-  -- print("fd_exec", vim.print(fd_exec))
-  plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
-  -- end
-end, {})
+-- add_cmd('RetagZigComp', function()
+--   -- if vim.bo.filetype == 'zig' then
+--   -- FILES=$(fd -e zig . 'src/' 'lib/std/') && ztags -a -r $FILES
+--   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src', 'lib' .. sep .. 'std' } }):sync()
+--   local obj = vim.system({ 'fd', '-e', 'zig', 'src', 'lib' .. sep .. 'std' }, { text = true }):wait()
+--   print("fd_exec", vim.print(obj.stderr))
+--   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+--   vim.system({'ztags', '-a', '-r'}, { text = true }, function(obj) end)
+--   -- end
+-- end, {})
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
-  local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
-  plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
+  local obj = vim.system({ 'fd', '.', '-e', 'zig', 'src' }, { text = true }):wait()
+  vim.system({'ztags', '-a', '-r', unpack(vim.split(obj.stdout, '\n',{ plain=true }))}, { text = true }, function(obj)
+    if (obj.stderr ~= "") then print(obj.stderr) end
+  end)
   -- end
 end, {})
 
@@ -466,79 +516,90 @@ end, {})
 local git_show_remote_upstream_else_origin = function(cwd)
   -- git remote show origin
   -- git config --get remote.origin.url
-  local remote = plenary.job:new({ cwd = cwd, command = 'git', args = { 'config', '--get', 'remote.upstream.url' } }):sync()
-  if remote and #remote == 1 and remote[1] ~= '' then
+  local remote_obj = vim.system({'git', 'config', '--get', 'remote.upstream.url'}, { text = true }):wait()
+  if remote_obj.code ~= 0 or remote_obj.stderr ~= "" then return '' end
+  local remote = vim.split(remote_obj.stdout, '\n')
+  if #remote == 1 and remote[1] ~= '' then
     local col_i = string.find(remote[1], ':')
     return remote[1]:sub(5, col_i - 1) .. '/' .. remote[1]:sub(col_i + 1, -5)
   end
-  remote = plenary.job:new({ cwd = cwd, command = 'git', args = { 'config', '--get', 'remote.origin.url' } }):sync()
-  if remote and #remote == 1 and remote[1] ~= '' then return remote[1]:sub(5, -1):sub(1, -5) end
+  remote_obj = vim.system({'git', 'config', '--get', 'remote.origin.url'}, {text = true}):wait()
+  if remote_obj.code ~= 0 or remote_obj.stderr ~= "" then return '' end
+  remote = vim.split(remote_obj.stdout, '\n')
+  if #remote == 1 and remote[1] ~= '' then return remote[1]:sub(5, -1):sub(1, -5) end
   return ''
 end
 
---- @return table|nil # Autocommand id (number)
-local get_relpath_inrepo = function()
-  local relpath = plenary.path:new(api.nvim_buf_get_name(0)):make_relative()
-  local relpathdir = vim.fs.dirname(relpath)
-  local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel' } }):sync()
-  if not git_root or #git_root ~= 1 or git_root[1] == '' then return { nil, nil } end
-  local relpath_inrepo = plenary.path:new(relpath):make_relative(git_root[1])
-  return { git_root, relpath_inrepo }
-end
+-- TODO/FIXME
+-- --- @return table|nil # Autocommand id (number)
+-- local get_relpath_inrepo = function()
+--   local normrelpath_buf = utils.pathNormRelOnCwd(api.nvim_buf_get_name(0))
+--   vim.print("normrelpath_buf:", normrelpath_buf)
+--   -- local relpath = plenary.path:new(api.nvim_buf_get_name(0)):make_relative()
+--   local relpathdir = vim.fs.dirname(normrelpath_buf)
+--   -- TODO testng + replace plenary.job:new
+--   local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel' } }):sync()
+--   if not git_root or #git_root ~= 1 or git_root[1] == '' then return { nil, nil } end
+--   local cwd_normrelpath_buf = normrelpath_buf
+--   -- local relpath_inrepo = plenary.path:new(relpath):make_relative(git_root[1])
+--   local relpath_inrepo = utils.pathNormRel(cwd_normrelpath_buf, git_root[1])
+--   return { git_root, relpath_inrepo }
+-- end
 
--- https://github.com/nvim-lua/plenary.nvim/ /blob/master/ tests/plenary/job_spec.lua
--- /blob/5129a3693c482fcbc5ab99a7706ffc4360b995a0/
+-- TODO FIXME
 -- TODO bug, must replace : with /
 -- example
 -- github.com:matu3ba/simpaSRG/blob/a38ef23973e15053414c7c8b4cdf61c09aa26bf1/src/simpleSRG.h
-add_cmd('GHPerma', function()
-  ---@diagnostic disable-next-line: deprecated, param-type-mismatch
-  local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
-  if opt_relpath_inrepo == nil then return end
-  local relpath_inrepo = opt_relpath_inrepo
+-- add_cmd('GHPerma', function()
+--   get_relpath_inrepo()
+--   ---@diagnostic disable-next-line: deprecated, param-type-mismatch
+--   local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
+--   if opt_relpath_inrepo == nil then return end
+--   local relpath_inrepo = opt_relpath_inrepo
+--
+--   local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
+--   if not isgit or isgit[1] ~= 'true' then return end
+--   local remote = git_show_remote_upstream_else_origin(git_root[1])
+--   vim.print(remote)
+--   if remote == '' then return end
+--
+--   local commitsha = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', 'HEAD' } }):sync()
+--   if not commitsha or #commitsha ~= 1 or commitsha[1] == '' then return end
+--   local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
+--   vim.print(relpath_inrepo_check)
+--
+--   if not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo then return end
+--   local permalink = remote .. '/blob/' .. commitsha[1] .. '/' .. relpath_inrepo
+--   vim.print(permalink)
+--   setPlusAnd0Register(permalink)
+-- end, {})
 
-  local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
-  if not isgit or isgit[1] ~= 'true' then return end
-  local remote = git_show_remote_upstream_else_origin(git_root[1])
-  vim.print(remote)
-  if remote == '' then return end
-
-  local commitsha = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', 'HEAD' } }):sync()
-  if not commitsha or #commitsha ~= 1 or commitsha[1] == '' then return end
-  local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
-  vim.print(relpath_inrepo_check)
-
-  if not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo then return end
-  local permalink = remote .. '/blob/' .. commitsha[1] .. '/' .. relpath_inrepo
-  vim.print(permalink)
-  setPlusAnd0Register(permalink)
-end, {})
-
+-- TODO FIXME
 -- TODO bug, must replace : with /
 -- /home/misterspoon/dev/git/studienarbeit_SRG/simpaSRG/tools/main.cpp
 --:GHBranch
 --git@github.com:matu3ba/simpaSRG.git
 --github.com:matu3ba/simpaSRG/blob/main/tools/main.cpp
-add_cmd('GHBranch', function()
-  ---@diagnostic disable-next-line: deprecated, param-type-mismatch
-  local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
-  if opt_relpath_inrepo == nil then return end
-  local relpath_inrepo = opt_relpath_inrepo
-
-  local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
-  if not isgit or isgit[1] ~= 'true' then return end
-  local remote = git_show_remote_upstream_else_origin(git_root[1])
-  vim.print(remote)
-
-  local branch = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', '--abbrev-ref', 'HEAD' } }):sync()
-  if not branch or #branch ~= 1 or branch[1] == '' then return end
-  local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
-  vim.print(relpath_inrepo_check)
-
-  local branchlink = remote .. '/blob/' .. branch[1] .. '/' .. relpath_inrepo
-  vim.print(branchlink)
-  setPlusAnd0Register(branchlink)
-end, {})
+-- add_cmd('GHBranch', function()
+--   ---@diagnostic disable-next-line: deprecated, param-type-mismatch
+--   local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
+--   if opt_relpath_inrepo == nil then return end
+--   local relpath_inrepo = opt_relpath_inrepo
+--
+--   local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
+--   if not isgit or isgit[1] ~= 'true' then return end
+--   local remote = git_show_remote_upstream_else_origin(git_root[1])
+--   vim.print(remote)
+--
+--   local branch = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', '--abbrev-ref', 'HEAD' } }):sync()
+--   if not branch or #branch ~= 1 or branch[1] == '' then return end
+--   local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
+--   vim.print(relpath_inrepo_check)
+--
+--   local branchlink = remote .. '/blob/' .. branch[1] .. '/' .. relpath_inrepo
+--   vim.print(branchlink)
+--   setPlusAnd0Register(branchlink)
+-- end, {})
 
 -- git branch: git rev-parse --abbrev-ref HEAD
 -- add_cmd('GHLink', function()
@@ -570,20 +631,15 @@ end, {})
 --   print(vim.inspect.inspect(tests_run:result()))
 -- end, {})
 add_cmd('CheckFmt', function()
-  local stylua_run = plenary.job:new { command = 'stylua', args = { '--color', 'Never', '--check', '.' } }
-  stylua_run:sync()
-  if stylua_run.code ~= 0 then
-    local res_tab = stylua_run:result()
-    for _, tables in ipairs(res_tab) do
-      print(tables)
-    end
-    -- print (vim.inspect(stylua_run:result()));
+
+  local obj = vim.system({ 'stylua', '--color', 'Never', '--check' }, { text = true }):wait()
+  if obj.code ~= 0 then
+    vim.print(obj.stdout)
   end
 end, {})
 add_cmd('FmtThis', function()
-  local stylua_run = plenary.job:new { command = 'stylua', args = { '--color', 'Never', '.' } }
-  stylua_run:sync()
-  if stylua_run.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']] end
+  local obj = vim.system({ 'stylua', '--color', 'Never' }, { text = true }):wait()
+  if obj.code ~= 0 then print [[Formatting had warning or error. Run 'stylua .']] end
 end, {})
 
 --==nvim_util

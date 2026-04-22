@@ -45,6 +45,9 @@ done
 # SHENNANIGAN 'setsid --fork is the only way to properly ensure that a command is run as a detached process.'
 # setsid --fork                                         run program in new session
 
+# read file into variable without cat
+value=$(<config.txt)
+
 executables="test.xml"
 for executable in ${executables}; do
  if [ "${executable: -4}" != ".xml" ]   \

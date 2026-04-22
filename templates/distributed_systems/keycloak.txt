@@ -1,0 +1,23 @@
+minimal setup: https://www.keycloak.org/server/containers
+see ./templates/distributed_systems/keycloak/
+
+```env
+# Credentials for admin service account in master realm.
+# Might be personal credentials for production environment.
+ADMIN_CLIENT_ID=admin-cli
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin
+
+# Wanted client id for admin service account.
+SERVICE_ACCOUNT_CLIENT_ID=service-account
+
+# Base url for keycloak instance only used by the bootstrap script.
+# For terraform it is set via tfvars prefilled for local development.
+BOOTSTRAP_KEYCLOAK_URL=http://localhost:8080
+
+# Shit fix for local backend override https://github.com/opentofu/opentofu/issues/3643
+TF_DATA_DIR=./.terraform/shitfix
+
+# TODO document
+DUMP_FILE
+```

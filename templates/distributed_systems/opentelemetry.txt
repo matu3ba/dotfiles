@@ -1,0 +1,37 @@
+SHENNANIGAN
+* loki
+  - logs only
+  ==.NET
+  log4net.GlobalContext.Properties("Stage") = "production"
+  ==log4net
+  <appender name="LoggerOtlpAppender" type="LoggerOtlpAppender">
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date %property{Stage}-%property{traceId} [%thread] %-5level %logger [%ndc] - %message%newline" />
+    </layout>
+  </appender>
+  - TODO look at how this looks like
+
+* tempo
+  - traces
+    - UUID per request-response = trace_id/traceid=TRACEID
+    - latency per request-response
+* protocol offers no customization for per log entry based tags and alike
+  - UUID per request-response
+  - latency per request-response
+
+Why log correlation to traces?
+  Unified view: You can see logs and traces together in a unified view in your observability tool.
+  Context enrichment: Logs are enriched with trace context, making them more informative.
+  Troubleshooting: Quickly find all logs related to a specific trace when debugging issues.
+  Performance analysis: Understand what affects the performance of your application.
+
+https://github.com/oneuptime/blog/tree/master/posts/2026-01-21-loki-tempo-traces-correlation
+Best Practices Correlate Logs and Traces with Loki and Tempo
+  Consistent Trace ID Format: Use 32-character lowercase hex strings
+  Structured Logging: Use JSON format for easy parsing
+  Include Both IDs: Log both trace_id and span_id for precise correlation
+  Time Synchronization: Ensure all services use NTP
+  Label Carefully: Do not use trace_id as a Loki label (high cardinality)
+  Use Structured Metadata: Prefer structured metadata over labels for trace IDs
+
+var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;

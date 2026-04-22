@@ -1,0 +1,51 @@
+https://www.cloudraft.io/blog/top-open-source-logging-tools
+* trade-offs, grafana is not resource efficient
+https://www.reddit.com/r/devops/comments/13ab0l5/lightweight_elk_alternative_for_ingesting_and/
+* analyzing logs looks like an annoying problem
+https://www.parseable.com/blog/grafana-loki-vs-parseable#architecture-deep-dive
+* faster, but not feature complete
+
+https://oneuptime.com/blog/post/2026-02-06-iis-receiver-opentelemetry-collector/view
+Clickhouse SQL queries much, much better
+* alternatives parguqe (Rust)
+
+Loki log
+* timestamp with nanosecond precision UTC+0 [indexed]
+* key-value pairs for labels/selectors [indexed]
+* log line [unindexed]
+
+Tempo trace
+TODO data format
+
+Prometheus metrics (+ alarms)
+TODO data format
+
+why log correlation https://opentelemetry.io/docs/languages/dotnet/logs/correlation/
+1. Unified view: You can see logs and traces together in a unified view in your observability tool.
+2. Context enrichment: Logs are enriched with trace context, making them more informative.
+3. Troubleshooting: Quickly find all logs related to a specific trace when debugging issues.
+4. Performance analysis: Understand what affects the performance of your application.
+
+Best Practices Correlate Logs and Traces with Loki and Tempo
+* Consistent Trace ID Format: Use 32-character lowercase hex strings
+* Structured Logging: Use JSON format for easy parsing
+* Include Both IDs: Log both trace_id and span_id for precise correlation
+* Time Synchronization: Ensure all services use NTP
+* Label Carefully: Do not use trace_id as a Loki label (high cardinality)
+* Use Structured Metadata: Prefer structured metadata over labels for trace IDs
+
+loki logql LogQL
+https://grafana.com/docs/loki/latest/query/log_queries/
+https://grafana.com/docs/loki/latest/query/bp-query/
+http://<loki-instance>/loki/api/v1/query_range?query={job="app"}&start=1633017600000000000&end=1633104000000000000
+{service_name="SERVICE_NAME"}
+{service_name="SERVICE_NAME"} | trace_id!=""
+{service_name="SERVICE_NAME"} | trace_id!="" | deployment.environment = "live" TODO double check
+
+tempo traceql TraceQL
+https://grafana.com/docs/tempo/latest/traceql/construct-traceql-queries/#construct-a-traceql-query
+{ resource.deployment.environment = "live" }
+{ trace:id = "ffffffffffffffffffffffffffffffff" }
+{ resource.deployment.environment = "live" && resource.service.name = "SERVICE_NAME" && trace:id = "ffffffffffffffffffffffffffffffff" }
+
+TODO promql PromQL

@@ -1,0 +1,14 @@
+docker compose up|down|logs|ps
+docker build|ps|pull|push|run|stop
+
+https://www.redhat.com/en/blog/compose-kubernetes-podman
+https://www.redhat.com/en/blog/podman-compose-docker-compose
+https://www.redhat.com/en/blog/compose-kubernetes-podman
+podman generate kube
+podman play kube
+
+https://docs.docker.com/compose/intro/compose-application-model/
+https://docs.docker.com/guides/
+https://docs.docker.com/guides/go-prometheus-monitoring/application/
+https://docs.docker.com/guides/kube-deploy/
+https://docs.docker.com/reference/compose-file/

@@ -18,6 +18,7 @@
 ====hardware_token
 ====crypto
 ====protocols
+====authentication
 
 ====methods
 to ensure security based on "How to Secure Existing C and C++ Software without Memory Safety" by Erlingsson
@@ -168,7 +169,7 @@ requires libseccomp
 cargo install --locked syd
 
 Windows "Win32 app isolation"
-TODO list capabilities
+* built on top of https://learn.microsoft.com/en-us/windows/win32/secauthz/implementing-an-appcontainer
 
 Microkernel/no OS: Single security boundary
 sel4 : specific individual capabilities
@@ -409,6 +410,9 @@ functional correct code without constant time guarantees open research problem
       - sw enforces bounds of valid BCs and non-BCs must not overlap (compiler + heap allocator)
       - for example eliminates Spectre
       - from my understanding this should also eliminate cache attacks
+    * PICASSO: Scaling CHERI Use-After-Free Protection to Millions of Allocations using Colored Capabilities
+      - follow-up paper optimizing and investigating and optimizing capability
+        revocation, throughput and latencies including comparison to other work
     * External IO/bus behavior could be another time-channel of Kernels (whitelist and traffic based timing attack)
     * instructions guarantees xor (spatial or temporal separation meaning on different die or location independent) needed
     * cache effects completely unclear
@@ -463,6 +467,14 @@ functional correct code without constant time guarantees open research problem
 ====protocols
 * prover for protocols: https://tamarin-prover.com/book/
 
+====authentication
+authorization
+keycloak: design problem of extensions requiring extensive + cumbersome checks
+via tags etc to prevent accidental live system breakage
+
+https://kanidm.com/comparisons/, https://github.com/kanidm/kanidm
+* library-like and simpler than Keycloak
+
 ====standards
 Common Criteria Certification for Integrated Circuits and Smart cards
 requires Evaluation Assurance Level 6/7 (highest).
@@ -473,3 +485,4 @@ bottom-up approach:
 * impl -verification-> specification
 
 https://phrack.org/issues/68/9#article
+* parasitic compute

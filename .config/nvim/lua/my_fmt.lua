@@ -163,6 +163,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 -- })
 
 -- unused: very verbose
+-- replace plenary
 -- local has_plenary, plenary = pcall(require, 'plenary')
 -- if has_plenary then
 --   -- Runs clangfmt on the whole file.

@@ -107,6 +107,11 @@ contains() {
   fi
 }
 
+# read file into variable requires cat
+value=$(cat config.txt)
+# loop might break due to formatting
+for val in "${value}"; do echo "$val"; done
+
 # var="abcdef"
 # removed_prefix="${var#a}"
 # removed_suffix="${var%e}"

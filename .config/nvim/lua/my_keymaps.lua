@@ -27,6 +27,7 @@ local opts = {} -- default opts
 -- tabs to space :%s/^\t\+/ /g
 -- space to tabs :%s/^\s\+/\t/g
 -- https://vi.stackexchange.com/questions/495/how-to-replace-tabs-with-spaces
+-- idea: clarify operations
 -- Principle:
 --  <Space> general mapleader for fast operations
 --    * 1-9 goto window 1-9
@@ -35,8 +36,8 @@ local opts = {} -- default opts
 --    * d debugging, diffput(2,3)
 --    * g git (G unused)
 --    * p|P paste (fast)
---    * r reorganize (t tabs, w windows) TODO
---    * t tags, telescope, TODO remap rg
+--    * r reorganize (t tabs, w windows)
+--    * t tags, telescope
 --    * q quit (fast), query into quick and loclist
 --    * w lsp workspace
 --    * - for leap jump
@@ -182,7 +183,7 @@ map('n', '<leader>D', '"_D', opts) -- delete into blackhole register
 --map('n', '<leader>p', [[v$P]], opts) -- keep pasting over the same thing (until before EOL), also joins next line
 -- overwrite line at cursor start with text from register
 
--- TODO if register contains newlines, strip last newline
+-- TODO if register contains newlines at end, strip them
 map('n', '<leader>p', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', true)<CR>]], opts)
 map('n', '<leader>P', [[<cmd>lua require("my_utils").pasteOverwriteFromRegister('+', false)<CR>]], opts)
 map('n', '<C-p>', 'p`[', opts) -- ] paste without cursor movement
@@ -195,6 +196,12 @@ map('n', '<leader>sr', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], o
 -- C-a,C-f,C-g,C-k,C-l,C-v,C-b free in emacs mode
 map('t', '<C-q>', [[<C-\><C-n>]], opts) -- Quit terminal editing
 map('t', '<C-a>', [[<C-\><C-n><C-w>]], opts) -- quit And enter windowing
+
+--==undotree
+--.config\nvim\init.lua packadd nvim.undotree
+--:Undotree
+--:undolist (undolevels)
+--related: undo*
 
 -- list and open buffer with number
 -- :1b, :2b etc
@@ -397,7 +404,12 @@ map('n', '\\st', [[/@.*@.*:<CR>]], opts) -- shell navigation: search terminal (f
 -- C-d|n|p|a|l manual completions
 -- C-n,C-p to complete from all buffers
 -- C-x C-n to complete from current buffer
--- :his, C-g|C-t TODO search
+-- :his, C-g|C-t
+--==cmd history search
+-- :redir >reg_file_name
+-- :his
+-- :redir END
+-- :r reg_file_name
 
 -- selection mode
 -- word selected + K => search manual entry
@@ -499,8 +511,9 @@ map('n', '<leader>ta', '<cmd>execute "tag " .. expand("<cword>")<CR>', opts)
 -- C-q (send to quickfixlist), :cdo %s/<search term>/<replace term>/gc, :cdo update (saving)
 -- :norm {Vim} run command on every line
 -- shift|shift+tab selects items
--- TODO overlap with gitsigns somehow
--- TODO: resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
+-- overlap with gitsigns somehow
+-- idea: resolve telescope huge repo memory issues
+-- https://github.com/nvim-telescope/telescope.nvim/issues/647
 map('n', '<leader>tb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], opts) -- buffers
 map('n', '<leader>tls', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts) -- buffer: document symbols
 map('n', '<leader>tk', [[<cmd>lua require('telescope.builtin').keymaps()<CR>]], opts) -- keybindings
@@ -538,14 +551,28 @@ map('n', '-', '<Plug>(leap-forward)', {}) -- -> forward
 map('n', '_', '<Plug>(leap-backward)', {}) -- _> inverse forward
 map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across the windows
 
--- TODO describe :vs otherfile
 --==diff
 ---1. manually (ie python code with too many conflicts)
 ---:e filetoshowthediffs
+---1.1. diffthis firstfile
+---1.2 diffthis secondfile
+map('n', '<leader>dt', '<cmd>diffthis<CR>', { desc = 'diffthis' })
+map('n', '<leader>do', '<cmd>diffoff<CR>', { desc = 'diffoff' })
+map('n', '<leader>dg', '<cmd>diffget<CR>', { desc = 'diffget' })
+map('n', '<leader>dp', '<cmd>diffput<CR>', { desc = 'diffput' })
 ---:windo diffthis, :diffupdate, :diffoff!
----2. :Gvdiffsplit!
+---2. :Neogit
+---see also ==git for Neogit information
+---dw on conflicted file
+---git OURS means the current branch
+---git THEIRS means THE InRolling Stuff (the branch that is [with conflicts] merged), (git checkout --theirs FILE)
+---git BASE means the local file as of now (git checkout --ours FILE)
 ---:diffget //2|//3, :diffput
----C-w,C-o
+--:bufdo diffoff xor C-w,C-o (close all other windows)
+--Hint: use strategy preference hints for git:
+--* git merge -Xours
+--* git merge -Xtheirs
+
 --== gitsigns in file git operations (:Gitsigns debug_messages)
 --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
 -- :Gitsigns show @~1
@@ -567,6 +594,7 @@ map('n', '<leader>-', '<Plug>(leap-cross-window)', {}) -- search and go across t
 --map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>', opts)
 
 -- vim-fugitive, other git keybindings have <leader>hX see :CGs .config/nvim/lua/my_gitsign.lua
+-- this should be scoped and unbind the other keybindings
 -- map('n', '<leader>gs', '<cmd>Git<CR>', opts)
 -- map('n', '<leader>g2', '<cmd>diffget //2<CR>', opts)
 -- map('n', '<leader>g3', '<cmd>diffget //3<CR>', opts)
@@ -580,7 +608,8 @@ if has_neogit then
   vim.keymap.set('n', '<leader>gs', neogit.open, { silent = true, noremap = true, desc = 'Git status' })
   map('n', '<leader>gc', ':Neogit commit<Cr>', { desc = 'Git commit' })
   map('n', '<leader>gp', ':Neogit push<CR>', { desc = 'Git push' })
-  -- TODO force with lease
+  map('n', '<leader>go', ':Neogit<CR>', { desc = 'Git open' })
+  -- force with lease: P, -f
   -- map("n", "<leader>gP", "<leader>gp", { desc = "Git push" })
   map('n', '<leader>gb', ':Telescope git_branches<CR>', { desc = 'Telescope git branches' })
   -- map("n", "<leader>gB", ":G blame<CR>", { desc = "Git blame" })
@@ -608,7 +637,7 @@ end
 --     or provide the cwd to use for the other neovim instance.
 
 --====harpoon
--- TODO copy last command into named/unnamed register
+-- idea copy last command into named/unnamed register
 -- removing via quick menu is simpler
 map('n', '<leader>mv', [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>]], opts) -- mv for move to overview
 map('n', '<leader>mm', [[<cmd>lua require("harpoon.mark").add_file()<CR>]], opts) -- mm means fast adding files to belly
@@ -657,7 +686,7 @@ map('n', '<leader>co', [[<cmd>lua require("harpoon.term").gotoTerminal(6)<CR>]],
 -- exec + log under cursor
 -- s shell content exec and log(log the command and then execute it)
 -- doesnt detect cli failures, because there is no standard to encode them
--- TODO combine this with overseer.
+-- idea combine this with overseer.
 -- map('n', ';sj', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(1)<CR>]], opts)
 -- map('n', ';sk', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(2)<CR>]], opts)
 -- map('n', ';sl', [[<cmd>lua require("my_harpoon").bashCmdLogAndExec(3)<CR>]], opts)

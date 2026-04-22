@@ -58,6 +58,9 @@ $env:Editor = "nvim"
 # robocopy $src $dest filename
 # robocopy $src $dest *.exe
 
+# [System.IO.Directory]::SetCurrentDirectory($(pwd))
+# [System.IO.Directory]::EnumerateFiles(".", "nvim.pdb", [System.IO.SearchOption]::AllDirectories)
+
 # Installing Windows Terminal
 # https://github.com/microsoft/terminal/releases
 # Add-AppxPackage -Path C:\Path\App-Package.msixbundle
@@ -69,6 +72,10 @@ $env:Editor = "nvim"
 # missing comparison to ghostty
 # https://github.com/wez/wezterm/releases
 # winget install wez.wezterm
+
+# Windows fork of ghostty https://github.com/mattn/ghostty
+# https://github.com/mattn/ghostty/tree/win32-apprt
+# idea comparison
 
 # Install/update of powershell called pwsh.exe to fix utf8:
 # function GitDiff { & git diff --no-color $args }
@@ -89,6 +96,13 @@ $env:Editor = "nvim"
 
 # DevShell to be used from Powershell
 # https://intellitect.com/blog/enter-vsdevshell-powershell/
+#  Import-Module "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\vsdevshell\Microsoft.VisualStudio.DevShell.dll"
+#  Import-Module "C:\Program Files\Microsoft Visual Studio\18\Professional\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+#  Enter-VsDevShell -InstanceId 00000000
+#  $installPath = &"C:Program Files (x86)Microsoft Visual StudioInstallervswhere.exe" -version 16.0 -property installationpath
+#  Import-Module (Join-Path $installPath "Common7ToolsMicrosoft.VisualStudio.DevShell.dll")
+#  Enter-VsDevShell -VsInstallPath $installPath -SkipAutomaticLocation
+#  dotnet build --runtime ubuntu.16.04-x64
 # https://learn.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell?view=vs-2022
 # & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1"
 
@@ -279,6 +293,25 @@ filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 # debug runtime files for deploying along application
 # C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\debug_nonredist\x64\Microsoft.VC143.DebugCRT
 
+#====startup_time
+# https://learn.microsoft.com/en-us/powershell/scripting/dev-cross-plat/performance/startup-performance?view=powershell-7.6
+# https://github.com/PowerShell/PowerShell/issues/10983
+# Get-Module -ListAvailable
+# $PSModuleAutoLoadingPreference = 'None'
+# Import-Module Microsoft.PowerShell.Utility
+# Import-Module Microsoft.PowerShell.Management
+
+# load without profile: pwsh -NoProfile
+# remove cache (process)
+# * rm -fo -r $env:LOCALAPPDATA\Microsoft\Windows\Caches
+# * rm -fo -r $env:windir\System32\Config\SystemProfile\AppData\Local\Microsoft\Windows\Caches
+# remove cache (PowerShell analysis cache)
+# * $env:LOCALAPPDATA\Microsoft\PowerShell
+# * rm -fo -r $env:windir\System32\Config\SystemProfile\AppData\Local\Microsoft\Windows\PowerShell
+
+# Write-Host "$(Get-Date -Format 'HH:mm:ss.fff') | Profile: Step X"
+# isolated network (CRL checks on startup): pwsh.exe -noninteractive
+
 #====setup
 
 Import-Module posh-git
@@ -376,3 +409,5 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # }
 # Get-Process -Name $ProcessName -IncludeUserName | Where-Object UserName -eq $UserName
 # $UserName = "$env:USERDOMAINNAME\$env:USERNAME"
+#
+#fd -uu 'search_entry' | Where-Object { $_ -match "item1|item2|item3|item3"}

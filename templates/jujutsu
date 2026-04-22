@@ -41,3 +41,13 @@ jj new (same as jj commit)
 jj edit uniq_id_from_jj_log
 jj squash
 jj resolve
+
+TODO
+https://shaddy.dev/notes/jj-worktrees/
+https://lwn.net/Articles/958814/
+https://github.com/jj-vcs/jj/discussions/3560 kernel patch series with jj
+
+https://devcry.heiho.net/html/2026/20260118-jj-xx.html
+deep dive https://medium.com/@pushpankdhruw/the-version-control-system-thats-making-git-power-users-switch-a-deep-dive-into-jujutsu-cdacdc43de00
+jj commands https://www.infovision.com/blog/git-and-jujutsu-the-next-evolution-in-version-control-systems/
+https://thenewstack.io/jujutsu-dealing-with-version-control-as-a-martial-art/

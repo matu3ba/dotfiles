@@ -49,6 +49,9 @@ const process = std.process;
 // type-1 hypervisor in zig https://hv.smallkirby.com/en
 // simple file (tree) encryption https://github.com/jedisct1/turbocrypt
 // Static + Dynamic analysis tool for Zig projects https://bitbucket.org/rhyoslabs/ephor.git
+// Tripwire https://mitchellh.com/writing/tripwire
+// * https://github.com/ghostty-org/ghostty/blob/main/src/tripwire.zig
+// ZON processor https://codeberg.org/tensorush/zq
 
 // https://github.com/david-vanderson/dvui
 // https://codeberg.org/ssmid/zeppelin
@@ -372,7 +375,8 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // x86_64-windows-none
 // wasm32-wasi
 
-// TODO: How to get debug session in Zig from build system
+// How to get debug session in Zig from build system
+// idea: configure vs build separation should allow this
 // qemu-arm -g 1234 ./b.out
 // gdb-multiarch ./b.out
 // target remote localhost:1234
@@ -982,3 +986,18 @@ test "@hasDecl" {
 // world.c -o ./hello_world.exe
 // clang: error: no such file or directory: 'hello-world.c'
 // clang: error: no input files
+
+pub fn static_function_overloading(comptime T: type, comptime buffer_capacity: usize) type {
+    return struct {
+        const Self = @This();
+        buffer: [buffer_capacity]T = undefined,
+        len: usize = 0,
+        pub fn slice(self: anytype) switch (@TypeOf(&self.buffer)) {
+            *[buffer_capacity]T => []T,
+            *const [buffer_capacity]T => []const T,
+            else => unreachable,
+        } {
+            return self.buffer[0..self.len];
+        }
+    };
+}

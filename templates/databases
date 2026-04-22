@@ -40,6 +40,10 @@ Simpler alternative to use REST on postgresql https://github.com/PostgREST/postg
   - TODO many more things
 * https://dikmenonur.medium.com/sql-performance-tuning-a-comprehensive-guide-0e8a0b0b8aa9
 
+clickhouse: logs, traces, metrics, yet
+redis: session, cache
+postgresql: ACID db to be used with saner sql overlay for default behavior
+
 ====replication
 "Enough with all the Raft" by Alex Miller
 * Blob Storage

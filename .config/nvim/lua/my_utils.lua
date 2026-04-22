@@ -81,6 +81,26 @@ M.pathJoin = function(...)
   return table.concat(all_parts, M.path_separator)
 end
 
+---@param path string Input path.
+---@return string Normalized, (if cwd is root path) relative (to cwd) path.
+M.pathNormRelOnCwd = function(path)
+  local cwd = vim.uv.cwd()
+  return M.pathNormRel(cwd, path)
+end
+
+---@param cwd string Current working directory.
+---@param path string Input path.
+---@param opts? string Input path.
+---@return string Normalized, (if cwd is root path) relative (to cwd) path.
+M.pathNormRel = function(cwd, path, opts)
+  if (opts == nil) then opts = {expand_env=false} end
+  local normalized_pa = vim.fs.normalize(path, opts)
+  vim.print(normalized_pa)
+  local relpath = vim.fs.relpath(cwd, normalized_pa, {})
+  if (relpath == nil) then relpath = normalized_pa; end
+  return relpath
+end
+
 -- Simpler alternative to vim.keymap.set for more direct usage of
 -- vim.api.nvim_set_keymap
 ---@param mode string

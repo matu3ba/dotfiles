@@ -1,3 +1,5 @@
+https://www.npopov.com/2026/01/11/LLVM-The-bad-parts.html
+
 "Don’t Look UB: Exposing Sanitizer-Eliding Compiler Optimizations"
 * use mutational fuzzing pipeline to generate programs susceptible to UB
 * perf overhead of 4% for not having those problematic conditions
@@ -112,7 +114,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/tmp/llvm -P cmake_install.cmake
 mv /tmp/llvm $HOME/.local/llvm[bs]
 ```
 
-TODO runtime instrumentation for tracing / logging LLVM things.
+runtime instrumentation for tracing / logging LLVM things.
 
 SHENNANIGAN
 1. Rewrite blocked by missing formal semantics

@@ -21,6 +21,8 @@ see also section ====computing_models
   - can/should be extended with synchronization model
 * memory logics for functional+time behavior of cache, RAM and other storage?
   * state automata known for synchronization of cache lines, but the rest?
+  * https://www.philipzucker.com/coegraph/
+    - interesting egg to automata relation
 * SIMD logic?, Ralf Jung's group had a paper for common SIMD things
 * segmentation of depedendencies for ASIL/safety
 * "Temporal Stream Logic: Synthesis beyond the Bools"
@@ -164,7 +166,8 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
     about code (in weak memory context) using relaxed atomics in arbitrary ways
     * no clear path forward wrt tradeoffs
 * "Using LKMM atomics in Rust" on lwn.net
-  - https://lwn.net/Articles/993785/ TODO atomics semantics
+  - https://lwn.net/Articles/993785/
+    * idea atomics semantics
 
 ====formal_problems
 - 1. implicit proof-carrying code
@@ -231,7 +234,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
    * pointer provenance semantics for provenance based aliasing analysis and optimizations
      + "Zapping pointers out of thin air" on lwn.net https://lwn.net/Articles/993484/
        very informative article and discussions regarding 1. atomics, 2. pointer semantics
-       o TODO discussion points
+       o idea discussion points
        article tldr;
        - 1. ABA tolerance requires to annotate when pointer is physical instead of logical
        (and "angelic provenance" to simplify stuff for devs probably at compilation time cost + memory doesnt help with that)
@@ -259,7 +262,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
      + gcc      nothing
        o https://rust-lang.github.io/rfcs/3559-rust-has-provenance.html#drawbacks
        o buggy and no plan how to move forward
-   * TODO https://fil-c.org/ https://github.com/pizlonator/fil-c/ model + perf numbers
+   * fil-c ./templates/formal_modeling/fil-c
    * CHERI example usage (mixed tagged pointer capabilities)
      one implementation may choose
      | perms | padding | ot    | bounds |
@@ -498,7 +501,6 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 - 18. TLA+ as only feasibe system to formally verify complex non-deterministic
   parallelism, states and changes over time via temporal logic
   * https://www.learntla.com/
-  * TODO
   * https://softwareengineering.stackexchange.com/questions/270674/which-language-has-most-advanced-support-for-proof-based-programming
   * actor based languages for distributed systems simplify implementation details significantly
     o P language to apply formal methods https://github.com/p-org/P
@@ -678,7 +680,7 @@ One possible strategy:
 
 ====state_of_art
 - (Partially) verifiable are static and more simple language like 'Structured Text',
-  'CompCert C' up to pure functional languages (io restricted) like TODO
+  'CompCert C' up to pure functional languages (io restricted)
 - Hotswapping and/or with REPL are interpreted languages like Julia, Python, R
   and all functional + logic Programming Languages
 - Static languages intended for optimizing compilers like Rust, C, C++, D
@@ -744,7 +746,8 @@ System implementation details towards correctness:
 
 Candidates for an optimal language (independent of domain) working on at least 3 points:
 - Compcert C is working on frontend verification and semantics of linker speak (3+4+7 solved, 3+5 unclear)
-  * requires manual modeling with costly (manual) existential variables solving TODO what are existential variables used for?
+  * requires manual modeling with costly (manual) existential variables solving
+  TODO what are existential variables used for?
 - Rust satisfies 3, 4 for safe Rust and is kinda working on 6 (no completion
   model), but it is not simple, so it can not be optimal (no realistic chance
   to prove correctness or to reduce bug count to 0)
@@ -828,6 +831,8 @@ tldr; posix process model fix suggestions via component model layered on top of 
 8 Virtualization tooling
   * Virtual Platform Layering
   TODO https://youtu.be/phodPLY8zNE?t=1282
+  WASM Keynote: The Path to Components - Luke Wagner,
+  Distinguished Engineer, Fastly
 
 "Components, WebAssembly’s Docker’s Moment - Bailey Hayes, Cosmonic" https://www.youtube.com/watch?v=wttN69wciSM
 * sounds like capabilities without being explicit on them

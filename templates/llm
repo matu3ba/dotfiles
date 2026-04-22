@@ -1,8 +1,15 @@
+====tools
 ====llms
 ====artifacts
 ====known_to_work_use_cases
 ====visualization
 ====frameworks
+
+====tools
+https://github.com/rtk-ai/rtk
+https://github.com/Swival
+* https://00f.net/2026/04/13/swival-ai-agent/
+* no bullshit any model agent
 
 ====trade-offs
 excellent overview guide on methods for LLM design with practical trade-offs?

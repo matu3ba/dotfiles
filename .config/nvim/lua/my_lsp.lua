@@ -163,43 +163,48 @@ vim.lsp.config('texlab', {
 })
 vim.lsp.enable 'texlab'
 
--- lspconfig.lua_ls.setup {
-vim.lsp.config('lua_ls', {
-  on_attach = common_on_attach,
-  on_init = function(client)
-    if client.workspace_folders == nil or client.workspace_folders[1] == nil then return false end
-    local path = client.workspace_folders[1].name -- neovim config dir
-    -- Debug common problems
-    -- vim.print(client.config.settings)
-    -- :lua local file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(client.config.settings) .. "\n"); file:close()
-
-    -- :lua print(client.workspace_folders[1].name .. "\n")
-    -- :lua print(tostring(not vim.uv.fs_stat(client.workspace_folders[1].name..'/.luarc.json')) .. "\n")
-    -- :lua print(tostring(not vim.uv.fs_stat(client.workspace_folders[1].name..'/.luarc.jsonc')) .. "\n")
-
-    if not vim.uv.fs_stat(path .. '/.luarc.json') and not vim.uv.fs_stat(path .. '/.luarc.jsonc') then
-      -- vim.print("special client setup")
-      client.config.settings = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-        -- cmd = { sumneko_binary, "--logpath", "$HOME/.cache/lua-language-server/", "--metapath", "$HOME/.cache/lua-language-server/meta/"}
-        diagnostics = {
-          globals = { 'vim' }, -- does not work and "$HOME/.cache/lua-language-server/" does not exist
-        },
-        runtime = {
-          version = 'LuaJIT',
-        },
-        workspace = {
-          library = { vim.env.VIMRUNTIME },
-          -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-          -- library = vim.api.nvim_get_runtime_file("", true),
-          checkThirdParty = false,
-        },
-      })
-
-      client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
-    end
-    return true
-  end,
-})
+-- vim.lsp.config('lua_ls', {
+--   on_attach = common_on_attach,
+--   on_init = function(client)
+--     if client.workspace_folders == nil or client.workspace_folders[1] == nil then return false end
+--     local path = client.workspace_folders[1].name -- neovim config dir
+--     -- Debug common problems
+--     -- vim.print(client.config.settings)
+--     -- :lua local file = assert(io.open("tmpfile123", "a")); file:write(vim.inspect(client.config.settings) .. "\n"); file:close()
+--
+--     -- :lua print(client.workspace_folders[1].name .. "\n")
+--     -- :lua print(tostring(not vim.uv.fs_stat(client.workspace_folders[1].name..'/.luarc.json')) .. "\n")
+--     -- :lua print(tostring(not vim.uv.fs_stat(client.workspace_folders[1].name..'/.luarc.jsonc')) .. "\n")
+--
+--     if not vim.uv.fs_stat(path .. '/.luarc.json') and not vim.uv.fs_stat(path .. '/.luarc.jsonc') then
+--       -- vim.print("special client setup")
+--       client.config.settings = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+--         -- cmd = { sumneko_binary, "--logpath", "$HOME/.cache/lua-language-server/", "--metapath", "$HOME/.cache/lua-language-server/meta/"}
+--         diagnostics = {
+--           globals = { 'vim' }, -- does not work and "$HOME/.cache/lua-language-server/" does not exist
+--         },
+--         runtime = {
+--           version = 'LuaJIT',
+--         },
+--         workspace = {
+--           library = { vim.env.VIMRUNTIME },
+--           -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+--           -- library = vim.api.nvim_get_runtime_file("", true),
+--           checkThirdParty = false,
+--         },
+--       })
+--
+--       client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
+--     end
+--     return true
+--   end,
+-- })
+vim.lsp.config['lua_ls'] = {
+  cmd = { 'lua-language-server' },
+  filetypes = { 'lua' },
+  root_markers = { '.luarc.json', '.git' },
+  settings = { Lua = { diagnostics = { globals = { "vim" } } } }
+}
 vim.lsp.enable 'lua_ls'
 
 --==Keybindings

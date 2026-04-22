@@ -194,11 +194,10 @@ return {
   { 'nvim-mini/mini.move' },
 
   -- :Neogit
-  -- TODO :Neogit diffsplit
   -- :Neogit pull, push, commit
-  -- TODO faster rewrite of commit msg
-  -- TODO faster squashing of message
-  -- leader gs,gc,gp, q to close
+  -- interactive rebase, rewrite commit msg,
+  -- squashing etc supported like magit
+  -- leader gs,gc,go, q to close
   {
     'NeogitOrg/neogit',
     config = function()
@@ -244,7 +243,7 @@ return {
   --   <leader>cb: Choose BASE version of conflict.
   --   <leader>ca: Choose all versions of conflict (deletes markers leaving content)
   --   dx: Choose none of versions of conflict (delete conflict region).
-  { 'sindrets/diffview.nvim' },
+  { 'dlyongemallo/diffview.nvim' },
 
   -- idea { "axieax/urlview.nvim" } -- :Telescope urlview
   --requires = { "tpope/vim-repeat" },
@@ -253,7 +252,7 @@ return {
   -- leap: enter repeats, tab reverses the motion
   -- (unused default breaks mini.surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
-  -- TODO figure out better keymap
+  -- idea figure out better keymap
   { url = "https://codeberg.org/andyg/leap.nvim" },
   -- repeat action not yet supported
 
@@ -300,8 +299,7 @@ return {
   -- { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
   -- { 'ThePrimeagen/harpoon' }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
-  -- use instead track.nvim?
-  -- { 'matu3ba/libbuf.nvim', dev = false }, TODO fixup
+  -- { 'matu3ba/libbuf.nvim', dev = false },
   -- any benchmark against nvim-telescope/telescope-fzf-native.nvim ?
   -- any way to place results in buffer?
   -- git clone https://github.com/jake-stewart/jfind && cd jfind && cmake -S . -B build && cd build && make -j$(nproc) && sudo make install
@@ -336,14 +334,10 @@ return {
   -- { 'jbyuki/ntangle.nvim' },
 
   -- more functionality + tutorial
+  -- TODO https://github.com/vim-scripts/DrawIt slop-code lua translation
+  -- for personal use and/or venn.nvim
   -- https://www.baeldung.com/linux/vim-drawit-ascii-diagrams
-  -- TODO open source ascii editor, ideally within neovim
-  -- inspiration https://monodraw.helftone.com/
-  -- { 'jbyuki/venn.nvim', dev = false }, TODO fixup
-  -- idea { 'simnalamburt/vim-mundo' } to search undotree
-
-  -- TODO replacement with search
-  { 'mbbill/undotree' }, -- :UndotreeToggle, rarely used (<l>u unmapped)
+  -- { 'jbyuki/venn.nvim', dev = false },
 
   -- :Telescope builtin.keymaps
   { 'folke/which-key.nvim', config = function() require('which-key').setup() end },
@@ -353,7 +347,7 @@ return {
     'ellisonleao/glow.nvim',
     config = function() require('glow').setup() end,
   },
-  -- TODO figure out which markdown viewer to use
+  -- idea figure out which markdown viewer to use
   -- markdown OXY2DEV/markview.nvim
   -- markdown MeangeringProgrammer/render-markdown.nvim
   -- jupyter and markdown live preview, idea

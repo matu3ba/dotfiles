@@ -18,7 +18,8 @@ alias chmt='chmod +x ./t.sh'
 #To query ip+port of active processes install net-tools and use
 #netstat -plnt
 #alias checkemptyspace='for f in *\ *; do echo="$f"; done' #; if ! test -z "$FAIL"; then echo "emptyspace in file" fi'
-## TODO remove non-unix and non-portable symbols in filenames and folder names
+# remove non-unix and non-portable symbols in filenames and folder names
+# dos2unix, unix2dos
 alias helpuser='echo "appimage_update gitreb gitrm replunderscore"'
 alias helpcommonuser='echo "bashrc firejail_build nvim tmuxst tmuxat foxla sfoxla tbirdla"'
 #TIMENOW_SEC=$(date +"%Y%m%d_%H%M%S")
@@ -230,7 +231,7 @@ alias rsync_synchronize='rsync -avzu --delete --progress -h'
 alias cpv='rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 #rsync -av --delete --progress -h -e 'ssh -i ~/.ssh/priv_key' user@ip:path_in path_out
 #rsync -av --dry-run --delete -P --stats src target
-# TODO rsync without permissions
+# rsync without permissions: rsync -v
 
 # program aliases
 #alias l='exa'
@@ -241,7 +242,7 @@ alias rgp=' rg -p'
 alias rgi="rg -g '!tests' -g '!src/include'"
 #alias rgv='rg --vimgrep'
 
-# sed: SED_PATTERN FILE
+#==sed: SED_PATTERN FILE
 # BSD sed
 # * sed -i .bak 'pattern' FILE
 # * sed -i '' 'pattern' FILE
@@ -256,8 +257,9 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # rg -l '\r' -g '*.md'
 # grep -l -r -U $'\015' --include="*.md" .
 # replace windows line endings: find . -name "*.php" -type f -exec dos2unix {} \;
+# see section ==fd-find for piping to sed
 
-# find
+#==find
 # find ./ -maxdepth 1 -type f -exec SED_PATTERN {} \;
 # rm files with exec bit: find ./ -type f -perm /1 -exec rm {} \;
 # replace occurences with word
@@ -268,7 +270,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # list all sections of an elf file sorted by change time
 # find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
 
-# file tree
+#==file_tree
 # mingw64 tree: cmd //c "tree /F"
 # mingw64 tree: cmd //c "tree . /F"
 # tree /
@@ -278,7 +280,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # find ./ -regex '.*lighttpd.*'
 
 
-# fd-find
+#==fd-find
 # rm files with exec bit unless script:
 # fd -E excludepattern -maxdepth 1 clean.sh -t x -x rm {} \;
 # find files based on extension and delete ({} is implicit if not given)
@@ -297,6 +299,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # fd --type f -x sed -i 's;Ether;Twin;g'
 # fd --type f -x sd -F Ether Twin
 # fd -e md -e txt .
+# fd regex1 --and regex2 --and regex3
 # To batch process results, use -X
 # Get relative path to all files in dirs matching pattern and run command per line
 # fd 'Release' -t d -x realpath --relative-to=. {}/* | xargs -n1 sha256sum
@@ -307,6 +310,36 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # rg -l arrow_chars | xargs -n1 sed -i 's;arrow_chars;arrow_chars_utf;g'
 # rg -l -F 'parse' | xargs -n1 sed -i 's;parse;parse_utf;g'
 
+#==xargs
+# 1 handle spaces, newlines, special chars correctly: -0
+# find . -name "*.log" -print0 | xargs -0 rm -f
+# 2 counting lines in text file
+# ls *.txt | xargs wc -l
+# 3 run command in batches
+# seq 1 100 | xargs -n 10 echo
+# 4 parallel downloads
+# cat urls.txt | xargs -n 1 -P 4 curl -O
+# 5 prompt for confirmation: -p
+# find . -type f -name "*.bak" | xargs -p rm
+# 6 template/replace each occurence of {}
+# echo "example.txt" | xargs -I {} mv {} {}.bak
+# 7 search and replace in files
+# grep -rl "TODO" . | xargs sed -i 's/TODO/DONE/g'
+# BestPractice
+# handle spaces/newlines via in find use -print0, in xargs use -0
+# find . -name "*.log" -print0 | xargs -0 rm
+# avoid argument list too long errors
+# ls | xargs -n 100 command
+# preview commands before execution (xargs -t prints them before execution)
+# find . -name "*.tmp" | xargs echo rm
+# AvancedExamples
+# rename files by changing extensions
+# find . -name "*.txt" | xargs -I {} sh -c 'mv "$1" "${1%.txt}.md"' _ {}
+# read input from file directly
+# xargs -a list.txt -n1 rm
+# On doubt, use -n1. Specifically on Windows.
+# Known problem: In mingw64 xargs -a looks broken. grepping however works
+
 # busybox grep (very slow)
 # grep -r regex .
 
@@ -314,7 +347,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 # {n}(exactly),{n,m}(at least n, no more than m),
 # rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
-# TODO: figure out why globbing does not work
+# figure out why globbing does not work
 # rg -g '*.rs' to ignore file ending
 # rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
 # rg --vimgrep lines+columns -u[u[u]] unrestricted
@@ -327,6 +360,10 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # only show to be searched filepaths:
 # rg --files
 # only search for file type: -t, --type TY from --type-list
+# Workaroud on mingw for backtick paths '\' on mingw under Windows:
+# option 1 use: --path-separator '\x2F'
+# option 2 pipe through: cygpath --file -
+# (fd-find does not have the problem and offers -x to directly execute on files)
 
 #====grep
 # patterns: extended regex -E, fixed string -F, basic regex -G, perl regex -P

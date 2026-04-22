@@ -28,6 +28,7 @@ local has_lazy = vim.uv.fs_stat(lazypath)
 if not has_lazy then
   print 'Please install lazy, instructions in init.lua'
 else
+  vim.cmd "packadd nvim.undotree"
   vim.opt.runtimepath:prepend(lazypath)
   -- workaround https://github.com/natecraddock/telescope-zf-native.nvim/issues/21
   require('lazy').setup('my_plugins', { rocks = { enabled = false } })
@@ -37,7 +38,6 @@ else
   -- 1. coredumps + 2. debug symbols + 3. live attach etc
   -- qemu user documentation is created for support contracts, not user friendly-ness
 
-  -- TODO windowing
   -- * 1. :tabm shortcuts        hydra tab mode
   -- * 2. combine commands to replace terminal buffer
   -- * 3. implement sharing cmds between overseer and shell (via registers?)
@@ -45,7 +45,7 @@ else
   -- * 5. vim macro capture groups https://pabloariasal.github.io/2020/04/25/vim-is-for-the-lazy/
   -- "Seven habits of effective text editing" by Bram Moolenaar
 
-  -- TODO https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
+  -- reverting plugins https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
   -- idea config: setup NeoComposer
 
   -- idea https://github.com/birth-software/birth
@@ -55,7 +55,7 @@ else
   -- idea web search via shell
   -- idea walk through https://www.youtube.com/@devopstoolbox/videos
   -- idea walk through https://github.com/bregman-arie/devops-exercises
-  -- TODO implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
+  -- idea implement most of https://bluz71.github.io/2021/09/10/vim-tips-revisited.html
   -- * \ prefix for find and replace helpers
   --   + also do them
   -- * ; as prefix for runners
@@ -98,10 +98,6 @@ else
   require 'my_oil' -- file_explorer
   require 'my_fmt' -- smart_formatter
   require 'my_treesitter' -- smart_formatter
-
-  -- workaround lazy caching init.lua loading, but the module might be absent.
-  local has_libbuf, _ = pcall(require, 'libbuf')
-  if has_libbuf then require 'my_buf' end
 
   --==lazy fast restore state from https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
   local aucmds_lazy = vim.api.nvim_create_augroup('aucmds_lazy', { clear = true })

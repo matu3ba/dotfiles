@@ -11,13 +11,14 @@ local statusline = {}
 vim.o.statusline = "%!v:lua.require'my_statusline'.setup()"
 
 local visual_setting_choices = {
-  [1] = 'min', -- minimal: no expanded path and no cwd
-  [2] = 'cwd', -- expanded cwd
-  [3] = 'pa', -- expanded path
-  [4] = 'pa_cwd', -- both expanded
+  [1] = 'min', -- minimal: shortened path and no cwd
+  [2] = 'cwd', -- normal cwd
+  [3] = 'pa', -- normal path
+  [4] = 'pa_cwd', -- both normal
 }
 _ = visual_setting_choices
-local visual_setting = 1
+-- default [3] = 'pa', -- normal path
+local visual_setting = 3
 
 -- idea config: toggle show size of last copy + selection in cmdline
 
@@ -102,13 +103,16 @@ local function get_cwd()
   end
 end
 
-local function get_path()
-  -- rel_path is absolute, when path not within cwd
-  -- plenary handles for us gracefully uris
+-- returns
+-- if path in cwd: relative path
+-- if not in cwd: absolute path
+local function get_path(cwd)
   local bufname = vim.api.nvim_buf_get_name(0)
-  -- neovim should always return valid path and unlist the buffer instead, but if it fails, use
-  -- if bufname == nil then return "[DELETED]" end
-  local rel_path = plenary.path:new(bufname):make_relative()
+  -- local rel_path = plenary.path:new(bufname):make_relative()
+  local rel_path = vim.fs.relpath(cwd, bufname, {})
+  if (rel_path == nil) then
+    rel_path = bufname
+  end
   return rel_path
 end
 
@@ -197,13 +201,15 @@ end
 function statusline.setup()
   local _visual_setting = visual_setting
   local reserved_rhs = 80
-  local winwidth = vim.fn.winwidth(0)
+  local winwidth = vim.api.nvim_win_get_width(0)
 
   local cwd = get_cwd()
-  local cwd_width = vim.fn.strdisplaywidth(cwd)
+  -- local cwd_width = vim.fn.strdisplaywidth(cwd)
+  local cwd_width = plenary.strings.strdisplaywidth(cwd)
 
-  local path = get_path()
-  local path_width = vim.fn.strdisplaywidth(path)
+  local path = get_path(cwd)
+  -- local path_width = vim.fn.strdisplaywidth(path)
+  local path_width = plenary.strings.strdisplaywidth(path)
 
   -- visual_setting_choices
   -- cwd shown => 2,4 not shown => 1,3

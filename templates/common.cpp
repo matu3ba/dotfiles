@@ -64,6 +64,9 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // 2. possible invalid pointer arithmetic
 // 3. possible out of bounds access
 
+// no abi
+// see https://github.com/simdutf/simdutf how to do it
+
 // disable diagnostics https://clang.llvm.org/docs/DiagnosticsReference.html
 // #pragma clang diagnostic push
 // #pragma clang diagnostic ignored "-Wnullability-extension"
@@ -137,7 +140,9 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //   - replace #define with 'static constexpr' and 'auto lambda_fn = [](auto ..) {}'
 //   - templates instead of type params (or write out coercible types): template <typename T> T square(T n) { return n * n; }
 //   - constexpr/consteval if and SFINAE (ie std::enable_if or concepts)
-//   - TODO explain ADL
+//   - Argument dependent Lookup (ADL)
+//     * decl of class member, decl of fn block/scope, decl not in fn/fn template,
+//       and more longer rules
 //   - variadic templates instead of macro ellipsis/VA_ARGS
 //   template <typename... Args>
 //   void printValues(Args&&... args) {
@@ -403,7 +408,7 @@ void use_queue() {
 inline void hash_combine(unsigned long &seed, unsigned long const &value) {
   seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
-// TODO: get better non-cryptographic hash
+// idea: get better non-cryptographic hash from zig
 // xxhash claims 31 GB/s, so thats ~10 byte/clock cycle on a 3 GHz cpu
 // ssic" old-school hash is for (string) |char| hash = 31 *% hash +% char;,
 // which has a multiply and add on the critical path, so it has 5-7 cycles of
@@ -1941,7 +1946,8 @@ int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len) {
 
 // SHENNANIGAN tagged unions before C++17 std::variant unusable without third party solution
 
-// TODO shared_ptr in union in C++
+// idea shared_ptr in union in C++
+// * painful
 // https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
 // https://stackoverflow.com/questions/68963247/why-are-the-results-of-this-code-different-with-and-without-fsanitize-undefine
 // https://stackoverflow.com/questions/73157920/undefined-behavior-according-to-clang-fsanitize-integer-on-libstdc-stdran
@@ -1990,7 +1996,6 @@ int use_union_tmp() {
 // resulting in unnecessary checks
 
 // https://en.cppreference.com/w/cpp/atomic/memory_order
-// TODO
 // * difference to C memory order =>
 // * guide to check for yourself with cerberus
 
@@ -2193,8 +2198,10 @@ struct Foo {
   int data;
 };
 
-// TODO how are futures processed (by producer or consumer)?
-// TODO how are futures synced (SPSC, SPMC possible or default)?
+// how are futures processed (by producer or consumer)?
+// * immediately called on new thread
+// * fancy way around creating thread (mixing asynchrony and parallelism)
+// * futures require sync classes (impl defined)
 // std::async for thread, return_val, fn_name, args
 // std::future -> used by consumer via consumer.get()
 // std::promise -> low level routines constructed by producer (for C interop)
@@ -2596,7 +2603,6 @@ template<typename> struct is_pair : std::false_type {};
 template<typename T, typename U> struct is_pair<std::pair<T, U>> : std::true_type {};
 
 #if defined(HAS_CPP17)
-// TODO ideally have perf numbers
 // TODO move std::variant here for cleaner overview
 // - TODO static dispatch via struct
 // - TODO move dynamic dispatch via std::variant here

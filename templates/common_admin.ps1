@@ -56,10 +56,88 @@ wmic process list
 #   </configSections>
 # <configuration>
 
+# get IIS version
+reg.exe query HKLM\SOFTWARE\Microsoft\InetStp /v VersionString
+[System.Diagnostics.FileVersionInfo]::GetVersionInfo("$env:SystemRoot\system32\inetsrv\InetMgr.exe").ProductVersion
+powershell "get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\  | select setupstring,versionstring"
+$w3wpPath = $Env:WinDir + "\System32\inetsrv\w3wp.exe"
+$productProperty = Get-ItemProperty -Path $w3wpPath
+Write-Host $productProperty.VersionInfo.ProductVersion
+# get IIS configs
 Import-Module Webadministration
 Get-Website
 Get-WebBinding
 (Get-WebBinding).bindingInformation
+
+# force stop stuck IIS Express session (in admin shell)
+net stop winnat
+net start winnat
+# more involved alternative:
+netsh http delete urlacl url=http://*:$PORT/
+netsh http add urlacl url=http://*:$PORT/ user=Everyone
+# with port replaced by debug network output
+netstat -ab
+
+# https://www.c-sharpcorner.com/blogs/how-to-publish-and-deploy-net-core-website-on-iis
+# TODO
+# https://www.leansentry.com/guide/reset-restart-recycle-iis
+# TODO
+# https://learn.microsoft.com/de-de/iis/manage/provisioning-and-managing-iis/appcmdexe
+# TODO
+
+import-module -Name IISAdministration -RequiredVersion 1.1.0.0
+$mod = Get-Module -Name IISAdministration
+$mod.Version
+$mod.ExportedCmdlets | Format-Table
+Get-IISConfigSection
+#IIS
+# C:\Windows\System32\inetsrv\
+# usually without permissions:
+# C:\Windows\System32\inetsrv\config\applicationHost.config
+#IIS Express
+# $HOME\Documents\IISExpress\config\applicationhost.config
+#
+#IIS Express
+# .vs\*.*\applicationhost.config
+# .vs\config\applicationhost.config
+# .vs\Service\config\applicationhost.config
+& "C:\Program Files\IIS Express\iisexpress.exe" /?
+& "C:\Program Files\IIS\appcmd.exe" list site
+& "C:\Program Files\IIS Express\appcmd.exe" list site
+& "C:\Program Files\IIS Express\appcmd.exe" /? site
+# APPCMD (Command) (Object_type) <ID> </Param1:Wert1 ...>
+# Command: list, add, delete, set
+# Object_type: site, app, vdir, apppool, config, module, trace
+
+# appcmd delete site WebSite1
+# Trouble clearing the ASP.NET Temporary Files cache:
+# Potential temp file paths:
+#     "%TMP%\Temporary ASP.NET Files"
+#     "%WINDIR%\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files"
+#     "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files"
+
+# #IIS Express & .NET core bat file
+# SET MSBuildPath="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
+# SET IISExpressPath="%ProgramFiles(x86)%\IIS Express\IISExpress.exe"
+# SET ACPath=%HOMEPATH%\Workspace\MyProject
+# SET ConfigFile=%ACPath%\.vs\config\applicationhost.config
+#
+# :: Build the 3 API projects
+# %MSBuildPath% "%ACPath%\Project1Api\Project1Api.csproj" /verbosity:quiet
+# %MSBuildPath% "%ACPath%\Project2Api\Project2Api.csproj" /verbosity:quiet
+# %MSBuildPath% "%ACPath%\Project3Api\Project3Api.csproj" /verbosity:quiet
+#
+# :: Start up an minimized IIS Express instance for each API
+# start /min cmd /c "%IISExpressPath%" /config:%ConfigFile% /site:Project1Api
+# start /min cmd /c "%IISExpressPath%" /config:%ConfigFile% /site:Project2Api
+# start /min cmd /c "%IISExpressPath%" /config:%ConfigFile% /site:Project3Api
+#
+# :: Build the 2 .NET Core projects, and then launch the UI project in a browser
+# start /min cmd /c dotnet run -p "%ACPath%\SubFolder\Project4Api\Project4Api.csproj"
+# start /min cmd /c dotnet run -p "%ACPath%\SubFolder\ProjectInterface\ProjectInterface.csproj" & start "" http://localhost:54225
+
+# http://danderson.io/posts/multiple-asp-net-apps-under-the-same-host-and-port-during-development-in-visual-studio-with-iis-express-and-webpack-dev-server-as-a-proxy/
+# incomplete instructions and unnecessary tooling for reverse proxy setup
 
 # registry:
 # HKLM\Software\Microsoft\InetStp\Components
@@ -171,9 +249,6 @@ function setupWindowsTask {
   Register-ScheduledTask -TaskName "WSL2PortsBridge" -Action $a -Trigger $t -Settings $s -Principal $p
 }
 
-#====setup_kubenetes
-# see TODO
-# best instructions?
-
-# TODO sql administration
+# sql administration
 # https://dbatools.io/
+# * https://github.com/dataplat/dbatools

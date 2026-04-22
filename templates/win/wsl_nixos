@@ -1,0 +1,7 @@
+https://github.com/nix-community/NixOS-WSL/releases/tag/23.5.5.2
+wsl --import NixOS .\NixOS\ nixos-wsl.tar.gz --version 2
+wsl -d NixOS
+wsl -s NixOS
+wsl -d NixOS --system --user root -- /mnt/wslg/distro/bin/nixos-wsl-recovery
+choose older versions with:
+wsl -d NixOS --system --user root -- /mnt/wslg/distro/bin/nixos-wsl-recovery --system /nix/var/nix/profiles/system-42-link

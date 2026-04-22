@@ -1,4 +1,133 @@
+====semantic_problems
+====semantic_solution
+====rel
+====rel
+
 list foreign keys of table1
 EXEC sp_fkeys 'table1'
 
 https://www.baeldung.com/sql/list-table-foreign-keys
+
+====semantic_problems
+https://www.youtube.com/watch?v=qiVUf9X6ItM&t=4357s
+"do we understand sql? and if not, why?"
+SQL-86/89/92, SQL:1999/2003/2008/2011/2016/2023/2027..
+* by ISO/IEC JTC1 SC32 WG3
+standard has 2k $ price
+* 11 parts
+* DBMS implement core (part 2 SQL foundation) + parts from standard + non-standard things
+                          Question 1      Question 2
+                       A       A             A
+      compute R-S    R 1       2           R 1
+                       2                     NULL
+                          Answer 1        Answer 2
+SELECT R.A FROM R              A             A
+EXCEPT                         1             1
+SELECT S.A FROM S
+
+SELECT R.A FROM R              A             A
+WHERE R.A NOT IN (             1             ""
+  SELECT S.A FROM S
+)
+
+SELECT R.A FROM R              A             A
+EXCEPT WHERE NOT EXISTS (      1             1
+  SELECT S.A FROM S                          NULL
+  WHERE S.A = R.A
+)
+
+Q1.1                       Q1.2  A1
+SELECT *                     R    AA
+Q = SELECT R.A, R.A FROM R   A    11
+                             1
+Q2.1                        Q2.2 result?
+Q' = SELECT * FROM (Q) AS T   A2: postgres/sqlite: as above
+                              oracle/ms sql/mysql/db2: compile-time error
+
+Q3.1                              Q3.2 result?
+SELECT * FROM R WHERE EXISTS(Q')  A3
+                                   A
+                                   1
+
+More fun with NULL (Ordering)
+Q4.1
+SELECT O.num FROM Orders O WHERE NOT EXISTS (
+  SELECT * FROM Payments P Where P.ord = O.num
+)
+     Q4.2
+     Orders          Payments
+     num   amount    pid   ord
+     ord1  100       pay1  ord1
+     ord2  150       pay2  NULL
+     ord3  135
+       ----------------------
+                 v
+unpaid orders -> db -> ord2, ord3
+false positives very common, average % of wrong answers up to 60%
+
+"when nulls appear, things go bad"
+* cannot be explained
+* at odds with the way the world behaves
+* wrong answer to your queries
+* all results become suspect
+* can never trust the answers
+
+standard
+* 2% of queries do not behave on different DBMSs
+* lots of issues minor and syntactic
+  - different syntax for
+    * set ops (except vs minus)
+    * fns (% vs mod, substring vs substr)
+* serious and surprise people with good SQL knowledge
+
+SELECT *
+FROM R
+WHERE '' = ''
+
+SQL history
+10 lines
+10 pages (Codd's paper)
+100 pages (SQL 1986)
+1.5k pages (SQL foudations now)
+4.5k pages (SQL standard, today)
+no one knows the whole thing anymore, needs small well-defined core
+with clear semantics extended by libraries. this is what REL is.
+
+tldr;
+* without NULL, temporaries, nested statement/expressions, etc in queries,
+  semantics fairly ok specified
+* existence NULL boils down to same problem as default error handling,
+  which is non-existent in SQL
+  - many, many combinations
+  - always avoid NULL like in PL, use table-specific concepts
+    and LUTS for semantics, ideally connected to semantic db etc
+
+====semantic_solution
+1. NULL problem/forward compatibility
+   - dont use NULL
+   - if you have to use NULL, plan for 2. breaking changes
+2. breaking database migrations (code+data migration paths
+   of clustered apps+dbs)
+   - TODO
+
+====solutions
+* "REL: A Programming language for relational data"
+  Wim Martens at SIGMOD'25
+  see ====semantic_problems
+  * i'm unable to find the talk on direct search
+  => nothing open source (formalized, executable). good talk on the problem.
+* Ariel: duckdb can be considered an experiment (continued from bigquery, by some of
+  the original authors) to bring sanity to SQL by focusing on a subset or
+  extending what is needed and doing it to work against CSV or Parquet files
+  without needing a real database engine
+* about apache datafusion: DataFusion is an extensible query engine written in
+  Rust that uses Apache Arrow as its in-memory format.
+  Apache Arrow as in-memory format and Apache Parquet as the format for both file
+  and network transmission. Duckdb can use both, so can do the latest versions of
+  Panda and any really good lib.
+  https://datafusion.apache.org/user-guide/sql/struct_coercion.html#null-handling-for-missing-fields
+  they override standard SQL with implicit CAST/COERCE where needed so behavior
+  is sane.
+* Datafusion/Duckdb can also work directly against sqlite, which is more "on
+  topic" respect to Arcan. They shine with S3 parqued parquet files and
+  interacting with other legacy databases like postgres, today's JDBC.

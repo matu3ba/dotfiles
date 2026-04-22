@@ -12,6 +12,8 @@
 # https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html
 # https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html
 
+# https://adkaster.github.io/SerenityOS-Superbuild-Makefiles/
+
 #====cpp_modules
 
 # TODO summarize techniques from https://izzys.casa/

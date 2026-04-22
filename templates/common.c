@@ -27,7 +27,8 @@
 // "exceptions" https://gist.github.com/mlugg/eea73b7795d2282ca5d6d825e67c5f07
 // * beware that setjmp and longjmp dont clean up anything and do straight jumps
 
-// TODO write examples pkg-config flags for compilation based on https://ariadne.space/2025/02/08/c-sboms-and-how-pkgconf.html
+// TODO write examples pkg-config flags for compilation based on
+// https://ariadne.space/2025/02/08/c-sboms-and-how-pkgconf.html
 // gcc -o main main.c `pkg-config --cflags --libs glib-2.0`
 // see C SBOMs
 
@@ -271,6 +272,9 @@ ERRDEFER_CLEANUP1:
 // * dependency exploration
 // * https://archdia.com/pages/knowledge-base ???
 // sandbox https://github.com/ringtailsoftware/uvm32 using https://github.com/cnlohr/mini-rv32ima
+// cross-compiling
+// * simple https://github.com/cross-tools
+// * buildroot, yocto
 
 // string handling https://github.com/skullchap/chadstr
 // 2d ui layout library https://github.com/nicbarker/clay
@@ -1558,12 +1562,12 @@ size_t utf8_to_utf16_buflen(uint8_t const *input, size_t input_len);
 size_t utf8_to_utf16_buflen(uint8_t const *input, size_t input_len) {
   (void)input;
   (void)input_len;
-  // TODO port the zig code
+  // idea port the zig code
   return 0;
 }
 size_t utf8_to_utf16(uint8_t const *input, size_t input_len, uint16_t *output, size_t output_len);
 size_t utf8_to_utf16(uint8_t const *input, size_t input_len, uint16_t *output, size_t output_len) {
-  // TODO port the zig code
+  // idea port the zig code
   (void)input;
   (void)input_len;
   (void)output;
@@ -1575,15 +1579,15 @@ void use_utf8_to_utf16_static(void);
 void use_utf8_to_utf16_static(void) {
   utf8_to_utf16_buflen(NULLPTR, 0);
   utf8_to_utf16(NULLPTR, 0, NULLPTR, 0);
-  // TODO
+  // idea
 }
 void use_utf8_to_utf16_dynamic(void);
 void use_utf8_to_utf16_dynamic(void) {
-  // TODO
+  // idea
 }
 
 #if defined(_WIN32)
-// TODO FIXUP of content into something usable uint8_t, uint16_t instead of char/WCHAR
+// idea FIXUP of content into something usable uint8_t, uint16_t instead of char/WCHAR
 // ideally usable with size_t but Windows appears to have nothing for this
 
 #if !defined(WIN32_LEAN_AND_MEAN)

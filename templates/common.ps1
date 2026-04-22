@@ -3,6 +3,7 @@
 # Other files
 # :PWConf windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 # :Templates templates\powershell
+#====tools
 #====variables
 #====common_paths
 #====cli
@@ -10,22 +11,28 @@
 #====access_control
 #====encoding
 
+#====tools
+# https://dscottraynsford.wordpress.com/2017/11/18/auto-formatting-powershell-in-visual-studio-code/
+# * Visual Studio Code PowerShell extension
+#   - SHIFT+ALT+F (or press F1 and type Format and select Format Document).
+
 # https://4sysops.com/archives/measure-object-computing-the-size-of-folders-and-files-in-powershell/
 # https://www.gngrninja.com/script-ninja/2016/5/24/powershell-calculating-folder-sizes
+# https://learn.microsoft.com/en-us/powershell/scripting/lang-spec/chapter-01?view=powershell-7.6
 
-https://devblogs.microsoft.com/scripting/category/windows-powershell/
-https://devblogs.microsoft.com/powershell-community/
-module handling (distributed profiles) https://devblogs.microsoft.com/powershell-community/creating-a-scalable-customised-running-environment/
-misc tweaks tab completion, keybinds, $profile, https://devblogs.microsoft.com/powershell-community/cheat-sheet-console-experience/
-$host.Name, $PROFILE, $PROFILE | Get-Member -MemberType NoteProperty, VSCode profile https://devblogs.microsoft.com/powershell-community/how-to-make-use-of-powershell-profile-files/
-Get-NetAdapter, Rename-NetAdapter
-dir | clip
-echo "123" | Set-Clipboard, Get-Clipboard
-// beware of encoding horrors in PS5, for example by Get-ChildItem truncating content on piping
-file event watcher https://devblogs.microsoft.com/powershell-community/a-reusable-file-system-event-watcher-for-powershell/
-
-Time measurements: Measure-Command { CMD }
-Get PowerShell version: echo $PSVersionTable
+# https://devblogs.microsoft.com/scripting/category/windows-powershell/
+# https://devblogs.microsoft.com/powershell-community/
+# module handling (distributed profiles) https://devblogs.microsoft.com/powershell-community/creating-a-scalable-customised-running-environment/
+# misc tweaks tab completion, keybinds, $profile, https://devblogs.microsoft.com/powershell-community/cheat-sheet-console-experience/
+# $host.Name, $PROFILE, $PROFILE | Get-Member -MemberType NoteProperty, VSCode profile https://devblogs.microsoft.com/powershell-community/how-to-make-use-of-powershell-profile-files/
+# Get-NetAdapter, Rename-NetAdapter
+# dir | clip
+# echo "123" | Set-Clipboard, Get-Clipboard
+# // beware of encoding horrors in PS5, for example by Get-ChildItem truncating content on piping
+# file event watcher https://devblogs.microsoft.com/powershell-community/a-reusable-file-system-event-watcher-for-powershell/
+#
+# Time measurements: Measure-Command { CMD }
+# Get PowerShell version: echo $PSVersionTable
 
 # SHENNANIGAN
 # , is join operator which may silently work or break the program
@@ -33,13 +40,29 @@ Get PowerShell version: echo $PSVersionTable
 # Add-Type -AssemblyName System.IO.Compression.FileSystem ;
 # [System.IO.Compression.ZipFile]::ExtractToDirectory("$NEOVIM_TMP_DIR\$zip_target", "$NEOVIM_TMP_DIR\")
 
+function chaining_and_error_behavior() {
+  $errorActionPreference = 'Stop'
+  # stopping on error (of cmd1,cmd2,cmd3,..) via ;
+  Write-Output "cmd1 ok"; Write-Output "cmd2 ok"; Write-Output "cmd3 ok"
+
+  # always execute via &
+  Write-Output "cmd1 fail" & Write-Output "cmd2 ok"
+  Write-Output "cmd1 ok" & Write-Output "cmd2 ok"
+
+  # only execute on failure (of cmd1) via ||
+  Write-Output "cmd1 fail" || Write-Output "cmd2 ok"
+  Write-Output "cmd1 ok" || Write-Output "cmd2 never executed"
+}
+
 #====variables
-#types
-$obj | Get-Member
-$obj.GetType
-#content formatting (try out for PSCustomObject)
-Write-Output ($obj | Format-List | Out-String)
-Write-Output ($obj | Format-Table | Out-String)
+function usage_variables() {
+  #types
+  $obj | Get-Member
+  $obj.GetType
+  #content formatting (try out for PSCustomObject)
+  Write-Output ($obj | Format-List | Out-String)
+  Write-Output ($obj | Format-Table | Out-String)
+}
 
 # ====common_paths
 # echo $profile shows powershell configuration
@@ -78,7 +101,6 @@ Write-Output ($obj | Format-Table | Out-String)
 # https://powershell.one/tricks/filesystem/filesystemwatcher
 # in lua for windows file system via winapi lua bindings https://github.com/stevedonovan/winapi with https://stevedonovan.github.io/winapi/api.html#watch_for_file_changes
 # or via ETW
-# TODO
 
 #====access_control
 # icacls is chmod and chown together.
@@ -146,6 +168,11 @@ function CheckExitCode {
   }
 }
 
+# Get Windows Operating System Information, here 64 bit support
+function IsWindows64Bit {
+  (Get-WmiObject win32_operatingsystem | Select-Object osarchitecture).osarchitecture -eq "64-bit"
+}
+
 # Assumes VSSetup installed, for example via
 # Install-Module VSSetup -Scope CurrentUser
 function GetMsbuildPath {
@@ -184,7 +211,7 @@ function runMsbuild2015 {
   # msbuild test.sln /t:project1;project2 /p:Configuration="Release" /p:Platform="x64" /p:BuildProjectReferences=false
   # To rebuild or clean, change /t:project to /t:project:clean or /t:project:rebuild
   param (
-    [string[]] $build_args
+    [string[]] $build_args,
     [string] $at = "."
   )
   [string] $msBuild = ResolveMsBuild2015
@@ -243,11 +270,14 @@ function runMsbuild {
 
 function easytypos_param {
   param (
-    [string] action1 = "echo"
+    [string] $action1 = "echo"
     # SHENNANIGAN very easy typos in param
     # [string] action2 = "echo",
   )
 }
+
+# taskkill Get-Process | Where {$_.ProcessName -eq "Server"} | Stop-Process -Force
+# Stop-Process -Name "vlc"
 
 # alternative: tasklist, taskkill
 # function checkThrowServer {
@@ -273,7 +303,7 @@ function easytypos_param {
 
 function RunActionOnProcess {
   param (
-    [string] action = "echo"
+    [string] $action = "echo"
   )
   Get-Process | Where {$_.ProcessName -eq "Server"} | & $action
   # Get-Process | Where {$_.ProcessName -eq "Server"} | Stop-Process -Force
@@ -281,7 +311,7 @@ function RunActionOnProcess {
 
 function RunInDir {
 param (
-  [string] dirpath = "."
+  [string] $dirpath = "."
 )
   try {
       Push-Location
@@ -293,10 +323,10 @@ param (
   }
 }
 
-function basic_FileOperations {
-param (
-  [string] git_dir = "."
-)
+function basic_FileOperations() {
+  param (
+    [string] $git_dir = "."
+  )
   #
   if (-not (Test-Path "$git_dir\.git\")) {
     [string[]] $files =  @("file1", "file2")
@@ -310,6 +340,7 @@ param (
     CheckExitCode
     git clean -f -X -d
     CheckExitCode
+  }
 }
 
 function basic_7z {
@@ -372,13 +403,14 @@ function basic_stringops {
   }
 }
 
-#Get-Process | Sort-Object -Property WS | Select-Object -Last 5
-#Get-Process | Select-Object -Property ProcessName, Id, WS
-# Select-Object -Skip 1
 
-# selecting newest/oldest events in event protocol
-$a = Get-WinEvent -LogName "Windows PowerShell"
-$a | Select-Object -Index 0, ($a.count - 1)
+function select_oldest_newest_events_in_event_protocol() {
+  #Get-Process | Sort-Object -Property WS | Select-Object -Last 5
+  #Get-Process | Select-Object -Property ProcessName, Id, WS
+  # Select-Object -Skip 1
+  $a = Get-WinEvent -LogName "Windows PowerShell"
+  $a | Select-Object -Index 0, ($a.count - 1)
+}
 
 function rename_files_for_manual_checks {
   Get-ChildItem *.txt -ReadOnly |
@@ -740,8 +772,8 @@ function stopWatch {
 
 function prefix_array() {
   param (
-    [Parameter(Mandatory, Position=0)] [string[]] arr1,
-    [Parameter(Mandatory, Position=1)] [string] src
+    [Parameter(Mandatory, Position=0)] [string[]] $arr1,
+    [Parameter(Mandatory, Position=1)] [string] $src
   )
   return arr1.ForEach({"${src}\$_"})
 }
@@ -808,3 +840,189 @@ function htop() { systeminfo |find "Available Physical Memory" }
 
 # Measure time (without memory)
 function time() { Measure-Command }
+
+function iterate_file_short() {
+  # dir is an alias for Get-ChildItem
+  dir -rec *.xlsx | select BaseName,Extension
+  # [System.IO.Path]::GetExtension("C:\temp\25Aug2020.txt")
+}
+
+function iterate_file_endings_fast() {
+    [System.IO.Directory]::EnumerateFiles(".", "*.*", "AllDirectories") | Where { [System.IO.Path]::GetExtension($_) -in {".csproj",".vbproj"} }
+}
+
+# returns "" or msbuildexe path
+function iterate_files_to_find_msbuildexe_path() {
+  # lucky probe Visual Studio versions 2026 not checking 2022 versions
+  $MSBuild = [System.IO.Directory]::EnumerateFiles("C:\Program Files\Microsoft Visual Studio\", "MSBuild.exe", "AllDirectories") |
+  Where-Object{$_ -match '^C:\\Program Files\\Microsoft Visual Studio\\.*Professional\\MSBuild\\Current\\Bin\\MSBuild.exe$'} |
+  Sort-Object -Descending |
+  Select-Object -First 1
+  if (-not [string]::IsNullOrEmpty($MSBuild)) {
+    return $MSBuild
+  }
+  return ""
+}
+
+# returns "" or msbuildexe path
+function okish_msbuild_find() {
+  $vsPath = Get-ChildItem -Directory "C:\Program Files\Microsoft Visual Studio\**\**" |
+  Where-Object { $_ -match '\d{2,4}' } |
+  Where-Object { Test-Path $_"\MSBuild\Current\Bin\MSBuild.exe" } |
+  Sort-Object -Descending |
+  Select-Object -First 1
+  if ([string]::IsNullOrEmpty($vsPath)) {
+    return ""
+  }
+  if (Test-Path -Path "$vsPath\MSBuild\Current\Bin\amd64\") {
+    $MSBuild = "$vsPath\MSBuild\Current\Bin\amd64\MSBuild.exe"
+  }
+  else {
+    $MSBuild = "$vsPath\MSBuild\Current\Bin\MSBuild.exe"
+  }
+  return $MSBuild
+}
+
+function reassigning_type_var_errors() {
+  # Powershell may have some uncleanable persistent state of a session, which
+  # does not allow overwriting $params. Typically this happens, when the
+  # parameter is typed differently already: [string[]] $params = ""
+  # If this happens, then converting to json neither works: $params | ConvertTo-Json
+  [string[]] $params = @("-SkipCertificateCheck","-UseBasicParsing","-Method","GET")
+  $params = @{ Uri = [Uri]"https://cwapi.cambio.intra:8104/cwIdent/cwo/customer/about?dbcheck" }
+  $params = @{
+    Method      = "GET"
+    URI = "https://cwapi.cambio.intra:8104/cwIdent/cwo/customer/about?dbcheck"
+    SkipCertificateCheck = $True
+  }
+  $params | ConvertTo-Json
+  # might make weird stuff like failing to lookup https://System.Types.HashTable
+  Invoke-WebRequest @params
+}
+
+# splatting requires to use ""-strings or leads to weird failures
+function splatting_cli_commands() {
+
+  # -Debug and -Verbose are good options for Invoke-WebRequest
+  $params = @{
+    Method      = "GET";
+    URI = "https://ziglang.org/";
+    UseBasicParsing = $True;
+  }
+  Write-Verbose "`$resp = Invoke-WebRequest $(HashtableToCliArgsString $params)"
+  # Make sure to use @params and NOT $params
+  # Invoke-WebRequest: Cannot bind parameter 'Uri'. Cannot convert the "System.Collections.Hashtable" value of type "System.Collections.Hashtable" to type "System.Uri".
+  Invoke-WebRequest @params
+}
+
+function trace_errors() {
+  Trace-Command -Expression { function f ([uri]$Address) {}; f @{ "razzle" = "n" } } -Name TypeConversion -PSHost -Option All
+}
+
+function iterate_hashtable() {
+  ($params.GetEnumerator() | ForEach-Object{ "$($_.Key) $($_.Value)" }) -join " | "
+}
+
+# Converts from Hashtable
+#   [Hashtable] $params = [ordered]@{
+#     Method      = "GET";
+#     Uri = "https://example.com";
+#     SkipCertificateCheck = $True;
+#     UseBasicParsing = $True;
+#   }
+#   that is usable as Invoke-WebRequest @params
+# to dense human readable CliArgument string (in contrast to Write-Output @params)
+#   "-Method GET -Uri https://example.com -SkipCertificateCheck -UseBasicParsing"
+Function HashtableToCliArgsString {
+  ($params.GetEnumerator() |
+    ForEach-Object{
+      if ($_ -eq $Null) { "" }
+      if ($_.Value -eq $True) {
+        "-$($_.Key)"
+      } elseif ($_.Value -ne $False) {
+          "-$($_.Key) $($_.Value)"
+      }
+    }
+  ) -join " "
+}
+
+Function Get-ServiceURIs() {
+  @(
+    # REST
+     'https://URI:PORT/ServiceName/some_path/about?dbcheck', # ServiceName
+    # WCF
+     'https://URI:PORT/ServiceName/Filename.svc', # ServiceName
+  )
+}
+
+Function shakeDownTest() {
+    [CmdletBinding()] param (
+        # -NonInteractive mode for immediate error
+        [Parameter(Position = 0, Mandatory = $True, HelpMessage = "URI to send GET request to run shakeDownTest")]
+        [Uri] $uri,
+        [Parameter(Position = 1, Mandatory = $False, HelpMessage = "SkipCertificateCheck.")]
+        [switch] $SkipCertificateCheck = $False
+    )
+    # Easy behavior reproduction
+    Write-Host "`$resp = Invoke-WebRequest -UseBasicParsing -Method GET -Uri '$uri'"
+
+
+    [Hashtable] $params = [ordered]@{
+        Method = "GET";
+        Uri = $uri,
+        SkipCertificateCheck = $SkipCertificateCheck;
+        UseBasicParsing = $True;
+    }
+    [string] $webrequest_cmd_string = "`$resp = Invoke-WebRequest $(HashtableToCliArgsString $params)"
+
+    # Powershell is very type-safe and nice to debug:
+    # using 'catch {}' does not catch the type exceptions and silently fails instead
+    try {
+        $resp = Invoke-WebRequest $params
+    } catch [System.Net.WebException] {
+        Write-Error "$_ $webrequest_cmd_string"
+        return 1
+    } catch {
+        Write-Error "$_ $webrequest_cmd_string"
+        return 1
+    }
+
+    if ($resp -eq $Null) { return 2; } # empty response witout headers etc
+    if ($resp.Headers -eq $Null) { return 3; } # no header
+    if (200 -ne $resp.StatusCode) { return 4; } # http status not ok
+
+    switch($resp.Headers.'Content-Type') {
+        "application/json; charset=UTF-8" {
+            $json = $resp.Content | ConvertFrom-Json
+            if ($json.description -eq $Null) { return 5; } # no description
+            # liveness check like db connection? latency?
+            # product version? git version?
+            if ($json.header -eq $Null) { return 6; } # no header
+            # <header_checks>..
+        }
+        "text/html; charset=UTF-8" {
+            # Parsing HTML is often overkill and would require 'AngleSharp' as dependency
+            if ($True -ne $resp.Content.Contains("Service available.")) {
+                return 6 # service error
+            }
+        }
+        Default {
+            return 5; # unexpected field value in html header field 'Content-Type'
+        }
+    }
+
+    return 0; # OK
+}
+
+Function runShakeDownTests() {
+  ForEach ($uri in $service_uris) {
+      $res = shakeDownTest $uri
+      if ($res -ne 0) {
+          Write-Output "$uri $res Fail"
+          return $res
+      } else {
+          Write-Output "OK"
+      }
+  }
+  return 0
+}

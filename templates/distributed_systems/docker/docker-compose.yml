@@ -1,0 +1,28 @@
+# based on https://docs.docker.com/guides/go-prometheus-monitoring/application/
+# compose file https://docs.docker.com/reference/compose-file/
+# https://docs.docker.com/compose/intro/compose-application-model/
+
+# services
+services:
+  # service api
+  api:
+    container_name: go-api
+    #>docker compose up --build
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: go-api:latest
+    ports:
+      - 8000:8000
+    networks:
+      - go-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    #>docker compose watch
+    develop:
+      watch:
+        - path: .
+          action: rebuild

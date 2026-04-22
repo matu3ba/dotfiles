@@ -1,0 +1,6 @@
+https://simpleregex.dev/negated-character-class/
+/[^bglnt]ing/g
+/.*
+/[abcd]
+
+etc

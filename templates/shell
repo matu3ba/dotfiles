@@ -12,10 +12,13 @@ Shell is a convenience cli and arbitrary complex scripting glue for
 
 ====replacements
 Purpose: ???
-https://f5n.org/blog/2026/shell-scripts/ TODO
+https://f5n.org/blog/2026/shell-scripts/
+maybe useful, idk
 
 ====terminal
-https://how-terminals-work.vercel.app/ TODO
+https://how-terminals-work.vercel.app/
+nice graphics
+
 
 There is a complete wiki dedicated to the weird quirks of bash:
 https://wiki.bash-hackers.org/syntax/expansion/brace
@@ -77,7 +80,7 @@ only supports '-path RELATIVEPATH' forcing more typing
 
 SHENNANIGAN
 "Weaponizing Plain Text: ANSI Escape Sequences as a Forensic Nightmare" STÖK, Hacker
-TODO summarize solutions
+some stuff possible
 https://forum.defcon.org/node/245741
 https://forum.defcon.org/node/245748
 Many people poked https://www.cyberark.com/resources/threat-research-blog/dont-trust-this-title-abusing-terminal-emulators-with-ansi-escape-characters
@@ -113,3 +116,6 @@ List process infos from spawned processes in shell:
 ps -o pid,ppid,cmd,pgid
 List all processes with pgid:
 ps ax -O pgid
+
+Get number of lines, columns etc:
+mode

@@ -94,7 +94,7 @@ alias gshn='git --no-pager show --name-only'
 # TODO: combined diff for fish vs posix shell
 
 # https://stackoverflow.com/questions/8382019/how-do-i-git-diff-on-a-certain-directory
-# TODO diff on certain dir
+# diff on certain dir: git diff RANGE -- mydir1 -- mydir2
 
 #get diffed file to unindexed file
 #https://stackoverflow.com/questions/855767/can-i-use-git-diff-on-untracked-files
@@ -184,7 +184,6 @@ alias gshn='git --no-pager show --name-only'
 # git config --global core.untrackedcache true
 # git config --global core.fsmonitor true
 
-# TODO configs
 # git config rebase.updateRefs true
 # git config rebase.autosquash true
 
@@ -273,6 +272,7 @@ alias gcs='git rebase -i --autosquash'
 # git commit --fixup :/second
 
 # To ignore indentation changes in git diff, add -w
+# To add paths, use git diff RANGE -- path1 -- path2
 alias gd='git diff'
 alias gdc='git diff --cached'
 # Check for conflict markers: git diff --check
@@ -391,11 +391,15 @@ alias glo='git log --oneline --decorate'
 alias gladogs='git log --all --decorate  --oneline --graph --simplify-by-decoration'
 # show commits including merge commits (without simplify-by-decoration)
 # git log --graph --pretty=oneline --abbrev-commit
-# TODO https://stackoverflow.com/questions/56724650/git-log-full-diff-what-does-it-do
+# Setup: commit C changes file A,B;
+#   git log -p --full-diff -- A
+#   * for each commit it shows the diff of all files changed in that commit
+#   git log -p -- A
+#   * shows all commits changing A (with diffs to A)
 # https://adamj.eu/tech/2023/10/30/git-show-commit-message-subject/
 # https://dev.to/vishnuchilamakuru/git-show-command-cheat-sheet-45ph
 
-# TODO git shortlog
+# mini log with headings only: git shortlog
 # https://git-scm.com/book/id/v2/Git-Tools-Advanced-Merging#_manual_remerge
 
 # show only branch relation
@@ -412,37 +416,35 @@ alias glss='git ls-files -s' # staged
 alias glsa='git ls-files -mo --exclude-standard' # all non ignored
 # git ls-remote
 
-#TODO
-#merge with merge message no rebase
-#merge without merge message no rebase
 
-# TODO how the hell do I get a nice parent with children commit ???
+# how to get nice parent with children commits
+# 1 rebase workflow with continuous commits on top of HEAD against master
+# 2 git merge --ff-only --comit BRANCH
+
 # --squash, --no-squash
 # unreliable without other options working: -m "commit message"
 #git merge --no-ff --no-commit --squash BRANCH
 # git log --graph --decorate --pretty=oneline --abbrev-commit
 
+#merge with merge message no rebase
+#merge without merge message no rebase
 # merge without forward (less reliable)
 # alias gm='git merge --no-ff' # recommendation to create a commit
 alias gmce='git merge --edit --no-ff --commit'
 alias gmse='git merge --squash -e --commit'
-# merge with forward
+# merge with forward (no commit message)
 alias gm='git merge --ff-only'
 # dont forward and dont do commit msg (most reliable)
 alias gmn='git merge --no-ff --no-commit'
-# dont forward, do commit msg (less reliable)
-alias gmc='git merge --no-ff --commit'
+# make commit message and hide child branches
+# * must be continuous commit range + rebase workflow
+alias gmc='git merge --ff-only --commit'
 alias gmom='git merge downstream/master'
 alias gmt='git mergetool --no-prompt'
 alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
 alias gmum='git merge --ff-only upstream/master'
 # The following may lose data due to unability to reconstruct pre-merge state:
 # alias gma='git merge --abort'
-
-# TODO own tutorial
-# https://stackoverflow.com/questions/30136558/how-to-squash-commits-which-have-merge-commit-in-between
-# https://shinglyu.com/web/2018/03/25/merge-pull-requests-without-merge-commits.html
-# https://stackoverflow.com/questions/16358418/how-to-avoid-merge-commit-hell-on-github-bitbucket
 
 alias gp='git push'
 alias gpdry='git push --dry-run'
@@ -628,8 +630,6 @@ alias gsu='git submodule update'
 # git rebase --autosquash -i
 # git rm --cached app.log
 # force overwrite to ignore .gitignore: git add -f app.log
-
-# TODO split commits in arbitrary commit range
 
 # idea fast and intuitive git log search?
 # git log -G 'PxProfilControlGui:'

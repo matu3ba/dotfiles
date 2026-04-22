@@ -1,0 +1,179 @@
+# https://gist.github.com/ju2wheels/1885539d63dbcfb20729 docker compose spec v1
+# * https://github.com/compose-spec/compose-spec
+# https://docs.docker.com/compose/yml/
+# Each service defined in docker-compose.yml must specify exactly one of
+# image or build. Other keys are optional, and are analogous to their
+# docker run command-line counterparts.
+#
+# As with docker run, options specified in the Dockerfile (e.g., CMD,
+# EXPOSE, VOLUME, ENV) are respected by default - you don't need to
+# specify them again in docker-compose.yml.
+#
+service_name:
+  # Path to a directory containing a Dockerfile. When the value supplied
+  # is a relative path, it is interpreted as relative to the location of
+  # the yml file itself. This directory is also the build context that is
+  # sent to the Docker daemon.
+  #
+  # Compose will build and tag it with a generated name, and use that image
+  # thereafter.
+  build: ./
+  # Add or drop container capabilities. See man 7 capabilities for a full list.
+  cap_add:
+    - ALL
+  cap_drop:
+    - NET_ADMIN
+    - SYS_ADMIN
+  # Override the default command.
+  command: /usr/bin/start
+  # A single value, analogous to its docker run counterpart.
+  cpu_shares: 73
+  # A single value, analogous to its docker run counterpart.
+  domainname: foo.com
+  # Custom DNS servers. Can be a single value or a list.
+  #
+  # dns: 8.8.8.8
+  dns:
+    - 8.8.8.8
+    - 9.9.9.9
+  # Custom DNS search domains. Can be a single value or a list.
+  #
+  # dns_search: example.com
+  dns_search:
+    - dc1.example.com
+    - dc2.example.com
+  # A single value, analogous to its docker run counterpart.
+  entrypoint: /code/entrypoint.sh
+  # Add environment variables from a file. Can be a single value or a list.
+  #
+  # If you have specified a Compose file with docker-compose -f FILE, paths
+  # in env_file are relative to the directory that file is in.
+  #
+  # Environment variables specified in environment override these values.
+  #
+  # Compose expects each line in an env file to be in VAR=VAL format. Lines
+  # beginning with # (i.e. comments) are ignored, as are blank lines.
+  #
+  # env_file: .env
+  env_file:
+    - ./common.env
+    - ./apps/web.env
+    - /opt/secrets.env
+  # Add environment variables. You can use either an array or a dictionary.
+  #
+  # Environment variables with only a key are resolved to their values on
+  # the machine Compose is running on, which can be helpful for secret or
+  # host-specific values.
+  #
+  # environment:
+  #   - RACK_ENV=development
+  #   - SESSION_SECRET
+  environment:
+    RACK_ENV: development
+    SESSION_SECRET:
+  # Expose ports without publishing them to the host machine - they'll only
+  # be accessible to linked services. Only the internal port can be specified.
+  expose:
+    - "3000"
+    - "8000"
+  # Extend another service, in the current file or another, optionally
+  # overriding configuration.
+  extends:
+    file: common.yml
+    service: webapp
+  # Link to containers started outside this docker-compose.yml or even
+  # outside of Compose, especially for containers that provide shared or
+  # common services. external_links follow semantics similar to links when
+  # specifying both the container name and the link alias (CONTAINER:ALIAS).
+  external_links:
+    - redis_1
+    - project_db_1:mysql
+    - project_db_1:postgresql
+  # A single value, analogous to its docker run counterpart.
+  hostname: foo
+  # Tag or partial image ID. Can be local or remote - Compose will
+  # attempt to pull if it doesn't exist locally.
+  image: centos/centos7
+  # Link to containers in another service. Either specify both the service
+  # name and the link alias (SERVICE:ALIAS), or just the service name
+  # (which will also be used for the alias).
+  #
+  # An entry with the alias' name will be created in /etc/hosts inside
+  # containers for this service.
+  #
+  # Each linked container injects a set of environment variables, each of
+  # which begins with the uppercase name of the container.
+  #
+  # To see what environment variables are available to a service, run
+  # docker-compose run SERVICE env.
+  #
+  # * name_PORT
+  #   Full URL, e.g. DB_PORT=tcp://172.17.0.5:5432
+  #
+  # * name_PORT_num_protocol
+  #   Full URL, e.g. DB_PORT_5432_TCP=tcp://172.17.0.5:5432
+  #
+  # * name_PORT_num_protocol_ADDR
+  #   Container's IP address, e.g. DB_PORT_5432_TCP_ADDR=172.17.0.5
+  #
+  # * name_PORT_num_protocol_PORT
+  #   Exposed port number, e.g. DB_PORT_5432_TCP_PORT=5432
+  #
+  # * name_PORT_num_protocol_PROTO
+  #   Protocol (tcp or udp), e.g. DB_PORT_5432_TCP_PROTO=tcp
+  #
+  # * name_NAME
+  #   Fully qualified container name, e.g. DB_1_NAME=/myapp_web_1/myapp_db_1
+  links:
+    - db
+    - db:database
+    - redis
+  # A single value, analogous to its docker run counterpart.
+  mem_limit: 1000000000
+  # Networking mode. Use the same values as the docker client --net parameter.
+  #
+  # net: "bridge"
+  # net: "none"
+  # net: "container:[name or id]"
+  # net: "host"
+  net: "bridge"
+  # Sets the PID mode to the host PID mode. This turns on sharing between
+  # container and the host operating system the PID address space. Containers
+  # launched with this flag will be able to access and manipulate other
+  # containers in the bare-metal machine's namespace and vise-versa.
+  pid: "host"
+  # Expose ports. Either specify both ports (HOST:CONTAINER), or just the
+  # container port (a random host port will be chosen).
+  #
+  # Note: When mapping ports in the HOST:CONTAINER format, you may experience
+  # erroneous results when using a container port lower than 60, because YAML
+  # will parse numbers in the format xx:yy as sexagesimal (base 60). For this
+  # reason, we recommend always explicitly specifying your port mappings as
+  # strings.
+  ports:
+    - "3000"
+    - "8000:8000"
+    - "49100:22"
+    - "127.0.0.1:8001:8001"
+  # A single value, analogous to its docker run counterpart.
+  privileged: true
+  # A single value, analogous to its docker run counterpart.
+  restart: always
+  # A single value, analogous to its docker run counterpart.
+  stdin_open: true
+  # A single value, analogous to its docker run counterpart.
+  tty: true
+  # A single value, analogous to its docker run counterpart.
+  user: postgresql
+  # Mount paths as volumes, optionally specifying a path on the host machine
+  # (HOST:CONTAINER), or an access mode (HOST:CONTAINER:ro).
+  volumes:
+    - /var/lib/mysql
+    - cache/:/tmp/cache
+    - ~/configs:/etc/configs/:ro
+  # Mount all of the volumes from another service or container.
+  volumes_from:
+    - service_name
+    - container_name
+  # A single value, analogous to its docker run counterpart.
+  working_dir: /code

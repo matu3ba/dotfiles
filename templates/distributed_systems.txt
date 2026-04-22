@@ -14,6 +14,9 @@
 ====opentofu
 
 https://github.com/donlon/cloudflare-error-page
+https://notes.nicolevanderhoeven.com/How+Loki+stores+data
+https://notes.nicolevanderhoeven.com/Kubernetes
+https://notes.nicolevanderhoeven.com/Prometheus
 
 ====rent_models
 Infrastructure (IaaS) - You pay for the server time, CPU, RAM, disk etc. You manage everything from the OS up.
@@ -175,6 +178,11 @@ https://www.qovery.com/blog/northflank-alternatives
   - 2 no unified (remote debugging) tooling
   - 3 no best practices for vendor + security + cost deployment validation / monitoring
 * local setup
+  - https://sigridjin.medium.com/building-a-kubernetes-cluster-from-scratch-overview-and-prerequisites-498ed989fd45
+  - https://sigridjin.medium.com/building-a-kubernetes-cluster-from-scratch-setting-up-etcd-and-control-plane-0719698f0182
+  - https://sigridjin.medium.com/building-a-kubernetes-cluster-with-kubeadm-from-theory-to-practice-faebea2eebd5
+  - https://sigridjin.medium.com/building-a-kubernetes-cluster-in-an-air-gapped-environment-with-kubespray-offline-b43249319d73
+  - https://sigridjin.medium.com/a-hands-on-guide-to-rke2-and-cluster-api-for-on-premise-kubernetes-4b1c2c96be2d
   - https://sanj.dev/post/2025-12-11-ultimate-local-kubernetes-showdown-2025
     * k0s security, purist, multi-platform, hate deps more than complexity
       - "pure+simple", very fast
@@ -190,6 +198,13 @@ https://www.qovery.com/blog/northflank-alternatives
   - very similar to how Embedded/Edge Devices should be managed
 
 ====kubernetes_monitoring_logging
+For Kubernetes cost monitoring and autoscaling, deploy tools like Carpenter,
+VerticalPod AutoScaler, and the Descheduler. These are useful CNCF and Kubernetes tools.
+* vertical pod autoscaler: resource requests for CPU and memory
+* SynCF project called Kepler, which is the Kubernetes energy exporter
+* eBPF for Profiling
+* Limit access to production profiling data to prevent over-optimization by
+  inexperienced engineers.
 https://kubernetes.io/docs/tasks/debug/
 https://middleware.io/blog/kubernetes-troubleshooting-techniques/
 https://kubernetes.io/docs/tasks/debug/debug-cluster/
@@ -233,6 +248,13 @@ MinIO replacement options
 * Garage (complex config)
 * Apache Ozone (complex config)
 * Ceph Object Gateway (heavy dependency)
+
+database
+used by https://artifacthub.io/packages/helm/oneuptime/oneuptime
+* 1 Clickhouse (ClickHouse is used for analytics, logs, and time-series data storage)
+* 2 Redis (Redis is used for caching and session management)
+* 3 PostgreSQL is used for storing application data, user data, and configuration
+* other custom log storage solution???
 
 ====nix/lix for linux kernel experiments/stuff
 ====how to attach debugger over network over kubernetes
