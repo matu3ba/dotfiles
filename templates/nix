@@ -1,3 +1,37 @@
+====edge_cases
+https://wiki.nixos.org/wiki/Nix_Language_Quirks
+soo many quirks..
+
+https://nix.dev/guides/best-practices
+bad: non quoted URL
+good: Always quote URLs.
+bad: rec { a = 1; b = a + 2; }
+good: let a = 1; in { a = a; b = a + 2; }
+or selfreference: let argset = { a = 1; b = argset.a + 2; }; in argset
+bad: buildInputs = with pkgs; [ curl jq ];
+good: buildInputs = builtins.attrValues { inherit (pkgs) curl jq; };
+bad: <...>
+good: no lookup paths, even not in examples
+bad (implicit top level params): import <nixpkgs> {}
+good: import <nixpkgs> { config = {}; overlays = []; }
+bad: attribute set operator //
+good: let pkgs = import <nixpkgs> {}; in pkgs.lib.recursiveUpdate { a = { b = 1; }; } { a = { c = 3;}; }
+  results: { a = { b = 1; c = 3; }; }
+bad: let pkgs = import <nixpkgs> {}; in pkgs.stdenv.mkDerivation { name = "foo"; src = ./.; }
+good: let pkgs = import <nixpkgs> {}; in pkgs.stdenv.mkDerivation { name = "foo"; src = builtins.path { path = ./.; name = "myproject"; }; }
+
+https://jade.fyi/nix-iceberg.svg
+btw i use nixos: inherit, nix-diff, --debugger, nix-tree, nix pills, tvix, nix-shell vs nix shell
+pkg maintainer: nixos rebuild --fast -target-host, attrset ? "key", attrset ? key, ''foo''\n'' == "foo\n",
+  github/boolean-option/true, structuredAttrs, (x: x x) (x: x x)
+assigned nix hacker at employment: #!/usr/bin/env nix-shell, #!/usr/bin/env nix-shell -i python3 -p python3,
+  __structuredAttrs, --accept-flake-config, Zilch, builtins.toString [true false true] == "1 1"
+nix is easy we promise: __impure, (let f = a; a; s = {f=f;}; in [(f==f) (s==s)]), let __lessThan = a: b: b - a; in 1 > 2,
+normal and can be trusted with nix: nix2, __noChroot, restrict-eval, let a = _: _-1; or = 8; in [ a or 9 ],
+  (_:_) != (_:_) but (a:a) != (a:a)
+has meowed before: let { body = 1; __overrides.body = 2; }, importNative, more than 1 million chars of indent breaks things,
+  test suite of nix wasnt run
+
 Core data structures of nix
 Nix structure simplified are a bunch of build runner storing artifacts into for
 user read-only storage with a hash in filepath and dynamically adjusting PATH.

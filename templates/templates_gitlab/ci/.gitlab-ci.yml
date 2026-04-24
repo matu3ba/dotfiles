@@ -1,0 +1,51 @@
+# global execution
+
+stages:
+  - build
+
+# when pipelines are created, can not be overwritten in subsequent stage rule
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
+
+default:
+  tags:
+    - podman
+
+include:
+  - local: '/ci/another.yml'
+  - component: '/ci/another.yml'
+  - component: $CI_SERVER_FQDN/components/opentofu/job-templates@0.44.0
+    inputs:
+      base_os: "debian"
+      plan_name: "${GITLAB_TOFU_STATE_NAME}"
+      # Terraform files are NOT defined in the root folder
+      # root_dir: realms
+
+# job
+some_stage:
+  # secret storage interaction (premium only)
+  # secrets:
+  # environment:
+  image :
+  stage: build
+  needs:
+    - job: another_job
+      artifacts: true
+    - job: integration-tests
+  environment:
+    name: production
+    action: start
+  cache:
+    key: ziggy
+    paths:
+      - $HOME/zig-global
+      - $HOME/zig-local
+  before_script:
+    - apt-get update -qq
+    - apt-get install -qq libssl-dev pkg-config build-essential curl git
+  script:
+    - zig build
+  variables:
+    GITLAB_TOFU_INIT_FLAGS: "-lockfile=readonly"

@@ -16,6 +16,9 @@
 -- { code = 0, signal = 0, stdout = '..', stderr = '' }
 
 -- :h vim.json.encode() for usage of vim.split, vim.json.encode, vim.json.decode
+--  for line in vim.iter(vim.split(obj.stdout, "\n", { trimempty = true })) do
+--    vim.print(line)
+--  end
 
 --vim.fn.setloclist(winnr, {}, ' ', { items = items })
 --vim.fn.setqflist({}, " ", {nr = "$", items = entries})
@@ -25,11 +28,9 @@
 --cad[dbuffer]|laddb[uffer] add errors to (q/l)list
 --(c/l)gete[xpr] expr - same as (c/l)ex[pr], but without jumping
 
--- TODO make fn for :!mkdir -p %:h
--- TODO nvim +':w ++p' /path/to/file
---
--- TODO :Frel to copy selected path as relative path trimming file ending,
--- TODO vice versa as absolute path
+-- nvim +':w ++p' /path/to/file
+-- * does not work, because buffer must be associated with writable file
+-- and +cmd is processed before file is loaded
 
 --==Globals
 local api = vim.api
@@ -63,6 +64,7 @@ add_cmd('CJfi', config_edit .. sep .. 'lua' .. sep .. 'my_jfind.lua', {})
 add_cmd('CKey', config_edit .. sep .. 'lua' .. sep .. 'my_keymaps.lua', {})
 add_cmd('CLi', config_edit .. sep .. 'lua' .. sep .. 'my_lint.lua', {})
 add_cmd('CLsp', config_edit .. sep .. 'lua' .. sep .. 'my_lsp.lua', {})
+add_cmd('CVis', config_edit .. sep .. 'lua' .. sep .. 'my_visits.lua', {})
 add_cmd('COil', config_edit .. sep .. 'lua' .. sep .. 'my_oil.lua', {})
 add_cmd('COpts', config_edit .. sep .. 'lua' .. sep .. 'my_opts.lua', {})
 add_cmd('COver', config_edit .. sep .. 'lua' .. sep .. 'my_over.lua', {})
@@ -325,6 +327,12 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 -- :w !diff % -
 -- workaround diffput/diffget not working(in all visible windows) :bufdo diffoff
 
+local setPlusAnd0Register = function(content)
+  vim.fn.setreg('0', content)
+  -- if vim.fn.hasclip
+  vim.fn.setreg('+', content)
+end
+
 -- Usage
 --:'<,'>QFsetRange
 -- :5,12QFsetRange
@@ -379,19 +387,13 @@ local QFsetValidPaths = function (l1, l2)
   end
   vim.fn.setqflist(items, "r")
 end
-add_cmd('QFsetValidPaths', function(opts) QFsetValidPaths(opts.line1, opts.line2) end, { range=true, desc = '\'<,\'>QFsetRange5,12QFsetRange,7QFsetRange' })
+add_cmd('QFsetValidPaths', function(opts) QFsetValidPaths(opts.line1, opts.line2) end, { range=true, desc = '\'<,\'>QFsetValidPaths5,12QFsetValidPaths,7QFsetValidPaths' })
 
 ---- Scripting ----
 -- copy path under cursor: yiW
 -- pull current filename into where you are: Ctrl+R %
 -- vimscript register assignment: :let @+ = expand("%:p")
 -- Note: Relative paths are only respected until cwd. If path goes via parent dir, absolute path is returned.
-
-local setPlusAnd0Register = function(content)
-  vim.fn.setreg('0', content)
-  -- if vim.fn.hasclip
-  vim.fn.setreg('+', content)
-end
 
 --==nvim_path
 --- Sets + register with path [[:line]:column]
@@ -428,6 +430,13 @@ if has_oil then
   end
 end
 
+-- add_cmd('Dabs', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+-- add_cmd('DabsU', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+-- add_cmd('DabsW', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+-- add_cmd('Drel', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+-- add_cmd('DrelU', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+-- add_cmd('DrelW', function() setPlusAnd0Register(vim.fs.dirname(api.nvim_buf_get_name(0))) end, {})
+
 -- Functions with suffix U and W do not do special case handling or validation.
 add_cmd('Frel', function() setPlusAnd0Register(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0))) end, {})
 add_cmd('FrelU', function() setPlusAnd0Register(utils.pathNormRelOnCwd(api.nvim_buf_get_name(0)):gsub('\\','/')) end, {})
@@ -462,6 +471,17 @@ add_cmd('ShDay', function() utils.printOrReplaceOsDate("%Y%m%d") end, { range=tr
 add_cmd('ShTime', function() utils.printOrReplaceOsDate("%H:%M:%S") end, { range=true })
 add_cmd('ShDate', function() utils.printOrReplaceOsDate("") end, { range=true })
 -- stylua: ignore end
+
+-- nothing portable for
+add_cmd('MkdirPa', function(ctx)
+  local path = ctx.fargs[1]
+  local basename = vim.fn.fnamemodify(path, ":h")
+  vim.fn.mkdir(basename, "p")
+  if basename ~= path then
+    vim.cmd.edit(path)
+  end
+  -- vim.cmd.write()
+end, {nargs = 1})
 
 --==zig
 -- Retag only local files with https://github.com/gpanders/ztags

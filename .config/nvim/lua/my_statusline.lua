@@ -2,6 +2,7 @@
 --! Offers 1 mode: usage
 -- luacheck: globals vim
 -- luacheck: no max line length
+local utils = require 'my_utils'
 local has_plenary, plenary = pcall(require, 'plenary')
 local has_gitsigns, _ = pcall(require, 'gitsigns')
 local has_navic, navic = pcall(require, 'nvim-navic')
@@ -108,7 +109,6 @@ end
 -- if not in cwd: absolute path
 local function get_path(cwd)
   local bufname = vim.api.nvim_buf_get_name(0)
-  -- local rel_path = plenary.path:new(bufname):make_relative()
   local rel_path = vim.fs.relpath(cwd, bufname, {})
   if (rel_path == nil) then
     rel_path = bufname
@@ -204,12 +204,10 @@ function statusline.setup()
   local winwidth = vim.api.nvim_win_get_width(0)
 
   local cwd = get_cwd()
-  -- local cwd_width = vim.fn.strdisplaywidth(cwd)
-  local cwd_width = plenary.strings.strdisplaywidth(cwd)
+  local cwd_width = vim.fn.strdisplaywidth(cwd)
 
   local path = get_path(cwd)
-  -- local path_width = vim.fn.strdisplaywidth(path)
-  local path_width = plenary.strings.strdisplaywidth(path)
+  local path_width = vim.fn.strdisplaywidth(path)
 
   -- visual_setting_choices
   -- cwd shown => 2,4 not shown => 1,3

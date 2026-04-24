@@ -1,9 +1,12 @@
 --! Dependency harpoon
---! TODO cmds
 local M = {}
 local has_harpoon, harpoon = pcall(require, 'harpoon')
 local has_harpoonterm, harp_term = pcall(require, 'harpoon.term')
 local _ = harpoon
+
+-- harpoon cache (delete frequently, because windows slow):
+-- vim.fn.stdpath("data")
+-- $HOME/AppData/Local/nvim-data/harpoon.json
 
 --====harpoon2 usage blocked by
 -- 1. What would be a sane setup with potentially necessary default values, ie empty files 1+2?

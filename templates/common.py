@@ -21,6 +21,9 @@
 #====libs
 # mpmath
 
+#====links
+# hot reloading: https://www.indelible.org/ink/python-reloading/
+
 #====code_examples
 # import sys
 # import threading

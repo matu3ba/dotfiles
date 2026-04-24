@@ -97,7 +97,8 @@ else
   require 'my_aerial' -- overview_window
   require 'my_oil' -- file_explorer
   require 'my_fmt' -- smart_formatter
-  require 'my_treesitter' -- smart_formatter
+  -- require 'my_visits' -- mini.visits
+  -- require 'my_treesitter' -- smart_formatter
 
   --==lazy fast restore state from https://dev.to/vonheikemen/lazynvim-how-to-revert-a-plugin-back-to-a-previous-version-1pdp
   local aucmds_lazy = vim.api.nvim_create_augroup('aucmds_lazy', { clear = true })

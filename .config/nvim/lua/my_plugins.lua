@@ -22,8 +22,9 @@ return {
   -- Debug plugins startuptime via: nvim -V1 --startuptime FILE
   -- To find which plugins to disable, use :verbose au BufEnter
 
-  { 'nvim-lua/plenary.nvim' },
-
+  -- only used for plenary.strings.strdisplaywidth
+  -- jit => linetabsize_col, but I can not find it in luajit
+  -- see https://github.com/nvim-telescope/telescope.nvim/issues/2552
   {
     'marko-cerovac/material.nvim',
     priority = 1000, --<l>ma
@@ -38,7 +39,7 @@ return {
 
   -- used to install lua-language-server and debugger
   -- only used to install lua-language-server
-  { 'williamboman/mason.nvim', config = function() require('mason').setup() end },
+  -- { 'williamboman/mason.nvim', config = function() require('mason').setup() end },
   -- { 'jay-babu/mason-nvim-dap.nvim', config = function() require('mason-nvim-dap').setup() end },
 
   { --==LSP
@@ -213,16 +214,11 @@ return {
     end,
   },
 
-  -- The alternative would be to use https://github.com/git/git/blob/master/Documentation/mergetools/vimdiff.txt
-  -- as shown here https://gist.github.com/karenyyng/f19ff75c60f18b4b8149
-
   --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
   -- :Gitsigns show @~1
-  {
-    'lewis6991/gitsigns.nvim',
-    -- initialized in .config/nvim/lua/my_gitsign.lua
-    -- config = function() require('gitsigns').setup{} end,
-  },
+  -- initialized in .config/nvim/lua/my_gitsign.lua
+  { 'lewis6991/gitsigns.nvim' },
+
   --:DiffviewOpen, :DiffviewClose/tabclose, :DiffviewFileHistory
   -- USAGE
   -- view
@@ -294,7 +290,10 @@ return {
   -- buffer manipulation + project search
 
   --==bufferactions
-  --TODO think about using mini-visits + add terminal functionality based on now numerous tutorials, if stuff breaks
+  -- :Minivisits
+  -- { 'nvim-mini/mini.visits' },
+  -- TODO add terminal functionality based on now numerous tutorials
+  --
   -- blockers of harpoon2 mentioned in my_harpoon.lua
   -- { 'ThePrimeagen/harpoon', branch = 'harpoon2' }
   { 'matu3ba/harpoon', dev = false }, -- <l> or ; [m|c|s]key=[j|k|l|u|i] mv|mc|mm, :CKey, :CCmd
@@ -306,7 +305,7 @@ return {
   -- ctrl-e, ctrl-a, ctrl-w, ctrl-f, ctrl-b for editing navigation, ctrl-p and ctrl-n for history.
 
   --==finder
-  { 'jake-stewart/jfind.nvim', branch = '2.0' },
+  -- { 'jake-stewart/jfind.nvim', branch = '2.0' },
   -- think about design to resolve https://github.com/nvim-telescope/telescope.nvim/issues/647
 
   --<leader> prefix t
@@ -314,12 +313,14 @@ return {
   { 'natecraddock/telescope-zf-native.nvim', lazy = false }, -- simpler algorithm for matching
   -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = false }, -- 1.65x speed of fzf
   -- Telescope gh issues author=windwp label=bug search=miscompilation
-  { 'nvim-telescope/telescope-github.nvim' }, --Telescope gh issues|pull_request|gist|run
+  -- { 'nvim-telescope/telescope-github.nvim' }, --Telescope gh issues|pull_request|gist|run
   -- <leader>fd file search by directory, <leader>fs forwardIntoDir searchstring
   --broken with https://github.com/princejoogie/dir-telescope.nvim/issues/6
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
-  --==languages
+
+  --==lint
   { 'mfussenegger/nvim-lint' }, -- my_lint.lua
+
   --{ "neomake/neomake" } -- get useful comments for code semantics
   --==Organization
   -- ideas
@@ -343,10 +344,8 @@ return {
   { 'folke/which-key.nvim', config = function() require('which-key').setup() end },
 
   -- markdown live preview via :Glow[!] [path]
-  {
-    'ellisonleao/glow.nvim',
-    config = function() require('glow').setup() end,
-  },
+  { 'ellisonleao/glow.nvim', config = function() require('glow').setup() end },
+
   -- idea figure out which markdown viewer to use
   -- markdown OXY2DEV/markview.nvim
   -- markdown MeangeringProgrammer/render-markdown.nvim
@@ -406,10 +405,8 @@ return {
   -- more severe issues with stability (editor becomes completely unresponsive) :-( )
   --{ 'sakhnik/nvim-gdb' } -- idea: fix https://github.com/sakhnik/nvim-gdb/issues/177
 
-  --{ "glepnir/mutchar.nvim" }, idea setup
   -- doesnt work for me
   -- { "chomosuke/term-edit.nvim", lazy = false, version = "1.*" },
-  -- { 'debugloop/telescope-undo.nvim' }, -- browse via <C-n>,<C-p>, <C-CR> revert state, <CR> yank additions, <S-CR> yank deletions
 
   -- commonly known JSON file formats: schemastore.nvim
   -- toggleterm.nvim
@@ -421,7 +418,7 @@ return {
   --==treesitter
   -- .config/nvim/lua/my_treesitter.lua
   -- replacement without perf issues for context.vim would be great
-  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  -- { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   -- { 'mizlan/iswap.nvim' }, --:Iswap, as mapping :ISwapWith
   -- block-wise movement and file-local replacements
   -- { 'nvim-treesitter/nvim-treesitter-refactor' },
@@ -442,8 +439,6 @@ return {
   -- telescope-ui-select.nvim
   -- text-case.nvim
 }
-
--- { 'ziglang/zig.vim' }, -- :lua vim.api.nvim_set_var("zig_fmt_autosave", 0)
 
 --fugitive <leader> [gs|g2|g3|p2|p3]
 -- best shortcuts and brief usage

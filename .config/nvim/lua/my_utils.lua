@@ -8,7 +8,41 @@ M.isRemoteSession = function()
   local sty = vim.env.STY
   return sty ~= nil and sty == '' -- fork expensive in cygwin
 end
--- let g:remoteSession = ($STY == "")
+
+-- M.strdisplaywidth = (function()
+--   local fallback = function(str, col)
+--     str = tostring(str)
+--     if vim.in_fast_event() then
+--       return #str - (col or 0)
+--     end
+--     return vim.fn.strdisplaywidth(str, col)
+--   end
+--
+--   if jit and path.sep ~= [[\]] then
+--     local ffi = require "ffi"
+--     ffi.cdef [[
+--       typedef unsigned char char_u;
+--       int linetabsize_col(int startcol, char_u *s);
+--     ]]
+--
+--     local ffi_func = function(str, col)
+--       str = tostring(str)
+--       local startcol = col or 0
+--       local s = ffi.new("char[?]", #str + 1)
+--       ffi.copy(s, str)
+--       return ffi.C.linetabsize_col(startcol, s) - startcol
+--     end
+--
+--     local ok = pcall(ffi_func, "hello")
+--     if ok then
+--       return ffi_func
+--     else
+--       return fallback
+--     end
+--   else
+--     return fallback
+--   end
+-- end)()
 
 -- taken from gitsigns
 -- local jit_os --- @type string
@@ -95,7 +129,6 @@ end
 M.pathNormRel = function(cwd, path, opts)
   if (opts == nil) then opts = {expand_env=false} end
   local normalized_pa = vim.fs.normalize(path, opts)
-  vim.print(normalized_pa)
   local relpath = vim.fs.relpath(cwd, normalized_pa, {})
   if (relpath == nil) then relpath = normalized_pa; end
   return relpath

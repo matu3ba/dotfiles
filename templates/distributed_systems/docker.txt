@@ -1,3 +1,5 @@
+
+==usage
 docker compose up|down|logs|ps
 docker build|ps|pull|push|run|stop
 
@@ -12,3 +14,12 @@ https://docs.docker.com/guides/
 https://docs.docker.com/guides/go-prometheus-monitoring/application/
 https://docs.docker.com/guides/kube-deploy/
 https://docs.docker.com/reference/compose-file/
+
+==tools
+https://oneuptime.com/blog/post/2026-03-18-lint-validate-containerfiles-podman/view
+Installing Hadolint
+hadolint Containerfile
+
+https://github.com/adrienverge/yamllint
+
+https://hedgedoc.misc.booking.cambio-carsharing.com/-8chD6HZRLSuDjt8bVsJKQ?both

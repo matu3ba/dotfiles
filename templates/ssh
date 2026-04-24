@@ -61,9 +61,11 @@ ssh USER@HOST
 5. Disable password in /etc/ssh/sshd_config:
 PasswordAuthentication no
 
-ssh may complain with `WARNING: UNPROTECTED PRIVATE KEY FILE!`
-Fix it on the machine with:
-sudo chmod 600 *
+When copying keys, ssh may complain with `Permissions [..] are too open. [..]
+Load key [..] bad permissions.` or `WARNING: UNPROTECTED PRIVATE KEY FILE!` and
+`Please make sure you have the correct access rights and the repository exists.`
+Fix:
+sudo chmod 600 ~/.ssh/*
 sudo chmod 644 ~/.ssh/known_hosts
 sudo chmod 755 ~/.ssh
 

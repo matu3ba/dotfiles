@@ -38,8 +38,16 @@ if not ok_lint then return end
 -- git clone 'https://github.com/prefix-dev/pixi'
 -- cargo install --locked --git https://github.com/prefix-dev/pixi.git pixi
 
+-- idea codespell for spell checking
 -- idea codespell for non-english texts
 -- https://sean.fish/x/blog/codespell-ignorelists-neovim/
+-- idea Harper for text grammar checking
+
+-- idea https://oneuptime.com/blog/post/2026-03-18-lint-validate-containerfiles-podman/view
+-- * hadolint
+-- * yamllint
+-- * codespell
+-- * harper
 
 lint.linters_by_ft = {
   -- # shellcheck disable=SC2016

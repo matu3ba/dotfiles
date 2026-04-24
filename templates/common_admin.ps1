@@ -2,6 +2,8 @@
 
 #====process_list
 #====iis
+#====iis_debug
+#====iis_usage
 #====hyper-v
 #====vm_usage
 
@@ -94,17 +96,8 @@ Get-IISConfigSection
 # C:\Windows\System32\inetsrv\
 # usually without permissions:
 # C:\Windows\System32\inetsrv\config\applicationHost.config
-#IIS Express
-# $HOME\Documents\IISExpress\config\applicationhost.config
-#
-#IIS Express
-# .vs\*.*\applicationhost.config
-# .vs\config\applicationhost.config
-# .vs\Service\config\applicationhost.config
 & "C:\Program Files\IIS Express\iisexpress.exe" /?
 & "C:\Program Files\IIS\appcmd.exe" list site
-& "C:\Program Files\IIS Express\appcmd.exe" list site
-& "C:\Program Files\IIS Express\appcmd.exe" /? site
 # APPCMD (Command) (Object_type) <ID> </Param1:Wert1 ...>
 # Command: list, add, delete, set
 # Object_type: site, app, vdir, apppool, config, module, trace
@@ -115,6 +108,87 @@ Get-IISConfigSection
 #     "%TMP%\Temporary ASP.NET Files"
 #     "%WINDIR%\Microsoft.NET\Framework\v4.0.30319\Temporary ASP.NET Files"
 #     "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\Temporary ASP.NET Files"
+
+#IIS Express
+# default config: $HOME\Documents\IISExpress\config\applicationhost.config
+# VS config files
+# .vs\*.*\applicationhost.config
+# .vs\config\applicationhost.config
+# .vs\Service\config\applicationhost.config
+# compat layer (without functionality in IIS Express)
+& "C:\Program Files\IIS Express\appcmd.exe" list site
+& "C:\Program Files\IIS Express\appcmd.exe" /? site
+
+# 3 usable executables
+# 1 iisexpress server
+& "C:\Program Files\IIS Express\iisexpress.exe" /?
+# & "C:\Program Files\IIS Express\iisexpress.exe"
+# /config:config-file
+# /site:site-name
+# /siteid:site-id
+# /path:app-path
+# /port:port-number
+# /clr:clr-version
+# /userhome:user-home-directory  (default is %userprofile%\documents\iisexpress).
+# /trace:trace-level  'none', 'n', 'info', 'i', 'warning', 'w', 'error', and 'e' (default none)
+
+#====iis_debug
+# & "C:\Program Files\IIS Express\iisexpress.exe" /path:cwAPI\ServiceImplementation\cwLoginREST /port:60010 /trace:error
+# error (solution from https://gunnarpeipman.com/)
+# Failed to register URL "http://localhost:60010/" for site "Development Web Site" application "/". Error description: Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird. (0x80070020)
+# Registration completed
+# Failed to initialize site bindings
+# Error initializing ULATQ.  hr = 80070020
+# Terminating W3_SERVER object
+# InitComplete event signalled
+# Process Model Shutdown called
+# Unable to start iisexpress.
+# Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird.
+# For more information about the error, run iisexpress.exe with the tracing switch enabled (/trace:error).
+#steps
+netsh interface ipv4 show excludedportrange protocol=tcp
+# example
+
+
+# 2 iisexpress admin cmds
+& "C:\Program Files\IIS Express\IisExpressAdminCmd.exe" /?
+# & "C:\Program Files\IIS Express\IisExpressAdminCmd.exe"
+# setupFriendlyHostnameUrl -url:<url>
+# deleteFriendlyHostnameUrl -url:<url>
+# setupUrl -url:<url>
+# deleteUrl -url:<url>
+# setupSslUrl -url:<url> -CertHash:<value>
+# setupSslUrl -url:<url> -UseSelfSigned
+# deleteSslUrl -url:<url>
+# 3 iisexpress (system) tray: appears to have no arguments or help page
+& "C:\Program Files\IIS Express\iisexpresstray.exe"
+# example not available, i have no idea why this command exists besides for starting systray
+
+#====iis_usage
+# 1. autoregistering
+& "C:\Program Files\IIS Express\iisexpress.exe" /path:cwAPI\ServiceImplementation\cwLoginREST /port:40000 /trace:error
+
+# 2. manually reserving url for user and service, can also do listen
+netsh http add urlacl url=http://localhost:60010/ user=$env:USERNAME
+& "C:\Program Files\IIS Express\iisexpress.exe" ` /path:"cwAPI\ServiceImplementation\cwLoginREST" ` /port:60010
+netsh http delete urlacl url=http://localhost:60010/
+
+# 3. IisExpressAdminCmd
+& "C:\Program Files\IIS Express\IisExpressAdminCmd.exe" setupUrl -url:"http://localhost:60010/"
+& "C:\Program Files\IIS Express\IisExpressAdminCmd.exe" deleteUrl -url:"http://localhost:60010/"
+# no idea why usage is good
+
+# slop
+#& "C:\Program Files\IIS Express\IisExpressAdminCmd.exe" setupSite /siteId:1 /physicalPath:"cwAPI\ServiceImplementation\cwLoginREST" /binding:http://localhost:60010/
+#& "C:\Program Files\IIS Express\IisExpressAdminCmd.exe" stopSite /siteId:1
+#& "C:\Program Files\IIS Express\IisExpressAdminCmd.exe" deleteSite /siteId:1
+
+# debug
+netsh http show iplisten
+netsh http show sslcert
+netsh http show urlacl
+netsh http delete urlacl url=http://*:$PORT/
+netsh http add urlacl url=http://*:$PORT/ user=Everyone
 
 # #IIS Express & .NET core bat file
 # SET MSBuildPath="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
