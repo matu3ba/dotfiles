@@ -94,10 +94,11 @@
             };
             nix.settings.auto-optimise-store = true;
 
-            environment.systemPackages = with pkgs; [
-              neovim
-              git
-            ];
+            environment.systemPackages = builtins.attrValues {
+              inherit (pkgs)
+                neovim
+                git;
+            };
           })
         ];
       };
