@@ -44,13 +44,15 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
   };
 
+  # outputs = inp@{ nixpkgs, nixos-wsl, ... }: {
   outputs = { nixpkgs, nixos-wsl, ... }: {
     nixosConfigurations = {
       # inherit nixpkgs;
       wsl = nixpkgs.lib.nixosSystem {
+        # specialArgs = { inherit inp; }; # forward custom input to access overlayed pkgs etc
         modules = [
           nixos-wsl.nixosModules.wsl
-          {
+          ({ pkgs, ... }: {
             nixpkgs.hostPlatform = "x86_64-linux";
             system.stateVersion = "25.11";
 
@@ -91,12 +93,14 @@
               options = "--delete-older-than 1w";
             };
             nix.settings.auto-optimise-store = true;
-          }
+
+            environment.systemPackages = with pkgs; [
+              neovim
+              git
+            ];
+          })
         ];
       };
-      # amd64linux = nixpkgs.lib.nixosSystem {
-      #   # example
-      # };
     };
   };
 }
