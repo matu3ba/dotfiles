@@ -464,6 +464,15 @@ functional correct code without constant time guarantees open research problem
   - Physical attacks
     * Eletromagnetic waves, power measurements, optical, etc
 
+potential hardware-based OS solution
+* model hardware semantics explicit in OS
+"seL4 as a CPU Driver in an OS for Real Computers"
+> Kirsch assembles an OS for a real computer out of components which have
+> explicit, formally-specified trust relationships based on the hardware
+* unclear if this has been tried before and what the limitations are
+https://sockeye.ethz.ch/kirsch/docs/design/glas.html#who-has-tried-this-before
+* very nice talk explaining the problem of modern hardware
+
 ====protocols
 * prover for protocols: https://tamarin-prover.com/book/
 
