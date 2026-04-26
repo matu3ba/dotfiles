@@ -44,24 +44,34 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
   };
 
-  # outputs = inp@{ nixpkgs, nixos-wsl, ... }: {
-  outputs = { nixpkgs, nixos-wsl, ... }: {
+  outputs = { nixpkgs, nixos-wsl, ... }:
+  let
+    sharedModule = { pkgs, ... }: {
+      environment.systemPackages = with pkgs; [ neovim git ];
+      documentation.enable = true;
+
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      nix.gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 1w";
+      };
+      nix.settings.auto-optimise-store = true;
+    };
+  in {
     nixosConfigurations = {
-      # inherit nixpkgs;
       wsl = nixpkgs.lib.nixosSystem {
-        # specialArgs = { inherit inp; }; # forward custom input to access overlayed pkgs etc
         modules = [
+          sharedModule
           nixos-wsl.nixosModules.wsl
-          ({ pkgs, ... }: {
+          {
             nixpkgs.hostPlatform = "x86_64-linux";
             system.stateVersion = "25.11";
 
             hardware.enableAllFirmware = false;
-
             boot.isContainer = true;
             networking.networkmanager.enable = false;
             services.openssh.enable = false;
-            documentation.enable = true;
 
             wsl.enable = true;
             wsl.defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
@@ -83,21 +93,78 @@
             wsl.wslConf.interop.appendWindowsPath = true;
             wsl.wslConf.network.generateHosts = true;
             wsl.wslConf.network.generateResolvConf = true;
-            wsl.wslConf.network.hostname = "nixos";
+            wsl.wslConf.network.hostname = "nixos_wsl";
             wsl.wslConf.user.default = "jan-philipp.hafer";
-            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+          }
+        ];
+      };
+      station = nixpkgs.lib.nixosSystem {
+        modules = [
+          sharedModule
+          ({ config, lib, pkgs, modulesPath, ... }: {
+            # hardware-config
+            imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
-            nix.gc = {
-              automatic = true;
-              dates = "weekly";
-              options = "--delete-older-than 1w";
+            boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+            boot.initrd.kernelModules = [ ];
+            boot.kernelModules = [ "kvm-amd" "v4l2loopback" ];
+
+            fileSystems."/" =
+              { device = "/dev/disk/by-uuid/5c732e8c-9d09-46b0-8611-1d75679e16e7";
+                fsType = "ext4";
+              };
+            fileSystems."/boot" =
+              { device = "/dev/disk/by-uuid/678C-B2DB";
+                fsType = "vfat";
+              };
+            swapDevices = [ ];
+            networking.useDHCP = true;
+            # hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
+
+            # sys-config
+            nixpkgs.hostPlatform = "x86_64-linux";
+            system.stateVersion = "25.11";
+
+            boot = {
+              loader = {
+                # Use the systemd-boot EFI boot loader.
+                systemd-boot.enable = true;
+                efi.canTouchEfiVariables = true;
+                #grub.device = "/dev/nvme0n1";
+              };
+              tmp.cleanOnBoot = true;
+              kernelPackages = pkgs.linuxPackages_latest;
+              extraModulePackages = [ config.boot.kernelPackages.v4l2loopback.out ];
+              extraModprobeConfig = ''
+               options vl2loopback exclusive_caps=1 card
+              '';
             };
-            nix.settings.auto-optimise-store = true;
+            fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
+            networking.hostName = "nixos_station"; # Define your hostname.
+            networking.wireless.enable = true;  # wpa_supplicant
+            time.timeZone = "Europe/Berlin";
 
-            environment.systemPackages = builtins.attrValues {
-              inherit (pkgs)
-                neovim
-                git;
+            i18n.defaultLocale = "en_US.UTF-8";
+            console = {
+              font = "Lat2-Terminus16";
+              keyMap = "de-latin1-nodeadkeys";
+              #useXkbConfig = true; # use xkbOptions in tty.
+            };
+
+            # services.printing.enable = true; # CUPS
+
+            # TODO nixos-generate-config, https://github.com/NixOS/nixos-hardware, sudo nix-shell -p dmidecode --run "dmidecode -t 11"
+            hardware.alsa.enable = true;
+            hardware.graphics.enable = true;
+
+            users.users.jan = {
+              isNormalUser = true;
+              extraGroups = [ "wheel" "input" ]; # allow 'sudo' for user
+            };
+
+            services.openssh = {
+              enable = true;
+              settings.PasswordAuthentication = false;
             };
           })
         ];
