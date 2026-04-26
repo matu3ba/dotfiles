@@ -11,6 +11,7 @@
 # revert: git restore -s COMMIT flake.nix
 # * if necessary: wsl -d NixOS.Dev --user root
 # pin: update flake.lock
+# check: nix flake check
 
 #==keep_small_store_debug
 # du -sh /nix/store/* | sort -h
@@ -43,71 +44,59 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
   };
 
-  outputs = { nixpkgs, nixos-wsl, ... }:
-  let
-    system = "x86_64-linux";
-    pkgs = import nixpkgs { inherit system; };
-    # username = builtins.getEnv "USER";
-  in {
-    nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
-      inherit pkgs system;
-      modules = [
-        nixos-wsl.nixosModules.wsl
-        {
+  outputs = { nixpkgs, nixos-wsl, ... }: {
+    nixosConfigurations = {
+      # inherit nixpkgs;
+      wsl = nixpkgs.lib.nixosSystem {
+        modules = [
+          nixos-wsl.nixosModules.wsl
+          {
+            nixpkgs.hostPlatform = "x86_64-linux";
+            system.stateVersion = "25.11";
 
-          hardware.enableAllFirmware = false;
+            hardware.enableAllFirmware = false;
 
-          boot.isContainer = true;
-          networking.networkmanager.enable = false;
-          services.openssh.enable = false;
-          documentation.enable = true;
+            boot.isContainer = true;
+            networking.networkmanager.enable = false;
+            services.openssh.enable = false;
+            documentation.enable = true;
 
-          wsl.enable = true;
-          wsl.defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
-          # docker desktop, extraBin, extraBin copy/name/src, extraBin name
-          # interop.includePath/register
-          # ssh-agent enable/package/users
-          # startMenuLaunchers
-          # tarball.configPath
-          # usbip enable/autoAttach/snippetIpAddress
-          # useWindowsDriver (OpenGL)
-          wsl.wrapBinSh = true;
-          wsl.wslConf.automount.enabled = true;
-          # wsl.wslConf.ldconfig = false; errors on usage
-          wsl.wslConf.automount.mountFsTab = false; # probably leave false, systemd will mount these
-          wsl.wslConf.automount.options = "metadata,uid=1000,gid=100";
-          wsl.wslConf.automount.root = "/mnt";
-          wsl.wslConf.boot.systemd = true; # disabling may break NixOS installation
-          wsl.wslConf.interop.enabled = true;
-          wsl.wslConf.interop.appendWindowsPath = true;
-          wsl.wslConf.network.generateHosts = true;
-          wsl.wslConf.network.generateResolvConf = true;
-          wsl.wslConf.network.hostname = "nixos";
-          wsl.wslConf.user.default = "jan-philipp.hafer";
-          nix.settings.experimental-features = [ "nix-command" "flakes" ];
-          nix.gc = {
-            automatic = true;
-            dates = "weekly";
-            options = "--delete-older-than 1w";
-          };
-          nix.settings.auto-optimise-store = true;
-          # user.users.wsluser = {
-          #   isNormalUser = true;
-          #   extraGroups = [ "wheel" ];
-          # };
+            wsl.enable = true;
+            wsl.defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
+            # docker desktop, extraBin, extraBin copy/name/src, extraBin name
+            # interop.includePath/register
+            # ssh-agent enable/package/users
+            # startMenuLaunchers
+            # tarball.configPath
+            # usbip enable/autoAttach/snippetIpAddress
+            # useWindowsDriver (OpenGL)
+            wsl.wrapBinSh = true;
+            wsl.wslConf.automount.enabled = true;
+            # wsl.wslConf.ldconfig = false; errors on usage
+            wsl.wslConf.automount.mountFsTab = false; # probably leave false, systemd will mount these
+            wsl.wslConf.automount.options = "metadata,uid=1000,gid=100";
+            wsl.wslConf.automount.root = "/mnt";
+            wsl.wslConf.boot.systemd = true; # disabling may break NixOS installation
+            wsl.wslConf.interop.enabled = true;
+            wsl.wslConf.interop.appendWindowsPath = true;
+            wsl.wslConf.network.generateHosts = true;
+            wsl.wslConf.network.generateResolvConf = true;
+            wsl.wslConf.network.hostname = "nixos";
+            wsl.wslConf.user.default = "jan-philipp.hafer";
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-          system.stateVersion = "25.11";
-          environment.systemPackages = builtins.attrValues {
-            inherit (pkgs)
-              neovim
-              git;
-          };
-          # environment.systemPackages = with pkgs; [
-          #   neovim
-          #   git
-          # ];
-        }
-      ];
+            nix.gc = {
+              automatic = true;
+              dates = "weekly";
+              options = "--delete-older-than 1w";
+            };
+            nix.settings.auto-optimise-store = true;
+          }
+        ];
+      };
+      # amd64linux = nixpkgs.lib.nixosSystem {
+      #   # example
+      # };
     };
   };
 }
