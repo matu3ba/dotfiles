@@ -3,4 +3,4 @@ if not has_visits then
   error 'Please install nvim-mini/mini.visits'
   return
 end
-visits.setup({})
+visits.setup {}

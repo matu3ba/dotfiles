@@ -1,0 +1,41 @@
+critical is usual refered to as
+* safety-critical
+* security-critical
+
+critical system
+* highly reliable
+* retain reliability during evolvement without incurring prohibitive costs
+- fail-safe (become safe, when not operating)
+- fail-operational (still working, when control system fails)
+- fail-soft (still working with degraded functionality)
+- fail-secure (maintain max security when not operating)
+- fail-passive (continue to operate when failure)
+- fault-tolerant (redundancy for keeping operation/avoid failure when faults are induced)
+
+2 strictly specified types
+1. safety critical (failure/malfunction leading to death/injury, loss/damage of equipment/property, environment harm)
+* ISO 26262
+* more information on https://public-docs.ferrocene.dev/main/index.html
+* https://public-docs.ferrocene.dev/main/qualification/evaluation-plan/index.html
+  - automotive [ISO 26262:2018] (ASIL D/TCL 3),
+  - industrial [IEC 61508:2010] (class T3)
+  - medical software [IEC 62304:2006 + AMD 1:2015]
+  - automotive [ISO 26262:2018] (ASIL B)
+  - industrial [IEC 61508:2010] (SIL 2)
+
+2. security critical (unfortunately no widely accepted short definition)
+* suggestion: Preventing or reducing the probability systems from threats that can lead to
+unauthorized information access, unlawful use, disclosure, disruption,
+deletion, corruption, modification, inspection, recording, devaluation, theft,
+or damage to hardware, software (computer+network), communication channels, or
+data, as well as to the disruption or misdirection of the services they
+provide.
+* CIA triad (confidentiality, integrity, availability)
+* O-ISM3 as maturity model
+* creative commons
+
+2 loosely unspecified types
+1. mission critical
+* essential to survival of business/organization
+2. business critical
+* not necessary during incidents [situation that might be, or could lead to, a disruption, loss, emergency or crisis]

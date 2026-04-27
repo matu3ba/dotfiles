@@ -249,7 +249,7 @@ return {
   -- (unused default breaks mini.surround) s|S char1 char2 <space>? (<space>|<tab>)* label?
   -- -|_ char1 char2 <space>? (<space>|<tab>)* label?
   -- idea figure out better keymap
-  { url = "https://codeberg.org/andyg/leap.nvim" },
+  { url = 'https://codeberg.org/andyg/leap.nvim' },
   -- repeat action not yet supported
 
   -- Remote editing

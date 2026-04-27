@@ -337,7 +337,7 @@ end
 --:'<,'>QFsetRange
 -- :5,12QFsetRange
 -- :7QFsetRange
-local QFsetRange = function (l1, l2)
+local QFsetRange = function(l1, l2)
   -- No range provided: do nothing or default to whole file
   -- other option: if selection off (+ start cursor == end cursor),
   -- default to whole file
@@ -345,7 +345,7 @@ local QFsetRange = function (l1, l2)
   assert(l1 ~= 0)
   assert(l2 ~= 0)
   local lines = vim.fn.getline(l1, l2)
-  local fname = vim.fn.expand("%")
+  local fname = vim.fn.expand '%'
   local items = {}
   for i, l in ipairs(lines) do
     table.insert(items, {
@@ -354,11 +354,11 @@ local QFsetRange = function (l1, l2)
       text = l,
     })
   end
-  vim.fn.setqflist(items, "r")
+  vim.fn.setqflist(items, 'r')
 end
-add_cmd('QFsetRange', function(opts) QFsetRange(opts.line1, opts.line2) end, { range=true, desc = '\'<,\'>QFsetRange5,12QFsetRange,7QFsetRange' })
+add_cmd('QFsetRange', function(opts) QFsetRange(opts.line1, opts.line2) end, { range = true, desc = "'<,'>QFsetRange5,12QFsetRange,7QFsetRange" })
 
-local QFsetValidPaths = function (l1, l2)
+local QFsetValidPaths = function(l1, l2)
   -- No range provided: do nothing or default to whole file
   -- other option: if selection off (+ start cursor == end cursor),
   -- default to whole file
@@ -367,8 +367,8 @@ local QFsetValidPaths = function (l1, l2)
   assert(l2 ~= 0)
   local lines = vim.fn.getline(l1, l2)
   for i, l in ipairs(lines) do
-    if (not vim.uv.fs_stat(l)) then
-      vim.print(i, relpath, "not existing")
+    if not vim.uv.fs_stat(l) then
+      vim.print(i, relpath, 'not existing')
       return
     end
   end
@@ -385,9 +385,9 @@ local QFsetValidPaths = function (l1, l2)
       text = l,
     })
   end
-  vim.fn.setqflist(items, "r")
+  vim.fn.setqflist(items, 'r')
 end
-add_cmd('QFsetValidPaths', function(opts) QFsetValidPaths(opts.line1, opts.line2) end, { range=true, desc = '\'<,\'>QFsetValidPaths5,12QFsetValidPaths,7QFsetValidPaths' })
+add_cmd('QFsetValidPaths', function(opts) QFsetValidPaths(opts.line1, opts.line2) end, { range = true, desc = "'<,'>QFsetValidPaths5,12QFsetValidPaths,7QFsetValidPaths" })
 
 ---- Scripting ----
 -- copy path under cursor: yiW
@@ -475,13 +475,11 @@ add_cmd('ShDate', function() utils.printOrReplaceOsDate("") end, { range=true })
 -- nothing portable for
 add_cmd('MkdirPa', function(ctx)
   local path = ctx.fargs[1]
-  local basename = vim.fn.fnamemodify(path, ":h")
-  vim.fn.mkdir(basename, "p")
-  if basename ~= path then
-    vim.cmd.edit(path)
-  end
+  local basename = vim.fn.fnamemodify(path, ':h')
+  vim.fn.mkdir(basename, 'p')
+  if basename ~= path then vim.cmd.edit(path) end
   -- vim.cmd.write()
-end, {nargs = 1})
+end, { nargs = 1 })
 
 --==zig
 -- Retag only local files with https://github.com/gpanders/ztags
@@ -525,8 +523,8 @@ end, {nargs = 1})
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
   local obj = vim.system({ 'fd', '.', '-e', 'zig', 'src' }, { text = true }):wait()
-  vim.system({'ztags', '-a', '-r', unpack(vim.split(obj.stdout, '\n',{ plain=true }))}, { text = true }, function(obj)
-    if (obj.stderr ~= "") then print(obj.stderr) end
+  vim.system({ 'ztags', '-a', '-r', unpack(vim.split(obj.stdout, '\n', { plain = true })) }, { text = true }, function(obj)
+    if obj.stderr ~= '' then print(obj.stderr) end
   end)
   -- end
 end, {})
@@ -536,15 +534,15 @@ end, {})
 local git_show_remote_upstream_else_origin = function(cwd)
   -- git remote show origin
   -- git config --get remote.origin.url
-  local remote_obj = vim.system({'git', 'config', '--get', 'remote.upstream.url'}, { text = true }):wait()
-  if remote_obj.code ~= 0 or remote_obj.stderr ~= "" then return '' end
+  local remote_obj = vim.system({ 'git', 'config', '--get', 'remote.upstream.url' }, { text = true }):wait()
+  if remote_obj.code ~= 0 or remote_obj.stderr ~= '' then return '' end
   local remote = vim.split(remote_obj.stdout, '\n')
   if #remote == 1 and remote[1] ~= '' then
     local col_i = string.find(remote[1], ':')
     return remote[1]:sub(5, col_i - 1) .. '/' .. remote[1]:sub(col_i + 1, -5)
   end
-  remote_obj = vim.system({'git', 'config', '--get', 'remote.origin.url'}, {text = true}):wait()
-  if remote_obj.code ~= 0 or remote_obj.stderr ~= "" then return '' end
+  remote_obj = vim.system({ 'git', 'config', '--get', 'remote.origin.url' }, { text = true }):wait()
+  if remote_obj.code ~= 0 or remote_obj.stderr ~= '' then return '' end
   remote = vim.split(remote_obj.stdout, '\n')
   if #remote == 1 and remote[1] ~= '' then return remote[1]:sub(5, -1):sub(1, -5) end
   return ''
@@ -651,11 +649,8 @@ end
 --   print(vim.inspect.inspect(tests_run:result()))
 -- end, {})
 add_cmd('CheckFmt', function()
-
   local obj = vim.system({ 'stylua', '--color', 'Never', '--check' }, { text = true }):wait()
-  if obj.code ~= 0 then
-    vim.print(obj.stdout)
-  end
+  if obj.code ~= 0 then vim.print(obj.stdout) end
 end, {})
 add_cmd('FmtThis', function()
   local obj = vim.system({ 'stylua', '--color', 'Never' }, { text = true }):wait()

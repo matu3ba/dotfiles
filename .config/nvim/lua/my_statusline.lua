@@ -110,9 +110,7 @@ end
 local function get_path(cwd)
   local bufname = vim.api.nvim_buf_get_name(0)
   local rel_path = vim.fs.relpath(cwd, bufname, {})
-  if (rel_path == nil) then
-    rel_path = bufname
-  end
+  if rel_path == nil then rel_path = bufname end
   return rel_path
 end
 

@@ -50,8 +50,11 @@ pub fn build(b: *std.Build) !void {
     // compiler and linter error "unsafe buffer access" horrible to use.
     // clang-tidy version in CI too old, so disable it to prevent errors
     // and use local clang-tidy without "unsafe buffer access" errors.
-    if (!no_opt_deps) lintC(b, run_step);
-    if (!no_opt_deps) lintCpp(b, run_step);
+
+    // Linter errors are too verbose or config wrongly escaped.
+    // TODO provide generated config file as input instead.
+    // if (!no_opt_deps) lintC(b, run_step);
+    // if (!no_opt_deps) lintCpp(b, run_step);
     if (!no_opt_deps) lintLua(b, run_step);
     if (!no_opt_deps) lintSh(b, run_step);
     lintZig(b, run_step);
@@ -100,7 +103,8 @@ fn lintC(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleCFiles[0..]) |cfile| {
         // clang-tidy clang-tidy_flags file -- clang_flags
         // somehow "--warnings-as-errors='*'" is incorrectly escaped as "--warnings-as-errors='*'"
-        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet", "--warnings-as-errors=*" });
+        // run_clang_tidy_check also works with "-config={Checks: '*'}"
+        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet", "--checks=*", "--warnings-as-errors=*" });
         run_clang_tidy_check.addArg(cfile);
         run_clang_tidy_check.addArg("--");
         run_clang_tidy_check.addArgs(&c99_flags);
@@ -213,10 +217,12 @@ fn fmtCpp(b: *std.Build, run_step: *std.Build.Step) void {
     }
 }
 
+// see also lintC
 fn lintCpp(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleCppFiles[0..]) |cfile| {
         // clang-tidy clang-tidy_flags file -- clang_flags
-        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet" });
+        // run_clang_tidy_check also works with "-config={Checks: '*'}"
+        const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet", "--checks=*", "--warnings-as-errors=*" });
         run_clang_tidy_check.addArg(cfile);
         run_clang_tidy_check.addArg("--");
         run_clang_tidy_check.addArgs(&cpp14_flags);
@@ -371,7 +377,8 @@ fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
 }
 
 // latexmk -pvc -pdflatex='lualatex --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
-// latexmk -interaction=batchmode -Werror -pdflatex='lualatex -halt-on-error --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
+// latexmk -interaction=batchmode   -Werror -pdflatex='lualatex -halt-on-error --file-line-error --synctex=1' -pdf -outdir=build src/smartcv_example.tex
+// alternative: -interaction=nonstopmode
 // mkdir -p build/ && lualatex --file-line-error --synctex=1 --output-directory=build src/smartcv_example.tex
 fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleTexFiles[0..]) |texfile| {
@@ -577,7 +584,6 @@ const SingleLuaFiles = [_][]const u8{
     ".config/nvim/lua/dap/my_dap.lua",
     ".config/nvim/lua/dap/my_dap_pickers.lua",
     ".config/nvim/lua/my_aerial.lua",
-    ".config/nvim/lua/my_buf.lua",
     ".config/nvim/lua/my_cmds.lua",
     ".config/nvim/lua/my_dap.lua",
     ".config/nvim/lua/my_fmt.lua",
@@ -593,9 +599,7 @@ const SingleLuaFiles = [_][]const u8{
     ".config/nvim/lua/my_oil.lua",
     ".config/nvim/lua/my_opts.lua",
     ".config/nvim/lua/my_over.lua",
-    ".config/nvim/lua/my_packer.lua",
     ".config/nvim/lua/my_plugins.lua",
-    ".config/nvim/lua/my_rust.lua",
     ".config/nvim/lua/my_statusline.lua",
     ".config/nvim/lua/my_surround.lua",
     ".config/nvim/lua/my_telesc.lua",

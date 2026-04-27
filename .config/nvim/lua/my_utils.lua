@@ -127,10 +127,10 @@ end
 ---@param opts? string Input path.
 ---@return string Normalized, (if cwd is root path) relative (to cwd) path.
 M.pathNormRel = function(cwd, path, opts)
-  if (opts == nil) then opts = {expand_env=false} end
+  if opts == nil then opts = { expand_env = false } end
   local normalized_pa = vim.fs.normalize(path, opts)
   local relpath = vim.fs.relpath(cwd, normalized_pa, {})
-  if (relpath == nil) then relpath = normalized_pa; end
+  if relpath == nil then relpath = normalized_pa end
   return relpath
 end
 
