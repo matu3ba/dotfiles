@@ -42,12 +42,41 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { nixpkgs, nixos-wsl, ... }:
   let
     sharedModule = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [ neovim git ];
+      environment.systemPackages = with pkgs; [ neovim git docker-compose ];
+      # podman needs /etc/subuid, /etc/subgid
+      environment.extraInit = ''
+        if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
+          export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+        fi
+      ''; # docker-compose for $USER
+
+      virtualisation = {
+        containers.enable = true;
+        containers.storage.settings = {
+          storage = {
+            driver = "overlay";
+            runroot = "/run/containers/storage";
+            graphroot = "/var/lib/containers/storage";
+            rootless_storage_path = "/tmp/containers-$USER";
+            options.overlay.mountopt = "nodev,metacopy=on";
+          };
+        };
+        oci-containers.backend = "podman";
+        podman = {
+          enable = true;
+          dockerCompat = true;
+          defaultNetwork.settings.dns_enabled = true;
+        };
+      }; # podman via docker-compose for $USER
+
+
       documentation.enable = true;
 
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
