@@ -1,0 +1,56 @@
+https://infosecwriteups.com/container-escape-techniques-breaking-out-of-the-digital-jail-ad06962c5292
+* if possible: run containers as user
+https://dev.to/kanywst/kubernetes-deep-dive-oci-runtime-vs-cri-4o2n
+* TODO complete summary on structure + runtime edge cases
+https://www.paloaltonetworks.com/cyberpedia/kubernetes-security ?
+https://medium.com/@kankojoseph/from-containers-to-host-privilege-escalation-techniques-in-docker-487fe2124b8e container analysis?
+https://unit42.paloaltonetworks.com/container-escape-techniques/ ?
+https://infosecwriteups.com/container-escape-techniques-breaking-out-of-the-digital-jail-ad06962c5292 ?
+
+Docker Hub
+Docker Compose
+Docker Swarm
+?
+
+
+==basic_structure
+
+--
+OCI runtime
+--
+CRI runtime
+--
+Kernel
+
+more secure OCI (open container initiative) compatible runtimes than docker
+* podman (go based CLI frontend managing multiple things)
+  - OCI runtime: runc (used previously crun)
+* docker swarm
+* rancher desktop
+* heroku
+* lxc
+* k8 (dropped direct docker support)
+
+runc (The standard)
+youki (Written in Rust)
+gVisor (Sandbox)
+Kata Containers (VM-based)
+runwasi (WebAssembly)
+Kuasar (Multi-sandbox)
+
+common k8 OCI runtimes [CRI as interface to OCI compliant]
+* containerd
+* CRI-O
+* Docker Engine
+* Mirantis Container Runtime
+
+==comparison
+
+"An Empirical Analysis of Common OCI Runtimes' Performance Isolation Capabilities" by Volpert et al. [2024]
+* podman (before using runc)
+* kata
+* gvisor
+
+OCI runtime performance comparison
+
+OCI runtime security comparison

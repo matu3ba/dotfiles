@@ -260,6 +260,32 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # see section ==fd-find for piping to sed
 
 #==find
+# GNU find -H|L|P [-D debugopts] [-Olevel] [staring-point..] [expression]
+#  with symbolic link handling -P -L -H
+#   debugopts: exec|opt|rates|search|stat|tree|all|help
+#   Olevel: 0|1|2|3
+#   expression: Tests|Actions|GlobalOpts|PositionalOpts|Operators
+#     Tests +n|-n|n|-anewer ref|atime|cmin|cnewer|ctime|empty|executable|fale|fstype|gid|group|
+#       ilname|iname|inum|ipath|iregex|iwholename|links|lname|mmin|mtime|name pattern|newer ref|
+#       newerXY ref|nogroup|nouser|path|perm -mode|perm /mode|perm +mode|readable|regex pattern|
+#       samefile name|size n[cwbkMG]|true|type ty[bcdPflsD]|uid n|used n|user uname|wholename pattern|
+#       writable|xtype c|context pattern
+#     Actions -delete|exec cmd ;|exec command {} +|execdir command ;|execdir command {} +|
+#       fls file|fprint file|fprint0 file|fprintf file format|ls|ok cmd ;| okdir cmd|print True;|
+#       print0|printf fmt[\a\b\c\f\n\r\t\v\0\\,\NNN,%%,%a,%Ak,%b,%Bk,%c,%Ck, (too long to summarize)|
+#       prune|quit
+#     GlobalOpts -d|depth|files0-from file|help|ignore_readdir_race|maxdepth lvls
+#       mindepth lvls|mount|noignore_readdir_race|noleaf|verison|xdev
+#     PositionalOpts -daystart|follow|regextype ty|warn|nowarn
+#     Operators ( expr ) , ! expr , -not expr , expr1 expr 2 , epxr1 -a expr 2,
+#       expr1 -and expr2 , epxr1 -o expr2 , expr1 -or expr2
+#       and epxr1 , epxr2
+#     unusual filenames
+#     -print0|fprint0 exact filename
+#     -ls|fls unusual chars are escaped
+#     -printf|fprintf directive dependent result based on LC_CTYPE [very bad to use]
+#     -print|fprint   same behavior as printf
+# find ./ -name '*.tf'
 # find ./ -maxdepth 1 -type f -exec SED_PATTERN {} \;
 # rm files with exec bit: find ./ -type f -perm /1 -exec rm {} \;
 # replace occurences with word

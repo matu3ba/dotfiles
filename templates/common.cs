@@ -19,6 +19,11 @@
 // * missing await runtime bug compiler only warns, not always picked up as warning
 // * subsequent signals and events can be missed due to some missing special io cases
 
+// Best Practices
+//   https://www.youtube.com/@zoran-horvat
+// News
+//   https://www.youtube.com/@nickchapsas
+
 //==performance
 // 8ns call overhead to ffi C code
 
@@ -52,9 +57,34 @@
 
 // https://learn.microsoft.com/de-de/dotnet/framework/interop/how-to-implement-callback-functions
 
+//==nuget
 // symbol packages (.snupkg) https://learn.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg
 // debugging nuget libs https://www.damirscorner.com/blog/posts/20250411-DebuggingLibrariesFromNuGet.html
+// .nuspec: package spec something along
+//   <?xml version="1.0"?>
+//   <package >
+//     <metadata>
+//       <id>Package</id>
+//       <version>1.0.0</version>
+//       <authors>Your username</authors>
+//       <owners>Your username</owners>
+//       <license type="expression">MIT</license>
+//       <!-- <icon>icon.png</icon> -->
+//       <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+//       <requireLicenseAcceptance>false</requireLicenseAcceptance>
+//       <description>Package description</description>
+//       <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+//       <copyright>Copyright 2022</copyright>
+//       <tags>Tag1 Tag2</tags>
+//     </metadata>
+//   </package>
+// .nupkg: nuget package
+// Updating package (can overwrite old version): nuget push <package_file> -Source <source_name>
 
+// finding out conflict reasons: dotnet nuget why
+
+//==dotnet
+// Updating package (can overwrite old version): dotnet nuget push <package_file> --source <source_name>
 
 // https://csharperimage.jeremylikness.com/2017/07/build-and-deploy-net-core-web-app-from.html
 // https://andrewlock.net/building-net-framework-asp-net-core-apps-on-linux-using-mono-and-the-net-cli/

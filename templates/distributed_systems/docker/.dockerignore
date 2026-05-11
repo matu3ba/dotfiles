@@ -1,0 +1,21 @@
+#==General
+# https://docs.docker.com/reference/dockerfile#dockerignore-file
+# logs, results, tmp
+# cache/intermediates
+# local secrets, dev files
+# platform
+# build
+# language
+
+#==Build
+.git
+.cache
+# ignore md files besides READMEs
+*.md
+!README*.md
+# include Dockerfile in Docker image, unless it contains sensitive information.
+!/Dockerfile
+
+#==Run
+/docker-compose.yml
+

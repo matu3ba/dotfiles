@@ -7,9 +7,11 @@
 # fetch = +refs/pull/*/head:refs/remotes/upstream/pr/*
 # gh-resolved = base
 
-# git bare: git clone --bare url reponame
-# git switch master
-# git worktree add master glibc musl
+#==worktree
+# git clone --bare "url" .bare
+##make sure git knows where the gitdir is
+# echo "gitdir: ./.bare" > .git
+# git worktree add master|main
 
 #restore specific file
 #git restore --source=COMMITHASH filename

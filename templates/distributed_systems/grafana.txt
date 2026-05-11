@@ -38,12 +38,15 @@ loki logql LogQL
 https://grafana.com/docs/loki/latest/query/log_queries/
 https://grafana.com/docs/loki/latest/query/bp-query/
 http://<loki-instance>/loki/api/v1/query_range?query={job="app"}&start=1633017600000000000&end=1633104000000000000
+{service_name=~".+"}
 {service_name="SERVICE_NAME"}
 {service_name="SERVICE_NAME"} | trace_id!=""
-{service_name="SERVICE_NAME"} | trace_id!="" | deployment.environment = "live" TODO double check
+{service_name="SERVICE_NAME"} | trace_id!="" | deployment.environment = "live"
+{service_name="SERVICE_NAME"} |~ ".*GET.*" |= "healthcheck"
 
 tempo traceql TraceQL
 https://grafana.com/docs/tempo/latest/traceql/construct-traceql-queries/#construct-a-traceql-query
+{ resource.deployment.environment = "dev" }
 { resource.deployment.environment = "live" }
 { trace:id = "ffffffffffffffffffffffffffffffff" }
 { resource.deployment.environment = "live" && resource.service.name = "SERVICE_NAME" && trace:id = "ffffffffffffffffffffffffffffffff" }

@@ -14,9 +14,6 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{md,smd}]
-trim_trailing_whitespace = false
-
 [*.{zig,zon}]
 indent_size = 4
 

@@ -1,7 +1,7 @@
 # dotfiles
 
 Actions are performed according to structure of dotfiles, .gitignore, ignorefiles,
-win_src_dest, nixos/configuration.nix and hardware-configuration.nix
+`win_src_dest`, nixos/configuration.nix and hardware-configuration.nix
 
 - `checkHealth.sh` shows status of files
 - `fileBackup.sh` create backup to folder `$HOME/back/TIMESTAMP_backconfig` with timestamp if not symlink
@@ -10,7 +10,12 @@ win_src_dest, nixos/configuration.nix and hardware-configuration.nix
 - `symlinkInstall.sh` create symlinks and also create folders with symlinks
 - `symlinkUninstall.sh` remove symlinks
 - `fileOverwrite.ps1` overwrite configurations based on win_src_dest on Windows
-- TODO: usage on NixOS
+- `flake.nix` NixOS setup/usage wsl/station (`x86_64-linux`)
+  * core usage pain points
+    - nix language (implementation) bad designed: error msgs bad, slow
+    - no authoritative docs on (use case based) code creation design, debugging, core patterns
+      * blog posts tend to contain bad patterns and no functional minimal code, TODO blog post
+    - 2GB container install size, on trimming/potential breakage ~200-300 MB less
 
 ### Dependencies
 

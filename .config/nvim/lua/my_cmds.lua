@@ -314,6 +314,7 @@ add_cmd('HSend', [[:cfdo lua require("harpoon.mark").add_file()]], {})
 
 --==quickfix
 -- nvim -q <(rg --vimgrep "BufReadPre") '+copen'
+-- :gr -r 'foo' *
 -- alternative: :grep /pattern/ **
 -- :cdo s/Before/After/
 -- nvim -q
@@ -332,6 +333,10 @@ local setPlusAnd0Register = function(content)
   -- if vim.fn.hasclip
   vim.fn.setreg('+', content)
 end
+
+-- TODO https://www.reddit.com/r/neovim/comments/1p5jeil/how_to_surround_visual_selection_in_quotes_or/
+-- auxiliary function to deal with selection
+-- better: :h operatorfunc, :h g@
 
 -- Usage
 --:'<,'>QFsetRange
