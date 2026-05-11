@@ -1,10 +1,11 @@
-#==setup for user name
+#==wsl
+#====wsl_setup for user name
 # 1 sudo nixos-rebuild boot --flake .#wsl
 # 2 wsl -t NixOS
 # 3 wsl -d NixOS --user root exit
 # 4 wsl -t NixOS
 # 5 user was setup, start NixOS: wsl -s NixOS
-#==usage
+#====wsl_usage
 # install: sudo nixos-rebuild switch --flake .#wsl
 # update: nix flake update
 # * if necessary: nix-channel --update
@@ -12,6 +13,12 @@
 # * if necessary: wsl -d NixOS.Dev --user root
 # pin: update flake.lock
 # check: nix flake check
+#==station
+#====station_setup
+# idea generate hardware setup with detection + how to store it properly
+#====station_usage
+# sudo nixos-rebuild switch --flake .#station
+# see ====wsl_usage
 
 #==keep_small_store_debug
 # du -sh /nix/store/* | sort -h
@@ -44,12 +51,16 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # nix-index-database.url = "github:nix-community/nix-index-database"; # locate pkg in nixpkgs
+    # nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    # inputs.nur.url = "github:nix-community/NUR";
   };
 
-  outputs = { nixpkgs, nixos-wsl, ... }:
+  outputs = { nixpkgs, nixos-wsl, home-manager,... }:
   let
     sharedModule = { pkgs, ... }: {
-      environment.systemPackages = with pkgs; [ neovim git docker-compose ];
+      # packages maven javaPackages.compiler.openjdk17
+      environment.systemPackages = with pkgs; [ neovim git docker-compose opentofu ];
       # podman needs /etc/subuid, /etc/subgid
       environment.extraInit = ''
         if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
@@ -76,7 +87,6 @@
         };
       }; # podman via docker-compose for $USER
 
-
       documentation.enable = true;
 
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -86,14 +96,18 @@
         options = "--delete-older-than 1w";
       };
       nix.settings.auto-optimise-store = true;
+
     };
+    # sharedHomeModule = { pkgs, ... }: {
+    #   # TODO shared home module used as
+    # };
   in {
     nixosConfigurations = {
       wsl = nixpkgs.lib.nixosSystem {
         modules = [
           sharedModule
           nixos-wsl.nixosModules.wsl
-          {
+          ({ config, lib, pkgs, ... }: {
             nixpkgs.hostPlatform = "x86_64-linux";
             system.stateVersion = "25.11";
 
@@ -101,6 +115,24 @@
             boot.isContainer = true;
             networking.networkmanager.enable = false;
             services.openssh.enable = false;
+
+            programs.fish.enable = true;
+            environment.pathsToLink = ["/share/fish"];
+            environment.shells = [pkgs.fish];
+            environment.enableAllTerminfo = true;
+
+            users.users."jan-philipp.hafer" = {
+              isNormalUser = true;
+              shell = pkgs.fish;
+              extraGroups = [
+                "wheel"
+                "docker"
+              ];
+              # hashedPassword = "";
+              # openssh.authorizedKeys.keys = [
+              #   "ssh-rsa ..."
+              # ]; # ssh public key
+            };
 
             wsl.enable = true;
             wsl.defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
@@ -124,7 +156,42 @@
             wsl.wslConf.network.generateResolvConf = true;
             wsl.wslConf.network.hostname = "nixos_wsl";
             wsl.wslConf.user.default = "jan-philipp.hafer";
-          }
+
+          })
+          home-manager.nixosModules.home-manager
+          ({ config, lib, pkgs, ... }: {
+            # wrong, must be inputs (stateless eval)
+            # username = "jan-philipp.hafer";
+            # hostname = "nixos_wsl";
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.sharedModules = [];
+            # import ./home-manager/home.nix; evaluates purely in home-manager/, so
+            # home.file > "../file" is broken
+            # home-manager.users."jan-philipp.hafer" = import ./home-manager/home.nix;
+            home-manager.users."jan-philipp.hafer" = {
+              home.username = "jan-philipp.hafer";
+              home.homeDirectory = "/home/jan-philipp.hafer";
+              home.stateVersion = "25.11";
+
+              home.file = {
+                "./.config/" = {
+                    source = ./.config;
+                    recursive = true;
+                };
+                "./.bashrc".source = ./.bashrc;
+              };
+
+              home.sessionVariables = {
+                EDITOR = "nvim";
+              };
+
+              home.packages = [
+                pkgs.fish
+              ];
+            };
+            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+          })
         ];
       };
       station = nixpkgs.lib.nixosSystem {
