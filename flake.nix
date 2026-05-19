@@ -1,10 +1,13 @@
 #==wsl
-#====wsl_setup for user name
+#====wsl_setup nixos.wsl to usable for user name
+# 0 wsl --install --no-distribution && wsl --install --from-file nixos.wsl && wsl -d NixOS
 # 1 sudo nixos-rebuild boot --flake .#wsl
 # 2 wsl -t NixOS
 # 3 wsl -d NixOS --user root exit
 # 4 wsl -t NixOS
 # 5 user was setup, start NixOS: wsl -s NixOS
+#====wsl_setup tarball to usable
+# sudo nix run .#nixosConfigurations.wsl.config.system.build.tarballBuilder
 #====wsl_usage
 # install: sudo nixos-rebuild switch --flake .#wsl
 # update: nix flake update
@@ -20,6 +23,9 @@
 # sudo nixos-rebuild switch --flake .#station
 # see ====wsl_usage
 
+#==generators
+# nix run github:nix-community/nixos-generators -- --format qcow --flake .#vm1
+
 #==keep_small_store_debug
 # du -sh /nix/store/* | sort -h
 # nix path-info -Sh /run/current-system
@@ -34,6 +40,9 @@
 ## why-depends does not explain /nix/store entries for flakes/non-nixpkg registry entry
 # nix why-depends /run/current-system $(nix-store --query --requisites /run/current-system | grep gcc)
 
+# nix-store --delete --ignore-liveness result/ && rm result
+# nix-store --query --roots result/
+
 # related: nix show-derivation --recursive .#wsl
 # nix show-derivation STORE_PATH_gcc | jq '.[].outputs'
 
@@ -42,6 +51,9 @@
 # last resort debug: grep -R "STORE_PATH" /nix/store/*.drv
 #==hot_fix
 # nix-store --verify --check-contents --repair
+
+#==search
+# https://search.nixos.org/packages better: nix search nixpkgs fd
 
 {
   description = "Smallish NixOS-WSL flake";
@@ -60,6 +72,7 @@
   let
     sharedModule = { pkgs, ... }: {
       # packages maven javaPackages.compiler.openjdk17
+      # podman-compose not yet sufficiently compatible
       environment.systemPackages = with pkgs; [ neovim git docker-compose opentofu ];
       # podman needs /etc/subuid, /etc/subgid
       environment.extraInit = ''
@@ -121,6 +134,7 @@
             environment.shells = [pkgs.fish];
             environment.enableAllTerminfo = true;
 
+            networking.hostName = "nixos_wsl";
             users.users."jan-philipp.hafer" = {
               isNormalUser = true;
               shell = pkgs.fish;
@@ -185,9 +199,22 @@
               home.sessionVariables = {
                 EDITOR = "nvim";
               };
+              # export GPG_TTY=$(tty)
+              # set -gx GPG_TTY "$(tty)"
+              programs.gpg.enable = true;
+              services.gpg-agent = {
+                defaultCacheTtl = 34560000;
+                enable = true;
+                enableScDaemon = false;
+                enableSshSupport = true;
+                maxCacheTtl = 34560000;
+                pinentry.package = pkgs.pinentry-tty;
+              };
 
               home.packages = [
+                pkgs.fd
                 pkgs.fish
+                pkgs.ripgrep
               ];
             };
             # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
@@ -236,7 +263,7 @@
               '';
             };
             fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
-            networking.hostName = "nixos_station"; # Define your hostname.
+            networking.hostName = "nixos_station";
             networking.wireless.enable = true;  # wpa_supplicant
             time.timeZone = "Europe/Berlin";
 
