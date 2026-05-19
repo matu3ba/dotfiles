@@ -1,5 +1,17 @@
 # Flake Guide based on intuition and (non-)design insights
 
+Bare setup tutorials or guides have no recommendations or routines for quick
+setup of "standard tooling" to edit flakes or nix files.
+Therefore this guide aims to demonstrate initial experience without such tooling
+from a clean setup besides reasonable programming knowledge of functional concepts.
+This hopefully shows that the initial default experience is not great based on
+documentation/specification (guides and tutorials) and implementation
+(debugging output/selection of debugging tooling and methods).
+
+On personal interactions with the online communities I have had plenty of
+similar experiences (even though people were generally nice), but that may just
+have been bad luck or community place selection.
+
 1. Flakes ought to be pure, so using input like the arch and host is not
 recommended.
 
@@ -10,7 +22,7 @@ recommended.
     * nixpkgs.legacyPackages.${system}
     * widely used import/ hack
       let
-        system = "x86_64-linux";
+        system = "`x86_64-linux`";
         pkgs = import nixpkgs { inherit system; };
       in {
         ..
@@ -42,7 +54,9 @@ Difference between 2.4 and 2.5 ?
 
 3. Best practice for shared module or when to choose other abstraction for cross-arch/cross-os flake
     * Dont overthink it, simply make a sharedModule for shared
-      configuration
+      configuration.
+    * There are too many guides without design rational for evaluation performance,
+      debugging experience and complexity reduction.
       outputs = { nixpkgs, nixos-wsl, ... }:
       let
         sharedModule = { pkgs, ... }: {
