@@ -9,16 +9,28 @@ gpg --full-gen-key --expert
 // YYYY-MM-DD being expiration date
 // based on https://musigma.blog/2021/05/09/gpg-ssh-ed25519.html
 gpg --quick-generate-key \
-    'Your_Name <your.email@example.com> (optional_comment)' \
+    'Name Mail (optional_comment)' \
     ed25519 cert YYYY-MM-DD
+gpg --quick-generate-key 'Name Mail (optional_comment)' ed25519 cert YYYY-MM-DD
 // save keyfingerprint to env var without spaces (it says key-Fingerprint on the output)
-
+// should also work with spaces
 
 gpg --list-keys
+* gpg -k
 gpg --list-secret-keys --keyid-format LONG
+* gpg -K
 gpg --list-keys --with-subkey-fingerprints --keyid-format LONG
 gpg --list-secret-keys --with-subkey-fingerprints --keyid-format LONG
 
+gpg -K
+
+sec   ed25519/0xsec_short_hash create_date [SC] [expires: expire_date]
+      Key fingerprint = [key fingerprint 10 blocks a 4 digits]
+uid                   [ultimate] name mail
+ssb   cv25519/0xpub_short_hash create_date [E]
+
+keyfingerprint="[key fingerprint 10 blocks a 4 digits]"
+set -lx keyfingerprint
 export KEYFP=keyfingerprint
 fish: set KEYFP 'keyfingerprint'
 // subkeys for sign, encrypt, authenticate
@@ -104,9 +116,15 @@ gpg --local-user F6D13162F2BEF65838F6C8E6BF3B5AFCD4480E60 --sign-key 31EFB482E96
 gpg -a --gen-revoke KEYID > KEYID.rev
 // make key unusable
 gpg --import KEYID.rev
+// default key server
+gpgconf --list-options gpg
+// search keys
+gpg --keyserver SERVER --search-keys STRING
 // send keys
 gpg --keyserver hkp://pgp.mit.edu --send-keys KEYID KEYID2
 gpg --keyserver hkp://pgp.surfnet.nl --send-keys KEYID KEYID2
+// receive keys
+gpg --keyserver SERVER --recv-key KEYID
 // backup keypair
 // pub key
 gpg --export --armor KEYID > shortKEYID.pub
@@ -140,4 +158,110 @@ gpg --verify llvm_release.tar.gz.sig
 https://unix.stackexchange.com/questions/372879/import-my-ssh-key-as-gpg-sub-key-to-use-for-ssh-authentication
 
 commands taken from https://gock.net/blog/2020/gpg-cheat-sheet
-TODO
+different home directory
+export GNUPGHOME=/mnt/c/Users/$USER/AppData/Roaming/gnupg/
+gpg --homedir ~/.gnupg-alternate --list-keys
+
+verbose fingerprint options
+gpg --with-subkey-fingerprint keys.asc
+gpg -v keys.asc
+
+sign|unsign key
+1
+gpg --fingerprint KEYID
+gpg --sign-key KEYID
+2
+gpg --edit-key KEYID
+gpg>fpr
+gpg>sign|delsig
+gpg>save
+
+sign key and local sign key
+gpg -a --export KEYID > signed-key.asc
+gpg --lsign-key KEYID
+
+revoke published key signature + publish revocation cert / export key with revoked signature
+gpg --edit-key KEYID
+gpg>revsig
+gpg>save
+gpg --send-key KEYID / gpg -a --export KEYID > exported-key.asc
+
+add uid
+gpg --edit-key KEYID
+gpg>adduid
+(enter details as prompted)
+gpg>list
+gpg>save
+gpg>quit
+
+revoke cert
+gpg -a --gen-revoke KEYID > revoke.asc
+
+// export pub, encrypted private keys, trustdb
+gpg-import-and-export-instructions.md
+gpg -a --export >mypubkeys.asc
+alternative: --armor and MAIL_ADDRESS.gpg
+gpg -a --export-secret-keys >myprivatekeys.asc
+gpg --export-ownertrust >otrust.txt
+// import private, pub keys, trustdb
+gpg --import myprivatekeys.asc
+gpg --import mypubkeys.asc
+gpg -K
+gpg -k
+gpg --import-ownertrust otrust.txt
+
+// export public, secret keyring, trustdb
+cp ~/.gnupg/pubring.gpg /path/to/backups/
+cp ~/.gnupg/secring.gpg /path/to/backups/
+cp ~/.gnupg/trustdb.gpg /path/to/backups/
+# or, instead of backing up trustdb
+gpg --export-ownertrust > otrust-gpg.txt
+
+// import public, secret keyring, trustdb
+cp /path/to/backups/*.gpg ~/.gnupg/
+# or, if you exported the ownertrust
+gpg --import-ownertrust otrust-gpg.txt
+
+==encryption
+encrypt file
+gpg --output KWBDP.txt.gpg --encrypt --recipient MAIL KWBDP.txt
+gpg -e -r KEYID|MAIL KWBDP.txt -o KWBDP.txt.gpg
+also sign
+gpg -s -e -r KEYID|MAIL -o KWBDP.txt.gpg KWBDP.txt
+disable compression (large already compressed files)
+gpg -s -e -z 0 -r KEYID|MAIL -o KWBDP.txt.gpg KWBDP.txt
+stdin also works
+cat "my secret message" | gpg -e -r KEYID > message.txt.gpg
+encrypt using passphrase
+gpg -c file.txt
+
+==signatures
+sign without encryption with detached signature (creates file.txt.asc)
+gpg -a -s file.txt
+gpg --clear-sign file.txt
+gpg --default-key KEYID -a -s file.txt
+verify
+gpg --verify file.txt.asc
+
+==decryption
+list recipients of encrypted file
+gpg --list-only FILE
+decrypt
+gpg -o "$BACKUP_FILE" -d "${BACKUP_FILE}.tar.gz.gpg"
+decrypt with default file name
+gpg -d "${BACKUP_FILE}.tar.gz.gpg"
+
+==batching
+encrypt all jpg in cur dir to 2 recipients, no compression
+find . -maxdepth 1 -type f -name "*.jpg" -exec gpg -z 0 -e -r KEY1 -r KEY2 -o {}.gpg {} \;
+decrypt gpg files in cur dir
+gpg --decrypt-files *.gpg
+scripting decrypt gpg files in cur dir
+#!/usr/bin/bash
+read -rsp "Enter passphrase: " PASSPHRASE
+for FILE in *.*.gpg; do
+    echo "Extracting $FILE to ${FILE%.gpg}."
+    echo "$PASSPHRASE" | gpg --passphrase-fd 0 --batch -d --output "${FILE%.gpg}" "$FILE"
+done
+decrypt using passphrase from stdin
+echo "passphrase" | gpg --passphrase-fd 0 --batch -d -o file.txt file.txt.gpg

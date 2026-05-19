@@ -12,6 +12,9 @@ nix-collect-garbage
 #sudo systemctl start nix-daemon.socket
 #sudo systemctl start nix-daemon.service
 
+systemctl --user --all
+systemctl list-unit-files --user --state=enabled
+
 nix shell 'github:nixos/nixpkgs/nixpkgs-unstable#hello'
 echo $PATH
 

@@ -40,6 +40,47 @@
 # Add-Type -AssemblyName System.IO.Compression.FileSystem ;
 # [System.IO.Compression.ZipFile]::ExtractToDirectory("$NEOVIM_TMP_DIR\$zip_target", "$NEOVIM_TMP_DIR\")
 
+# HowToUseCli_Args -array:@("t1","t2") -switch
+function HowToUseCli_Args() {
+ [CmdletBinding()] param (
+  [switch] $switch = $false,
+  [string[]] $array = @()
+ )
+  Write-Output $array
+}
+
+# SHENNANIGAN
+function doNotUse_Write-Host() {
+  Write-Host "Das kommt nicht in test.log an" > test.log
+  1 .. 10 | % {Write-Host $_} | where {$_ -lt 5}
+}
+
+# SHENNANIGAN
+function doNotUse_Write-Output_inFunctionWithReturnInner() {
+  Write-Output "2"
+  Write-Output "1"
+  return 0
+}
+
+function doNotUse_Write-Output_inFunction() {
+  $res = doNotUse_Write-Output_inFunctionWithReturnInner
+  # $res[0]: 2, $res[1]: 1, $res[2]: 0
+  if ($res.Count -ne 1) { echo "bad behavior" } # BAD
+}
+
+function Write-Verbose_inFunctionWithReturnInner() {
+ [CmdletBinding()] param ()
+  Write-Verbose "2"
+  Write-Verbose "1"
+  return 0
+}
+
+function useWrite-Verbose_inFunctionWithReturn() {
+  $res = Write-Verbose_inFunctionWithReturnInner -Verbose
+  # $res[0]: 0
+  if ($res.Count -ne 1) { echo "bad behavior" }
+}
+
 function chaining_and_error_behavior() {
   $errorActionPreference = 'Stop'
   # stopping on error (of cmd1,cmd2,cmd3,..) via ;
@@ -369,9 +410,39 @@ param (
   }
 }
 
-function basic_wixinstaller {
-  # TODO
-}
+# slop A: What is best practice for installing programs on Windows and what is the most performant way to ship versioned code?
+# Best Practice for Installing Programs & Shipping Versioned Code
+# hierachy best to acceptable
+#   WiX Toolset (v4) — Gold standard open-source MSI authoring. Produces .msi/.msix packages, integrates with CI/CD, supports upgrades, rollbacks, and repair. Best for enterprise/on-prem.
+#   MSIX — Modern Windows packaging format. Supports clean installs/uninstalls, delta updates, containerized app execution. Best for Store or Intune distribution.
+#   Inno Setup / NSIS — Lightweight open-source .exe installers. Simpler but less robust for enterprise (no Windows Installer transaction support).
+#   Raw .exe bootstrappers (e.g. WiX Burn) — Useful as a chained installer wrapping .msi packages. Handles prerequisites.
+#   Winget manifest packages — Ship a .yaml manifest to the winget repo; users install via winget install. Zero custom installer needed for simple apps.
+#   Chocolatey / Scoop — Open-source package managers for scripted, repeatable installs. Excellent for dev tooling.
+# Most performant for versioned code shipping: WiX → .msi with a proper UpgradeCode + ProductVersion, combined with a CI pipeline publishing to a Winget or Chocolatey feed.
+
+# What package versioning and introspection does Windows offer?
+# Windows Package Versioning & Introspection
+#   Windows Installer DB (msiexec /query) Installed MSI product version, GUID, upgrade codes
+#   WMI (Win32_Product) Package name, version, vendor — but slow & has side effects
+#   PowerShell Get-Package  Queries PackageManagement providers (MSI, Chocolatey, etc.)
+#   PowerShell Get-AppxPackage  MSIX/UWP app versions
+#   RegistryHKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*  Fast, reliable for all traditional installers
+#   winget list Unified view across MSI, MSIX, and winget sources
+#   wmic product get  Legacy but widely used
+#   Edge cases:Win32_Product triggers an MSI consistency check on query — avoid in production scripts. Prefer the registry or Get-Package.
+
+# Open-Source Security Audit Tooling
+#   installed software
+#     Trivy Scans Windows hosts for CVEs in installed packages (OS + language ecosystems)
+#     OpenSCAP / SCAP Workbench Policy compliance (CIS, STIG benchmarks) for Windows
+#     Wazuh HIDS — file integrity, CVE correlation, registry monitoring
+#     Sysinternals (Autoruns, Sigcheck) Binary signing, persistence, supply-chain checks
+#     Grype CVE scanning of SBOMs and installed package lists
+#     CycloneDX / Syft  SBOM generation from Windows installs for downstream audit
+#   containerized (Windows Containers)
+#     Trivy Scans Windows container images layer-by-layer for CVEs
+#     Grype Alternative image CVE scanner with SBOM input support
 
 function basic_stringops {
   # concat
@@ -825,6 +896,21 @@ function where_pendant() {
   Get-Command Get-Command
 }
 
+function foreach_example() {
+  foreach ($s in $services) {
+      if ($short_uri_path.Contains($s)) { return $true }
+  }
+  return $false
+}
+
+function foreach_shorter() {
+  $short_uri_path = "s1_path"
+  [string[]] $services = ["s1", "s2"]
+  # $args[0] is the current array element passed by the [Predicate[string]]
+  # delegate to the scriptblock, equivalent to $_ in a pipeline.
+  [Array]::Exists($services, [Predicate[string]]{ $short_uri_path.Contains($args[0]) })
+}
+
 
 # https://stackoverflow.com/questions/8609204/union-and-intersection-in-powershell
 function union_intersection() {
@@ -951,7 +1037,7 @@ Function Get-ServiceURIs() {
     # REST
      'https://URI:PORT/ServiceName/some_path/about?dbcheck', # ServiceName
     # WCF
-     'https://URI:PORT/ServiceName/Filename.svc', # ServiceName
+    'https://URI:PORT/ServiceName/Filename.svc' # ServiceName
   )
 }
 
@@ -969,7 +1055,7 @@ Function shakeDownTest() {
 
     [Hashtable] $params = [ordered]@{
         Method = "GET";
-        Uri = $uri,
+        Uri = $uri;
         SkipCertificateCheck = $SkipCertificateCheck;
         UseBasicParsing = $True;
     }

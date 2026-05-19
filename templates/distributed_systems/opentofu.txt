@@ -1,6 +1,7 @@
 ====best_practice
 ====general
 ====install
+====usage
 
 ====best_practice
 https://dixken.de/blog/terraform-best-practices
@@ -177,3 +178,7 @@ provider "scaleway" {
 
 ====install
 winget install --exact --id=OpenTofu.Tofu
+
+====usage
+tofu fmt -check -recursive .
+.tf files must have newline at end of file: \ No newline at end of file

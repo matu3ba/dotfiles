@@ -38,6 +38,8 @@ echo "* text=auto" > .gitattributes
 git add --renormalize .
 git status                  # Show files that will be normalized
 git commit -m "Introduce end-of-line normalization"
+Validate with
+git ls-files --eol
 
 ====diff
 1. Installling a tool to read binary files and output text files
@@ -56,9 +58,37 @@ echo "*.pdf diff=pdf" >> ~/.config/git/attributes
 Command-line feature, explain binary diff (if needed)
 *.doc   diff=astextplain
 
+basic
+--staged/cached
+path limiting
+-- <path> limit comparison to specific file or dir
+--stat show summary of changes
+--name-only show only names of changes files
+--name-status show names and status of changed files
+display control
+-w ignore whitespace changes
+--ignore-space-change ignore chagesn in amount of whitespace
+--color-words show word-level diffs with color
+--word-diff show word-level diffs in different format
+-U<n> show n lines of context (default is 3)
+--no-prefix dont show a/ and b/ prefix in diff output
+filtering
+--binary changes to binary files
+-Sstring add or remove specified string
+-Gregex changes matching regex
+--pickaxe-all using -S or -G show all changes in file, not just matching ones
+format
+--patch-with-stat show patch and stat summary
+--compact-summary show status summary in compact format
+--numstat show stats in matchine-friendly format
+--summary show creation/deletion summary
+
 ====merge
 Diff marker behavior
-TODO
+marker types: zdiff3, diff3
+git checkout -m --conflict=diff3 file
+git checkout -m --conflict=zdiff3 file
+
 #*.sln       merge=binary
 
 Show root commits:
@@ -125,7 +155,7 @@ git clone REMOTE --reference ~/path_to_repo/ --dissociate
 without --dissociate it uses REPO/.git/objects/info/alternates witht he filepath
 
 based on so you think you know git by gitbutler founder
-TODO apply changes to git config
+idea apply changes to git config
 
 Show credential helper via
 git config credential.helper
@@ -150,12 +180,11 @@ git update-git-for-windows
 
 https://paperless.blog/git-bisect-run-techniques
 
-TODO git absorb
 https://github.com/tummychow/git-absorb
 https://github.com/mfontani/los-opinionated-git-tools/blob/master/git-fixup
-
-TODO stacked diffs (since 10 years)
-TODO jujutsu => rebase working?
+stacked diffs (since 10 years)
+jujutsu => rebase working?
+* better use jujuts
 
 official guides
 https://github.com/git/git/blob/08bdfd453584e489d5a551aecbdcb77584e1b958/Documentation/howto/coordinate-embargoed-releases.adoc

@@ -23,8 +23,10 @@ abbr --add -g grv   'git remote -v'
 abbr --add -g gco   'git remote checkout'
 abbr --add -g gc    'git commit -v -S' # sign is faster
 abbr --add -g gcn   'git commit -v' # nosign
-abbr --add -g gcmsg 'git commit -m'
-abbr --add -g gca   'git commit --amend'
+abbr --add -g gca   'git commit -v --amend -S' # sign is faster
+abbr --add -g gcan  'git commit -v --amend' # nosign
+abbr --add -g gcf   'git commit -v --fixup -S' # sign is faster
+abbr --add -g gcfn  'git commit -v --fixup' # nosign
 
 abbr --add -g gd    'git diff'
 abbr --add -g gdn   'git diff --name-only'
@@ -34,7 +36,6 @@ abbr --add -g gds   'git diff --shortstat'
 alias gdu='git ls-files --others --exclude-standard -z | xargs -0 -n 1 git --no-pager diff /dev/null'
 abbr --add -g gdfa  'git diff --name-only --diff-filter=A'
 abbr --add -g gwch  'git whatchanged -p --abbrev-commit --pretty=medium'
-abbr --add -g gcomf 'git commit -v --fixup'
 
 abbr --add -g gf    'git fetch'
 abbr --add -g gfrg  'git ls-files | rg'

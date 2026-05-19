@@ -33,19 +33,34 @@ https://github.com/iovisor/bpftrace
 ==Performance analysis profiler
 "Coz: Causal Profiling"
 https://github.com/plasma-umass/coz
-* TODO explain advantage
+* measures optimization potential: predicts what the impact of optimizing code
+  will have on overall throughput or latency
 
 "Dthreads: efficient deterministic multithreading"
 https://github.com/emeryberger/dthreads
-* usage of processes with ipc instead of threads to enforece determinism
-* TODO explain tradeoffs
+* usage of processes with ipc instead of threads to enforce determinism
+* pretty much erlang with beam etc
 
 https://www.brendangregg.com/blog/2024-03-17/the-return-of-the-frame-pointers.html
-TODO summary on what to use
+on stack walking
+* LBR (Last Branch Record): Intel's hardware feature that was limited to 16 or 32 frames
+* BTS (Branch Trace Store): Another Intel thing
+* AET (Archetectural Event Trace): Another Intel thing. It's a JTAG-based tracer
+  that can trace low-level CPU, BIOS, and device events, and apparently can be
+  used for stack traces as well.
+* DWARF: high overhead since designed for non-realtime use for debuggers
+* eBPF stack walking (SystemTap): brittle due to shipping language pieces
+* ORC (oops rewind capability): Can't ORCs invade user space as well?
+* SFrames (Stack Frames): revision V2 significant VM size overhead and the lack
+  of clear advantages over established alternatives
+* Shadow Stacks (Intel and AMD feature): other blog posts sound like slowdown
+  is currently too high
+* There are much more specialized solutions
+Hence
 * keep frame pointers and pay <1% perf penalty to have proper stack traces for
-  performance analysis
-* LBR?
-* TODO
+  performance analysis (even though there is inaccuracy that needs mitigation)
+* SFrames may become default, once the problems are hashed out (which are currently not)
+* Shadow Stacks may become default, once the problems are hashed out (which are currently not)
 
 ==FAQ
 Linux strace ./callstuff
@@ -68,3 +83,29 @@ requires external state being the same or loss of state at least being recoverab
 * rules out X11
 * makes things hard for curses/graphical tty
 * common in conzainerized workloads (fs private, network commonly lost)
+
+====generalized_tracing_infra
+https://jvns.ca/blog/2017/07/05/linux-tracing-systems/
+https://www.brendangregg.com/blog/2015-07-08/choosing-a-linux-tracer.html
+generators
+- probes: via kernel dynamically changing assembly to get runtime-info
+  * kprobes (kernel), uprobes (user)
+- tracepoints: compile in your program, enable/activate to use, low overhead
+  * USDT probe (great name lol), kernel tracepoints, etc
+collectors
+- ftrace (janky), perf_events (ring buffer memory), eBPF (configurable stuff),
+  sysdig (kernel module+tracing system), systemtap, lttng
+
+1 trace crate (runtime-configurable)
+  * generate USDT probe
+  * emit text log
+  * located within distributed trace
+2 dtrace based on debug info
+3 end to end tracing <-> sw <-> model <-> hw (ASIC/FGPA etc)
+(minimize disabled probe effects, don't lie, minimize enabled probe effecs)
+* no help from kernel?
+* no dynamic binary patching?
+* subscriber and filtering in-process?
+* integration into distributed tracing (like OpenTelemetry)?
+
+modeling spans in dtrace?

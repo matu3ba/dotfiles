@@ -259,7 +259,8 @@ return {
   { 'stevearc/oil.nvim' }, -- my_oil.lua
   { 'stevearc/conform.nvim' }, -- my_fmt.lua
   -- fn overview window with jumps etc
-  { 'stevearc/aerial.nvim' }, -- my_aerial.lua
+  -- deactivate until NixOS 26-05
+  -- { 'stevearc/aerial.nvim' }, -- my_aerial.lua
   { 'nvimtools/hydra.nvim' }, -- my_hydra.lua
 
   -- crs coerce to snake_case

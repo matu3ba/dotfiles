@@ -311,7 +311,7 @@ if status is-interactive
   abbr --add -g rsync_synchronize ' rsync -avzu --delete --progress -h'
   abbr --add -g cpv ' rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress'
 
-  abbr --add -g du ' dust'
+  # abbr --add -g du ' dust'
   abbr --add -g rgv ' rg --vimgrep --color always'
   abbr --add -g rgn ' rg --vimgrep'
   abbr --add -g rgp ' rg -p'
@@ -387,12 +387,24 @@ if status is-interactive
     gpg-connect-agent updatestartuptty /bye >/dev/null
   end
 
-  #function countdown -d "TODO countdown in seconds shown as H:M:S"
-  #  sleep(0.1)
-  #end
-  #function stopwatch -d "TODO stopwatch showing time running H:M:S since start"
-  #  sleep(0.1)
-  #end
+  function countDown -d "countdown in seconds shown as H:M:S"
+      set start (math (date '+%s') + $argv[1])
+      while test $start -ge (date +%s)
+          set time (math $start - (date +%s))
+          printf '%s\r' (date -u -d "@$time" +%H:%M:%S)
+          sleep 0.1
+      end
+  end
+
+  function stopWatch -d "stopwatch showing time running H:M:S since start"
+      set start (date +%s)
+      while true
+          set time (math (date +%s) - $start)
+          printf '%s\r' (date -u -d "@$time" +%H:%M:%S)
+          sleep 0.1
+      end
+  end
+
 end
 
 # SHENNANIGAN

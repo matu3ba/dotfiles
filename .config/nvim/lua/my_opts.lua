@@ -51,31 +51,47 @@ local function load_options()
   -- vim.o.columns/vim.o.lines
   -- clipboard :h clipboard-osc52, :h clipboard-wsl, :h
   -- use Windows Terminal, a terminal supporting osc52 or add logic below
-  if vim.version()['minor'] >= 10 and utils.isRemoteSession() then
+  if utils.isRemoteSession() then
     vim.g.clipboard = {
       name = 'OSC 52',
       copy = {
-        ['+'] = require('vim.clipboard.osc52').copy,
-        ['*'] = require('vim.clipboard.osc52').copy,
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
       },
       paste = {
-        ['+'] = require('vim.clipboard.osc52').paste,
-        ['*'] = require('vim.clipboard.osc52').paste,
+        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
       },
     }
   elseif utils.isWSL() then
-    vim.g.clipboard = {
-      name = 'WslClipboard',
-      copy = {
-        ['+'] = 'clip.exe',
-        ['*'] = 'clip.exe',
-      },
-      paste = {
-        ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-        ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-      },
-      cache_enabled = 0,
-    }
+    if vim.fn.executable("win32yank.exe") then
+      -- use faster clipboard, if available
+      vim.g.clipboard = {
+        name = "win32yank-wsl",
+        copy = {
+          ["+"] = "win32yank.exe -i --crlf",
+          ["*"] = "win32yank.exe -i --crlf",
+        },
+        paste = {
+          ["+"] = "win32yank.exe -o --lf",
+          ["*"] = "win32yank.exe -o --lf",
+        },
+        cache_enabled = true,
+      }
+    else
+      vim.g.clipboard = {
+        name = 'WslClipboard',
+        copy = {
+          ['+'] = 'clip.exe',
+          ['*'] = 'clip.exe',
+        },
+        paste = {
+          ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+          ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+        },
+        cache_enabled = 0,
+      }
+    end
   else
     vim.o.clipboard = 'unnamedplus' -- system clipboard (broken in firefox)
   end

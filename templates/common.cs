@@ -82,9 +82,11 @@
 // Updating package (can overwrite old version): nuget push <package_file> -Source <source_name>
 
 // finding out conflict reasons: dotnet nuget why
+// updating package (can overwrite old version): dotnet nuget push <package_file> --source <source_name>
 
 //==dotnet
-// Updating package (can overwrite old version): dotnet nuget push <package_file> --source <source_name>
+// finding outdated assembly bindings (except for ASP.NET [framework]): dotnet outdated
+// testing .net and .net standard projects: dotnet test
 
 // https://csharperimage.jeremylikness.com/2017/07/build-and-deploy-net-core-web-app-from.html
 // https://andrewlock.net/building-net-framework-asp-net-core-apps-on-linux-using-mono-and-the-net-cli/
@@ -375,3 +377,8 @@ public partial class Activity : IDisposable
 
 namespace AppFramework.AppName {
 }
+
+// assembly bindings consolidation is fast on
+// * .net standard, .net: dotnet outdated
+// assembly bindings consolidation on .net framework
+// * manually deleting bindings and regenerate via

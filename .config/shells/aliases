@@ -291,7 +291,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # replace occurences with word
 # ignore files
 # find . ! -name '*.html' [! -path '*.svn*' ..] -exec grep 'SearchString' {} /dev/null \;
-# list executables by change date, TODO executables
+# list executables by change date
 # find . -type f -executable -printf "%T@ %Tc %p\n" | sort -n
 # list all sections of an elf file sorted by change time
 # find dist/ -exec file {} \; | grep -i elf | cut -d':' -f1- | ls -lt
@@ -350,7 +350,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # 6 template/replace each occurence of {}
 # echo "example.txt" | xargs -I {} mv {} {}.bak
 # 7 search and replace in files
-# grep -rl "TODO" . | xargs sed -i 's/TODO/DONE/g'
+# grep -rl "SHENNANIGAN" . | xargs sed -i 's/SHENNANIGAN/SHENANIGAN/g'
 # BestPractice
 # handle spaces/newlines via in find use -print0, in xargs use -0
 # find . -name "*.log" -print0 | xargs -0 rm
@@ -369,7 +369,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # busybox grep (very slow)
 # grep -r regex .
 
-#====ripgrep
+#==ripgrep
 # usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
 # {n}(exactly),{n,m}(at least n, no more than m),
 # rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
@@ -391,7 +391,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # option 2 pipe through: cygpath --file -
 # (fd-find does not have the problem and offers -x to directly execute on files)
 
-#====grep
+#==grep
 # patterns: extended regex -E, fixed string -F, basic regex -G, perl regex -P
 # ignore binary -I, recursive without/with following symlinks -r/-R, default nonregex pattern
 # grep -I -r 'nonregex_pattern' .
@@ -400,6 +400,9 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 #       4 only file names with/without match -l/-L, 5 only matched parts -o
 #       6 quiet mode only setting status -q
 # process binary file as text -a
+#====binary_files
+# grep -rIL .
+# non-empty binary files: find . -type f ! -size 0 -exec grep -IL . "{}" \;
 
 # POSIX misses current shell recognition and shell conformity
 # most sane solution and reliable way is to use shell-specifc VERSION:

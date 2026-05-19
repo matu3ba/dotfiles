@@ -1,0 +1,45 @@
+#==General
+# https://codefresh.io/blog/not-ignore-dockerignore-2/
+# https://docs.docker.com/reference/dockerfile#dockerignore-file
+# - reduce docker image size (filetree starting at Dockerfile used)
+# - unintended secrets exposure
+# - docker build -- cache invalidation through common pattern COPY . /usr/src/app
+
+# pattern:
+# { term }
+# term:
+# '*' matches any sequence of non-Separator characters
+# '?' matches any single non-Separator character
+# '[' [ '^' ] { character_range } ']'
+# character class (must be non-empty)
+# c matches character c (c != '*', '?', '\', '[')
+# '\' c matches character c
+# character_range:
+# c matches character c (c != '\', '-', ']')
+# '\' c matches character c
+# lo '-' hi matches character c for lo <= c <= hi
+# additions:
+# '**' matches any number of directories (including zero)
+# '!' lines starting with ! (exclamation mark) can be used to make exceptions to exclusions
+# '#' comments (lines when starting with # are ignored)
+
+# logs, results, tmp
+# cache/intermediates
+# local secrets, dev files
+# platform
+# build
+# language
+
+backup
+.cache
+compose.yml
+# include Dockerfile in Docker image, unless it contains sensitive information.
+!/Containerfile
+Containerfile.keycloak.setup
+# convention: .env contain secrets etc, env/ files not
+.env*
+.git*
+.gitlab-ci.yml
+# ignore md files besides READMEs
+*.md
+!README*.md

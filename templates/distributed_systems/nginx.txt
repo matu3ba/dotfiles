@@ -1,0 +1,11 @@
+https://www.f5.com/company/blog/nginx/avoiding-top-10-nginx-configuration-mistakes
+Mistake 1: Not Enough File Descriptors per Worker
+Mistake 2: The error_log off Directive
+Mistake 3: Not Enabling Keepalive Connections to Upstream Servers
+Mistake 4: Forgetting How Directive Inheritance Works
+Mistake 5: The proxy_buffering off Directive
+Mistake 6: Improper Use of the if Directive
+Mistake 7: Excessive Health Checks
+Mistake 8: Unsecured Access to Metrics
+Mistake 9: Using ip_hash When All Traffic Comes from the Same /24 CIDR Block
+Mistake 10: Not Taking Advantage of Upstream Groups

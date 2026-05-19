@@ -44,14 +44,19 @@ if not ok_lint then return end
 -- idea Harper for text grammar checking
 
 -- idea https://oneuptime.com/blog/post/2026-03-18-lint-validate-containerfiles-podman/view
--- * hadolint
+-- * hadolint (Containerfile, shellcheck)
 -- * yamllint
--- * codespell
--- * harper
+-- * codespell (misspells https://github.com/codespell-project/codespell)
+-- * harper (grammar https://github.com/Automattic/harper)
 
 lint.linters_by_ft = {
-  -- # shellcheck disable=SC2016
-  sh = { 'shellcheck' },
+  -- clang14 introduced:
+  -- // NOLINTBEGIN
+  -- // NOLINTEND
+  -- // NOLINTBEGIN(errorclass)
+  -- somecode // NOLINT
+  c = { 'clangtidy' }, -- codex
+  cpp = { 'clangtidy' },
   -- # ignore ruff lints for whole file (too long line)
   -- # ruff: noqa: E501 E701
   -- # ignore ruff lints with at end eof line:
@@ -64,21 +69,16 @@ lint.linters_by_ft = {
   -- Converting to pipx might require to rm ~/.local/bin/deps
   -- fd -e py --max-depth=1 -x ruff check {}
   -- fd -e py --max-depth=1 -x ruff check --fix {}
-  python = { 'ruff' },
-  -- TODO clangd ignore lsp msg
-  -- clang14 introduced:
-  -- // NOLINTBEGIN
-  -- // NOLINTEND
-  -- // NOLINTBEGIN(errorclass)
-  -- somecode // NOLINT
-  c = { 'clangtidy' }, -- codex
-  cpp = { 'clangtidy' },
   -- luacheck: push ignore
   -- luacheck: pop ignore
   -- luacheck: globals vim
   -- luacheck: no max line length
   -- See also https://github.com/LuaLS/lua-language-server/wiki/Annotations
   lua = { 'luacheck' },
+  python = { 'ruff' },
+  -- # shellcheck disable=SC2016
+  sh = { 'shellcheck' },
+  tofu = { 'tofu' },
 }
 
 local ruff = lint.linters.ruff
