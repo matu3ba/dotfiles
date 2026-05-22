@@ -217,6 +217,12 @@ static domain_name_servers=DNS1 DNS2
 ====plasma
 balooctl6 disable
 startplasma-wayland
+kde inotify problems
+  kde-inotify-survey
+  akonadictl stop
+  akonadictl status
+  ~/.config/akonadi/akonadiserverrc
+  * add last line unindented: StartServer=true
 
 ====custom
 * tlp: apk add tlp

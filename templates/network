@@ -113,17 +113,27 @@ Resolve ARP
 arp-scan -l --resolve --format='${ip} ${Name} ${Vendor}'
 arp-scan -l --format='${ip} ${Vendor}'
 
-Print hostname entries via working DNS:
+Print hostname entries (with ips or only ip) via working DNS:
 host -t a DNS
+> DNS has address 192.168.0.XYZ
 dig +short DNS
+> IP
 getent hosts DNS
+> IP     DNS   DNS
 nslookup DNS
-python -c 'import socket; print socket.gethostbyname("DNS")'
+> server:   ip
+> address:  ip
+>
+>name:      name
+>address:   ip
+python -c 'import socket; print(socket.gethostbyname("DNS"))'
+> IP
 
 Get multicast ip in ip4 only network:
 ping -v4 DNS
 Search for ips with open ports 80:
 nmap -p 80 192.168.178.0/24 --open
+> there may be no reply by router/other device
 
 Search for specific hostname (not all devices provide one):
 nmap -sP 192.168.178.0/24 | grep YOUR_HOSTNAME
@@ -141,6 +151,10 @@ ping ff02::1%eth0 -w 2
 Hop to the next pc via link local address (requires network interface ethX):
 ssh user@IPV6(ANUM:ANUM:..)%ethX
 
+Get open ssh ports
+sudo nmap -sS -sV -p 22 -Pn -vv --reason 192.168.0.121/24
+> PORT   STATE SERVICE REASON         VERSION
+> 22/tcp open  ssh     syn-ack ttl TTL OpenSSH X.Y (protocol Z.0)
 Get MAC address of other device:
 nmap -sn 192.168.178.0/24
 Get MAC address of current device:

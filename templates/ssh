@@ -178,3 +178,6 @@ Problems with solutions
    * delete known_hosts entry, ie via ssh-keygen -R user@domain@ip
 5. How can I get out of a hanging session, ie the other end is rebooting etc?
    * <CR>~.
+6. Can not connect to NixOS with ssh from LAN. Reason and fix?
+   https://discourse.nixos.org/t/unable-to-ssh-into-my-nixos-machine-over-the-local-network/58781/15
+   ssh -i ~/.ssh/PRIV_KEY user@domain@ip
