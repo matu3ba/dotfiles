@@ -975,10 +975,10 @@ function reassigning_type_var_errors() {
   # parameter is typed differently already: [string[]] $params = ""
   # If this happens, then converting to json neither works: $params | ConvertTo-Json
   [string[]] $params = @("-SkipCertificateCheck","-UseBasicParsing","-Method","GET")
-  $params = @{ Uri = [Uri]"https://cwapi.cambio.intra:8104/cwIdent/cwo/customer/about?dbcheck" }
+  $params = @{ Uri = [Uri]"https://uri:port/path/about?dbcheck" }
   $params = @{
     Method      = "GET"
-    URI = "https://cwapi.cambio.intra:8104/cwIdent/cwo/customer/about?dbcheck"
+    URI = "https://uri:port/path/about?dbcheck"
     SkipCertificateCheck = $True
   }
   $params | ConvertTo-Json

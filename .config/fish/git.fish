@@ -15,6 +15,8 @@ abbr --add -g gbd   'git branch -d'
 abbr --add -g gbD   'git branch -D'
 abbr --add -g gbr   'git branch --remote'
 
+# git switch -c new_branch from_branch
+abbr --add -g gsw   'git switch'
 abbr --add -g gfap  'git fetch --all --prune'
 abbr --add -g gpdel 'git push --delete'
 abbr --add -g grpr  'git remote prune'
@@ -37,6 +39,7 @@ alias gdu='git ls-files --others --exclude-standard -z | xargs -0 -n 1 git --no-
 abbr --add -g gdfa  'git diff --name-only --diff-filter=A'
 abbr --add -g gwch  'git whatchanged -p --abbrev-commit --pretty=medium'
 
+# git fetch REMOTE/LOCAL from:to
 abbr --add -g gf    'git fetch'
 abbr --add -g gfrg  'git ls-files | rg'
 #git push set upstream
@@ -72,7 +75,8 @@ alias gu='git pull --no-rebase --ff-only'
 # ff fetch-merge without checkout: git fetch upstream master:master
 # same principle to fetch FROM TO: git fetch . FROM:TO
 # ie to merge into master without checkout: git fetch . FROM:master
-abbr --add -g glgs 'git log -S' # git log search 'regex' -- file
+abbr --add -g glgS 'git log -S' # git log search 'regex' -- file
+abbr --add -g glgs 'git log --show-signature'
 
 alias glg='git log --stat'
 alias glgp='git log --stat -p'

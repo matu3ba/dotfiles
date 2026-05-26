@@ -147,6 +147,9 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
 * best theory overview and consequences "The One-Decade Task: Putting std::atomic in CUDA. - Olivier Giroux - CppCon 2019"
   https://www.youtube.com/watch?v=VogqOscJYvk
 * only promise theory covers all semantics, but no tooling exists
+  - simply not true: only covers high-level semantics, not low-level timing ones
+  - https://markburgess.org/BookOfPromises.pdf
+  - from folks of https://cfengine.com/
 * "Multicore Semantics: Making Sense of Relaxed Memory"
 * C/C++
   - sequential

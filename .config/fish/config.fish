@@ -356,6 +356,21 @@ if status is-interactive
       echo "invalid argument number"
     end
   end
+  function resetToBranchAndCherryPickLastCommits -d "reset to branch argv1 and apply last argv2 commits (or revert)"
+      git show-ref --quiet --branches $argv[1]; or begin; echo "no branch $argv[1]"; return 1; end
+      string match -qr '^\d+$' -- $argv[2] and test $argv[2] -gt 0; or begin; echo "$argv[2] <= 0 or no number"; return 1; end
+      set commits (git log HEAD~$argv[2]..HEAD --reverse --format="%H")
+      test -n "$commits"; or begin; echo "empty commits"; return 1; end
+      set original_head (git rev-parse HEAD)
+      set prev_head (git rev-parse HEAD~$argv[2])
+      git reset --hard $argv[1]; or return 1
+      if not git cherry-pick $prev_head..$original_head
+          echo "cherry-pick failed, reverting.."
+          git cherry-pick --abort 2>/dev/null; or true
+          git reset --hard $original_head
+          return 1
+      end
+  end
 
   # Note: Other shells do not know what gpg server is currently attached to.
   function startGpg -d "start gpg with ssh to workaround pinentry-tty bugs"

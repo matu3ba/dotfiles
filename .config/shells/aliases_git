@@ -568,9 +568,10 @@ alias gsu='git submodule update'
 # -1 push master to upstream/master
 # git push <remote> <local_branch_name>:<remote_branch_to_push_into>
 # git push upstream master:master
-# 0. fast-forward merge
+# 0. fast-forward merge without switch (always fast-forward merge)
 # git fetch <remote> <sourceBranch>:<destinationBranch>
 # git fetch . feature:master
+# git fetch upstream master:master
 # 1. merge with merge commit + push
 # git switch master && git merge --no-ff --no-commit && git switch feature
 # git switch master && git merge --no-ff --no-commit && git switch feature && git push upstream master:master
@@ -586,6 +587,12 @@ alias gsu='git submodule update'
 # git worktree add scratch @
 # git -C scratch merge feature
 # git worktree remove -f scratch
+# 5. (cleanly: reset to master and cherry-pick last N changes) xor return error
+# see ==reset_cherry_pick .config/shells/bash_aliases resetToBranchAndCherryPickLastCommits
+#     and .config/fish/config.fish resetToBranchAndCherryPickLastCommits
+
+# create new branch on top of master and switch to it
+# git switch -c feature master
 
 #====checks
 #has git: git rev-parse --is-inside-work-tree

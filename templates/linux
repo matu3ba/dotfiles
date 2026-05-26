@@ -12,6 +12,7 @@
 ====architecutre
 ====Ghost_of_Unix
 ====kernel_dev
+====bad_parts
 
 https://venam.net/blog/unix/2021/02/07/audio-stack.html
 
@@ -573,3 +574,7 @@ KFuzzTest - fuzz kernel from kernel space
 * complex setup utilizing KASAN
 0x.tools - perf analysis tools (tracking, tracing, etc)
 * https://github.com/tanelpoder/0xtools
+
+====bad_parts
+* kernel no micro-kernel, so many security problems (windows is worse though)
+* desktop https://slugcat.systems/brain_dump/linux-desktop-issues/

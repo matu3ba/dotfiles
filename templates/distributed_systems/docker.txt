@@ -2,6 +2,35 @@
 docker compose up|down|logs|ps
 docker build|ps|pull|push|run|stop
 
+docker compose up
+  --abort-on-container-exit, --abort-on-container-failure, --menu [incompat with --detach]
+  -d | --detach
+  --always-recreate-deps [incompat with --no-recreate]
+  --[no-]attach stringArray restrict attaching to specified services [incompat with --attach-dependencies]
+  --[no-]build build images before starting containers
+  --dry-run
+  --exit -code-from string return exit code of selected service container [implies --abort-on-container-exit]
+  --force-recreate
+  --no-color|deps|log-prefix|recreate|start
+  --pull string
+  --quiet-build|poull
+  --remove-orphans
+  -V --renew-anon-volumes recreate anonymous vols instead of retrieving data from prev container
+  --scale scale
+  -t --timeout int timeout [seconds] for shutdown when attached or already running
+  --timetamps | --wait
+  --wait-timeout int
+  -w | --watch watch source code and rebuild/refresh when files are updated
+  -y | --yes assume "yes" answer to all prompts and run non-interactively
+
+docker compose down
+      --dry-run | --remove-orphans (containers not defined in compose file)
+      --rmi string  remove images used by services, 'local' removes only images without custom tag ('local'|'all')
+  -t, --timeout int specify shutdown timeout [s]
+  -v, --volumes remove named vols declared in volumes sections of compose file
+                and anonymous volumes attached to containers
+
+
 https://www.redhat.com/en/blog/compose-kubernetes-podman
 https://www.redhat.com/en/blog/podman-compose-docker-compose
 https://www.redhat.com/en/blog/compose-kubernetes-podman
@@ -21,4 +50,9 @@ hadolint Containerfile
 
 https://github.com/adrienverge/yamllint
 
-https://hedgedoc.misc.booking.cambio-carsharing.com/-8chD6HZRLSuDjt8bVsJKQ?both
+# Troubleshooting
+# Errors
+# bind: address already in use > kill services
+podman network rm -f keycloak-master
+podman rm SHA256SUM
+podman network ls

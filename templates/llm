@@ -4,6 +4,7 @@
 ====known_to_work_use_cases
 ====visualization
 ====frameworks
+====knowledge_distribution
 
 ====tools
 https://github.com/rtk-ai/rtk
@@ -113,6 +114,8 @@ TODO summarize properly
 * https://globaltechresearch.substack.com/p/the-ironwood-an-introduction-to-google
 * https://techaimint.substack.com/p/tech-talk-how-googles-tpugemini-push
 
+* simple local model https://huggingface.co/openbmb/MiniCPM5-1B
+
 ====artifacts
 https://ea.rna.nl/2024/05/27/when-chatgpt-summarises-it-actually-does-nothing-of-the-kind/
 * sumarizing
@@ -153,6 +156,9 @@ given known probability distribution(s) and sufficient handling of edge cases (c
 * 3. basic overview stuff not to be trusted/needs validation
   - deepseek, chatgpt, gemini
 * 4. derived formal system by given system traces via SMT or concolic testing
+* 5. physics/geometry-rule based optimization via knowledge database, see youtube "Homegrown DXB | Josefine Lissner: LEAP 71"
+  - feels similar to 2., but more stateful
+* 6. likely: rule based optimization via knowledege database
 => pattern detection (like word contextualization) + optimization problems (like calibration)
 
 any automation system can only be as good as the (formal) semantics encoding
@@ -178,3 +184,15 @@ https://github.com/Open-Model-Initiative/Omni-RLM
 * preventing bad configuration language design and proper debuggability of system?
 * zig test quickstart.zig
 
+tensorzero for data iteration for llms
+
+====knowledge_distribution
+Did you play so far with rule-based optimization stored in (custom) knowledge
+databases? Are those models small and trained from scratch or how the stateful
+information is extracted from the model (and vice versa for speedup)? Context
+Leap 71 interview https://www.youtube.com/watch?v=jXSif-_54jo.
+
+As I understand it, there should be information loss depending on quantization.
+But I don't quite understand how reasonable simplifications can be used or if
+those could not be tracked as "semantic shadow state" for later information
+distribution (to derived models etc). Does this make sense to you?

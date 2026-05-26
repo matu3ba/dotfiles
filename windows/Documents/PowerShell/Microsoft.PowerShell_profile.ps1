@@ -20,6 +20,18 @@ $env:DOTNET_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"
 
+# Internal errors (Powershell Exceptions etc)
+#   $ErrorActionPreference = 'Stop'
+# External errors (executables like git etc)
+#   if ($LASTEXITCODE -ne 0) {
+#     Write-Host "cherry-pick failed, reverting.."
+#   }
+#
+#   # default ErrorActionPreference if ($Count -notmatch '^\d+$' -or [int]$Count -le 0)
+#   if ([int]::TryParse($Count, [ref]$null) -and [int]$Count -gt 0) {
+#     Write-Host "$Count <= 0 or no number"; return
+#   }
+
 #====common_cli
 #====shortcuts
 #====aliases
@@ -259,6 +271,31 @@ function MakeWorkTree {
   git worktree add master
   popd
 }
+function Reset-ToBranchAndCherryPickLastCommits {
+    param(
+      [Parameter(Mandatory, Position=0)] [string]$Branch,
+      [Parameter(Mandatory, Position=1)] [int]$Count
+    )
+    git show-ref --quiet --branches $Branch 2>$null
+    if ($LASTEXITCODE -ne 0) { Write-Host "no branch $Branch"; return }
+
+    if ($Count -le 0) {
+      Write-Host "$Count <= 0 or no number"; return
+    }
+    $commits = git log "HEAD~$Count..HEAD" --reverse --format="%H"
+    if (-not $commits) { Write-Host "empty commits"; return }
+    $original_head = git rev-parse "HEAD"
+    $prev_head = git rev-parse "HEAD~$Count"
+    git reset --hard $Branch
+    if ($LASTEXITCODE -ne 0) { return }
+    git cherry-pick "$prev_head..$original_head"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "cherry-pick failed, reverting.."
+        git cherry-pick --abort 2>$null
+        git reset --hard $original_head
+    }
+}
+
 function MakePath {
   param (
     [Parameter(Mandatory, Position=0)] [string] $Path

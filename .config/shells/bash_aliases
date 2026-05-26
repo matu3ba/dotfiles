@@ -31,3 +31,23 @@ makeWorkTree() {
   echo "gitdir: ./.bare" > .git
   git worktree add master
 }
+
+# reset to branch $1 and apply last $2 commits
+# success: exist code 0
+# failure: revert, exit code 1
+resetToBranchAndCherryPickLastCommits() {
+  #current_branch=$(git symbolic-ref --short HEAD)
+  git show-ref --quiet --branches "$1" || (echo "no branch $1"; return)
+  [ "$2" -gt 0 ] 2>/dev/null || (echo "$2 <= 0 or no number"; return)
+  commits=$(git log HEAD~"$2"..HEAD --reverse --format="%H")
+  test -z "$commits" && (echo "empty commits"; return)
+  original_head=$(git rev-parse HEAD)
+  prev_head=$(git rev-parse HEAD~"$2")
+  git reset --hard "$1" || return
+  # must now revert on failure
+  if ! git cherry-pick "$prev_head".."$original_head"; then
+    echo "cherry-pick failed, reverting.."
+    git cherry-pick --abort 2>/dev/null || true
+    git reset --hard "$original_head"
+  fi
+}

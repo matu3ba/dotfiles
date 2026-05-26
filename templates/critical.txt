@@ -39,3 +39,16 @@ provide.
 * essential to survival of business/organization
 2. business critical
 * not necessary during incidents [situation that might be, or could lead to, a disruption, loss, emergency or crisis]
+
+tooling
+https://arewesafetycriticalyet.org/tooling/tools-list/
+Tool Categories
+* Package Managers
+* Compilers
+* Static Analysis
+* Formal Verification
+* Testing
+* Code Coverage
+* Debugging
+* Profiling
+* Requirements Traceability

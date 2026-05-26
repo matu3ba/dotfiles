@@ -34,6 +34,14 @@ const process = std.process;
 // read/write memory from running process and grab basic network information on linux https://codeberg.org/jmatth11/plunder
 // fetch and (cross-)compile msvc tools - https://github.com/marler8997/msvcup
 // chat application - https://codeberg.org/awebo-chat/awebo
+// tool and library for generating minimal ELF shared-object stub files - https://codeberg.org/typedlambda/stubborn-elf
+// * stub file is few hundred bytes, contains symbol names, types, sizes extracted from real lib, but no code.
+// * linker treats it same as real lib at link time
+// * missing: process to fetch or commit header files
+// * can use .ifs for source control to create stub .so at build time or directly stub .so
+// ELF: .so used for 1 soname for DT_NEEDED, 2 defined symbols ("undefined reference" link errors),
+// 3 symbol types (STT_* values) to know whether to emit PLT entries
+// - can probably just emit PLT entries if/when PLT32 reloaction or on canonical PLT entry PC32 relocation)
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz

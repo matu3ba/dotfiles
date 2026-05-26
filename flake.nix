@@ -1,4 +1,12 @@
 #==wsl
+#====wsl_usage
+# install: sudo nixos-rebuild switch --flake .#wsl
+# update: nix flake update
+# * if necessary: nix-channel --update
+# revert: git restore -s COMMIT flake.nix
+# * if necessary: wsl -d NixOS.Dev --user root
+# pin: update flake.lock
+# check: nix flake check
 #====wsl_setup nixos.wsl to usable for user name
 # 0 wsl --install --no-distribution && wsl --install --from-file nixos.wsl && wsl -d NixOS
 # 1 sudo nixos-rebuild boot --flake .#wsl
@@ -8,14 +16,6 @@
 # 5 user was setup, start NixOS: wsl -s NixOS
 #====wsl_setup tarball to usable
 # sudo nix run .#nixosConfigurations.wsl.config.system.build.tarballBuilder
-#====wsl_usage
-# install: sudo nixos-rebuild switch --flake .#wsl
-# update: nix flake update
-# * if necessary: nix-channel --update
-# revert: git restore -s COMMIT flake.nix
-# * if necessary: wsl -d NixOS.Dev --user root
-# pin: update flake.lock
-# check: nix flake check
 #==station
 #====station_setup
 # idea generate hardware setup with detection + how to store it properly

@@ -100,5 +100,9 @@ idea finish this
 
 ====protocol
 https://github.com/letoram/arcan/blob/master/doc/a12.md
-TODO this will take lots of time to properly understand and model
-=> start when reverse engineering suceeded to have actual hardware
+
+====sweet_research
+m1n1+seL4+arcan+durian+consort+cat9+ds4, Linux excluded
+The Promised Desktop -- 5-year programme to formally verify the graphical stack
+* reverse engineering suceeded on hardware with execution working
+* pending: initial (slop) draft by Ariel on the formal model writeup to iterate on

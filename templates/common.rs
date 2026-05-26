@@ -11,6 +11,8 @@
 //memory safety (and typestate programming ie preventing api misuse like deadlocking) without needing
 //optimal performance (given by things like nonsequential atomics, opaque memory, non-tree like
 //memory lifetimes) or have existing libraries handling that for you (or be very limited in scope).
+//safety-critical https://arewesafetycriticalyet.org/
+//  https://public-docs.ferrocene.dev/main/index.html
 
 //====tooling
 // SHENNANIGAN cargo packages depend on dynamic gcc libraries during linking,
