@@ -1,0 +1,160 @@
+==iwyu
+==plugins
+==shortcuts
+
+
+==iwyu
+'include what you use' iwyu, make compilation incremental?
+https://github.com/include-what-you-use/include-what-you-use
+https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/#_incremental
+https://learn.microsoft.com/en-us/visualstudio/ide/walkthrough-building-an-application?view=vs-2022
+https://stackoverflow.com/questions/37785991/where-to-add-the-directory-for-def-file-in-visual-studio
+
+==plugins
+- editorconfig
+https://learn.microsoft.com/en-us/visualstudio/ide/cpp-editorconfig-properties?view=vs-2019&viewFallbackFrom=vs-2022
+- git diff margin
+  * does not support git worktrees https://github.com/laurentkempe/GitDiffMargin/issues/88
+  * may randomly fail https://github.com/laurentkempe/GitDiffMargin/issues/460
+- vsvim has many conflicting keybindings
+- Solution Color needed, because VisualStudio has no trivial way to view the path to the workdir
+- compile_commands.json via "Clang Power Tools VS extension".
+  * Visual Studio >= 2017, for example Microsoft Visual Studio Community 2019.
+    - https://clangpowertools.com/blog/generate-json-compilation-database.html
+    - Solution Rightclick -> Clang Power Tools -> Export Compilation Database
+  * Alternative of bear likely does not work.
+
+==shortcuts
+https://learn.microsoft.com/en-us/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
+https://learn.microsoft.com/de-de/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
+
+VS2015
+next/prev tab              Ctrl-f6/Ctrl-Shift-f6
+only compile current file  Ctrl-f7
+search
+  keyword                  Ctrl-,
+  TODO                     Ctrl-t
+  TODO                     Ctrl-f12
+  symbol results           Shift-f12
+quick action               Ctrl-.
+close document window      Ctrl-f4
+close all doc windows      Alt-w-l
+snippet expanding          Ctrl-k-s
+rename                     Ctrl-r,Ctrl-r
+go
+find                       Ctrl-f
+  find next/prev           f3/Shift-f3
+  toggle full screen          f11
+  toggle side bar             ctrl-b
+  show explorer/toggle focus  Ctrl-shift-e
+  show search                 Ctrl-shift-f
+  show source control         Ctrl-shift-g
+  show debug                  Ctrl-shift-d
+  show extensions             Ctrl-shift-x
+  replace in files            Ctrl-shift-h
+  toggle search details       Ctrl-shift-j
+  shown output panel          Ctrl-shift-u
+  open markdown preview       Ctrl-shift-v
+  Ctrl-k-v
+  Ctrl-k-z
+comment/uncomment          Ctrl-k Ctrl-c/Ctrl-k Ctrl-u
+format
+  file                     Ctrl-k Ctrl-d
+  selection                Ctrl-k Ctrl-f
+replace                    Ctrl-h
+  within
+  focus find entry         Alt-n
+  focus replace field      Alt-p
+  toggle match case        Alt-c
+  toggle word              Alt-w
+  toggle regex             Alt-e
+  open loook in dropdown   Alt-l
+  replace next             Alt-r
+  replace all              Alt-a
+  exit dialog              Esc
+debugging+continue         f5
+  stop debugging           Shift-f5
+  toggle (enable) breakpt  (Ctrl-)f9
+  step over                f10
+  step into/out            f11/Shift-f11
+  delete all breakpoints   Ctrl-Shift-f9
+  break at fn              Ctrl-b
+  break all                Ctrl-Alt-break
+  run to cursor            Ctrl-f10
+  set next statement       Ctrl-Shift-f10
+  breakpoint window        Ctrl-Alt-b
+git
+  diff(unreliable)         Alt-f8
+  stage                    TODO
+
+toggle menu                Shift-f10
+toggle dropdown menu       Alt-prefix
+select
+  word                     Ctrl-w
+  line                     not in VS2015
+select in component view   Ctrl-f2
+  navigate                 tab
+goto
+  editing view                Esc
+  cmd window                  Ctrl-Alt-a
+  solution explorer           Ctrl-Alt-l
+  out window                  Ctrl-Alt-o
+  debugger                    Ctrl-Alt-b
+  call hierachy               Ctrl-Alt-k
+  class view                  Ctrl-Alt-c
+  data sources                Shift-Alt-d
+  edit master                 Ctrl-m Ctrl-m
+  code coverage result        Ctrl-e-c
+  shell                       Ctrl-ö
+  code editor                 f7
+  error list                  Ctrl-^-e
+  tab finder                  Alt-f7
+  mark12..                    ma and 'a but only per file not global
+  before(/)after matching brace Ctrl-'`'
+  between matching braces     Ctrl-}  (VS2019+)
+    smart selection?
+  next variable instance      Ctrl-Shift-Arrow
+  next/pre error              Ctrl-Shift-f12/Shift-f8
+  previous error              unmapped
+  next/prev local error       unmapped
+  next/prev issue             Alt-PgUp/PgDn (VS2019+)
+  next/prev window            Ctrl-Tab/Ctrl-Shift-Tab
+  back/forward            Ctrl-'-'/Ctrl-Shift-'-'
+fold
+  toggle region                 Ctrl-m Ctrl-m
+  collapse all but classes      Ctrl-m-o
+  collapse all                  Ctrl-m-a
+  expand all                    Ctrl-m-l
+  expand all disable outlines   Ctrl-m-p
+  collapse/uncollapse region    Ctrl-m-h/Ctrl-m-u
+view
+  split                       Alt-w-p-Enter
+    jump between              f6
+  normal                      Alt-w-p-p-Enter
+  peek                        Alt-f12
+  bigger/smalelr              Ctrl-Shift-, and .
+
+file operations
+  add new file                Ctrl-Shift-a
+  open file                   Ctrl-o
+  close file                  Ctrl-f4
+
+bookmarks
+  toggle                          Ctrl-k Ctrl-k
+  create new folder               Ctrl-k Ctrl-f
+  prev/next                       Ctrl-k Ctrl-p/n
+  prev/next in folder             Ctrl-Shift-k Ctrl-Shift-p/n
+  jump to named one               not possible
+
+multicursor
+  selection                  Alt-mouse
+  keyboard selection         Alt-Shift-Arrow
+  VS2019+:
+  multi-carets selection     Ctrl-Alt
+  caret pattern selection    Alt-Shift-';'
+  select next pattern match  Alt-Shift-'.'
+
+custom shortcuts (Tools -> Options -> Environment -> Keyboard -> inserttext -> Assign
+SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t
+TODO: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim
+

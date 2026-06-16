@@ -1,0 +1,62 @@
+best cheat sheet
+https://github.com/hugsy/defcon_27_windbg_workshop/blob/main/windbg_cheatsheet.md
+
+https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg--kernel-mode-
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/k--kb--kc--kd--kp--kp--kv--display-stack-backtrace-
+https://gist.github.com/nickfloyd/a332462f85ac32372c74
+.sympath srv*
+.reload
+x notepad!*
+x notepad!wWin*
+.frame - stack frame
+dv or dt - value of variable.
+bu notepad!wWinMain
+bl
+g
+lm
+k
+bu ntdll!ZwWriteFile
+bl
+~
+~0s
+k
+
+Analyze a problem:
+!analyze -v
+
+Show fixed symbol paths:
+.symfix
+.sympath+ path
+Only needed, if symbols have not fully qualified paths
+.srcpath+ path
+.reload
+bu MyApp!main
+g
+bp main
+g
+Controls
+.lines            enable source line information
+bp binname!main   set initial breakpoint
+  Newer versions also support bp main
+  This may fail, if symbol is incorrectly scoped, needed may be scope::fn_name
+lm                list modules for bp usage (module!fn_name for non-executables)
+l+t               stepping will be done by source line
+l+s               source lines will be displayed at prompt
+g                 run program until "main" is entered
+pr                execute one source line, and toggle register display off
+p                 execute one source line
+
+Assembly:
+switch mode: l+t (source) and l-t (assembly)
+p,t,g for step, trace, go (semantics?)
+p-,t-,g-
+step out, into, over, go
+datatype dt
+sizeof sizeof()
+.writemem FileName Range
+SHENNANIGAN writemem does not detect hex length, so 0x30 would be 30 bytes
+.writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L48
+.writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 0x30
+Larger chunks needs L?: .writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L?0x30
+.readmem myfile 1000 10
+

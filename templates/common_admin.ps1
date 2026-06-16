@@ -14,6 +14,10 @@ tasklist
 wmic process list
 
 #====iis
+# RawUrl: Raw URL received by IIS, before any manipulation, for example sending
+# it around IIS or your file system with URL rewriting.
+# Trace in otlp httpcontext tracer collects URL after IIS processing.
+
 #dump IIS services
 # %SYSTEMROOT%\System32\inetsrv\config
 #

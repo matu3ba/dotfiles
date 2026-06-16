@@ -1,0 +1,12 @@
+==usage
+start visual studio from terminal cli
+code
+
+==plugins
+==shortcuts
+
+==plugins
+lldb debugger with vscode: https://github.com/vadimcn/codelldb
+
+==shortcuts
+https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf

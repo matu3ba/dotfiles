@@ -382,3 +382,51 @@ namespace AppFramework.AppName {
 // * .net standard, .net: dotnet outdated
 // assembly bindings consolidation on .net framework
 // * manually deleting bindings and regenerate via
+
+// .NET < 11 has a bad process API
+// https://7thzero.com/blog/process-startinfo-redirectstandardoutput-not-quite-what-you-d-ex
+// SHENNANIGAN using .net dlls from powershell requires process spawn to set all or none of redirects
+// process.StartInfo.RedirectStandardOutput = true;
+// process.StartInfo.RedirectStandardInput = true;
+// process.StartInfo.RedirectStandardError = true;
+// Example to run through Nunit:
+// using System;
+// using System.Collections.Generic;
+// using System.Linq;
+// using System.Text;
+// using Nunit.Framework;
+//
+// namespace ClassLibrary1
+// {
+//   [TestFixture]
+//   public class InstallTest
+//   {
+//     [Test]
+//     public void InstallAgentNix()
+//     {
+//         Process process = new Process();
+//         process.StartInfo.FileName = @"C:\Tools\plink.exe";
+//         process.StartInfo.Arguments = @"10.10.9.27 -l root -pw PASSWORD -m C:\test.sh";
+//         process.StartInfo.UseShellExecute = false;
+//         process.StartInfo.RedirectStandardOutput = true;
+//         process.StartInfo.RedirectStandardInput = true;
+//         process.StartInfo.RedirectStandardError = true;
+//         process.Start();
+//
+//         string output = process.StandardOutput.ReadToEnd();
+//
+//         process.WaitForExit();
+//
+//         output = output.Trim().ToLower();
+//
+//         Assert.AreEqual("pass", output, "Test Case Failed");
+//     }
+//   }
+// }
+
+// SHENNANIGAN C#/.NET runtime does not support overwriting stdin/stdout/stderr file handles.
+// SHENNANIGAN In Powershell redirection contends with io in runtime leading to freezes/lags and dropped data.
+// * Redirection is possible via CreateProcess and cmd.exe (at cost of extra process).
+
+// .NET >= 11 has better process API
+// TODO review

@@ -30,6 +30,38 @@ docker compose down
   -v, --volumes remove named vols declared in volumes sections of compose file
                 and anonymous volumes attached to containers
 
+docker run [options] IMAGE [COMMAND [ARG...]]
+
+docker start [options] CONTAINER [CONTAINER..]
+  -all, -a|--attach, --detach-keys [a-Z],
+  -f filter stringarray, -i interactive, -l last, --sig-proxy
+
+copy files from running container
+docker cp <containerId>:/container_path_source /host_path_target
+
+SHENNANIGAN
+docker is unable to pause entry-point application, which makes in-process+in-memory database usage annoying
+
+SHENNANIGAN
+docker may have permission problems on directories, debugging steps
+id
+docker run --rm --entrypoint id quay.io/keycloak/keycloak:26.6.0
+More weirdly, it is unable to correctly set permissions for directory volumes, so they may need fixup
+# directory volumes (here ./kc_backups) may be owned as root
+chmod g+w ./kc_backups
+# 1000 is user keycloak in container, group appears to be same on system
+docker run --user 1000:$(id -g) --name keycloak-export -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 export --dir /kc_backups
+
+Docker doesn't bypass permisisons unless instructed via --privileged or --user root
+Note the difference between host bindings to local dirs ./kc_backups and kc_data managed by docker runtime.
+* see >docker volume ls
+
+==local_backup (persistent /opt/keycloak/data, backups in kc_backups/)
+docker run --name keycloak-run -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
+# modify keycloak
+docker run --user 1000:$(id -g) --name keycloak-export -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 export --dir /kc_backups
+==local_restore (persistent /opt/keycloak/data, backups in backups/)
+docker run --name kc_restore -v kc_data:/opt/keycloak/data -v ./kc_backups:/opt/keycloak/data/import -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 start-dev --import-realm
 
 https://www.redhat.com/en/blog/compose-kubernetes-podman
 https://www.redhat.com/en/blog/podman-compose-docker-compose
@@ -51,6 +83,30 @@ hadolint Containerfile
 https://github.com/adrienverge/yamllint
 
 # Troubleshooting
+#==broken_storage
+docker compose --profile basic up
+unable to get image 'postgres:16-alpine': Error response from daemon: failed to convert ImageData to ImageInspect 'postgres:16-alpine': locating item named "manifest" for image with ID "667495ca2ac33180ad36901
+78da1bf274f481d0c43849d4c1941f0176983bd2e" (consider removing the image to resolve the issue): file does not exist
+Error: executing /run/current-system/sw/bin/docker-compose --profile basic up: exit status 1
+podman images
+ERRO[0000] Image 5bbb5d82342d exists in local storage but may be corrupted (remove the image to resolve the issue): locating item named "manifest" for image with ID "5bbb5d82342d88de830b18dda51cc09b6c14eaa5b48
+cca880f9f6ff11a902d31" (consider removing the image to resolve the issue): file does not exist
+1 nuclear option
+podman system reset
+podman images       # should be empty
+podman ps -a        # should be empty
+podman volume ls    # likely empty too
+# if needed
+rm -rf ~/.local/share/containers/storage
+rm -rf ~/.config/containers
+# root podman is in /var/lib/containers/storage
+2 migrating containers
+podman system migrate
+3 prune dangling image IDs
+podman image prune --all
+4 prune individual images
+podman rmi postgres:16-alpine --force
+
 # Errors
 # bind: address already in use > kill services
 podman network rm -f keycloak-master

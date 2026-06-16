@@ -41,7 +41,7 @@ git commit -m "Introduce end-of-line normalization"
 Validate with
 git ls-files --eol
 
-====diff
+====diff_config
 1. Installling a tool to read binary files and output text files
   * pandoc, pdftotext, pdftostdout
   * https://github.com/jgm/pandoc
@@ -84,6 +84,12 @@ format
 --summary show creation/deletion summary
 
 ====merge
+merge with merge commit: --no-ff
+* This ensures that commits attached directly to master branch (i.e.
+  --first-parent) generally pass all tests and therefore makes things like git
+  bisect easier. It also makes cherry-picking into bug fixes branches easier.
+
+====diff
 Diff marker behavior
 marker types: zdiff3, diff3
 git checkout -m --conflict=diff3 file
@@ -91,6 +97,7 @@ git checkout -m --conflict=zdiff3 file
 
 #*.sln       merge=binary
 
+====diff
 Show root commits:
 git log --max-parents=0
 Get number of commits:
@@ -104,6 +111,17 @@ git log --merges --oneline
 git log --format '%h %s' | grep -E '^[a-f0-9]+ .{1,7}$'
 Show commit as file:
 git cat-file commit HASH
+Show commit body:
+git rev-list --format=%B --max-count=1 HEAD
+git log --format=%B -n 1 HEAD
+Show commit without indentation (graphical copy paste):
+git log --format=format:"commit %H %d%nAuthor: %an <%ae>%nDate: %aD%n%n%B"
+Show compact commit without indentation (graphical copy paste):
+git log --format=format:"%H%n%an<%ae>%n%aD%n%n%B"
+Show line seperated commits without indentation (graphical copy paste):
+git log --format=format:"%B----"
+Show commit seperated commits without indentation (graphical copy paste):
+git log --format=format:"%H%n%B----"
 
 Get parent commit
 git cat-file -p COMMIT
@@ -175,6 +193,14 @@ Git worktree structure as view on code:
 * fuzz - computer look at code
 * scratch - everything else
 
+https://gist.github.com/socketbox/7f2dcc68fda4885f3265e7bf85828b27
+
+Git worktree checkout existing branch present in local repo:
+git worktree add ./existing-branch-name existing-branch-name
+
+Git worktree adding dir feat_branch with feat_branch based on master
+git worktree add ./feat_branch ./feat_branch master
+
 git for windows update
 git update-git-for-windows
 
@@ -207,6 +233,10 @@ git push --tags
 $git describe --tag --always --dirty="+"
 on dirty (non-tagged commit after 0.0.1): 0.0.1-4-gdeadbeef
 on clean (tagged commit 0.0.1): 0.0.1
+
+====windows_long_paths
+admin pws> New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+pws> git config --system core.longpaths true
 
 beautiful commit messages: https://github.com/rocketraman/gitworkflow
 * trade-off being more complicated

@@ -3,6 +3,8 @@
 ====expectations
 ====understanding
 ====dynamic_array_structures
+====static-search-tree
+====perfect_hashing
 
 ====status
 
@@ -282,3 +284,9 @@ https://cp-algorithms.com/algebra/montgomery_multiplication.html
 https://azmr.uk/dyn/
 Weak AVL trees are replacements for AVL trees and red-black trees.
 * https://maskray.me/blog/2025-12-14-weak-avl-tree
+
+====static-search-tree
+https://curiouscoding.nl/posts/static-search-tree/
+
+====perfect_hashing
+https://curiouscoding.nl/posts/

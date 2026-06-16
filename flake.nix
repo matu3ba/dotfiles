@@ -1,6 +1,6 @@
 #==wsl
 #====wsl_usage
-# install: sudo nixos-rebuild switch --flake .#wsl
+# install: nixos-rebuild switch --sudo --flake .#wsl
 # update: nix flake update
 # * if necessary: nix-channel --update
 # revert: git restore -s COMMIT flake.nix
@@ -9,7 +9,7 @@
 # check: nix flake check
 #====wsl_setup nixos.wsl to usable for user name
 # 0 wsl --install --no-distribution && wsl --install --from-file nixos.wsl && wsl -d NixOS
-# 1 sudo nixos-rebuild boot --flake .#wsl
+# 1 nixos-rebuild boot --sudo --flake .#wsl
 # 2 wsl -t NixOS
 # 3 wsl -d NixOS --user root exit
 # 4 wsl -t NixOS
@@ -20,8 +20,10 @@
 #====station_setup
 # idea generate hardware setup with detection + how to store it properly
 #====station_usage
-# sudo nixos-rebuild switch --flake .#station
+# nixos-rebuild switch --sudo --flake .#station
 # see ====wsl_usage
+# nixos-rebuild
+# --target-host requires host access via ssh + switch, boot, test need root access
 
 #==generators
 # nix run github:nix-community/nixos-generators -- --format qcow --flake .#vm1
@@ -36,6 +38,7 @@
 # nix why-depends /run/current-system nixpkgs#curl.bin
 ##why-depends x on y at build time?
 # nix why-depends --derivation /run/current-system nixpkgs#curl.bin
+# nix why-depends --derivation .#nixosConfigurations.wsl.config.system.build.toplevel .#nixosConfigurations.wsl.pkgs.MYPKG
 # other example: nix why-depends .#simple_package github:nixos/nixpkgs#python310
 ## why-depends does not explain /nix/store entries for flakes/non-nixpkg registry entry
 # nix why-depends /run/current-system $(nix-store --query --requisites /run/current-system | grep gcc)
@@ -50,18 +53,24 @@
 
 # last resort debug: grep -R "STORE_PATH" /nix/store/*.drv
 #==hot_fix
-# nix-store --verify --check-contents --repair
+# sudo nix-store --verify --check-contents --repair
 
 #==search
 # https://search.nixos.org/packages better: nix search nixpkgs fd
+
+#==troubleshooting
+#====WSL systemd reload failure (D-Bus reloading during live switch very fragile due to session bus tied to running shell/user)
+#1 systemctl --user status dbus-broker.service
+#2 systemctl --user restart dbus-broker.service
+#3 reapply config. it should return without error.
 
 {
   description = "Smallish NixOS-WSL flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # nix-index-database.url = "github:nix-community/nix-index-database"; # locate pkg in nixpkgs
     # nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -177,6 +186,19 @@
             wsl.wslConf.interop.enabled = true;
             wsl.wslConf.interop.appendWindowsPath = true;
             wsl.wslConf.network.generateHosts = true;
+            # manual host creation, config taken from WSL generateHosts=true
+            # networking.hosts = {
+            #   # ipv4
+            #   # keycloak for https://github.com/wkrzywiec/keycloak-security-example
+            #   "127.0.0.1" = ["localhost" "keycloak"];
+            #   "127.0.1.1" = ["nixoswsl"];
+            #   # ipv6
+            #   "::1"     = ["ip6-localhost ip6-loopback"];
+            #   "fe00::0" = ["ip6-localnet"];
+            #   "ff00::0" = ["ip6-mcastprefix"];
+            #   "ff02::1" = ["ip6-allnodes"];
+            #   "ff02::2" = ["ip6-allrouters"];
+            # };
             wsl.wslConf.network.generateResolvConf = true;
             wsl.wslConf.network.hostname = "nixos_wsl";
             wsl.wslConf.user.default = "jan-philipp.hafer";

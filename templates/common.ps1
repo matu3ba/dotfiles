@@ -10,6 +10,7 @@
 #====file_watcher
 #====access_control
 #====encoding
+#====string_ops
 
 #====tools
 # https://dscottraynsford.wordpress.com/2017/11/18/auto-formatting-powershell-in-visual-studio-code/
@@ -97,7 +98,7 @@ function chaining_and_error_behavior() {
 
 #====variables
 function usage_variables() {
-  #types
+  #types, get type
   $obj | Get-Member
   $obj.GetType
   #content formatting (try out for PSCustomObject)
@@ -174,6 +175,22 @@ function usage_variables() {
 # 2. file format printing filtering if not in list
 # 3. normalize line endings
 # 4. reencoding and check if successful
+
+#====string_ops
+# usage Get-ShakedownUriServiceName 'service/some/path/about?check'
+function Get-ShakedownUriServiceName {
+  Param ([Parameter(Mandatory = $True)] [string] $ShakedownUriPath)
+  $segment = ($ShakedownUriPath.TrimStart('/') -split '/')[0]
+  if ($ShakedownUriPath.EndsWith('about?check')) {
+    $type = 'REST'
+    $service = $segment -replace 'REST$', ''
+  }
+  else {
+    $type = 'WCF'
+    $service = $segment -replace 'WCF$', ''
+  }
+  [tuple]::Create($service, $type)
+}
 
 # only checks for exceptions and externally invoked commands
 # does not check function return values
@@ -557,6 +574,17 @@ function StartProcess_stdout {
   Write-Host "stdout: $stdout"
   Write-Host "stderr: $stderr"
   Write-Host "exit code: " + $p.ExitCode
+}
+
+function Start-Process_HashmapArgs {
+  $processOptions = @{
+    FilePath = "sort.exe"
+    RedirectStandardInput = "TestSort.txt"
+    RedirectStandardOutput = "Sorted.txt"
+    RedirectStandardError = "SortError.txt"
+    UseNewEnvironment = $true
+  }
+  Start-Process @processOptions
 }
 
 # taken from

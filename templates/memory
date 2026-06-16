@@ -2,6 +2,7 @@
 ====human
 ====hardware_transactional_memory
 ====memory_in_languages
+====DDR
 
 "What Every Programmer Should Know About Memory" by Ulrich Drepper
 
@@ -486,3 +487,6 @@ C: 0 (ish) bytes are still memory mapped. maxrss=0 (ish)
 ====memory_in_languages
 https://lukefleed.xyz/posts/who-owns-the-memory-pt1/
 * good overview, but many edge cases not described
+
+====DDR
+ddr ram https://curiouscoding.nl/posts/ddr/

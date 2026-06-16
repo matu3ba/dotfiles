@@ -7,7 +7,7 @@
 # 5  rebuilding hyprland config in nix with home manager
 # 6  Managing Dotfiles with Home Manager
 # 7  Flake System Installation & Declarative Partitioning With Disko
-# 8  Deklarativer Docker with Podman and container management
+# 8  Declarative Docker with Podman and container management
 # 9  management of secrets in nix config
 # 10 nixos containers, fast flexible and fully declarative
 # 11 NixOS Package Creation

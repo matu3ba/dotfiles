@@ -12,6 +12,7 @@
 ====incus_usage
 ====Infrastructure_as_Code
 ====opentofu
+====security
 
 https://github.com/donlon/cloudflare-error-page
 https://notes.nicolevanderhoeven.com/How+Loki+stores+data
@@ -69,6 +70,9 @@ https://github.com/basilysf1709/distributed-systems
 
 ====problems
 debugging VMs is yet another tool to learn
+templates/distributed_systems/kubernetes/README.md
+https://samof76.space/kubernetes-in-anger.html
+Kubernetes Production Incident Debugging rage
 
 ====future
 https://www.macchaffee.com/blog/2024/the-next-platform/
@@ -385,3 +389,17 @@ https://www.scaleway.com/en/docs/tutorials/manage-instances-with-terraform-and-f
 https://www.scaleway.com/en/docs/tutorials/use-cockpit-with-terraform/
 https://www.scaleway.com/en/docs/cockpit/concepts/#cockpit
 https://controlmonkey.io/resource/opentofu-errors-guide/
+
+====security
+* much harder than simple system due to a bigger system
+
+======key_rotation
+TODO check what is best practice with FIPS etc stuff
+https://github.com/Cosmian/kms ??
+1 bootstrapping: yubikey or other source (standard solution?)
+2 injecten secrets into workflows: API specific (standard solution?)
+3 depends on what one wants (standard solution?)
+4 rotation routines (standard tools?, apis?)
+5 client concept (standard solution?)
+=> specialized tools dont solve problems due to missing standards by workflows,
+specialized tools only help on minimizing attack surface

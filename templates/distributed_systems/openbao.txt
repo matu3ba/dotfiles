@@ -1,0 +1,32 @@
+==OpenBao
+* Remote API
+* Hardened (to some degree)
+* dedicated secrets engine (owns the credential lifecycle, enforces leases, offers rotation primitive)
+* does not solve fundamental rotation problems, see ./templates/distributed_systems.txt ======key_rotation
+
+Simplest On-Prem Linux Setup with TPM Integration
+does not natively support TPM auto-unseal (HSM/KMS is Enterprise-only) . Workarounds:
+    tpm2-tools + systemd unit — seal the unseal key(s) to the TPM's NVRAM at first boot, unseal on start via a systemd ExecStartPre script.
+    clevis + tang — clevis pins secrets to TPM2 (PCR-bound unseal key), tang is the network policy server.
+    * Works well for auto-unlock without storing keys in plaintext.
+    * Most distros package it.
+    go-tpm + custom plugin — if you need tight Vault integration and control; more dev work.
+  * extra: systemd hardening (NoNewPrivileges, PrivateTmp, etc.)
+  * TPM PCR binding can break on firmware/kernel updates → test recovery path. Single-node has no HA.
+
+bao kv put secret/scaleway api_key=xyz
+bao kv get secret/scaleway
+# internal encryption key rotation
+bao operator rotate
+=> CLI commands map 1:1 to a REST calls
+
+when gitlab is fine
+< 5 services consuming secrets
+< 3 secret types (e.g. one cloud provider, one DB, one API)
+1 team, shared trust model
+Rotation frequency: monthly or less
+No compliance audit requirement
+
+threshold
+* ~10 services or ~2 teams with different trust levels is roughly the crossover
+* compliance/audit mandate

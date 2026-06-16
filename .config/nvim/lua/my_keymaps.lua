@@ -216,6 +216,15 @@ map('n', '<leader>5', [[<cmd>5wincmd w<CR>]], opts)
 map('n', '<leader>6', [[<cmd>6wincmd w<CR>]], opts)
 map('n', '<leader>7', [[<cmd>7wincmd w<CR>]], opts)
 map('n', '<leader>8', [[<cmd>8wincmd w<CR>]], opts)
+-- close window by number
+map('n', '<leader>q1', [[<cmd>1wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q2', [[<cmd>2wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q3', [[<cmd>3wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q4', [[<cmd>4wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q5', [[<cmd>5wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q6', [[<cmd>6wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q7', [[<cmd>7wincmd w<CR><cmd>q<CR>]], opts)
+map('n', '<leader>q8', [[<cmd>8wincmd w<CR><cmd>q<CR>]], opts)
 -- open tab by number for direct access
 map('n', '<C-1>', [[1gt]], opts) -- requires kitty protocol (not supported by tmux, zellij)
 map('n', '<C-2>', [[2gt]], opts)
@@ -561,6 +570,7 @@ map('n', '<leader>do', '<cmd>diffoff<CR>', { desc = 'diffoff' })
 map('n', '<leader>dg', '<cmd>diffget<CR>', { desc = 'diffget' })
 map('n', '<leader>dp', '<cmd>diffput<CR>', { desc = 'diffput' })
 ---:windo diffthis, :diffupdate, :diffoff!
+---jumping via ]c,[c
 ---2. :Neogit
 ---see also ==git for Neogit information
 ---dw on conflicted file

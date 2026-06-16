@@ -1,3 +1,6 @@
+==binary_paths
+==export_database
+
 minimal setup: https://www.keycloak.org/server/containers
 see ./templates/distributed_systems/keycloak/
 
@@ -21,3 +24,29 @@ TF_DATA_DIR=./.terraform/shitfix
 # TODO document
 DUMP_FILE
 ```
+
+==binary_paths
+/usr/bin/
+/usr/sbin/
+/bin/
+/sbin/
+/opt/..
+
+==export_database
+quirky has no pause/stop command
+* ls /proc/368/environ
+* kill -s SIGINT PROC
+* keycloak not listed in /proc, because it is entrypoint
+/opt/keycloak/bin/kc.sh export --help
+docker ps
+docker cp <containerId>:/file/path/within/container /host/path/target
+* kill -s SIGCONT PROC
+
+/opt/keycloak/bin/kc.sh pause
+/opt/keycloak/bin/kc.sh export --help
+
+actual process for backups to workaround docker entrypoint SHENNANIGAN
+1 must use persistent volume kc_data
+docker run --name keycloak-run -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
+2 can use backup, but have to adjust group name (or user id), since docker has no sane defaults
+docker run --user 1000:$(id -g) --name keycloak-export -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 export --dir /kc_backups

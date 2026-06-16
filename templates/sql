@@ -1,7 +1,8 @@
 ====semantic_problems
 ====semantic_solution
-====rel
-====rel
+====solutions
+====ideal_solutions
+====semantic_problems_orm
 
 list foreign keys of table1
 EXEC sp_fkeys 'table1'
@@ -131,3 +132,29 @@ tldr;
 * Datafusion/Duckdb can also work directly against sqlite, which is more "on
   topic" respect to Arcan. They shine with S3 parqued parquet files and
   interacting with other legacy databases like postgres, today's JDBC.
+
+====ideal_solutions
+ORM can hide performance sensitive things like sync, locking and joins while SQL offers no safety-net against such errors besides transactions (but enables more reasoning on perf).
+see for example https://travisofthenorth.com/blog/2016/10/2/beware-the-orm
+For me I'd be even more radical than ORM (if possible) and version the schema next to build system + application code like how opentofu versions infra
+but as generated schema files for migration and restore routines and remove all the bad stuff from SQL + use a streaming language if necessary.
+If you can provide me with a non-perf obliterating ORM or non-bullshit SQL linter etc, that would help.
+Where ORM help most is to simplify mocking SQL stuff, but with proper libs the data mocking should be also possible to generate from the schema etc.
+All I've seen for now is just SQL crimes left and right with non-portable performance hacks on indexing, because everybody knows SQL is only for
+non-null portable tables and nobody needs portable and perf-tunable indices into tables.
+
+Looks like dbml might fix the schema part with unclear mocking capabilities.
+https://dbml.dbdiagram.io/docs/
+
+SaneSQL linter/lsp is still missing though.
+* use case 1: no null fields
+* use case 2: mocking based on schema
+* use case 3: identify everything non-portable in schema
+* use case 4: identify everything non-portable in queries
+
+====semantic_problems_orm
+object-relation mapping (ORM)
+"Beware the ORM: Locking and Joins"
+* shows perf problems due to hidden sync and mutexes of ORM
+* postgres
+  test=# SELECT locktype, relation::regclass, mode, transactionid AS tid, virtualtransaction AS vtid, pid, granted FROM pg_locks;

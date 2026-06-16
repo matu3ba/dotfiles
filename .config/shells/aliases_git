@@ -534,6 +534,12 @@ alias gsu='git submodule update'
 
 # SHENNANIGAN setting reliably to branch is tedious
 #git worktree add --track -b crt_arm_fixes crt_arm_fixes downstream/crt_arm_fixes
+# git worktree add [new-branch] path [commit-ish]
+# git worktree add ./existing-branch-name existing-branch-name
+# git worktree add ./feat_branch ./feat_branch master
+# git worktree list
+# git worktree remove [-f]
+# * SHENNANIGAN no option for 'git worktree remove && git branch -d feat'
 
 #====commit_hygiene_tldr
 # every commit must build

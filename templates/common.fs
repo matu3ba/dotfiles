@@ -4,3 +4,5 @@
 // C# compiling to .NET runtime looks also faster than Java with F# offering several optimization options.
 // In simple benchmarks C++ was 3x faster.
 // OCaml has comparable performance with what looks like a more dense syntax.
+
+// https://iev.ee/blog/resharp-how-we-built-the-fastest-regex-in-fsharp/

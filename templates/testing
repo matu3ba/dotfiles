@@ -181,6 +181,8 @@ Ideas for the ideal cli test system for non-timing and timing based testing:
 TODO explain property based testing, metamorphic testing
 https://github.com/cryptocode/marble
 https://www.cockroachlabs.com/blog/metamorphic-testing-the-database/
+https://proofsandintuitions.net/2026/05/18/property-based-testing-specifications/
+* nice with formal context
 
 "Compile-time function call interception for testing in C/C++" by Gabor Marton and Zoltan Porkolab
 for some terminology

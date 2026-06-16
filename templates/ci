@@ -266,5 +266,26 @@ https://ashishb.net/programming/common-pitfalls-of-github-actions/
 Github static analysis
 https://github.com/zizmorcore/zizmor
 
+====priorities
+1. manual override
+2. tip of master branch (or the next one if tip is red, and so on)
+3. tip of other checked branches (i.e. llvm22 or 0.17.x)
+4. core team member PRs
+5. contributor PRs
+6. other master branch commits in descending order
+
+"how hard is it to write a CI system"
+2 insights
+    1 Priorities: Even loop is "what is the highest priority thing to do next?"
+    with fuzzing master/benchmarking historical commits low-priority else => branch
+    2 CGI-shaped interface to whole thing: no hard-coded priority
+    logic into CI system/yaml, just run a program off the main branch
+    which dynamically decides which tasks to spawn in response to which events.
+    Let this program also call the shots on what's :check_mark: and
+    implementing not-rocket-science, if a particular project wants to.
+hard part:
+    orchestrating jobs across multiple heterogeneous machines.
+
 ====actual_cis
 https://www.jetbrains.com/help/teamcity/teamcity-configuration-and-maintenance.html#Build+Settings
+https://www.azabani.com/2025/12/18/shoestring-web-engine-ci.html

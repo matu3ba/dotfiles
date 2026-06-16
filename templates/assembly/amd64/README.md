@@ -13,19 +13,30 @@ Showing disassembly
 
 #### Building
 
-cd templates/assembly/amd64/
+`cd templates/assembly/amd64/`
 
 * hello_world assembly on windows
-  nasm -f win64 -o hello_world_win64.obj hello_world_win64.asm
-  link hello_world_win64.obj /subsystem:console /entry:main /out:hello_world_win64.exe
-  TODO look how to set subsystem, entry, out on lld-link
-  ./hello_world_win64.exe
+```sh
+nasm -f win64 -o hello_world_win64.obj hello_world_win64.asm
+link hello_world_win64.obj /subsystem:console /entry:main /out:hello_world_win64.exe
+TODO look how to set subsystem, entry, out on lld-link
+./hello_world_win64.exe
+```
 * hello_world assembly on linux
-  nasm -f elf64 -o hello_world_elf64.obj hello_world_linux64.asm
-  ld.lld -o hello_world_elf64.exe hello_world_elf64.obj
-  ./hello_world_elf64.exe
+```sh
+nasm -f elf64 -o hello_world_elf64.obj hello_world_linux64.asm
+ld.lld -o hello_world_elf64.exe hello_world_elf64.obj
+./hello_world_elf64.exe
+
+$ as assem.s -o assem.o
+$ gcc -o assem assem.o -nostdlib -static
+$ ./assem
+```
 * hello_world assembly on macos
-  nasm -f macho64 -o hello_world_macho64.obj hello_world_mac64.asm
-  TODO must specify arch etc
-  ld64.lld -o hello_world_macho64.exe hello_world_macho64.obj
-  ./hello_world_macho64.exe
+```sh
+nasm -f macho64 -o hello_world_macho64.obj hello_world_mac64.asm
+TODO must specify arch etc
+ld64.lld -o hello_world_macho64.exe hello_world_macho64.obj
+./hello_world_macho64.exe
+```
+

@@ -1,9 +1,12 @@
 ====MSVC_build_system
 ====MSVC_msbuild
+====MSVC_debug
+====VisualStudio
+====VisualStudioCode
 ====debug
 ====build_problems
 ====debugging_timetravel
-====windbg_intro
+====windbg
 ====injection
 ====perf_trace
 ====profile_memory
@@ -117,7 +120,7 @@ unfixable
 - lock on project, if project opened graphically and building
 - changes of used files in project file invalidates solution cache (forces complete build)
 
-====debug
+====MSVC_debug
 Debugging macros
 "Project + Properties, C/C++, Preprocessor, Preprocess to a File = Yes.
 /E, /P, /EP
@@ -130,23 +133,13 @@ https://learn.microsoft.com/en-us/cpp/build/reference/fo-object-file-name?view=m
 /Fo"pathname"
 /Fo:[ ]"pathname"
 
-Does Visual Studio have 'include what you use' iwyu to make compilation incrmental?
-https://github.com/include-what-you-use/include-what-you-use
-https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/#_incremental
-https://learn.microsoft.com/en-us/visualstudio/ide/walkthrough-building-an-application?view=vs-2022
-https://stackoverflow.com/questions/37785991/where-to-add-the-directory-for-def-file-in-visual-studio
+====VisualStudio
+templates/win/VisualStudio.txt
 
-lldb debugger with vscode: https://github.com/vadimcn/codelldb
+====VisualStudioCode
+templates/win/VisualStudioCode.txt
 
-Visual Studio Plugins
-- editorconfig
-https://learn.microsoft.com/en-us/visualstudio/ide/cpp-editorconfig-properties?view=vs-2019&viewFallbackFrom=vs-2022
-- git diff margin
-  * does not support git worktrees https://github.com/laurentkempe/GitDiffMargin/issues/88
-  * may randomly fail https://github.com/laurentkempe/GitDiffMargin/issues/460
-- vsvim has many conflicting keybindings
-- Solution Color needed, because VisualStudio has no trivial way to view the path to the workdir
-
+====debug
 SHENNANIGAN Piping output of graphical applications does not work on default.
 Doing it without effort (use own stdout handle) requires arcane settings to use both console and standard handles:
 gcc -mconsole test_gdi.c -lgdi32
@@ -179,12 +172,6 @@ Build problems, ie incremental build problems:
 Tools -> Options -> Proj & Sol. -> Build & Run -> build log verbosity -> diagnostic
 Search for "Project not up to date because" or "missing".
 Compare with msbuild output.
-
-Generate compile_commands.json from Visual Studio with "Clang Power Tools VS extension".
-This mandates Visual Studio >= 2017, for example Microsoft Visual Studio Community 2019.
-Alternative of bear likely does not work.
-https://clangpowertools.com/blog/generate-json-compilation-database.html
-Solution Rightclick -> Clang Power Tools -> Export Compilation Database
 
 workaround admin privileges for installer files (.exe):
 insert into run.bat with :set encoding=ansi
@@ -305,68 +292,8 @@ Step Back Forwards     p-  p
 Trace Back Forwards    t-  t
 Go Back Forwards       g-  g
 windbg -srcpath SourcePath
-====windbg_intro
-best cheat sheet
-https://github.com/hugsy/defcon_27_windbg_workshop/blob/main/windbg_cheatsheet.md
-
-https://learn.microsoft.com/de-de/windows-hardware/drivers/debugger/getting-started-with-windbg--kernel-mode-
-https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/k--kb--kc--kd--kp--kp--kv--display-stack-backtrace-
-https://gist.github.com/nickfloyd/a332462f85ac32372c74
-.sympath srv*
-.reload
-x notepad!*
-x notepad!wWin*
-.frame - stack frame
-dv or dt - value of variable.
-bu notepad!wWinMain
-bl
-g
-lm
-k
-bu ntdll!ZwWriteFile
-bl
-~
-~0s
-k
-
-Analyze a problem:
-!analyze -v
-
-Show fixed symbol paths:
-.symfix
-.sympath+ path
-Only needed, if symbols have not fully qualified paths
-.srcpath+ path
-.reload
-bu MyApp!main
-g
-bp main
-g
-Controls
-.lines            enable source line information
-bp binname!main   set initial breakpoint
-  Newer versions also support bp main
-  This may fail, if symbol is incorrectly scoped, needed may be scope::fn_name
-lm                list modules for bp usage (module!fn_name for non-executables)
-l+t               stepping will be done by source line
-l+s               source lines will be displayed at prompt
-g                 run program until "main" is entered
-pr                execute one source line, and toggle register display off
-p                 execute one source line
-
-Assembly:
-switch mode: l+t (source) and l-t (assembly)
-p,t,g for step, trace, go (semantics?)
-p-,t-,g-
-step out, into, over, go
-datatype dt
-sizeof sizeof()
-.writemem FileName Range
-SHENNANIGAN writemem does not detect hex length, so 0x30 would be 30 bytes
-.writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L48
-.writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 0x30
-Larger chunks needs L?: .writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L?0x30
-.readmem myfile 1000 10
+====windbg
+templates/win/windbg.txt
 
 Graphical usage available from VS2019 on and in VS Code (Time Travel Debug for C/C++ extension).
 
@@ -389,6 +316,9 @@ https://github.com/microsoft/Detours
 https://github.com/Hpmason/retour-rs
 NtCreateSection, NtMapViewOfSection and RtlCreateUserThread
 https://www.ired.team/offensive-security/code-injection-process-injection/ntcreatesection-+-ntmapviewofsection-code-injection
+ https://aixxe.net/2025/11/portable-code-injection
+ Library patching with NtMapViewOfSection
+https://aixxe.net/2024/09/dll-memory-patching
 
 ====perf_trace
 https://github.com/google/UIforETW
@@ -430,137 +360,6 @@ CLI Installation and Fixup
 https://christitus.com/install-windows-the-arch-linux-way/
 https://christitus.com/fix-corrupt-windows-install/
 
-overview of basic ones https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf
-https://learn.microsoft.com/en-us/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
-https://learn.microsoft.com/de-de/visualstudio/ide/default-keyboard-shortcuts-in-visual-studio?view=vs-2022
-
-shortcuts:
-VS2015
-next/prev tab              Ctrl-f6/Ctrl-Shift-f6
-only compile current file  Ctrl-f7
-search
-  keyword                  Ctrl-,
-  TODO                     Ctrl-t
-  TODO                     Ctrl-f12
-  symbol results           Shift-f12
-quick action               Ctrl-.
-close document window      Ctrl-f4
-close all doc windows      Alt-w-l
-snippet expanding          Ctrl-k-s
-rename                     Ctrl-r,Ctrl-r
-go
-find                       Ctrl-f
-  find next/prev           f3/Shift-f3
-  toggle full screen          f11
-  toggle side bar             ctrl-b
-  show explorer/toggle focus  Ctrl-shift-e
-  show search                 Ctrl-shift-f
-  show source control         Ctrl-shift-g
-  show debug                  Ctrl-shift-d
-  show extensions             Ctrl-shift-x
-  replace in files            Ctrl-shift-h
-  toggle search details       Ctrl-shift-j
-  shown output panel          Ctrl-shift-u
-  open markdown preview       Ctrl-shift-v
-  Ctrl-k-v
-  Ctrl-k-z
-comment/uncomment          Ctrl-k Ctrl-c/Ctrl-k Ctrl-u
-format
-  file                     Ctrl-k Ctrl-d
-  selection                Ctrl-k Ctrl-f
-replace                    Ctrl-h
-  within
-  focus find entry         Alt-n
-  focus replace field      Alt-p
-  toggle match case        Alt-c
-  toggle word              Alt-w
-  toggle regex             Alt-e
-  open loook in dropdown   Alt-l
-  replace next             Alt-r
-  replace all              Alt-a
-  exit dialog              Esc
-debugging+continue         f5
-  stop debugging           Shift-f5
-  toggle (enable) breakpt  (Ctrl-)f9
-  step over                f10
-  step into/out            f11/Shift-f11
-  delete all breakpoints   Ctrl-Shift-f9
-  break at fn              Ctrl-b
-  break all                Ctrl-Alt-break
-  run to cursor            Ctrl-f10
-  set next statement       Ctrl-Shift-f10
-  breakpoint window        Ctrl-Alt-b
-git
-  diff(unreliable)         Alt-f8
-  stage                    TODO
-
-toggle menu                Shift-f10
-toggle dropdown menu       Alt-prefix
-select
-  word                     Ctrl-w
-  line                     not in VS2015
-select in component view   Ctrl-f2
-  navigate                 tab
-goto
-  editing view                Esc
-  cmd window                  Ctrl-Alt-a
-  solution explorer           Ctrl-Alt-l
-  out window                  Ctrl-Alt-o
-  debugger                    Ctrl-Alt-b
-  call hierachy               Ctrl-Alt-k
-  class view                  Ctrl-Alt-c
-  data sources                Shift-Alt-d
-  edit master                 Ctrl-m Ctrl-m
-  code coverage result        Ctrl-e-c
-  shell                       Ctrl-ö
-  code editor                 f7
-  error list                  Ctrl-^-e
-  tab finder                  Alt-f7
-  mark12..                    ma and 'a but only per file not global
-  before(/)after matching brace Ctrl-'`'
-  between matching braces     Ctrl-}  (VS2019+)
-    smart selection?
-  next variable instance      Ctrl-Shift-Arrow
-  next/pre error              Ctrl-Shift-f12/Shift-f8
-  previous error              unmapped
-  next/prev local error       unmapped
-  next/prev issue             Alt-PgUp/PgDn (VS2019+)
-  next/prev window            Ctrl-Tab/Ctrl-Shift-Tab
-  back/forward            Ctrl-'-'/Ctrl-Shift-'-'
-fold
-  toggle region                 Ctrl-m Ctrl-m
-  collapse all but classes      Ctrl-m-o
-  collapse all                  Ctrl-m-a
-  expand all                    Ctrl-m-l
-  expand all disable outlines   Ctrl-m-p
-  collapse/uncollapse region    Ctrl-m-h/Ctrl-m-u
-view
-  split                       Alt-w-p-Enter
-    jump between              f6
-  normal                      Alt-w-p-p-Enter
-  peek                        Alt-f12
-  bigger/smalelr              Ctrl-Shift-, and .
-
-file operations
-  add new file                Ctrl-Shift-a
-  open file                   Ctrl-o
-  close file                  Ctrl-f4
-
-bookmarks
-  toggle                          Ctrl-k Ctrl-k
-  create new folder               Ctrl-k Ctrl-f
-  prev/next                       Ctrl-k Ctrl-p/n
-  prev/next in folder             Ctrl-Shift-k Ctrl-Shift-p/n
-  jump to named one               not possible
-
-multicursor
-  selection                  Alt-mouse
-  keyboard selection         Alt-Shift-Arrow
-  VS2019+:
-  multi-carets selection     Ctrl-Alt
-  caret pattern selection    Alt-Shift-';'
-  select next pattern match  Alt-Shift-'.'
-
 remote desktop (rdp)
 https://learn.microsoft.com/en-us/windows/win32/termserv/terminal-services-shortcut-keys
   start button press         windows + pos1 (home)   old?
@@ -569,10 +368,6 @@ https://learn.microsoft.com/en-us/windows/win32/termserv/terminal-services-short
                              unclear: looks like tab is not reachable, alt broken with on-screen keyboard
   overview programs          ctrl+alt+tab
                              unclear
-
-custom shortcuts (Tools -> Options -> Environment -> Keyboard -> inserttext -> Assign
-SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t
-TODO: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim
 
 SHENNANIGAN shutdown script may not get called at all + no diagnosis
 Otherwise: Local group policy.
@@ -614,9 +409,6 @@ https://stackoverflow.com/questions/24836194/windows-dll-dynamic-initialization-
 1. Import/export resolution just needs .dlls.
 2. Static initialization just needs .dlls.
 3. Dynamic initialization requires all imports to be resolved for the .dll.
-
-start visual studio from terminal cli
-code
 
 SHENNANIGAN LoadLibray (temporary) uses up virtual memory in error cases, which can lead
 to out of virtual memory situations (error 8). See https://github.com/matu3ba/win32k-mitigation

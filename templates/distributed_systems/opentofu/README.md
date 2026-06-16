@@ -20,3 +20,5 @@ https://github.com/infracost/infracost
 3. lsp: https://github.com/opentofu/tofu-ls
 4. cost scanner: https://github.com/infracost/infracost
 5. All-in-one security analyzer https://github.com/aquasecurity/trivy
+
+https://opentofu.org/docs/language/modules/
