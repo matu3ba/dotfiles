@@ -68,6 +68,13 @@ Fix:
 sudo chmod 600 ~/.ssh/*
 sudo chmod 644 ~/.ssh/known_hosts
 sudo chmod 755 ~/.ssh
+CI dump ssh keys from secrets:
+rm -rf ~/.ssh
+umask 0077
+mkdir ~/.ssh
+cp "$SSH_PRIVATE_KEY" ~/.ssh/key
+cp "$SSH_KNOWN_HOSTS" ~/.ssh/known_hosts
+cp "$SSH_CONFIG" ~/.ssh/config
 
 ssh may complain with file has invalid format:
 Most likely a configuration problem, because ssh does not check your config for

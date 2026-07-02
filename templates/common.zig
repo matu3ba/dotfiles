@@ -60,6 +60,7 @@ const process = std.process;
 // Tripwire https://mitchellh.com/writing/tripwire
 // * https://github.com/ghostty-org/ghostty/blob/main/src/tripwire.zig
 // ZON processor https://codeberg.org/tensorush/zq
+// Problem solving for engineering roles (zig leetcode) - https://codeberg.org/saurabh/zigling
 
 // https://github.com/david-vanderson/dvui
 // https://codeberg.org/ssmid/zeppelin

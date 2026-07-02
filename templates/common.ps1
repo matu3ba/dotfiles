@@ -647,8 +647,8 @@ function sane_BinaryDiff {
     [string] $dest_file,
     [switch] $short = $false
   )
-  $hash1 = (Get-FileHash $src_file).Hash
-  $hash2 = (Get-FileHash $dest_file).Hash
+  $hash1 = (Get-FileHash $src_file -Algorithm SHA256).Hash
+  $hash2 = (Get-FileHash $dest_file -Algorithm SHA256).Hash
   if ($hash1 -ne $hash2) {
     if ($short) { return 1 }
     Write-Host "delta ${src_file} ${dest_file}"

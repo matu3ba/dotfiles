@@ -311,6 +311,9 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # fd -E excludepattern -maxdepth 1 clean.sh -t x -x rm {} \;
 # find files based on extension and delete ({} is implicit if not given)
 # fd -I -e o -t f -x rm {}
+# find files and exclude directory
+# fd --exclude '/nix/' --exclude '/mnt' docker /
+# fd --exclude '/nix/' docker /
 # find files based on regex and delete (implicit {})
 # fd -I -t d zig-cache -x rm -fr
 # find all files (with extension) in dir

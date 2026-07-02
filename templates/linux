@@ -51,6 +51,11 @@ systemd-analyze --system unit-paths
 incomplete:
 sudo systemctl --all list-unit-files --type=service
 
+systemd-run
+* Run specified command in transient scope or service.
+systemd-nspawn
+* Spawn command or OS in lightweight container.
+
 ====autostart
 $XDG_CONFIG_HOME/autostart - ~/.config/autostart/
 $XDG_CONFIG_DIRS/autostart - /etc/xdg/autostart

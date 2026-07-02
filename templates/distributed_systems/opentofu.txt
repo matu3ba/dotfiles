@@ -101,6 +101,35 @@ Terraform Best Practices
     only:
       - main
 
+https://www.env0.com/blog/lightning-talk-a-tale-of-three-configs-on-best-practices-with-opentofu-structuring
+
+
+* Best: use backend config with variables
+  - alternatives have either complex dir structure and/or have accidental wrong usage
+  - structure
+    main.tf
+    variables.tf
+    outputs.tf
+    backend.tf
+    variable "env" {}
+    locals {
+      env_to_bucket {
+        dev = "fe-dev-state"
+        prod = "fe-prod-state"
+      }
+    }
+    terraform {
+      backend "s3" {
+        bucket = local.env_to_bucket["var.env"]
+        key = "terraform.tfstate"
+        region = "us-east-1"
+      }
+    }
+tofu init -var="env=dev"
+tofu apply -var="env=dev"
+tofu init -var="env=prod"
+tofu apply -var="env=prod"
+
 ====general
 plugins are called providers https://opentofu.org/docs/language/providers/
 * used to interact with cloud providers, SaaS providers, and other APIs

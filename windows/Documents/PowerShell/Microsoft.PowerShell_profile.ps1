@@ -191,6 +191,7 @@ function GitCommitCheck {
   [string[]] $cached_file = [string[]]$(git --no-pager diff --cached --name-only)
   if ($diffed_file.Length -eq 0) { return 0; }
   if ($cached_file.Length -eq 0) { Write-Host "no files staged"; return 1; }
+  # much faster: $hash_diff = (Get-FileHash "$diffed_file" -Algorithm SHA256).Hash
   $cmp = Compare-Object $diffed_file $cached_file -PassThru -IncludeEqual -ExcludeDifferent
   if ($cmp.Length -eq 0) { return 0; }
   else {

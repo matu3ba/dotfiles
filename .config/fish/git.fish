@@ -1,6 +1,4 @@
 ## git abbreviations to get the nice shell completions ##
-abbr --add -g glgn 'git --no-pager log --name-only'
-abbr --add -g gshn 'git --no-pager show --name-only'
 abbr --add -g gwt   'git worktree'
 abbr --add -g grst  'git restore'
 abbr --add -g g     'git'
@@ -49,6 +47,8 @@ alias grph='git rev-parse HEAD'
 
 abbr --add -g gs   'git status'
 abbr --add -g gsh  'git show'
+abbr --add -g gshb 'git --no-pager show --no-patch --format="%B"'
+abbr --add -g gshn 'git --no-pager show --name-only'
 abbr --add -g gshm 'git show -m'
 abbr --add -g gsb  'git show -sb'
 abbr --add -g gss  'git show -s'
@@ -77,6 +77,7 @@ alias gu='git pull --no-rebase --ff-only'
 # ie to merge into master without checkout: git fetch . FROM:master
 abbr --add -g glgS 'git log -S' # git log search 'regex' -- file
 abbr --add -g glgs 'git log --show-signature'
+abbr --add -g glgn 'git --no-pager log --name-only'
 
 alias glg='git log --stat'
 alias glgp='git log --stat -p'

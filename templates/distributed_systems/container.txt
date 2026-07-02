@@ -1,0 +1,33 @@
+==debug
+
+==debug
+container debugging tool based on FUSE https://github.com/Mic92/cntr
+
+
+====clean_automatic
+======podman
+podman stop -a
+podman system prune -a -f
+podman volume prune -f
+
+======docker
+docker stop -a
+docker system prune -a -f
+docker volume prune -a -f
+
+====clean_manual
+======podman
+>ls /var/lib/containers/
+storage
+>ls ~/.local/share/containers/
+cache  podman  storage
+>ls ~/.cache/containers/
+>ls /var/lib/containers/
+>ls /tmp/containers-$USER/
+
+======docker
+>ls ~/.docker/
+
+
+>ls /run/podman/
+>ls /run/user/1000/podman/

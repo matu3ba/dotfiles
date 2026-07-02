@@ -1,3 +1,5 @@
+==iam
+
 youtube alternative: https://rumble.com/
 
 https://www.youtube.com/watch?v=gHqDEMrqTjE
@@ -83,3 +85,110 @@ https://github.com/coollabsio/coolify
 
 Network firewall rules
 https://utcc.utoronto.ca/~cks/space/blog/linux/NftablesImplementingAPflog
+
+==iam
+default html with strict browser settings only covers portably same-origin (scheme + domain + port) logins for browser via ORC
+requires
+* DNS
+* reverse proxy/same origin
+* ORC origin and policy for password delegation (ideally based on an object capability model)
+* Backend-for-Frontend (BFF) pattern
+* There appears to be no excellent guide on best practice design with security and trade-offs.
+
+[HTML-Attribut]
+autocomplete="username|current-password" | pw manager fields to fill
+rel="noopener|noreferrer"                | relation between linked resource and current document
+* controls credential leakage between origins
+[HTTP]
+[-Request header-]
+* Set-Cookie
+  SameSite=Strict|Lax|None                 | if cookie sent with cross-site requests
+* Authorization headers
+[-Response header-]
+Access-Control-Allow-Origin|Methods: *, Access-Control-Max-Age: [default 5 [in seconds]]
+  * response with Access-Control-Allow-Credentials true (for preflight requests)
+  * Origin: single origin which tells browsers to allow that origin to access the resource
+    xor allow any origin to access the resource (URL xor *)
+  * Cross-Origin Resource Sharing (CORS), https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS
+  * Access-Control-Allow-Origin where?
+  * q: can java do this? java tomcat not that simple to set fitting allow-orogin from list
+  * only accessed by browser, not javascript
+    - nginx: proxy with load balancer?
+    - dns based switchover?
+  * nginx as switchover service
+  * angular
+  * resource server -> check bearer/secret
+  * keycloak
+> CORS prevents foreign website using company services
+> curl always works
+  * threat Cross-site request forgery (CSRF) https://developer.mozilla.org/en-US/docs/Glossary/CSRF
+    - company website login > other website creating formulat to create POST request against company website
+      * hidden field as secret sent from server
+  * tab with session storage
+    - browser sets cookie to domain independent from tab
+      * company website uses access token hold by angular, never cookies
+> CSRF prevents inclusion of company services by foreign websites
+Q: Does Keycloak or do Keycloak plugins use cookies to store the secrets?
+A: Depends on usage. Secrets have to be persistent somewhere and user wants
+generally have the option to use multiple tabs. TLS ensure website origin integrity.
+
+[API]
+Request.credentials to indicate: omit (never in req or include in resp),
+  same-origin (default), include (always, even for cross-origin requests)
+about:logins
+
+> Keycloak typically uses cookies to manage sessions and store tokens on the
+> client side. Those cookies are mostly "secure HTTP-only domain-bounded"
+> cookies.
+There is https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API, but the use
+cases are very unclear and it looks overkill, when we can control DNS, CORS,
+proxies, TLS and thus origin confidentiality, integrity and reasonable availability.
+
+Depending on browsre configuration there are more things to take into consideration
+https://skycloak.io/blog/keycloak-fedcm-third-party-cookie-deprecation/ and it is recommended
+against CSRF to do BFF, meaning to move session mangement into service layer with
+guide as link in instruction.
+Without BFF one would have to always validate CSRF token at server-side
+https://corgea.com/learn/angular-security-best-practices-2025.
+
+Answer as short as possible with edge cases and ask, when anything is unclear
+before answering. Consider me changing default model on failure. Can I use
+Keycloak with Javascript/Typescript/Angular in the browser as client without
+BFF pattern to not store login data via cookies ? If yes, link the
+guide/article or how to find it with keywords and briefly outline the ideas and
+concepts.
+
+slop keycloak setup instructions
+I'll search for information on browser-based Keycloak integration without BFF.
+Yes, absolutely. Use OAuth 2.0 Authorization Code Flow + PKCE (no cookies needed).
+Key guides
+    Official Keycloak docs: https://www.keycloak.org/securing-apps/javascript-adapter keycloak
+    Angular-specific: https://skycloak.io/blog/guiding-you-on-how-to-integrate-keycloak-with-angular/ skycloak
+    PKCE setup guide: https://skycloak.io/blog/keycloak-how-to-create-a-pkce-authorization-flow-client/ skycloak
+Core concepts
+    Public client (no secret stored in browser) + PKCE handshake replaces client secret
+    Authorization Code Flow: Browser redirects to Keycloak → user logs in → browser gets code → SPA exchanges code for tokens
+    Tokens in memory (not cookies) → access/refresh tokens stored in JS variables, not localStorage (XSS risk)
+    Configuration: Use pkceMethod: "S256" in keycloak-js init options  medium
+    No BFF needed: The official keycloak-js library + Angular adapter handle this directly
+Libraries
+    keycloak-js + keycloak-angular for Angular
+    Or raw keycloak-js for vanilla JS/TS
+Edge case: Silent SSO (check-sso) breaks on modern browsers blocking third-party cookies—disable checkLoginIframe or use onLoad: 'login-required' if needed
+
+BFF pattern https://skycloak.io/blog/keycloak-backend-for-frontend-bff-pattern/
+* essentially middleware doing session tracking for secrets etc
+* application gets opaque handle
+* integrity based on TLS
+
+Single-page applications face a fundamental security problem: they run entirely
+in the browser, an environment where secrets cannot be kept. Storing OAuth
+tokens in localStorage or sessionStorage exposes them to cross-site scripting
+(XSS) attacks. The Backend-for-Frontend (BFF) pattern solves this by
+introducing a thin server-side layer that handles authentication on behalf of
+the frontend, keeping tokens where they belong — on the server.
+https://skycloak.io/blog/keycloak-fedcm-third-party-cookie-deprecation/
+
+https://www.keycloak.org/docs/25.0.6/securing_apps/index.html
+https://www.angulararchitects.io/blog/oauth2-with-spring-angular-keycloak-spring-for-resource-server/
+https://blog.angular-university.io/angular-jwt-authentication/

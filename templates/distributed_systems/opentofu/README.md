@@ -22,3 +22,11 @@ https://github.com/infracost/infracost
 5. All-in-one security analyzer https://github.com/aquasecurity/trivy
 
 https://opentofu.org/docs/language/modules/
+
+https://www.env0.com/blog/a-guide-to-the-terraform-state-file
+TODO
+
+https://opentofu.org/docs/cli/commands/plan/
+
+https://oneuptime.com/blog/post/2026-03-20-tofu-init-initialize-project/view
+https://opentofu.org/docs/cli/commands/init/

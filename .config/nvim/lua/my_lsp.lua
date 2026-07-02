@@ -1,6 +1,7 @@
 --! Lsp config
 -- luacheck: globals vim
 -- luacheck: no max line length
+-- get logs :lua =require('vim.lsp.log').get_filename()
 
 -- lsp protocol
 -- 1. file opened in editor -> editor supposed to inform server about changes to
@@ -115,6 +116,8 @@ end
 -- CompileFlags:
 --   Add: [-std=c++20]
 
+-- nx is technically not a good solution, for example due to no security descriptions
+-- alternatives to biome by startup void offering cloud integration and tools vite, vitest, rolldown: oxc
 vim.lsp.config('biome', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('clangd', { capabilities = common_capabilities, on_attach = common_on_attach })
 vim.lsp.config('julials', { capabilities = common_capabilities, on_attach = common_on_attach })

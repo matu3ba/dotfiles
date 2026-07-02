@@ -15,3 +15,61 @@ TODO
 https://troglobit.com/post/2024-08-07-buildroot-development-environment/
 
 ====yocto
+
+====mise
+o mise ENV
+  * mise -E staging en
+    + new shell vs load complete toml file
+  * scw secrets tool etc
+    + tools true to enable in tool
+    + redact can filter secrets from output
+o can modify PATH for wrapper scripts
+o can show nice status settings
++ very fast
++ package manager
+  * including signed lockfile
++ dependency-based task runner: mise run
+  * inline: echo '{"name":"name1"}' | jq.name
+  * task can provide own dependencies
+  * task from git can be shared (including dependencies), ie tagged from git etc
++ group tasks, tasks hiding/quieting
+- CI setup
+  * triple runtime for tasks, possibly due to PATH search
+    * ~30s cache download
+    * ~30s tool dependency installing
+  * e2e tests?
+
+mise.toml
+[tools]
+"npm:release"
+backends
+aqua standard backend (advanced asdf implementation)
+* optional paranoia modus
+* chain of trust vs asdf without chain of trust
+* hadolint very simple to version
+
+[tasks.name1]
+depends = ["name2","name3"]
+run = "echo hello world"
+run = '''
+
+'''
+>"fin"
+
+[tasks.name2]
+run = "echo name2"
+
+[tasks.name3]
+depends = ["name2"]
+run = { task = "greet", arg = "name3"}
+
+[tasks.greet]
+usage = 'arg <name> help="name"'
+run = "echo $usage"
+
+#!/usr/bin/env sh
+#MISE description="foo"
+
+#!/usr/bin/env node
+#MISE tools.node = "latest"
+console.log("hello, world!");

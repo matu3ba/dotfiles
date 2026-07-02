@@ -1,0 +1,32 @@
+flake.nix
+packages = with pkgs; [ fish nodejs_22 docker curl jq dotnet-sdk_8 ];
+
+dotnet new web -n MyApp
+cd MyApp
+dotnet run -- --url=http://example.com --realm=myrealm --clientId=myclient --urls=http://localhost:5001/
+dotnet run -- --urls=http://localhost:5001/
+
+==Program.cs
+// Default Keycloak config
+var kc_url = "http://localhost:8080";
+var kc_realm = "my-app";
+var kc_clientId = "angular-app";
+var error = false;
+
+foreach (var arg in args)
+{
+    if (arg.StartsWith("--kc_url=")) kc_url = arg["--kc_url=".Length..];
+    else if (arg.StartsWith("--kc_url=")) kc_realm = arg["--kc_realm=".Length..];
+    else if (arg.StartsWith("--kc_clientId=")) kc_clientId = arg["--kc_clientId=".Length..];
+    else if (arg.StartWith("--urls=") // ignore setting urls via CLI
+    else error = true;
+}
+
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
+
+app.MapGet("/api/keycloak", () => error
+    ? Results.Json(new { kc_url = "", kc_realm = "", kc_clientId = "" }, statusCode: 500)
+    : Results.Json(new { kc_url, kc_realm, kc_clientId }, statusCode: 200));
+
+app.Run();
