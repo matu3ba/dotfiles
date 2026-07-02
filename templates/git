@@ -240,3 +240,7 @@ pws> git config --system core.longpaths true
 
 beautiful commit messages: https://github.com/rocketraman/gitworkflow
 * trade-off being more complicated
+
+====agit
+agit workflow: review workflow without website slowdown
+* requires git hoster support

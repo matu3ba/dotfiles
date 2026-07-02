@@ -32,6 +32,7 @@ $env:Editor = "nvim"
 #     Write-Host "$Count <= 0 or no number"; return
 #   }
 
+#====Start-Process
 #====common_cli
 #====shortcuts
 #====aliases
@@ -52,6 +53,7 @@ $env:Editor = "nvim"
 #         DOTNET_TELEMETRY_OPTOUT=1 \
 #         COMPlus_EnableDiagnostics=0
 
+#====Start-Process
 # help Start-Process
 #Start-Process
 # [-FilePath] <string> [[-ArgumentList] <string[]>] [-Credential <pscredential>]
@@ -60,6 +62,14 @@ $env:Editor = "nvim"
 # [-RedirectStandardOutput <string>] [-WindowStyle <ProcessWindowStyle>]
 # [-Wait] [-UseNewEnvironment] [-Environment <hashtable>] [-WhatIf] [-Confirm]
 # [<CommonParameters>]
+
+# Powershell-only
+# * redirection of stdin/stdout/stderr requires NoNewWindow and creates contention due to sharing same conhost with spawned process
+#   - Keyboard input events are delayed/queued behind I/O processing (or can be dropped/need to be repeated)
+#   - NoNewWindow=$true, RedirectStandardOutput="out.log", RedirectStandardError="error.log"
+# * $null = $service_processes[-1].Handle keeps handles open => PS polls/waits on these handles in its event loop
+# * no redirection has no contention
+#   - NoNewWindow=$false, WindowStyle="Hidden"
 
 #====common_cli
 # copy to clipboard including newline: pwd | clip
@@ -140,7 +150,8 @@ New-Alias -Name gbrt -Value GitBranchRemoteTracking -Force -Option AllScope
 New-Alias -Name gc -Value GitCommitSign -Force -Option AllScope
 New-Alias -Name gcf -Value GitCommitFixup -Force -Option AllScope
 New-Alias -Name gcs -Value GitCommitSquash -Force -Option AllScope
-New-Alias -Name gca -Value GitCommitAmend -Force -Option AllScope
+New-Alias -Name gca -Value GitCommitAmendSign -Force -Option AllScope
+New-Alias -Name gcan -Value GitCommitAmendNoSign -Force -Option AllScope
 New-Alias -Name gcn -Value GitCommitNoSign -Force -Option AllScope
 New-Alias -Name gd -Value GitDiff -Force -Option AllScope
 New-Alias -Name gdNo -Value GitDiffNoColor -Force -Option AllScope
@@ -161,6 +172,7 @@ New-Alias -Name gpsuu -Value GitPushSetUpstreamUpstream -Force -Option AllScope
 New-Alias -Name grv -Value GitRemoteVerbose -Force -Option AllScope
 New-Alias -Name gs -Value GitStatus -Force -Option AllScope
 New-Alias -Name gsh -Value GitShow -Force -Option AllScope
+New-Alias -Name gshb -Value GitShowBody -Force -Option AllScope
 New-Alias -Name gshn -Value GitShowNameOnly -Force -Option AllScope
 New-Alias -Name gsr -Value GitShowRemote -Force -Option AllScope
 New-Alias -Name gsto -Value GitStashPop -Force -Option AllScope
@@ -218,7 +230,8 @@ function GitBranch { & git branch $args }
 function GitBranchAll { & git branch -avv $args }
 function GitBranchRemote { & git branch --remote $args }
 function GitBranchRemoteTracking { & git rev-parse --abbrev-ref --symbolic-full-name '@{u}' }
-function GitCommitAmend { & git commit --amend $args }
+function GitCommitAmendSign { & git commit --amend -S $args }
+function GitCommitAmendNoSign { & git commit --amend $args }
 function GitCommitNoSign { & git commit -v $args }
 function GitCommitSign { & git commit -v -S $args }
 function GitCommitFixup { & git commit --fixup $args }
@@ -242,6 +255,10 @@ function GitPushSetUpstreamDownstream { & git push --set-upstream downstream $(g
 function GitPushSetUpstreamUpstream { & git push --set-upstream upstream $(git branch --show-current) $args }
 function GitRemoteVerbose { & git remote -v }
 function GitShow { & git show $args }
+function GitShowBody {
+  param([Parameter(Mandatory, Position=0)] [string]$Branch)
+  return & git show --no-patch --format="%B" $Branch
+}
 function GitShowNameOnly { & git show --name-only $args }
 function GitShowRemote { & git remote show roigin $args }
 function GitStashPop { & git stash pop $args }
@@ -294,6 +311,10 @@ function Reset-ToBranchAndCherryPickLastCommits {
         Write-Host "cherry-pick failed, reverting.."
         git cherry-pick --abort 2>$null
         git reset --hard $original_head
+    } else {
+        Write-Host "OK, reproduce via"
+        Write-Host "git reset --hard $Branch"
+        Write-Host "git cherry-pick `"$prev_head..$original_head`""
     }
 }
 
@@ -449,3 +470,21 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # $UserName = "$env:USERDOMAINNAME\$env:USERNAME"
 #
 #fd -uu 'search_entry' | Where-Object { $_ -match "item1|item2|item3|item3"}
+
+function startProcessRedirect {
+  $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+  $pinfo.FileName = "ping.exe"
+  $pinfo.RedirectStandardError = $true
+  $pinfo.RedirectStandardOutput = $true
+  $pinfo.UseShellExecute = $false
+  $pinfo.Arguments = "localhost"
+  $p = New-Object System.Diagnostics.Process
+  $p.StartInfo = $pinfo
+  $p.Start() | Out-Null
+  $p.WaitForExit()
+  $stdout = $p.StandardOutput.ReadToEnd()
+  $stderr = $p.StandardError.ReadToEnd()
+  Write-Host "stdout: $stdout"
+  Write-Host "stderr: $stderr"
+  Write-Host "exit code: " + $p.ExitCode
+}

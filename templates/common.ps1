@@ -11,6 +11,7 @@
 #====access_control
 #====encoding
 #====string_ops
+#====hashtable
 
 #====tools
 # https://dscottraynsford.wordpress.com/2017/11/18/auto-formatting-powershell-in-visual-studio-code/
@@ -191,6 +192,101 @@ function Get-ShakedownUriServiceName {
   }
   [tuple]::Create($service, $type)
 }
+
+#====hashtable
+# https://evotec.xyz/blog/powershell-few-tricks-about-hashtable-and-array-i-wish-i-knew-when-i-started/
+function expression_initialization {
+  $SomeData = @('be', 'me', 'one', 'more', 'time')
+  $MyOtherArray1 = foreach ($Something in $SomeData) {
+      "MyValue $Something"
+  }
+}
+function expression_fn_return {
+  $SomeData = @('be', 'me', 'one', 'more', 'time')
+  foreach ($Something in $SomeData) {
+      "MyValue $Something"
+  }
+}
+function fn_always_returns_array {
+    param(
+        [string[]] $Test
+    )
+    [Array] $Output = foreach ($my in $Test) {
+        $my
+    }
+    if ($Output -is [array]) {
+        Write-Color 'Array' -Color Green
+    }
+    , $Output # force array return, not accidental string
+}
+function validate_fn_always_returns_array {
+  Write-Color 'validate_fn_always_returns_array' -Color Cyan
+  $Value1 = Show-ThirdExample -Test 'one', 'two'
+  $Value1 -is [array]
+  $Value2 = Show-ThirdExample -Test 'one'
+  $Value2 -is [array]
+}
+function complex_expression_assignment {
+  $Output = @(
+        if ($Test -contains 'one') {
+            'one'
+        }
+        if ($Test -contains 'two') {
+            'two'
+        }
+        foreach ($T in $Test) {
+            "modified$T"
+        }
+        $i = 1
+        do {
+            $i++
+            'one'
+        } while ($i -le 5)
+    )
+    , $Output
+
+}
+# Always use expression assignment for performance!
+
+function hashtable_interface {
+    param(
+        [System.Collections.IDictionary] $Table
+    )
+    $Table | Format-Table -AutoSize
+}
+function use_hashtable_interface {
+  $ht_interface_ordered_data = [ordered] @{
+      Name    = 'Ordered Przemek'
+      Surname = 'Klys'
+      Job     = 'IT'
+  }
+  $ht_interface_unordered_data = @{
+      Name    = 'Unordered Przemek'
+      Surname = 'Klys'
+      Job     = 'IT'
+  }
+  hashtable_interface $ht_interface_ordered_data
+  hashtable_interface $ht_interface_unordered_data
+}
+function generic_list_typed {
+  $SomeData = @('be', 'me', 'one', 'more', 'time')
+  $GenericList1 = [System.Collections.Generic.List[string]]::new()
+  foreach ($Something in $SomeData) {
+    $GenericList1.Add("MyValue $Something")
+  }
+  $GenericList1 -join ','
+
+  # deprecated by microsoft, prefer typed container for performance
+  # $ArrayList1 = [System.Collections.ArrayList]::new()
+  # foreach ($Something in $SomeData) {
+  #   $null = $ArrayList1.Add("MyValue $Something")
+  # }
+  # $ArrayList1 -join ','
+}
+
+
+#====events
+# https://evotec.xyz/blog/powershell-everything-you-wanted-to-know-about-event-logs/
 
 # only checks for exceptions and externally invoked commands
 # does not check function return values

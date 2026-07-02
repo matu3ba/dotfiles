@@ -160,6 +160,39 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CrashControl
 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
 * set a debugger as the postmortem debugger
 REG_SZ string "C:\debuggers\windbg.exe" -p %ld -e %ld -g
+# edit registry
+HKEY_CURRENT_USER/HKEY_LOCAL_MACHINE
+Get-ItemProperty -Path "HKCU\Software\Microsoft\Office\16.0\Outlook\test123"
+Get-ItemProperty -Path "HKLM:\Software\Microsoft\Office\16.0\Outlook\test123"
+Set-ItemProperty -Path "HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook\test123" -Name "name" -Value "val"
+Get-Item -Path "HKLM:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+New-Item -Path "HKLM:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+
+faster alternative:
+$key = 'HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook'
+$value = 'QueryBuilder'
+$valueData = ""
+$valueType = [Microsoft.Win32.RegistryValueKind]::DWord
+[Microsoft.Win32.Registry]::SetValue($key, $value, $valueData, $valueType)
+ie to fix ms outlook use:
+HKEY_CURRENT_USER/HKEY_LOCAL_MACHINE (HKCU, HKLM) works:
+1 remove HKEY_LOCAL_MACHINE, if existing
+Get-Item -Path "HKLM:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+Remove-Item -Path "HKLM:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+2 remove HKEY_CURRENT_USER = admin, if existing
+admin (if admin was used)
+Get-Item -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+Remove-Item -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+3 add HKEY_CURRENT_USER = USER, if not existing
+Get-Item -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+New-Item -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
+and restart PC, then start ms outlook.
+4 close outlook
+5 delete relevant outlook cache objects under C:\Users\$USER\AppData\Local\Microsoft\Outlook
+rm team-contract@cambio-carsharing.com.ost
+rm 16\OutlookConfig.Team-Contract@cambio-carsharing.com.json
+rm 16\AutoD.Team-Contract@cambio-carsharing.com.xml
+6 start outlook
 
 Monitoring Silent Process Exit https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/registry-entries-for-silent-process-exit
 * Self termination
