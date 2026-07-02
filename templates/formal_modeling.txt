@@ -740,7 +740,7 @@ System implementation details towards correctness:
      serialized and unserialized)
 - 2. Correctness requires to limit functionality to what is necessary
 - 3. Correctness requires to have a system to limit expressivity
-- 4. Correctness requires an axiomatic functional model
+- 4. Correctness requires an axiomatic-operational functional model
 - 5. Correctness requires a functional proof of all related parts in an abstract model
 - 6. Full trust into correctness requires a fully mechanized proof of all code
      under a correct model of hardware for all known hardware assumptions

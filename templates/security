@@ -176,6 +176,8 @@ sel4 : specific individual capabilities
 
 https://github.com/dckc/awesome-ocap
 TODO explain capabilities and how regular OS lack and their trade-offs
+https://www.ntecs.de/blog/2023-04-16-fighting-supply-chain-attacks-using-object-capabilities/
+TODO explain object capabilities in languages
 
 ====apparmor
 https://apparmor.pujol.io/

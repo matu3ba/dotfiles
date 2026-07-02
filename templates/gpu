@@ -154,6 +154,7 @@ drivers buggy
   chasing features for the sake of features (with lower efficiency); for linux only
 * trade-off 2: NVK project with https://www.collabora.com/news-and-blog/news-and-events/introducing-nvk.html
   and track whatever Vulkan is doing and track upstream or maintain
+  - Faith Ekstrand
 * trade-off 3: WGPU/WebGPU (portably used) should be always ok, unless one knows the bugs
 
 GPU pipeline

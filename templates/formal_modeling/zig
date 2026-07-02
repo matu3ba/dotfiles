@@ -24,3 +24,4 @@ n. should this system also express initialization via 'uninit' ?
 n+1. should this system also express releasing resources (owning, ctor,dtor relations)?
 
 effort estimation for the solver of more complex cases, meaning axiomatic/manual?
+* operational semantics

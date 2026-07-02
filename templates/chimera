@@ -222,7 +222,8 @@ kde inotify problems
   akonadictl stop
   akonadictl status
   ~/.config/akonadi/akonadiserverrc
-  * add last line unindented: StartServer=true
+  * last line unindented StartServer=true
+    - looks like it does not work
 
 ====custom
 * tlp: apk add tlp
