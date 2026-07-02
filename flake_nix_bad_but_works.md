@@ -106,3 +106,40 @@ solution
 
 7. Image and install size of NixOS WSL is ~2 GB, which is very big for a Linux VM.
    Compare that to 500MB for Standard Ubuntu.
+
+8. Podman (and docker) can have userspace networking being out of sync with overlay filesystem state
+   resulting in container layers becoming orphaned and permission-denied errors preventing cleanup.
+   This happens specifically on NixOS WSL, but also on MacOS and other nested containers, overlays
+   or other virtualization technologies with overlay and synchronization bugs.
+   In WSL systemd is fragile, namespace complexity high and reboot can lose mount
+   state mid-operation. Likewise, Mac virtualization has namespace/mount sync problems.
+   ```
+   1 Prevent broken podman on WSL restart
+   systemctl --user mask podman-restart.service
+   # update nix-os
+   systemctl --user unmask podman-restart.service
+
+   2 Fix broken podman container
+   # 1. Stop podman daemon completely
+   podman machine stop 2>/dev/null || true
+   systemctl --user stop podman 2>/dev/null || true
+   # 2. Unmount any remaining overlays
+   sudo umount -l /tmp/containers-$USER/overlay/*/diff 2>/dev/null || true
+   sudo umount -l /tmp/containers-$USER/overlay/*/work 2>/dev/null || true
+   # 3. Delete with elevated permissions
+   sudo rm -rf /tmp/containers-$USER/
+   sudo rm -rf ~/.local/share/containers/
+   # 4. Restart podman cleanly
+   podman machine start 2>/dev/null || systemctl --user start podman
+   ```
+   General solution to prevent broken containers (push-based garbage collection
+   model, atomic transaction log, centralized resource tracking): Use
+   systemd-nspawn, Incus or Lima on Mac.
+   So, basically the solution to virtualization (in unreliable environments) is
+   a file system.
+
+9. There is no overview/excellent guide on virtualization in NixOS, which would have saved
+   me significant time instead of slowly asking LLMs answer by answer. Further, I would
+   expect from a excellent virtualization environment to have a mode to detect such
+   problems, but neither docker or podman offer such functionality.
+   Maybe, once file systems are moved to user space, better tools will be made.
