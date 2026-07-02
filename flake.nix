@@ -134,6 +134,19 @@
     #   # TODO shared home module used as
     # };
   in {
+    # TODO linter etc setup
+    # nodejs_22
+    # devShells.${system}.default = pkgs.mkShell {
+    #   name = "keycloak-angular";
+    #   packages = with pkgs; [ fish nodejs_22 biome docker curl jq dotnet-sdk_10 ];
+    #   shellHook = ''
+    #     export NPM_CONFIG_PREFIX="$PWD/.npm-prefix"
+    #     mkdir -p "$NPM_CONFIG_PREFIX"
+    #     export PATH="$NPM_CONFIG_PREFIX/bin:$PWD/node_modules/.bin:$PATH"
+    #     exec ${pkgs.fish}/bin/fish
+    #   '';
+    # };
+
     nixosConfigurations = {
       wsl = nixpkgs.lib.nixosSystem {
         modules = [
