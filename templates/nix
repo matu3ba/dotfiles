@@ -1,4 +1,11 @@
 ====edge_cases
+====ci
+====cache
+====build
+====deployment
+====testing
+
+====edge_cases
 https://wiki.nixos.org/wiki/Nix_Language_Quirks
 soo many quirks..
 
@@ -376,3 +383,30 @@ Use case constrains of package managers
 3. regular linux distros with global dep graph (may break without easy rollback)
 4. systemd/dbus/pipewire as one size fits all thing competing with pkg manager, takes over everything (see systemd-boot) making the whole thing harder
 5. build server: own build server and packager things are easy again
+
+====ci
+garnix https://github.com/garnix-io/garnix-ci
+comparison https://github.com/garnix-io/benchmarks
+forced to use github https://github.com/juspay/github-nix-ci
+
+====cache
+https://wiki.nixos.org/wiki/Binary_Cache
+private cache https://www.channable.com/tech/setting-up-a-private-nix-cache-for-fun-and-profit
+interesting caching hints for browsers etc https://github.com/numtide/nar-serve
+
+====build
+https://numtide.com/blog/how-to-use-nix-flakes-to-manage-c-libraries-and-header-files/
+* not sure if thats best practice, but certainly simplifies consistent behavior
+  and caching
+
+====deployment
+https://numtide.com/blog/it-takes-68-steps-to-deploy-odoo-with-nixos/
+* all steps needed to deploy NixOS with example application Odoo
+barebone installation nixos https://github.com/nix-community/nixos-anywhere
+* https://numtide.com/blog/we-dont-need-nixos-cloud-images-anymore-2/
+
+====testing
+https://numtide.com/blog/nix-vm-test-reproducible-integration-tests/
+* There are likely better alternatives to nix-vm-test.
+* TODO ask about caching behavior manipulation for task steps etc
+nixos compose https://github.com/garnix-io/nixos-compose

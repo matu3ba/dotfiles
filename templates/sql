@@ -3,6 +3,7 @@
 ====solutions
 ====ideal_solutions
 ====semantic_problems_orm
+====postgres_perf
 
 list foreign keys of table1
 EXEC sp_fkeys 'table1'
@@ -158,3 +159,9 @@ object-relation mapping (ORM)
 * shows perf problems due to hidden sync and mutexes of ORM
 * postgres
   test=# SELECT locktype, relation::regclass, mode, transactionid AS tid, virtualtransaction AS vtid, pid, granted FROM pg_locks;
+
+====postgres_perf
+https://www.channable.com/tech/postgres-performance-lessons-1
+https://www.channable.com/tech/postgres-performance-lessons-2
+https://www.channable.com/tech/dbcritic-constructively-criticizing-your-postgres-schema
+* use dbcritic on postgres schemas

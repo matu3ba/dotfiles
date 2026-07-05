@@ -63,7 +63,7 @@ Difference between 2.4 and 2.5 ?
           environment.systemPackages = with pkgs; [ neovim git ];
         };
       in {
-      }
+      };
 
 4. Problem Bizarre syntax errors are not helpful
    cannot put a module function directly inside the modules = [ … ] list; NixOS
@@ -134,7 +134,7 @@ solution
    ```
    General solution to prevent broken containers (push-based garbage collection
    model, atomic transaction log, centralized resource tracking): Use
-   systemd-nspawn, Incus or Lima on Mac.
+   systemd-nspawn, Incus or Lima.
    So, basically the solution to virtualization (in unreliable environments) is
    a file system.
 

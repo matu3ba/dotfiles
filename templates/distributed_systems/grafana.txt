@@ -8,6 +8,7 @@ https://www.parseable.com/blog/grafana-loki-vs-parseable#architecture-deep-dive
 https://oneuptime.com/blog/post/2026-02-06-iis-receiver-opentelemetry-collector/view
 Clickhouse SQL queries much, much better
 * alternatives parguqe (Rust)
+* upfront cost of queries, but simple and arbitrary scaling
 
 Loki log
 * timestamp with nanosecond precision UTC+0 [indexed]

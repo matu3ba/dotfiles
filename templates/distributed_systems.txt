@@ -13,6 +13,7 @@
 ====Infrastructure_as_Code
 ====opentofu
 ====security
+====optimizing
 
 https://github.com/donlon/cloudflare-error-page
 https://notes.nicolevanderhoeven.com/How+Loki+stores+data
@@ -281,3 +282,6 @@ https://github.com/Cosmian/kms ??
 5 client concept (standard solution?)
 => specialized tools dont solve problems due to missing standards by workflows,
 specialized tools only help on minimizing attack surface
+
+====optimizing
+https://www.channable.com/tech/how-we-optimized-cluster-wide-scheduling-for-sticky-workloads
