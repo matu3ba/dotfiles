@@ -143,3 +143,57 @@ solution
    expect from a excellent virtualization environment to have a mode to detect such
    problems, but neither docker or podman offer such functionality.
    Maybe, once file systems are moved to user space, better tools will be made.
+
+10. The name `legacyPackages` is bad, because it uses lazy evluation needed by
+   the massive attrset (>80k packages). It only exists, because early flake
+   proposals wanted outputs based on strict evaluation for simpler reasoning
+   and faster CI. More annoyingly, one can often get around usage of
+   `legacyPackages` except for cases like `devShells.x86_64-linux.default =
+   nixpkgs.legacyPackages.x86_64-linux.mkShell`.
+
+11. Modules can infer `pkgs` from `hostPlatform`, but root steps like dev shells
+   have no option to infer it. This is bizarre, because one should be able to infer
+   or set it. It is probably related to a missing host and target model and other missing
+   pieces like missing abi model leading to nasty behavior on cross-compiling vs native
+   compilation of the store and cache.
+   ```nix
+{
+  description = "Smallish NixOS-WSL flake";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixos-wsl.url = "github:nix-community/NixOS-WSL";
+  };
+
+  outputs = { nixpkgs, nixos-wsl, home-manager,... }:
+  let
+    sharedModule = { pkgs, ... }: {
+      environment.systemPackages = with pkgs; [ neovim git docker-compose ];
+      ..
+    };
+    system = "x86_64-linux";
+    pkgs = import nixpkgs { inherit system; };
+  in {
+    devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+      name = "dotfiles ci";
+      packages = with pkgs; [ biome curl dotnet-sdk_10 fish opentofu jq ];
+      shellHook = ''
+        exec ${pkgs.fish}/bin/fish
+      '';
+    };
+    nixosConfigurations = {
+      wsl = nixpkgs.lib.nixosSystem {
+        modules = [
+          sharedModule
+          nixos-wsl.nixosModules.wsl
+          ({ config, lib, pkgs, ... }: {
+            nixpkgs.hostPlatform = "x86_64-linux";
+            system.stateVersion = "25.11";
+            ..
+          })
+        ];
+      };
+    };
+  };
+}
+   ```
