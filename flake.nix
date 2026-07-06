@@ -54,6 +54,7 @@
 # last resort debug: grep -R "STORE_PATH" /nix/store/*.drv
 #==hot_fix
 # sudo nix-store --verify --check-contents --repair
+# sudo nix-store --verify --check-contents --repair --check-contents
 
 #==search
 # https://search.nixos.org/packages better: nix search nixpkgs fd
@@ -72,17 +73,18 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    zig-flake.url = "github:silversquirl/zig-flake";
     # nix-index-database.url = "github:nix-community/nix-index-database"; # locate pkg in nixpkgs
     # nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     # inputs.nur.url = "github:nix-community/NUR";
   };
 
-  outputs = { nixpkgs, nixos-wsl, home-manager,... }:
+  outputs = { nixpkgs, nixos-wsl, home-manager, zig-flake, ... }:
   let
     sharedModule = { pkgs, ... }: {
       # packages maven javaPackages.compiler.openjdk17
       # podman-compose not yet sufficiently compatible
-      environment.systemPackages = with pkgs; [ neovim git docker-compose opentofu ];
+      environment.systemPackages = with pkgs; [ neovim git docker-compose ];
       # podman needs /etc/subuid, /etc/subgid
       environment.extraInit = ''
         if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
@@ -130,22 +132,25 @@
       nix.settings.auto-optimise-store = true;
 
     };
+    # Host, Target and ABI are incoherent in Nix. Need this for top level steps
+    # like devShells.x86_64-linux.default
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+
     # sharedHomeModule = { pkgs, ... }: {
     #   # TODO shared home module used as
     # };
   in {
-    # TODO linter etc setup
-    # nodejs_22
-    # devShells.${system}.default = pkgs.mkShell {
-    #   name = "keycloak-angular";
-    #   packages = with pkgs; [ fish nodejs_22 biome docker curl jq dotnet-sdk_10 ];
-    #   shellHook = ''
-    #     export NPM_CONFIG_PREFIX="$PWD/.npm-prefix"
-    #     mkdir -p "$NPM_CONFIG_PREFIX"
-    #     export PATH="$NPM_CONFIG_PREFIX/bin:$PWD/node_modules/.bin:$PATH"
-    #     exec ${pkgs.fish}/bin/fish
-    #   '';
-    # };
+
+    # tofu-ls
+    devShells.${system}.default = pkgs.mkShellNoCC {
+      name = "dotfiles ci";
+      packages = with pkgs; [ biome clang-tools curl dotnet-sdk_10 fish jq luaPackages.luacheck opentofu shellcheck stylua ];
+      buildInputs = [ zig-flake.packages.${system}.nightly ];
+      shellHook = ''
+        exec ${pkgs.fish}/bin/fish
+      '';
+    };
 
     nixosConfigurations = {
       wsl = nixpkgs.lib.nixosSystem {
