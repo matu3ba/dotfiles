@@ -125,10 +125,20 @@ https://www.env0.com/blog/lightning-talk-a-tale-of-three-configs-on-best-practic
         region = "us-east-1"
       }
     }
-tofu init -var="env=dev"
-tofu apply -var="env=dev"
-tofu init -var="env=prod"
-tofu apply -var="env=prod"
+* Typical values for explicit ENV in commands: dev, prod, local
+tofu init -var="env=ENV"
+tofu plan -var="env=ENV"
+tofu apply -var="env=ENV"
+tofu destroy -var="env=ENV"
+
+tofu validate
+tofu-ls, lsp: https://github.com/opentofu/tofu-ls
+
+tofu plan -var-file=./envs/local.tfvars -var="keycloak_base_url=$BOOTSTRAP_KEYCLOAK_URL"
+tofu apply -auto-approve -var-file=./envs/local.tfvars -var="keycloak_base_url=$BOOTSTRAP_KEYCLOAK_URL"
+tofu plan --destroy -var-file=./envs/local.tfvars -var="keycloak_base_url=$BOOTSTRAP_KEYCLOAK_URL"
+tofu destroy -auto-approve -var-file=./envs/local.tfvars -var="keycloak_base_url=$BOOTSTRAP_KEYCLOAK_URL"
+tofu output service_account_client_secrets
 
 ====general
 plugins are called providers https://opentofu.org/docs/language/providers/
@@ -211,3 +221,53 @@ winget install --exact --id=OpenTofu.Tofu
 ====usage
 tofu fmt -check -recursive .
 .tf files must have newline at end of file: \ No newline at end of file
+
+Main commands:
+  init          Prepare your working directory for other commands
+  validate      Check whether the configuration is valid
+  plan          Show changes required by the current configuration
+  apply         Create or update infrastructure
+  destroy       Destroy previously-created infrastructure
+
+All other commands:
+  console       Try OpenTofu expressions at an interactive command prompt
+  fmt           Reformat your configuration in the standard style
+  force-unlock  Release a stuck lock on the current workspace
+  get           Install or upgrade remote OpenTofu modules
+  graph         Generate a Graphviz graph of the steps in an operation
+  import        Associate existing infrastructure with a OpenTofu resource
+  login         Obtain and save credentials for a remote host
+  logout        Remove locally-stored credentials for a remote host
+  metadata      Metadata related commands
+  output        Show output values from your root module
+  providers     Show the providers required for this configuration
+  refresh       Update the state to match remote systems
+  show          Show the current state or a saved plan
+  state         Advanced state management
+  taint         Mark a resource instance as not fully functional
+  untaint       Remove the 'tainted' state from a resource instance
+  version       Show the current OpenTofu version
+  workspace     Workspace management
+
+Global options (use these before the subcommand, if any):
+  -chdir=DIR    Switch to a different working directory before executing the
+                given subcommand.
+  -help         Show this help output, or the help for a specified subcommand.
+  -version      An alias for the "version" subcommand.
+
+https://developer.hashicorp.com/terraform/cli/config/environment-variables
+TF_LOG
+TF_LOG_PATH
+TF_INPUT
+TF_VAR_name
+TF_CLI_ARGS
+TF_CLI_ARGS_name
+TF_DATA_DIR
+TF_WORKFSPACE
+TF_IN_AUTOMATION
+TF_REGISTRY_DISCOVERY_RETRY
+TF_REGISTRY_CLIENT_TIMEOUT
+TF_STATE_PERSIST_INTERVAL
+TF_CLI_CONFIG_FILE
+TF_PLUGIN_CACHE_DIR
+Note, that HCP Terraform CLI Integration may also affect environment variables

@@ -4,3 +4,26 @@ Most common options:
 ninja -t rules
 ninja -d explain
 ninja -v
+
+ninja
+--version print ninja version ("1.13.2")
+-v, --verbose show all command lines while building
+--quiet don't show progress status, just command output
+-C DIR change to DIR before doing anything else
+-f FILE specify input build file [default=build.ninja]
+-j N run N jobs in parallel (0 means infinity) [default=#CPUs]
+-k N keep going until N jobs fail (0 means infinity) [default=1]
+-l N do not start new jobs if the load average is greater than N
+-n dry run (don't run commands but act like they succeeded)
+-d MODE enable debugging (use '-d list' to list modes)
+-t TOOL run a subtool (use '-t list' to list subtools)
+   terminates toplevel options; further flags are passed to the tool
+-w FLAG adjust warnings (use '-w list' to list warnings)
+
+ninja -d list
+debugging modes:
+  stats        print operation counts/timing info
+  explain      explain what caused a command to execute
+  keepdepfile  don't delete depfiles after they're read by ninja
+  keeprsp      don't delete @response files on success
+multiple modes can be enabled via -d FOO -d BAR
