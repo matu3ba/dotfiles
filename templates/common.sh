@@ -5,7 +5,7 @@
 # control characters and dont contain leading dashes(-).
 set -o errexit # abort on nonzero exitstatus
 set -o nounset # abort on unbound variable
-# set -o pipefail        # (not posix only) don't hide errors within pipes
+# set -o pipefail        # (not in posix only) don't hide errors within pipes
 # IFS="$(printf '\n\t')" # change IFS to just newline and tab
 
 set -e
@@ -110,7 +110,7 @@ contains() {
 # read file into variable requires cat
 value=$(cat config.txt)
 # loop might break due to formatting
-for val in "${value}"; do echo "$val"; done
+for val in ${value}; do echo "$val"; done
 
 # var="abcdef"
 # removed_prefix="${var#a}"

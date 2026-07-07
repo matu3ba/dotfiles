@@ -75,7 +75,7 @@ fn memcpyslice() void {
     var msg: ?[LEN]u8 = null;
     const src = "somemsg";
     const src_len = src.len;
-    msg = .{undefined} ** LEN;
+    msg = @splat(undefined);
     @memcpy(msg.?[0..src_len], "somemsg");
     std.debug.print("msg: {?s}\n", .{msg});
 }

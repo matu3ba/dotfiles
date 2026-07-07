@@ -55,26 +55,26 @@ local function load_options()
     vim.g.clipboard = {
       name = 'OSC 52',
       copy = {
-        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+        ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+        ['*'] = require('vim.ui.clipboard.osc52').copy '*',
       },
       paste = {
-        ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-        ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+        ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+        ['*'] = require('vim.ui.clipboard.osc52').paste '*',
       },
     }
   elseif utils.isWSL() then
-    if vim.fn.executable("win32yank.exe") then
+    if vim.fn.executable 'win32yank.exe' then
       -- use faster clipboard, if available
       vim.g.clipboard = {
-        name = "win32yank-wsl",
+        name = 'win32yank-wsl',
         copy = {
-          ["+"] = "win32yank.exe -i --crlf",
-          ["*"] = "win32yank.exe -i --crlf",
+          ['+'] = 'win32yank.exe -i --crlf',
+          ['*'] = 'win32yank.exe -i --crlf',
         },
         paste = {
-          ["+"] = "win32yank.exe -o --lf",
-          ["*"] = "win32yank.exe -o --lf",
+          ['+'] = 'win32yank.exe -o --lf',
+          ['*'] = 'win32yank.exe -o --lf',
         },
         cache_enabled = true,
       }

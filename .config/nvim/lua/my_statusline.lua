@@ -1,12 +1,10 @@
---! Statusline with dependency plenary, gitsigns
+--! Statusline with dependency gitsigns
 --! Offers 1 mode: usage
 -- luacheck: globals vim
 -- luacheck: no max line length
-local utils = require 'my_utils'
-local has_plenary, plenary = pcall(require, 'plenary')
 local has_gitsigns, _ = pcall(require, 'gitsigns')
 local has_navic, navic = pcall(require, 'nvim-navic')
-if not has_plenary or not has_gitsigns then return end
+if not has_gitsigns then return end
 
 local statusline = {}
 vim.o.statusline = "%!v:lua.require'my_statusline'.setup()"

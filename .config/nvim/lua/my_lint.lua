@@ -124,19 +124,24 @@ ruff.args = {
 local function systemd_run(linter)
   local cwd = vim.fn.getcwd()
   local args = {
-    "--user",
-    "--collect",
-    "--same-dir",
-    "--quiet",
-    "--pipe",
-    "-p", "PrivateUsers=true",
-    "-p", "ProtectSystem=true",
-    "-p", "PrivateNetwork=true",
-    "-p", string.format("BindReadOnlyPaths='%s':'%s'", cwd, cwd),
-    "-E", "PATH=" .. os.getenv("PATH"),
+    '--user',
+    '--collect',
+    '--same-dir',
+    '--quiet',
+    '--pipe',
+    '-p',
+    'PrivateUsers=true',
+    '-p',
+    'ProtectSystem=true',
+    '-p',
+    'PrivateNetwork=true',
+    '-p',
+    string.format("BindReadOnlyPaths='%s':'%s'", cwd, cwd),
+    '-E',
+    'PATH=' .. os.getenv 'PATH',
     linter.cmd,
   }
-  linter.cmd = "systemd-run"
+  linter.cmd = 'systemd-run'
   vim.list_extend(args, linter.args or {})
   linter.args = args
   return linter
@@ -149,10 +154,8 @@ vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
   callback = function()
     lint.try_lint()
     if vim.fn.executable 'typos' == 1 then lint.try_lint 'typos' end
-    if vim.fn.executable 'biome' == 1 then
-      lint.try_lint(nil, {
-        wrap_linter = systemd_run
-      })
-    end
-  end
+    if vim.fn.executable 'biome' == 1 then lint.try_lint(nil, {
+      wrap_linter = systemd_run,
+    }) end
+  end,
 })

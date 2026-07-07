@@ -164,6 +164,7 @@ comptime_assert((2 + 2) % 3 == 1, "Whoa dude, you knew!");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
+#pragma clang diagnostic ignored "-Wc2y-extensions"
 #define CONCAT_(prefix, suffix) prefix##suffix
 #define CONCAT(prefix, suffix) CONCAT_(prefix, suffix)
 #define outscope_assert(expr)                      \

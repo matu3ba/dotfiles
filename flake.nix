@@ -145,7 +145,9 @@
     # tofu-ls
     devShells.${system}.default = pkgs.mkShellNoCC {
       name = "dotfiles ci";
-      packages = with pkgs; [ biome clang-tools curl dotnet-sdk_10 fish jq luaPackages.luacheck opentofu shellcheck stylua ];
+      packages = with pkgs; [ biome clang-tools curl dotnet-sdk_10 fish jq
+      (texlive.combined.scheme-basic.withPackages (ps: with ps; [ parskip enumitem ]))
+      luaPackages.luacheck opentofu shellcheck stylua ];
       buildInputs = [ zig-flake.packages.${system}.nightly ];
       shellHook = ''
         exec ${pkgs.fish}/bin/fish

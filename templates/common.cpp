@@ -3132,7 +3132,7 @@ void use_optional() {
     fprintf(stdout, "%s%s\n", "create2(true) returned ", str->c_str());
   auto opt_str = check_empty(true);
   if (opt_str.has_value()) {
-    opt_str.value();
+    (void)opt_str.value();
   }
   // best to use optional in combination with std::optional<T&> and T&
   // and not use T* to ensure T* can or can not be nullptr

@@ -1,3 +1,5 @@
+====design
+
 For shell.nix or default.nix and run with nix-shell
 find_version
 niv
@@ -72,3 +74,6 @@ pkgs.stdenvNoCC.mkDerivation {
   '';
   #hardeningDisable = [ "all" ];
 }
+
+====design
+https://discourse.nixos.org/t/looking-for-clarity-on-nix-developer-shells-and-their-design/71399

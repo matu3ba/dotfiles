@@ -373,14 +373,14 @@ local QFsetValidPaths = function(l1, l2)
   local lines = vim.fn.getline(l1, l2)
   for i, l in ipairs(lines) do
     if not vim.uv.fs_stat(l) then
-      vim.print(i, relpath, 'not existing')
+      vim.print(i, lines[i], 'not existing')
       return
     end
   end
 
   local cwd = vim.uv.cwd()
   local items = {}
-  for i, l in ipairs(lines) do
+  for _, l in ipairs(lines) do
     local normrelpath = utils.pathNormRel(cwd, l)
     -- vim.fs.relpath(cwd, l, {})
     -- if (relpath == nil) then relpath = l; end
@@ -528,120 +528,122 @@ end, { nargs = 1 })
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
   local obj = vim.system({ 'fd', '.', '-e', 'zig', 'src' }, { text = true }):wait()
-  vim.system({ 'ztags', '-a', '-r', unpack(vim.split(obj.stdout, '\n', { plain = true })) }, { text = true }, function(obj)
-    if obj.stderr ~= '' then print(obj.stderr) end
+  vim.system({ 'ztags', '-a', '-r', unpack(vim.split(obj.stdout, '\n', { plain = true })) }, { text = true }, function(obj_in)
+    if obj_in.stderr ~= '' then print(obj_in.stderr) end
   end)
   -- end
 end, {})
 
--- TODO proper parsing to distinguish https/http,git@
--- @return upstream remote else origin remote else empty string
-local git_show_remote_upstream_else_origin = function(cwd)
-  -- git remote show origin
-  -- git config --get remote.origin.url
-  local remote_obj = vim.system({ 'git', 'config', '--get', 'remote.upstream.url' }, { text = true }):wait()
-  if remote_obj.code ~= 0 or remote_obj.stderr ~= '' then return '' end
-  local remote = vim.split(remote_obj.stdout, '\n')
-  if #remote == 1 and remote[1] ~= '' then
-    local col_i = string.find(remote[1], ':')
-    return remote[1]:sub(5, col_i - 1) .. '/' .. remote[1]:sub(col_i + 1, -5)
+-- @return wanted remote according to wanted else empty string
+local git_show_remote = function(cwd, wanted)
+  -- run git remote and store as remote_names
+  local rem = vim.system({ 'git', 'remote' }, { cwd = cwd, text = true }):wait()
+  if rem.code ~= 0 or rem.stdout == '' then return '' end
+
+  local remote_names = {}
+  for name in rem.stdout:gmatch '[^\r\n]+' do
+    if name ~= '' then table.insert(remote_names, name) end
   end
-  remote_obj = vim.system({ 'git', 'config', '--get', 'remote.origin.url' }, { text = true }):wait()
-  if remote_obj.code ~= 0 or remote_obj.stderr ~= '' then return '' end
-  remote = vim.split(remote_obj.stdout, '\n')
-  if #remote == 1 and remote[1] ~= '' then return remote[1]:sub(5, -1):sub(1, -5) end
+
+  local want_pat = (wanted == 'git') and '^git@' or '^https?://'
+  local function try(remote_name)
+    local r = vim.system({ 'git', 'config', '--get', 'remote.' .. remote_name .. '.url' }, { cwd = cwd, text = true }):wait()
+    if r.code ~= 0 or r.stdout == '' then return '' end
+    local url = r.stdout:gsub('%s+$', '')
+    if not url:match(want_pat) then return '' end
+    -- for https: drop trailing .git so /blob/... works
+    if wanted == 'https' then url = url:gsub('%.git$', '') end
+    return url
+  end
+
+  -- prefer origin if present
+  for _, n in ipairs(remote_names) do
+    if n == 'origin' then
+      local v = try 'origin'
+      if v ~= '' then return v end
+      break
+    end
+  end
+
+  for _, n in ipairs(remote_names) do
+    local v = try(n)
+    if v ~= '' then return v end
+  end
+
   return ''
 end
 
--- TODO/FIXME
--- --- @return table|nil # Autocommand id (number)
--- local get_relpath_inrepo = function()
---   local normrelpath_buf = utils.pathNormRelOnCwd(api.nvim_buf_get_name(0))
---   vim.print("normrelpath_buf:", normrelpath_buf)
---   -- local relpath = plenary.path:new(api.nvim_buf_get_name(0)):make_relative()
---   local relpathdir = vim.fs.dirname(normrelpath_buf)
---   -- TODO testng + replace plenary.job:new
---   local git_root = plenary.job:new({ cwd = relpathdir, command = 'git', args = { 'rev-parse', '--show-toplevel' } }):sync()
---   if not git_root or #git_root ~= 1 or git_root[1] == '' then return { nil, nil } end
---   local cwd_normrelpath_buf = normrelpath_buf
---   -- local relpath_inrepo = plenary.path:new(relpath):make_relative(git_root[1])
---   local relpath_inrepo = utils.pathNormRel(cwd_normrelpath_buf, git_root[1])
---   return { git_root, relpath_inrepo }
--- end
+-- @return { git_root: string, relpath: string } or nil on error
+local get_relpath_inrepo = function()
+  local bufpath = api.nvim_buf_get_name(0)
+  local res = vim.system({ 'git', 'rev-parse', '--show-toplevel' }, { text = true }):wait()
+  if res.code ~= 0 then
+    vim.notify('Not in git repository', vim.log.levels.ERROR)
+    return nil
+  end
+  local git_root = res.stdout:gsub('\n$', '')
+  local relpath = vim.fs.normalize(bufpath):sub(#git_root + 2)
 
--- TODO FIXME
--- TODO bug, must replace : with /
--- example
--- github.com:matu3ba/simpaSRG/blob/a38ef23973e15053414c7c8b4cdf61c09aa26bf1/src/simpleSRG.h
--- add_cmd('GHPerma', function()
---   get_relpath_inrepo()
---   ---@diagnostic disable-next-line: deprecated, param-type-mismatch
---   local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
---   if opt_relpath_inrepo == nil then return end
---   local relpath_inrepo = opt_relpath_inrepo
---
---   local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
---   if not isgit or isgit[1] ~= 'true' then return end
---   local remote = git_show_remote_upstream_else_origin(git_root[1])
---   vim.print(remote)
---   if remote == '' then return end
---
---   local commitsha = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', 'HEAD' } }):sync()
---   if not commitsha or #commitsha ~= 1 or commitsha[1] == '' then return end
---   local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
---   vim.print(relpath_inrepo_check)
---
---   if not relpath_inrepo_check or #relpath_inrepo_check ~= 1 or relpath_inrepo_check[1] ~= relpath_inrepo then return end
---   local permalink = remote .. '/blob/' .. commitsha[1] .. '/' .. relpath_inrepo
---   vim.print(permalink)
---   setPlusAnd0Register(permalink)
--- end, {})
+  return { git_root = git_root, relpath = relpath }
+end
 
--- TODO FIXME
--- TODO bug, must replace : with /
--- /home/misterspoon/dev/git/studienarbeit_SRG/simpaSRG/tools/main.cpp
---:GHBranch
---git@github.com:matu3ba/simpaSRG.git
---github.com:matu3ba/simpaSRG/blob/main/tools/main.cpp
--- add_cmd('GHBranch', function()
---   ---@diagnostic disable-next-line: deprecated, param-type-mismatch
---   local git_root, opt_relpath_inrepo = unpack(get_relpath_inrepo())
---   if opt_relpath_inrepo == nil then return end
---   local relpath_inrepo = opt_relpath_inrepo
---
---   local isgit = plenary.job:new({ command = 'git', args = { 'rev-parse', '--is-inside-work-tree' } }):sync()
---   if not isgit or isgit[1] ~= 'true' then return end
---   local remote = git_show_remote_upstream_else_origin(git_root[1])
---   vim.print(remote)
---
---   local branch = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'rev-parse', '--abbrev-ref', 'HEAD' } }):sync()
---   if not branch or #branch ~= 1 or branch[1] == '' then return end
---   local relpath_inrepo_check = plenary.job:new({ cwd = git_root[1], command = 'git', args = { 'ls-files', '--error-unmatch', relpath_inrepo } }):sync()
---   vim.print(relpath_inrepo_check)
---
---   local branchlink = remote .. '/blob/' .. branch[1] .. '/' .. relpath_inrepo
---   vim.print(branchlink)
---   setPlusAnd0Register(branchlink)
--- end, {})
+add_cmd('GITBranch', function()
+  local info = get_relpath_inrepo()
+  if not info then return end
 
--- git branch: git rev-parse --abbrev-ref HEAD
--- add_cmd('GHLink', function()
---   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
---   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
--- end, {})
--- idea
--- add_cmd('GHRepo', function()
---   git remote show origin
---   git remote show upstream
---   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
---   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
--- end, {})
--- add_cmd('GHDown', function()
--- TODO
---   local fd_exec = plenary.job:new({ command = 'fd', args = { '-e', 'zig', 'src' } }):sync()
---   plenary.job:new({ command = 'ztags', args = { '-a', '-r', unpack(fd_exec) } }):start()
--- end, {})
+  local remote = git_show_remote(info.git_root, 'https')
+  if remote == '' then
+    vim.notify('No corresponding remote found', vim.log.levels.ERROR)
+    return
+  end
 
+  local branch_res = vim.system({ 'git', 'rev-parse', '--abbrev-ref', 'HEAD' }, { cwd = info.git_root, text = true }):wait()
+  if branch_res.code ~= 0 then
+    vim.notify('Failed to get current branch', vim.log.levels.ERROR)
+    return
+  end
+
+  local branch = branch_res.stdout:gsub('\n$', '')
+  local link = remote .. '/blob/' .. branch .. '/' .. info.relpath
+  setPlusAnd0Register(link)
+  vim.notify('Link copied: ' .. link, vim.log.levels.INFO)
+end, {})
+
+add_cmd('GITPerma', function()
+  local info = get_relpath_inrepo()
+  if not info then return end
+
+  local remote = git_show_remote(info.git_root, 'https')
+  if remote == '' then
+    vim.notify('No corresponding remote found', vim.log.levels.ERROR)
+    return
+  end
+
+  local sha_res = vim.system({ 'git', 'rev-parse', 'HEAD' }, { cwd = info.git_root, text = true }):wait()
+  if sha_res.code ~= 0 then
+    vim.notify('Failed to get commit SHA', vim.log.levels.ERROR)
+    return
+  end
+
+  local sha = sha_res.stdout:gsub('\n$', '')
+  local link = remote .. '/blob/' .. sha .. '/' .. info.relpath
+  setPlusAnd0Register(link)
+  vim.notify('Permalink copied: ' .. link, vim.log.levels.INFO)
+end, {})
+
+add_cmd('GITRemote', function()
+  local info = get_relpath_inrepo()
+  if not info then return end
+
+  local remote = git_show_remote(info.git_root, 'git')
+  if remote == '' then
+    vim.notify('No corresponding remote found', vim.log.levels.ERROR)
+    return
+  end
+
+  setPlusAnd0Register(remote)
+  vim.notify('Remote copied: ' .. remote, vim.log.levels.INFO)
+end, {})
 --==luafmt
 -- https://github.com/nvim-lua/plenary.nvim/issues/474 prevents us from
 -- using plenary for spawning another neovim instance like this:

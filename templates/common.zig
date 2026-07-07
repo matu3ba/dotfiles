@@ -419,7 +419,7 @@ fn simpleCAS() !void {
 // SHENNANIGAN PERF: array assignments work with =
 test "perf array assignment" {
     const x: u8 = 100;
-    const a: [1_000_000]u8 = .{x} ** 1_000_000;
+    const a: [1_000_000]u8 = @splat(x);
     var b: [1_000_000]u8 = undefined;
 
     // a pile of code
@@ -948,7 +948,6 @@ test "@hasDecl" {
 // unreachable can be anything
 // test {
 //    unreachable[0..5];
-//    unreachable[0..5] ** 3;
 //    unreachable(1, true, "foo");
 //    unreachable(1, true, "foo")[0..5];
 //    try unreachable(1, true, "foo");
