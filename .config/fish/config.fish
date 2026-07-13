@@ -373,34 +373,34 @@ if status is-interactive
   end
 
   # Note: Other shells do not know what gpg server is currently attached to.
-  function startGpg -d "start gpg with ssh to workaround pinentry-tty bugs"
-    gpgconf --launch "gpg-agent"
-    set -gx GPG_TTY "$(tty)"
-    set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
-    # idea modify prompt, process name and title
-  end
-  function registerTty -d "register GPG_TTY"
-    set -gx GPG_TTY "$(tty)"
-  end
-  function reconnectGpg -d "reconnect to gpg client to workaround pinentry-tty bugs"
-    gpg-connect-agent updatestartuptty /bye >/dev/null
-  end
-  function stopGpg -d "stop gpg with ssh to workaround pinentry-tty bugs"
-    set -e GPG_TTY
-    set -e SSH_AUTH_SOCK
-    # idea modify prompt, process name and title
-    gpgconf --kill gpg-agent
-  end
-
-  # function oldfixGpg -d "fix gpg tty via stopping, starting and updating startup tty"
-  #   set -e GPG_TTY
-  #   set -e SSH_AUTH_SOCK
-  #   gpgconf --kill gpg-agent
+  # function startGpg -d "start gpg with ssh to workaround pinentry-tty bugs"
   #   gpgconf --launch "gpg-agent"
   #   set -gx GPG_TTY "$(tty)"
   #   set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+  #   # idea modify prompt, process name and title
+  # end
+  # function registerTty -d "register GPG_TTY"
+  #   set -gx GPG_TTY "$(tty)"
+  # end
+  # function reconnectGpg -d "reconnect to gpg client to workaround pinentry-tty bugs"
   #   gpg-connect-agent updatestartuptty /bye >/dev/null
   # end
+  # function stopGpg -d "stop gpg with ssh to workaround pinentry-tty bugs"
+  #   set -e GPG_TTY
+  #   set -e SSH_AUTH_SOCK
+  #   # idea modify prompt, process name and title
+  #   gpgconf --kill gpg-agent
+  # end
+
+  function reconnectGpg -d "fix gpg tty via setting GPG_TTY, SSH_AUTH_SOCK and gpg-connect-agent"
+    # set -e GPG_TTY
+    # set -e SSH_AUTH_SOCK
+    # gpgconf --kill gpg-agent
+    # gpgconf --launch "gpg-agent"
+    set -gx GPG_TTY "$(tty)"
+    set -gx SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
+    gpg-connect-agent updatestartuptty /bye >/dev/null
+  end
 
   function fixGpg -d "fix gpg tty via setting GPG_TTY and SSH_AUTH_SOCK"
     set -gx GPG_TTY "$(tty)"

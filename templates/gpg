@@ -30,7 +30,7 @@ uid                   [ultimate] name mail
 ssb   cv25519/0xpub_short_hash create_date [E]
 
 keyfingerprint="[key fingerprint 10 blocks a 4 digits]"
-set -lx keyfingerprint
+set -lx KEYFP keyfingerprint
 export KEYFP=keyfingerprint
 fish: set KEYFP 'keyfingerprint'
 // subkeys for sign, encrypt, authenticate
@@ -41,6 +41,17 @@ gpg --quick-add-key $KEYFP ed25519 auth 1y
 gpg -K
 // use authentication subkey for authentication in SSH
 // here using GnuPG as an SSH agent
+
+gpg -K output example:
+pub   ed25519/11F8CEFFFFFFFFFF DATE_CREATION [C] [expires: DATE]
+      4C0BD04C4BFD19FFFFFFFFFFFFFFFFFFFFFFFFFF
+uid                 [ultimate] name <email>
+sub   ed25519/1CA019FFFFFFFFFF DATE_CREATION [S] [expires: DATE_1Y]
+      CCD8976E58EBB5FFFFFFFFFFFFFFFFFFFFFFFFFF
+sub   cv25519/6C1DD0FFFFFFFFFF DATE_CREATION [E] [expires: DATE_1Y]
+      67ABBA4B356683FFFFFFFFFFFFFFFFFFFFFFFFFF
+sub   ed25519/A6405CFFFFFFFFFF DATE_CREATION [A] [expires: DATE_1Y]
+      6DFD760E2B0952FFFFFFFFFFFFFFFFFFFFFFFFFF
 
 // Adjust the .gitconfig with the output(without any 0x in front):
 [user]
