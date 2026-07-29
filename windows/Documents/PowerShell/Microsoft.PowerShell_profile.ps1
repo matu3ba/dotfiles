@@ -348,6 +348,10 @@ filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 # C:\Windows\SysWOW64
 # C:\Programs
 # C:\Programs (x86)
+# linker deps
+# cd $HOME\AppData\Local\Programs\Git\cmd\
+# wsl bash
+# ldd git.exe
 
 # debug runtime files for deploying along application
 # C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.40.33807\debug_nonredist\x64\Microsoft.VC143.DebugCRT

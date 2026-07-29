@@ -1,0 +1,42 @@
+# SHENANIGAN Docker/Podman Compose's path resolution is cwd-dependent, making
+# it unsuitable for multi-repo setups without workarounds.
+#
+# Resulting structure of missing composibility
+# * copy paste of compose.yml contents for each service group
+# mydockerstuff/
+# ├── setup1/
+# │  ├── cache/
+# │  ├── compose.yml  (contains only immich itself with its own postgres, typesense and redis)
+# │  ├── postgres/
+# │  ├── upload/
+# │  ├── typesense/
+# │  ├── redis/
+# ├── setup2/
+# │  ├── data/
+# │  ├── compose.yml  (contains only outline itself with its own postgres and redis)
+# │  ├── postgres/
+# │  ├── redis/
+# ├── setup3/
+# │  ├── data/
+# │  └── compose.yml  (contains only portainer itself)
+# ├── portainer/
+# │  ├── data/
+# │  └── compose.yml  (contains only portainer itself)
+#
+# podman compose -f immich/compose.yml up -d
+# podman compose -f portainer/compose.yml pull && podman compose -f portainer/compose.yml down && podman compose -f portainer/compose.yml up -d
+#
+# option 1: local build, tag image, use image from local or gitlab registry
+# option 2: use relative paths and pack everything into another compose.yml
+
+# To attach stdin to a process from running podman compose -d:
+# version: "3"
+# services:
+#   app:
+#     image: app:1.2.3
+#     command:
+#       - start-dev
+#     stdin_open: true # docker run -i
+#     tty: true        # docker run -t
+
+# Alternative: Manually repeating correct startup logic and use: podman run --rm service

@@ -41,6 +41,25 @@ Simpler alternative to use REST on postgresql https://github.com/PostgREST/postg
 * https://dikmenonur.medium.com/sql-performance-tuning-a-comprehensive-guide-0e8a0b0b8aa9
 
 clickhouse: logs, traces, metrics, monitoring, etc (all observability)
+ https://matduggan.com/clickhouse-is-winning-the-observability-wars/
+> Every observability stack works at 1 TB a day. If you're small, pick whatever
+> your team already knows. Life is short. We're all just waiting for the robots
+> to kick our heads off like soccer balls.
+> ..
+> The question is not which stack works today. The question is which stack
+> still resembles itself two years from now, when your data volume has 5x'd and
+> your team has 2x'd and the person who originally designed the whole thing has
+> left the company.
+> There is a real cost to this: you have to eat the schema-design and
+> query-engine complexity up front, at a scale where the other options are
+> objectively easier. You will be, briefly, the one making things harder for
+> your developers. They will not always appreciate this. But the trade you're
+> making is that their experience — and yours — remains roughly the same as the
+> data grows by an order of magnitude, and the next order of magnitude, and
+> probably the one after that. I have spent ten years watching observability
+> stacks change shape underneath me while I tried to keep them running.
+> ClickHouse is the first one that hasn't and that has been able to actually
+> scale with me. That's pretty incredible.
 redis: session, cache
 postgresql: ACID db to be used with saner sql overlay for default behavior
 

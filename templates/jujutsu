@@ -1,5 +1,8 @@
 https://martinvonz.github.io/jj/latest/
 https://www.vincentschmalbach.com/jujutsu-a-next-generation-replacement-for-git/
+tutorial https://evmar.github.io/jjtut/
+https://lobste.rs/s/beqyuc/evan_s_jujutsu_tutorial
+https://evmar.github.io/jjtut/pitch/
 
 Advantages
 * git compatibility, smooth conflict handling, working copy as commit

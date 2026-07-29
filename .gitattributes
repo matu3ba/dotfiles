@@ -1,16 +1,26 @@
 # Git stores internally files as utf8 and with eol lf.
 # Set default behavior to automatically normalize line endings.
-* text=lf
+# Update line endings of already checkked in files
+#   git add --update --renormalize --verbose .
 
-# files to keep native line ending
+#==text_files: general text files behavior
+#==native_line_ending_files: files to keep native line ending
+#==specific_files: explicit line ending and utf8 without bom compatible fmt
+#==deviating_rules: more complex rules
+#==binary_files: binary files are used verbatim and keep line endings
+#==SHENANIGANS: unexpected and/or bad behavior
 
+#==text_files
+# explicit line ending and utf8 without bom compatible fmt
+* text eol=lf
+# Typical other option to use auto-detection: text eol=auto
+
+#==native_line_ending_files
 # *.c text eol=crlf
 # *.cpp text eol=crlf
 # *.h text eol=crlf
 
-# general files with explicit line ending and utf8 without bom compatible fmt
-* text eol=lf
-# specific files with explicit line ending and utf8 without bom compatible fmt
+#==specific_files
 *.c text eol=lf
 *.cpp text eol=lf
 *.h text eol=lf
@@ -18,14 +28,15 @@
 *.txt text eol=lf
 *.zig text eol=lf
 
-# deviating rules
+#==deviating_rules
 # Consider checking manually the bom and prefer UTF-16LE-BOM or UTF-16LE
 # /some/explicit/path text working-tree-encoding=UTF-16 eol=CRLF
 
-# binary files
+#==binary_files
 # data/binary_data/** binary
 # lib/include/** linguist-vendored
 
+#==SHENANIGANS
 # SHENNANIGAN
 # Legacy encodings like utf-16le-bom may get wrongly renormalized and/or
 # detected.

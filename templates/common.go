@@ -11,3 +11,9 @@
 // Empty func              1.5s ns   0.135 ns
 // cgo                     40 ns     4.281 ns
 // encoding/json int parse 52.89 ns  5.518 ns
+
+// Go has no high performance arena, only sync.Pool
+// * https://github.com/golang/go/issues/51317
+//   proposal: arena: new package providing memory arenas
+// * pre-allocating is certainly possible
+// This hurts server use cases which need predictable performance.

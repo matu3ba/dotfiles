@@ -136,6 +136,47 @@ fi
 #    exit 1
 # fi
 
+#test options
+# -b FILE Returns true if FILE is a block device.
+# -c FILE Returns true if FILE is a character device.
+# -d FILE Returns true if FILE is a directory.
+# -e FILE Returns true if FILE exists.
+# -f FILE Returns true if FILE is a regular file.
+# -g FILE Returns true if FILE has the set-group-ID bit set.
+# -h if pathname resolves to ex. dir entry for symbolic link [not implemented on fish]
+# -G FILE Returns true if FILE exists and has the same group ID as the current user.
+# -k FILE Returns true if FILE has the sticky bit set. If the OS does not support the concept it  re‐
+#        turns false. See <https://en.wikipedia.org/wiki/Sticky_bit>.
+# -L FILE Returns true if FILE is a symbolic link.
+# -O FILE Returns true if FILE exists and is owned by the current user.
+# -p FILE Returns true if FILE is a named pipe.
+# -r FILE Returns true if FILE is marked as readable.
+# -s FILE Returns true if the size of FILE is greater than zero.
+# -S FILE Returns true if FILE is a socket.
+# -t FD  Returns true if the file descriptor FD is a terminal (TTY).
+# -u FILE Returns true if FILE has the set-user-ID bit set.
+# -w FILE Returns true if FILE is marked as writable; note that this does not check if the filesystem
+#        is read-only.
+# -x FILE Returns true if FILE is marked as executable.
+#
+# FILE1 -nt FILE2 Returns true if FILE1 is newer than FILE2, or FILE1 exists and FILE2 does not.
+# FILE1 -ot FILE2 Returns true if FILE1 is older than FILE2, or FILE2 exists and FILE1 does not.
+# FILE1 -ef FILE1 Returns true if FILE1 and FILE2 refer to the same file.
+#
+# NUM1 -eq NUM2 Returns true if NUM1 and NUM2 are numerically equal.
+# NUM1 -ne NUM2 Returns true if NUM1 and NUM2 are not numerically equal.
+# NUM1 -gt NUM2 Returns true if NUM1 is greater than NUM2.
+# NUM1 -ge NUM2 Returns true if NUM1 is greater than or equal to NUM2.
+# NUM1 -lt NUM2 Returns true if NUM1 is less than NUM2.
+# NUM1 -le NUM2 Returns true if NUM1 is less than or equal to NUM2.
+#
+# COND1 -a COND2 Returns true if both COND1 and COND2 are true.
+# COND1 -o COND2 Returns true if either COND1 or COND2 are true.
+# Expressions can be inverted using the ! operator:
+# ! EXPRESSION Returns true if EXPRESSION is false, and false if EXPRESSION is true.
+# Expressions can be grouped using parentheses.
+# ( EXPRESSION ) Returns the value of EXPRESSION.
+
 # based on https://github.com/dylanaraps/pure-sh-bible
 TEST1=""
 if test -n "${TEST1}"; then echo "length of string non-zero"; fi

@@ -619,6 +619,10 @@ function show_object_properties {
 # write in red color with Write-Host: Write-Warning
 # write non-terminatign error class: Write-Error/Throw
 # * can be used to terminate via $ErrorActionPreference = "Stop";
+#   - see https://learn.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_preference_variables
+#   - $ErrorActionPreference = 'Stop'
+#     Get-Process -Name 'TotallyFakeProcess' -ErrorAction Continue
+#     Write-Output -InputObject "I'll still run..."
 # * Write-Error "Unable to connect to server." -Category ConnectionError
 # * use throw, if you want program execution to stop
 # write on switch -Verbose: Write-Verbose

@@ -7,6 +7,10 @@ Typical .gitattributes setting:
 data/binary_data/** binary
 lib/include/** linguist-vendored
 
+.gitattributes must have only line feed '\n' line endings for 'git add --renormalize .'
+if unsure, check if .gitattributes has '\r': cat .gitattributes | od -c | tail
+fix: sed -i 's/\r$//' .gitattributes
+
 https://git-scm.com/docs/gitattributes/2.21.0
 * git stores data internally (reencodes on checkout into desired format) as
   - utf8 without bom

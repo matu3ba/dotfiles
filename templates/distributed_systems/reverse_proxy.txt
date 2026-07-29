@@ -1,0 +1,53 @@
+nginx
+* 20260627 80% deployment
+* 20+ years old
+* >80% of use cases and performance range
+* biggest ecosystem
+* framework
+
+Pingora library
+* https://github.com/cloudflare/pingora
+* very mature
+* no framework, only library
+
+Pingap
+* https://github.com/vicanso/pingap
+* https://vicanso.github.io/pingap-en/
+* ~5 years
+
+River
+* incomplete
+* stalled development
+
+
+1 Reverse Proxy vs. Load Balancer vs. API Gateway
+* can be used as ingress/egress controller
+
+* when to use 1 reverse proxy
+  - no authentication/permission awareness
+  - no API versioning
+  - routing based logic
+  - caching
+  - component and network hiding
+  - centralized passway
+  - organizes processing of load-bearing tasks like en/decryption
+  - typical names: nginx
+* when to use 2 load balancer
+  - distributes load based on some logic
+  - scalability needed
+  - high availability
+  - resource utiliziation
+  - fault tolerance
+  - latency acceptable
+  - implementation cost amortized
+  - typical names: traefik, envoy, nginx, haproxy
+* when to use  3api gateway
+  - centralized control for micro-service architectures
+  - not perf critical
+  - complexity no concern
+  - maintenance overhead amortized
+  - basically a monolith with a different name
+  - typical names: kong, aws api gateway, apigee, tyk, envoy
+
+Practical speaking API gateways are monoliths with different names and load
+balancers traffic-related logic.

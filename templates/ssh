@@ -152,6 +152,14 @@ Host github.com
   IdentityFile ~/.ssh/github_ed25519
   IdentitiesOnly yes
 
+Host gist.github.com
+  HostName gist.github.com
+  Port 22
+  User git
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/github_ed25519
+  IdentitiesOnly yes
+
 Config Options
 *PreferredAuthentications* keyboard-interactive,password,publickey,hostbased,gssapi-with-mic
 To use explicitly the given config key for the host, set

@@ -197,3 +197,11 @@ solution
   };
 }
    ```
+
+12. Flakes require git versioning to exist. This leads to the requirements
+* flake.nix is in git repo `work`
+* else: flake.nix is in another git repo `work-flake` with usage options
+  - git repo `work` is in file tree of git repo `work-flake` and flake.nix can be used via `nix develop`
+    - `work-flake` becomes the "root/integration git repo".
+  - flake.nix can be used from git repo work via `nix develop path_to/work-flake`
+    - `work-flake` becomes an "uncoupled config" and nix has no database to loosly couple/associate `work-flake` with `work`

@@ -4,3 +4,17 @@ f-droid
 
 twrp
 LingeageOS
+
+termux
+==setup_storage (for permissions): termux-setup-storage
+* ls ~/storage/downloads
+==reset: termux-reset
+==setup_cliboard: pkg install termux-api termux-am-socket
+* f-droid install termux:API
+  - enable all necessary settings
+* https://github.com/milkneko-dev/termux-android-setup-guide
+* echo "t123" | termux-clipboard-set
+* termux-clipboard-get
+==base64
+base64 < in.pdf > out.txt
+base64 -d < in.txt > out.pdf

@@ -145,3 +145,7 @@ PTP precision time protocol
 * crypto PTP for timestamps going on
 * human observable time difference of sound: nanoseconds area
 => processing time addition in switch works like field-bus techniques
+
+https://www.youtube.com/watch?v=EU_nQh8wg5A
+"benchmarking: its about time" by matt godbolt
+see ./example/benchmarking/README.md

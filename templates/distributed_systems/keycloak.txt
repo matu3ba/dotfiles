@@ -1,4 +1,10 @@
 https://stackoverflow.com/questions/49572291/keycloak-user-validation-and-getting-token
+https://oneuptime.com/blog/post/2026-01-28-keycloak-authorization-services/view
+https://learn.microsoft.com/en-us/entra/fundamentals/identity-fundamental-concepts
+https://docs.redhat.com/en/documentation/red_hat_build_of_keycloak/22.0/html/server_administration_guide/admin_permissions
+https://www.keycloak.org/docs/26.7.0/authorization_services/
+https://www.keycloak.org/docs/latest/server_admin/index.html#_role_scope_mappings
+https://www.trion.de/news/2024/04/09/keycloak-realm-admin.html
 
 ==binary_paths
 ==export_database

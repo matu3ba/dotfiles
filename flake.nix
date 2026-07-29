@@ -1,6 +1,14 @@
 #==wsl
+#==dev
+
+#==wsl
 #====wsl_usage
-# install: nixos-rebuild switch --sudo --flake .#wsl
+# install workaround(https://github.com/nix-community/NixOS-WSL/issues/1074):
+# * nixos-rebuild boot --sudo --flake .#wsl
+# * sudo shutdown -r now
+# * sudo /run/current-system/activate
+# * sudo /run/current-system/bin/switch-to-configuration switch
+# install best: nixos-rebuild switch --sudo --flake .#wsl
 # update: nix flake update
 # * if necessary: nix-channel --update
 # revert: git restore -s COMMIT flake.nix
@@ -65,6 +73,25 @@
 #2 systemctl --user restart dbus-broker.service
 #3 reapply config. it should return without error.
 
+# nixos-rebuild switch problems:
+# build logs: --print-build-logs, activation logs: add -L
+# --verbose, --show-trace, -v
+
+# > nix why-depends .#nixosConfigurations.wsl.config.system.build.toplevel nixpkgs#dbus-broker
+# /nix/store/hvjh93g31b129ssi2yp0wxrmadg2jsq4-nixos-system-nixos_wsl-26.05.20260630.95ca1e2
+# └───/nix/store/rwx4swanl5kjrsx6rqzpb6y85718lf9l-system-path
+# ╎   └───/nix/store/49x6wkrr41xqc4imyd2m8vdm9k8pl73p-dbus-broker-37
+# Find what's in system-path that depends on dbus-broker
+# nix-store --query --requisites /nix/store/rwx4swanl5kjrsx6rqzpb6y85718lf9l-system-path | grep -E '(dbus|broker)'
+# What directly references dbus-broker?
+# nix-store --query --referrers /nix/store/49x6wkrr41xqc4imyd2m8vdm9k8pl73p-dbus-broker-37
+
+# ls -la ~/.config/systemd/user/
+# systemctl list-dependencies service
+
+#==dev
+# devShells: nix develop
+
 {
   description = "Smallish NixOS-WSL flake";
 
@@ -84,7 +111,7 @@
     sharedModule = { pkgs, ... }: {
       # packages maven javaPackages.compiler.openjdk17
       # podman-compose not yet sufficiently compatible
-      environment.systemPackages = with pkgs; [ neovim git docker-compose ];
+      environment.systemPackages = with pkgs; [ neovim git docker-compose jq ];
       # podman needs /etc/subuid, /etc/subgid
       environment.extraInit = ''
         if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then

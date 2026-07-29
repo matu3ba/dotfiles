@@ -1,0 +1,15 @@
+# podman build -t node-dev:26 -f Containerfile.dev .
+# podman run --rm -p 4200:4200 -v .:/app:z -v /app/node_modules node-dev:26 npx ng serve
+
+FROM node:26-alpine
+RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
+WORKDIR /app
+COPY package*.json ./
+
+RUN npm ci && \
+    npm cache clean --force && \
+    chmod -R 555 node_modules
+
+COPY --chown=nodejsuser:nodejsuser . .
+EXPOSE 4200
+USER nodejsuser

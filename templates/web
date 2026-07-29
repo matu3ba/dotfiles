@@ -1,4 +1,5 @@
 ==iam
+==browser_storage
 
 youtube alternative: https://rumble.com/
 
@@ -91,6 +92,7 @@ default html with strict browser settings only covers portably same-origin (sche
 requires
 * DNS
 * reverse proxy/same origin
+  - or configuration hacks to set origin HTML header
 * ORC origin and policy for password delegation (ideally based on an object capability model)
 * Backend-for-Frontend (BFF) pattern
 * There appears to be no excellent guide on best practice design with security and trade-offs.
@@ -113,8 +115,8 @@ Access-Control-Allow-Origin|Methods: *, Access-Control-Max-Age: [default 5 [in s
   * Access-Control-Allow-Origin where?
   * q: can java do this? java tomcat not that simple to set fitting allow-orogin from list
   * only accessed by browser, not javascript
-    - nginx: proxy with load balancer?
-    - dns based switchover?
+    - nginx: reverse proxy with load balancer functionality
+    - dns based switchover
   * nginx as switchover service
   * angular
   * resource server -> check bearer/secret
@@ -192,3 +194,39 @@ https://skycloak.io/blog/keycloak-fedcm-third-party-cookie-deprecation/
 https://www.keycloak.org/docs/25.0.6/securing_apps/index.html
 https://www.angulararchitects.io/blog/oauth2-with-spring-angular-keycloak-spring-for-resource-server/
 https://blog.angular-university.io/angular-jwt-authentication/
+
+https://www.keycloak.org/docs/latest/server_admin/
+https://www.keycloak.org/docs/latest/authorization_services/
+
+==browser_storage
+Browser storage options: Cache, Cookies, Indexed DB, Local Storage, Session Storage.
+Non-Persistent: Cache, Session storage.
+Persistent: Local Storage, Cookies (user-configurable expiry)
+Same-origin Policy(access except from domain setting data prevented): IndexedDB, localStorage, sessionStorage, and cookies
+Session Storage survives page reloads.
+HTTP-only Cookies: Cannot be read by JavaScript, sent only via HTTP requests.
+Web Storage API: Refers to localStorage and sessionStorage.
+
+Comparison Table
+Parameter          | Cache Storage    | Cookies           | IndexedDB    | Local Storage | Session Storage
+---                | ---              | ---               | ---          | ---           | ---
+Capacity           | varying          | 4 KB              | ~50 MB       | 10 MB         | 5 MB
+Browser            | HTML5            | HTML5             | HTML5        | HTML5         | HTML5
+Accessible from    | Any Window       | Any Window        | Same origin  | Any Window    | Same tab
+Expires            | Manually set     | User-configurable | Never        | Never         | On tab close
+Storage location   | Browser & Server | Browser & Server  | Browser only | Browser only  | Browser only
+Sent with requests | Yes              | Yes               | No           | No            | No
+HTTP-only support  | No               | Yes               | No           | No            | No
+
+Network access, Domain, TLS security != Storage access security
+* no way to tell user reliably to remove local data from incidents
+* connectio success + HTTPS allows HTTP Clear-Site-Data: "storage", "cookies", "cache"
+  - ie on logout, indicent, XSS detection, compromise, pw change, account deletion
+* cert revocation, ie on key rotation, CA policy dont imply origin was hacked
+* no object capability model applied/no cryptographic binding between storage and origin validity
+
+web security fix via object capability model
+* Capability-safe JavaScript (or WASM subset) to Enforce unforgeable references.
+* Browser-native capability semantics for Storage access via capabilities, not origin-keying.
+* Revocation protocol for Standard way to invalidate capabilities (CapTP, GNAP, ZCAP-LD).
+* Cryptographic binding for Capabilities tied to agent identity (like Fuchsia does).

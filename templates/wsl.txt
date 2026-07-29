@@ -1,3 +1,14 @@
+==usage
+
+list WSL OSes: wsl -l
+select WSL OS (distribution): wsl -d
+change default WSL OS: wsl -s
+use shell in WSL: wsl bash script.sh
+WSL hex dump .gitattributes: WSL bash cat .gitattributes | od -c | tail
+
+does not work with virtualbox
+https://github.com/MicrosoftDocs/WSL/issues/798
+
 wsl --install --no-distribution
 
 cd ~\Documents
@@ -14,10 +25,15 @@ same system:
 sudo nix-channel --add https://nixos.org/channels/nixos-25.05 nixos
 sudo nix-channel --add https://github.com/nix-community/NixOS-WSL/archive/refs/heads/release-25.05.tar.gz nixos-wsl
 
-git clone github.com/matu3ba/dotfiles/
-TODO setup rebuild source
-
 sudo nix-channel --update
 sudo nixos-rebuild switch
 
 wsl -s NixOS
+
+Problem: On Windows neovim shows on copying to clipboard
+clipboard: error invoking win32yank.exe: /mnt/c/Program Files/Neovim/bin/win32yank.exe: /mnt/c/Program Files/Neovim/bin/win32yank.exe: cannot execute binary file
+Solution: wait for a while or restart, likely antivirus problem
+
+SHENANIGAN Escaping rules for powershell > wsl bash for variables are very annoying. On doubt, run in wsl bash.
+source env_cwo_template && echo '{"url":"'$DOTNET_SERVER_DNS'/api/keycloak"}' | jq .
+source env_cwo_template && jq -n --arg url "$DOTNET_SERVER_DNS/api/keycloak" '{url: $url}'

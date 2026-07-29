@@ -61,7 +61,7 @@ sub   ed25519/A6405CFFFFFFFFFF DATE_CREATION [A] [expires: DATE_1Y]
 [commit]
  gpgsign = true
 
-// To delete subkeys, use $KEYFP with exclamation mark (!)
+==To delete subkeys, use $KEYFP with exclamation mark (!)
 gpg --list-keys --with-subkey-fingerprints --keyid-format LONG
 gpg --delete-secret-and-public-keys $KEYFP!
 
@@ -70,7 +70,7 @@ export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
 
-// list currently known ssh keys in gpg
+==list currently known ssh keys in gpg
 ssh-add -L
 // ssh allowed public keys on remote ssh machine
 ~/.ssh/authorized_keys
@@ -82,7 +82,41 @@ server running? pid?
 pid shell?
 strace connection request to gpg server
 
--- git and remote hoster key signing --
+==add public sign key to git remote hoster
+>gpg -K
+              [KEYID           ]
+ssb   ed25519/0xD784B07FFFFFFFFF CREATE_DATE [S] [expires: EXPIRE_DATE]
+>gpg --armor --export $KEYID
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+..
+-----END PGP PUBLIC KEY BLOCK-----
+
+after import of
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+-----END PGP PUBLIC KEY BLOCK-----
+gitlab view:
+ 5609470538F364FFFFFFFFFFFFFFFFFFFFFFFFFF
+sub keys:
+    E67319663EE58915CFFFFFFFFFFFFFFFFFFFFFFF
+    EBBF5F6099975E1A6FFFFFFFFFFFFFFFFFFFFFFF
+    A4EC60B77B5E036CEFFFFFFFFFFFFFFFFFFFFFFF
+    014683AC81661C0B0FFFFFFFFFFFFFFFFFFFFFFF
+>gpg -K
+[keyboxd]
+---------
+sec   ed25519/0xE3795EFFFFFFFFFF CREAT_DATE [SC] [expires: EXPIRE_DATE]
+      Key fingerprint = 5609 4705 38F3 FFFF FFFF  FFFF FFFF FFFF FFFF FFFF
+uid                   [ultimate] NAME EMAIL
+ssb   cv25519/0x3A4293FFFFFFFFFF CREAT_DATE [E]
+ssb   ed25519/0xD784B0FFFFFFFFFF CREAT_DATE [S] [expires: EXPIRE_DATE]
+ssb   cv25519/0x89FFEFFFFFFFFFFF CREAT_DATE [E] [expires: EXPIRE_DATE]
+ssb   ed25519/0x0BE606FFFFFFFFFF CREAT_DATE [A] [expires: EXPIRE_DATE]
+
+Check
+>gpg --list-public-keys --with-subkey-fingerprints --keyid-format LONG KEYID
+to validate, if subkeys are supported or broken.
+
+// git and remote hoster key signing --
 // must delete pub keys and readd them to make github check commits generated
 // from subkeys again to correctly derive validity of each key.
 // On expiration 'gpg --armor --export keyid' will produce the public keys of:

@@ -1,5 +1,5 @@
 /*====grids
- *
+ *====links
  */
 
 /* Highly customizable, low-level CSS framework that allows for complete
@@ -123,3 +123,7 @@
 /*   white-space: nowrap; */
 /*   text-overflow: ellipsis; */
 /* } */
+
+/*====links
+ * https://matklad.github.io/2026/06/04/css-unavoidable-bad-parts.html
+ **/

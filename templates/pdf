@@ -30,7 +30,8 @@ https://github.com/vslavik/diff-pdf
 
 Viewers
 evince, mupdf, okular, qpdfview, zathura
-xournalpp
+comments + fancy marks (also windows): xournal
+simple marks (also windows): okular
 
 Editors
 Adobe Reader or simple editing programs

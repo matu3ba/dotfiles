@@ -12,6 +12,34 @@ tools ideas https://troglobit.com/post/2025-01-05-testing-network-daemons/
 infix - immutable network centered linux os https://kernelkit.org/about/ https://github.com/kernelkit/infix
 crypto+networking lib to build arbitrary networks (py) - https://github.com/markqvist/Reticulum
 
+https://brianlinkletter.com/2026/02/open-source-simulator-emulator-in-2026/
+https://brianlinkletter.com/open-source-network-simulators/
+* Cloonix https://clownix.net/
+* IoT simulations https://www.contiki-ng.org/
+* Cloud Computing Infra and Service simulation https://github.com/Cloudslab/cloudsim
+* IoT and wireless network simlator http://cupcarbon.com/
+* cnet for WAN, LAN, WLAN simulation
+* Containerlab as network emulator
+* Containernet to emulate scenarios
+* CORE simulate fixed and mobile networks
+* Network Emulator for Mobile Universes https://gitlab.com/v-a/nemu
+
+hardware: Computer Architecture course for timing/architecture/reversing/etc estimations
+* excellent overview, is https://safari.ethz.ch/architecture/fall2025/doku.php?id=schedule
+  * +1 has most general trade-offs besides internal computing bus design where I'd expect
+    something along optimizing each phase of computing operations
+  * -1 very many trade-offs, lots of specialized tools
+* general full system simulation course (bus system with attached components), ie systemc/tlm for discrete systems, for hw/sw codesign
+  - computing unit simulation (for stuff like side effects) needs cycle accuracy of internal bus (which is IP) and
+    10GHz oscillilsopes+X are expensive
+  - hardware based CPU register loggers exist and likely related simulators (I guess all with redacted commit queue time in cycles)
+* simulation standard(s) + libs for hardware bigger than bus systems
+  - router/routing simulators based on routing configs by private cloud vendors with good timing accuracy exists,
+    but not for private consumers
+  - anything more complex with accurate timing is not open source, since data curation and handling itself
+    becomes costly/IP (https://brianlinkletter.com/open-source-network-simulators/ also looks like simplified emulation
+    tooling similar or simpler than systemc/tlm based simulations.)
+
 ====usage
 realtime browser stuff only works via WebRTC
 

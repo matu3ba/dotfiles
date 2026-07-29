@@ -1,8 +1,55 @@
+==building
+==composing
+==dev_containers
 ==debug
+
+==building
+The post in https://sgt.hootr.club/blog/docker-protips/ with FROM scratch looks
+excellent, but looks generally what production stuff uses (might be missing
+some debug stuff for k8).
+https://tmp.bearblog.dev/minimal-containers-using-nix/ has nix vs alpine
+example showing that layers would need replacements.
+https://github.com/nlewo/nix2container only shows what is fast.
+
+* docker/podman build
+* Habitat
+* buildah
+* nix: https://nix.dev/tutorials/nixos/building-and-running-docker-images.html
+
+==composing
+* podman compose
+  - cwd-based configurations very annoying/broken
+* podman pod
+  - cluster config file generation from podman/nix
+* podman build + kind load + kubectl
+  - https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view
+* quadlet
+  - VM usage another slowdown >podman machine list
+
+==dev_containers
+https://containers.dev/supporting
+https://containers.dev/
+https://github.com/orgs/devcontainers-community/repositories
+
+Angular vscode devcontainer
+* https://code.visualstudio.com/docs/devcontainers/containers
+* https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
+* works with podman desktop
+* devcontainers can not be used in ci
+  - not reliable, might include display
+  - alternative containers from cypress, playwright, headless (ng test)
+
+* when Windows containers not available
+  * nix as contaier has best trade-offs
+    - flexible handling of dockerfile + package selection
+    - flexible handling of caching: handling local cache possible with container overlays or cache
+    - simpler than mise with individual handling of configs
+  * nix container to build selection of dev containers as OCI images
+  * what mise does not have: config introspection, bumps, small image sizes, simple state, low ops overhead
+  * what mise does have: simple guide with proper instructions
 
 ==debug
 container debugging tool based on FUSE https://github.com/Mic92/cntr
-
 
 ====clean_automatic
 ======podman

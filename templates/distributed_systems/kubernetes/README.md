@@ -1,5 +1,6 @@
 ## Minimal Kubernetes setup
 
+- [ ] https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view
 - [ ] Overview of sane options with trade-offs
 - [ ] Basic nix flake setup
 - [ ] Running k3s
@@ -10,3 +11,7 @@
 * https://samof76.space/kubernetes-in-anger.html Kubernetes Production Incident Debugging
   - interesting overview on operation complexity
 * [Discussion with context](https://lobste.rs/s/iggblv/kubernetes_anger)
+
+### Usage
+
+https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view

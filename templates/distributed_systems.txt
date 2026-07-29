@@ -285,3 +285,9 @@ specialized tools only help on minimizing attack surface
 
 ====optimizing
 https://www.channable.com/tech/how-we-optimized-cluster-wide-scheduling-for-sticky-workloads
+
+* envoy gateway
+* envoy logs
+
+scans in scaleway via TCP SYN
+whiskerfluff access log amazon queries

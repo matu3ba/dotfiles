@@ -4,6 +4,7 @@
 ====kubernetes_deployments
 ====implementation_tradoffs
 ====tools
+====certifications
 
 ====kubernetes
 * good at handling relative stateless applications
@@ -66,6 +67,9 @@ https://www.qovery.com/blog/northflank-alternatives
   - 2 no unified (remote debugging) tooling
   - 3 no best practices for vendor + security + cost deployment validation / monitoring
 * local setup
+  - k3s in docker laufen lassen
+  - minikube with load balancer needs redhat enterprise or equivalent
+    * local bgp etc doesnt work under windows, ubuntu
   - https://sigridjin.medium.com/building-a-kubernetes-cluster-from-scratch-overview-and-prerequisites-498ed989fd45
   - https://sigridjin.medium.com/building-a-kubernetes-cluster-from-scratch-setting-up-etcd-and-control-plane-0719698f0182
   - https://sigridjin.medium.com/building-a-kubernetes-cluster-with-kubeadm-from-theory-to-practice-faebea2eebd5
@@ -139,3 +143,8 @@ argocd
 cilium-cli
 kubectl
 scalway-cli
+
+====certifications
+Cloud Native Platform Engineering Engineer (CNPE)
+* https://github.com/elmerbulthuis/cnpe
+* https://github.com/mrmcmuffinz/kubernetes-to-the-moon

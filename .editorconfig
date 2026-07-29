@@ -23,6 +23,18 @@ indent_size = 4
 # tab_width = 2
 # tab_width defaults to indent_size
 
+# Ignore paths, does not help for binary files
+# [/vendor/**]
+# root = true
+# charset = unset
+# end_of_line = unset
+# indent_size = unset
+# indent_style = unset
+# insert_final_newline = false
+# max_line_length = off
+# tab_width = unset
+# trim_trailing_whitespace = false
+
 # to unset settings, ie due to unrepresentable utf-16-le-bom, use
 # charset = unset
 

@@ -61,6 +61,7 @@ const process = std.process;
 // * https://github.com/ghostty-org/ghostty/blob/main/src/tripwire.zig
 // ZON processor https://codeberg.org/tensorush/zq
 // Problem solving for engineering roles (zig leetcode) - https://codeberg.org/saurabh/zigling
+// Persistent data structures (for undo/redo) https://github.com/bneb/zimple
 
 // https://github.com/david-vanderson/dvui
 // https://codeberg.org/ssmid/zeppelin
@@ -987,6 +988,39 @@ test "@hasDecl" {
 // * 3 yet unclear configuration and debugging concept
 //   - buffer misconfiguration/incorrect usage possible https://www.openmymind.net/Is-Zigs-New-Io-Unsafe/
 //   - no guides on how to debug inter-component perf (under hostile kernel) etc
+
+// SHENNANIGAN `errdefer` in this code indeed doesn't get executed.
+// Avoid duplicating error logging attatched runtime context
+// My intuition was that errdefer is associated with leaving the lexical scope
+// due to an error. However, break :blk error.X merely produces an error value
+// for the block rather than propagating an error from the function, so the
+// errdefer is skipped.
+// Rationale so far: Extra complexity not worth it.
+pub const PacketHeader = extern struct {
+    packet_id: u32,
+    payload_len: u32,
+};
+pub fn errdefer_leak_readPacket(allocator: std.mem.Allocator, r: *std.Io.Reader) ![]u8 {
+    const header = try r.takeStruct(PacketHeader, .big);
+    const result = (blk: {
+        const payload = allocator.alloc(u8, header.payload_len) catch |e| break :blk e;
+        errdefer {
+            std.log.info("errdefer triggered", .{});
+            allocator.free(payload);
+        }
+        r.readSliceAll(payload) catch |e| break :blk e;
+        if (header.payload_len > 0 and payload[0] == 0xff) break :blk error.InvalidPayloadFormat;
+        break :blk payload;
+    }) catch |e| {
+        std.log.err("Failed to process packet_id: {d} (len: {d}). Error: {any}", .{
+            header.packet_id,
+            header.payload_len,
+            e,
+        });
+        return e;
+    };
+    return result;
+}
 
 // bug
 // jan@chimera ~/d/e/create_appimage (master) [1]> zig cc -target x86_64-linux-musl --static hello

@@ -1,3 +1,5 @@
+==ceritifate_management
+
 Talking To People - messengers
 Encrypting Email - email is insecure, gnugpg better than nothing
 Sending Files - Magic Wormhole
@@ -34,3 +36,6 @@ https://github.com/pq-code-package/mlkem-native/blob/main/SOUNDNESS.md
 * how are platform attack vectors (side channels) evaluated in practice? best effort?
 
 https://github.com/pq-code-package/mlkem-native
+
+==ceritifate_management
+https://github.com/FiloSottile/mkcert

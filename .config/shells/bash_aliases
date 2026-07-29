@@ -21,20 +21,27 @@ alias .............="cd ../../../../../../../../../../../.."
 #}
 
 # assume: $1 contains https..dirname.git
+# usage: makeWorkTree GIT_REMOTE
 makeWorkTree() {
-  worktreesfolder=$(basename -s .git "$1")
-  echo "$worktreesfolder"
-  mkdir "$worktreesfolder"
-  cd "$worktreesfolder"
+  worktreesdir=$(basename -s .git "$1")
+  if test -e "$worktreesdir"; then
+    echo "worktreesdir $worktreesdir already exists, skipping.."
+    return
+  fi
+  echo "$worktreesdir"
+  mkdir "$worktreesdir"
+  cd "$worktreesdir"
   git clone --bare "$1" .bare
   # make sure git knows where the gitdir is
   echo "gitdir: ./.bare" > .git
   git worktree add master
+  cd ..
 }
 
 # reset to branch $1 and apply last $2 commits
 # success: exist code 0
 # failure: revert, exit code 1
+# usage: resetToBranchAndCherryPickLastCommits BRANCH COUNT_LAST_COMMITS
 resetToBranchAndCherryPickLastCommits() {
   #current_branch=$(git symbolic-ref --short HEAD)
   git show-ref --quiet --branches "$1" || (echo "no branch $1"; return)

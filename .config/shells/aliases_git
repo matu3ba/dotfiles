@@ -12,6 +12,7 @@
 ##make sure git knows where the gitdir is
 # echo "gitdir: ./.bare" > .git
 # git worktree add master|main
+# fixup worktree to relative path
 
 #restore specific file
 #git restore --source=COMMITHASH filename
@@ -653,3 +654,8 @@ alias gsu='git submodule update'
 #local branch = branch1, git switch branch2 && git reset --hard branch1
 #git update-ref refs/heads/branch2 refs/heads/branch1
 #better use git branch -f three C2
+
+#==practice
+#https://matklad.github.io/2026/05/18/always-be-blaming.html
+# why of code: git blame && git log -S
+

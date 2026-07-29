@@ -1,0 +1,22 @@
+Problem: glibc or mimalloc may on certain (bursty) workloads not free memory
+Cause: glibc's ptmalloc manages memory through arenas. Each arena allocates
+from one or more contiguous heap regions. For thread arenas, these regions are
+mmap-backed sub-heaps.
+> Last freed chunks are cached by the allocator and are not consolidated into the
+> arena's reclaimable free space. With no allocation churn to trigger
+> consolidation, those chunks can act like a blocker, leaving the memory stranded
+> inside the allocator.
+> Thread arenas make this worse because they grow using mmap-backed sub-heaps. If
+> the current sub-heap fills up, the arena can attach a new sub-heap and move the
+> top pointer there. Automatic heap shrinking works from the top of the arena. If
+> the top sub-heap still has unconsolidated chunks, older sub-heaps below it may
+> remain mapped too, even if they are free.
+See also mimalloc issues "Cross-Thread deallocation"
+see also Mimalloc Cigarette: Losing one week of my life catching a memory leak https://github.com/microsoft/mimalloc/issues/537
+https://pranitha.dev/posts/rust-and-memory-allocators/
+Confirm: Memory returned to OS via $gdb -p 1 -batch -ex "call malloc_trim(0)"
+Solution: Switch to jemalloc with `background_threads` and purge unused pages
+asynchronously via `dirty_decay_ms` and `muzzy_decay_ms`.
+`tcache_gc_incr_bytes` is another option to control this.
+With background_thread enabled, this purging can happen
+asynchronously instead of waiting for future application allocation activity.

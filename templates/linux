@@ -4,6 +4,7 @@
 ====autostart
 ====udev
 ====WM
+====users_groups_permissions
 ====sandboxing
 ====Linux forensics
 ====ebpf
@@ -13,6 +14,7 @@
 ====Ghost_of_Unix
 ====kernel_dev
 ====bad_parts
+====courses
 
 https://venam.net/blog/unix/2021/02/07/audio-stack.html
 
@@ -270,10 +272,13 @@ sudo chmod -R 777 /dev/sdX
 > if error: sudo chown -hR $(whoami) /dev/sdX
 sudo mount -orw,remount /dev/sdX
 
-User accounting
-/etc/passwd
+====users_groups_permissions
+id
+users
+groups
+cat /etc/passwd
 Do not use --system, since any user can use them (also removes expiry date).
-/etc/login.defs
+cat /etc/login.defs
 [UID_MIN, UID_MAX]
 [GID_MIN, GID_MAX]
 /etc/group
@@ -583,3 +588,6 @@ KFuzzTest - fuzz kernel from kernel space
 ====bad_parts
 * kernel no micro-kernel, so many security problems (windows is worse though)
 * desktop https://slugcat.systems/brain_dump/linux-desktop-issues/
+
+====courses
+https://linuxhandbook.com/courses/

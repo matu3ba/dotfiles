@@ -593,7 +593,7 @@ add_cmd('GITBranch', function()
 
   local remote = git_show_remote(info.git_root, 'https')
   if remote == '' then
-    vim.notify('No corresponding remote found', vim.log.levels.ERROR)
+    vim.notify('No remote is matching "https"', vim.log.levels.ERROR)
     return
   end
 
@@ -615,7 +615,7 @@ add_cmd('GITPerma', function()
 
   local remote = git_show_remote(info.git_root, 'https')
   if remote == '' then
-    vim.notify('No corresponding remote found', vim.log.levels.ERROR)
+    vim.notify('No remote is matching "https"', vim.log.levels.ERROR)
     return
   end
 
@@ -637,7 +637,7 @@ add_cmd('GITRemote', function()
 
   local remote = git_show_remote(info.git_root, 'git')
   if remote == '' then
-    vim.notify('No corresponding remote found', vim.log.levels.ERROR)
+    vim.notify('No remote is matching "git"', vim.log.levels.ERROR)
     return
   end
 

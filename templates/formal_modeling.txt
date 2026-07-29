@@ -10,6 +10,7 @@
 ====correctness_implementation
 ====interfaces
 ====specification
+====data_modeling
 and misc
 
 ====theory
@@ -900,3 +901,42 @@ reference (information) - system semantics? specification, code docs, manual, wi
 * [information distribution across colleagues,
    support works; information distribution is the critical bottleneck of every company]
 Think how to navigate, simplify and explani complex problems and systems like companies!
+
+====data_modeling
+https://www.youtube.com/watch?v=0BXuYlNrUmE
+The Unreasonable Effectiveness of Constructive Data Modeling - Alexis King | SSW 2026
+1 product types (tuples, structs, records)
+2 sum types (ADTs/Rust-syle enums, union types, sealed interfaces)
+3 exhaustivepattern-matching on sum type variants (switch)
+Types are restrictions.
+==idea_1: Think positive space, not negative space.
+* easier to add than to subtract
+UInt for 0,1,..
+type List<T> = <library>
+type NonEmptyList<T> = (T, List<T>)
+==idea_2: Decouple representation from interpretation.
+Bad: Data is array, so i must ascribe it an array type.
+Good: Data is sequence of zero or more elements, which can be represented as array.
+Data does not have a single "privileged representation".
+constructive modeling can be tricky
+Bad: struct TimeRange { start: Instant, end: Instant } where start <= end
+Good: struct TimeRange { start: Instant, duration: Duration }
+How do I know which I pick?
+What is type system for?
+* Preventing you from writing 1 + stringVariable?
+* Formally proving your program correct?
+* Playing taxonomist in your product domain?
+* Writing maximally-precise specification of shape of your data at runtiem?
+* Excellent: keeping track of cases to handle
+Insight: Type system is obligation propagation machine. Use sites inform what
+the obligations must be.
+==idea_2: Pick the simplest representation that allows writing 'panic("this shouldn't happen")' as little as possible.
+* also phrased as "write total functions"
+Summary
+1 Define data's positive space, not its negative space.
+2 Decouple representation from interpretation.
+3 Use type definitions to encode obligations necessary to write total functions.
+4 Push obligations to places best equipped to handle them.
+
+https://matklad.github.io/2026/05/12/software-architecture.html
+* nice architecture advices
