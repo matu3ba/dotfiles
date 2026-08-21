@@ -1,33 +1,237 @@
+==Advantages
+==Shortcomings
+==add remove basic
+==add remove worktree
+==config
+==debug
+
 https://martinvonz.github.io/jj/latest/
 https://www.vincentschmalbach.com/jujutsu-a-next-generation-replacement-for-git/
 tutorial https://evmar.github.io/jjtut/
 https://lobste.rs/s/beqyuc/evan_s_jujutsu_tutorial
 https://evmar.github.io/jjtut/pitch/
 
-Advantages
+cargo install --locked --bin jj jj-cli
+
+==Advantages
 * git compatibility, smooth conflict handling, working copy as commit
 * automatic rebasing
 * flexible ways to edit commit messages without complex rebase ops
   see https://github.com/martinvonz/jj/blob/main/docs/git-comparison.md
 * operation logging and undo
+* Option to do lock-free operations and inversion of control in contrast to git
+  implementations
 
-Shortcomings
+==Shortcomings
 * requires LF and UTF8, does not support .gitattributes
 * missing features like git blame
 * there may be performance issues
 * ecosystem of tooling in its infancy
 * pre 1.0 with breaking changes
-* no worktree support
-* not yet shallow clone https://github.com/martinvonz/jj/issues/675
 https://martinvonz.github.io/jj/latest/sapling-comparison/
 For example, jj has no blame/annotate or bisect commands, and also no copy/rename support
 * git pull --rebase does not exist and neither strategy to do things on remote
   + script to automatically rebase remotes and force push xor rebase on git server
   + script to automatically do the same locally and compare locally
+No standard way to share and replay history with coworkers with minimal metadata
+  + splitting history
+  + merging history
 
+List of SHENANIGAN
+1 CLI commands may or may not need -r to refer to revisions.
+2 CLI has no standard way to debug shell escaping behavior
+3 CLI has no standard way to debug parsing problems
+* TODO check jj debug and --debug with high debug level for options
+
+==add remove basic
 git init --git-repo .
 jj git clone --colocate
 jj git init --colocate
+jj git init
+rm -rf .jj
+
+==add remove worktree
+TODO jj workspace commands
+
+==new working copy
+jj new bookmark_rev__id
+
+==edit commit/fix typo
+jj edit bookmark_rev__id
+
+==remote config
+jj config list --include-defaults git
+jj config set --repo git.push "upstream"
+
+jj git remote list
+jj git remote add upstream URL
+jj git remote rename origin upstream
+jj git remote set-url upstream URL
+
+SHENANIGAN
+> jj git remote list
+downstream git@gitlab.bla.com:orga/repo.git
+upstream https://gitlab.bla.com/orga/repo.git
+Jujutsu can only handle the fallback remote origin and has to be configured
+explicitly what to use for fetch and push.
+jj config set --repo git.fetch "upstream"
+jj config set --repo git.push "downstream"
+
+==remote testing
+jj git fetch --remote upstream
+jj git fetch --remote downstream
+jj git fetch --all-remotes
+env GIT_TRACE=1 jj git fetch --remote upstream
+
+jj log -r "bookmarks()"
+jj git push --dry-run
+
+==branch bookmark
+jj bookmark create my-feature-branch DOES NOT WORK
+jj bookmark create my-feature-branch -r '@'
+
+==git commit messages
+1 merge commit
+jj describe '@' --template 'Merge branch into main\n\nCommits:\n'$(jj log -r "main..c404c907" -T ' "- " ++ description.first_line() ++ "\n"' --no-graph)
+TODO
+2 no merge commit: jj merge main feature-branch
+* direct copy of branch into current branch: jj new @ feature-branch
+
+==remote push
+jj git push --bookmark my-feature-branch
+
+jj git push --remote upstream --bookmark my-feature-branch
+jj git push --remote upstream --bookmark my-feature-branch --allow-new
+* explicit bookmark usage is needed on first push
+
+debugging
+1 ssh -T git@gitlab.cambio-carsharing.com
+2 sh-add -l
+Error connecting to agent: No such file or directory
+jj config set --user git.program "ssh"
+
+GIT_TRACE=1 GIT_SSH_COMMAND="ssh -vvv" jj git push --bookmark various_fixes
+$env:GIT_TRACE=1; $env:GIT_SSH_COMMAND="ssh -vvv"; jj git push --bookmark various_fixes; Remove-Item Env:\GIT_TRACE; Remove-Item Env:\GIT_SSH_COMMAND
+On windows:
+Get-Command ssh
+Git Bash: C:\WINDOWS\System32\OpenSSH\ssh.exe
+* 2 client conflict
+* git config --list --show-origin --show-scope
+* git config --global core.sshCommand "C:/Windows/System32/OpenSSH/ssh.exe"
+
+==track remote branch
+jj bookmark track remote_branch@upstream
+
+==update
+jj git fetch
+
+current commit/working copy: @
+
+==squash into commit my-feature
+jj squash -r @ --into my-feature
+
+==edit commit my-feature
+jj describe my-feature -m "feat: implement user authentication system"
+
+==rebase
+rebase feature branch on top of main: jj rebase -b my-feature -d main
+reorder commits: jj arrange
+move commit 'abc' so it sits before 'xyz': jj rebase -r abc -B xyz
+move range of commits ('abc' to 'def') to sit after commit 'xyz': jj rebase -r "abc::def" -A xyz
+* git iff abc::def represent entire tip of branch and to move on top of xyz:
+  git rebase --onto xyz abc~1
+
+==autofix/auosquash
+automatic squash into historical commits originally altered those lines: jj absorb
+
+==squashing
+squash working copy into parent: jj squash
+interactively select changes from current commit into its parent: jj squash -i
+move only specific file into parent commit: jj squash file.txt
+squash commit into different commit: jj squash --from abc --into xyz
+squash commit into own parent: jj squash -r abc
+* git commit --amend --no-edit
+* git rebase -i abc~2
+
+==conflict resolve
+jj resolve --list
+jj resolve --tool <your-tool-name> <path/to/file>
+
+==diff
+jj diff = jj diff -r @
+jj diff -r rev = jj diff -f rev- -t rev
+jj diff -r rev- -r rev = jj diff -f rev- -t rev
+* can use rev- and rev+, rev--, rev++
+* can not use -r rev-2, have to use -r 'parents(@, 3)'
+example: jj log -r "parents(@, 3) | parents(@, 1)" -p
+* since there is only linear history, there is no ~ and ^
+
+==log
+show log first parent to debug diffs: jj log -r "parents(@, 2) | parents(@, 1)" -p
+templating: jj log -r "parents(@, 2) | parents(@, 1)" --template "change_id.short() + ' ' + description.first_line() + '\n'"
+* There is no way to do formatted output of logs, but one can use revset-aliases as workarounds.
+& { jj log -r "parents(@, 2) | parents(@, 1)"; echo "----"; jj log -r "parents(@, 2) | parents(@, 1)" -p }
+[revset-aliases]
+# Defines a custom function 'p(from, to)' that evaluates parents dynamically
+'p(from, to)' = 'parents(@, from) | parents(@, to)'
+& { jj log -r "p(2, 1)" ; echo "----"; jj log -r "p(2, 1)" -p }
+
+==split
+jj split -r rev_id
+
+==merge (forwarding history on immutable bookmark allowed, since its history addition)
+jj bookmark move main --to "main | my-feature"
+
+==abandon commit chain
+jj abandon rev_ids
+
+==restore
+jj restore --from main --to @ config.json
+jj restore --from main
+
+==timetravel
+operation log: jj op log
+single specific commit history: jj evolog
+historical subset of work branched off at bookmark commit added to new base commit
+jj rebase -r "bookmark_name..specified_commit" -d <new-destination-commit>
+* expected eviction/external mutations, immutable lock
+* working copy detachment via global flags like --at-operation detaches and
+freezes working copy ignoring local edits until pivot state back to present
+
+==cleanup
+jj util gc
+jj op abandon op_id
+jj bookmark forget name
+jj abandon commit
+check opslog size: jj op log | wc -l
+
+==workspaces
+jj workspace add ../mein-feature-ordner -r my-bookmark
+jj workspace list
+jj workspace forget mein-feature-ordner
+* relative pfade nutzen
+* locking und caching großes problem
+* ghost workspaces verhindern: jj workspace forget <ordner-name> && rm -rf <ordner-pfad>
+
+==fancy lock-free/native (non-git), manual snapshots, no fs watching
+[core]
+snapshot-on-value = "manual"
+watch-filesystem = false
+jj init mein-natives-projekt --git=false
+cd mein-natives-projekt
+jj describe -m "Initialer nativer Commit"
+echo "const agent = 'AI';" > app.js
+jj file snapshot
+conversion to git repo in-tree: jj git init
+conversion out of tree:
+git init ../exportierter-git-ordner
+jj git init --at ../exportierter-git-ordner
+
+==minify jj metadata
+* no custom commands yet
+jj git clone --revisions="main..feature-xyz" ./mein-haupt-repo ../shareable-trace-repo
+
+--no-integrate-operation
 
 js st
 echo "blabal" >> a.txt
@@ -54,3 +258,78 @@ https://devcry.heiho.net/html/2026/20260118-jj-xx.html
 deep dive https://medium.com/@pushpankdhruw/the-version-control-system-thats-making-git-power-users-switch-a-deep-dive-into-jujutsu-cdacdc43de00
 jj commands https://www.infovision.com/blog/git-and-jujutsu-the-next-evolution-in-version-control-systems/
 https://thenewstack.io/jujutsu-dealing-with-version-control-as-a-martial-art/
+
+==config
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[[--scope]]
+--when.repositories = ["~/dotfiles/"]
+[--scope.user]
+email = "user@mailbox.org"
+name = "user"
+
+[[--scope]]
+--when.repositories = ["~/my/"]
+[--scope.user]
+email = "user@mailbox.org"
+name = "user"
+
+[[--scope]]
+--when.repositories = ["C:/code/"]
+[--scope.user]
+email = "user@mail.com"
+name = "user"
+signingkey = "FFFFFFFFFFFFFFFF!"
+[--scope.commit]
+gpgsign = true
+
+[[--scope]]
+--when.repositories = ["~/ca/"]
+[--scope.user]
+email = "user@mail.com"
+name = "user"
+signingkey = "FFFFFFFFFFFFFFFF!"
+[--scope.commit]
+gpgsign = true
+
+[core]
+editor = "nvim"
+
+[ui]
+color = "auto"
+
+[working-copy]
+eol = "\n" # autocrlf = false
+
+==built-in diff/merge tool
+https://paulsmith.github.io/jj-builtin-diff-editor-cheatsheet/ Jujutsu / jj's built-in diff/merge tool cheatsheet
+====Navigation
+k, uparrow                prev item
+j, downarrow              nex item
+page up                   prev same type
+page down                 next same type
+shift-leftarrow,shift-h   outer item with fold
+left, h                   outer item only
+right l                   inner item and unfold
+====View_Controls
+f                         expand/collapse section
+F                         expand/collapse all
+e                         edit commit msg
+====Mouse controls
+Click on item
+Click on selection
+Expand/collapse section
+Access commands
+====General
+?                         show help
+q                         quit/cancel
+c                         confirm changes
+Ctrl-c                    force quit
+Esc                       close dialog
+====Scrolling
+vim movements
+====Seleciton
+Space                     toogle
+Enter                     toggle and advance
+a                         invert all
+A                         invert all uniformly

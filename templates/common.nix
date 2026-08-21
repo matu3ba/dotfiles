@@ -14,6 +14,9 @@
 #==container_composition
 # * podman compose
 #   - cwd-based configurations very annoying
+#   - Podman/Docker compose has no tooling for diagnostics and tagging
+#     stateful/stateless containers for use case groups, so automation is error
+#     prone, requires building from scratch or requires compose file duplication.
 # * podman pod
 #   - cluster config files?
 # * podman system

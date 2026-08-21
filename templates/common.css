@@ -1,5 +1,6 @@
 /*====grids
  *====links
+ *====security
  */
 
 /* Highly customizable, low-level CSS framework that allows for complete
@@ -7,11 +8,12 @@
  * https://github.com/tailwindlabs/tailwindcss
  */
 
-/*====grids are to create tables in CSS*/
-/* https://css-tricks.com/snippets/css/complete-guide-grid/ */
-/* https://css-tricks.com/dont-overthink-flexbox-grids/ */
-/* https://philipwalton.github.io/solved-by-flexbox/demos/grids/ */
-/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+/*====grids are to create tables in CSS
+ * https://css-tricks.com/snippets/css/complete-guide-grid/
+ * https://css-tricks.com/dont-overthink-flexbox-grids/
+ * https://philipwalton.github.io/solved-by-flexbox/demos/grids/
+ * https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+ */
 
 /*
  * possible with flexbox and dynamic width (offs is static offset):
@@ -30,6 +32,7 @@
  * | orange   | blue     |
  * -----------------------
  */
+
 /* html
  * <div class='flex_grid'>
  *   <div class='flex_row'>
@@ -64,6 +67,7 @@
  *   title
  *   left_col<20px>right_col
  */
+
 /* html
  * <div class="home_page">
  *   <div class='flex_grid'>
@@ -100,30 +104,37 @@
 .home_right { flex: 1; width: 300px; }
 @media screen and (max-width: 600px) { .home_page { display: block; } }
 
-/* table with auto layout */
-/* <table> */
-/*   <tr> */
-/*     <td>Ed</td> */
-/*     <td>Wood</td> */
-/*   </tr> */
-/*   <tr> */
-/*     <td>Albert</td> */
-/*     <td>Schweitzer</td> */
-/*   </tr> */
-/* </table> */
-/* table { */
-/*   table-layout: auto; */
-/*   width: 120px; */
-/*   border: 1px solid red; */
-/* } */
-/**/
-/* td { */
-/*   border: 1px solid blue; */
-/*   overflow: hidden; */
-/*   white-space: nowrap; */
-/*   text-overflow: ellipsis; */
-/* } */
+/*==table with auto layout
+ * <table>
+ *   <tr>
+ *     <td>Ed</td>
+ *     <td>Wood</td>
+ *   </tr>
+ *   <tr>
+ *     <td>Albert</td>
+ *     <td>Schweitzer</td>
+ *   </tr>
+ * </table>
+ * table {
+ *   table-layout: auto;
+ *   width: 120px;
+ *   border: 1px solid red;
+ * }
+
+ * td {
+ *   border: 1px solid blue;
+ *   overflow: hidden;
+ *   white-space: nowrap;
+ *   text-overflow: ellipsis;
+ * }
+ */
 
 /*====links
  * https://matklad.github.io/2026/06/04/css-unavoidable-bad-parts.html
- **/
+
+ *====security
+ * https://lobste.rs/s/qo7eyx/css_bomb_inside_your_inbox
+ * https://portswigger.net/research/css-the-bomb-inside-your-inbox#defences
+ * - css is crazy, only strict isolation and sandboxing helps
+ * - “Anyone who is not profoundly shocked by CSS has not understood it.”
+ */

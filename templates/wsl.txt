@@ -1,4 +1,75 @@
+means WSL2 here
+==config
 ==usage
+==design
+==podman_workaround
+
+==config
+global (hyper-v based VM for WSL): echo $env:UserProfile\.wslconfig
+local: cat /etc/wsl.conf
+
+# $env:UserProfile\.wslconfig
+[wsl2]
+memory=8GB                  # Limit memory allocation so WSL doesn't starve the host
+guiApplications=false       # Disable GUI if not strictly required to save overhead
+# default: nat (fallback to virtioproxy)
+networkingMode=mirrored     # Mirrors Windows network stack (fixes VPN/Proxy container bugs)
+autoMemoryReclaim=gradual   # Automatically drops cached RAM to prevent freezes
+
+* empty wslconfig should work without nix/nixos on ubuntu
+
+# /etc/wsl.conf
+[boot]
+systemd=true
+[interop]
+# default enabled=true, appendWindowsPath=true
+enabled=false
+appendWindowsPath=false
+[automount]
+enabled=true
+options="metadata,uid=1000,gid=1000,umask=0022,fmask=11,case=off"
+
+* minimal ubuntu has only [boot] systemd=true and [user] default=user
+
+networkingMode
+| networkingMode | Core Behavior                  | Primary Benefit                  | Biggest Drawback                   |
++----------------+--------------------------------+----------------------------------+------------------------------------+
+| nat (Default)  | Hidden behind a virtual Windows| Strong network isolation; unique | Blocked by restrictive corporate   |
+|                | switch layer (Hyper-V NAT).    | guest-only IP footprint.         | VPNs and endpoint security tools.  |
++----------------+--------------------------------+----------------------------------+------------------------------------+
+| mirrored       | Shares/mirrors host network    | Native IPv6, Multicast support,  | Port collisions (cannot bind same  |
+|                | adapters directly into Linux.  | and high corporate VPN/Proxy sync| port on host and WSL at once).     |
++----------------+--------------------------------+----------------------------------+------------------------------------+
+| virtioproxy    | Paravirtualized proxy layer    | Bypasses strict endpoint agents  | High DNS lookup latency; restricted|
+|                | acting as an outbound fallback.| to ensure basic outward internet.| inbound connections from host/LAN. |
++----------------+--------------------------------+----------------------------------+------------------------------------+
+| bridged        | Attaches directly to physical  | WSL behaves like a separate bare-  | Deprecated; complex setup; fails |
+|                | LAN via a dedicated vSwitch.   | metal machine on the local network.| entirely on Wi-Fi connections.   |
++----------------+--------------------------------+----------------------------------+------------------------------------+
+| none           | Suppresses guest virtual NIC   | Complete local sandbox isolation | Zero communication network paths;  |
+|                | generation entirely.           | for secure offline execution.    | breaks host-to-guest localhost.    |
++------------------+------------------------------+----------------------------------+------------------------------------+
+
+hyper-v
+* nat: itnernal switch (visible to host/VM but not LAN) with windows handling internet connection sharing on top of it.
+* bridged: bind to physical network adapter (Ethernet/wifi) with VM getting own IP from home/office router.
+* none: private switch/disconnected: isolated VM entirely, connection only between VMs on same switch, neither Windows host nor internet can reach it
+* mirrored: does not exist
+* mirrored: no lightweight fallback proxy layer, network simply disconnects
+
+==usage
+SHENANIGAN
+* unreliable systemd: breaks randomly programs relying on systemd
+* sporadic network bugs
+podman compose
+- systemd conflict and cleanup bugmirroredmirroredmirroredmirroredmirroredmirroredmirroredmirroredmirrored
+- network crash on multi service projects
+- path mapping errors on named volumes in WSL-VHDX-filesystem
+- missing user level dbus due to missing rootless linger emulation by wsl subsystem
+docker compose
+- Virtual Memory Ballooning Leak
+- Console Echo Terminus Mangle
+- Host Localhost Port Binding Drops
 
 list WSL OSes: wsl -l
 select WSL OS (distribution): wsl -d
@@ -37,3 +108,98 @@ Solution: wait for a while or restart, likely antivirus problem
 SHENANIGAN Escaping rules for powershell > wsl bash for variables are very annoying. On doubt, run in wsl bash.
 source env_cwo_template && echo '{"url":"'$DOTNET_SERVER_DNS'/api/keycloak"}' | jq .
 source env_cwo_template && jq -n --arg url "$DOTNET_SERVER_DNS/api/keycloak" '{url: $url}'
+
+==design
+* Based on single hyper-v based VM
+* No good isolation across WSL instances
+* very buggy due to various trade-offs on compatibility
+  - systemd based applications have horrible behavior, best to eliminate systemd
+* lots of race conditions
+* uses variant of linux kernel on "utility VM"
+  - systemd, dbus, session management adjusted by nested namespaces on windows host os
+  - filesystems /mnt/c are connected via unreliable 9P protocol
+* why 9p?
+  - instead of SMB/CIFS/NFS direct communication over virtual bus channels/vsockets of vSOckets without TCP/IP network overhead
+  - why still bad
+    * implementation bugs, file locking (NTFS with mandatory locking vs Linux advisory locking)
+    * NTFS kernel lcoks would have need write locks on every linux write access, which
+      would have frozen io performance
+      - this breaks rootless podman on id/permissions
+* dynamic memory
+  - linux cache problem
+    * linux kernel uses unused RAM as page cache to improve perf
+    * cgroup feature into subssytem (autoMemoryReclaim=gradual) to force linux kernel to drop
+      page cache cyclically
+      - this can create instabilities in container engines
+=> unrecommended for
+  - security of file permissions
+  - stable sockets
+  - stable script automation
+* no inversion of control attempt whatsoever, only adding more features to the 2 million LOC systemd monolith
+  - Poettering added support for Trusted Graphical Sessions
+  - enables Deterministic Boot-Fuzzing
+  - enables Hypervisor-enclaves & "Zero-Trust" Embedded Architecture
+    (process isolation and permission control based on type 1 hypervisor)
+  - enables boot sequence as pure, stateless fn (from the kernel perspective)
+    * snapshotting, rollback etc possible
+
+==podman_workaround
+ignoring systemd
+podman system service --time=0 unix://$HOME/podman.sock &
+export DOCKER_HOST=unix://$HOME/podman.sock
+podman-compose up -d
+
+==nix_workarounds
+sudo nix-store --verify --check-contents --repair --check-contents
+nixos-rebuild switch --sudo --flake .#wsl
+systemctl list-unit-files
+systemctl --user list-unit-files
+systemctl  list-unit-files | grep enabled
+dbus-broker --version
+systemctl show user@1000.service
+
+# Step 1: Find what generates "reloading user units"
+>grep -r "reloading user units" /etc/nixos/ 2>/dev/null || echo "not in /etc/nixos"
+not in /etc/nixos
+# Step 2: Check if it's in the NixOS module system
+>find /nix/store -name "*.nix" -type f 2>/dev/null | xargs grep -l "reloading user" 2>/dev/null | head -3
+/nix/store/0yhqd1ir96m29s67wgr8l2cm8whslwa8-source/flake.nix
+# Step 3: Extract and inspect the actual activation script that runs
+>cat /run/current-system/activate | grep -A 20 "reloading user" || echo "not in activate script"
+not in activate script
+# Step 4: Check switch-to-configuration directly
+>ls -la /run/current-system/bin/switch-to-configuration
+-r-xr-xr-x 2 root root 852 User  1  1970 /run/current-system/bin/switch-to-configuration
+
+# Step 5: Is switch-to-configuration a bash script or binary?
+>file /run/current-system/bin/switch-to-configuration
+/run/current-system/bin/switch-to-configuration: a /nix/store/1sr8rmx4v0v994lkbzhwc1f0qr1gxxs9-bash-5.3p9/bin/bash -e script, ASCII text executable
+
+# Step 6: If it's a script, search for the user reload logic
+>head -200 /run/current-system/bin/switch-to-configuration | grep -i "user\|reload\|dbus"
+error code (no result found)
+
+# Verify systemd.user.enable is actually false
+>sudo cat /run/current-system/etc/nixos-version 2>/dev/null || echo "version file not found"
+version file not found
+
+
+# Check if there are any systemd user services being generated
+>ls -la /etc/systemd/user/ 2>/dev/null || echo "no user systemd dir"
+
+>ls -la ~/.config/systemd/user/ 2>/dev/null || echo "no user config"
+
+# Most important: extract the actual switch-to-configuration and find the user reload
+>sudo strings /run/current-system/bin/switch-to-configuration | grep -B 5 -A 5 "reloading"
+
+# Build but don't switch
+>result=$(nixos-rebuild build --sudo --flake .#wsl 2>&1 | grep -oP '/nix/store/[^ ]+nixos-system' | tail -1)
+>echo "System path: $result"
+>cat "$result/activate" | wc -l
+
+> ls -la /etc/systemd/user/ | grep podman
+
+nix why-depends .#nixosConfigurations.wsl.config.system.build.toplevel nixpkgs#dbus-broker
+
+
+ls -la ~/.config/systemd/user/

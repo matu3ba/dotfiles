@@ -15,7 +15,7 @@
 # for example to mandate --build-arg NUMPY_VERSION=SOME_VERSION, use
 # ARG NUMPY_VERSION
 
-FROM node:26-alpine
+FROM docker.io/library/node:26-alpine
 RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
 WORKDIR /app
 COPY package*.json ./

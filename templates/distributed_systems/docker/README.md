@@ -78,14 +78,14 @@ Dockerfile. This is useful for creating smaller production images by separating
 build-time dependencies from runtime dependencies.
 
 ```Containerfile
-FROM node:18 AS build
+FROM docker.io/library/node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:18-alpine
+FROM docker.io/library/node:22-alpine
 WORKDIR /app
 COPY --from=build /app/dist ./dist
 CMD ["node", "dist/index.js"]

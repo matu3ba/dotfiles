@@ -1,6 +1,11 @@
 # SHENANIGAN Docker/Podman Compose's path resolution is cwd-dependent, making
-# it unsuitable for multi-repo setups without workarounds.
-#
+# it unsuitable for multi-repo setups without workarounds (forces monorepos).
+
+# SHENANIGAN
+# Podman/Docker compose has no tooling for diagnostics and tagging
+# stateful/stateless containers for use case groups, so automation is error
+# prone, requires building from scratch or requires compose file duplication.
+
 # Resulting structure of missing composibility
 # * copy paste of compose.yml contents for each service group
 # mydockerstuff/

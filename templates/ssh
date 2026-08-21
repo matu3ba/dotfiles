@@ -18,7 +18,7 @@ Generating private key with 200 instead of 16 default rounds.
 With
 USER=$USERNAME
 HOST=$HOSTNAME
-COMMENT="$(date +'%Y%m%d')${USER}@${HOST}"
+COMMENT="$(date +'%Y%m%d')${USER}@${HOSTNAME}"
 ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
 and with passphrase dialog
 ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -f $HOME/.ssh/PRIVATEKEYNAME
@@ -94,7 +94,7 @@ checklist ssh correctly running
 5. firewall or netfilter, firejail etc blocking things?
 6. where to look for more help
 
-____Setup_gpg____
+____Setup_gpg_git_commit_signing____
 fish
 set -U GPG_TTY "$(tty)"
 set -U SSH_AUTH_SOCK $(gpgconf --list-dirs agent-ssh-socket)
@@ -130,6 +130,27 @@ Adjust the .gitconfig with the output(without any 0x in front):
  gpgsign = true
 
 ssh-add -l
+
+____Setup_ssh_git_commit_signing__
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+touch ~/.ssh/allowed_signers
+# Declaring the `git` namespace helps prevent cross-protocol attacks.
+echo "$(git config --get user.email) namespaces=\"git\" $(cat ~/.ssh/PRIVATEKEYNAME.pub)" >> ~/.ssh/allowed_signers
+
+# ~/.gitconfig
+[gpg]
+  format = ssh
+[user]
+  email = EMAIL
+  name = USERNAME
+  signingkey = ~/.ssh/examplekey.pub
+[commit]
+  gpgsign = true
+[tag]
+  gpgsign = true
+[gpg "ssh"]
+  allowedSignersFile = ~/.config/git/allowed_signers
 
 ____Configuration____
 ~/.ssh/config for configs:

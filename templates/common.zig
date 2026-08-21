@@ -85,6 +85,7 @@ const process = std.process;
 // linker
 // * https://gamesbymason.com/blog/2025/statically-linking-pipewire/
 //   replacing dynamic linkage with static https://github.com/allyourcodebase/pipewire
+// * virtual memory allocator design https://tkammer.de/zisp/notes/260817-release.html
 
 //====dod
 // * DOD means cache-effective computing techniques

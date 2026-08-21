@@ -1,8 +1,13 @@
 # dotfiles
 
-Actions are performed according to structure of dotfiles, .gitignore, ignorefiles,
-`win_src_dest`, nixos/configuration.nix and hardware-configuration.nix
+Most relevant commands with config dependencies
+* `all commands except for flake.nix ($HOME, ~/dotfiles)`
+* `symlinkInstall.sh (ignorefiles, .gitignore)`
+* `flake.nix (./.config/, ./.bashrc)`
+* `nix configs (nixos/configuration.nix, nixos/hardware-configuration.nix)`
+* `fileOverwrite.ps1 (win_src_dest)`
 
+Commands with explanation
 - `checkHealth.sh` shows status of files
 - `fileBackup.sh` create backup to folder `$HOME/back/TIMESTAMP_backconfig` with timestamp if not symlink
 - `fileRemove.sh` remove regular files, if existing on system
@@ -14,26 +19,30 @@ Actions are performed according to structure of dotfiles, .gitignore, ignorefile
   * core usage pain points
     - nix language (implementation) bad designed: error msgs bad, slow
     - no authoritative docs on (use case based) code creation design, debugging, core patterns
-      * blog posts tend to contain bad patterns and no functional minimal code, TODO blog post
+      * blog posts tend to contain bad patterns and no functional minimal code
+      * see flake_nix_bad_but_works.md
     - 2GB container install size, on trimming/potential breakage ~200-300 MB less
+    - unusable with containers and default WSL configurations due to bad file corruptions
+    - random systemd errors and /nix/store corruptions, but no crashes
+      unrelated to virtualization to far
+    - standard workflows untested by nixos upstream including releases
 
 ### Dependencies
 
-- readlink to follow symbolic links
-- realpath to resolve non-canonical paths provided by fd-find
-- fd-find: https://github.com/sharkdp/fd (cargo install fd-find) for convenient ignorelist
+- `readlink` to follow symbolic links
+- `realpath` to resolve non-canonical paths provided by fd-find
+- `fd-find`: https://github.com/sharkdp/fd (cargo install fd-find) for convenient ignorelist
   * fd returns relative paths prefixed with ./ to prevent -files from modifying shell behavior
 - POSIX-compatible shell
-- zig build
-  * cross compilation `zig build test -Dno_cross`
-    o zig
-  * mandatory dependencies `zig build test -Dno_opt_deps`
-    o zig
-  * optional dependencies `zig build test -Dno_opt_deps`
+- `zig build`
+  * without cross compilation: `zig build test -Dno_cross`
+  * without optional dependencies: `zig build test -Dno_opt_deps`
+  * including all optional dependencies: `zig build test --summary all`
+    o nix (install all dependencies): `nix develop`
     o stylua: `cargo install stylua --features lua52`
-    o haskell (shellcheck)
-    o llvm-tools (clang-format, clang-tidy)
-    o luacheck
+    o haskell: `shellcheck`
+    o llvm-tools: `clang-format`, `clang-tidy`
+    o lua: `luacheck`
 
 ### Usage
 

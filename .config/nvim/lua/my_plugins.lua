@@ -194,6 +194,10 @@ return {
   -- usage in my_hydra.lua
   { 'nvim-mini/mini.move' },
 
+  -- TODO jj.nvim by core neovim contributor NicolasGB
+  -- :lua print(vim.inspect(require('jj.cmd').log({ revisions = '@', raw_flags = { "--summary" } })))
+  -- :lua print(vim.inspect(require('jj.diff')._backends))
+
   -- :Neogit
   -- :Neogit pull, push, commit
   -- interactive rebase, rewrite commit msg,

@@ -1,0 +1,30 @@
+====coordination
+====guide
+====specification
+====tools
+
+====coordination
+knowledge collection
+knowledge management
+wiki
+iteration
+
+====guide
+learning: minimal system with components
+expert: use case based tweaks
+
+====specification
+workflows
+informal
+formal
+
+====tools
+https://github.com/hedgedoc/hedgedoc
+very limited
+* wysiwyg
+
+https://github.com/Requarks/wiki wiki.js https://js.wiki/
+has only optimized search + labeling, probably hedgedoc features with dynamic preview
+* wysiwyg
+
+ideal: knowledge (graph) + hedgedoc + dynamic overview hierachy + optimized search + labeling

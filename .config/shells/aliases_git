@@ -59,6 +59,8 @@
 #git log -p
 #git log -p --stash
 #git log --oneline --graph --all
+#show complete history of diffs with commit metadata: git log -p -m --full-history
+#use --all to search through all branches instead of current/given one
 
 # Get number of commits since or between commits
 # git describe COMIMIT_RANGE --tag TAGNAME
@@ -538,7 +540,7 @@ alias gsu='git submodule update'
 # git worktree add [new-branch] path [commit-ish]
 # git worktree add ./existing-branch-name existing-branch-name
 # git worktree add ./feat_branch ./feat_branch master
-# git worktree list
+# git worktree list [--porcelain]
 # git worktree remove [-f]
 # * SHENNANIGAN no option for 'git worktree remove && git branch -d feat'
 
@@ -582,7 +584,7 @@ alias gsu='git submodule update'
 # 1. merge with merge commit + push
 # git switch master && git merge --no-ff --no-commit && git switch feature
 # git switch master && git merge --no-ff --no-commit && git switch feature && git push upstream master:master
-# 2. quash and merge + push
+# 2. squash and merge + push
 # git switch master && git merge --squash && git switch feature
 # git switch master && git merge --squash && git switch feature && git push upstream master:master
 # 3. rebase and merge + push

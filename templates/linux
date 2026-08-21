@@ -57,6 +57,7 @@ systemd-run
 * Run specified command in transient scope or service.
 systemd-nspawn
 * Spawn command or OS in lightweight container.
+* https://wolf.nereid.pl/posts/systemd-nspawn/
 
 ====autostart
 $XDG_CONFIG_HOME/autostart - ~/.config/autostart/
@@ -255,6 +256,7 @@ application kernel for containers: https://github.com/google/gvisor
 Fixing Desktop GPU + IPC design problems (for example making dbus superfluous): aracan-fe
 Desktop sandboxing to reduce gigantic attack vector: firejail (no great debug tooling)
 Tight sandboxing: bubblewrap (no good documentation or profile for diy)
+* https://bxt.rs/blog/easy-sandboxing-on-linux-with-bubblewrap/
 firejail:
 configs in /etc/firejail/, /usr/local/etc/firejail, ~/.config/firejail
 tools in /usr/lib/firejail, /usr/local/lib/firejail

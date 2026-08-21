@@ -1,6 +1,16 @@
 https://www.youtube.com/watch?v=EU_nQh8wg5A
 "benchmarking: its about time" by matt godbolt
 
+assembly followup by https://lobste.rs/s/wphnca/everyone_says_assembly_is_untyped
+https://www.gingerbill.org/article/2026/08/20/designing-odins-inline-asm/
+* The advantage/disadvantage of intrinsics is that they don't expose register
+  allocation. The compiler is free to reorder them where it can prove the
+  reordering is equivalent and to insert stack spills and reloads as needed in
+  the middle.
+* The advantage/disadvantage of intrinsics is that they permit optimizations. The compiler
+  can constant-fold them, optimize shuffles for the target architecture, etc.;
+  Clang/LLVM does this.
+
 what can go wrong?
 ==clocks
 ==compilers
@@ -8,8 +18,22 @@ what can go wrong?
 ==confounding_factors
 
 ```
-zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/benchmarking/bench_ex1.cpp -o ./build/bench_ex1.exe && ./build/bench_ex1.exe
-zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/benchmarking/bench_ex1.cpp -o ./build/bench_ex1.exe && ./build/bench_ex1.exe
+example/benchmarking/bench_ex1.cpp
+example/benchmarking/bench_ex2_now.asm
+example/benchmarking/bench_ex3.cpp
+example/benchmarking/bench_ex3_vdso.asm
+example/benchmarking/bench_ex4_time.cpp
+example/benchmarking/bench_ex5_bench.cpp
+example/benchmarking/bench_ex6_volatile.cpp
+example/benchmarking/bench_ex7_asm.cpp
+example/benchmarking/bench_ex8_donotoptimize.cpp
+example/benchmarking/bench_ex9_clobber.cpp
+example/benchmarking/bench_ex10_counters.cpp
+example/benchmarking/bench_ex11_ordering.cpp
+example/benchmarking/bench_ex12_cyclebench.cpp
+example/benchmarking/bench_ex13_clock_selection.cpp
+example/benchmarking/bench_ex14_branching.cpp
+example/benchmarking/bench_ex15_summary.cpp
 ```
 
 std::chrono clocks
@@ -50,5 +74,3 @@ whole process:
 4 seq lock { rdtsc + calibration maths }
 5 struct timespec
 6 time_point{timespec to nanos}
-
-TODO finish talk

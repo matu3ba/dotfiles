@@ -35,7 +35,7 @@ on chimera:
 * apk add mesa-gbm-devel freetype-devel harfbuzz-devel libxkbcommon-devel
 * apk add ffmpeg-devel leptonica-devel tesseract-devel
 * apk add libvncserver-devel libusb-devel v4l2loopback-devel
-TODO package libvlc-core
+package libvlc-core
 missing: apk add kms?? libvlc-core?? v4l2loopback-devel mupdf??
 
 idea shell file

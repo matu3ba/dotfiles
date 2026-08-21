@@ -127,6 +127,49 @@ git log --format=format:"%B----"
 Show commit seperated commits without indentation (graphical copy paste):
 git log --format=format:"%H%n%B----"
 
+Decomposes merges against all parents; tracks file renames:
+git log -p -m --follow HEAD <path>
+
+======Base merge strategies with file tracking (--follow)
+Shows uncompressed multi-column combined diffs; tracks file renames:
+git log -p -c --follow HEAD PATH
+Shows conflict/evil-merge diffs only; tracks file renames:
+git log -p --cc --follow HEAD PATH
+Shows only manual conflict resolution diffs; tracks file renames:
+git log -p --remerge-diff --follow HEAD PATH
+Shows diffs from mainline perspective only; tracks file renames:
+(-m here disables history simplification by git)
+git log -p -m --first-parent --follow HEAD PATH
+
+show everything including renames in branch HEAD:
+git log -p -m --full-history HEAD -- PATH
+show everything including renames in all branches:
+git log -p -m --all --full-history HEAD -- PATH
+
+======Octupus merge strategies with file tracking (--follow)
+If reasonable, rule out merges to have 3 or more parents:
+* git rev-list --min-parents=3 --all
+* git-lint
+# Inside a server-side hook script
+if [ $(git rev-list --parents -n 1 $commit | wc -w) -gt 3 ]; then
+    echo "ERROR: Octopus merges are forbidden!" && exit 1
+fi
+======Octupus Linux Kernel Best Practice
+* no Cthulhu merge with 66-way octupus merge
+* 10-15 parents at maximum
+* test: git merge-tree HEAD branch1 branch2 branch3 branch4
+  - must be exit status 0
+* use: git merge HEAD branch1 branch2 branch3 branch4
+
+======Octupus Log
+Expands octopus merge into N separate, full patches (one per parent); track renames:
+git log -p -m --follow HEAD PATH
+Combine all N parents into a massive multi-column gutter diff; track renames:
+git log -p -c --follow HEAD PATH
+Completely ignores the N-1 side branches; treat the octopus merge as a single
+patch against the main branch:
+git log -p --first-parent --follow HEAD PATH
+
 Get parent commit
 git cat-file -p COMMIT
 git show -p COMMIT

@@ -482,7 +482,11 @@ https://sockeye.ethz.ch/kirsch/docs/design/glas.html#who-has-tried-this-before
 authorization
 keycloak: design problem of extensions requiring extensive + cumbersome checks
 via tags etc to prevent accidental live system breakage
+* established OAUTH so that frontend does not need to care about
+session handling
 
+https://github.com/sebadob/rauthy
+* Rauthy - Single Sign-On Identity & Access Management via OpenID Connect, OAuth 2, and PAM
 https://kanidm.com/comparisons/, https://github.com/kanidm/kanidm
 * library-like and simpler than Keycloak
 

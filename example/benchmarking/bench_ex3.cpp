@@ -1,3 +1,5 @@
+//zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/benchmarking/bench_ex3.cpp -c -o ./build/bench_ex3.o
+//zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/benchmarking/bench_ex3.cpp -c -o ./build/bench_ex3.o
 #include <chrono>
 namespace sc = std::chrono;
 
@@ -35,7 +37,7 @@ namespace sc = std::chrono;
 int main() {
   using clock = std::chrono::steady_clock;
   for (int i = 0; i < 1'000'000; i += 1)
-    clock::now();
+    (void)clock::now();
 }
 
 // >g++ clock.cpp

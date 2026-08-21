@@ -16,59 +16,75 @@ have been bad luck or community place selection.
 recommended.
 
 2.  When learning flakes, how to forward inputs, specifically nixpkgs
+
 2.1 nixpkgs is not part of default forwarded pieces, so things silently break without reasonable
     debugging info
-    * with pkgs
-    * nixpkgs.legacyPackages.${system}
-    * widely used import/ hack
-      let
-        system = "`x86_64-linux`";
-        pkgs = import nixpkgs { inherit system; };
-      in {
-        ..
-      }
-    * solution: pkg usage not possible, even though system install works => must be symbol forwarding
-      environment.systemPackages = builtins.attrValues {
-        inherit (nixpkgs.legacyPackages.${system})
-          neovim
-          git;
-      };
-2.2 nixos-wsl.nixosModules.wsl {} is implicitly nixos-wsl.nixosModules.wsl({ ... }: {})
-2.3 Most confusing and annoying, examples mention superflous knowledge to not import, using
-    deprecated default configs including setting system to pkgs
-    * all of this besides setting once nixpkgs.hostPlatform is handled by nix
-    * no curated set of best practice in multiple minimal flake.nix as real use cases
-2.4 Exact use cases after basics for outputs = inputs@{ nixpkgs, nixos-wsl, ... } :
+  * with pkgs
+  * nixpkgs.legacyPackages.${system}
+  * widely used import/hack
+```nix
+let
+  system = "`x86_64-linux`";
+  pkgs = import nixpkgs { inherit system; };
+in {
+  ..
+}
+```
+  * solution: pkg usage not possible, even though system install works => must be symbol forwarding
+```nix
+environment.systemPackages = builtins.attrValues {
+  inherit (nixpkgs.legacyPackages.${system})
+    neovim
+    git;
+};
+```
+
+2.2 Interestinly `nixos-wsl.nixosModules.wsl {}` is implicitly `nixos-wsl.nixosModules.wsl({ ... }: {})`
+
+2.3 Most confusing and annoying, examples mention superflous knowledge to not
+import, using deprecated default configs including setting system to pkgs
+  * all of this besides setting once nixpkgs.hostPlatform is handled by nix
+  * no curated set of best practice in multiple minimal flake.nix as real use cases
+
+2.4 Exact use cases after basics for
+```nix
+outputs = inputs@{ nixpkgs, nixos-wsl, ... } :
 {
   wsl = nixpkgs.lib.nixosSystem {
     specialArgs = { inherit inp; }
   };
 }
-    * 2 syntaxes for the same thing (no idea), maybe slop
-    * making it more explicit what that inputs are being used
+```
+  * 2 syntaxes for the same thing (no idea), maybe slop
+  * making it more explicit what that inputs are being used
+
 2.5 Exact use cases after basics for outputs = { self, nixpkgs, nixos-wsl, ... } : {}
-    * overlays
-    * other forms of reflection of the module content
-Difference between 2.4 and 2.5 ?
-    * self is much more powerful
+  * overlays
+  * other forms of reflection of the module content
+
+2.6 Difference between 2.4 and 2.5 ?
+  * self is much more powerful
 
 3. Best practice for shared module or when to choose other abstraction for cross-arch/cross-os flake
-    * Dont overthink it, simply make a sharedModule for shared
-      configuration.
-    * There are too many guides without design rational for evaluation performance,
-      debugging experience and complexity reduction.
-      outputs = { nixpkgs, nixos-wsl, ... }:
-      let
-        sharedModule = { pkgs, ... }: {
-          environment.systemPackages = with pkgs; [ neovim git ];
-        };
-      in {
-      };
+  * Dont overthink it, simply make a sharedModule for shared
+    configuration.
+  * There are too many guides without design rational for evaluation performance,
+    debugging experience and complexity reduction.
+```nix
+  outputs = { nixpkgs, nixos-wsl, ... }:
+  let
+    sharedModule = { pkgs, ... }: {
+      environment.systemPackages = with pkgs; [ neovim git ];
+    };
+  in {
+  };
+```
 
 4. Problem Bizarre syntax errors are not helpful
-   cannot put a module function directly inside the modules = [ … ] list; NixOS
+   cannot put a module function directly inside the `modules = [ .. ]` list; NixOS
    expects either an attribute set or a function wrapped as a module, so your
    function syntax is being parsed as invalid.
+```txt
 error: syntax error, unexpected ',', expecting '.' or '='
        at $HOME/dotfiles/flake.nix:104:19:
           103|           sharedModule
@@ -85,21 +101,24 @@ solution
         ({ config, lib, pkgs, modulesPath, ... }: {
         })
       ];
+```
 
 5. Wrongly nested arguments lead to unknown options without suggestion (lsp?)
-          ({ config, lib, pkgs, ... }: {
-            home-manager.users."jan-philipp.hafer" = {
-              home.programs.gpg.enable = true;
-              home-manager.services.gpg-agent = {
-                defaultCacheTtl = 34560000;
-                enable = true;
-                enableScDaemon = false;
-                enableSshSupport = true;
-                maxCacheTtl = 34560000;
-                pinentry.package = pkgs.pinentry-tty;
-              };
-            };
-          })
+```nix
+({ config, lib, pkgs, ... }: {
+  home-manager.users."user" = {
+    home.programs.gpg.enable = true;
+    home-manager.services.gpg-agent = {
+      defaultCacheTtl = 34560000;
+      enable = true;
+      enableScDaemon = false;
+      enableSshSupport = true;
+      maxCacheTtl = 34560000;
+      pinentry.package = pkgs.pinentry-tty;
+    };
+  };
+})
+```
 
 6. Documentation is often wrong, ie NixOS WSL has wrong docs on generation of tarballs
    sudo nix run .#nixosConfigurations.wsl.config.system.build.tarballBuilder
@@ -113,50 +132,62 @@ solution
    or other virtualization technologies with overlay and synchronization bugs.
    In WSL systemd is fragile, namespace complexity high and reboot can lose mount
    state mid-operation. Likewise, Mac virtualization has namespace/mount sync problems.
-   ```
-   1 Prevent broken podman on WSL restart
-   systemctl --user mask podman-restart.service
-   # update nix-os
-   systemctl --user unmask podman-restart.service
+```sh
+# 1 Prevent broken podman on WSL restart
+systemctl --user mask podman-restart.service
+## update nix-os
+systemctl --user unmask podman-restart.service
 
-   2 Fix broken podman container
-   # 1. Stop podman daemon completely
-   podman machine stop 2>/dev/null || true
-   systemctl --user stop podman 2>/dev/null || true
-   # 2. Unmount any remaining overlays
-   sudo umount -l /tmp/containers-$USER/overlay/*/diff 2>/dev/null || true
-   sudo umount -l /tmp/containers-$USER/overlay/*/work 2>/dev/null || true
-   # 3. Delete with elevated permissions
-   sudo rm -rf /tmp/containers-$USER/
-   sudo rm -rf ~/.local/share/containers/
-   # 4. Restart podman cleanly
-   podman machine start 2>/dev/null || systemctl --user start podman
-   ```
+#2 Fix broken podman container
+## 1. Stop podman daemon completely
+podman machine stop 2>/dev/null || true
+systemctl --user stop podman 2>/dev/null || true
+## 2. Unmount any remaining overlays
+sudo umount -l /tmp/containers-$USER/overlay/*/diff 2>/dev/null || true
+sudo umount -l /tmp/containers-$USER/overlay/*/work 2>/dev/null || true
+## 3. Delete with elevated permissions
+sudo rm -rf /tmp/containers-$USER/
+sudo rm -rf ~/.local/share/containers/
+## 4. Restart podman cleanly
+podman machine start 2>/dev/null || systemctl --user start podman
+```
    General solution to prevent broken containers (push-based garbage collection
    model, atomic transaction log, centralized resource tracking): Use
    systemd-nspawn, Incus or Lima.
    So, basically the solution to virtualization (in unreliable environments) is
-   a file system.
+   a file system to track actions.
+   Update: Systemd offering no inversion of control and the actual pid 1
+   potentially messing up things at the worst time point looks bad. Tracking
+   all process interactions in file system/database would introduce high costs.
+   Hyper-V and pid 1 logs should have hints, but I have not looked into them
+   for debugging.
 
 9. There is no overview/excellent guide on virtualization in NixOS, which would have saved
    me significant time instead of slowly asking LLMs answer by answer. Further, I would
    expect from a excellent virtualization environment to have a mode to detect such
    problems, but neither docker or podman offer such functionality.
    Maybe, once file systems are moved to user space, better tools will be made.
+   Update: Docker and podman have a bad build (cwd-dependent, very limited,
+   error prone), deploy (no concept), execution (configuration translation
+   from/to kubernetes impossible, very limited, error prone) system and
+   do not document container build- and runtime-dependencies semantics
+   as provided by underlying tooling. Likewise, docker and podman have very
+   limited introspection (only logs) into containers and the runtimes as
+   documented standard process for developers.
 
 10. The name `legacyPackages` is bad, because it uses lazy evluation needed by
-   the massive attrset (>80k packages). It only exists, because early flake
-   proposals wanted outputs based on strict evaluation for simpler reasoning
-   and faster CI. More annoyingly, one can often get around usage of
-   `legacyPackages` except for cases like `devShells.x86_64-linux.default =
-   nixpkgs.legacyPackages.x86_64-linux.mkShell`.
+    the massive attrset (>80k packages). It only exists, because early flake
+    proposals wanted outputs based on strict evaluation for simpler reasoning
+    and faster CI. More annoyingly, one can often get around usage of
+    `legacyPackages` except for cases like `devShells.x86_64-linux.default =
+    nixpkgs.legacyPackages.x86_64-linux.mkShell`.
 
 11. Modules can infer `pkgs` from `hostPlatform`, but root steps like dev shells
-   have no option to infer it. This is bizarre, because one should be able to infer
-   or set it. It is probably related to a missing host and target model and other missing
-   pieces like missing abi model leading to nasty behavior on cross-compiling vs native
-   compilation of the store and cache.
-   ```nix
+    have no option to infer it. This is bizarre, because one should be able to infer
+    or set it. It is probably related to a missing host and target model and other missing
+    pieces like missing abi model leading to nasty behavior on cross-compiling vs native
+    compilation of the store and cache.
+```nix
 {
   description = "Smallish NixOS-WSL flake";
 
@@ -196,7 +227,7 @@ solution
     };
   };
 }
-   ```
+```
 
 12. Flakes require git versioning to exist. This leads to the requirements
 * flake.nix is in git repo `work`
