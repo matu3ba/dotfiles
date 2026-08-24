@@ -18,11 +18,11 @@ REM additional delayed expansion possible via 'SetLocal EnableDelayedExpansion'
 REM and usage via ^!variable^!
 
 REM http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html
-REM TODO extend by guide
+REM TODO write content as minimal examples plus comments in working batch script
 REM https://www.robvanderwoude.com/battech_fileproperties.php
-REM TODO extend by collection
+REM TODO write content as minimal examples plus comments in working batch script
 REM https://ss64.com/nt/if.html
-REM TODO check out
+REM TODO write content as minimal examples plus comments in working batch script
 
 REM cd without args shows pwd
 REM dir shows ls

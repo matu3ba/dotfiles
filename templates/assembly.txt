@@ -1,6 +1,7 @@
 ====isas
 ====AT&T_syntax_bad
 
+https://blog.brakmic.com/intro-to-x86-assembly-with-fasm/
 https://xania.org/AoCO2025
 
 ====isas

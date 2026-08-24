@@ -6,6 +6,8 @@ https://www.keycloak.org/docs/26.7.0/authorization_services/
 https://www.keycloak.org/docs/latest/server_admin/index.html#_role_scope_mappings
 https://www.trion.de/news/2024/04/09/keycloak-realm-admin.html
 
+https://blog.brakmic.com/keycloak-with-postgresql-on-kubernetes/
+
 ==binary_paths
 ==export_database
 

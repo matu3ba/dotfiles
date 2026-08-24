@@ -57,6 +57,8 @@ hyper-v
 * mirrored: does not exist
 * mirrored: no lightweight fallback proxy layer, network simply disconnects
 
+lxmonika https://github.com/trungnt2910/lxmonika as very incomplete WSL1 replacement
+
 ==usage
 SHENANIGAN
 * unreliable systemd: breaks randomly programs relying on systemd
