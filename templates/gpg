@@ -6,12 +6,13 @@ requires
 //new to crypto, use
 gpg --full-gen-key --expert
 
-// YYYY-MM-DD being expiration date
+//==best practice create gpg key (fast)
+// YYYY-MM-DD being expiration date is alternative to using 3y
 // based on https://musigma.blog/2021/05/09/gpg-ssh-ed25519.html
 gpg --quick-generate-key \
-    'Name Mail (optional_comment)' \
-    ed25519 cert YYYY-MM-DD
-gpg --quick-generate-key 'Name Mail (optional_comment)' ed25519 cert YYYY-MM-DD
+    'Name <Mail> (optional_comment)' \
+    ed25519 cert 3y
+gpg --quick-generate-key 'Name <Mail> (optional_comment)' ed25519 cert 3y
 // save keyfingerprint to env var without spaces (it says key-Fingerprint on the output)
 // should also work with spaces
 
@@ -29,10 +30,13 @@ sec   ed25519/0xsec_short_hash create_date [SC] [expires: expire_date]
 uid                   [ultimate] name mail
 ssb   cv25519/0xpub_short_hash create_date [E]
 
-KEYFPSPACES="[key fingerprint 10 blocks a 4 digits]"
+// trim spaces from key fingerprint
+KEYFPSPACES='key_fingerprint_10_blocks_a_4_digits'
+set KEYFPSPACES 'key_fingerprint_10_blocks_a_4_digits'
 KEYFP=$(echo $KEYFPSPACES | tr -d ' ')
+set KEYFP $(echo $KEYFPSPACES | tr -d ' ')
 
-keyfingerprint="[key fingerprint 10 blocks a 4 digits]"
+keyfingerprint="key fingerprint 10 blocks a 4 digits"
 set -lx KEYFP keyfingerprint
 export KEYFP=keyfingerprint
 fish: set KEYFP 'keyfingerprint'
@@ -224,23 +228,27 @@ gpg>fpr
 gpg>sign|delsig
 gpg>save
 
-sign key and local sign key
-gpg -a --export KEYID > signed-key.asc
+sign key and local sign key (use ! to only export those key, not the full key pair)
+gpg -a --export KEYID! > signed-key.asc
 gpg --lsign-key KEYID
 
 revoke published key signature + publish revocation cert / export key with revoked signature
 gpg --edit-key KEYID
 gpg>revsig
 gpg>save
-gpg --send-key KEYID / gpg -a --export KEYID > exported-key.asc
+gpg --send-key KEYID / gpg -a --export KEYID! > exported-key.asc
 
 add uid
 gpg --edit-key KEYID
 gpg>adduid
 (enter details as prompted)
+gpg>trust
 gpg>list
+gpg>uid
+gpg>deluid
 gpg>save
 gpg>quit
+SHENANIGAN: May still show [untrusted] even though uid was trusted. Has to save.
 
 revoke cert
 gpg -a --gen-revoke KEYID > revoke.asc

@@ -185,3 +185,9 @@ schemas rule of thumb
 * Always use timestamptz
 * Always use primary keys
 * Use foreign keys with cascading deletes for low-volume tables, particularly where database consistency and correctness are important. Careful at higher volume.
+
+====mysql
+foreign key target table info
+SELECT TABLE_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE REFERENCED_TABLE_NAME IS NOT NULL;
