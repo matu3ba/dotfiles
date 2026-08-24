@@ -29,6 +29,9 @@ sec   ed25519/0xsec_short_hash create_date [SC] [expires: expire_date]
 uid                   [ultimate] name mail
 ssb   cv25519/0xpub_short_hash create_date [E]
 
+KEYFPSPACES="[key fingerprint 10 blocks a 4 digits]"
+KEYFP=$(echo $KEYFPSPACES | tr -d ' ')
+
 keyfingerprint="[key fingerprint 10 blocks a 4 digits]"
 set -lx KEYFP keyfingerprint
 export KEYFP=keyfingerprint

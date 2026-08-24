@@ -170,6 +170,9 @@ Completely ignores the N-1 side branches; treat the octopus merge as a single
 patch against the main branch:
 git log -p --first-parent --follow HEAD PATH
 
+======ignore
+--ignore-cr-at-eol
+
 Get parent commit
 git cat-file -p COMMIT
 git show -p COMMIT
