@@ -6,6 +6,9 @@ vim.filetype.add {
   extension = {
     smd = 'supermd',
     shtml = 'superhtml',
+    tf = 'terraform',
+    tofu = 'terraform',
+    tfvars = 'terraform-vars',
     ziggy = 'ziggy',
     ['ziggy-schema'] = 'ziggy_schema',
   },

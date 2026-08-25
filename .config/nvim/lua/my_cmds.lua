@@ -178,17 +178,24 @@ add_cmd('Bda', [[:bufdo :bdelete]], {}) -- deleting all buffers except current o
 --  only 1 instance is annoying --unique
 
 --==nvim_latex
+---@type integer|nil
 _G.Pid_okular = nil
 add_cmd('Pmsta', function()
   local this_tex_file = vim.fn.expand '%:p'
   local line_number = vim.fn.line '.'
   local okularcmd = 'okular --noraise "' .. 'build' .. sep .. 'main.pdf' .. '#src:' .. line_number .. ' ' .. this_tex_file .. '"'
-  _G.Pid_okular = vim.fn.jobstart(okularcmd)
-  if _G.Pid_okular <= 0 then print '_G.Pid_okular: could not launch okular' end
+  local job_id = vim.fn.jobstart(okularcmd)
+  if job_id <= 0 then
+    print '_G.Pid_okular: could not launch okular'
+  else
+    _G.Pid_okular = job_id
+  end
 end, {})
 add_cmd('Pmsto', function()
-  if _G.Pid_okular ~= nil and _G.Pid_okular > 0 then
-    local _ = vim.fn.jobstop(_G.Pid_okular)
+  ---@type integer|nil
+  local pid = _G.Pid_okular
+  if pid and pid > 0 then
+    vim.fn.jobstop(pid)
     _G.Pid_okular = nil
   end
 end, {})
@@ -342,16 +349,16 @@ end
 --:'<,'>QFsetRange
 -- :5,12QFsetRange
 -- :7QFsetRange
+---@param l1 integer
+---@param l2 integer
 local QFsetRange = function(l1, l2)
-  -- No range provided: do nothing or default to whole file
-  -- other option: if selection off (+ start cursor == end cursor),
-  -- default to whole file
-  -- lines = vim.fn.getline(1, '$')
-  assert(l1 ~= 0)
-  assert(l2 ~= 0)
-  local lines = vim.fn.getline(l1, l2)
+  if l1 == 0 or l2 == 0 then error 'Invalid buffer lines provided to QFsetRange' end
+  -- convert 1-indexed human line args to 0-indexed API bounds (end is exclusive)
+  local current_buf = 0 -- 0 represents the current active buffer
+  local lines = api.nvim_buf_get_lines(current_buf, l1 - 1, l2, false)
   local fname = vim.fn.expand '%'
   local items = {}
+
   for i, l in ipairs(lines) do
     table.insert(items, {
       filename = fname,
@@ -363,27 +370,22 @@ local QFsetRange = function(l1, l2)
 end
 add_cmd('QFsetRange', function(opts) QFsetRange(opts.line1, opts.line2) end, { range = true, desc = "'<,'>QFsetRange5,12QFsetRange,7QFsetRange" })
 
+---@param l1 integer
+---@param l2 integer
 local QFsetValidPaths = function(l1, l2)
-  -- No range provided: do nothing or default to whole file
-  -- other option: if selection off (+ start cursor == end cursor),
-  -- default to whole file
-  -- lines = vim.fn.getline(1, '$')
-  assert(l1 ~= 0)
-  assert(l2 ~= 0)
-  local lines = vim.fn.getline(l1, l2)
+  if l1 == 0 or l2 == 0 then error 'Invalid buffer lines provided to QFsetValidPaths' end
+  local current_buf = 0
+  local lines = api.nvim_buf_get_lines(current_buf, l1, l2, false)
   for i, l in ipairs(lines) do
     if not vim.uv.fs_stat(l) then
-      vim.print(i, lines[i], 'not existing')
+      vim.print(i, l, 'not existing')
       return
     end
   end
-
-  local cwd = vim.uv.cwd()
+  local cwd = vim.uv.cwd() or ''
   local items = {}
   for _, l in ipairs(lines) do
     local normrelpath = utils.pathNormRel(cwd, l)
-    -- vim.fs.relpath(cwd, l, {})
-    -- if (relpath == nil) then relpath = l; end
     table.insert(items, {
       filename = normrelpath,
       lnum = 1,
@@ -480,6 +482,7 @@ add_cmd('ShDate', function() utils.printOrReplaceOsDate("") end, { range=true })
 -- nothing portable for
 add_cmd('MkdirPa', function(ctx)
   local path = ctx.fargs[1]
+  if path == nil then return end
   local basename = vim.fn.fnamemodify(path, ':h')
   vim.fn.mkdir(basename, 'p')
   if basename ~= path then vim.cmd.edit(path) end
@@ -528,6 +531,7 @@ end, { nargs = 1 })
 add_cmd('RetagZig', function()
   -- if vim.bo.filetype == 'zig' then
   local obj = vim.system({ 'fd', '.', '-e', 'zig', 'src' }, { text = true }):wait()
+  if obj.stdout == nil then return end
   vim.system({ 'ztags', '-a', '-r', unpack(vim.split(obj.stdout, '\n', { plain = true })) }, { text = true }, function(obj_in)
     if obj_in.stderr ~= '' then print(obj_in.stderr) end
   end)
@@ -541,6 +545,7 @@ local git_show_remote = function(cwd, wanted)
   if rem.code ~= 0 or rem.stdout == '' then return '' end
 
   local remote_names = {}
+  if rem.stdout == nil then return end
   for name in rem.stdout:gmatch '[^\r\n]+' do
     if name ~= '' then table.insert(remote_names, name) end
   end
@@ -549,6 +554,7 @@ local git_show_remote = function(cwd, wanted)
   local function try(remote_name)
     local r = vim.system({ 'git', 'config', '--get', 'remote.' .. remote_name .. '.url' }, { cwd = cwd, text = true }):wait()
     if r.code ~= 0 or r.stdout == '' then return '' end
+    if r.stdout == nil then return 'ERROR' end
     local url = r.stdout:gsub('%s+$', '')
     if not url:match(want_pat) then return '' end
     -- for https: drop trailing .git so /blob/... works
@@ -581,6 +587,7 @@ local get_relpath_inrepo = function()
     vim.notify('Not in git repository', vim.log.levels.ERROR)
     return nil
   end
+  if res.stdout == nil then return 'ERROR' end
   local git_root = res.stdout:gsub('\n$', '')
   local relpath = vim.fs.normalize(bufpath):sub(#git_root + 2)
 
@@ -603,6 +610,7 @@ add_cmd('GITBranch', function()
     return
   end
 
+  if branch_res.stdout == nil then return 'ERROR' end
   local branch = branch_res.stdout:gsub('\n$', '')
   local link = remote .. '/blob/' .. branch .. '/' .. info.relpath
   setPlusAnd0Register(link)
@@ -625,6 +633,7 @@ add_cmd('GITPerma', function()
     return
   end
 
+  if sha_res.stdout == nil then return 'ERROR' end
   local sha = sha_res.stdout:gsub('\n$', '')
   local link = remote .. '/blob/' .. sha .. '/' .. info.relpath
   setPlusAnd0Register(link)
@@ -720,27 +729,29 @@ add_cmd('PrintAllTabInfos', function()
   local reg_wins = {}
   local i = 1
   for _, win in pairs(windows) do
-    local cfg = vim.api.nvim_win_get_config(win) -- see nvim_open_win()
+    local cfg = api.nvim_win_get_config(win) -- see nvim_open_win()
     -- check for absence of floating window
-    if cfg.relative == '' then
+    if cfg.relative == nil or cfg.relative == '' then
       reg_wins[i] = {}
       local curwin_infos = vim.fn.getwininfo(win)
-      -- reg_wins[i]["loclist"] = curwin_infos[1]["loclist"] -- unused
-      -- reg_wins[i]["quickfix"] = curwin_infos[1]["quickfix"] -- unused
-      -- reg_wins[i]["terminal"] = curwin_infos[1]["terminal"] --unused
-      -- reg_wins[i]["topline"] = curwin_infos[1]["topline"] --unused
-      -- reg_wins[i]["winbar"] = curwin_infos[1]["winbar"] -- unused
-      reg_wins[i]['botline'] = curwin_infos[1]['botline'] -- botmost screen line
-      reg_wins[i]['bufnr'] = curwin_infos[1]['bufnr'] -- buffer number
-      reg_wins[i]['height'] = curwin_infos[1]['height'] -- window height excluding winbar
-      reg_wins[i]['tabnr'] = curwin_infos[1]['tabnr']
-      reg_wins[i]['textoff'] = curwin_infos[1]['textoff'] -- foldcolumn, signcolumn etc width
-      reg_wins[i]['variables'] = curwin_infos[1]['variables'] --unused
-      reg_wins[i]['width'] = curwin_infos[1]['width'] -- width (textoff to derive rightmost screen column)
-      reg_wins[i]['wincol'] = curwin_infos[1]['wincol'] -- leftmost screen column of window
-      reg_wins[i]['winid'] = curwin_infos[1]['winid']
-      reg_wins[i]['winnr'] = curwin_infos[1]['winnr']
-      reg_wins[i]['winrow'] = curwin_infos[1]['winrow'] -- topmost screen line
+      if curwin_infos[1] ~= nil then
+        -- reg_wins[i]["loclist"] = curwin_infos[1]["loclist"] -- unused
+        -- reg_wins[i]["quickfix"] = curwin_infos[1]["quickfix"] -- unused
+        -- reg_wins[i]["terminal"] = curwin_infos[1]["terminal"] --unused
+        -- reg_wins[i]["topline"] = curwin_infos[1]["topline"] --unused
+        -- reg_wins[i]["winbar"] = curwin_infos[1]["winbar"] -- unused
+        reg_wins[i]['botline'] = curwin_infos[1]['botline'] -- botmost screen line
+        reg_wins[i]['bufnr'] = curwin_infos[1]['bufnr'] -- buffer number
+        reg_wins[i]['height'] = curwin_infos[1]['height'] -- window height excluding winbar
+        reg_wins[i]['tabnr'] = curwin_infos[1]['tabnr']
+        reg_wins[i]['textoff'] = curwin_infos[1]['textoff'] -- foldcolumn, signcolumn etc width
+        reg_wins[i]['variables'] = curwin_infos[1]['variables'] --unused
+        reg_wins[i]['width'] = curwin_infos[1]['width'] -- width (textoff to derive rightmost screen column)
+        reg_wins[i]['wincol'] = curwin_infos[1]['wincol'] -- leftmost screen column of window
+        reg_wins[i]['winid'] = curwin_infos[1]['winid']
+        reg_wins[i]['winnr'] = curwin_infos[1]['winnr']
+        reg_wins[i]['winrow'] = curwin_infos[1]['winrow'] -- topmost screen line
+      end
 
       -- included with offset + 1 in winrow, wincol
       local winpos = api.nvim_win_get_position(win) -- top left corner of window
@@ -785,7 +796,7 @@ add_cmd('PrintCliArgs', function()
 end, {})
 
 add_cmd('PrintLspClientsOfBuffer', function()
-  local bufnr = vim.api.nvim_get_current_buf()
+  local bufnr = api.nvim_get_current_buf()
   local clients = vim.lsp.get_clients { bufnr = bufnr }
   if next(clients) == nil then
     print 'none'
@@ -795,7 +806,7 @@ add_cmd('PrintLspClientsOfBuffer', function()
 end, {})
 
 --add_cmd('RunAsTask', function(params)
---  local bufname = vim.api.nvim_buf_get_name(0)
+--  local bufname = api.nvim_buf_get_name(0)
 --  local cmd = params.args
 --  -- If no args, use the last yanked text as the command
 --  if cmd == "" then

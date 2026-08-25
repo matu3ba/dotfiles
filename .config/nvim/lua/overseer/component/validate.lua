@@ -1,5 +1,9 @@
 local constants = require 'overseer.constants'
 -- local overseer = require "overseer"
+
+---@param task_list table
+---@param task_name string
+---@return integer
 local find_index_task = function(task_list, task_name)
   local j = -1
   for i = 1, #task_list do

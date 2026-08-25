@@ -64,6 +64,7 @@ local function load_options()
       },
     }
   elseif utils.isWSL() then
+    ---@diagnostic disable-next-line: unnecessary-if
     if vim.fn.executable 'win32yank.exe' then
       -- use faster clipboard, if available
       vim.g.clipboard = {

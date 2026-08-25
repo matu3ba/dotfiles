@@ -6,6 +6,7 @@ if not has_gitsigns then return end
 gitsigns.setup {
   -- unchanged default settings
   on_attach = function(bufnr)
+    ---@type any
     local gs = package.loaded.gitsigns
 
     local function map(mode, l, r, opts)

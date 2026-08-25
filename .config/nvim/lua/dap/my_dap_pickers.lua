@@ -5,7 +5,7 @@ local conf = require('telescope.config').values
 local action_state = require 'telescope.actions.state'
 local actions = require 'telescope.actions'
 
-local h = assert(io.popen 'bash -c "tasklist //NH //FI \'SESSIONNAME eq Console\'"')
+local h = io.popen 'bash -c "tasklist //NH //FI \'SESSIONNAME eq Console\'"'
 -- local dat = h:read('*a')
 local dat = {}
 for line in h:lines() do

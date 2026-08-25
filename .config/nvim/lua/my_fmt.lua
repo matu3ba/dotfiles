@@ -25,12 +25,15 @@ local fmts_by_ft = {
   c = { 'clang-format' }, -- // clang-format off|on
   cpp = { 'clang-format' }, -- // clang-format off|on
   lua = { 'stylua' }, -- stylua: ignore start|end
+  nix = { 'nixfmt' },
   -- python = { 'ruff_format' }, -- # fmt: off|on, # fmt: skip
   rust = { 'rustfmt', lsp_format = 'prefer' },
   -- sh = { 'shfmt' }, -- go not great language
   shtml = { 'superhtml' },
   -- https://github.com/WGUNDERWOOD/tex-fmt/issues/55
   -- tex = { 'tex-fmt' }, -- % tex-fmt: off|on, % tex-fmt: skip
+  terraform = { 'tofu_fmt' },
+  ['terraform-vars'] = { 'tofu_fmt' },
   zig = { 'zigfmt', lsp_format = 'prefer' },
   -- -- zig = { lsp_format = 'prefer' },
   ziggy = { 'ziggy' },
@@ -72,9 +75,9 @@ local user_fmts_by_ft = {
       context = { only = { 'source.fixAll' } },
       apply = true,
     }
-    conform.format { bufnr = args.buf, formatters = fmts_by_ft['zig'] }
+    _ = conform.format { bufnr = args.buf, formatters = fmts_by_ft['zig'] }
   end,
-  zon = function(args) conform.format { bufnr = args.buf, formatters = fmts_by_ft['zig'] } end,
+  zon = function(args) _ = conform.format { bufnr = args.buf, formatters = fmts_by_ft['zig'] } end,
 }
 
 vim.api.nvim_create_autocmd('BufWritePre', {
@@ -86,9 +89,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {
       user_fmts_by_ft[ft](args)
     else
       if fmts_by_ft[ft] == nil then
-        conform.format { bufnr = args.buf, formatters = { 'trim_whitespace' } }
+        _ = conform.format { bufnr = args.buf, formatters = { 'trim_whitespace' } }
       else
-        conform.format { bufnr = args.buf, formatters = fmts_by_ft[ft] }
+        _ = conform.format { bufnr = args.buf, formatters = fmts_by_ft[ft] }
       end
     end
   end,

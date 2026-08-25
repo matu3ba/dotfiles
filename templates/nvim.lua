@@ -4,17 +4,17 @@
 -- luacheck: no max line length
 local M = {}
 
-local checkSetup1 = function() return true end
-
-M.check = function()
-  vim.health.start 'plugin report'
-  if not checkSetup1() then
-    vim.health.error 'curl not found'
-    return
-  end
-  vim.health.error 'curl found'
-  -- ..
-end
+-- local checkSetup1 = function() return true end
+--
+-- M.check = function()
+--   vim.health.start 'plugin report'
+--   if not checkSetup1() then
+--     vim.health.error 'curl not found'
+--     return
+--   end
+--   vim.health.error 'curl found'
+--   -- ..
+-- end
 
 --TODO https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
 

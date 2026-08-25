@@ -39,9 +39,11 @@ const process = std.process;
 // * linker treats it same as real lib at link time
 // * missing: process to fetch or commit header files
 // * can use .ifs for source control to create stub .so at build time or directly stub .so
-// ELF: .so used for 1 soname for DT_NEEDED, 2 defined symbols ("undefined reference" link errors),
-// 3 symbol types (STT_* values) to know whether to emit PLT entries
-// - can probably just emit PLT entries if/when PLT32 reloaction or on canonical PLT entry PC32 relocation)
+//   ELF: .so used for 1 soname for DT_NEEDED, 2 defined symbols ("undefined reference" link errors),
+//   3 symbol types (STT_* values) to know whether to emit PLT entries
+//   - can probably just emit PLT entries if/when PLT32 reloaction or on canonical PLT entry PC32 relocation)
+// fetch and (cross-)compile msvc tools - https://github.com/marler8997/msvcup
+// chat application - https://codeberg.org/awebo-chat/awebo
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz

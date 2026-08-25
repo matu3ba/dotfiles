@@ -106,271 +106,356 @@
     # inputs.nur.url = "github:nix-community/NUR";
   };
 
-  outputs = { nixpkgs, nixos-wsl, home-manager, zig-flake, ... }:
-  let
-    sharedModule = { pkgs, ... }: {
-      # packages maven javaPackages.compiler.openjdk17
-      # podman-compose not yet sufficiently compatible
-      environment.systemPackages = with pkgs; [ neovim git docker-compose jq ];
-      # podman needs /etc/subuid, /etc/subgid
-      environment.extraInit = ''
-        if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
-          export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
-        fi
-      ''; # docker-compose for $USER
+  outputs =
+    {
+      nixpkgs,
+      nixos-wsl,
+      home-manager,
+      zig-flake,
+      ...
+    }:
+    let
+      sharedModule = { pkgs, ... }: {
+        # packages maven javaPackages.compiler.openjdk17
+        # podman-compose not yet sufficiently compatible
+        environment.systemPackages = with pkgs; [
+          neovim
+          git
+          docker-compose
+          jq
+        ];
+        # podman needs /etc/subuid, /etc/subgid
+        environment.extraInit = ''
+          if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
+            export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+          fi
+        ''; # docker-compose for $USER
 
-      virtualisation = {
-        containers.enable = true;
-        containers.storage.settings = {
-          storage = {
-            driver = "overlay";
-            runroot = "/run/containers/storage";
-            graphroot = "/var/lib/containers/storage";
-            rootless_storage_path = "/tmp/containers-$USER";
-            options.overlay.mountopt = "nodev,metacopy=on";
+        virtualisation = {
+          containers.enable = true;
+          containers.storage.settings = {
+            storage = {
+              driver = "overlay";
+              runroot = "/run/containers/storage";
+              graphroot = "/var/lib/containers/storage";
+              rootless_storage_path = "/tmp/containers-$USER";
+              options.overlay.mountopt = "nodev,metacopy=on";
+            };
           };
-        };
-        oci-containers.backend = "podman";
-        podman = {
-          enable = true;
-          dockerCompat = true;
-          defaultNetwork.settings.dns_enabled = true;
-        };
-      }; # podman via docker-compose for $USER
+          oci-containers.backend = "podman";
+          podman = {
+            enable = true;
+            dockerCompat = true;
+            defaultNetwork.settings.dns_enabled = true;
+          };
+        }; # podman via docker-compose for $USER
 
-      documentation.enable = true;
+        documentation.enable = true;
 
-      # lix (stable,latest,git,lix_2_93,etc)
-      nixpkgs.overlays = [ (final: prev: {
-        inherit (prev.lixPackageSets.stable)
-          nixpkgs-review
-          nix-eval-jobs
-          nix-fast-build
-          colmena;
-      }) ];
-      nix.package = pkgs.lixPackageSets.stable.lix;
-
-      nix.settings.experimental-features = [ "nix-command" "flakes" ];
-      nix.gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 1w";
-      };
-      nix.settings.auto-optimise-store = true;
-
-    };
-    # Host, Target and ABI are incoherent in Nix. Need this for top level steps
-    # like devShells.x86_64-linux.default
-    system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
-
-    # sharedHomeModule = { pkgs, ... }: {
-    #   # TODO shared home module used as
-    # };
-  in {
-
-    # tofu-ls
-    devShells.${system}.default = pkgs.mkShellNoCC {
-      name = "dotfiles ci";
-      packages = with pkgs; [ biome clang-tools curl dotnet-sdk_10 fish jq
-      (texlive.combined.scheme-basic.withPackages (ps: with ps; [ parskip enumitem ]))
-      luaPackages.luacheck opentofu shellcheck stylua ];
-      buildInputs = [ zig-flake.packages.${system}.nightly ];
-      shellHook = ''
-        exec ${pkgs.fish}/bin/fish
-      '';
-    };
-
-    nixosConfigurations = {
-      wsl = nixpkgs.lib.nixosSystem {
-        modules = [
-          sharedModule
-          nixos-wsl.nixosModules.wsl
-          ({ config, lib, pkgs, ... }: {
-            nixpkgs.hostPlatform = "x86_64-linux";
-            system.stateVersion = "25.11";
-
-            hardware.enableAllFirmware = false;
-            boot.isContainer = true;
-            networking.networkmanager.enable = false;
-            services.openssh.enable = false;
-
-            programs.fish.enable = true;
-            environment.pathsToLink = ["/share/fish"];
-            environment.shells = [pkgs.fish];
-            environment.enableAllTerminfo = true;
-
-            networking.hostName = "nixos_wsl";
-            users.users."jan-philipp.hafer" = {
-              isNormalUser = true;
-              shell = pkgs.fish;
-              extraGroups = [
-                "wheel"
-                "docker"
-              ];
-              # hashedPassword = "";
-              # openssh.authorizedKeys.keys = [
-              #   "ssh-rsa ..."
-              # ]; # ssh public key
-            };
-
-            wsl.enable = true;
-            wsl.defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
-            # docker desktop, extraBin, extraBin copy/name/src, extraBin name
-            # interop.includePath/register
-            # ssh-agent enable/package/users
-            # startMenuLaunchers
-            # tarball.configPath
-            # usbip enable/autoAttach/snippetIpAddress
-            # useWindowsDriver (OpenGL)
-            wsl.wrapBinSh = true;
-            wsl.wslConf.automount.enabled = true;
-            # wsl.wslConf.ldconfig = false; errors on usage
-            wsl.wslConf.automount.mountFsTab = false; # probably leave false, systemd will mount these
-            wsl.wslConf.automount.options = "metadata,uid=1000,gid=100";
-            wsl.wslConf.automount.root = "/mnt";
-            wsl.wslConf.boot.systemd = true; # disabling may break NixOS installation
-            wsl.wslConf.interop.enabled = true;
-            wsl.wslConf.interop.appendWindowsPath = true;
-            wsl.wslConf.network.generateHosts = true;
-            # manual host creation, config taken from WSL generateHosts=true
-            # networking.hosts = {
-            #   # ipv4
-            #   # keycloak for https://github.com/wkrzywiec/keycloak-security-example
-            #   "127.0.0.1" = ["localhost" "keycloak"];
-            #   "127.0.1.1" = ["nixoswsl"];
-            #   # ipv6
-            #   "::1"     = ["ip6-localhost ip6-loopback"];
-            #   "fe00::0" = ["ip6-localnet"];
-            #   "ff00::0" = ["ip6-mcastprefix"];
-            #   "ff02::1" = ["ip6-allnodes"];
-            #   "ff02::2" = ["ip6-allrouters"];
-            # };
-            wsl.wslConf.network.generateResolvConf = true;
-            wsl.wslConf.network.hostname = "nixos_wsl";
-            wsl.wslConf.user.default = "jan-philipp.hafer";
-
+        # lix (stable,latest,git,lix_2_93,etc)
+        nixpkgs.overlays = [
+          (final: prev: {
+            inherit (prev.lixPackageSets.stable)
+              nixpkgs-review
+              nix-eval-jobs
+              nix-fast-build
+              colmena
+              ;
           })
-          home-manager.nixosModules.home-manager
-          ({ config, lib, pkgs, ... }: {
-            # wrong, must be inputs (stateless eval)
-            # username = "jan-philipp.hafer";
-            # hostname = "nixos_wsl";
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.sharedModules = [];
-            # import ./home-manager/home.nix; evaluates purely in home-manager/, so
-            # home.file > "../file" is broken
-            # home-manager.users."jan-philipp.hafer" = import ./home-manager/home.nix;
-            home-manager.users."jan-philipp.hafer" = {
-              home.username = "jan-philipp.hafer";
-              home.homeDirectory = "/home/jan-philipp.hafer";
-              home.stateVersion = "25.11";
+        ];
+        nix.package = pkgs.lixPackageSets.stable.lix;
 
-              home.file = {
-                "./.config/" = {
-                    source = ./.config;
-                    recursive = true;
+        nix.settings.experimental-features = [
+          "nix-command"
+          "flakes"
+        ];
+        nix.gc = {
+          automatic = true;
+          dates = "weekly";
+          options = "--delete-older-than 1w";
+        };
+        nix.settings.auto-optimise-store = true;
+
+      };
+      # Host, Target and ABI are incoherent in Nix. Need this for top level steps
+      # like devShells.x86_64-linux.default
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+
+      # sharedHomeModule = { pkgs, ... }: {
+      #   # TODO shared home module used as
+      # };
+    in
+    {
+
+      # tofu-ls, luaPackages.luacheck, lua-language-server
+      # nixd
+      devShells.${system}.default = pkgs.mkShellNoCC {
+        name = "dotfiles ci";
+        packages = with pkgs; [
+          biome
+          clang-tools
+          curl
+          dotnet-sdk_10
+          fish
+          jq
+
+          (texlive.combined.scheme-basic.withPackages (
+            ps: with ps; [
+              parskip
+              enumitem
+            ]
+          ))
+          shellcheck
+          # terraform
+          tofu-ls
+          opentofu
+          # nix-tools
+          nil
+          deadnix
+          statix
+          nixfmt
+          # lua-tools
+          emmylua-check
+          emmylua-ls
+          stylua
+        ];
+        buildInputs = [ zig-flake.packages.${system}.nightly ];
+        shellHook = "exec ${pkgs.fish}/bin/fish";
+      };
+
+      nixosConfigurations = {
+        wsl = nixpkgs.lib.nixosSystem {
+          modules = [
+            sharedModule
+            nixos-wsl.nixosModules.wsl
+            (
+              {
+                config,
+                lib,
+                pkgs,
+                ...
+              }:
+              {
+                nixpkgs.hostPlatform = "x86_64-linux";
+                system.stateVersion = "25.11";
+
+                hardware.enableAllFirmware = false;
+                boot.isContainer = true;
+                networking.networkmanager.enable = false;
+                services.openssh.enable = false;
+
+                programs.fish.enable = true;
+                environment.pathsToLink = [ "/share/fish" ];
+                environment.shells = [ pkgs.fish ];
+                environment.enableAllTerminfo = true;
+
+                networking.hostName = "nixos_wsl";
+                users.users."jan-philipp.hafer" = {
+                  isNormalUser = true;
+                  shell = pkgs.fish;
+                  extraGroups = [
+                    "wheel"
+                    "docker"
+                  ];
+                  # hashedPassword = "";
+                  # openssh.authorizedKeys.keys = [
+                  #   "ssh-rsa ..."
+                  # ]; # ssh public key
                 };
-                "./.bashrc".source = ./.bashrc;
-              };
 
-              home.sessionVariables = {
-                EDITOR = "nvim";
-              };
-              # export GPG_TTY=$(tty)
-              # set -gx GPG_TTY "$(tty)"
-              programs.gpg.enable = true;
-              services.gpg-agent = {
-                defaultCacheTtl = 34560000;
-                enable = true;
-                enableScDaemon = false;
-                enableSshSupport = true;
-                maxCacheTtl = 34560000;
-                pinentry.package = pkgs.pinentry-tty;
-              };
+                wsl.enable = true;
+                wsl.defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
+                # docker desktop, extraBin, extraBin copy/name/src, extraBin name
+                # interop.includePath/register
+                # ssh-agent enable/package/users
+                # startMenuLaunchers
+                # tarball.configPath
+                # usbip enable/autoAttach/snippetIpAddress
+                # useWindowsDriver (OpenGL)
+                wsl.wrapBinSh = true;
+                wsl.wslConf.automount.enabled = true;
+                # wsl.wslConf.ldconfig = false; errors on usage
+                wsl.wslConf.automount.mountFsTab = false; # probably leave false, systemd will mount these
+                wsl.wslConf.automount.options = "metadata,uid=1000,gid=100";
+                wsl.wslConf.automount.root = "/mnt";
+                wsl.wslConf.boot.systemd = true; # disabling may break NixOS installation
+                wsl.wslConf.interop.enabled = true;
+                wsl.wslConf.interop.appendWindowsPath = true;
+                wsl.wslConf.network.generateHosts = true;
+                # manual host creation, config taken from WSL generateHosts=true
+                # networking.hosts = {
+                #   # ipv4
+                #   # keycloak for https://github.com/wkrzywiec/keycloak-security-example
+                #   "127.0.0.1" = ["localhost" "keycloak"];
+                #   "127.0.1.1" = ["nixoswsl"];
+                #   # ipv6
+                #   "::1"     = ["ip6-localhost ip6-loopback"];
+                #   "fe00::0" = ["ip6-localnet"];
+                #   "ff00::0" = ["ip6-mcastprefix"];
+                #   "ff02::1" = ["ip6-allnodes"];
+                #   "ff02::2" = ["ip6-allrouters"];
+                # };
+                wsl.wslConf.network.generateResolvConf = true;
+                wsl.wslConf.network.hostname = "nixos_wsl";
+                wsl.wslConf.user.default = "jan-philipp.hafer";
 
-              home.packages = [
-                pkgs.fd
-                pkgs.fish
-                pkgs.ripgrep
-              ];
-            };
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
-          })
-        ];
-      };
-      station = nixpkgs.lib.nixosSystem {
-        modules = [
-          sharedModule
-          ({ config, lib, pkgs, modulesPath, ... }: {
-            # hardware-config
-            imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
+              }
+            )
+            home-manager.nixosModules.home-manager
+            (
+              {
+                config,
+                lib,
+                pkgs,
+                ...
+              }:
+              {
+                # wrong, must be inputs (stateless eval)
+                # username = "jan-philipp.hafer";
+                # hostname = "nixos_wsl";
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.sharedModules = [ ];
+                # import ./home-manager/home.nix; evaluates purely in home-manager/, so
+                # home.file > "../file" is broken
+                # home-manager.users."jan-philipp.hafer" = import ./home-manager/home.nix;
+                home-manager.users."jan-philipp.hafer" = {
+                  home.username = "jan-philipp.hafer";
+                  home.homeDirectory = "/home/jan-philipp.hafer";
+                  home.stateVersion = "25.11";
 
-            boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-            boot.initrd.kernelModules = [ ];
-            boot.kernelModules = [ "kvm-amd" "v4l2loopback" ];
+                  home.file = {
+                    "./.config/" = {
+                      source = ./.config;
+                      recursive = true;
+                    };
+                    "./.bashrc".source = ./.bashrc;
+                  };
 
-            fileSystems."/" =
-              { device = "/dev/disk/by-uuid/5c732e8c-9d09-46b0-8611-1d75679e16e7";
-                fsType = "ext4";
-              };
-            fileSystems."/boot" =
-              { device = "/dev/disk/by-uuid/678C-B2DB";
-                fsType = "vfat";
-              };
-            swapDevices = [ ];
-            networking.useDHCP = true;
-            # hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
+                  home.sessionVariables = {
+                    EDITOR = "nvim";
+                  };
+                  # export GPG_TTY=$(tty)
+                  # set -gx GPG_TTY "$(tty)"
+                  programs.gpg.enable = true;
+                  services.gpg-agent = {
+                    defaultCacheTtl = 34560000;
+                    enable = true;
+                    enableScDaemon = false;
+                    enableSshSupport = true;
+                    maxCacheTtl = 34560000;
+                    pinentry.package = pkgs.pinentry-tty;
+                  };
 
-            # sys-config
-            nixpkgs.hostPlatform = "x86_64-linux";
-            system.stateVersion = "25.11";
+                  home.packages = [
+                    pkgs.fd
+                    pkgs.fish
+                    pkgs.ripgrep
+                  ];
+                };
+                # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+              }
+            )
+          ];
+        };
+        station = nixpkgs.lib.nixosSystem {
+          modules = [
+            sharedModule
+            (
+              {
+                config,
+                lib,
+                pkgs,
+                modulesPath,
+                ...
+              }:
+              {
+                # hardware-config
+                imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
-            boot = {
-              loader = {
-                # Use the systemd-boot EFI boot loader.
-                systemd-boot.enable = true;
-                efi.canTouchEfiVariables = true;
-                #grub.device = "/dev/nvme0n1";
-              };
-              tmp.cleanOnBoot = true;
-              kernelPackages = pkgs.linuxPackages_latest;
-              extraModulePackages = [ config.boot.kernelPackages.v4l2loopback.out ];
-              extraModprobeConfig = ''
-               options vl2loopback exclusive_caps=1 card
-              '';
-            };
-            fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
-            networking.hostName = "nixos_station";
-            networking.wireless.enable = true;  # wpa_supplicant
-            time.timeZone = "Europe/Berlin";
+                boot.initrd.availableKernelModules = [
+                  "nvme"
+                  "xhci_pci"
+                  "ahci"
+                  "usb_storage"
+                  "usbhid"
+                  "sd_mod"
+                ];
+                boot.initrd.kernelModules = [ ];
+                boot.kernelModules = [
+                  "kvm-amd"
+                  "v4l2loopback"
+                ];
 
-            i18n.defaultLocale = "en_US.UTF-8";
-            console = {
-              font = "Lat2-Terminus16";
-              keyMap = "de-latin1-nodeadkeys";
-              #useXkbConfig = true; # use xkbOptions in tty.
-            };
+                fileSystems."/" = {
+                  device = "/dev/disk/by-uuid/5c732e8c-9d09-46b0-8611-1d75679e16e7";
+                  fsType = "ext4";
+                };
+                fileSystems."/boot" = {
+                  device = "/dev/disk/by-uuid/678C-B2DB";
+                  fsType = "vfat";
+                };
+                swapDevices = [ ];
+                networking.useDHCP = true;
+                # hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
 
-            # services.printing.enable = true; # CUPS
+                # sys-config
+                nixpkgs.hostPlatform = "x86_64-linux";
+                system.stateVersion = "25.11";
 
-            # TODO nixos-generate-config, https://github.com/NixOS/nixos-hardware, sudo nix-shell -p dmidecode --run "dmidecode -t 11"
-            hardware.alsa.enable = true;
-            hardware.graphics.enable = true;
+                boot = {
+                  loader = {
+                    # Use the systemd-boot EFI boot loader.
+                    systemd-boot.enable = true;
+                    efi.canTouchEfiVariables = true;
+                    #grub.device = "/dev/nvme0n1";
+                  };
+                  tmp.cleanOnBoot = true;
+                  kernelPackages = pkgs.linuxPackages_latest;
+                  extraModulePackages = [ config.boot.kernelPackages.v4l2loopback.out ];
+                  extraModprobeConfig = ''
+                    options vl2loopback exclusive_caps=1 card
+                  '';
+                };
+                fileSystems."/".options = [
+                  "noatime"
+                  "nodiratime"
+                  "discard"
+                ];
+                networking.hostName = "nixos_station";
+                networking.wireless.enable = true; # wpa_supplicant
+                time.timeZone = "Europe/Berlin";
 
-            users.users.jan = {
-              isNormalUser = true;
-              extraGroups = [ "wheel" "input" ]; # allow 'sudo' for user
-            };
+                i18n.defaultLocale = "en_US.UTF-8";
+                console = {
+                  font = "Lat2-Terminus16";
+                  keyMap = "de-latin1-nodeadkeys";
+                  #useXkbConfig = true; # use xkbOptions in tty.
+                };
 
-            services.openssh = {
-              enable = true;
-              settings.PasswordAuthentication = false;
-            };
-          })
-        ];
+                # services.printing.enable = true; # CUPS
+
+                # TODO nixos-generate-config, https://github.com/NixOS/nixos-hardware, sudo nix-shell -p dmidecode --run "dmidecode -t 11"
+                hardware.alsa.enable = true;
+                hardware.graphics.enable = true;
+
+                users.users.jan = {
+                  isNormalUser = true;
+                  extraGroups = [
+                    "wheel"
+                    "input"
+                  ]; # allow 'sudo' for user
+                };
+
+                services.openssh = {
+                  enable = true;
+                  settings.PasswordAuthentication = false;
+                };
+              }
+            )
+          ];
+        };
       };
     };
-  };
 }

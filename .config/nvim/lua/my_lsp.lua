@@ -2,6 +2,7 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 -- get logs :lua =require('vim.lsp.log').get_filename()
+-- :help lspconfig-all
 
 -- lsp protocol
 -- 1. file opened in editor -> editor supposed to inform server about changes to
@@ -56,6 +57,7 @@ local aucmd_lsp = vim.api.nvim_create_augroup('aucmds_lsp', { clear = true })
 
 --==PluginChecks
 
+-- show loaded configs :lua =vim.lsp.config._configs
 -- :help lspconfig-all
 local has_lspconfig, _ = pcall(require, 'lspconfig')
 if not has_lspconfig then
@@ -202,13 +204,60 @@ vim.lsp.enable 'texlab'
 --     return true
 --   end,
 -- })
-vim.lsp.config['lua_ls'] = {
-  cmd = { 'lua-language-server' },
-  filetypes = { 'lua' },
-  root_markers = { '.luarc.json', '.git' },
-  settings = { Lua = { diagnostics = { globals = { 'vim' } } } },
-}
-vim.lsp.enable 'lua_ls'
+
+-- env VIMRUNTIME=(nvim --headless -c 'echo $VIMRUNTIME' -c 'qa' 2>&1) emmylua_check --warnings-as-errors .
+-- VIMRUNTIME=(nvim --headless -c 'echo $VIMRUNTIME' -c "qa" 2>&1) emmylua_check --warnings-as-errors .
+
+vim.lsp.config('emmylua_ls', {
+  on_init = function(client)
+    -- If the workspace has its own emmylua_ls/lua_ls config file, defer to it.
+    if client.workspace_folders then
+      local path = client.workspace_folders[1].name
+      if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.emmyrc.json') or vim.uv.fs_stat(path .. '/.luarc.json')) then client.config.settings = {} end
+    end
+  end,
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
+  settings = {
+    emmylua = {
+      runtime = { version = 'LuaJIT' },
+      diagnostics = { globals = { 'vim' } },
+      workspace = {
+        library = {
+          vim.env.VIMRUNTIME,
+          -- For LSP Settings Type Annotations: https://github.com/neovim/nvim-lspconfig#lsp-settings-type-annotations
+          vim.api.nvim_get_runtime_file('lua/lspconfig', false)[1],
+        },
+        -- Or pull in all of 'runtimepath'. May be slower!
+        -- library = vim.api.nvim_get_runtime_file('', true),
+      },
+    },
+  },
+})
+vim.lsp.enable 'emmylua_ls'
+
+vim.lsp.config('nil', {
+  cmd = { 'nil' },
+  capabilities = common_capabilities,
+  on_attach = common_on_attach,
+  settings = {
+    ['nil'] = {
+      formatting = {
+        command = { 'nixfmt' },
+      },
+      nix = {
+        -- Prevents excessive processing by targeting specific inputs
+        maxMemoryMB = 2048,
+        flake = {
+          autoArchive = true,
+          autoEvalInputs = false, -- Skips heavy evaluation maps
+        },
+      },
+    },
+  },
+  filetypes = { 'nix' },
+})
+vim.lsp.enable 'nil'
 
 --==Keybindings
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -255,7 +304,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- stylua: ignore start
     vim.keymap.set('n', '<leader>rf', function()
       local params = vim.lsp.util.make_range_params(0, "utf-8")
-      params.context = { only = { "source.fixAll" }, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked, diagnostics = vim.lsp.diagnostic.get_line_diagnostics(), }
+      params.context = { only = { "source.fixAll" }, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked, diagnostics = vim.diagnostic.get(0, { lnum = vim.api.nvim_win_get_cursor(0)[1] - 1 }), }
       -- results is an array of lsp.CodeAction
       local diags = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
       if diags then
@@ -272,7 +321,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
             -- end
           end
         end
-        -- this does not work and docs in neovim are very bad on this
+        --FIXME TODO
+        ---@diagnostic disable-next-line: param-type-mismatch
         vim.lsp.buf.code_action {
           context = { diagnostics = unpack(diags), only = { "source.fixAll" }, },
           apply = true,
@@ -298,7 +348,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
     vim.keymap.set('n', '<leader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
     vim.keymap.set('n', '<leader>ws', function() vim.lsp.buf.workspace_symbol() end, opts) -- view workspace symbols
-    vim.keymap.set('n', '<leader>wf', function() vim.lsp.buf.open_float() end, opts) -- view dis
+    vim.keymap.set('n', '<leader>wf', function() vim.diagnostic.open_float() end, opts)
     vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
     vim.keymap.set('n', '<leader>ql', function() vim.diagnostic.setloclist() end, opts) -- buffer diagnostics to location list
     vim.keymap.set('n', '<leader>qf', function() vim.diagnostic.setqflist() end, opts) -- all diagnostics to quickfix list

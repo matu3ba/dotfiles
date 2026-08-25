@@ -33,7 +33,7 @@ pub fn build(b: *std.Build) !void {
     // * cargo (stylua)
     // * haskell (shellcheck)
     // * llvm-tools (clang-format, clang-tidy)
-    // * luacheck
+    // * emmylua-rust
     const no_opt_deps = b.option(bool, "no_opt_deps", "Exclude optional dependencies") orelse false; // -Dno_opt_deps
     const no_cross = b.option(bool, "no_cross", "No cross-compiling to common targets") orelse false; // -Dno_cross
 
@@ -55,7 +55,9 @@ pub fn build(b: *std.Build) !void {
     // TODO provide generated config file as input instead.
     // if (!no_opt_deps) lintC(b, run_step);
     // if (!no_opt_deps) lintCpp(b, run_step);
-    if (!no_opt_deps) lintLua(b, run_step);
+    // lua-language-server, emmylua_check need VIMRUNTE, which zig build can not
+    // set and isolates from host system. Thus omit lua linting for now.
+    // if (!no_opt_deps) lintLua(b, run_step);
     if (!no_opt_deps) lintSh(b, run_step);
     lintZig(b, run_step);
 
@@ -338,16 +340,38 @@ fn fmtLua(b: *std.Build, run_step: *std.Build.Step) void {
 }
 
 fn lintLua(b: *std.Build, run_step: *std.Build.Step) void {
-    for (SingleLuaFiles[0..]) |luafile| {
-        const run_luacheck = b.addSystemCommand(&.{ "luacheck", "--no-color", "-q" });
-        run_luacheck.addArg(luafile);
-        const expected_msg =
-            \\Total: 0 warnings / 0 errors in 1 file
-            \\
-        ;
-        run_luacheck.expectStdOutEqual(expected_msg);
-        run_step.dependOn(&run_luacheck.step);
-    }
+    _ = b; // autofix
+    _ = run_step; // autofix
+    // for (SingleLuaFiles[0..]) |luafile| {
+    //     const run_luacheck = b.addSystemCommand(&.{ "luacheck", "--no-color", "-q" });
+    //     run_luacheck.addArg(luafile);
+    //     const expected_msg =
+    //         \\Total: 0 warnings / 0 errors in 1 file
+    //         \\
+    //     ;
+    //     run_luacheck.expectStdOutEqual(expected_msg);
+    //     run_step.dependOn(&run_luacheck.step);
+    // }
+    // var env_map = std.process.getEnvMap(b.allocator) catch @panic("OOM");
+    // defer env_map.deinit();
+    // env VIMRUNTIME=(nvim --headless -c 'echo $VIMRUNTIME' -c 'qa' 2>&1) emmylua_check --warnings-as-errors .
+    // env VIMRUNTIME=(nvim --headless -c 'echo $VIMRUNTIME' -c 'qa' 2>&1)
+    // Workaround missing env variable setting from LazyPath https://github.com/ziglang/zig/issues/19482
+    // const vim_runtime_raw = b.run(&.{ "nvim", "--headless", "-c", "echo $VIMRUNTIME", "-c", "qa" });
+    // const vim_runtime_raw = b.runWithEnv(&.{ "nvim", "--headless", "-c", "echo $VIMRUNTIME", "-c", "qa" }, &env_map) catch |err| {
+    //     std.debug.print("Failed to run nvim setup: {}\n", .{err});
+    //     return;
+    // };
+    // const vim_runtime_path = std.mem.trim(u8, vim_runtime_raw, &std.ascii.whitespace);
+    // // with $VIMRUNTIME: emmylua_check --warnings-as-errors -f text .
+    // const run_emmylua_check = b.addSystemCommand(&.{ "emmylua_check", "--warnings-as-errors", "-f", "text", "." });
+    // run_emmylua_check.setEnvironmentVariable("VIMRUNTIME", vim_runtime_path);
+    // const expected_msg =
+    //     \\Diagnosis completed, no problems found
+    //     \\
+    // ;
+    // run_emmylua_check.expectStdOutEqual(expected_msg);
+    // run_step.dependOn(&run_emmylua_check.step);
 }
 
 // fn checkNix() void {} // nofmt nolint nobuild noproj

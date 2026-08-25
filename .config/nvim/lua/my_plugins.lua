@@ -324,7 +324,7 @@ return {
   --{ "princejoogie/dir-telescope.nvim", config = function() require("dir-telescope").setup({hidden = false,respect_gitignore = false,}) end, },
 
   --==lint
-  { 'mfussenegger/nvim-lint' }, -- my_lint.lua
+  { url = 'https://codeberg.org/mfussenegger/nvim-lint.git' }, -- my_lint.lua
 
   --{ "neomake/neomake" } -- get useful comments for code semantics
   --==Organization

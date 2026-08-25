@@ -116,16 +116,16 @@ M.pathJoin = function(...)
 end
 
 ---@param path string Input path.
----@return string Normalized, (if cwd is root path) relative (to cwd) path.
+---@return string string meaning if cwd is root path relative (to cwd) path.
 M.pathNormRelOnCwd = function(path)
-  local cwd = vim.uv.cwd()
+  local cwd = vim.uv.cwd() or ''
   return M.pathNormRel(cwd, path)
 end
 
 ---@param cwd string Current working directory.
 ---@param path string Input path.
----@param opts? string Input path.
----@return string Normalized, (if cwd is root path) relative (to cwd) path.
+---@param opts table? Options from vim.fs.normalize()
+---@return string relpath meaning if cwd is root path relative (to cwd) path.
 M.pathNormRel = function(cwd, path, opts)
   if opts == nil then opts = { expand_env = false } end
   local normalized_pa = vim.fs.normalize(path, opts)
@@ -139,7 +139,7 @@ end
 ---@param mode string
 ---@param lhs string
 ---@param rhs string
----@param opts vim.api.keyset.keymap overwritten noremap, silent to true
+---@param opts vim.keymap.set.Opts? Options for the keymap, noremap and silent will be forced to true
 M.keyMap = function(mode, lhs, rhs, opts)
   opts = vim.deepcopy(opts or {}, true)
   opts.noremap = true
@@ -297,7 +297,8 @@ M.show = function()
     border = 'single',
   })
   vim.api.nvim_set_current_win(win)
-  vim.fn.termopen({ 'top' }, {
+  vim.fn.jobstart({ 'top' }, {
+    term = true,
     on_exit = function(_, _, _)
       if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
     end,
@@ -383,13 +384,15 @@ M.CopyMatchingChar = function(backwards, register)
     ['/'] = '/',
     ['\\'] = '\\',
   }
+  local pattern = matchchar[cchar]
+  if not pattern then return end
   -- note searchpos: stopline only works forwards
   -- => flag 'b' is not using starting line
   local tup_search
   if backwards == false then
-    tup_search = vim.fn.searchpos(matchchar[cchar], 'nz', crow + 1) -- +1 to search until next line?
+    tup_search = vim.fn.searchpos(pattern, 'nz', crow + 1) -- +1 to search until next line?
   else
-    tup_search = vim.fn.searchpos(matchchar[cchar], 'bnz') -- +1 to search until next line?
+    tup_search = vim.fn.searchpos(pattern, 'bnz') -- +1 to search until next line?
   end
   local srow = tup_search[1]
   local scol = tup_search[2]
@@ -485,6 +488,7 @@ M.joinRemoveBlank = function()
     local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
     local crow = tup_rowcol[1] -- 1 indexed
     local nextline = vim.api.nvim_buf_get_lines(0, crow, crow + 1, true)
+    if not nextline[1] then return end
     vim.api.nvim_buf_set_lines(0, crow, crow + 1, true, {})
     local nextline_noprepostfix_space = vim.fn.trim(nextline[1], ' ', 0)
     local nextline_noprepostfix_spacetab = vim.fn.trim(nextline_noprepostfix_space, '\t', 0)
@@ -508,7 +512,7 @@ end
 -- keep_suffix defines, if remaining line suffix should be kept
 M.pasteOverwriteFromRegister = function(register, keep_suffix)
   local line_content = vim.api.nvim_get_current_line()
-  local reg_content = vim.fn.getreg(register)
+  local reg_content = tostring(vim.fn.getreg(register))
   local tup_rowcol = vim.api.nvim_win_get_cursor(0) -- [1],[2] = y,x = row,col
   local col_nr = tup_rowcol[2] -- 0 indexed => use +1
   local col = col_nr + 1
@@ -571,6 +575,7 @@ M.parseBufferToRegisters = function(bufnr)
   for crow = 1, #lut_index_to_reg do
     local lines = vim.api.nvim_buf_get_lines(bufnr, crow - 1, crow, false)
     if #lines == 0 then return end
+    if lines[1] == nil then return end
     local first = string.sub(lines[1], 1, 1)
     local second = string.sub(lines[1], 2, 2)
     local content = string.sub(lines[1], 3, -1)

@@ -1,6 +1,6 @@
 local ok_hydra, Hydra = pcall(require, 'hydra')
 if not ok_hydra then
-  vim.notify('hydra not installed...', vim.log.ERROR)
+  vim.notify('hydra not installed...', vim.log.levels.ERROR)
   return
 end
 

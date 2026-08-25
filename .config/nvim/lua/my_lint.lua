@@ -1,4 +1,5 @@
 --! Dependency nvim-lint
+--:h
 
 local ok_lint, lint = pcall(require, 'lint')
 if not ok_lint then return end
@@ -69,16 +70,22 @@ lint.linters_by_ft = {
   -- Converting to pipx might require to rm ~/.local/bin/deps
   -- fd -e py --max-depth=1 -x ruff check {}
   -- fd -e py --max-depth=1 -x ruff check --fix {}
+
   -- luacheck: push ignore
   -- luacheck: pop ignore
   -- luacheck: globals vim
   -- luacheck: no max line length
   -- See also https://github.com/LuaLS/lua-language-server/wiki/Annotations
-  lua = { 'luacheck' },
+  -- lua = { 'luacheck' },
+
+  -- env VIMRUNTIME=(nvim --headless -c 'echo $VIMRUNTIME' -c 'qa' 2>&1) emmylua_check --warnings-as-errors .
+  -- VIMRUNTIME=(nvim --headless -c 'echo $VIMRUNTIME' -c "qa" 2>&1) emmylua_check --warnings-as-errors .
+  nix = { 'statix', 'deadnix' },
   python = { 'ruff' },
   -- # shellcheck disable=SC2016
   sh = { 'shellcheck' },
-  tofu = { 'tofu' },
+  terraform = { 'tflint', 'trivy' },
+  ['terraform-vars'] = { 'tflint' },
 }
 
 local ruff = lint.linters.ruff
@@ -122,6 +129,8 @@ ruff.args = {
 ---@param linter lint.Linter
 ---@return lint.Linter
 local function systemd_run(linter)
+  ---@type any
+  local linter1 = linter
   local cwd = vim.fn.getcwd()
   local args = {
     '--user',
@@ -139,12 +148,12 @@ local function systemd_run(linter)
     string.format("BindReadOnlyPaths='%s':'%s'", cwd, cwd),
     '-E',
     'PATH=' .. os.getenv 'PATH',
-    linter.cmd,
+    linter1.cmd,
   }
-  linter.cmd = 'systemd-run'
-  vim.list_extend(args, linter.args or {})
-  linter.args = args
-  return linter
+  linter1.cmd = 'systemd-run'
+  vim.list_extend(args, linter1.args or {})
+  linter1.args = args
+  return linter1
 end
 
 local aucmds_lint = vim.api.nvim_create_augroup('aucmds_lint', { clear = true })
@@ -154,8 +163,12 @@ vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
   callback = function()
     lint.try_lint()
     if vim.fn.executable 'typos' == 1 then lint.try_lint 'typos' end
-    if vim.fn.executable 'biome' == 1 then lint.try_lint(nil, {
-      wrap_linter = systemd_run,
-    }) end
+    if vim.fn.executable 'biome' == 1 then
+      local stat = vim.uv.fs_stat '/run/systemd/system'
+      local is_booted = stat ~= nil and stat.type == 'directory'
+      if vim.fn.executable 'systemd-run' == 1 and is_booted then lint.try_lint(nil, {
+        wrap_linter = systemd_run,
+      }) end
+    end
   end,
 })
