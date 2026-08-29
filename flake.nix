@@ -3,12 +3,12 @@
 
 #==wsl
 #====wsl_usage
-# install workaround(https://github.com/nix-community/NixOS-WSL/issues/1074):
+# install best: nixos-rebuild switch --sudo --flake .#wsl
+# install workaround on activation problems:
 # * nixos-rebuild boot --sudo --flake .#wsl
 # * sudo shutdown -r now
 # * sudo /run/current-system/activate
 # * sudo /run/current-system/bin/switch-to-configuration switch
-# install best: nixos-rebuild switch --sudo --flake .#wsl
 # update: nix flake update
 # * if necessary: nix-channel --update
 # revert: git restore -s COMMIT flake.nix
@@ -300,6 +300,16 @@
                 wsl.wslConf.network.hostname = "nixos_wsl";
                 wsl.wslConf.user.default = "jan-philipp.hafer";
 
+                # override /run/systemd/generator/wsl-mnt-guard.service to use nixos /bin/true /bin/mount
+                # to workaround WSL 2.9.9.0 behavior that fixes https://github.com/nix-community/NixOS-WSL/issues/1074
+                systemd.services."wsl-mnt-guard" = {
+                  overrideStrategy = "asDropin";
+                  unitConfig.ConditionPathIsMountPoint = "/mnt/wsl";
+                  serviceConfig = {
+                    ExecStart = [ "" "${pkgs.coreutils}/bin/true" ];
+                    ExecStop = [ "" "-${pkgs.util-linux}/bin/mount --make-rslave /mnt/wsl" ];
+                  };
+                };
               }
             )
             home-manager.nixosModules.home-manager
