@@ -321,3 +321,10 @@ for FILE in *.*.gpg; do
 done
 decrypt using passphrase from stdin
 echo "passphrase" | gpg --passphrase-fd 0 --batch -d -o file.txt file.txt.gpg
+
+==troubleshooting
+Problem: >gpg -K
+gpg: WARNING: unsafe permissions on homedir '/home/user/.gnupg'
+gpg: keybox '/home/user/.gnupg/pubring.kbx' created
+gpg: /home/user/.gnupg/trustdb.gpg: trustdb created
+Solution: >chmod 700 ~/.gnupg

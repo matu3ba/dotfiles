@@ -1,0 +1,18 @@
+# Containerfile for having an Angular cli without installing Angular on the host system.
+# Unfortunately, there is no official Angular container and Angular has quirks.
+# Building
+# * podman build -t alpine-angular-cli:26 -f Containerfile.Angular_cli .
+# Setup Angular
+#   podman run --rm -v .:/app:z alpine-angular-cli:26 ng --version
+#   podman run --rm -v .:/app:z alpine-angular-cli:26 ng new --skip-install true --skip-git true tmp123
+FROM docker.io/library/node:26-alpine
+# Unfortunately we cant use npm install @angular/cli@22
+# with non-root user due to (on Windows podman desktop with WSL)
+# npm verbose stack Error: EPERM: operation not permitted, chmod '/app/node_modules/@angular-devkit/architect/bin/cli.js'
+# npm error Error: EPERM: operation not permitted, chmod '/app/node_modules/@angular-devkit/architect/bin/cli.js'
+RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001 && \
+    npm install --verbose -g @angular/cli@22
+WORKDIR /app
+RUN chown nodejsuser:nodejsuser /app
+COPY --chown=nodejsuser:nodejsuser . .
+USER nodejsuser

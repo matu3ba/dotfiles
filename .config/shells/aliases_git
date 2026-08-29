@@ -141,7 +141,7 @@ alias gshn='git --no-pager show --name-only'
 # name as the remote branch or will fail with
 #   error: failed to push some refs to 'git@REMOTE:REPO.git'
 
-##### Git config #####
+#==git_repo_config_file
 # fix missing remotes:
 #   git config remote.downstream.fetch "+refs/heads/*:refs/remotes/downstream/*"
 # TODO: fixup moving git repos
@@ -171,6 +171,39 @@ alias gshn='git --no-pager show --name-only'
 # [branch "master"]
 #   remote = origin
 #   merge = refs/heads/master
+
+#==git_repo_config_cli
+# git config push.default simple
+# git config branch.main.remote upstream
+# git config branch.main.pullRemote upstream
+# git config branch.main.pushRemote downstream
+
+# setup
+# function setup-git-remotes
+#     set -l url (git config --get remote.origin.url)
+#     test -z "$url" && echo "Error: no remote origin" && return 1
+#
+#     set -l branch (git symbolic-ref --short HEAD)
+#     test $status -ne 0 && echo "Error: failed to get current branch" && return 1
+#
+#     if string match -q 'https://*' "$url"
+#         git remote rename origin upstream || return 1
+#         set -l ssh (string replace -r 'https://([^/]+)/' 'git@\1:' "$url")
+#         git remote add downstream "$ssh" || return 1
+#     else if string match -q 'git@*:*' "$url"
+#         set -l https (string replace -r 'git@([^:]+):' 'https://\1/' "$url")
+#         git remote set-url origin "$https" || return 1
+#         git remote rename origin upstream || return 1
+#         git remote add downstream "$url" || return 1
+#     else
+#         echo "Error: unsupported URL format" && return 1
+#     end
+#
+#     git config "branch.$branch.remote" downstream || return 1
+#     git config "branch.$branch.pullRemote" upstream || return 1
+# end
+
+#### Git confiog
 
 # aliases (like shell, but for git)
 # git config --global alias.bb !better-branch.sh

@@ -12,6 +12,7 @@ https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view
 https://oneuptime.com/blog/post/2026-03-17-connect-container-network-podman/view
 
 ==podman_desktop
+0 Strongly consider, if GUI overhead, autoload etc necessary (no architecure improvements over WSL).
 1 use installer and follow menus
 2 do not allow network access
 3 Podman Setup: recreate default machine to fix

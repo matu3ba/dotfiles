@@ -15,3 +15,7 @@
 ### Usage
 
 https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view
+
+Podman desktop has hacks to make podman work with minimal setup in WSL, but no
+architectural improvements. Docker has only minor ones allowing cross-WSL
+filesystem access.

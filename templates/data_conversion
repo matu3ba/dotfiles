@@ -12,4 +12,6 @@ good data format
 - YAML, signed-yaml/YAML-crypt, YAML Path, YAML Patch
 Including additions bloated and complex to implement.
 
+yq eval -P config.toml | podman compose -f - up -d
+
 Is there a better format?

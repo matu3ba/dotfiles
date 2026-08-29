@@ -170,6 +170,11 @@ Completely ignores the N-1 side branches; treat the octopus merge as a single
 patch against the main branch:
 git log -p --first-parent --follow HEAD PATH
 
+====branches
+create new branch
+git switch -c new_branch old_branch
+SHENANIGAN Accidental set wrong tracking branch: git switch -c new_branch origin/old_branch
+
 ======ignore
 --ignore-cr-at-eol
 

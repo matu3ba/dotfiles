@@ -2,6 +2,7 @@
 ==composing
 ==dev_containers
 ==debug
+==security
 
 ==building
 The post in https://sgt.hootr.club/blog/docker-protips/ with FROM scratch looks
@@ -24,7 +25,7 @@ https://github.com/nlewo/nix2container only shows what is fast.
 * podman build + kind load + kubectl
   - https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view
 * quadlet
-  - VM usage another slowdown >podman machine list
+  - >podman machine list
 
 ==dev_containers
 https://containers.dev/supporting
@@ -78,3 +79,7 @@ cache  podman  storage
 
 >ls /run/podman/
 >ls /run/user/1000/podman/
+
+==security
+yaml format error prone
+other than yaml configs not supported by standard tooling (linters, lsps)

@@ -2,6 +2,8 @@
 ====guide
 ====specification
 ====tools
+====idealized
+====existing
 
 ====coordination
 knowledge collection
@@ -32,3 +34,36 @@ ideal: knowledge (graph) + hedgedoc + dynamic overview hierachy + optimized sear
 draw.io
 excalidraw.com
 hedgedoc
+
+====idealized
+* open source, but at least low cost
+* search indexing
+* spelling checks and corrections
+* simple backups
+* good ui
+* cli/rest API for search
+* fast
+* (nice to have) synonym based search (for example using simple LLM)
+* (nice to have) simple local copying of accessible material possible
+
+====existing
+https://www.reddit.com/r/selfhosted/comments/1l6zr1a/what_are_the_best_selfhosted_or_opensource/
+dokuwiki very tedious configuration
+https://www.dokuwiki.org/template:minimal
+https://bluespice.com => bigger companies?
+https://github.com/gollum/gollum
+=> advanced functionalitym but annoying non-techie setup
+https://github.com/xwiki/xwiki-platform
+=> has probably easiest setup
+
+https://docusaurus.io/ for code?
+api dokumentation nutzen wir z.b. docker.io/openapitools/openapi-generator-cli
+* die openapi spec + java client
+
+So far I've only seen maintained php and java solutions
+including https://www.dokuwiki.org (most folks seem to use dokuwiki) and
+https://github.com/xwiki/xwiki-platform (not sure on extensions etc, looks
+like mediawiki).
+Also, I am unaware of any open source multi-user editor-like editing one which feels smooth
+(no weird clicking, just typing for non-techies).
+Am I missing anything that I could take into consideration?

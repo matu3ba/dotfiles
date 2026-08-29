@@ -1,15 +1,18 @@
-# podman build -t node-dev:26 -f Containerfile.dev .
-# podman run --rm -p 4200:4200 -v .:/app:z -v /app/node_modules node-dev:26 npx ng serve
+# Containerfile for Angular development and building.
+# Building
+# * podman build -t alpine-angular-dev:26 -f Containerfile.Angular .
+# Dev instructions
+# * podman run --rm -p 4200:4200 -v .:/app:z -v /app/node_modules alpine-angular-dev:26 npx ng serve
+# Production usage
+# * After building website container image, mount nginx in via Kubernetes or
+#   docker/podman compose.
 
 FROM docker.io/library/node:26-alpine
 RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
 WORKDIR /app
 COPY package*.json ./
-
 RUN npm ci && \
     npm cache clean --force && \
     chmod -R 555 node_modules
-
 COPY --chown=nodejsuser:nodejsuser . .
-EXPOSE 4200
 USER nodejsuser

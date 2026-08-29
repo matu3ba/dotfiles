@@ -51,7 +51,12 @@ Compose.yml
    * alternative often used with apptainer: process-compose.yml
      - ./process-compose -f process-compose.yml
    * alternative for using with systemd quadlet https://github.com/onlyati/quadlet-lsp
-2. compose linter: dclint as only typescript based option, podlet/quadlet Linux systemd-only
+2. compose linter
+   * compose-lint (https://pypi.org/project/compose-lint/) for security
+     - simple and has great "How it compares"
+     - no json support
+   * dclint (typescript-based) option for only schema/structure
+     - no json support
 3. yaml linter: https://github.com/adrienverge/yamllint
    * yaml fmt: https://xkyle.com/A-Detailed-Comparison-of-YAML-Formatters/
    * yaml validate: https://www.liquidweb.com/blog/validate-yaml/

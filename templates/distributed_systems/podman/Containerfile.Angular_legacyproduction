@@ -1,0 +1,14 @@
+# Incomplete Containerfile for Angular in production.
+# Building
+# * podman build -t alpine-angular-legacyprod:26 -f Containerfile.Angular_legacyproduction .
+# podman run --rm -p 4200:4200 alpine-angular-legacyprod:26 npx ng build
+
+FROM docker.io/library/node:26-alpine
+RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci && \
+    npm cache clean --force && \
+    chmod -R 555 /app/node_modules
+COPY . .
+USER nodejsuser
