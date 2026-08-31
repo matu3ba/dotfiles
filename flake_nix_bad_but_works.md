@@ -236,3 +236,14 @@ podman machine start 2>/dev/null || systemctl --user start podman
     - `work-flake` becomes the "root/integration git repo".
   - flake.nix can be used from git repo work via `nix develop path_to/work-flake`
     - `work-flake` becomes an "uncoupled config" and nix has no database to loosly couple/associate `work-flake` with `work`
+
+13. Core conceptual differences in intended goals and semantics between
+    `nix-shell`, `nix develop`, `nix shell` and `nix build` are not (well) communicated.
+    As of 20260831, the Nix project is still lacking consolidation into use dense design
+    rationale document for use cases and workflows to create conceptual simplicity.
+* As far as I understand it, `nix build` was the initial and steadily
+  improved production build mode and `nix-shell` for the "interactive shell stuff".
+* Then `nix-shell` got separated into
+  - 1 `nix develop` (stage-based development shell)
+  - 2 `nix shell` (PATH-only modification shell)
+  - 3 `nix run` (no modification execution)

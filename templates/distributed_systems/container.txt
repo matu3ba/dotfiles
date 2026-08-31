@@ -51,6 +51,7 @@ Angular vscode devcontainer
 
 ==debug
 container debugging tool based on FUSE https://github.com/Mic92/cntr
+* nix builds use container technology
 
 ====clean_automatic
 ======podman

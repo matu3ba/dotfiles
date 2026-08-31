@@ -90,7 +90,13 @@
 # systemctl list-dependencies service
 
 #==dev
-# devShells: nix develop
+# devShells
+# * nix develop --ignore-environment --keep HOME
+# * nix develop --ignore-environment --keep HOME --command bash --norc
+# checks (checks.${system}.CHECKNAME = ..)
+# * nix flake check -L
+# package builds (packages.${system}.PKGNAME = ..)
+# * nix build .#zig-build-test-all
 
 {
   description = "Smallish NixOS-WSL flake";
@@ -230,9 +236,19 @@
           emmylua-ls
           stylua
         ];
-        buildInputs = [ zig-flake.packages.${system}.nightly ];
-        shellHook = "exec ${pkgs.fish}/bin/fish";
+        buildInputs = [ zig-flake.packages.${system}.nightly ]; # (cross-)compilation
       };
+      packages.${system}.zig-build-test-all = pkgs.runCommandLocal "zig-build-test-all" {
+        src = ./.;
+        nativeBuildInputs = [ zig-flake.packages.${system}.nightly ];
+      } ''
+        export ZIG_LOCAL_CACHE_DIR="$TMPDIR/.zig-cache/"
+        export ZIG_GLOBAL_CACHE_DIR="$TMPDIR/.cache/zig"
+        mkdir -p "$ZIG_LOCAL_CACHE_DIR" "$ZIG_GLOBAL_CACHE_DIR"
+        cd "$src"
+        zig build test --summary all
+        touch "$out"
+      '';
 
       nixosConfigurations = {
         wsl = nixpkgs.lib.nixosSystem {

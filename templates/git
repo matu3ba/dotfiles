@@ -171,9 +171,14 @@ patch against the main branch:
 git log -p --first-parent --follow HEAD PATH
 
 ====branches
-create new branch
+======create new branch
 git switch -c new_branch old_branch
 SHENANIGAN Accidental set wrong tracking branch: git switch -c new_branch origin/old_branch
+
+======list of remote unmerged and merged branches for cleanup
+git for-each-ref --merged=master --sort=authorname --format='%(authorname), %(committerdate:short), %(refname:short)' refs/remotes/downstream
+git for-each-ref --no-merged=master --sort=authorname --format='%(authorname) | %(committerdate:short) | %(refname:short) | TODO' refs/remotes/downstream
+git push downstream --delete BRANCH
 
 ======ignore
 --ignore-cr-at-eol

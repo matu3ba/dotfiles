@@ -42,7 +42,6 @@ bootc container lint
 3. build analyzer: `docker build --check .`, podman has nothing
 4. image analyzer (for security etc): unconclusive by criteria, there are many options without clear winner
 5. explore each layer in a docker image: https://github.com/wagoodman/dive
-6. All-in-one security analyzer https://github.com/aquasecurity/trivy
 
 Compose.yml
 1. docker-compose
@@ -60,6 +59,10 @@ Compose.yml
 3. yaml linter: https://github.com/adrienverge/yamllint
    * yaml fmt: https://xkyle.com/A-Detailed-Comparison-of-YAML-Formatters/
    * yaml validate: https://www.liquidweb.com/blog/validate-yaml/
+
+General
+1. All-in-one security analyzer (Dockerfiles, images, IaC): https://github.com/aquasecurity/trivy
+2. All-in-one linter (Terraform, K8s, Compose, ..): https://github.com/Checkmarx/kics/
 
 ## Structure
 
