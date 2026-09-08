@@ -20,6 +20,12 @@ wmic process list
 
 #dump IIS services
 # %SYSTEMROOT%\System32\inetsrv\config
+# C:\Windows\System32\inetsrv\config
+# administration.config
+# applicationHost.config
+# redirection.config
+# schema/
+# Export/
 #
 # C:\Windows\System32\inetsrv\config\applicationHost.config:
 # For schema documentation, see

@@ -39,4 +39,7 @@ The security model relies on not being able to forge references.
             Introduction: If A has references to both B and C, A can send to B a message containing a reference to C. B can retain that reference for subsequent use.
 In the object-capability model, all computation is performed following the above rules.
 
+https://purplesyringa.moe/blog/wasm-is-not-quite-a-stack-machine/
+http://troubles.md/wasm-is-not-a-stack-machine/
+
 Stackful Coroutine Made Fast?

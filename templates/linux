@@ -587,6 +587,9 @@ KFuzzTest - fuzz kernel from kernel space
 0x.tools - perf analysis tools (tracking, tracing, etc)
 * https://github.com/tanelpoder/0xtools
 
+https://people.kernel.org/monsieuricon/
+* excellent blog on tooling setup
+
 ====bad_parts
 * kernel no micro-kernel, so many security problems (windows is worse though)
 * desktop https://slugcat.systems/brain_dump/linux-desktop-issues/

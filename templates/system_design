@@ -1,5 +1,6 @@
 ====software_systems
 ====software_architectures
+====browser
 
 ====software_systems
 https://github.com/ashishps1/awesome-system-design-resources
@@ -94,6 +95,9 @@ Important to recognize that these are bad
 because we have a priori decided what we want not to work, optimize and merge together.
 Still necessary due to brain capacity, but crucial to keep in mind that these are bad
 (worse design, worse efficiency).
+
+====browser
+https://kciter.so/posts/the-expensive-main-thread/en/
 
 A manager msut subcract a crucial and difficult design task. 2 contractors: small
 new org propositing intuitively appealing approach for less money than budgeted

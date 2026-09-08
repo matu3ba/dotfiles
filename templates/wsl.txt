@@ -1,14 +1,36 @@
 means WSL2 here
 ==config
+====wslconfig
+====/etc/wsl.config
 ==usage
+==install_nixos_wsl
 ==design
 ==podman_workaround
+==nix_workarounds
+==ubuntu_workarounds
 
 ==config
+https://github.com/microsoft/WSL/
+https://github.com/MicrosoftDocs/WSL/commits/main/WSL/wsl-config.md
+* only linux side is open source, windows side including config parser is proprietary
 global (hyper-v based VM for WSL): echo $env:UserProfile\.wslconfig
 local: cat /etc/wsl.conf
 
-# $env:UserProfile\.wslconfig
+====wslconfig
+> cat $env:UserProfile\.wslconfig
+======WSL_2.9.9.0
+[wsl2]
+memory=8GB                       # Limit memory allocation so WSL doesn't starve the host
+guiApplications=false            # Disable GUI if not strictly required to save overhead
+networkingMode=mirrored          # Mirrors Windows network stack (fixes VPN/Proxy container bugs)
+vmIdleTimeout=120000             # Auto-suspend idle VM (reduces I/O load)
+pageReporting=true               # Return unused pages to Windows
+kernelCommandLine=swapaccount=1  # Safer swap handling
+[experimental]
+autoMemoryReclaim=gradual     # Automatically drops cached RAM to prevent freezes
+sparseVhd=true                # Shrink .vhdx when you free space
+
+======WSL_2.7.x
 [wsl2]
 memory=8GB                  # Limit memory allocation so WSL doesn't starve the host
 guiApplications=false       # Disable GUI if not strictly required to save overhead
@@ -16,22 +38,10 @@ guiApplications=false       # Disable GUI if not strictly required to save overh
 networkingMode=mirrored     # Mirrors Windows network stack (fixes VPN/Proxy container bugs)
 autoMemoryReclaim=gradual   # Automatically drops cached RAM to prevent freezes
 
+======WSL_any
 * empty wslconfig should work without nix/nixos on ubuntu
 
-# /etc/wsl.conf
-[boot]
-systemd=true
-[interop]
-# default enabled=true, appendWindowsPath=true
-enabled=false
-appendWindowsPath=false
-[automount]
-enabled=true
-options="metadata,uid=1000,gid=1000,umask=0022,fmask=11,case=off"
-
-* minimal ubuntu has only [boot] systemd=true and [user] default=user
-
-networkingMode
+======networkingMode
 | networkingMode | Core Behavior                  | Primary Benefit                  | Biggest Drawback                   |
 +----------------+--------------------------------+----------------------------------+------------------------------------+
 | nat (Default)  | Hidden behind a virtual Windows| Strong network isolation; unique | Blocked by restrictive corporate   |
@@ -49,13 +59,31 @@ networkingMode
 | none           | Suppresses guest virtual NIC   | Complete local sandbox isolation | Zero communication network paths;  |
 |                | generation entirely.           | for secure offline execution.    | breaks host-to-guest localhost.    |
 +------------------+------------------------------+----------------------------------+------------------------------------+
-
 hyper-v
 * nat: itnernal switch (visible to host/VM but not LAN) with windows handling internet connection sharing on top of it.
 * bridged: bind to physical network adapter (Ethernet/wifi) with VM getting own IP from home/office router.
 * none: private switch/disconnected: isolated VM entirely, connection only between VMs on same switch, neither Windows host nor internet can reach it
 * mirrored: does not exist
 * mirrored: no lightweight fallback proxy layer, network simply disconnects
+
+====/etc/wsl.config
+> cat /etc/wsl.conf
+======compat
+[boot]
+systemd=true
+[interop]
+# default enabled=true, appendWindowsPath=true
+enabled=false
+appendWindowsPath=false
+[automount]
+enabled=true
+options="metadata,uid=1000,gid=1000,umask=0022,fmask=11,case=off"
+
+======minimal/default ubuntu
+[boot]
+systemd=true
+[user]
+default=user
 
 lxmonika https://github.com/trungnt2910/lxmonika as very incomplete WSL1 replacement
 
@@ -64,7 +92,7 @@ SHENANIGAN
 * unreliable systemd: breaks randomly programs relying on systemd
 * sporadic network bugs
 podman compose
-- systemd conflict and cleanup bugmirroredmirroredmirroredmirroredmirroredmirroredmirroredmirroredmirrored
+- systemd conflict and cleanup
 - network crash on multi service projects
 - path mapping errors on named volumes in WSL-VHDX-filesystem
 - missing user level dbus due to missing rootless linger emulation by wsl subsystem
@@ -73,24 +101,39 @@ docker compose
 - Console Echo Terminus Mangle
 - Host Localhost Port Binding Drops
 
-list WSL OSes: wsl -l
-select WSL OS (distribution): wsl -d
-change default WSL OS: wsl -s
-use shell in WSL: wsl bash script.sh
-WSL hex dump .gitattributes: WSL bash cat .gitattributes | od -c | tail
+Problem: On Windows neovim shows on copying to clipboard
+clipboard: error invoking win32yank.exe:
+"/mnt/c/Program Files/Neovim/bin/win32yank.exe": cannot execute binary file
+Solution: wait for a while or restart, likely antivirus problem
 
-does not work with virtualbox
+SHENANIGAN Escaping rules for powershell > wsl bash for variables are very annoying. On doubt, run in wsl bash.
+source env_cwo_template && echo '{"url":"'$DOTNET_SERVER_DNS'/api/keycloak"}' | jq .
+source env_cwo_template && jq -n --arg url "$DOTNET_SERVER_DNS/api/keycloak" '{url: $url}'
+
+Problem: does not work with virtualbox
 https://github.com/MicrosoftDocs/WSL/issues/798
 
+use shell in WSL: wsl bash script.sh
+WSL hexdump .gitattributes: wsl bash cat .gitattributes | od -c | tail
+or: wsl hexdump .gitattributes
+
 wsl --install --no-distribution
+# --uninstall removes wsl
+wsl --update
+wsl --list --online
+wsl --list --all
+wsl --shutdown # shutdown Hyper-V based utility VM for WSL
+wsl --unregister Ubuntu-26.04
+wsl -s Ubuntu-26.04 # set default
+wsl -d Ubuntu-26.04 # start Ubuntu-26.04 in WSL
+wsl -l # list WSL OSes
 
 cd ~\Documents
 
+==install_nixos_wsl
 curl -JLO https://github.com/nix-community/NixOS-WSL/releases/download/2505.7.0/nixos.wsl
 curl -JLO https://github.com/nix-community/NixOS-WSL/releases/download/2505.7.0/nixos.wsl.sha256
-
 sha256sum -c nixos.wsl.sha256
-
 .\nixos.wsl
 or wsl --install --from-file nixos.wsl
 
@@ -100,16 +143,7 @@ sudo nix-channel --add https://github.com/nix-community/NixOS-WSL/archive/refs/h
 
 sudo nix-channel --update
 sudo nixos-rebuild switch
-
 wsl -s NixOS
-
-Problem: On Windows neovim shows on copying to clipboard
-clipboard: error invoking win32yank.exe: /mnt/c/Program Files/Neovim/bin/win32yank.exe: /mnt/c/Program Files/Neovim/bin/win32yank.exe: cannot execute binary file
-Solution: wait for a while or restart, likely antivirus problem
-
-SHENANIGAN Escaping rules for powershell > wsl bash for variables are very annoying. On doubt, run in wsl bash.
-source env_cwo_template && echo '{"url":"'$DOTNET_SERVER_DNS'/api/keycloak"}' | jq .
-source env_cwo_template && jq -n --arg url "$DOTNET_SERVER_DNS/api/keycloak" '{url: $url}'
 
 ==design
 * Based on single hyper-v based VM
@@ -150,6 +184,13 @@ ignoring systemd
 podman system service --time=0 unix://$HOME/podman.sock &
 export DOCKER_HOST=unix://$HOME/podman.sock
 podman-compose up -d
+podman stats
+https://github.com/podman-container-tools/podman/discussions/25607
+https://github.com/podman-container-tools/podman/issues/28341
+* Use cgroupfs instead of systemd for cgroup manager on WSL2.
+* Use DOCKER_HOST for the socket directly
+* https://github.com/bearoffwork/nixos-wsl
+* https://github.com/rosenbjerg/wsl2-podman
 
 ==nix_workarounds
 sudo nix-store --verify --check-contents --repair --check-contents
@@ -203,5 +244,18 @@ version file not found
 
 nix why-depends .#nixosConfigurations.wsl.config.system.build.toplevel nixpkgs#dbus-broker
 
-
 ls -la ~/.config/systemd/user/
+
+==ubuntu_workarounds
+Problem: WSL2 doesn't expose binfmt_misc properly in all configurations.
+* > mount | grep binfmt_misc
+binfmt_misc on /proc/sys/fs/binfmt_misc type binfmt_misc (rw,relatime)
+none on /proc/sys/fs/binfmt_misc/status type tmpfs (ro,mode=755)
+=> binfmt_misc is read-only, so systemd-binfmt can not write into it.
+Solution:
+>sudo systemctl stop systemd-binfmt.service
+>sudo systemctl mask systemd-binfmt.service
+>sudo systemctl daemon-reload
+>sudo systemctl reset-failed systemd-binfmt.service
+>systemctl status
+>systemctl list-units --failed

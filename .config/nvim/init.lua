@@ -353,6 +353,10 @@ require 'my_keymaps'
 -- convert symbols into hex: !%xxd
 -- reverse convert (before saving): :%!xxd -r
 -- show non-text ascii symbols with :ascii
+-- global inverse selection
+-- :g!/LIVE/d
+-- dedicated invert operator
+-- :v/LIVE/d
 
 -- make-path
 -- :!mkdir -p somepath\somefile

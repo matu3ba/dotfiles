@@ -1,0 +1,31 @@
+FROM docker.io/library/node:26-alpine
+ARG UID
+ARG GID
+
+# 1 /etc/passwd must contain
+# root:x:0:0:root:/root:/bin/sh
+# $USER:x:UID:GID::/home/$USER:/bin/sh
+# 2 /home/$USER must be empty
+# 3 UID and GID in container must match
+RUN set -e; \
+    echo "=== Validating /etc/passwd ===" && \
+    PASSWD_LINES=$(grep '/bin/sh$' /etc/passwd) && \
+    COUNT=$(echo "$PASSWD_LINES" | wc -l) && \
+    if [ "$COUNT" -eq 2 ]; then echo "[OK] Found exactly 2 entries with /bin/sh"; else echo "[FAIL] Expected 2 entries with /bin/sh, found $COUNT"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q '^root:x:0:0:root:/root:/bin/sh$'; then echo "[OK] root entry valid"; else echo "[FAIL] root entry malformed"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q "^[^:]*:x:${UID}:${GID}::/home/[^:]*:/bin/sh$"; then echo "[OK] Non-root entry valid (UID=${UID}, GID=${GID})"; else echo "[FAIL] Non-root entry with UID=${UID} GID=${GID} not found"; exit 1; fi && \
+    NON_ROOT_USER=$(echo "$PASSWD_LINES" | grep -v '^root:' | cut -d: -f1) && \
+    echo "[OK] Extracted user: $NON_ROOT_USER" && \
+    echo "=== Validating /home/$NON_ROOT_USER is empty ===" && \
+    UNEXPECTED=$(find /home -mindepth 1 -maxdepth 1 ! -name "$NON_ROOT_USER" 2>/dev/null || true) && \
+    if [ -z "$UNEXPECTED" ]; then echo "[OK] /home clean"; else echo "[FAIL] Unexpected entries in /home"; exit 1; fi && \
+    if [ ! -d "/home/$NON_ROOT_USER" ] || [ -z "$(find "/home/$NON_ROOT_USER" -type f 2>/dev/null)" ]; then echo "[OK] /home/$NON_ROOT_USER empty"; else echo "[FAIL] /home/$NON_ROOT_USER is not empty"; exit 1; fi && \
+    echo "=== Validating UID + GID match ===" && \
+    USER_ID=$(id -u "$NON_ROOT_USER") && \
+    USER_GID=$(id -g "$NON_ROOT_USER") && \
+    if [ "$USER_ID" = "$UID" -a "$USER_GID" = "$GID" ]; then echo "[OK] User UID, GID matches"; else echo "[FAIL] UID, GID mismatch: expected $UID/$GID, got $USER_ID/$USER_GID"; exit 1; fi && \
+    echo "[OK] All validations passed"
+
+WORKDIR /app
+RUN mkdir -p /app/node_modules && chown -R ${UID}:${GID} /app
+USER ${UID}:${GID}

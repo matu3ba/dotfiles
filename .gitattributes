@@ -1,19 +1,33 @@
+# Syntax of gitattributes: <pattern>  <attr> [<attr> ...]
+# Form        | Meaning
+# ---         | ---
+# attr        | Set (true)
+# -attr       | Unset (false)
+# attr=value  | Set to a specific value
+# !attr       | Unspecified (use the built-in default)
+
 # Git stores internally files as utf8 and with eol lf.
 # Set default behavior to automatically normalize line endings.
 # Update line endings of already checkked in files
 #   git add --update --renormalize --verbose .
 
-#==text_files: general text files behavior
+#=text_files: text files behavior
 #==native_line_ending_files: files to keep native line ending
 #==specific_files: explicit line ending and utf8 without bom compatible fmt
-#==deviating_rules: more complex rules
-#==binary_files: binary files are used verbatim and keep line endings
-#==SHENANIGANS: unexpected and/or bad behavior
+#==file_encoding: other than utf8 no bom encoding
+#=binary_files: binary files are used verbatim and keep line endings
+#=merge
+#=diff
+#=export (git archive)
+#=linguist (detect PL and do statistic)
+#=SHENANIGANS: unexpected and/or bad behavior
 
-#==text_files
-# explicit line ending and utf8 without bom compatible fmt
+#=text_files
+# explicit line ending and utf8 without bom
 * text eol=lf
-# Typical other option to use auto-detection: text eol=auto
+# Typical (bad practice/backwards compat) option to use auto-detection text: * text eol=auto
+# Exact behavior depends on the eol sub-attribute and the core.eol and
+# core.autocrlf git config values.
 
 #==native_line_ending_files
 # *.c text eol=crlf
@@ -28,13 +42,26 @@
 *.txt text eol=lf
 *.zig text eol=lf
 
-#==deviating_rules
-# Consider checking manually the bom and prefer UTF-16LE-BOM or UTF-16LE
-# /some/explicit/path text working-tree-encoding=UTF-16 eol=CRLF
+#==file_encoding
+# Consider checking manually the bom and prefer eplicitness on BOM like
+# UTF-16LE-BOM or UTF-16LE over UTF-16:
+# /some/explicit/path text working-tree-encoding=UTF-16LE eol=CRLF
 
-#==binary_files
+#=binary_files
 # data/binary_data/** binary
+
+#=merge
+
+#=diff
+
+#=export (git archive)
+
+#=linguist (detect PL and do statistics)
+# linguist-generated/vendored/documentation code is excluded from language
+# statistics and diff views:
 # lib/include/** linguist-vendored
+# linguist-detectable code is included in statistics even when being prose or data:
+# *.kicad_pcb linguist-detectable
 
 #==SHENANIGANS
 # SHENNANIGAN

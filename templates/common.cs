@@ -1,4 +1,5 @@
 //==performance
+//==semantics
 
 // C/C++ to C# interop summary from https://mark-borg.github.io/blog/2017/interop/
 // Interoperability mechanisms
@@ -24,15 +25,6 @@
 //   https://www.youtube.com/@MilanJovanovicTech
 // News
 //   https://www.youtube.com/@nickchapsas
-
-//==performance
-// 8ns call overhead to ffi C code
-
-// https://github.com/neogeek/csharp_editorconfig
-
-// comptime https://github.com/sebastienros/comptime
-
-// Still a problem: Very long build times for big code bases and unfinished (incremental) build system.
 
 // SHENNANIGAN Windows Forms handle key combinations
 // KeyPress event must be inherited by current window or dynamically set for all elements of a form
@@ -431,3 +423,23 @@ namespace AppFramework.AppName {
 
 // .NET >= 11 has better process API
 // TODO review
+
+
+//==performance
+// 8ns call overhead to ffi C code
+
+// https://github.com/neogeek/csharp_editorconfig
+
+// comptime https://github.com/sebastienros/comptime
+
+// Still a problem: Very long build times for big code bases and unfinished (incremental) build system.
+
+
+//==semantics
+// framework loading with arbitrary module/plugin/extensions order
+// * static context
+// * System.Configuration.ConfigurationManager.AppSettings initialization
+// * logic code dependencies can enforce an logical order
+// framework exec with specified order
+// * depends on used framework model
+// * example: config in System.Configuration.ConfigurationManager.AppSettings["resource"]

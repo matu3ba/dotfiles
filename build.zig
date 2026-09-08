@@ -551,6 +551,7 @@ const c17_flags = [_][]const u8{ "-std=c17", "-Werror", "-Weverything", "-Wno-c+
 const c23_flags = [_][]const u8{ "-std=c23", "-Werror", "-Weverything", "-Wno-c++-compat", "-Wno-unsafe-buffer-usage", "-Wno-declaration-after-statement", "-Wno-switch-default", "-Wno-c++98-compat", "-Wno-pre-c11-compat", "-Wno-pre-c23-compat" };
 
 const SingleCFiles = [_][]const u8{
+    "example/colors.c",
     // "example/gdb/adv/catch.c",
     // "example/gdb/adv/dll_injection_unix.c",
     // "example/gdb/adv/dll_injection_win.c",
@@ -569,14 +570,13 @@ const SingleCFiles = [_][]const u8{
     // "example/provenance_miscompilation/extern.c",
     // "example/provenance_miscompilation/ptr_provenance_miscompilation.c",
     "example/sequence_points.c",
+    "example/server.c",
     // "example/util_string.c", // clang-diagnostics security failure
     "example/why_clang_tidy.c",
-    "templates/colors.c",
     "templates/common.c",
     // "templates/common_c89.c", // separately tested
     // "templates/flags.c", // no usable code
     "templates/hacks.c",
-    "templates/server.c",
 };
 
 // zig c++ flags

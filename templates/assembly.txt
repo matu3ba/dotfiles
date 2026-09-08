@@ -4,6 +4,8 @@
 https://blog.brakmic.com/intro-to-x86-assembly-with-fasm/
 https://xania.org/AoCO2025
 
+Aarch64 debugging story https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/
+
 ====isas
 intel x86 > 5k isa with 400 pages unofficial reference
 call it Intel SIB

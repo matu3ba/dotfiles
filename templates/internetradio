@@ -1,6 +1,8 @@
+==internetradio
+https://www.radio-browser.info
+
 1. Install ffmpeg to use ffplay
 2. Setup radio stations with urls from
-https://www.radio-browser.info
 and either use a .pl file with the following entries to start
   Title1=Jazzloft
   File1=STREAMURL

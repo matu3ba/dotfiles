@@ -3,6 +3,7 @@
 ==bpftrace
 ==Performance analysis profiler
 ==FAQ
+==otlp_opentelemetry
 
 Mostly taken from https://klarasystems.com/articles/freebsd-vs-linux-tracing-and-troubleshooting/
 From portable and widely used to non-portable
@@ -109,3 +110,12 @@ collectors
 * integration into distributed tracing (like OpenTelemetry)?
 
 modeling spans in dtrace?
+
+==otlp_opentelemetry
+applications https://opentelemetry.io/docs/specs/semconv/
+* rpc.system.name: wcf
+  - absence of value means not applicable
+  - "rpc.system: rest" is from technical perspective wrong, since rest means no
+    additional rpc system is involved and thus rpc.system should not be set
+* http.method: get
+* deployment.environment: production

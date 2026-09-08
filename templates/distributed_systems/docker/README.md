@@ -11,58 +11,7 @@ unless configured as such.
 Other alternatives are depend on use cases. See cri, oci, both (cri-o) compliance
 for Kubernetes compatibility (oci).
 
-## Dependencies
-- Unix environment (ie WSL, docker desktop has problems)
-- containers: (podman or docker) xor apptainer xor OCI container
-  * all of these are for application virtualization
-  * OS virtualization are different and incompatible (qemu, lxc, OpenVZ, kvm, xen, etc)
-- docker-compose (podman-compose may get stuck and has problems),
-  * alternative (ie for apptainer): process-compose
-
-## Development recommendations
-
-Containerfile
-1. docker or podman
-2. Containerfile linter
-   * hadolint
-   * docker
-```
-# syntax=docker/dockerfile:1
-# check=error=true
-# check=skip=JSONArgsRecommended,StageNameCasing
-docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=skip=JSONArgsRecommended,StageNameCasing" .
-```
-   * https://docs.docker.com/reference/build-checks/
-   * podman https://developers.redhat.com/articles/2025/02/26/best-practices-building-bootable-containers
-```
-bootc container lint
-```
-     - cli simplification https://willhbr.net/2026/03/13/language-servers-in-containers/
-3. lsp: https://github.com/docker/docker-language-server
-3. build analyzer: `docker build --check .`, podman has nothing
-4. image analyzer (for security etc): unconclusive by criteria, there are many options without clear winner
-5. explore each layer in a docker image: https://github.com/wagoodman/dive
-
-Compose.yml
-1. docker-compose
-   * podman compose misses features
-     - Red-Hat pushes quadlets instead of docker-compose compatibility
-   * alternative often used with apptainer: process-compose.yml
-     - ./process-compose -f process-compose.yml
-   * alternative for using with systemd quadlet https://github.com/onlyati/quadlet-lsp
-2. compose linter
-   * compose-lint (https://pypi.org/project/compose-lint/) for security
-     - simple and has great "How it compares"
-     - no json support
-   * dclint (typescript-based) option for only schema/structure
-     - no json support
-3. yaml linter: https://github.com/adrienverge/yamllint
-   * yaml fmt: https://xkyle.com/A-Detailed-Comparison-of-YAML-Formatters/
-   * yaml validate: https://www.liquidweb.com/blog/validate-yaml/
-
-General
-1. All-in-one security analyzer (Dockerfiles, images, IaC): https://github.com/aquasecurity/trivy
-2. All-in-one linter (Terraform, K8s, Compose, ..): https://github.com/Checkmarx/kics/
+General container properties apply, see ./templates/distributed_systems/container.txt
 
 ## Structure
 

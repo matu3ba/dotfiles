@@ -16,9 +16,13 @@ Environment variables
 ____Generating_keys____
 Generating private key with 200 instead of 16 default rounds.
 With
-USER=$USERNAME
-HOST=$HOSTNAME
+# win-only: USER=$USERNAME
+# if needed: HOSTNAME=$(hostname)
+#            HOSTNAME=$(cat /etc/hostname)
+#            set HOSTNAME (cat /etc/hostname)
 COMMENT="$(date +'%Y%m%d')${USER}@${HOSTNAME}"
+set -lx HOSTNAME $(hostname)
+set -lx COMMENT "$(date +'%Y%m%d')$USER@$HOSTNAME"
 ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -N "PASSPHRASE" -f ~/.ssh/PRIVATEKEYNAME
 and with passphrase dialog
 ssh-keygen -a 200 -t ed25519 -C "${COMMENT}" -f $HOME/.ssh/PRIVATEKEYNAME

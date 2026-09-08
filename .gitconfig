@@ -33,6 +33,12 @@
 # handled via cli option
 # [commit]
 #  gpgsign = true
+# [tag]
+#  gpgsign = true
+# [gpg]
+#   format = ssh
+# [gpg "ssh"]
+#   allowedSignersFile = ~/.ssh/allowed_signers
 
 # git config --list --system
 # git config --list --global

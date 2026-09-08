@@ -105,7 +105,7 @@ jj git push --remote upstream --bookmark my-feature-branch --allow-new
 * explicit bookmark usage is needed on first push
 
 debugging
-1 ssh -T git@gitlab.cambio-carsharing.com
+1 ssh -T git@gitlab.domain.com
 2 sh-add -l
 Error connecting to agent: No such file or directory
 jj config set --user git.program "ssh"

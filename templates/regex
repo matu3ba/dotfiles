@@ -4,3 +4,13 @@ https://simpleregex.dev/negated-character-class/
 /[abcd]
 
 etc
+
+Standard / Engine             | Invert Address Flag | Invert Regex                                             | Notes
+----                          | ----                | -----                                                    | ----
+POSIX BRE (sed, grep)         | ! (sed), -v (grep)  | [^...] char class only                                   | No lookahead support
+POSIX ERE (grep -E, awk)      | -v (grep only)      | [^...] char class only                                   | No lookahead; no lookahead operators
+Perl / PCRE                   | None (use code)     | (?!...) negative lookahead, (?<!...) negative lookbehind | Full Unicode, backreferences
+Rust regex crate              | None (use code)     | (?!...), (?<=...) limited lookbehind                     | No backreferences; linear time guarantee
+RE# (.NET/F#)【iev.ee blog】  | Not specified       | ~(pattern) complement operator + (?<=R1)R2(?=R3)         | Context-aware lookarounds; boolean algebra (&, ~, |)
+JavaScript (V8, SpiderMonkey) | None                | (?!...), (?<=...)                                        | Backtracking engine (ReDoS risk)
+Java                          | None (use code)     | (?!...), (?<=...)                                        | Backtracking; lookarounds supported

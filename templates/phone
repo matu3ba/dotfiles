@@ -1,3 +1,22 @@
+====technology_choice
+
+====technology_choice
+The practical rule: If more than 50% of your app is genuinely shareable
+business logic (networking, data, validation), KMP pays for its setup cost.
+Below that threshold, the shared module overhead doesn’t earn back its
+maintenance cost. If your app is mostly UI with minimal shared logic, Flutter
+or native is a better option.
+
+Don’t forget about the hiring factor. Kotlin developers can contribute to KMP
+projects right away. Flutter requires Dart expertise, which is a smaller talent
+pool.
+
+https://volpis.com/blog/kotlin-multiplatform-vs-flutter/
+* flutter (google) decreased (significantly) web backends support with marginal
+  market share of people using it
+* instead google pushes angular
+* Kotlin Multiplatform / CMP better choice, but i haven't checked market share
+
 shelter
 aurora
 f-droid

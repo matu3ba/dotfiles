@@ -1,0 +1,26 @@
+# Containerfile for Angular development and building.
+# Building
+# * podman build -t alpine-npm:26 -f Containerfile.npm .
+# * podman build --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t alpine-npm:26 -f Containerfile.npm .
+# Dev instructions
+# * podman run --rm -v .:/app:z -v /app/node_modules alpine-npm:26 npm --help
+# * podman run --rm -v .:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm ci && npm update"
+
+# FROM docker.io/library/node:26-alpine
+# ARG UID=100000
+# ARG GID=100000
+# RUN addgroup -g ${GID} -S nodejsuser && \
+#     adduser -u ${UID} -S nodejsuser -G nodejsuser
+# WORKDIR /app
+# RUN mkdir -p /app/node_modules && chown -R nodejsuser:nodejsuser /app/node_modules
+# COPY --chown=nodejsuser:nodejsuser . .
+# USER ${UID}:${GID}
+
+# TODO setup properly
+
+FROM docker.io/library/node:26-alpine
+WORKDIR /app
+RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
+RUN mkdir -p /app/node_modules && chown -R nodejsuser:nodejsuser /app/
+USER nodejsuser
+

@@ -1,3 +1,4 @@
+====tls
 
 Problem: Dynamic linking can lead to aweful user experience, because arbitrary locations are searched by the linker.
 Solution: Make a linker database with all the symbols used in all the programs to do conflict detection and do loading+unloading via database instead of via fs.
@@ -205,3 +206,7 @@ RELOCATION RECORDS FOR [.text]:
 OFFSET   TYPE              VALUE
 00000007 R_386_PC32        __i686.get_pc_thunk.cx
 0000000d R_386_GOTPC       _GLOBAL_OFFSET_TABLE_
+
+====tls
+https://doc.rust-lang.org/beta/unstable-book/compiler-flags/tls-model.html
+"ELF Handling For Thread-Local Storage"

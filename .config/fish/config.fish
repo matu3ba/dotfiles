@@ -183,6 +183,8 @@ if status is-interactive
   # * zdev/zig-bootstrap/master: CMAKE_GENERATOR=Ninja ./build x86_64-linux-musl native
   #   + enabling checks: -DLLVM_ENABLE_ASSERTIONS=ON \
   #   + preventing oom: -DLLVM_PARALLEL_LINK_JOBS=1 \
+
+  # use instead --zig-lib=./lib
   abbr --add -g  zbdeb ' set -lx ZIG_LIB_DIR lib; ./buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" -Dstatic-llvm -Dno-langref'
   abbr --add -g  zdeb ' set -lx ZIG_LIB_DIR lib; ../master/rel/bin/zig build -p deb -Doptimize=Debug --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" -Dstatic-llvm -Dno-langref'
   abbr --add -g  zbllvm ' CMAKE_GENERATOR=Ninja ./build x86_64-linux-musl native'

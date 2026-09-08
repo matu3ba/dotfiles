@@ -83,3 +83,13 @@ not work.
 * fault in a specific instruction breaks that instruction, not the whole CPU
 * security only applicable at certain points in an architecture
 * there is points in hardware where security is far more important, but that is the exception rather than the rule.
+
+I suspect that a mix of TLA+ and MESI + multiple buffers + bus systems based on
+instruction and memory dependency annotations are used in practice for
+computing sync. At least I've seen some TLA+ folks talk about hardware guys
+doing symbolic execution and there has to be some consensus protocol related to
+MESI etc.
+There are also quite some papers on this approach and TLA+ is the only solvable
+sync stuff I'm aware (TLA+ as only feasibe system to formally verify complex
+non-deterministic parallelism, states and changes over time via temporal
+logic). Likely streaming logic for simplification etc comes on top.

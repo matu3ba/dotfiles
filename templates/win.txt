@@ -189,9 +189,9 @@ New-Item -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\QueryBuilder"
 and restart PC, then start ms outlook.
 4 close outlook
 5 delete relevant outlook cache objects under C:\Users\$USER\AppData\Local\Microsoft\Outlook
-rm team-contract@cambio-carsharing.com.ost
-rm 16\OutlookConfig.Team-Contract@cambio-carsharing.com.json
-rm 16\AutoD.Team-Contract@cambio-carsharing.com.xml
+rm user@mail.com.ost
+rm 16\OutlookConfig.user@mail.com.json
+rm 16\AutoD.user@mail.com.xml
 6 start outlook
 
 Monitoring Silent Process Exit https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/registry-entries-for-silent-process-exit

@@ -355,7 +355,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // time zig test lib/std/std.zig -fno-lld -fno-llvm --zig-lib-dir lib --test-filter "tls client and server handshake"
 // time zig test lib/std/std.zig -fno-lld -fno-llvm --zig-lib-dir lib --test-filter "tls client and server handshake" --test-cmd 'gdb' --test-cmd-bin
 // macos workaround docker run -it --rm -v "$(pwd)":/work zig-riscv zig build -Dtarget=riscv32-linux -fqemu test
-
+// zig build --build-file test/behavior/x86_64/build.zig --cache-dir .zig-cache --summary all
 // Testing with wasm+wasmtime:
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
 

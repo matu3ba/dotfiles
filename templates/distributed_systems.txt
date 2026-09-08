@@ -64,6 +64,9 @@ alternatives:
 6 service discovery
 (less often)
 7 consensus
+* tla+ https://lamport.azurewebsites.net/video/videos.html
+* https://tigerbeetle.com/blog/2025-11-22-mathematics-of-consensus/
+* https://matklad.github.io/2020/11/01/notes-on-paxos.html
 8 replication
 
 ====sources

@@ -37,3 +37,8 @@ On Windows WSL2 and virtualization is not available due to affecting timing beha
 ----
 
 Answer as short as possible with edge cases and ask, when anything is unclear before answering. Consider me changing default model on failure.
+
+----
+
+Always be short, concise, edge-case including and ask, if anything is unclear before responding.
+Assume Windows WSL 2 with docker setup.

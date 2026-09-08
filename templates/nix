@@ -4,6 +4,12 @@
 ====build
 ====deployment
 ====testing
+====history
+====nixos_design
+
+https://ekala-project.github.io/nix-book/
+https://code.tvl.fyi/tree/tvix/docs
+https://git.snix.dev/snix/snix
 
 ====edge_cases
 https://wiki.nixos.org/wiki/Nix_Language_Quirks
@@ -410,3 +416,71 @@ https://numtide.com/blog/nix-vm-test-reproducible-integration-tests/
 * There are likely better alternatives to nix-vm-test.
 * TODO ask about caching behavior manipulation for task steps etc
 nixos compose https://github.com/garnix-io/nixos-compose
+
+====history
+slop history https://www.vinniefalco.com/p/the-nixos-leadership-crisis-an-analysis
+
+I’ll collect the strongest official and source-level references for each NixOS architecture topic, then turn those into a linked table of contents.I have the core Nix, boot, and switch pages; next I’ll pin current official URLs for modules, store/daemon, flakes, and activation source.I still need the current NixOS manual section URLs so the TOC points at stable official pages rather than stale copies.There is no single official “NixOS architecture book” that covers all four of those views. The closest high-level maps are the Nix layer diagram and the 2010 NixOS paper; the rest lives in manuals plus `nixpkgs` source.
+
+====nixos_design
+nixos consists conceptually of
+* interpreter with more or less process and build environment stuff without sandboxing (outputs .drv files)
+* builder with sandboxing (only snix OCI-compat)
+* activation script infras
+* store and metadata ?servers?
+* lots of helpers and glue code (path fixup, symlink standard paths, handle standard components/build environments, hardware detection, systemd wrappers etc)
+* arbitrarily designed and and often named configuration modules (home-manager, flakes, profiles, channels)
+* background daemons
+* packages receipes
+
+TODO: https://ekala-project.github.io/nix-book/ch10-00-nix-workflows.html
+* missing the nix run/shell/develop and nix-shell horrors on env vars, PATH leaking into shell etc
+* https://ekala-project.github.io/nix-book/ch10-07-devenv.html wants to use snix to reuse standard container stuff
+
+TODO: simplify the slop
+
+### 0. Start here
+- [How Nix / NixOS works](https://nixos.org/guides/how-nix-works/) — shortest official picture of store paths, isolation, and “the OS is also a Nix derivation”.
+- [Nix architecture and design](https://nixos.org/manual/nix/unstable/architecture.html) — the real component map: expression → evaluator → store derivation (`.drv`) → builder → store object.
+- [NixOS: A purely functional Linux distribution (JFP 2010)](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/C1ACBA2A51D2E5466820F5B5086EA2CE/S0956796810000195a.pdf/div-class-title-nixos-a-purely-functional-linux-distribution-div.pdf) — still the best *system-level* design paper: modules → toplevel derivation → activation → profiles/rollbacks.
+### 1. Logical dependencies of subcomponents
+This is the **module graph**, not the build graph: options, `imports`, `config`, merge/priority.
+- [Module system tutorial (nix.dev)](https://nix.dev/tutorials/module-system/index.html) — best explanation of modules as the composition interface.
+- [NixOS modules (wiki)](https://wiki.nixos.org/wiki/NixOS_modules) — how NixOS uses that library: `imports` / `options` / `config`.
+- [Writing NixOS modules](https://nixos.org/manual/nixos/unstable/#sec-writing-modules) — official NixOS chapter.
+- [Source of truth: `nixos/modules/system/activation/top-level.nix`](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/activation/top-level.nix) — where the module graph is assembled into `system.build.toplevel`.
+### 2. Build dependencies with IRs
+This is the **store graph**: Nix language → ATerm/JSON `.drv` → sandbox build → NAR/store object.
+- [Our first derivation (Nix Pills)](https://nixos.org/guides/nix-pills/06-our-first-derivation.html) — best intro to `.drv` as the IR.
+- [Store derivation and deriving paths](https://nixos.org/manual/nix/unstable/store/derivation.html) — formal model of the IR.
+- [Building a derivation](https://github.com/NixOS/nix/blob/master/doc/manual/source/store/building.md) — sandbox FS, env, output processing, reference scanning.
+- [Store path calculation](https://nixos.org/manual/nix/stable/protocols/store-path.html) — how input-addressed hashes are computed.
+- [stdenv / phases](https://nixos.org/manual/nixpkgs/unstable/#chap-stdenv) — the package-recipe IR *above* `.drv` (`setup.sh`, phases, hooks).
+### 3. Boot sequence
+Firmware/bootloader → initrd (stage 1) → real root (stage 2) → systemd.
+- Conceptual: the [2010 paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/C1ACBA2A51D2E5466820F5B5086EA2CE/S0956796810000195a.pdf/div-class-title-nixos-a-purely-functional-linux-distribution-div.pdf) still has the cleanest stage-1/stage-2 story.
+- [Stage 1 init](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/boot/stage-1-init.sh) — mount root, then `switch_root` into stage 2.
+- [Stage 2 init](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/boot/stage-2-init.sh) — remount, early mounts, then exec systemd.
+- [Stage 2 module](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/boot/stage-2.nix) — how that script is generated and parameterized.
+- Current default: systemd-in-initrd. See [NixOS 26.05 stage-1 change](https://www.fosslinux.com/157356/nixos-26-05-yarara-adopts-systemd-stage-1-boot.htm) plus `boot.initrd.systemd` options.
+### 4. Switch sequence
+`nixos-rebuild` → build toplevel → system profile → `switch-to-configuration` → activation script → systemd unit diff.
+- [Nixos-rebuild internals (wiki)](https://wiki.nixos.org/wiki/Nixos-rebuild) — shortest accurate sequence.
+- [Switching to a configuration / activation script](https://nixos.org/manual/nixos/unstable/#sec-switching-systems) — official order of stop / activate / daemon-reload / restart.
+- [Activation script section (source for the manual)](https://github.com/NixOS/nixpkgs/blob/master/nixos/doc/manual/development/activation-script.section.md)
+- [Activation script implementation](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/activation/activation-script.nix)
+- [What `switch-to-configuration` is wired from](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/activation/switchable-system.nix)
+### 5. The pieces in your mental model
+| Piece | Best resource |
+|---|---|
+| Evaluator / instantiate (unsandboxed; emits `.drv`) | [Nix architecture](https://nixos.org/manual/nix/unstable/architecture.html) |
+| Builder / sandbox | [Building](https://github.com/NixOS/nix/blob/master/doc/manual/source/store/building.md) and Nix `sandbox` setting |
+| Store + metadata / daemon | [Local daemon store](https://nix.dev/manual/nix/2.34/store/types/local-daemon-store.html); protocol notes: [Snix nix-daemon protocol](https://snix.dev/docs/reference/nix-daemon-protocol/intro/) |
+| Alternative store/builder split (Snix) | [snix-[ca]store API](https://snix.dev/docs/reference/snix-castore-api/) |
+| Activation infrastructure | [Activation script](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/system/activation/activation-script.nix) |
+| Glue: `/etc`, users, wrappers, hardware | [NixOS internals wiki](https://wiki.nixos.org/wiki/NixOS); hardware profiles: [nixos-hardware](https://github.com/NixOS/nixos-hardware) |
+| Modules / profiles / channels / flakes | [Modules wiki](https://wiki.nixos.org/wiki/NixOS_modules), [system configuration / flakes](https://wiki.nixos.org/wiki/NixOS_system_configuration), [Flakes (nix.dev)](https://nix.dev/concepts/flakes.html) |
+| Home Manager | [Home Manager as NixOS module](https://nix-community.github.io/home-manager/nix-flakes/nixos.html) |
+| Background daemons | Nix: `nix-daemon`; NixOS: systemd units generated by modules |
+| Package recipes | [Nixpkgs stdenv](https://nixos.org/manual/nixpkgs/unstable/#chap-stdenv) |
+If you want one reading order: paper → Nix architecture → module-system tutorial → `.drv` pill → building.md → stage-1/2 scripts → switch-to-configuration chapter.

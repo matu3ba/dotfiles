@@ -5,6 +5,9 @@
 ====protocols
 NearLink/Sparlink/Sparklink as potential bluetooth successor
 * no proper security analysis yet
+* BGP
+* OSPF
+* EIGRP (wont be implemented for a while)
 
 ====tools
 websocket tcp bridge https://github.com/novnc/websockify

@@ -241,9 +241,144 @@ podman machine start 2>/dev/null || systemctl --user start podman
     `nix-shell`, `nix develop`, `nix shell` and `nix build` are not (well) communicated.
     As of 20260831, the Nix project is still lacking consolidation into use dense design
     rationale document for use cases and workflows to create conceptual simplicity.
-* As far as I understand it, `nix build` was the initial and steadily
-  improved production build mode and `nix-shell` for the "interactive shell stuff".
+* As far as I understand it, `nix build` was the initial and steadily improved
+  production build mode for hermetic builds and `nix-shell` for the "interactive shell stuff".
 * Then `nix-shell` got separated into
-  - 1 `nix develop` (stage-based development shell)
-  - 2 `nix shell` (PATH-only modification shell)
-  - 3 `nix run` (no modification execution)
+  - 1 `nix develop` for stage-based development shell with build environment.
+    * Build environment is based on `mkShell`/`mkShellNoCC` selection.
+  - 2 `nix shell` for `PATH`-only prepend shell without build environment.
+  - 3 `nix run` to resolve to an executable path and execute it directly.
+* Most annoying during development are host and target system leaks of `PATH`,
+  shell config and env vars. Rule of thumb to host/target system shells should
+  **only append** to `PATH` (`nix develop/shell` prepend to `PATH`), ideally
+  never be nested and do as few as reasonable.
+  - I am unaware of a collection of all shell workarounds.
+* Nix does not model isolation/sandboxing (not even in hermetic builds), so
+  various workarounds may be needed.
+
+14. Essential workflows sorted roughly from less to more isolation. Nix only
+    has (fully) hermetic and sandboxed builds, iff installed accordingly.
+* quickly execute binaries based on (flake) output: `nix run nixpkgs#hello`
+  - adds to `PATH` and executes binary
+  - no build-time and run-time isolation
+* full interactive environment shell setup within nix
+```nix
+devShells.${system}.strict = pkgs.mkShellNoCC {
+  strictDeps = true; # needed when cross-compiling
+  packages = [ python311 pkgs.black ];
+};
+#>nix develop .#strict
+# or use devShells.${system}.default to omit .#strict
+```
+  - host shell `~/.bashrc` likely already loaded and leaks in
+  - env vars leak in
+  - replaces `PATH` (may include host paths wrapped through stdenv)
+  - `shellHook`, `stdenv/setup` sourced before shell prompt, `~/.bashrc`
+  - sets env vars and shell functions for building derivations directly
+* minimal interactive environment shell setup within nix
+```nix
+packages.${system}.dev-env = pkgs.buildEnv {
+  name = "dev-environment";
+  paths = with pkgs; [
+    jq shellcheck
+    nil deadnix statix nixfmt
+  ];
+};
+#>nix shell .#dev-env
+```
+  - host shell `~/.bashrc` likely already loaded and leaks in
+  - env vars leak in
+  - only prepends `PATH`, no `shellHook`, no `stdenv/setup`, no `~/.bashrc`
+  - same idea as external tool `nix-devenv`
+* filtering interactive environment shells
+  - option `--ignore-environment/-i` to filter env vars
+    * keeps only essential env vars, so might need `--keep` to keep some
+  - option `--command/-c` starts command/binary with arguments instead of a shell
+    and a cleaned up `PATH`
+    * since no bash is expected, no nix bashFunctions are sourced
+    * to start bash without using `~/.bashrc` leaks including from host shell
+      and with cleaned `PATH` use one of
+      - `nix develop --ignore-environment --keep HOME --command bash --norc`
+        This still does setup stdenv vars, nix bashFunctions `shellHook`.
+        With `--command non-bash`, only bash vars are kept.
+      - `nix shell --ignore-environment --keep HOME --command bash --norc`
+        This still does not setup stdenv vars, nix bashFunctions, `shellHook`.
+    * reproducible: identical env vars every time, iff input env vars
+      identical and command/binary has reproducible execution
+* hermetic builds
+  - comparable to podman container run-time security with good setup
+    * personally did not test network and orchestration yet in comparison to
+      container build systems and Kubernetes
+  - sandbox configuration is [hidden input](https://fzakaria.com/2026/07/30/the-nix-sandbox-is-a-hidden-input)
+  - many options for various use cases with possible simplifications
+    * local (without cache) `runCommandLocal` here with `zig-flake.url = github:silversquirl/zig-flake`
+```nix
+packages.${system}.zig-build-test-all = pkgs.runCommandLocal "zig-build-test-all" {
+  src = ./.;
+  nativeBuildInputs = [ zig-flake.packages.${system}.nightly ];
+} ''
+  export ZIG_LOCAL_CACHE_DIR="$TMPDIR/.zig-cache/"
+  export ZIG_GLOBAL_CACHE_DIR="$TMPDIR/.cache/zig"
+  mkdir -p "$ZIG_LOCAL_CACHE_DIR" "$ZIG_GLOBAL_CACHE_DIR"
+  cd "$src"
+  zig build test --summary all
+  touch "$out"
+'';
+#>nix build #.zig-build-test-all
+```
+    * TODO
+
+15. Looking into OCI security, SBOM and how Nix tries to deal with it,
+shows quickly that Nix always worked around the problem via it own controlled
+sandbox and that the OCI specification is very insufficient to create
+composable environments and composable security.
+Nix has Nucleus, which can check and enforce runtime semantics, but
+no converter (only kubnix and kubernix exist).
+OCI has at least mount configurations for binds to adjust to the user id,
+but docker does not implement.
+OCI has neither tooling nor convention to specify or compose the security
+basics starting with the `USER` `id`, `gid` being statically or dynamically
+used for tooling with typical use cases of assertions, composition/build
+system, search. Automatic permission generation, supervision and policy
+creation would be other interesting pieces.
+Therefore strategies are
+* 1 has to static checks for the user assumptions (for docker)
+```Dockerfile
+FROM docker.io/library/node:26-alpine
+ARG UID
+ARG GID
+
+# 1 /etc/passwd must contain
+# root:x:0:0:root:/root:/bin/sh
+# $USER:x:UID:GID::/home/$USER:/bin/sh
+# 2 /home/$USER must be empty
+# 3 UID and GID in container must match
+RUN set -e; \
+    echo "=== Validating /etc/passwd ===" && \
+    PASSWD_LINES=$(grep '/bin/sh$' /etc/passwd) && \
+    COUNT=$(echo "$PASSWD_LINES" | wc -l) && \
+    if [ "$COUNT" -eq 2 ]; then echo "[OK] Found exactly 2 entries with /bin/sh"; else echo "[FAIL] Expected 2 entries with /bin/sh, found $COUNT"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q '^root:x:0:0:root:/root:/bin/sh$'; then echo "[OK] root entry valid"; else echo "[FAIL] root entry malformed"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q "^[^:]*:x:${UID}:${GID}::/home/[^:]*:/bin/sh$"; then echo "[OK] Non-root entry valid (UID=${UID}, GID=${GID})"; else echo "[FAIL] Non-root entry with UID=${UID} GID=${GID} not found"; exit 1; fi && \
+    NON_ROOT_USER=$(echo "$PASSWD_LINES" | grep -v '^root:' | cut -d: -f1) && \
+    echo "[OK] Extracted user: $NON_ROOT_USER" && \
+    echo "=== Validating /home ===" && \
+    UNEXPECTED=$(find /home -mindepth 1 -maxdepth 1 ! -name "$NON_ROOT_USER" 2>/dev/null || true) && \
+    if [ -z "$UNEXPECTED" ]; then echo "[OK] /home clean"; else echo "[FAIL] Unexpected entries in /home"; exit 1; fi && \
+    if [ ! -d "/home/$NON_ROOT_USER" ] || [ -z "$(find "/home/$NON_ROOT_USER" -type f 2>/dev/null)" ]; then echo "[OK] /home/$NON_ROOT_USER empty"; else echo "[FAIL] /home/$NON_ROOT_USER is not empty"; exit 1; fi && \
+    echo "=== Validating UID + GID match ===" && \
+    USER_ID=$(id -u "$NON_ROOT_USER") && \
+    USER_GID=$(id -g "$NON_ROOT_USER") && \
+    if [ "$USER_ID" = "$UID" -a "$USER_GID" = "$GID" ]; then echo "[OK] User UID, GID matches"; else echo "[FAIL] UID, GID mismatch: expected $UID/$GID, got $USER_ID/$USER_GID"; exit 1; fi && \
+    echo "[OK] All validations passed"
+
+WORKDIR /app
+RUN mkdir -p /app/node_modules && chown -R ${UID}:${GID} /app
+USER ${UID}:${GID}
+```
+* 2 Use uidMappings / gidMappings on mounts as specified by OCI if tool supports it
+  after parsing out container uid/gid and/or setting user.
+  - podman has uidmap, gidmap, see https://docs.podman.io/en/latest/markdown/podman-run.1.html
+* 3 do non-root user setup yourself based on a bare container without users
+  - OCI has on semantic convention on this like it has no semantic convention
+    on run-time security.

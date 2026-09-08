@@ -1,0 +1,44 @@
+==network_driver
+
+https://docs.docker.com/reference/compose-file/
+https://docs.docker.com/compose/intro/compose-application-model/
+
+==network_driver
+* bridge: Default network driver.
+  Commonly used when app in container needs to communicate with other containers on same host.
+  - always use custom bridge
+  - host has unrestricted access to containers in network, containers in same network also
+  - thus containers not in network and outside docker host are blocked
+  - uses masquerading to give containers external network access, devices on
+    on host's external network only see ip address of docker host
+  - support port publishing, where network trafficing is forwarded,
+    published ports can be accessed from outside docker host on its IP address
+* host: remov network isolation between container and docker host/use host's network directly
+  meaning they share the networking namespace.
+  Commonly used on high performance demands on when large port ranges are needed.
+  - port mapping doesn't take effect, and the -p, --publish, -P, and
+    --publish-all options are ignored, producing a warning instead
+* overlay: connect multiple daemons together as distributed network among
+  docker hosts and enable swarm services and containers to communicate across
+  nodes. This removes need for OS-level routing, allows encryption between
+  nodes etc.
+  - needs control plane port, overlay traffic port, 7946/tcp, 7946/udp for communication
+  - discoverable by DNS lookup on name
+* ipvlan: allows total control over both IPv4 and IPv6 addressing.
+  - complete control of layer 2 VLAN tagging
+  - even IPvlan L3 routing for users interested in underlay network integration
+* macvlan: allows assigning MAC address to container to make it appear as
+  physical device on network.
+  Commonly used on dealing with legacy applications expecting to be directly
+  connected to physical network rathern than routed through docker host's network stack.
+  - docker daemon routes traffic to containers by MAC address
+* none: complete isolation of container from host and other containers.
+  Not available for swarm devices.
+
+SHENANIGAN
+podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t cow-client -f ./Containerfile.Angular ./cow-client/
+podman run --rm --name cow-client -p 127.0.0.1:4200:4200 -v ./cow-client/:/app:z -v /app/node_modules -e DOTNET_SERVER_DNS="http://localhost:4201" cow-client npx ng serve --host 0.0.0.0
+* compose files missing to set ARG in the Dockerfile defaults to empty string,
+  which can fail at runtime in a super weird ways.
+  This is especially annoying when using --build-arg UID=$(id -u) --build-arg GID=(id -g)
+  to set UID and GID of the container.

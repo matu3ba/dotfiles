@@ -1,8 +1,255 @@
+==overview
+==dependencies
+==development
+====general
+====Containerfile
+====compose.yml
+====kubernetes
+====composability
+====sandboxing
+======docker_security_bad
 ==building
 ==composing
 ==dev_containers
 ==debug
 ==security
+==oci
+
+==examples
+./templates/distributed_systems/container/Containerfile.Angular - ng version-pinned, node_modules read-only
+./templates/distributed_systems/container/Containerfile.Angular_cli - ng cli
+./templates/distributed_systems/container/Containerfile.Angular_legacyproduction - dont use
+./templates/distributed_systems/container/Containerfile.BestPractice - general Container best practice
+./templates/distributed_systems/container/Containerfile.Biome - biome setup
+./templates/distributed_systems/container/Containerfile.npm_hasnouser - npm from base image with only root shell user
+./templates/distributed_systems/container/Containerfile.npm_hasuser - npm from base image with non-root shell user
+* docker has nothing to change uid/gid of mount binds in contrast to OCI/podman problematic for files with 755 permission
+./templates/distributed_systems/container/compose.yml - collection of bad parts
+
+==overview
+This example code covers development and usage with heavy comments to
+understand functionality and best practice as of 20260428.
+https://mpolinowski.github.io/docs/DevOps/Linux/2019-09-25--podman-cheat-sheet/2019-09-25/
+
+More performance oriented alternative to docker/podman and docker-compose is
+[apptainer](https://apptainer.org/docs/user/1.0/docker_and_oci.html), which
+recommends process compose with yaml files as config and has no OCI runtime
+overhead unless configured as such.
+Other alternatives are depend on use cases. See cri, oci, both (cri-o)
+compliance for Kubernetes compatibility (oci).
+
+==dependencies
+- Unix environment (ie WSL, docker desktop has problems)
+- containers: (podman or docker) xor apptainer xor OCI container
+  * all of these are for application virtualization
+  * OS virtualization are different and incompatible (qemu, lxc, OpenVZ, kvm, xen, etc)
+- docker-compose/podman-compose
+  * alternative (ie for apptainer): process-compose
+
+==development
+
+====general
+1. All-in-one security analyzer (Dockerfiles, images, IaC): https://github.com/aquasecurity/trivy
+   * https://hub.docker.com/r/aquasec/trivy/
+2. All-in-one linter (Terraform, K8s, Compose, ..): https://github.com/Checkmarx/kics/
+   * https://hub.docker.com/r/checkmarx/kics
+
+====Containerfile
+1. docker or podman
+2. Containerfile linter
+   * hadolint
+   * docker
+```
+# syntax=docker/dockerfile:1
+# check=error=true
+# check=skip=JSONArgsRecommended,StageNameCasing
+docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=skip=JSONArgsRecommended,StageNameCasing" .
+```
+   * https://docs.docker.com/reference/build-checks/
+   * podman https://developers.redhat.com/articles/2025/02/26/best-practices-building-bootable-containers
+```
+bootc container lint
+```
+     - cli simplification https://willhbr.net/2026/03/13/language-servers-in-containers/
+3. lsp: https://github.com/docker/docker-language-server
+   * https://hub.docker.com/r/docker/lsp
+3. build analyzer: `docker build --check .`, podman has nothing
+   * can also use buildkit/moby, buildah
+4. image analyzer (for security etc): trivy
+5. explore each layer in a docker image: https://github.com/wagoodman/dive
+6. Image transport & inspection: https://github.com/podman-container-tools/skopeo
+7. SBOM, Scan, Sign: Syft, Grype, cosign
+
+TODO check
+Order of usage: buildkit/moby > trivy > cosign > kubectl
+
+====compose.yml
+1. docker-compose
+   * podman compose misses features
+     - Red-Hat pushes quadlets instead of docker-compose compatibility
+   * alternative often used with apptainer: process-compose.yml
+     - ./process-compose -f process-compose.yml
+   * alternative for using with systemd quadlet https://github.com/onlyati/quadlet-lsp
+2. compose linter
+   * compose-lint (https://pypi.org/project/compose-lint/) for security
+     - simple and has great "How it compares"
+     - no json support
+   * dclint (typescript-based) option for only schema/structure
+     - no json support
+3. yaml linter: https://github.com/adrienverge/yamllint
+   * yaml fmt: https://xkyle.com/A-Detailed-Comparison-of-YAML-Formatters/
+   * yaml validate: https://www.liquidweb.com/blog/validate-yaml/
+
+====kubernetes
+usually uses containerd or CRI-O, container engine abstracted away
+kubectl (k8 API)
+crictl (CRI debugging)
+image registries
+Relevant tooling:
+* Image signing: Sigstore/cosign
+* Vulnerability scanning: Trivy, Grype
+* Policy enforcement: Kyverno, Kube-mgmt
+* Config management: Kustomize, Helm, or Jsonnet
+
+Manifest Validation:
+* Kubeconform — Schema validation only
+* Kubescape — Security analysis (67 rules)
+* Datree — Best practices validation
+* kubeval — API schema checking
+* Monokle — Visual manifest validation
+Policy Enforcement:
+* Kyverno — Policy engine (admission controller)
+* OPA/Gatekeeper — Policy as code
+* Pod Security Admission — Built-in K8s (limited)
+* Kubewarden — Rust-based policy engine
+
+====composability
+Have to use dedicated checks in Containerfile or get silent broken errors,
+because there is on semantic convention on default user:
+FROM docker.io/library/node:26-alpine
+ARG UID
+ARG GID
+# 1 /etc/passwd must contain
+# root:x:0:0:root:/root:/bin/sh
+# $USER:x:UID:GID::/home/$USER:/bin/sh
+# 2 /home/$USER must be empty
+# 3 UID and GID in container must match
+RUN set -e; \
+    echo "=== Validating /etc/passwd ===" && \
+    PASSWD_LINES=$(grep '/bin/sh$' /etc/passwd) && \
+    COUNT=$(echo "$PASSWD_LINES" | wc -l) && \
+    if [ "$COUNT" -eq 2 ]; then echo "[OK] Found exactly 2 entries with /bin/sh"; else echo "[FAIL] Expected 2 entries with /bin/sh, found $COUNT"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q '^root:x:0:0:root:/root:/bin/sh$'; then echo "[OK] root entry valid"; else echo "[FAIL] root entry malformed"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q "^[^:]*:x:${UID}:${GID}::/home/[^:]*:/bin/sh$"; then echo "[OK] Non-root entry valid (UID=${UID}, GID=${GID})"; else echo "[FAIL] Non-root entry with UID=${UID} GID=${GID} not found"; exit 1; fi && \
+    NON_ROOT_USER=$(echo "$PASSWD_LINES" | grep -v '^root:' | cut -d: -f1) && \
+    echo "[OK] Extracted user: $NON_ROOT_USER" && \
+    echo "" && \
+    echo "=== Validating /home ===" && \
+    UNEXPECTED=$(find /home -mindepth 1 -maxdepth 1 ! -name "$NON_ROOT_USER" 2>/dev/null || true) && \
+    if [ -z "$UNEXPECTED" ]; then echo "[OK] /home clean"; else echo "[FAIL] Unexpected entries in /home"; exit 1; fi && \
+    if [ ! -d "/home/$NON_ROOT_USER" ] || [ -z "$(find "/home/$NON_ROOT_USER" -type f 2>/dev/null)" ]; then echo "[OK] /home/$NON_ROOT_USER empty"; else echo "[FAIL] /home/$NON_ROOT_USER is not empty"; exit 1; fi && \
+    echo "=== Validating UID + GID match ===" && \
+    USER_ID=$(id -u "$NON_ROOT_USER") && \
+    USER_GID=$(id -g "$NON_ROOT_USER") && \
+    if [ "$USER_ID" = "$UID" -a "$USER_GID" = "$GID" ]; then echo "[OK] User UID, GID matches"; else echo "[FAIL] UID, GID mismatch: expected $UID/$GID, got $USER_ID/$USER_GID"; exit 1; fi && \
+    echo "[OK] All validations passed"
+
+WORKDIR /app
+RUN chown ${UID}:${GID} /app
+USER ${UID}:${GID}
+
+testing: >podman build --build-arg UID=100000 --build-arg GID=100000 -t alpine-npm:26 -f Containerfile.npm_proper .
+>podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t alpine-npm:26 -f Containerfile.npm_proper .
+
+====sandboxing
+https://oneuptime.com/blog/post/2026-02-02-podman-security-configuration/view
+https://oneuptime.com/blog/post/2026-03-18-use-podman-sandbox-untrusted-code/view
+https://www.runxbuild.com/blog/docker-caps/
+https://learn.snyk.io/lesson/container-does-not-drop-all-default-capabilities/
+
+figuring out defaults of containers tedious
+>podman run --rm CONTAINER id
+>podman run --rm node:26-alpine id
+
+====security
+What OCI Left Unsolved
+* No signature enforcement — OCI spec defines where to store attestations, not
+  how to validate them.
+* No semantic standard for security metadata — No way to declare UID/GID,
+  capabilities, user assumptions in OCI spec.
+* No vulnerability lifecycle management — OCI has no concept of "stale SBOM" or
+  continuous re-scanning.
+* No base image security — No way to recursively verify that dependencies (base
+  images) are themselves secure.
+>syft $IMAGE --output cyclonedx-json > sbom.json
+>cosign attest --type cyclonedx --predicate sbom.json $IMAGE
+>cosign verify-attestation --type cyclonedx $IMAGE
+>trivy sbom:sbom.json
+
+======docker_security_bad
+Docker does not support uid= or gid= mount options like some other tools do.
+The mount preserves the host's original UID/GID ownership.
+Docker only applies USER ownership to mounts that don't exist on the host. For
+existing host directories, it preserves their original ownership.
+Use --mount instead of -v for explicitness.
+https://github.com/opencontainers/runtime-spec/blob/main/config.md
+
+docker has no flag '--userns keep-id', so security is very inconvenient.
+relabeling neither helps:
+>cat /etc/docker/daemon.json
+{
+  "userns-remap": "user:user"
+}
+>sudo systemctl restart docker
+>cat Containerfile.npm
+FROM docker.io/library/node:26-alpine
+WORKDIR /app
+RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
+COPY --chown=nodejsuser:nodejsuser . .
+RUN mkdir -p /app/node_modules && chown -R nodejsuser:nodejsuser /app/
+USER nodejsuser
+>docker build -t alpine-npm:26 -f Containerfile.npm .
+>docker run --rm -v ./client:/app -v /app/node_modules alpine-npm:26 ls -ld /app
+>docker run --rm -v ./client:/app -v /app/node_modules alpine-npm:26 sh -c "npm install --verbose && rm -rf node_modules"
+vs podman:
+>podman run --rm --userns=keep-id -v ./client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm install --verbose && rm -rf node_modules"
+
+https://docs.podman.io/en/latest/markdown/podman-run.1.html
+- uidmap, gidmap
+
+* uidMappings / gidMappings on mounts (optional)
+* Uses mount_setattr(MOUNT_ATTR_IDMAP) (Linux 5.12+)
+* Options: idmap or ridmap flag
+Rootless mode and userns-remap mode map container UIDs and GIDs to the host differently.
+    In userns-remap mode, container UID 0 is mapped to the first subordinate UID listed in
+    /etc/subuid for the remap user, and container UID n is mapped to subuid + n.
+    In rootless mode, container UID 0 is mapped to the host UID of the user running rootless
+    Docker (the result of id -u); container UID n (for n >= 1) is mapped to subuid + (n - 1).
+GIDs follow the same rules using /etc/subgid.
+docker: This difference matters when setting file permissions on bind-mounted directories: in
+rootless mode, files owned by your host user appear as owned by root inside the container.
+
+Nucleus runtime (local/systemd-only)
+* name, image, user identity
+* policy: capabilities drop + add, syscalls block, mounts
+* network, healthcheck, secrets, egress, ingress
+* comparison of Nucleus with OCI
++ pins input, checkable semantic uid/gid/user, reproducible, strong sandbox (gvisor+seccomp)
+- no SBOM support (vs storage only)
+- no provenance/attestation (vs external via cosign)
+- no cross-registry deployment (vs yes)
+nucleus run --runtime gvisor --memory 1G --cpus 2 --rootfs /path/to/rootfs \
+  --context ./agent-context/ -- /usr/bin/myapp
+
+nix2container
+>nix build '.#'
+>result | podman load
+>podman run --rm --user 1000:1000 --security-opt label=type:svirt_sandbox_file_t \
+  --security-opt no-new-privileges --cap-drop=ALL --cap-add=NET_BIND_SERVICE \
+  --ulimit nofile=1024 --read-only --tmpfs /tmp localhost/myapp:hash
+
+sysbox for nested containers
+podman run --runtime=sysbox-runc --rm ubuntu
 
 ==building
 The post in https://sgt.hootr.club/blog/docker-protips/ with FROM scratch looks
@@ -11,6 +258,9 @@ some debug stuff for k8).
 https://tmp.bearblog.dev/minimal-containers-using-nix/ has nix vs alpine
 example showing that layers would need replacements.
 https://github.com/nlewo/nix2container only shows what is fast.
+
+https://env.dev/guides/docker-on-windows
+* use podman, possibly fixing VolumeMount permissions issues on cross-platform setups
 
 * docker/podman build
 * Habitat
@@ -31,6 +281,8 @@ https://github.com/nlewo/nix2container only shows what is fast.
 https://containers.dev/supporting
 https://containers.dev/
 https://github.com/orgs/devcontainers-community/repositories
+* can also do your own setup
+https://hub.docker.com/r/docker/lsp
 
 Angular vscode devcontainer
 * https://code.visualstudio.com/docs/devcontainers/containers
@@ -84,3 +336,25 @@ cache  podman  storage
 ==security
 yaml format error prone
 other than yaml configs not supported by standard tooling (linters, lsps)
+have to use docker/lsp
+
+==oci
+
+====mount_order
+  ref https://blog.quarkslab.com/digging-into-the-oci-image-specification.html
+  ref https://oneuptime.com/blog/post/2026-03-17-mount-flag-vs-volume-flag-podman/view
+  >podman run --rm -v ./cow-client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm ci --verbose && npm update --verbose"
+  Explanation
+  >docker build -t image dockerfile
+  does build based on package-lock.json /app/node_modules
+  and then we chmod -R 555 node_modules and the whole things is stored
+  in the private image layer with owner USER root.
+  >podman run -v ./cow-client/:/app:z -v /app/node_modules image
+  Then first ./cow-client binds to /app and overwrites everything
+  with the use permissions of the current USER user.
+  Thereafter the private volume /app/node_modules of the image
+  mounts into /app/node_modules keeping the permissions.
+
+  Hence /app/node_modules has owner USER user
+  and /app/node_modules/* has owner USER root.
+
