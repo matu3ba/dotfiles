@@ -152,6 +152,10 @@ vim.lsp.enable 'zls'
 -- https://www.reddit.com/r/neovim/comments/12ki16d/java_lsp_for_jdk_11/
 -- https://langserver.org/, only support one https://github.com/eclipse-jdtls/eclipse.jdt.ls
 
+-- vim.lsp.config('lspconfig', {
+--   cmd = { "docker", "run", "--rm", "-i", "https://hub.docker.com/r/docker/lsp", "--stdio" }
+-- }
+
 vim.lsp.config('texlab', {
   capabilities = common_capabilities,
   on_attach = common_on_attach,

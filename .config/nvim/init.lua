@@ -14,6 +14,15 @@ vim.filetype.add {
   },
 }
 
+-- Workaround distros shipping broken neovim treesitter.
+local original_start = vim.treesitter.start
+vim.treesitter.start = function(bufnr, lang)
+  local ok = pcall(original_start, bufnr, lang)
+  if not ok then
+    vim.bo.syntax = 'on' -- regex-based highlighting
+  end
+end
+
 require 'my_opts'
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/.local/share/nvim/lazy/lazy.nvim
 -- git clone --filter=blob:none --single-branch https://github.com/folke/lazy.nvim.git $HOME/AppData/Local/nvim-data/lazy/lazy.nvim
