@@ -120,18 +120,19 @@ fn buildC(
     optimize: OptimizeMode,
     run_step: *std.Build.Step,
 ) void {
-    var c89flags: []const []const u8 = &c89_flags;
-    var c99flags: []const []const u8 = &c99_flags;
-    var c11flags: []const []const u8 = &c11_flags;
-    var c17flags: []const []const u8 = &c17_flags;
-    var c23flags: []const []const u8 = &c23_flags;
-    if (target.result.abi.isMusl()) {
-        c89flags = &(c89_flags ++ cmusl_flag);
-        c99flags = &(c99_flags ++ cmusl_flag);
-        c11flags = &(c11_flags ++ cmusl_flag);
-        c17flags = &(c17_flags ++ cmusl_flag);
-        c23flags = &(c23_flags ++ cmusl_flag);
-    }
+    // Workaround musl detection being broken when using nix.
+    const c89flags: []const []const u8 = &(c89_flags ++ cmusl_flag);
+    const c99flags: []const []const u8 = &(c99_flags ++ cmusl_flag);
+    const c11flags: []const []const u8 = &(c11_flags ++ cmusl_flag);
+    const c17flags: []const []const u8 = &(c17_flags ++ cmusl_flag);
+    const c23flags: []const []const u8 = &(c23_flags ++ cmusl_flag);
+    // if (target.result.abi.isMusl()) {
+    //     c89flags = &(c89_flags ++ cmusl_flag);
+    //     c99flags = &(c99_flags ++ cmusl_flag);
+    //     c11flags = &(c11_flags ++ cmusl_flag);
+    //     c17flags = &(c17_flags ++ cmusl_flag);
+    //     c23flags = &(c23_flags ++ cmusl_flag);
+    // }
     const exe_c89_mod = b.createModule(.{
         // C files have root_source_file = null
         .target = target,
@@ -238,18 +239,19 @@ fn buildCpp(
     optimize: OptimizeMode,
     run_step: *std.Build.Step,
 ) void {
-    var cpp14flags: []const []const u8 = &cpp14_flags;
-    var cpp17flags: []const []const u8 = &cpp17_flags;
-    var cpp20flags: []const []const u8 = &cpp20_flags;
-    var cpp23flags: []const []const u8 = &cpp23_flags;
-    var cpp26flags: []const []const u8 = &cpp26_flags;
-    if (target.result.abi.isMusl()) {
-        cpp14flags = &(cpp14_flags ++ cppmusl_flag);
-        cpp17flags = &(cpp17_flags ++ cppmusl_flag);
-        cpp20flags = &(cpp20_flags ++ cppmusl_flag);
-        cpp23flags = &(cpp23_flags ++ cppmusl_flag);
-        cpp26flags = &(cpp26_flags ++ cppmusl_flag);
-    }
+    // Workaround musl detection being broken when using nix.
+    const cpp14flags: []const []const u8 = &(cpp14_flags ++ cppmusl_flag);
+    const cpp17flags: []const []const u8 = &(cpp17_flags ++ cppmusl_flag);
+    const cpp20flags: []const []const u8 = &(cpp20_flags ++ cppmusl_flag);
+    const cpp23flags: []const []const u8 = &(cpp23_flags ++ cppmusl_flag);
+    const cpp26flags: []const []const u8 = &(cpp26_flags ++ cppmusl_flag);
+    // if (target.result.abi.isMusl()) {
+    //     cpp14flags = &(cpp14_flags ++ cppmusl_flag);
+    //     cpp17flags = &(cpp17_flags ++ cppmusl_flag);
+    //     cpp20flags = &(cpp20_flags ++ cppmusl_flag);
+    //     cpp23flags = &(cpp23_flags ++ cppmusl_flag);
+    //     cpp26flags = &(cpp26_flags ++ cppmusl_flag);
+    // }
     for (SingleCppFiles[0..]) |cppfile| {
         const exe_cppdefault_mod = b.createModule(.{
             .target = target,

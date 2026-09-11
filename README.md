@@ -38,7 +38,9 @@ Commands with explanation
   * without cross compilation: `zig build test -Dno_cross`
   * without optional dependencies: `zig build test -Dno_opt_deps`
   * including all optional dependencies: `zig build test --summary all`
-    o nix (install all dependencies): `nix develop`
+    o nix (install all dependencies): `nix develop --ignore-environment --keep HOME --command bash --norc`
+      - cleaner platforms can probably use more functional shells with: `nix develop`
+      - or simpler: `nix develop --ignore-environment --keep HOME --command zig build test --summary all`
     o stylua: `cargo install stylua --features lua52`
     o haskell: `shellcheck`
     o llvm-tools: `clang-format`, `clang-tidy`
