@@ -13,6 +13,15 @@
 # echo "gitdir: ./.bare" > .git
 # git worktree add master|main
 # fixup worktree to relative path
+# SHENNANIGAN setting reliably to branch is tedious
+#git worktree add --track -b crt_arm_fixes crt_arm_fixes downstream/crt_arm_fixes
+# git worktree add [new-branch] ./path-spec [commit-ish]
+# git worktree add  long_branch_name_ticket_feat_JH ./feat from_commit-ish
+# git worktree add ./existing-branch-name existing-branch-name
+# git worktree add ./feat_branch ./feat_branch master
+# git worktree list [--porcelain]
+# git worktree remove [-f]
+# * SHENNANIGAN no option for 'git worktree remove && git branch -d feat'
 
 #restore specific file
 #git restore --source=COMMITHASH filename
@@ -567,15 +576,6 @@ alias gsu='git submodule update'
 #          git show {1}:$1 | nvim -c set\ bt=nowrite || git show {1} | nvim -c set\ bt=nowrite -
 #      )"
 #fi
-
-# SHENNANIGAN setting reliably to branch is tedious
-#git worktree add --track -b crt_arm_fixes crt_arm_fixes downstream/crt_arm_fixes
-# git worktree add [new-branch] ./path-spec [commit-ish]
-# git worktree add ./existing-branch-name existing-branch-name
-# git worktree add ./feat_branch ./feat_branch master
-# git worktree list [--porcelain]
-# git worktree remove [-f]
-# * SHENNANIGAN no option for 'git worktree remove && git branch -d feat'
 
 #====commit_hygiene_tldr
 # every commit must build

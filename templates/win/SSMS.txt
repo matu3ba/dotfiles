@@ -1,0 +1,3 @@
+==shortcuts
+format
+  Ctrl-k, Ctrl-q

@@ -1,0 +1,3 @@
+" Visual Studio vsvim config file to be placed at $HOME/_vsvimrc
+" Exit insert mode with jk
+inoremap <C-]> <Esc>

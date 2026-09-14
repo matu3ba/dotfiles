@@ -333,6 +333,11 @@ filter fgrep($keyword) { if ( ($_ | Out-String) -like “*$keyword*”) { $_ } }
 filter fsed($before,$after) { %{$_ -replace $before,$after} }
 filter xargs { & $args[0] ($args[1..$args.length] + $_) }
 
+#====grep
+# grep lines with LIVE and write them back to file
+# Get-Content file.txt | Select-String 'LIVE' | Set-Content file.txt
+# Get-Content file.txt | Where-Object { $_ -match 'LIVE' } | Set-Content file.txt
+
 # compare two files
 # compare-object (get-content one.txt) (get-content two.txt)
 

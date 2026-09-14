@@ -1,0 +1,18 @@
+"vim configuration
+set number
+set relativenumber
+
+"ideavim configuration
+" clipboard options: unnamed, unnamedplus, ideaput
+set clipboard+=unnamed
+
+set ideajoin
+set ideamarks
+
+"rider shortcuts
+" View Keymap: Ctrl-Alt-S
+" Completion: Ctrl-Space Ctrl-Alt-Space works, but Alt-Shift-Space does not
+" Context Menu: Alt-Enter (Option-Enter on macOS)
+
+" Core Problems Of Ideavim With Rider:
+" * Formatting: Ctrl-K,Ctrl-D  Ctrl-K,Ctrl-F  Ctrl-E,Ctrl-C

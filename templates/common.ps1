@@ -1,4 +1,5 @@
 #! Common PowerShell operations
+#! . ~/dotfiles/templates/common.ps1
 
 # Other files
 # :PWConf windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
@@ -1033,7 +1034,7 @@ function foreach_example() {
 
 function foreach_shorter() {
   $short_uri_path = "s1_path"
-  [string[]] $services = ["s1", "s2"]
+  [string[]] $services = @("s1", "s2")
   # $args[0] is the current array element passed by the [Predicate[string]]
   # delegate to the scriptblock, equivalent to $_ in a pipeline.
   [Array]::Exists($services, [Predicate[string]]{ $short_uri_path.Contains($args[0]) })
@@ -1068,6 +1069,7 @@ function iterate_file_endings_fast() {
 # returns "" or msbuildexe path
 function iterate_files_to_find_msbuildexe_path() {
   # lucky probe Visual Studio versions 2026 not checking 2022 versions
+  # & "C:\Program Files\Microsoft Visual Studio\18\Professional\Common7\IDE\devenv.exe" .\Solution.sln
   $MSBuild = [System.IO.Directory]::EnumerateFiles("C:\Program Files\Microsoft Visual Studio\", "MSBuild.exe", "AllDirectories") |
   Where-Object{$_ -match '^C:\\Program Files\\Microsoft Visual Studio\\.*Professional\\MSBuild\\Current\\Bin\\MSBuild.exe$'} |
   Sort-Object -Descending |
@@ -1095,6 +1097,31 @@ function okish_msbuild_find() {
     $MSBuild = "$vsPath\MSBuild\Current\Bin\MSBuild.exe"
   }
   return $MSBuild
+}
+
+## Starts latest Visual Studio with optional arguments
+function start_latest_vs() {
+  param(
+    [string[]]$Arguments = @()
+  )
+  $vsPath = Get-ChildItem -Directory "C:\Program Files\Microsoft Visual Studio\**\**" |
+  Where-Object { $_ -match '\d{2,4}' } |
+  Where-Object { Test-Path $_"\Common7\IDE\devenv.exe" } |
+  Sort-Object -Descending |
+  Select-Object -First 1
+  if ([string]::IsNullOrEmpty($vsPath)) {
+    Write-Error "Visual Studio installation not found"
+    return
+  }
+  $devenvPath = "$vsPath\Common7\IDE\devenv.exe"
+  if (-not (Test-Path -Path $devenvPath)) {
+    Write-Error "devenv.exe not found at $devenvPath"
+    return
+  }
+
+  $processArgs = @($devenvPath) + $Arguments
+  Start-Process -FilePath $devenvPath -ArgumentList $Arguments -WindowStyle Normal
+  Write-Host "started visual studio from $devenvPath"
 }
 
 function reassigning_type_var_errors() {

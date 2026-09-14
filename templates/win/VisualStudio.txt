@@ -17,6 +17,8 @@ https://learn.microsoft.com/en-us/visualstudio/ide/cpp-editorconfig-properties?v
   * does not support git worktrees https://github.com/laurentkempe/GitDiffMargin/issues/88
   * may randomly fail https://github.com/laurentkempe/GitDiffMargin/issues/460
 - vsvim has many conflicting keybindings
+  * using "general" keybindings means C-c uses copy conflicting with fast Escape of insert mode.
+  * workaround is to bind C-] to Esc, see ./templates/win/_vsvimrc
 - Solution Color needed, because VisualStudio has no trivial way to view the path to the workdir
 - compile_commands.json via "Clang Power Tools VS extension".
   * Visual Studio >= 2017, for example Microsoft Visual Studio Community 2019.
@@ -154,7 +156,16 @@ multicursor
   caret pattern selection    Alt-Shift-';'
   select next pattern match  Alt-Shift-'.'
 
-custom shortcuts (Tools -> Options -> Environment -> Keyboard -> inserttext -> Assign
+VS2026
+  code cleanup with style rules Ctrl-k, Ctrl-e
+
+
+vsvim
+  https://github.com/VsVim/VsVim/wiki/FAQ#how-can-i-temporarily-disable-vsvim
+  toggle vsvim-vs shortcuts (default)   Ctrl-Shift-F12
+  * custom: VsVim.ToggleEnabled         Ctrl-C-,
+
+custom shortcuts: Tools > Options > Environment > Keyboard -> inserttext -> Assign
 SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t
 TODO: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim
 
