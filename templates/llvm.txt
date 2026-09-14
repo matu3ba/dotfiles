@@ -116,7 +116,7 @@ mv /tmp/llvm $HOME/.local/llvm[bs]
 
 runtime instrumentation for tracing / logging LLVM things.
 
-SHENNANIGAN
+SHENANIGAN
 1. Rewrite blocked by missing formal semantics
   * ebpf for LLVM for SMT solving (semantic traces over LLVM optimization passes) phd intro talk
 - 1.1 Pointer semantics (same applies for C)
@@ -132,7 +132,7 @@ SHENNANIGAN
   * 3. Powerful rr reverse execution for debugging and testing
   (reversible computation + recording)
 
-SHENNANIGAN
+SHENANIGAN
 llvm lto takes painfully much memory (>15GB with gcc linker, docs mention up to 15GB with lld)
 * Make sure to use
 ```
@@ -141,7 +141,7 @@ llvm lto takes painfully much memory (>15GB with gcc linker, docs mention up to 
   -DLLVM_TOOL_LTO_BUILD=OFF \
 ```
 
-SHENNANIGAN
+SHENANIGAN
 https://stackoverflow.com/questions/11485531/what-exactly-phi-instruction-does-and-how-to-use-it-in-llvm
 https://mlir.llvm.org/docs/Rationale/Rationale/#block-arguments-vs-phi-nodes
 
@@ -185,7 +185,7 @@ cmake --build . --target install
 vswhere
 Configuration example for Windows batch script:
 
-SHENNANIGAN
+SHENANIGAN
 Standalone builds mandate a download of the 'cmakeXYZ.tar.tz', which needs to
 be renamed to 'cmake'. However, building lld still requires a patch due to missing
 macho headers from libunwind. For some reason this breaks every major LLVM release,

@@ -253,7 +253,7 @@ netsh http add urlacl url=http://*:$PORT/ user=Everyone
 # https://learn.microsoft.com/en-us/powershell/module/hyper-v/import-vm
 # https://learn.microsoft.com/en-us/powershell/module/hyper-v/remove-vm
 # https://learn.microsoft.com/en-us/archive/technet-wiki/1350.hyper-v-export-vm-config-only-using-powershell
-#SHENNANIGAN hyper-v has no option to remove machine with keeping the vm config metadata (name etc)
+#SHENANIGAN hyper-v has no option to remove machine with keeping the vm config metadata (name etc)
 # must 1 make a backup of the config xor 2 create new vm labels
 #VM1
 #  - Virtual Hard Disks

@@ -290,7 +290,7 @@ private:
 using Meter = NamedType<long double, struct MeterParameter>;
 using Width = NamedType<Meter, struct WidthParameter>;
 using Height = NamedType<Meter, struct HeightParameter>;
-// SHENNANIGAN used defined literals are constrained to use
+// SHENANIGAN used defined literals are constrained to use
 // Meter operator""_meter(uint64_t length) { return Meter(length); }
 static Meter operator""_meter(long double length) { return Meter(length); }
 

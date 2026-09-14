@@ -186,7 +186,7 @@ in general this should not happen
   >nix-channel --update
 * https://nixos.wiki/wiki/Flakes
 * unstaged files to git are ignored
-* SHENNANIGAN: no way to add dependencies from outside git repo without git repo
+* SHENANIGAN: no way to add dependencies from outside git repo without git repo
 * Updating
 >nix flake update
 * Checking
@@ -229,7 +229,7 @@ TODO
 * only module: not 2 interacting ones
 * should be possible, but no experience https://discourse.nixos.org/t/reusing-custom-nixos-module-options-in-home-manager/27981
 * in case its needed https://nix-community.github.io/home-manager/index.html#sec-flakes-nixos-module
-* SHENNANIGAN docs: How to reuse the generated program configurations on Windows (copy over)?
+* SHENANIGAN docs: How to reuse the generated program configurations on Windows (copy over)?
 
 >nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager
 >nix-channel --update
@@ -348,15 +348,15 @@ final: prev: {
 }
 ^
 
-SHENNANIGAN gnupg wrong permission
+SHENANIGAN gnupg wrong permission
 >chmod 700 ~/.gnupg
 
-SHENNANIGAN
+SHENANIGAN
 Example snippets are not complete to try for fast learning (repeat + adjust for
 local use case). Only 11 stars: https://github.com/mimoo/nixbyexample
 
-SHENNANIGAN
+SHENANIGAN
 Very hard to debug overlays. Only to be used, if absolutely needed.
 
-SHENNANIGAN
+SHENANIGAN
 Might miss either evaluation or file it was executed on without --debug --show-trace

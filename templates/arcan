@@ -75,14 +75,14 @@ arcan_db drop_appl durden
 >./.nix-profile/bin/arcan ./nix-profile/share/arcan/appl/durden
 
 
-SHENNANIGAN
+SHENANIGAN
 Keyboard setup can be very annoying. Especially so, if browser + clipboard does
 not work yet.
 
-SHENNANIGAN
+SHENANIGAN
 Guide with examples for reading and writing config via arcan missing.
 
-SHENNANIGAN
+SHENANIGAN
 No "it just works" feeling for basic stuff (browsers, irc, discord to get help).
 
 ====FAQ

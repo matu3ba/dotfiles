@@ -6,12 +6,12 @@ package dotfiles.templates.common;
 // import java.nio.channels.*;
 // import java.util.*;
 // import java.util.concurrent.atomic.*;
-// SHENNANIGAN bad naming for atomics: getAndSet, compareAndSet, weakCompareAndSet
-// SHENNANIGAN ClassNotFoundException
+// SHENANIGAN bad naming for atomics: getAndSet, compareAndSet, weakCompareAndSet
+// SHENANIGAN ClassNotFoundException
 // chmod 664 example.jar
 // missing jar, which has the class to the classpath ie : java -cp example.jar com..main.startMain
 
-// SHENNANIGAN lsp setup requires alot useless configuration
+// SHENANIGAN lsp setup requires alot useless configuration
 
 // To run main(), use java file.java or javac file.java
 
@@ -68,7 +68,7 @@ public class FutureExampleClass {
     // }
     // Without this, there is no hard guarantee.
 
-    // SHENNANIGAN socket resources might need additional cleanup
+    // SHENANIGAN socket resources might need additional cleanup
   }
 }
 
@@ -86,6 +86,6 @@ public class FutureExampleClass {
 // Future fut = sched_exec_service.submit(myRunnable);
 // idea: make someFun a functor, if java supports that
 
-// SHENNANIGAN
+// SHENANIGAN
 // maven clean compile, package
 // Without package, there are no .jar files generated.

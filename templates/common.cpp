@@ -231,7 +231,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 // s-char only in "", L"", u8"", u"", U""
 // d-char (r-char) d-char in R"", LR"", u8R"", uR"", UR""
 
-// SHENNANIGAN allowed list very incomplete and may require dangerous downcasting
+// SHENANIGAN allowed list very incomplete and may require dangerous downcasting
 // 1  const char*
 // 2  unsigned long long int
 // 3  long double
@@ -456,7 +456,7 @@ enum class eType : uint8_t {
   ty2,
 };
 
-// SHENNANIGAN operators and functions can not be part of enum class
+// SHENANIGAN operators and functions can not be part of enum class
 
 template<class _eTy> class CImageHistory {
 public:
@@ -467,7 +467,7 @@ public:
 //       [-Wimplicit-fallthrough]
 //   152 |       case eType::ty2: {
 //       |       ^
-// SHENNANIGAN >= LLVM18 -Weverything may use conflicting and unnecessary
+// SHENANIGAN >= LLVM18 -Weverything may use conflicting and unnecessary
 // warnings for -Wcovered-switch-default and -Wswitch-default
 // .\templates\common.cpp:239:7: error: default label in switch which covers all
 //       enumeration values [-Werror,-Wcovered-switch-default]
@@ -519,7 +519,7 @@ struct sTemplatedTaggedUnion {
   }
 };
 
-// SHENNANIGAN: only works without constructor and destructor
+// SHENANIGAN: only works without constructor and destructor
 // void C_like_aggregate_construction_() {
 //   sTemplatedTaggedUnion templ_tagged_union = {eType::ty1, CImageHistory<int64_t>()};
 // }
@@ -536,7 +536,7 @@ void tagged_union() {
 #endif // ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 }
 
-// SHENNANIGAN: rules out C_like_aggregate_construction_
+// SHENANIGAN: rules out C_like_aggregate_construction_
 int32_t use_sTemplatedTaggedUnion();
 int32_t use_sTemplatedTaggedUnion() {
   sTemplatedTaggedUnion ttu0(eType::ty1);
@@ -602,7 +602,7 @@ int32_t use_sTemplatedVariant() {
 // }
 // #endif // !defined(_WIN32)
 
-// SHENNANIGAN: default values prevent the class from being an aggregate, so
+// SHENANIGAN: default values prevent the class from being an aggregate, so
 // list initialization breaks with a very unhelpful message like:
 // error: could not convert xxx from race-enclosed initializer list
 //
@@ -650,7 +650,7 @@ void sortarray_lambda_expression() {
 
 void simpleCAS();
 void simpleCAS() {
-  // SHENNANIGAN atomic default initializer of integers is 0, but not well documented/simple to find
+  // SHENANIGAN atomic default initializer of integers is 0, but not well documented/simple to find
   std::atomic<bool> is_initialized(false);
 
   // imagine 2 threads could do stuff with is_initialized
@@ -690,7 +690,7 @@ void always_emplace_back() {
   someints.emplace_back(1); // can leverage constructor as arguments
 }
 
-// SHENNANIGAN: managed objects like std::string or std::vector require manual
+// SHENANIGAN: managed objects like std::string or std::vector require manual
 // call of the destructor with active tag and construction of the destructor
 // `~Union(){}`.
 union S {
@@ -713,7 +713,7 @@ bool contains(std::map<int, int> &container, int search_key) {
   return 1 == container.count(search_key); // std::map enforces 0 or 1 matches
 }
 
-// SHENNANIGAN: Random access operators on hashmap use on non-existent of object
+// SHENANIGAN: Random access operators on hashmap use on non-existent of object
 // a default constructor or fail with an extremely bogus error message, if none
 // is given.
 // It always better to never use hashmap[key], because there is no check for the elements
@@ -739,7 +739,7 @@ public:
   }
 };
 
-// SHENNANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
+// SHENANIGAN: C++11 emplace() may or may not create in-place (eliding the move).
 // more context https://jguegant.github.io/blogs/tech/performing-try-emplace.html
 
 #if !defined(_WIN32)
@@ -786,7 +786,7 @@ class ClassWithMutex { // class with mutex
   }
 };
 
-// SHENNANIGAN Providing a const char* to function with reference will use the stack-local
+// SHENANIGAN Providing a const char* to function with reference will use the stack-local
 // memory instead of using a copy. If further, c_str() is used to emplace into a std::map,
 // this leads to UB due to usage of invalid memory once the stack local memory goes out of scope.
 // - 1. In doubt, alloc a copy with `std::string newstring = std::string(some_string)`
@@ -804,7 +804,7 @@ int use_reinterpret_cast() {
   uint8_t some_vals[9] = {0, 1, 0, 0, 0, 0, 0, 0, 0};
   // clang-format on
   int64_t val = *reinterpret_cast<int64_t *>(&some_vals[1]);
-  // SHENNANIGAN less type safe than C variant (memcpy)
+  // SHENANIGAN less type safe than C variant (memcpy)
   // WRONG int64_t val = *reinterpret_cast<int64_t*>(some_vals[1]);
   if (val != INT64_MIN)
     return 1;
@@ -814,7 +814,7 @@ int use_reinterpret_cast() {
 int ptr_no_reinterpret_cast();
 int ptr_no_reinterpret_cast() {
   char some_vals[5] = {0, 0, 0, 0, 1};
-  // SHENNANIGAN less type safe than C variant
+  // SHENANIGAN less type safe than C variant
   // WRONG int32_t val = reinterpret_cast<int32_t*>(some_vals[1]);
   int32_t *i32_arr_ptr = reinterpret_cast<int32_t *>(&some_vals[1]);
   (void)i32_arr_ptr;
@@ -860,7 +860,7 @@ int32_t handle_allocation_failure_with_bad_alloc(char const *buf, size_t size) {
 }
 // https://wiki.sei.cmu.edu/confluence/display/cplusplus/MEM52-CPP.+Detect+and+handle+memory+allocation+errors
 
-// SHENNANIGAN https://en.cppreference.com/w/cpp/container/map/find
+// SHENANIGAN https://en.cppreference.com/w/cpp/container/map/find
 // "Compiler decides whether to return iterator of (non) const type by way of
 // accessing map. Not the standard???
 
@@ -962,7 +962,7 @@ template<typename T_in> inline void SimplifiedImmutable<T_in>::Set(std::shared_p
 // googletest reference
 // http://google.github.io/googletest/reference/actions.html
 
-// SHENNANIGAN googlemock googletest
+// SHENANIGAN googlemock googletest
 // std::shared_ptr is not assignable
 //   MOCK_METHOD3(TheMock_MockedFn, uint8_t(Object::enum0 e0, const std::string &arg1, std::shared_ptr<VarI> & var2));
 //     EXPECT_CALL(*THE_MOCK, TheMock_MockedFn(_,"arg",_))
@@ -975,7 +975,7 @@ template<typename T_in> inline void SimplifiedImmutable<T_in>::Set(std::shared_p
 //       .WillRepeatedly(DoAll(SetArgReferee<2>(map.find("map_key")->second),Return(0)));
 // or use 'Invoke(object_pointer, &class::method)' instead of 'SetArgReferee<X>(..>)'.
 
-// SHENNANIGAN googlemock requires default constructor, even though usage can
+// SHENANIGAN googlemock requires default constructor, even though usage can
 // create UB (for types without explicit default constructor).
 // Workaround: Make default constructor protected and use FriendOfVariable2.
 // #define protected public
@@ -1009,13 +1009,13 @@ class FriendOfVariable2 {
   Variable2 mVar;
 };
 
-// SHENNANIGAN googlemock creates default return values for mocked objects, which
+// SHENANIGAN googlemock creates default return values for mocked objects, which
 // hides the origin of errors and invalidates iterators and pointers.
-// SHENNANIGAN cheat sheet by fuchsia is better than official docs and cook book
+// SHENANIGAN cheat sheet by fuchsia is better than official docs and cook book
 // Solution: EXPECT_CALL(testobject, testfunction(_, _, _)).WillOnce(DoAll(SetArgReferee<0>(v), SetArgReferee<1>(i), Return(true)));
 // adjusted from https://fuchsia.googlesource.com/third_party/googletest/+/HEAD/googlemock/docs/cheat_sheet.md
 
-// SHENNANIGAN googlemock can require to introduce additional objects to prevent segfaults etc.
+// SHENANIGAN googlemock can require to introduce additional objects to prevent segfaults etc.
 //   Mock function call argument (prevent null pointer access in non-mocked function):
 // EXPECT_CALL(testobject, testfunction(_)).Times(AtLeast(1))
 //                 .WillRepeatedly(Return(returnval));
@@ -1028,7 +1028,7 @@ class FriendOfVariable2 {
 //                 .Times(AtLeast(0))
 //                 .WillRepeatedly(DoAll(SetArgReferee<2>(mockedarg2),Return(0)));
 
-// SHENNANIGAN namespaces can not befriended, so test code relying on those
+// SHENANIGAN namespaces can not befriended, so test code relying on those
 // plus macros or templates forces use of macro hacks to prevent outlined above
 // to prevent accidental use of the default constructor: In short, friend
 // classes are a leaky abstraction (useless or force to use the pattern
@@ -1038,16 +1038,16 @@ class FriendOfVariable2 {
 // - 2. horrible behavior
 // - 3. DOD / C with more sane ~~namespaces~~classes + more typed macros
 
-// SHENNANIGAN googlemock
+// SHENANIGAN googlemock
 // inline implementation in headers can not be mocked and fail with bogus errors
 //   error: redefinition of constructor(const std::string& str)
 //   ..
 //   error: redefinition of constructor(const std::string& str)
 // for each such used function.
 
-// SHENNANIGAN googlemock
+// SHENANIGAN googlemock
 // Template types force senseless duplicate code (not DRY),
-// because templated functions can not be linked against. See 'SHENNANIGAN DESIGN ERROR'.
+// because templated functions can not be linked against. See 'SHENANIGAN DESIGN ERROR'.
 // Googlemock assumes it can link against .h code, which is not the case for templates
 // and all code should be directly used in the unit test instead like "inline fns".
 // https://github.com/google/googletest/issues/2660
@@ -1067,7 +1067,7 @@ class FriendOfVariable2 {
 // - minimal own injection lib
 //   * high perf + 0BSD to let others steal the code
 
-// SHENNANIGAN
+// SHENANIGAN
 // "static initialization order fiasco problem"
 // 2 static objects in 'x.cpp' and 'y.cpp', y.init() calls method on x object.
 // poor solution "Construct On First Use Idiom", which never destructs
@@ -1078,7 +1078,7 @@ class FriendOfVariable2 {
 // Note
 // << operator uses as few digits as possible to print, also omitting '.0' digits.
 
-// SHENNANIGAN
+// SHENANIGAN
 // The linker is a separate thing without knowledge on the compiler invocation,
 // so it does not explain linking failures with context.
 // Linkerpath filepath:line: undefined reference to `classname::functionname()'
@@ -1088,7 +1088,7 @@ class FriendOfVariable2 {
 
 // performance traps https://wolchok.org/posts/cxx-trap-1-constant-size-vector/
 
-// SHENNANIGAN
+// SHENANIGAN
 // C++ conversion string to int is worse without boost, so use C's strtol from templates/common.c
 // https://stackoverflow.com/questions/11598990/is-stdstoi-actually-safe-to-use
 
@@ -1097,7 +1097,7 @@ class FriendOfVariable2 {
 //     log(e.what());
 // }
 
-// SHENNANIGAN
+// SHENANIGAN
 // error: Unknown classname, did you mean xyz?
 // headers with classes include another:
 //  h1.h: #include h2.h
@@ -1105,7 +1105,7 @@ class FriendOfVariable2 {
 // must use in h1.h (assumed to be main class) as class declaration
 //  class h2;
 
-// SHENNANIGAN
+// SHENANIGAN
 // Template usage with base class adding to map via emplace (base class with interfaces is not
 // templated, specialized one is) may have undecipherable error messages (due no automatic upcast to base class):
 //   file.cpp:1032:64:   required from here
@@ -1123,7 +1123,7 @@ class FriendOfVariable2 {
 //     + 2. fns consuming object should use 'baseobjfn(unique_ptr<specialobj> b)' and be called with std::move to move the value into fn
 //     + 3. fns extending lifetime object should use 'baseobjfn(shared_ptr<specialobj>)' and care should be taken to avoid circular references
 
-// SHENNANIGAN DESIGN ERROR
+// SHENANIGAN DESIGN ERROR
 // Virtual functions can only be used with overloaded and explicit implementations,
 // because templated functions can not be linked against.
 //    class Base {
@@ -1268,7 +1268,7 @@ public:
 //   overload the pure function and use inner functions as templates.
 
 // From https://gpfault.net/posts/mapping-types-to-values.txt.html
-// SHENNANIGAN
+// SHENANIGAN
 // std::type_info::hash_code can return different values for different types
 // for all std::type_info objects referring to the same type, their hash code is the same.
 // type_id and dynamic_cast are the other options
@@ -1281,11 +1281,11 @@ public:
 // or name decoration and is unique to each compiler.
 // Possible Template Parameters: 1. class or typename, 2. Integers, 3. Function pointer, 4. Member function pointer
 
-// SHENNANIGAN
+// SHENANIGAN
 // Non-template classes need to be stored in helper structure or have lookup
 // helper function.
 
-// SHENNANIGAN
+// SHENANIGAN
 // Checking, if typename is a string is complex (even with C++17 extension)
 #if __cplusplus > 201402L
 template<typename STR> inline constexpr bool is_string_class_decayed = false;
@@ -1302,7 +1302,7 @@ static_assert(!is_string_class<char const *>);
 static_assert(!is_string_class<std::vector<char>>);
 #endif
 
-// SHENNANIGAN
+// SHENANIGAN
 // stringstream is simpler to use than template code (DIY is annoying)
 // std::string GetValueAsString() override {
 //     std::stringstream ss;
@@ -1310,10 +1310,10 @@ static_assert(!is_string_class<std::vector<char>>);
 //     return ss.str();
 // }
 
-// SHENNANIGAN
+// SHENANIGAN
 // std::to_string not defined for std::string, which is ennoying for generics
 
-// SHENNANIGAN
+// SHENANIGAN
 // Errors are unfeasible to decipher. Consider
 // std::string GetValueAsString1() {
 //   if (!std::is_same<bool, Y>::value && !std::numeric_limits<Y>::is_integer && !std::is_floating_point<Y>::value) { return *mtValue; }
@@ -1326,7 +1326,7 @@ static_assert(!is_string_class<std::vector<char>>);
 // }
 // Neither function works and comparing types in templates is very cryptic.
 
-// SHENNANIGAN
+// SHENANIGAN
 // Errors from pure virtual functions, ie destructors, which are needed are cryptic:
 // undefined reference to `VarInterface::~VarInterface()'
 // Solution: Change 'virtual ~VarInterface() = 0' to 'virtual ~VarInterface() {}'
@@ -1345,12 +1345,12 @@ static_assert(!is_string_class<std::vector<char>>);
 // Separately linking libc++:
 // clang your.cpp -lstdc++
 
-// SHENNANIGAN
+// SHENANIGAN
 // make_shared is faster due having references next to storage
 // make_shared and weak_ptr do not co-exist well, because one can only call the
 // destructor to remove all associated memory.
 
-// SHENNANIGAN
+// SHENANIGAN
 // Problem auto does verbatim replacement of the return type, which can hide a stack-local copy
 // Solution: Only use 'auto' for well-known iterators and status tuples, **never**
 // for objects.
@@ -1400,7 +1400,7 @@ void ipc_read() {
 }
 #endif // defined(_POSIX)
 
-// SHENNANIGAN
+// SHENANIGAN
 // interoperating type safe with c strings is very cumbersome
 void cstring_interop_annoying();
 void cstring_interop_annoying() {
@@ -1585,7 +1585,7 @@ template<typename T_Integral, typename std::is_same<T_Integral, int64_t>::type_v
 // // Function signature: void __cdecl exampleFunction(void)
 // }
 
-// SHENNANIGAN
+// SHENANIGAN
 // C++ standard forbids specializations of a templatized function inside a class
 // (via SFINAE).
 // This might work with enable_if if constexpr + static_cast.
@@ -1597,7 +1597,7 @@ template<typename T_Integral, typename std::is_same<T_Integral, int64_t>::type_v
 // instantiated." => Always move template fn implementations outside of
 // classes.
 
-// SHENNANIGAN
+// SHENANIGAN
 // msvc has no reliable relative paths as macro yet (see experimental:deterministic mode)
 // workaround get filename by Andry https://stackoverflow.com/a/54335644
 template<typename T, size_t S> inline constexpr size_t fname_offs(T const (&str)[S], size_t i = S - 1) {
@@ -1668,7 +1668,7 @@ void someLambda(bool bVal, std::string const &sName) {
 // WINBASEAPI BOOL WINAPI
 // QueryPerformanceFrequency(__out LARGE_INTEGER *lpFrequency);
 
-// SHENNANIGAN
+// SHENANIGAN
 // C++ does not capture C type problems, especially memcpy, memset etc
 // Prefer ape_printing, not ape_printing_bad
 #if defined(_WIN32)
@@ -1711,30 +1711,30 @@ void ape_itertoptr() {
   fprintf(stdout, "%s\n", pointer_inside_buffer);
 }
 
-// SHENNANIGAN
+// SHENANIGAN
 // destructors of virtual classes should ALWAYS have lifetime annotation
 // Otherwise: hell to debug, because ambiguous object lifetimes
 // (unless final class)
 // Use clang -Wnon-virtual-dtor or recent msvc (~ year 2020)
 
-// SHENNANIGAN
+// SHENANIGAN
 // Classes must be annotated as final, if they are not supposed to be inherited from.
 
-// SHENNANIGAN
+// SHENANIGAN
 // Delete copy + move constructors for non-final classes with no pure-virtual methods.
 
 // Consider marking copy constructr as explicit and deleting copy assignment, if
 // copying class is expensive. Consider providing a "clone fn" as syntactic sugar.
 
-// SHENNANIGAN
+// SHENANIGAN
 // synchronization of virtual classes should ALWAYS be annotated
 // Otherwise: hell to debug, because ambiguous synchronization
 
-// SHENNANIGAN clang-format annoyingly verbose to setup and configure
+// SHENANIGAN clang-format annoyingly verbose to setup and configure
 // clang-format -style=llvm -dump-config > .clang-format
 
 // https://learn.microsoft.com/de-de/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4251?view=msvc-170
-// SHENNANIGAN poor phrasing of "use virtual classes or c abi for dll exports"
+// SHENANIGAN poor phrasing of "use virtual classes or c abi for dll exports"
 // class __declspec(dllexport) X
 // {
 // public:
@@ -1745,12 +1745,12 @@ void ape_itertoptr() {
 //     void do_something_else();
 //     std::vector<int> data; // warning c4251
 // };
-// SHENNANIGAN no explanation how dllexports can be omitted (private classes)
+// SHENANIGAN no explanation how dllexports can be omitted (private classes)
 
-// SHENNANIGAN Error C2681 invalid expression type for dynamic_cast
+// SHENANIGAN Error C2681 invalid expression type for dynamic_cast
 // is confusing. The type may simply not known instead of "invalid".
 
-// SHENNANIGAN: high_resolution_clock not implemented across libstds;
+// SHENANIGAN: high_resolution_clock not implemented across libstds;
 // use steady_clock for measurements, system_clock for wall-clock time
 void use_chrono();
 void use_chrono() {
@@ -1774,7 +1774,7 @@ void use_chrono() {
 // ape_debug via tracing amount of expected loops vs actual loops, which may
 // prevent crash.
 
-// SHENNANIGAN C2259 'class' : cannot instantiate abstract class
+// SHENANIGAN C2259 'class' : cannot instantiate abstract class
 // if virtual function overload is missing from class provides no correct source
 // locations (may point to useless template classes instead)
 
@@ -1811,13 +1811,13 @@ struct Derived2 : Base2<Derived> {
 
 // simple template specialization
 
-// SHENNANIGAN streams do not enforce C abi and are overly complex for printing memory
+// SHENANIGAN streams do not enforce C abi and are overly complex for printing memory
 // This may hide serious bugs like memcpy to std::vector<bool>.
 void stream_flags();
 void stream_flags() {
   // https://codereview.stackexchange.com/questions/165120/printing-hex-dumps-for-diagnostics
   std::vector<uint8_t> array{1, 0, 0, 0};
-  // SHENNANIGAN implicit instantiation is allowed at least in msvc of visual studio 2015
+  // SHENANIGAN implicit instantiation is allowed at least in msvc of visual studio 2015
   std::fstream fstream{"somestream.txt", std::fstream::app | std::fstream::out};
   /*fstream.open();*/
   auto flags = fstream.flags();
@@ -1829,23 +1829,23 @@ void stream_flags() {
   fstream.close();
 }
 
-// SHENNANIGAN Unspecified how the compiler treats references (pointer or copy),
+// SHENANIGAN Unspecified how the compiler treats references (pointer or copy),
 // so "Strict Aliasing Rule" still applies.
 
-// SHENNANIGAN C++ compilers
+// SHENANIGAN C++ compilers
 // msvc Compiler Warning (level 2) C4308
 // constexpr int64_t cnt_value = (int64_t)((uint64_t) 1 << 63)
 // leads to weird warnings, even though its clear that we want to construct a number at comptime
 // constexpr int64_t cnt_value = -(((int64_t)1 << 32) + (int64_t)UINT32_MAX);
 
-// SHENNANIGAN
+// SHENANIGAN
 // incomplete type can not be instantiated in template:
 // * pull in all headers deps of headers
 // * class forward declares may create circular dependencies
 // * build each file individually
 // * might be a circular dependency during template usage
 
-// SHENNANIGAN missing virtual destructor for non-final methods in classes technically UB
+// SHENANIGAN missing virtual destructor for non-final methods in classes technically UB
 class ISomeInterface {
 public:
   virtual int SomeMethod() = 0;
@@ -1876,7 +1876,7 @@ struct CTestSomeInterface : ISomeInterface {
   }
 };
 
-// SHENNANIGAN superfluous distinction between dynamic_cast (pointers) and std::dynamic_pointer_cast (shared ptrs)
+// SHENANIGAN superfluous distinction between dynamic_cast (pointers) and std::dynamic_pointer_cast (shared ptrs)
 // if (dynamic_cast<ptrChildClass*>(ptrBaseClass) != nullptr)
 // {
 //   // found ptrChildClass
@@ -1898,7 +1898,7 @@ struct SomeDll {
 
 int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len);
 int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len) {
-  // SHENNANIGAN clangd
+  // SHENANIGAN clangd
   // shows ISO C++11 does not allow conversion from string literal to 'char *const' instead of
   // recommending the proper fix below
   // constexpr char * const_drivermsg = "DriverError: ";
@@ -1944,7 +1944,7 @@ int why_exceptions_dont_scale(char *errmsg_ptr, uint32_t *errmsg_len) {
   return 0;
 }
 
-// SHENNANIGAN tagged unions before C++17 std::variant unusable without third party solution
+// SHENANIGAN tagged unions before C++17 std::variant unusable without third party solution
 
 // idea shared_ptr in union in C++
 // * painful
@@ -1981,7 +1981,7 @@ int use_union_tmp() {
   return 0;
 }
 
-// SHENNANIGAN exceptions implementation are complex
+// SHENANIGAN exceptions implementation are complex
 // See https://maskray.me/blog/2020-12-12-c++-exception-handling-abi
 // and compare to setjmp and longjmp (store and retrieve stack)
 
@@ -1999,18 +1999,18 @@ int use_union_tmp() {
 // * difference to C memory order =>
 // * guide to check for yourself with cerberus
 
-// SHENNANIGAN
+// SHENANIGAN
 // templated classes with forwarded declared private class defined in cpp may
 // prevent usage of 'MyClass class = MyClass();' due to unknown type, which
 // needs to replaced by 'MyClass class();'
 
-// SHENNANIGAN implicit coercion via other class possible
+// SHENANIGAN implicit coercion via other class possible
 // templated constexpr can coerce implicitly via other class, but it must have the direct includes.
 
-// SHENNANIGAN msvc before VS2022 also uses indirect includes for templates
-// SHENNANIGAN msvc before VS2022 created implicit assignment operators
+// SHENANIGAN msvc before VS2022 also uses indirect includes for templates
+// SHENANIGAN msvc before VS2022 created implicit assignment operators
 
-// SHENNANIGAN msvc
+// SHENANIGAN msvc
 // private interior class may need inline constructor to propagate type
 // information to header, if forward declared in header
 
@@ -2036,7 +2036,7 @@ int use_union_tmp() {
 //   return Result.get();
 // }
 
-// SHENNANIGAN No operator found
+// SHENANIGAN No operator found
 // Define one and look for all conflicting implementations, but this might not catch everything.
 class OperatorExample {
   OperatorExample() {}
@@ -2239,13 +2239,13 @@ public:
     }
   }
   void WhenMsgRead() {
-    // SHENNANIGAN VS2022 does not show "Function definition is not allowed here"
+    // SHENANIGAN VS2022 does not show "Function definition is not allowed here"
     //                                   vvv
     // auto is_other0point [=](const SPoint2D & pt) {
     //   return true;
     // };
     SPoint2D pt_in = {0, 0};
-    // SHENNANIGAN Diagnostics to detect necessary scoping do not work, if fn
+    // SHENANIGAN Diagnostics to detect necessary scoping do not work, if fn
     // is invalid and may only indicate incorrect usage instead of lambda being
     // at forbidden location.
     std::future<bool> res = std::async(&CLambda::is_0point, this, pt_in);
@@ -2284,7 +2284,7 @@ private:
 // [&var, &] illegal !!
 // [*this] use copy of this (since C++17)
 
-// SHENNANIGAN workaround char8_t from given char8_t string literals (u8"", u8R"")
+// SHENANIGAN workaround char8_t from given char8_t string literals (u8"", u8R"")
 #if defined(HAS_CPP20)
 inline char const *operator""_SC(char8_t const *str, std::size_t) { return reinterpret_cast<char const *>(str); }
 // Unfortunately string literals are not constexpr in C++20:
@@ -2300,7 +2300,7 @@ inline char const *operator""_SC(char8_t const *str, std::size_t) { return reint
 void test_char_encoding();
 void test_char_encoding() {
   // FIXME check reflog
-  // SHENNANIGAN conform.nvim and/or clang-format version 19.1.2 breaks german characters on Windows
+  // SHENANIGAN conform.nvim and/or clang-format version 19.1.2 breaks german characters on Windows
   // and it ignores clang-format off
   // clang-format off
   // const unsigned char somechar1 = ''; // 188, Character too large for enclosing character literal type [character_too_large]
@@ -2385,7 +2385,7 @@ constexpr bool has_ostream_altname = requires(Ty t1, std::ostream &os) {
 struct S_test_bound_ostream {
   int32_t mem;
   // You can not do it as a member function, because the implicit this parameter is the left hand side of the <<-operator.
-  // SHENNANIGAN clangd does not complain about this function:
+  // SHENANIGAN clangd does not complain about this function:
   std::ostream &operator<<(std::ostream &ostr) {
     ostr << std::to_string(mem);
     return ostr;
@@ -2405,7 +2405,7 @@ void test_ostream() {
   std::stringstream ss1;
   (void)sbound_ostream1;
   (void)ss1;
-  // SHENNANIGAN: The ostream of sbound_ostream1 is unusable due to implicit this
+  // SHENANIGAN: The ostream of sbound_ostream1 is unusable due to implicit this
   // ss1 << sbound_ostream1;
   // std::cout << ss1.str();
 
@@ -2504,7 +2504,7 @@ void test_ConvertToString() {
 }
 #endif // defined(HAS_CPP20)
 
-// SHENNANIGAN MSVC C++20 freaks out on std::is_pod
+// SHENANIGAN MSVC C++20 freaks out on std::is_pod
 // replace with std::is_standard_layout and/or std::is_trivial
 
 // https://brevzin.github.io/c++/2021/11/21/conditional-members/
@@ -2537,12 +2537,12 @@ void test_ConvertToString() {
 // }
 // * Do not use negation in concepts, but more generalized ones
 
-// SHENNANIGAN C++20 has no default stream operator for enum classes, which
+// SHENANIGAN C++20 has no default stream operator for enum classes, which
 // forces explicit casts everywhere.
 // Since C++11 there is at least std::is::enum and std::underlying_type.
 // C++23 has std::to_underlying as shorthand for static_cast to the underlying type.
 
-// SHENNANIGAN C++26 Getting the string name from enum as template via
+// SHENANIGAN C++26 Getting the string name from enum as template via
 // reflection is discussed with this syntax:
 // template <typename E>
 // requires std::is_enum_v<E>
@@ -2572,11 +2572,11 @@ void test_ConvertToString() {
 // but hints at maybe having some guarantees, therefore changes to C ought to consider
 // also adding forward progress guarantees.
 
-// SHENNANIGAN C++11 to not including C++26 trivial infinite loops undefined behavior
+// SHENANIGAN C++11 to not including C++26 trivial infinite loops undefined behavior
 // forward progress guarantee was added resulting in bad behavior
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2809r3.html
 
-// SHENNANIGAN syntax for operator call
+// SHENANIGAN syntax for operator call
 // Input.operator ReturnValue()
 
 // Wrapper to infer fn args
@@ -2746,7 +2746,7 @@ void use_for_each() {
 // std::uniform_int_distribution<int32_t> Index(0, InclusiveEnd);
 // fprintf(stdout, "RandomModulo: %d\n", RandomModulo);
 
-// SHENNANIGAN constexpr fn can return stack memory
+// SHENANIGAN constexpr fn can return stack memory
 // * gcc evals constexpr eagerly, llvm medium, msvc lazy
 // * must be forced to be comptime via const lhs, static_assert
 // => almost always use `static constexpr` to force constant-initialization
@@ -2760,7 +2760,7 @@ void use_for_each() {
 
 #if defined(HAS_CPP14)
 // https://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time
-// SHENNANIGAN core guidelines have nothing on pattern matching std things
+// SHENANIGAN core guidelines have nothing on pattern matching std things
 // type for STL containers. Reflection on (std) scope elements is not possible.
 // clang-format off
 namespace is_stl_container_impl {
@@ -2786,7 +2786,7 @@ void use_is_stl_container() {
 
 // TODO reorganize and add here HAS_CPP17
 
-// SHENNANIGAN decltype declval over multiple templates requires to query the
+// SHENANIGAN decltype declval over multiple templates requires to query the
 // public type of a child via using, because C++ is unable to infer the type
 // from given types.
 
@@ -2800,7 +2800,7 @@ void use_is_stl_container() {
 // * improving readability of templates via concepts
 // * std::format
 
-// SHENNANIGAN concept may or may not be accepted from constexpr for example in msvc.
+// SHENANIGAN concept may or may not be accepted from constexpr for example in msvc.
 // Do not nest concepts to prevent breaking of concept composition rules
 // (see co_is_not_integral and addition_nonintegral2).
 template<typename T1>
@@ -2819,7 +2819,7 @@ requires co_is_not_integral<T1> int addition_nonintegral1(T1 num1, T1 num2) {
   (void)num2;
   return 0;
 }
-// SHENNANIGAN Not recommended to use nest concepts due to concept subsumption rules
+// SHENANIGAN Not recommended to use nest concepts due to concept subsumption rules
 // in conflict with core guidelines T.11: Whenever possible use standard concepts
 template<typename T1>
 requires(!std::is_integral_v<T1>) // () - Brackets in generics hint possible ambiguity
@@ -2863,7 +2863,7 @@ void use_comptime() {
 
   // no checks for global exit-time destructors
   constexpr static auto res1 = some_constexpr(42); // const + static
-  static constexpr auto res2 = some_constexpr(42); // SHENNANIGAN readability
+  static constexpr auto res2 = some_constexpr(42); // SHENANIGAN readability
 
   // allows checks for global exit-time destructors
   constinit static auto res3 = some_constexpr(42); // non-const + static
@@ -2892,7 +2892,7 @@ void use_format();
 void use_format() {
   std::string fmted = std::format("{}", std::numbers::pi_v<double>);
   std::cout << fmted;
-  // SHENNANIGAN std::print not part of C++20
+  // SHENANIGAN std::print not part of C++20
 }
 
 void use_contains();
@@ -2937,7 +2937,7 @@ void use_jthread() {
 
 #endif // defined(HAS_CPP20)
 
-// SHENNANIGAN msvc custom predicate compiler messages may be horrible, for example if const is missing
+// SHENANIGAN msvc custom predicate compiler messages may be horrible, for example if const is missing
 // std::multiset
 
 struct use_CustomComparator { // also known as predicate
@@ -2950,14 +2950,14 @@ struct use_CustomComparator { // also known as predicate
   // requires also move assign and move constructor
 };
 
-// SHENNANIGAN pure virtual method in interface must be used by overridden pure method
+// SHENANIGAN pure virtual method in interface must be used by overridden pure method
 // to infer the concrete method implementation or the used object with such method
 // must be given as template param effectively replacing need for (pure) virtual method.
 
-// SHENNANIGAN MSVC < C++20 is ok with static cast to class with virtual method, but C++20
+// SHENANIGAN MSVC < C++20 is ok with static cast to class with virtual method, but C++20
 // (correctly) requires the absence to choose the correct method.
 
-// SHENNANIGAN: C++20 uses move to do in-place construction on push_back, if possible,
+// SHENANIGAN: C++20 uses move to do in-place construction on push_back, if possible,
 // in contrast to C++11 emplace()
 // Hence, C++20 may choose incorrect function due to
 // eliding copies, when given
@@ -2969,7 +2969,7 @@ struct use_CustomComparator { // also known as predicate
 // Tradeoff
 // writing binary data to stream only possible via ostream::write() or ostream::put()
 
-// SHENNANIGAN implicit type conversion priority
+// SHENANIGAN implicit type conversion priority
 // - char16_t may be used as const char *
 //   even if another constructor is available and would match
 // => logic something along
@@ -2985,7 +2985,7 @@ struct use_CustomComparator { // also known as predicate
 // has if constexpr
 // #include <numeric>
 // add_sat/sub_sat/mul_sat/div_sat/saturate_cast
-// SHENNANIGAN no consistent add_wrap/sub_wrap/mul_wrap/div_wrap/wraparound_cast
+// SHENANIGAN no consistent add_wrap/sub_wrap/mul_wrap/div_wrap/wraparound_cast
 // Must use instead C23 ckd_mul(&res_mul, a, b))
 // to stay portable.
 // std::print, std::format can be used via <fmt/core.h> and fmt::print, fmt::format
@@ -3042,7 +3042,7 @@ void use_string_view() {
   std::string_view str_view3(arr);
   std::cout << str_view3 << " -- length: " << str_view3.length() << "\n";
 
-  // SHENNANIGAN: allocation needed with std::string
+  // SHENANIGAN: allocation needed with std::string
   // std::string cstr2 = "hello world!";
   // good: clangd complains with -Wdangling-gsl
   //                        ~~~~v~~~~~~~~~~~~~~
@@ -3138,7 +3138,7 @@ void use_optional() {
   // and not use T* to ensure T* can or can not be nullptr
 }
 
-// SHENNANIGAN function chaining makes code unreadable
+// SHENANIGAN function chaining makes code unreadable
 void use_function_chaining();
 void use_function_chaining() {
   // TODO https://www.cppstories.com/2023/monadic-optional-ops-cpp23/
@@ -3249,7 +3249,7 @@ void use_flat_set() {
 // https://yongweiwu.wordpress.com/2024/10/11/cxx-compile-time-programming/
 // https://adroit-things.com/programming/c-cpp/constructing-compile-time-string-objects/
 
-// SHENNANIGAN Looks like C++ wants to only create objects at comptime and make
+// SHENANIGAN Looks like C++ wants to only create objects at comptime and make
 // object properties usable thereafter, but never fill runtime-known data
 // structures at comptime.
 // Therefore, one has to template or consteval construct objects with such data.
@@ -3356,11 +3356,11 @@ static_assert(enum_to_string(Color(42)) == "<unnamed>");
 // TODO reflexpr https://en.cppreference.com/w/cpp/keyword/reflexpr
 // TODO struct of array https://brevzin.github.io/c++/2025/05/02/soa/
 
-// SHENNANIGAN iostream bad, successor https://github.com/ned14/llfio
+// SHENANIGAN iostream bad, successor https://github.com/ned14/llfio
 // * use std::print for formatting
 // * https://www.reddit.com/r/cpp/comments/g187t6/current_iostream_status_in_c/
 
-// SHENNANIGAN not possible to test if a type meets the Container named type requirement
+// SHENANIGAN not possible to test if a type meets the Container named type requirement
 // * there are neither plans nor willingness to change that
 // * boils down to resolving circular dependency on type resolving and arcane implementation details
 
@@ -3376,7 +3376,7 @@ constexpr void appendBlabla(std::string &str) { str.append("blabla"); }
 // constexpr function never produces a constant expression [clang-diagnostic-invalid-constexpr]
 // constexpr auto sum(std::vector<int> const &v) {
 //   int ret = 0;
-//   // SHENNANIGAN clangd version 18.1.8
+//   // SHENANIGAN clangd version 18.1.8
 //   //non-constexpr function 'operator!=<const int *, std::vector<int>>' cannot be used in a constant expression
 //   //          v
 //   for (auto i : v) {
@@ -3465,7 +3465,7 @@ int main() {
   static_assert(sv1.length() < std::numeric_limits<int>::max());         // slower C++17 2.
   fprintf(stdout, "%.*s\n", static_cast<int>(sv1.length()), sv1.data()); // 2.
 
-  // SHENNANIGAN:
+  // SHENANIGAN:
   char const *cstr_lit = "Hello, world!";
   std::print("{}\n", cstr_lit);
 

@@ -42,7 +42,7 @@ $env:Editor = "nvim"
 #====whereis
 #====setup
 #====problem_bootstrap_zig
-#====SHENNANIGAN
+#====SHENANIGAN
 
 # sane defaults
 # ENV POWERSHELL_CLI_TELEMETRY_OPTOUT=1 \
@@ -76,7 +76,7 @@ $env:Editor = "nvim"
 # copy to clipboard no newline: pwd | Set-Clipboard
 # copy to mounted network shares does not work, must use UNC paths
 # \\IP\share
-# SHENNANIGAN robocopy necessary for network paths/UNC paths
+# SHENANIGAN robocopy necessary for network paths/UNC paths
 # robocopy $src $dest filename
 # robocopy $src $dest *.exe
 
@@ -111,7 +111,7 @@ $env:Editor = "nvim"
 # confirm trust
 # inspiration for fuzzy finding in https://news.ycombinator.com/item?id=38471822
 
-# SHENNANIGAN unix line endings need
+# SHENANIGAN unix line endings need
 # gdNo > some.diff
 # git apply --ignore-whitespace some.diff
 # Find windows line endings: find . -name "*.php" | xargs file | grep "CRLF"
@@ -429,10 +429,10 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # function ZigBuildRelease { &  .\buildrel\stage3\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
 # function ZigRelease { &  ..\master\rel\bin\zig build -p rel -Doptimize=ReleaseSafe --search-prefix "..\..\zig-bootstrap\master\out-win\x86_64-windows-gnu-native" --zig-lib-dir lib -Dstatic-llvm }
 
-#====SHENNANIGAN
-# SHENNANIGAN zig
+#====SHENANIGAN
+# SHENANIGAN zig
 # Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require Microsoft.VisualStudio.Component.VC.Tools.x86.x64
-# SHENNANIGAN vswhere more reliable than dedicated api https://gitlab.kitware.com/cmake/cmake/-/issues/19241
+# SHENANIGAN vswhere more reliable than dedicated api https://gitlab.kitware.com/cmake/cmake/-/issues/19241
 # function ZigBootstrapRelease { & { md -ea 0 buildrel\ } && & { cd buildrel\ && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -GNinja } && & { cd buildrel\ && Measure-Command ninja install } }
 # cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="..\..\zig-bootstrap\master\out-win\host\" -G "Visual Studio 16 2019"
 # Getting correct msvc paths is annoying https://devblogs.microsoft.com/cppblog/finding-the-visual-c-compiler-tools-in-visual-studio-2017/
@@ -453,22 +453,22 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 # "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x64
 # cmake.exe -G "Ninja" ..
 # 3. https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
-# SHENNANIGAN varying setup depending on compiler version
-# SHENNANIGAN might or might not need -DMSVC_TOOLSET_VERSION=140
+# SHENANIGAN varying setup depending on compiler version
+# SHENANIGAN might or might not need -DMSVC_TOOLSET_VERSION=140
 # idea:
 # * query paths with vswhere in cmd: "c:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
 #   + how does this work within powershell?
 # * build things
 
-# SHENNANIGAN slow startup speed of pwsh.exe, faster startup with -nologo and with virus scanner exception
+# SHENANIGAN slow startup speed of pwsh.exe, faster startup with -nologo and with virus scanner exception
 
-# SHENNANIGAN alias does not work in pipe, workaround is involved
+# SHENANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
 
-# SHENNANIGAN piping broken, must use tmp file; pipe
+# SHENANIGAN piping broken, must use tmp file; pipe
 # $SEARCH='RepoName.csproj'; rg -l "${SEARCH}" > tmp; rg -F 'sln' .\tmp
 
-# SHENNANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
+# SHENANIGAN Adjusting Windows Terminal with non-Windows things is a horrible user experience
 # https://stackoverflow.com/questions/71045716/adding-msys-to-windows-terminal
 
 # check for existence of processes without and with bailout

@@ -37,7 +37,7 @@
 # Time measurements: Measure-Command { CMD }
 # Get PowerShell version: echo $PSVersionTable
 
-# SHENNANIGAN
+# SHENANIGAN
 # , is join operator which may silently work or break the program
 # worse, C# code calls use C# syntax ie
 # Add-Type -AssemblyName System.IO.Compression.FileSystem ;
@@ -52,13 +52,13 @@ function HowToUseCli_Args() {
   Write-Output $array
 }
 
-# SHENNANIGAN
+# SHENANIGAN
 function doNotUse_Write-Host() {
   Write-Host "Das kommt nicht in test.log an" > test.log
   1 .. 10 | % {Write-Host $_} | where {$_ -lt 5}
 }
 
-# SHENNANIGAN
+# SHENANIGAN
 function doNotUse_Write-Output_inFunctionWithReturnInner() {
   Write-Output "2"
   Write-Output "1"
@@ -356,7 +356,7 @@ function ResolveMsBuild2015 {
   return $msBuild2015
 }
 
-# SHENNANIGAN Parallel cleanup is broken in msbuild
+# SHENANIGAN Parallel cleanup is broken in msbuild
 function runMsbuild2015 {
   # msbuild test.sln /t:project /p:Configuration="Release" /p:Platform="x64" /p:BuildProjectReferences=false
   # Notice that what is assigned to /t is the project name in the solution, it can be different from the project file name.
@@ -426,7 +426,7 @@ function runMsbuild {
 function easytypos_param {
   param (
     [string] $action1 = "echo"
-    # SHENNANIGAN very easy typos in param
+    # SHENANIGAN very easy typos in param
     # [string] action2 = "echo",
   )
 }
@@ -657,7 +657,7 @@ function param_string_array {
 # Debug problems via -v:Lvl Lvl is q,m,n,d,diag
 # msbuild project.sln /t:Build /p:Configuration=Release /p:Platform=x64 -nologo -v:d
 
-# SHENNANIGAN Start-Process stdout and stderr not accessible without setting RedirectStandardError = $true
+# SHENANIGAN Start-Process stdout and stderr not accessible without setting RedirectStandardError = $true
 # https://stackoverflow.com/questions/8761888/capturing-standard-out-and-error-with-start-process
 function StartProcess_stdout {
   $pinfo = New-Object System.Diagnostics.ProcessStartInfo
@@ -719,7 +719,7 @@ function parseVersion {
   $content = @("#define MAJOR_VERSION 0", "#define MINOR_VERSION 1", "#define MINOR_VERSION 2")
   for ($i=0; $i -lt $content.Length; $i+=1) {
     if ($content[$i].StartsWith("#define MAJOR_VERSION ")) {
-      #SHENNANIGAN $content[$i] may get expanded incorrectly
+      #SHENANIGAN $content[$i] may get expanded incorrectly
       #$major = [int]$($($content -split " ")[2])
       $major = [int]$($($($content[$i]) -split " ")[2])
       # Write-Output "$major" prints 7
@@ -737,7 +737,7 @@ function parseVersion {
 # fix publication not working by rewriting it in powershell
 # underlying problem: %%a not getting correctly expanded no matter what I tried
 
-# SHENNANIGAN waiting for child processes is weird:
+# SHENANIGAN waiting for child processes is weird:
 # $proc = Start-Process "$msBuild" -ArgumentList $build_args -NoNewWindow -PassThru
 # $handle = $proc.Handle # cache proc.Handle to fix ExitCode to work correctly
 # $proc.WaitForExit() # prevent msbuild not being terminated due to subprocess
@@ -804,7 +804,7 @@ function sane_StartProcess {
   }
 }
 
-# SHENNANIGAN Microsoft Website on robocopy help is incomplete and unhelpful.
+# SHENANIGAN Microsoft Website on robocopy help is incomplete and unhelpful.
 # complete one from https://ss64.com/nt/robocopy-exit.html
 #   Error    Meaning if set
 #    0       No errors occurred, and no copying was done.
@@ -827,11 +827,11 @@ function sane_StartProcess {
 #            This means that the files already exist in the destination directory
 #    7 (4+1+2) Files were copied, a file mismatch was present, and additional files were present.
 
-# SHENNANIGAN robocopy docs incorrect on error => !$? >= 8, it is error !$? > 8
+# SHENANIGAN robocopy docs incorrect on error => !$? >= 8, it is error !$? > 8
 # robocopy $SRC $TARGET *.dll
 # if (!$? -gt 8) { Write-Output "error: " !$?; return !$?; }
 
-# SHENNANIGAN robocopy does not support filepath and subdir selection
+# SHENANIGAN robocopy does not support filepath and subdir selection
 # it only supports filepath exclusion
 # robocopy $src $dest *.* /compress /xd $excl_dirs /xf $excl_files /eta /j
 # robocopy $src $dest /s /compress /xd $excl_dirs /xf $excl_files /eta /j
@@ -960,7 +960,7 @@ function stopWatch {
 # <NMakeBuildCommandLine>rem vs.ps1 parameters: build_mode
 # powershell -NoProfile -ExecutionPolicy unrestricted -file "$(SolutionDir)vs.ps1" $(Configuration)</NMakeBuildCommandLine>
 
-# SHENNANIGAN xcopy has one of the worst behaviors
+# SHENANIGAN xcopy has one of the worst behaviors
 # Adding a wildcard (*) to the end of the destination will suppress this prompt and default to copying as a file
 # xcopy file7.dll file.dll* /y /c /f /q
 

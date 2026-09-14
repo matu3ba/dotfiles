@@ -1,4 +1,4 @@
-# SHENNANIGAN cmake error is bogus, gcc 15 needed
+# SHENANIGAN cmake error is bogus, gcc 15 needed
 # CMake Error in CMakeLists.txt:
 #   The "CXX_MODULE_STD" property on the target "test_example.exe" requires
 #   that the "__CMAKE::CXX23" target exist, but it was not provided by the

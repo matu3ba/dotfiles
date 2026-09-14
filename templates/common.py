@@ -13,7 +13,7 @@
 # fast and sane python tooling
 # https://github.com/astral-sh/uv instead of pipx etc
 # https://github.com/astral-sh/ruff as linter, formatter, fixer
-# SHENNANIGAN E305 blank-lines-after-function-or-class is wasting lots of space
+# SHENANIGAN E305 blank-lines-after-function-or-class is wasting lots of space
 # https://peps.python.org/pep-0008/#blank-lines
 # and not even the PEP is following the guide
 # https://docs.python.org/3/library/pdb.html debugger
@@ -173,7 +173,7 @@ def prettyDict(d, indent=0):
       print("  " * (indent + 1) + str(value))
 
 
-# SHENNANIGAN do not use xml.dom.minidom, it breaks space and newlines:
+# SHENANIGAN do not use xml.dom.minidom, it breaks space and newlines:
 # https://bugs.python.org/issue5752
 # use instead ElementTree
 
@@ -237,7 +237,7 @@ def writeFile(tree: object, filepath: str, use_bom: bool):
 # description how to access their api or files with bare Python (bruh).
 # Workaround: curl -s --user USER:TOKEN
 
-# SHENNANIGAN
+# SHENANIGAN
 # .strip() is necessary after file read, because Python automatically adds "\n"
 
 ## Basic logging of html messages
@@ -375,7 +375,7 @@ def firstkeyval(current: dict) -> object:
   return next(iter(current.items()))  # return next(iter(req.viewitems()))
 
 
-# SHENNANIGAN Dictionary is missing this common method
+# SHENANIGAN Dictionary is missing this common method
 def is_subdict(small: dict, big: dict) -> bool:
   """
   Test, if 'small' is subdict of 'big'
@@ -391,7 +391,7 @@ def is_subdict(small: dict, big: dict) -> bool:
   return dict(big, **small) == big
 
 
-# SHENNANIGAN Dictionary is missing this common method
+# SHENANIGAN Dictionary is missing this common method
 def has_fieldsvals(small: dict, big: dict) -> bool:
   """
   Test, if 'small' has all values of of 'big'
@@ -420,7 +420,7 @@ def merge_1lvldicts(alpha: dict = {}, beta: dict = {}) -> dict:
   return dict(list(alpha.items()) + list(beta.items()))
 
 
-# SHENNANIGAN Dictionary is missing this common method
+# SHENANIGAN Dictionary is missing this common method
 def merge_dicts(alpha: dict = {}, beta: dict = {}) -> dict:
   """
   Recursive merge dicts. Not multi-threading safe.
@@ -448,7 +448,7 @@ def _merge_dicts_aux(alpha: dict = {}, beta: dict = {}, result: dict = {}, path:
   return result
 
 
-### SHENNANIGAN tuples and dicts are annoying to differentiate
+### SHENANIGAN tuples and dicts are annoying to differentiate
 # dictionary
 dict1 = {"m1": "cp", "m2": "cp"}
 # tuple
@@ -464,7 +464,7 @@ def getLastListOptindex(timeline_msg: list) -> Optional[int]:
   return len(timeline_msg) - 1 if timeline_msg else None
 
 
-# SHENNANIGAN stack trace formatting is inefficient and one can not use g[f|F] to jump to location
+# SHENANIGAN stack trace formatting is inefficient and one can not use g[f|F] to jump to location
 # function to write status + trace to variable
 def getStackTrace() -> str:
   return repr(traceback.format_stack())
@@ -579,7 +579,7 @@ def expectEquation(self, is_true: bool, actual: object) -> int:
   return 0
 
 
-# SHENNANIGAN: Mixed " and ' strings are invalid json
+# SHENANIGAN: Mixed " and ' strings are invalid json
 # Dict -> str is inconsistent to json -> str, so workaround with
 # dict_asjson_lower = str(dict1).replace("'", '"')
 def combineDictsFromStr():
@@ -614,7 +614,7 @@ def fstrings():
   print(f"{variable=}")
 
 
-# SHENNANIGAN os.kill() does not call registered cleanup function `atexit.register(exit_cleanup)`
+# SHENANIGAN os.kill() does not call registered cleanup function `atexit.register(exit_cleanup)`
 # by deamonzed threads. Must store pids of child processes and clean them explicitly or
 # signal main thread via
 def signalMainThread(self) -> None:
@@ -651,7 +651,7 @@ signal.signal(signal.SIGINT, handle_sigint)
 # timeline = list((seq_no, msg))           # (seq_no, msg) is a tuple
 # storage_msg: list = list()               # list of messages
 
-# SHENNANIGAN
+# SHENANIGAN
 # readline() with timeout io file api is broken, see https://github.com/python/cpython/issues/51571
 # Workaround
 # * 1. Read from Kernel structure and append chunk-wise to buffer from socket until stop event.
@@ -704,7 +704,7 @@ def isLocalHost(arg: str) -> bool:
     return False
 
 
-# SHENNANIGAN Generic module annotation not allowed
+# SHENANIGAN Generic module annotation not allowed
 # Also, ty has no explicit docs for this.
 # possible error messages + solution patterns. The following does not work:
 #   from typing import ModuleType
@@ -718,7 +718,7 @@ def check_fn(fn: list) -> int:
   return 0
 
 
-# SHENNANIGAN
+# SHENANIGAN
 # No explicit scheduling methods + watchdogs. Unlucky schedules may cause fatal
 # delay for shuffling data between daemon thread and main thread.
 # As example: 1 main thread, 2 deamon threads may cause the relevant deamon thread
@@ -729,7 +729,7 @@ def redirect_stderr() -> None:
   sys.stderr = sys.stdout
 
 
-# SHENNANIGAN
+# SHENANIGAN
 # Must not use trailing comma in dictionary or json.dumps generated string has
 # silent failures, for example on parsing the output as json via php.
 def sendHtml(self, ip: str, port: int, msg: str) -> int:

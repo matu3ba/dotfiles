@@ -30,20 +30,20 @@ https://github.com/Nukesor/pueue
 more simple one without any config
 https://github.com/leahneukirchen/nq
 
-SHENNANIGAN
+SHENANIGAN
 - 1. brace expansion does only work on standalone variables:
   * "{1..3}" does not work, but {1..3} works
   * workaround for using in variables: `eval {$a..$b}`
   * workaround in for loops `for i in $(eval echo {$a..$b})`
 
-SHENNANIGAN process spawning
+SHENANIGAN process spawning
 - There is no standard way to signal a process is initialized to the parent process
 - Shell has only quirky signaling ways: (named) pipe, (temp) file
   * Example: 'stty -F /dev/ttyS0 min 0 time 10 &' takes time to spawn
 
   > Yes, but why is this characterized as something negative?
 
-SHENNANIGAN
+SHENANIGAN
 Shells are not properly supported in any OS except plan9, since
 - 1. the OS provides no enforcement or convention of CLI API interface (there
      is no enforced encoding standard or checkable stuff),
@@ -53,7 +53,7 @@ Shells are not properly supported in any OS except plan9, since
 Thus, shells remain a hack around the system that is "simple to implement the
 initials" and is annoying to use and write at many corner cases.
 
-SHENNANIGAN
+SHENANIGAN
 Escape unusual characters for usage, ie as shell variables:
 find . -exec printf "%q\n" {} \;
 find . -path RELPATH -exec printf "%q\n" {} \;
@@ -75,10 +75,10 @@ find . -type f |
 sed -n "s/\(.*\)Ether.*$/& \1Twin\.py/p" |
 xargs -p -n 2 mv
 
-SHENNANIGAN find
+SHENANIGAN find
 only supports '-path RELATIVEPATH' forcing more typing
 
-SHENNANIGAN
+SHENANIGAN
 "Weaponizing Plain Text: ANSI Escape Sequences as a Forensic Nightmare" STÖK, Hacker
 some stuff possible
 https://forum.defcon.org/node/245741
@@ -92,10 +92,10 @@ Incomplete implementation https://tomscii.sig7.se/2020/11/How-Zutty-works
 List of terminal escape codes
 https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797.
 
-SHENNANIGAN
+SHENANIGAN
 mosh can drop data and has no history, ssh is not designed for performance
 
-SHENNANIGAN
+SHENANIGAN
 1. C-[0-9], C-[F1-F12] etc are not mappable without kitty keymap protocol
 2. kitty does not support remote session persistence and maintainer is hostile
 to terminal multiplexers.
@@ -105,7 +105,7 @@ session persistence:
 - 2. use a private one to other ghostty sessions like wezterm
 - 3. use a separate communication channel other than shell (https://goteleport.com/blog/ssh-restricted-shells/)
 
-SHENNANIGAN
+SHENANIGAN
 Terminfo data base: infocmp
 Currently used storage paths: infocmp -D
 Copy terminfo to remote:

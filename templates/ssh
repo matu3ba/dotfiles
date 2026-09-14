@@ -184,12 +184,12 @@ To use explicitly the given config key for the host, set
 Ignore config file (ie to setup root user ssh key in script)
 ssh -F none -o PubkeyAuthentication=no example.com
 
-SHENNANIGAN
+SHENANIGAN
 ssh-copy-id can not be called with modified ssh config
 TODO make own helper script
 TODO separated ssh configs
 
-SHENNANIGAN SECURITY
+SHENANIGAN SECURITY
 ssh has known unmitigated timing channels. See templates/security.
 
 ____FAQ____

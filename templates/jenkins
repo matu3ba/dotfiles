@@ -31,7 +31,7 @@ new Date()."$prop"()
 As pointed out in the comments this is really just a special case of string interpolation, because the following is also valid
 new Date().'toString'()
 
-SHENNANIGAN
+SHENANIGAN
 Missing type causes Jenkins to freak out instead of printing missing type info error.
 For example, "${GitCommitAuthorEmail}" works, but ${GitCommitAuthorEmail} may not.
 Most notably, jenkins may misidentify ${} as a non-existing inbuilt instead of doing the variable lookup.
@@ -55,17 +55,17 @@ def output = USEDSHELL(returnStdout: true, script: '''pwd
   '''
 )
 
-SHENNANIGAN
+SHENANIGAN
 Invalid Jenkinsfile leads to permanent execution spam and lost execution history.
 
-SHENNANIGAN
+SHENANIGAN
 Usage of any shell requires script block without proper parser check indicating error source.
 This may lead to weird escaping problems instead of invalid Jenkinsfile and Java errors.
 
-SHENNANIGAN
+SHENANIGAN
 Removing stages causes lost execution history.
 
-SHENNANIGAN
+SHENANIGAN
 Reading powershell commands outputs leads to trailing newline, which may not be
 handled by plugins like powershell plugins.
 
@@ -82,13 +82,13 @@ def SendEmail() {
     }
 }
 
-SHENNANIGAN empty script blocks not allowed
+SHENANIGAN empty script blocks not allowed
 script {
   // something1
   // something2
 }
 
-SHENNANIGAN Jenkins does not accept empty {}-blocks
+SHENANIGAN Jenkins does not accept empty {}-blocks
 {
   dir("$HOME") {
     echo "$HOME"

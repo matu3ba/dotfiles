@@ -242,7 +242,7 @@ manager-core
 https://wouterj.nl/2024/08/git-notes
 idea store discussion with git
 
-SHENNANIGAN
+SHENANIGAN
 gitignore file is also matching case insensitive on Windows and there is no
 default to check this stuff.
 

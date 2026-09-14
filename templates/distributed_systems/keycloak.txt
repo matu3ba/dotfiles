@@ -55,7 +55,7 @@ docker cp <containerId>:/file/path/within/container /host/path/target
 /opt/keycloak/bin/kc.sh pause
 /opt/keycloak/bin/kc.sh export --help
 
-actual process for backups to workaround docker entrypoint SHENNANIGAN
+actual process for backups to workaround docker entrypoint SHENANIGAN
 1 must use persistent volume kc_data
 docker run --name keycloak-run -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
 2 can use backup, but have to adjust group name (or user id), since docker has no sane defaults

@@ -15,7 +15,7 @@
 //  https://public-docs.ferrocene.dev/main/index.html
 
 //====tooling
-// SHENNANIGAN cargo packages depend on dynamic gcc libraries during linking,
+// SHENANIGAN cargo packages depend on dynamic gcc libraries during linking,
 // which may not be provided
 //  cargo install du-dust
 //  ld: error: unable to find library -lgcc_s
@@ -107,7 +107,7 @@
 
 //====design_flaws
 //unfair Rust https://this.quiz.is.fckn.gay/
-// SHENNANIGAN
+// SHENANIGAN
 // * still not possible to write your own smart pointer which would work with dyn traits, including
 // coercions
 // * macros have artificial limits when called from other macros (can not put PoC into bigger
@@ -123,7 +123,7 @@
 // https://ohadravid.github.io/posts/2026-01-09-fourteen-ref/
 // 14 & break the compiler, 13 & are fine
 
-// SHENNANIGAN cargo and rustc:
+// SHENANIGAN cargo and rustc:
 // * dynamic linking to musl is broken since a very long time https://github.com/rust-lang/rust/issues/135244 and
 // https://github.com/rust-lang/rust/issues/95926 and filing issues / ask how to disable proc macro and other stuff
 // depending on dynamic linking is the only solution aside of rewriting or patching rust compiler
@@ -133,7 +133,7 @@
 // * dynamic linking on musl systems needs libc path, which should be supported by Rust,
 // but not necessary on the target system
 
-// SHENNANIGAN
+// SHENANIGAN
 // * intentionally racy reads and writes (like for parallel seeded region growing) are not
 // expressible currently in Rust
 //   - Function atomic_load_unordered in nightly, do not use this intrinsic as its not in memory model
@@ -153,7 +153,7 @@
 //     unsafe fn raw(&self) -> *mut i32 { self.0.get() }
 // }
 
-// SHENNANIGAN async canceling has affine semantics (cancels whole tree)
+// SHENANIGAN async canceling has affine semantics (cancels whole tree)
 // https://sunshowers.io/posts/cancelling-async-rust/
 // workarounds from https://lwn.net/Articles/1036924/
 // * cancel-safe: safely dropping Future
@@ -167,14 +167,14 @@
 //   * use threads to emulate Go/JS approach
 //   * future: Async drop, Unforgettable types (linear types), etc https://without.boats/blog/asynchronous-clean-up/
 
-// SHENNANIGAN not good on: buffer reuse, self-referential structs, compile-time generics (versioned generics)
+// SHENANIGAN not good on: buffer reuse, self-referential structs, compile-time generics (versioned generics)
 // https://databento.com/blog/why-we-didnt-rewrite-our-feed-handler-in-rust
 
 //====setup
 //curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
 //..
 //rustc --print target-list
-//SHENNANIGAN rust-analyzer assumes Cargo.toml to exist,
+//SHENANIGAN rust-analyzer assumes Cargo.toml to exist,
 //so PATH hacks may be needed:
 //~/.rustup/toolchains/stable-x86_64-unknown-linux-musl/bin/rust-analyzer --help
 

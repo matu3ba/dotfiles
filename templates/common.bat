@@ -13,7 +13,7 @@ REM   set Logfile=%path%logfile.log
 REM Minor example https://stackoverflow.com/questions/16107246/how-to-add-quotes-to-string-in-a-batch-script
 
 REM ^ is escape character, without it ^%variable^% is early (parsing) expansion
-REM SHENNANIGAN EnableDelayedExpansion exists
+REM SHENANIGAN EnableDelayedExpansion exists
 REM additional delayed expansion possible via 'SetLocal EnableDelayedExpansion'
 REM and usage via ^!variable^!
 

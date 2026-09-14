@@ -39,10 +39,10 @@ docker start [options] CONTAINER [CONTAINER..]
 copy files from running container
 docker cp <containerId>:/container_path_source /host_path_target
 
-SHENNANIGAN
+SHENANIGAN
 docker is unable to pause entry-point application, which makes in-process+in-memory database usage annoying
 
-SHENNANIGAN
+SHENANIGAN
 docker may have permission problems on directories, debugging steps
 id
 docker run --rm --entrypoint id quay.io/keycloak/keycloak:26.6.0

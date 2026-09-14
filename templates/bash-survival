@@ -62,7 +62,7 @@ Read this file into an array, splitting by newline, in a single line of code. It
 There are helpers out there for most common situations
 - unfeasible due to big scope
 
-SHENNANIGAN
+SHENANIGAN
 .bashrc
 [[ $- != *i* ]] && return # If not running interactively, don't do anything
 

@@ -26,7 +26,7 @@
 // News
 //   https://www.youtube.com/@nickchapsas
 
-// SHENNANIGAN Windows Forms handle key combinations
+// SHENANIGAN Windows Forms handle key combinations
 // KeyPress event must be inherited by current window or dynamically set for all elements of a form
 // https://learn.microsoft.com/en-us/dotnet/desktop/winforms/how-to-handle-user-input-events-in-windows-forms-controls?view=netframeworkdesktop-4.8
 // protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
@@ -84,7 +84,7 @@
 // https://csharperimage.jeremylikness.com/2017/07/build-and-deploy-net-core-web-app-from.html
 // https://andrewlock.net/building-net-framework-asp-net-core-apps-on-linux-using-mono-and-the-net-cli/
 
-// SHENNANIGAN
+// SHENANIGAN
 // NET is C# with some different syntax to make stack and garbage collected
 // heap explicit, which does not include memory managed by C and C++.
 
@@ -220,14 +220,14 @@ namespace WindowsForms_TimerCallback {
 //if (sender->GetType() == OpParamGridView)
 //works: if (sender->GetType()->ToString() == "System::Windows::Forms::DataGridView")
 
-// SHENNANIGAN .NET has no super or base to call virtual function of base classs
+// SHENANIGAN .NET has no super or base to call virtual function of base classs
 // This is wrong for .NET, but correct for C#
 
 // .NET has : base() in constructor to inherit base class somehow
 // https://www.devx.com/terms/base-class-net/
 // unclear which version looks like at least it does not work with override
 
-// SHENNANIGAN Windows Forms: There is no user accessible event log.
+// SHENANIGAN Windows Forms: There is no user accessible event log.
 // Debugging callbacks handled elsewhere very annoying.
 
 // You can override the Form.ProcessCmdKey method in order to be able to handle every key press of the user.
@@ -245,7 +245,7 @@ protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 public ref class CustomDataGridView : public System::Windows::Forms::DataGridView
 {
 protected:
-  // SHENNANIGAN On default ProcessDataGridViewKey one is never entered on
+  // SHENANIGAN On default ProcessDataGridViewKey one is never entered on
   // Escape keypress in contrast to ProcessDialogKey, because the superblock
   // Windows Forms Escape Handler runs.
   bool ProcessDataGridViewKey(System::Windows::Forms::KeyEventArgs ^ e) override
@@ -378,7 +378,7 @@ namespace AppFramework.AppName {
 
 // .NET < 11 has a bad process API
 // https://7thzero.com/blog/process-startinfo-redirectstandardoutput-not-quite-what-you-d-ex
-// SHENNANIGAN using .net dlls from powershell requires process spawn to set all or none of redirects
+// SHENANIGAN using .net dlls from powershell requires process spawn to set all or none of redirects
 // process.StartInfo.RedirectStandardOutput = true;
 // process.StartInfo.RedirectStandardInput = true;
 // process.StartInfo.RedirectStandardError = true;
@@ -417,8 +417,8 @@ namespace AppFramework.AppName {
 //   }
 // }
 
-// SHENNANIGAN C#/.NET runtime does not support overwriting stdin/stdout/stderr file handles.
-// SHENNANIGAN In Powershell redirection contends with io in runtime leading to freezes/lags and dropped data.
+// SHENANIGAN C#/.NET runtime does not support overwriting stdin/stdout/stderr file handles.
+// SHENANIGAN In Powershell redirection contends with io in runtime leading to freezes/lags and dropped data.
 // * Redirection is possible via CreateProcess and cmd.exe (at cost of extra process).
 
 // .NET >= 11 has better process API

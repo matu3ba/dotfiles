@@ -149,7 +149,7 @@ memory models
 available via atomic_var.store(true, std::memory_order_release)
 => architecture-dependent and messy (stuff like spurious wakeups exist and costs can vary significantly)
 
-SHENNANIGAN Out of thin air problem of C11/C++11 memory semantics
+SHENANIGAN Out of thin air problem of C11/C++11 memory semantics
 ```Zig
 const std = @import("std");
 var X: i32 = 0;

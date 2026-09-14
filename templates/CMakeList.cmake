@@ -7,7 +7,7 @@
 # 3. lib + exe generation
 # 4. use googletest
 # 5. debugging
-# 6. SHENNANIGAN
+# 6. SHENANIGAN
 
 # 0. CMake is best used in the command line.
 # Example `set(CMAKE_BUILD_TYPE "Release" CACHE STRING FORCE)` required for debugging symbols.
@@ -100,7 +100,7 @@ add_test(NAME test1 COMMAND test1)
 
 # cmake -P to run a single script
 
-# 6. SHENNANIGAN
+# 6. SHENANIGAN
 # As of cmake v3.26.5
 # To get only the used file paths, we must use --trace-format=json-v1
 # and extract field 'file' from each returned json

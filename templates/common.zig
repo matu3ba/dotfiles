@@ -359,7 +359,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // Testing with wasm+wasmtime:
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
 
-// SHENNANIGAN Bootstrapping and checking methods is very time consuming
+// SHENANIGAN Bootstrapping and checking methods is very time consuming
 // -DCMAKE_C_LINKER_DEPFILE_SUPPORTED=false
 // -DCMAKE_CXX_LINKER_DEPFILE_SUPPORTED=false
 // cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="../../zig-bootstrap/master/out-win/host/" -DCMAKE_BUILD_TYPE=Release -DZIG_STATIC=ON -DZIG_STATIC_ZSTD=OFF -DZIG_TARGET_TRIPLE="x86_64-windows"
@@ -420,7 +420,7 @@ fn simpleCAS() !void {
     }
 }
 
-// SHENNANIGAN PERF: array assignments work with =
+// SHENANIGAN PERF: array assignments work with =
 test "perf array assignment" {
     const x: u8 = 100;
     const a: [1_000_000]u8 = @splat(x);
@@ -433,7 +433,7 @@ test "perf array assignment" {
     // a pile of code
 }
 
-// SHENNANIGAN
+// SHENANIGAN
 // Parameter Reference Optimization
 // examples from @SpexGuy's talk
 // https://www.youtube.com/watch?v=dEIsJPpCZYg
@@ -481,16 +481,16 @@ fn totalAll(structs: []const BigStruct) u128 {
 //     list.add(list.items[0]); // implicit: list.add(&list.items[0]);
 // }
 
-// SHENNANIGAN
+// SHENANIGAN
 // Parameter Reference Optimization
 // idea example
 
-// SHENNANIGAN
+// SHENANIGAN
 // RLS (Result location semantics) is implicit, but copies are eliminated
 // This leads to surprising and potentially unwanted behavior.
 // idea example
 
-// SHENNANIGAN
+// SHENANIGAN
 // Test runner allows no signaling to qemu -g 4242 (debugger mode)
 
 // NaN means 'x != x', usable via isNan
@@ -696,10 +696,10 @@ const windows_utf16_string_literal = struct {
 
 // get slice from multi pointer => std.mem.span
 
-// SHENNANIGAN
+// SHENANIGAN
 // source locations of missing tuple for printing dont work properly
 
-// SHENNANIGAN
+// SHENANIGAN
 // for loops don't want to give pointers to elements of an array
 // https://github.com/ziglang/zig/issues/14734
 
@@ -883,7 +883,7 @@ test "@hasDecl" {
     try std.testing.expect(!@hasDecl(Foo, "nope1234"));
 }
 
-// SHENNANIGAN one can create trivially dependency loops without type dependency
+// SHENANIGAN one can create trivially dependency loops without type dependency
 // -pub const BuiltinFunction = *const fn (*Vm, u64, u64, u64, u64, u64) void;
 // -
 //  pub const BuiltinProgram = struct {
@@ -972,7 +972,7 @@ test "@hasDecl" {
 // https://github.com/CTSRD-CHERI/qemu/tree/qemu-cheri
 // nice comptime usage https://bur.gy/2024/08/31/why-not-zig.html
 
-// SHENNANIGAN
+// SHENANIGAN
 // std.Io too high-level for optimizations
 // * 1 generic implementation has high limits on the (in most cases) target-specific
 //   implementation for no reason, for example std.Io.Mutex can store only usize,
@@ -992,7 +992,7 @@ test "@hasDecl" {
 //   - buffer misconfiguration/incorrect usage possible https://www.openmymind.net/Is-Zigs-New-Io-Unsafe/
 //   - no guides on how to debug inter-component perf (under hostile kernel) etc
 
-// SHENNANIGAN `errdefer` in this code indeed doesn't get executed.
+// SHENANIGAN `errdefer` in this code indeed doesn't get executed.
 // Avoid duplicating error logging attatched runtime context
 // My intuition was that errdefer is associated with leaving the lexical scope
 // due to an error. However, break :blk error.X merely produces an error value

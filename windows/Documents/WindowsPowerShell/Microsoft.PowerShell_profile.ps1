@@ -35,7 +35,7 @@ $env:DOTNET_TELEMETRY_OPTOUT = $true
 # winget install --id Microsoft.Powershell --source winget
 # https://learn.microsoft.com/de-de/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4#msi
 
-# SHENNANIGAN alias does not work in pipe, workaround is involved
+# SHENANIGAN alias does not work in pipe, workaround is involved
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
 # pipe: powershell -command "& c:\scripts\scheduled_task.ps1 *> %LOG%"
 

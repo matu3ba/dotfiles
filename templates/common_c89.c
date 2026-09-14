@@ -11,8 +11,8 @@ Requires support for
 * clang diagnostic push
 * clang diagnostic ignored
 
-SHENNANIGAN rounding direction for division with negative integers is implementation defined
-SHENNANIGAN checking if c89 or c90 has no macro
+SHENANIGAN rounding direction for division with negative integers is implementation defined
+SHENANIGAN checking if c89 or c90 has no macro
 - https://sourceforge.net/p/predef/wiki/Standards/ indicate there is no macro.
 - https://gist.github.com/colematt/97a3b50b680cfff98456cdcdfe4c721c
 - clang and gcc use c89, c90 and ansi flags identically.
@@ -39,7 +39,7 @@ SHENNANIGAN checking if c89 or c90 has no macro
 #if defined(__STDC__)
 #if defined(__STDC_VERSION__)
 #if (__STDC_VERSION__ >= 199409L)
-/* SHENNANIGAN: clangd complains about "not C89 compatible" even though __STDC_VERSION__ is undefined */
+/* SHENANIGAN: clangd complains about "not C89 compatible" even though __STDC_VERSION__ is undefined */
 #error "not C89 compatible"
 #endif // (__STDC_VERSION__ >= 199409L)
 #endif // defined(__STDC_VERSION__)
@@ -48,7 +48,7 @@ SHENNANIGAN checking if c89 or c90 has no macro
 #endif // defined(__STDC__)
 
 #if 0
-SHENNANIGAN There are no fixed typed integers.
+SHENANIGAN There are no fixed typed integers.
 So no inttypes.h and stdint.h
 Missing pile of target dependent pointer sizes to reimplement stdint.h
 Prefer typedefs, if possible.

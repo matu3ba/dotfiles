@@ -288,7 +288,7 @@ https://nixos-and-flakes.thiscute.world/
 More interesting projects
 embedded OS https://github.com/cleverca22/not-os
 
-SHENNANIGAN and tradeoffs
+SHENANIGAN and tradeoffs
 
 Overall tradeoff:
 - CPU baseline architecture
@@ -373,7 +373,7 @@ duplicating console stuff with brain-dump.org/projets/abduco
 nix resources
 https://github.com/figsoda/ekalf/tree/main
 
-SHENNANIGAN
+SHENANIGAN
 Newer mesa headers will not work together with older ones, so opengl with mesa
 can not be pure, since is a global runtime property of the hardware.
 Workarounds

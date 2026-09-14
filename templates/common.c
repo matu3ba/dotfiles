@@ -146,7 +146,7 @@ static_assert(HAS_C23, "use HAS_C23 macro");
 // * static_assert with C11: _Static_assert (0, "assert1");
 // * constexpr in C23
 
-// SHENNANIGAN __builtin_constant_p does not check for string literals
+// SHENANIGAN __builtin_constant_p does not check for string literals
 
 #if defined(HAS_C23)
 static_assert((2 + 2) % 3 == 1, "Whoa dude, you knew!");
@@ -219,7 +219,7 @@ DEFER_CLEANUP1:
   return st;
 }
 // * errdefer pattern with jump labels
-// SHENNANIGAN clang c++-compat: Cannot jump from this goto statement to its label [goto_into_protected_scope]
+// SHENANIGAN clang c++-compat: Cannot jump from this goto statement to its label [goto_into_protected_scope]
 //    goto ERRDEFER_CLEANUP1;
 int32_t *errdefer_in_c(void);
 int32_t *errdefer_in_c(void) {
@@ -353,7 +353,7 @@ ERRDEFER_CLEANUP1:
 // worksforme and which hackfix can be applied.
 
 //====pointers
-// SHENNANIGAN
+// SHENANIGAN
 // In short: Pointers are a huge footgun in C standard.
 // See https://matu3ba.github.io/post/shennanigans_in_c.html
 //
@@ -439,7 +439,7 @@ size_t use_counted_by(char *__counted_by(len) ptr, size_t len) {
 //   It can also be disabled in all compilers via #define restrict, using an according optimization level (typical -O1)
 //   or via separating header and implementation and disabling link time optimziations.
 
-// SHENNANIGAN memset_s and other *_s fns are optional, have heavy cost
+// SHENANIGAN memset_s and other *_s fns are optional, have heavy cost
 // without benefit and C23 got instead memset_explicit.
 // clangd still complains
 // some features of memset_s that memset lacks (hence many platforms/libcs are
@@ -525,7 +525,7 @@ void standard_namespacing(void) {
     } uRepr;
   } sNamespace1;
   // struct Namespace1 sNamespace1;
-  // SHENNANIGAN clang c++-compat Variable has incomplete type 'union Repr' [typecheck_decl_incomplete_type]
+  // SHENANIGAN clang c++-compat Variable has incomplete type 'union Repr' [typecheck_decl_incomplete_type]
   union Repr U64;
   U64.u64 = 12;
   sNamespace1.eMode = Undefined;
@@ -653,7 +653,7 @@ inline void hash_combine(unsigned long *seed, unsigned long const value) {
 // https://gitlab.com/fwojcik/smhasher3
 // https://github.com/rui314/mold/commit/fa8e95a289f911c0c47409d5848c993cb50c8862
 
-// SHENNANIGAN clang has useless warnings firing on trivial code like
+// SHENANIGAN clang has useless warnings firing on trivial code like
 // templates\common.c:315:7: warning: unsafe pointer arithmetic [-Wunsafe-buffer-usage]
 //   315 |       tmps++;
 //       |       ^~~~
@@ -735,7 +735,7 @@ void printBits(int32_t const size, void *const ptr) {
 
 void print_size_t(void);
 void print_size_t(void) {
-  // SHENNANIGAN clangd: no autocorrection of printf formatter string
+  // SHENANIGAN clangd: no autocorrection of printf formatter string
   size_t val_size_t = 0;
   printf("%zu\n", val_size_t);
   ptrdiff_t val_ptrdiff_t = 0;
@@ -766,7 +766,7 @@ int helper_seq_points(int *a) {
 }
 
 void sequence_points_ub(void);
-// SHENNANIGAN
+// SHENANIGAN
 void sequence_points_ub(void) {
   int a = 0;
   // a = a++ + b++; // Multiple unsequenced modifications to a
@@ -775,7 +775,7 @@ void sequence_points_ub(void) {
 }
 
 void aliasing_loader_clobberd_by_store(int *a, int const *b);
-// SHENNANIGAN
+// SHENANIGAN
 // Aliasing protection in C/C++ is based on type equivalence (in Rust not):
 void aliasing_loader_clobberd_by_store(int *a, int const *b) {
   for (int i = 0; i < 10; i += 1) {
@@ -797,7 +797,7 @@ void noaliasing_with_restrict(int *__restrict__ a, int const *b) {
 }
 
 void ptr_cmp(int *a, int const *b);
-// SHENNANIGAN
+// SHENANIGAN
 // Additional pointer semantics created unnecessary UB, so one has to compare
 // against 0 to be always compatible.
 void ptr_cmp(int *a, int const *b) {
@@ -813,7 +813,7 @@ void ptr_cmp(int *a, int const *b) {
 //   int* a = void*;
 
 void convert_string_to_int(char const *buff);
-// SHENNANIGAN
+// SHENANIGAN
 // No readable, portable simple to use, handling all standard cases for ascii standard
 // conversion routines for string to integer. <C++23> is worse without boost.
 // This code is uselessly verbose (ignore non-portable printf qualifiers for now) taken from
@@ -856,18 +856,18 @@ void convert_string_to_int_simple(char const *buff) {
   }
 }
 
-// SHENNANIGAN
+// SHENANIGAN
 // The preprocessor always searches the current directory first for quote includes
 // and this behavior can not be changed to include another_path/putc.h instead of
 // local dir putc.h
 
-// SHENNANIGAN
+// SHENANIGAN
 // create a list data structure implies 3 options:
 // * Make it generic using preprocessor directives (boils down to reimplementing or using C11 or generators)
 // * Make it generic using 'void *' instead of actual types
 // * Not making generic and reimplement for each type.
 
-// SHENNANIGAN
+// SHENANIGAN
 // `malloc(sizeof(MyType) * count)` breaks, if count is not given
 // strongly typed C solution requires (C99 generators or C11 generics)
 // C++ solution:
@@ -877,7 +877,7 @@ void convert_string_to_int_simple(char const *buff) {
 // }
 
 int no_reinterpret_cast(void);
-// SHENNANIGAN reinterpret_cast does not exist making different pointer type access UB
+// SHENANIGAN reinterpret_cast does not exist making different pointer type access UB
 // > Dereferencing a pointer that aliases an object that is not of a
 // > compatible type or one of the other types allowed by
 // > C 2011 6.5 paragraph 71 is undefined behavior.
@@ -898,14 +898,14 @@ int no_reinterpret_cast(void) {
 }
 
 int ptr_no_reinterpret_cast(void);
-// SHENNANIGAN unclear risk from clang/gcc provenance related miscomplations
+// SHENANIGAN unclear risk from clang/gcc provenance related miscomplations
 int ptr_no_reinterpret_cast(void) {
   char arr[4] = {0, 0, 0, 1};
   int32_t i32_arr = 0; // unnecessary variable hopefully elided
   memcpy(&i32_arr, &arr[0], 4);
   int32_t *i32_arr_ptr = &i32_arr;
   (void)i32_arr_ptr;
-  // SHENNANIGAN dont return stack local variable here!
+  // SHENANIGAN dont return stack local variable here!
   return 0;
 }
 
@@ -948,10 +948,10 @@ typedef struct structname {
   int some_var;
 } structname_s;
 
-// SHENNANIGAN
+// SHENANIGAN
 // clang and gcc do not support relative paths for object file output
 
-// MSVC SHENNANIGAN
+// MSVC SHENANIGAN
 // https://developercommunity.visualstudio.com/t/please-implement-integer-overflow-detection/409051
 // Visual Studio 2022 version 17.7 has some non-optimal way of checking
 // https://developercommunity.visualstudio.com/t/10326281
@@ -1009,7 +1009,7 @@ void use_callbacks(void) {
 }
 
 void fn_voidptr(void *raw_ptr, uint64_t len);
-// SHENNANIGAN const char* to void* cast has unhelpful error messages
+// SHENANIGAN const char* to void* cast has unhelpful error messages
 void fn_voidptr(void *raw_ptr, uint64_t len) { memset(raw_ptr, 0, len); }
 
 void use_voidptr(void);
@@ -1021,7 +1021,7 @@ void use_voidptr(void) {
   fn_voidptr((void *)sVars[0], strlen(sVars[0]));
 }
 
-// SHENNANIGAN standard flag for Windows
+// SHENANIGAN standard flag for Windows
 // WIN32_LEAN_AND_MEAN
 // silently removes deprecated code
 
@@ -1185,7 +1185,7 @@ void compound_literal_usage(void) {
   compound_literal_by_addr(&comlit1);
 }
 
-// SHENNANIGAN one can escape shadowing potentially resulting in weird errors
+// SHENANIGAN one can escape shadowing potentially resulting in weird errors
 // int x_global_cursed = 13;
 // void escaping_shadowing() {
 //   int x = 1;
@@ -1197,7 +1197,7 @@ void compound_literal_usage(void) {
 // }
 
 // void multi_character_constants(void);
-// SHENNANIGAN implementation dependent, so best to avoid them
+// SHENANIGAN implementation dependent, so best to avoid them
 // [-Wfour-char-constants] warning: multi-character character constant
 // void multi_character_constants(void) {
 //   enum State1 {
@@ -1208,7 +1208,7 @@ void compound_literal_usage(void) {
 // }
 
 void bitfields(void);
-// SHENNANIGAN implementation defined behavior for nesting due to being underspecified
+// SHENANIGAN implementation defined behavior for nesting due to being underspecified
 void bitfields(void) {
   struct Bitfield1 {
     unsigned int b0 : 3;
@@ -1219,7 +1219,7 @@ void bitfields(void) {
 // ./templates/common.c:1200:5: error: bit-field '' of type 'unsigned short' has a different storage size than the preceding bit-field (2 vs 1 bytes) and will not be packed
 //       under the Microsoft ABI [-Werror,-Wms-bitfield-padding]
 // void zero_bitfield(void);
-// // SHENNANIGAN 0 bit field
+// // SHENANIGAN 0 bit field
 // void zero_bitfield(void) {
 //   struct ZeroBitField1 {
 //     unsigned char x : 5;
@@ -1346,12 +1346,12 @@ struct ImageVLA ImageVLA;
 // TCHAR   DllPath[MAX_PATH] = {0};
 // GetModuleFileName((HINSTANCE)&__ImageBase, DllPath, _countof(DllPath));
 
-// SHENNANIGAN windows
+// SHENANIGAN windows
 // docs on job objects are very bad on runtime behavior
 // TerminateJobObject does not terminate until some IO completion function is
 // executed, which apparently executed pending job object tasks via callback.
 
-// SHENNANIGAN windows
+// SHENANIGAN windows
 // related complex reliable waiting for process tree completion on windows
 // I/O completion port and to listen for notifications JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO
 // but:
@@ -1375,7 +1375,7 @@ struct ImageVLA ImageVLA;
 // st = timeSetEvent(1, 0, &fnPtr, reinterpret_cast<DWORD_PTR>(this), TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 
 int FG_Init(char *errmsg_ptr, int *errmsg_len);
-// SHENNANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
+// SHENANIGAN snprintf standard specification has ambiguous phrasing on 0 sentinel
 // In practice implementations unconditionally add 0 sentinel.
 //   if (*errmsg_len > 0) errmsg_ptr[*errmsg_len - 1] = 0x0;
 int FG_Init(char *errmsg_ptr, int *errmsg_len) {
@@ -1451,7 +1451,7 @@ void veh_example(void);
 void deinitTimer(void) {}
 void resetOutputs(void) {}
 
-// SHENNANIGAN windows
+// SHENANIGAN windows
 // no guide how to minimize headers to optimize compilation time
 // only including below things fails in clangd with "No Target Architecture"
 // #include <windef.h>
@@ -1796,7 +1796,7 @@ void C99use_qsort(void) {
 //    | &= ^= |=     | Asgn by bitwise AND, XOR, and OR         |
 // 15 |  ,           | Comma                                    | Left-to-right
 
-// SHENNANIGAN Evaluation order of operators is undefined, the operator
+// SHENANIGAN Evaluation order of operators is undefined, the operator
 // precedence only describes the type of the result, not how it is evaluated.
 // Prefer to use new statements, if possible to remove evaluation order ambiguity.
 // See also ./example/operator_precedence.c
@@ -1817,7 +1817,7 @@ void C11_alignment_control(void) {
   _Alignas(128) _Atomic uint32_t mutex;
   (void)mutex;
   (void)threadloc_var;
-  // SHENNANIGAN allocation fns
+  // SHENANIGAN allocation fns
 #if defined(_WIN32)
   uint8_t *ptr_aligned_mem = _aligned_malloc(1024, 1024);
   _aligned_free(ptr_aligned_mem);
@@ -1900,9 +1900,9 @@ void C23_deprecated() {}
 [[nodiscard]] // warning on usage of discarded code
 int C23_discard(int x);
 int C23_discard(int x) { return x + 1; }
-// SHENNANIGAN C23 has no macros to test target for branch-free wraparound or
+// SHENANIGAN C23 has no macros to test target for branch-free wraparound or
 // saturation arithmetic (+|,|*)
-// SHENNANIGAN C23 has no saturation arithmetic
+// SHENANIGAN C23 has no saturation arithmetic
 void C23_wraparound_operations();
 void C23_wraparound_operations() {
   uint64_t a = UINT64_MAX;
@@ -1914,7 +1914,7 @@ void C23_wraparound_operations() {
     fprintf(stdout, "no overflow");
   }
 }
-// SHENNANIGAN C23 constexpr primarily to avoid VLAs
+// SHENANIGAN C23 constexpr primarily to avoid VLAs
 // without constexpr fns
 void C23_constexpr();
 void C23_constexpr() {
@@ -1944,7 +1944,7 @@ void C23_constexpr_to_prevent_VLA() {
   fprintf(stdout, "%d\n", a[0]);
 }
 // bool became a keyword since C17?
-// SHENNANIGAN char8_t was added instead of defaulting strings to UTF-8
+// SHENANIGAN char8_t was added instead of defaulting strings to UTF-8
 // [[noreturn]] instead of annotation
 
 enum efields : uint16_t { // best practice to specify len of enum

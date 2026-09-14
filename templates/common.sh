@@ -228,13 +228,13 @@ stopwatch() {
   done
 }
 
-# SHENNANIGAN
+# SHENANIGAN
 # Posix shell has no utility to remove control of process from host shell
 
 # Get symbol information via
 # type symbol
 
-# SHENNANIGAN Shells other than powershell have no static and dynamic checks
+# SHENANIGAN Shells other than powershell have no static and dynamic checks
 # for types So one has to do regex pattern matching at runtime for type checks
 # or hope that runtime type information are correct.
 

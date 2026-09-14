@@ -100,7 +100,7 @@ Verbosity
 This should probably run analysis manually
 msbuild MySolution.sln /p:RunCodeAnalysis=true
 
-SHENNANIGAN VS2015 Disabling stdafx.h may or may not work.
+SHENANIGAN VS2015 Disabling stdafx.h may or may not work.
 
 https://learn.microsoft.com/en-us/visualstudio/ide/msbuild-logs?view=vs-2022
 On incremental build slowdown search in verbose build output:
@@ -140,7 +140,7 @@ templates/win/VisualStudio.txt
 templates/win/VisualStudioCode.txt
 
 ====debug
-SHENNANIGAN Piping output of graphical applications does not work on default.
+SHENANIGAN Piping output of graphical applications does not work on default.
 Doing it without effort (use own stdout handle) requires arcane settings to use both console and standard handles:
 gcc -mconsole test_gdi.c -lgdi32
 
@@ -282,7 +282,7 @@ Installation of package to install .appinstaller packages:
    application you need either a Windows developer license or a
    sideloading-enabled system.
 * https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19
-  * SHENNANIGAN msxixbundle and msix are both zip files
+  * SHENANIGAN msxixbundle and msix are both zip files
 
 Installing .msi files:
 https://powershellexplained.com/2016-10-21-powershell-installing-msi-files/
@@ -402,7 +402,7 @@ https://learn.microsoft.com/en-us/windows/win32/termserv/terminal-services-short
   overview programs          ctrl+alt+tab
                              unclear
 
-SHENNANIGAN shutdown script may not get called at all + no diagnosis
+SHENANIGAN shutdown script may not get called at all + no diagnosis
 Otherwise: Local group policy.
 gpedit.msc -> Computer Configuration > Windows Settings > Scripts (Startup/Shutdown) > Shutdown (See Below)
 
@@ -443,18 +443,18 @@ https://stackoverflow.com/questions/24836194/windows-dll-dynamic-initialization-
 2. Static initialization just needs .dlls.
 3. Dynamic initialization requires all imports to be resolved for the .dll.
 
-SHENNANIGAN LoadLibray (temporary) uses up virtual memory in error cases, which can lead
+SHENANIGAN LoadLibray (temporary) uses up virtual memory in error cases, which can lead
 to out of virtual memory situations (error 8). See https://github.com/matu3ba/win32k-mitigation
 
 tracing ntdll calls
 https://www.x86matthew.com/view_post?id=lognt32
 
-SHENNANIGAN InitializeProcThreadAttributeList gives INVALID_PARAMETER (87) on
+SHENANIGAN InitializeProcThreadAttributeList gives INVALID_PARAMETER (87) on
 missing inheritance of a parameter without the docs describing any errors, even
 in more complex Kernel APIs usage cases. The parameter must also never be NULL
 or an invalid handle.
 
-SHENNANIGAN TerminateThread and TerminateProcess() have severe semantic problems
+SHENANIGAN TerminateThread and TerminateProcess() have severe semantic problems
 https://wiki.sei.cmu.edu/confluence/display/c/WIN01-C.+Do+not+forcibly+terminate+execution
 Replace thread with process.
 * If target thread owns critical section, critical section will not be released.
@@ -473,7 +473,7 @@ https://www.elastic.co/security-labs/deep-dive-into-the-ttd-ecosystem
 ttd  Tracing a kernel mode process is not possible
 
 Windows <= 10 services can run processes as user SYSTEM != user Adminstrator.
-SHENNANIGAN Windows >= 11 require hacks to run processes as SYSTEM.
+SHENANIGAN Windows >= 11 require hacks to run processes as SYSTEM.
 
 ====fast_admin_shell
 Windows key + X
@@ -595,7 +595,7 @@ Taskkill /IM "process name" /F
 pwsh Stop-Process -Name "ProcessName" -Force
 pwsh Stop-Process -ID PID -Force
 
-SHENNANIGAN too many ways to check hard drive status (smart)
+SHENANIGAN too many ways to check hard drive status (smart)
 wmic diskdrive get model,name,serialnumber,status
 wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus
 Get-CimInstance -namespace root\wmi -class MSStorageDriver_FailurePredictStatus
@@ -622,12 +622,12 @@ use alignment in macros
 #error "No Target Architecture"
 #endif
 
-SHENNANIGAN Portable include is #include <Windows.h>, but lower case also works on windows
-SHENNANIGAN github runner wants <windows.h> or complains with
+SHENANIGAN Portable include is #include <Windows.h>, but lower case also works on windows
+SHENANIGAN github runner wants <windows.h> or complains with
 error: non-portable path to file '<windows.h>'; specified path differs in case
 from file name on disk [-Werror,-Wnonportable-system-include-path].
 
-SHENNANIGAN Windows Input is very much not nice to use
+SHENANIGAN Windows Input is very much not nice to use
 * use SDL3 instead https://gist.github.com/flibitijibibo/aa8a61196621adf17f76d182720830c1
 https://ph3at.github.io/posts/Windows-Input/
 

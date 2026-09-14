@@ -1,4 +1,4 @@
-SHENNANIGAN
+SHENANIGAN
 * loki
   - logs only
   ==.NET

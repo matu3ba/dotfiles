@@ -1,6 +1,6 @@
 direnv allow .
 
-SHENNANIGAN direnv is not reliably deleting allow entries, when being run with
+SHENANIGAN direnv is not reliably deleting allow entries, when being run with
 direnv deny
 direnv deny .
 direnv deny .envrc

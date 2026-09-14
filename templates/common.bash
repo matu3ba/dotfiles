@@ -42,7 +42,7 @@ done
 # disown [Job|-r RunningJob|-a|-h JobWithoutSIGHUB]     with -a for all jobs
 #   Note: disown does not remove control from shell, so the job still gets terminated once shell is terminated. Use setsid for this.
 # ps                                                    report snapshot of current process
-# SHENNANIGAN 'setsid --fork is the only way to properly ensure that a command is run as a detached process.'
+# SHENANIGAN 'setsid --fork is the only way to properly ensure that a command is run as a detached process.'
 # setsid --fork                                         run program in new session
 
 # read file into variable without cat

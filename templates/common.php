@@ -1,5 +1,5 @@
 // https://stackoverflow.com/questions/9289269/most-reliable-safe-method-of-preventing-race-conditions-in-php
-// SHENNANIGAN php creates multiple instances on multiple parallel incoming
+// SHENANIGAN php creates multiple instances on multiple parallel incoming
 // user requests, which can race against another without recommended or native
 // way to prevent this race conditions
 // * the typical suggested solution is to use form keys in $_SESSION,

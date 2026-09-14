@@ -18,30 +18,30 @@ local M = {}
 
 --TODO https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
 
--- SHENNANIGAN :q! or ZQ on window drops data.
--- SHENNANIGAN no harpoon-like speed to run things for example with overseer
--- SHENNANIGAN: getpos has 1-indexed columns vs nvim_win_set_cursor 0-indexed
--- SHENNANIGAN no vim/neovim docs on how multiple newlines should be serialized and
+-- SHENANIGAN :q! or ZQ on window drops data.
+-- SHENANIGAN no harpoon-like speed to run things for example with overseer
+-- SHENANIGAN: getpos has 1-indexed columns vs nvim_win_set_cursor 0-indexed
+-- SHENANIGAN no vim/neovim docs on how multiple newlines should be serialized and
 -- deserialized to be visualized on 1 line.
--- SHENNANIGAN Window system installation tries to use system location for language files,
+-- SHENANIGAN Window system installation tries to use system location for language files,
 -- for which download fails due to missing write permissions.
 
--- SHENNANIGAN copying in hex 22ef bfbd 22 (from latin encoding of degree via
+-- SHENANIGAN copying in hex 22ef bfbd 22 (from latin encoding of degree via
 -- <degree>) breaks due to control character execution at least
 
 -- https://github.com/neovim/neovim/pull/30261/files
 
--- SHENNANIGAN: '<', '>' still advertised as cursor positions, but its only extmarks
+-- SHENANIGAN: '<', '>' still advertised as cursor positions, but its only extmarks
 -- cursor positions are 'v' for first and '.' for last selection positions
 -- bufnum, lnum, col, off
 
--- SHENNANIGAN Lua code to get selection unnecessary complex due to
+-- SHENANIGAN Lua code to get selection unnecessary complex due to
 -- callback requirement during invoking or does not handle all edge cases.
 -- As example, one needs to use nvim_buf_get_mark within commands and
 -- vim.fn.getpos within keymaps due to command mode in neovim leaving
 -- the visual mode without storing how the selection has been generated.
 M.printSelectionAndMode = function()
-  -- SHENNANIGAN There is no sane way to get the mode of how the extmark or
+  -- SHENANIGAN There is no sane way to get the mode of how the extmark or
   -- position was generated with vim.api.nvim_buf_get_mark(0, "<,>") or
   -- vim.fn.getpos 'v,.'
   -- local vstart = vim.fn.getpos 'v'

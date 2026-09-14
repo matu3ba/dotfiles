@@ -357,7 +357,7 @@ p *(char**)0x7fffffffbfc0
 Print vector
 print *(x._m_impl._m_start+0)
 
-SHENNANIGAN
+SHENANIGAN
 Printing std::map entries fails with 'Could not find operator[].', because map entry is std::string.
 Solution 1:
 std::string make_string(const char *x) { return x; }

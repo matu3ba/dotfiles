@@ -54,7 +54,7 @@ step out, into, over, go
 datatype dt
 sizeof sizeof()
 .writemem FileName Range
-SHENNANIGAN writemem does not detect hex length, so 0x30 would be 30 bytes
+SHENANIGAN writemem does not detect hex length, so 0x30 would be 30 bytes
 .writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L48
 .writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 0x30
 Larger chunks needs L?: .writemem C:\Users\USER\Stack.bin 0x00000165e21c46f0 L?0x30

@@ -1,6 +1,6 @@
 //====general
 //====reference_manual
-//====SHENNANIGAN
+//====SHENANIGAN
 //====conventions
 //====common
 
@@ -9,7 +9,7 @@
 // use Separate LineIDs = TRUE
 
 //====reference_manual
-// SHENNANIGAN Beckhoff does not specify accessor specifier behavior of interfaces ANY_INT
+// SHENANIGAN Beckhoff does not specify accessor specifier behavior of interfaces ANY_INT
 
 // Function blocks (fb, Object Function block)
 // * output and internal vars retained
@@ -99,7 +99,7 @@ Advanced:
 
 Attribute pragmas https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/2529556363.html&id=
 
-//====SHENNANIGAN
+//====SHENANIGAN
 // Beckhoff Engineering
 // * Copy paste of ENUMs not possible with graphical list view, must use file view xor disable list view
 // * Property references in libraries may not show up via show all references/shift-f12
@@ -118,7 +118,7 @@ FUNCTION_BLOCK FB_obsolete IMPLEMENTS ITF_obsolete
 PROGRAM MAIN
   t1 := t1 + 1;
   // fb_obsolete.Activate();
-  prop1 := fb_obsolete.obsolete_prop; // SHENNANIGAN: no warning
+  prop1 := fb_obsolete.obsolete_prop; // SHENANIGAN: no warning
   //fb_obsolete.obsolete_prop := 1;
   
 // Interfaces should not be trusted to return physical status of machine, unless explicit comment exists. 

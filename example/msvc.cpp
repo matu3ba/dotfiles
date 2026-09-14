@@ -63,7 +63,7 @@
 //     &quot; is the xml attribute value escape for double quotes "
 //     &gt; is the xml attribute value escape for the > character
 
-// SHENNANIGAN
+// SHENANIGAN
 // $(VC_ExecutablePath_x64_x64) looks like correct path on VS2022
 // $(VC_ExecutablePath_x64) can be wrongly expanded path on VS2022
 
@@ -89,11 +89,11 @@
 // * UTF16 LE BOM files with strings -> UTF8 files
 // * latin(ISO-8859-1)/WINDOWS-1252 files with strings -> UTF8 files
 
-// SHENNANIGAN git diff shows no difference, when the BOM was locally removed, because
+// SHENANIGAN git diff shows no difference, when the BOM was locally removed, because
 // it sees UTF-8 LE BOM as redundant to its internal utf8 storage.
 // However, msvc thinks differently and may choose other encodings than UTF-8
 
-// SHENNANIGAN execution with recompilation will save local file and reencode it,
+// SHENANIGAN execution with recompilation will save local file and reencode it,
 // if the file is opened in tab, even though no change in VS2022 editor has
 // happened.
 // Probably the timepoint and file content of file in opened tab nis cached,
@@ -101,7 +101,7 @@
 // Hence, external changes must be done with closed file and reopen it,
 // if VS2022 would reencode the file and msvc incorrectly interpret it.
 
-// SHENNANIGAN AdditionalOptions are mutual exclusive and can lead to incorrect
+// SHENANIGAN AdditionalOptions are mutual exclusive and can lead to incorrect
 // precompiled headers.
 //  <ClCompile>
 //    <WarningLevel>Level3</WarningLevel>
@@ -127,7 +127,7 @@
 // -    </ClCompile>
 // +    <ClCompile Include="SomeFile.cpp" />
 
-// SHENNANIGAN Step success is based on exit code 0 or 1, other exit codes may be incorrectly evaluated.
+// SHENANIGAN Step success is based on exit code 0 or 1, other exit codes may be incorrectly evaluated.
 
 // https://pspdfkit.com/blog/2021/string-literals-character-encodings-and-multiplatform-cpp/
 // https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8?view=msvc-170
