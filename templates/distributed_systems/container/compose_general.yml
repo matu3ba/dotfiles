@@ -45,3 +45,17 @@
 #     tty: true        # docker run -t
 
 # Alternative: Manually repeating correct startup logic and use: podman run --rm service
+
+# SHENANIGAN Compose can use empty arguments, even though the
+# dockerfile docker/podman build would fail with empty ones
+# Problem
+# ARG COMPOSE_POSSIBLY_EMPTY_STRING_INSTEAD_OF_FAILURE
+# Workarounds
+# * always default to an invalid value and do check in dockerfile
+# * always assume all arguments can be empty string and check in dockerfile
+# * do nothing an live with dockerfile+composefile being bad
+
+# SHENANIGAN There is no build system for composing basic steps, so one has to
+# use tedious and annoying cli arguments.
+# podman compose --env-file .env_kc -f co.yml -f co.frontend.yml run -u root angular npm install
+# is too long when I know for configuration "frontend, env ".env_kc" I want

@@ -36,8 +36,8 @@ https://docs.docker.com/compose/intro/compose-application-model/
   Not available for swarm devices.
 
 SHENANIGAN
-podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t cow-client -f ./Containerfile.Angular ./cow-client/
-podman run --rm --name cow-client -p 127.0.0.1:4200:4200 -v ./cow-client/:/app:z -v /app/node_modules -e DOTNET_SERVER_DNS="http://localhost:4201" cow-client npx ng serve --host 0.0.0.0
+podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t client -f ./Containerfile.Angular ./client/
+podman run --rm --name client -p 127.0.0.1:8082:8082 -v ./client/:/app:z -v /app/node_modules -e DOTNET_SERVER_DNS="http://localhost:8081" client npx ng serve --host 0.0.0.0
 * compose files missing to set ARG in the Dockerfile defaults to empty string,
   which can fail at runtime in a super weird ways.
   This is especially annoying when using --build-arg UID=$(id -u) --build-arg GID=(id -g)

@@ -1,0 +1,30 @@
+# Full stack automatic as default workflows for compose file.
+
+services:
+  angular:
+    container_name: angular
+    build:
+      context: ./client/
+      dockerfile: ../Containerfile.Angular
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    networks:
+      - keycloak-net
+    ports:
+      - "127.0.0.1:8082:8082"
+    volumes:
+      - ./client/:/app:z
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "${ANGULAR_SERVER_DNS}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    depends_on:
+      dotnet:
+        condition: service_healthy
+    entrypoint: ["npx", "ng", "serve", "--host", "0.0.0.0:8082"]
+    environment:
+      - DOTNET_SERVER_DNS=${DOTNET_SERVER_DNS}

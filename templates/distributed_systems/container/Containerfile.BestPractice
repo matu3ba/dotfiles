@@ -1,6 +1,6 @@
 # see https://docs.docker.com/reference/dockerfile/ for commands
 # podman build -t node-dev:26 -f Containerfile.dev|prod .
-# podman run --rm -p 4200:4200 -v .:/app:z -v /app/node_modules node-dev:26 npx ng serve
+# podman run --rm -p 8082:8082 -v .:/app:z -v /app/node_modules node-dev:26 npx ng serve
 
 # LABEL to label metadata
 # VOLUME to create mount point with specified name and marks it
@@ -15,9 +15,14 @@
 # for example to mandate --build-arg NUMPY_VERSION=SOME_VERSION, use
 # ARG NUMPY_VERSION
 
-# Do not use PORT to allow selecting different ports.
-# Metadata should include WORKDIR.
-# OCI has is no semantics convention regarding user and security.
+# Do not use
+# 1 EXPOSE PORT
+# - to allow selecting different ports.
+# 2 assume any non-root user or workdir exists or does not exist
+# - OCI has is no semantics convention regarding anything.
+#   Most important are however permissions by user, security.
+# 3 Your own metadata should include WORKDIR and non-root users with
+#   filepaths etc.
 
 FROM docker.io/library/node:26-alpine
 RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
@@ -30,7 +35,6 @@ RUN npm ci && \
     chmod -R 555 node_modules
 
 COPY --chown=nodejsuser:nodejsuser . .
-EXPOSE 4200
 USER nodejsuser
 # followup steps are executed as USER nodejsuser
 # until another USER like USER root is used.

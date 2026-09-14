@@ -1,0 +1,10 @@
+name: projectname
+
+networks:
+  net: # local network access only (bridge, ports bind to 127.0.0.1)
+    # compose has no way to block egress to host from containers alone,
+    # that would need firewall rules name: net
+    driver: bridge
+    external: false
+
+  # list all services and use standard cli commands

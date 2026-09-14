@@ -1,3 +1,15 @@
+# Container for management of npm packages
+# 1 npm image preparation
+# if a non-root user exists, check that uid and gid match
+# >podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t alpine-npm:26 -f Containerfile.npm .
+# test invalid uid/gid: >podman build --build-arg UID=100000 --build-arg GID=100000 -t alpine-npm:26 -f Containerfile.npm .
+# 2 npm package installing
+# >podman run --rm -v ./client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm install --verbose"
+# 3 npm package updating
+# >podman run --rm -v ./client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm ci --verbose && npm update --verbose"
+# sandboxing nice to have (not working yet)
+# >podman run --rm --cap-drop=ALL --security-opt=no-new-privileges --read-only --tmpfs /tmp:size=50m --tmpfs /app/node_modules:size=400m,noexec,nosuid -v ./client:/app:z alpine-npm:26 npm install
+
 FROM docker.io/library/node:26-alpine
 ARG UID
 ARG GID

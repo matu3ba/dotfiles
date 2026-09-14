@@ -55,7 +55,7 @@ cloud-provider-kind -enable-lb-port-mapping
 
 ==common_images
 podman run -p 8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 start-dev
-podman run -p 4201:4201 -v .:/app:z -w /app mcr.microsoft.com/dotnet/sdk:9.0 dotnet watch run -- --urls=http://localhost:4201/
+podman run -p 8081:8081 -v .:/app:z -w /app mcr.microsoft.com/dotnet/sdk:9.0 dotnet watch run -- --urls=http://localhost:8081/
 
 ==filter
 podman rm $(podman ps -a --filter status=created -q)

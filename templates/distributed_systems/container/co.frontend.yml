@@ -1,0 +1,28 @@
+# Frontned interactive as default workflows for compose file.
+# >podman compose --env-file .env_kc -f co.yml -f co.frontend.yml run -u root angular npm install
+# >podman compose --env-file .env_kc -f co.yml -f co.frontend.yml up angular
+# >podman compose --env-file .env_kc -f co.yml -f co.frontend.yml up
+# interactive shell
+# >podman exec -it angular sh
+# >$npm start
+
+# Add services to be overwritten (ideally appended)
+services:
+  angular:
+    container_name: angular
+    image: docker.io/library/node:26-alpine
+    tty: true
+    user: 1000:1000
+    working_dir: /app
+    networks:
+      - keycloak-net
+    ports:
+      - "127.0.0.1:8082:8082"
+    volumes:
+      - ./client/:/app
+      - /app/node_modules
+    depends_on:
+      dotnet:
+        condition: service_healthy
+    environment:
+      - DOTNET_SERVER_DNS=${DOTNET_SERVER_DNS}

@@ -25,3 +25,10 @@ zig-out/
 # backup files
 /.swp
 /.tmp
+
+# ok
+# /bla1/*
+# !/bla1/keepme
+# broken
+# build/*
+# !build/bin/keep.log

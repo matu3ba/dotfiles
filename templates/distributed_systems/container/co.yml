@@ -1,0 +1,74 @@
+#! Base compose file.
+#podman compose --env-file .env_kc -f co.yml -f co.frontend.yml run -u root angular npm install
+#podman compose --env-file .env_kc -f co.yml -f co.frontend.yml up angular
+
+# Projectname is overwritten by the last compose file, so it depends on usage pattern
+# if projectname should be used or not. If no projectname is set, the cwd is being used
+# as projectname.
+name: projectname
+
+# Same holds for network.
+networks:
+  net: # local network access only (bridge, ports bind to 127.0.0.1)
+    # compose has no way to block egress to host from containers alone,
+    # that would need firewall rules
+    name: net
+    # see ./templates/distributed_systems/compose.txt
+    driver: bridge
+    # external means externally from compose project tracked
+    external: false
+
+services:
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.6.0
+    networks:
+      - keycloak-net
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
+      KC_HTTP_ENABLED: true # dev-only
+      KC_HOSTNAME_STRICT: "false" # dev-only
+    ports:
+      - "127.0.0.1:8080:8080"
+    # volumes:
+    #   TODO condition for persistent database via local mount
+    command:
+      - start-dev # dev-only
+    healthcheck:
+      test: ["CMD", "/opt/keycloak/bin/kc.sh", "show-config"]
+      interval: 2s
+
+  dotnet:
+    # mcr.microsoft.com/dotnet/aspnet:10.0-alpine
+    image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+    container_name: backend
+    networks:
+      - keycloak-net
+    ports:
+      - "127.0.0.1:8081:8081"
+    working_dir: /app
+    volumes:
+      - ./backend/:/app:z
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "${DOTNET_SERVER_DNS}/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    # https://github.com/dotnet/aspnetcore/issues/20152
+    # dotnet watch run does not forward SIGTERM to child process
+    # dotnet run does
+    entrypoint: ["dotnet", "watch", "--", "--urls=http://0.0.0.0:8081/"]
+    environment:
+      - DOTNET_URLS=${DOTNET_SERVER_DNS}
+      - KEYCLOAK_SERVER_DNS=${KEYCLOAK_SERVER_DNS}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - ANGULAR_SERVER_DNS=${ANGULAR_SERVER_DNS}
+    stop_grace_period: 2s
+

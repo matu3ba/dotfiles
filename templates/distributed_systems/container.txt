@@ -343,14 +343,14 @@ have to use docker/lsp
 ====mount_order
   ref https://blog.quarkslab.com/digging-into-the-oci-image-specification.html
   ref https://oneuptime.com/blog/post/2026-03-17-mount-flag-vs-volume-flag-podman/view
-  >podman run --rm -v ./cow-client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm ci --verbose && npm update --verbose"
+  >podman run --rm -v ./client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm ci --verbose && npm update --verbose"
   Explanation
   >docker build -t image dockerfile
   does build based on package-lock.json /app/node_modules
   and then we chmod -R 555 node_modules and the whole things is stored
   in the private image layer with owner USER root.
-  >podman run -v ./cow-client/:/app:z -v /app/node_modules image
-  Then first ./cow-client binds to /app and overwrites everything
+  >podman run -v ./client/:/app:z -v /app/node_modules image
+  Then first ./client binds to /app and overwrites everything
   with the use permissions of the current USER user.
   Thereafter the private volume /app/node_modules of the image
   mounts into /app/node_modules keeping the permissions.

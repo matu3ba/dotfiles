@@ -2,17 +2,65 @@
 # Building
 # * podman build -t alpine-angular-dev:26 -f Containerfile.Angular .
 # Dev instructions
-# * podman run --rm -p 4200:4200 -v .:/app:z -v /app/node_modules alpine-angular-dev:26 npx ng serve
+# * podman run --rm -p 8082:8082 -v .client:/app:z -v /app/node_modules alpine-angular-dev:26 npx ng serve
 # Production usage
 # * After building website container image, mount nginx in via Kubernetes or
 #   docker/podman compose.
 
+#==Development
+# Requires npm package management as explained in
+# templates/distributed_systems/container/Containerfile.npm_hasuser
+# "Container for management of npm packages".
+# prepare Angular container with pinned node_modules:
+# >podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t client -f ./Containerfile.Angular ./client/
+# >cp env_kc_template .env_kc
+# prepare config
+# >sh -c '. ./.env_kc && echo "{ \"url\": \"${DOTNET_SERVER_DNS}/api/keycloak\" }" > client/src/assets/config.json'
+# >cat client/src/assets/config.json
+# starting
+# >podman compose --env-file .env_kc -f co.yml -f co.fullstack.yml up
+# stopping
+# >podman compose --env-file .env_kc -f co.yml -f co.fullstack.yml down
+# >podman compose -p projectname down
+# >podman compose -p projectname down -v
+# debugging compose file:
+# >podman run --rm --name client -p "127.0.0.1:8081:8081" -v ./client/:/app:z -v /app/node_modules -e DOTNET_SERVER_DNS="http://localhost:8081" client npx ng serve --host 0.0.0.0:8081
+# interactive shell: >podman exec -it -u node client sh
+
 FROM docker.io/library/node:26-alpine
-RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
+ARG UID
+ARG GID
+
+# 1 check that neither UID nor GID are empty (prevent bad compose defaults)
+# 2 /etc/passwd must contain
+# root:x:0:0:root:/root:/bin/sh
+# $USER:x:UID:GID::/home/$USER:/bin/sh
+# 3 /home/$USER must be empty
+# 4 UID and GID in container must match
+RUN set -e; \
+    echo "=== UID/GID > 0 check ===" && \
+    if [ "${UID}" -le 0 ] || [ "${GID}" -le 0 ]; then echo "[FAIL] UID or GID must be both positive numbers ${UID}, ${GID} "; exit 1; fi && \
+    echo "=== Validating /etc/passwd ===" && \
+    PASSWD_LINES=$(grep '/bin/sh$' /etc/passwd) && \
+    COUNT=$(echo "$PASSWD_LINES" | wc -l) && \
+    if [ "$COUNT" -eq 2 ]; then echo "[OK] Found exactly 2 entries with /bin/sh"; else echo "[FAIL] Expected 2 entries with /bin/sh, found $COUNT"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q '^root:x:0:0:root:/root:/bin/sh$'; then echo "[OK] root entry valid"; else echo "[FAIL] root entry malformed"; exit 1; fi && \
+    if echo "$PASSWD_LINES" | grep -q "^[^:]*:x:${UID}:${GID}::/home/[^:]*:/bin/sh$"; then echo "[OK] Non-root entry valid (UID=${UID}, GID=${GID})"; else echo "[FAIL] Non-root entry with UID=${UID} GID=${GID} not found"; exit 1; fi && \
+    NON_ROOT_USER=$(echo "$PASSWD_LINES" | grep -v '^root:' | cut -d: -f1) && \
+    echo "[OK] Extracted user: $NON_ROOT_USER" && \
+    echo "=== Validating /home/$NON_ROOT_USER is empty ===" && \
+    UNEXPECTED=$(find /home -mindepth 1 -maxdepth 1 ! -name "$NON_ROOT_USER" 2>/dev/null || true) && \
+    if [ -z "$UNEXPECTED" ]; then echo "[OK] /home clean"; else echo "[FAIL] Unexpected entries in /home"; exit 1; fi && \
+    if [ ! -d "/home/$NON_ROOT_USER" ] || [ -z "$(find "/home/$NON_ROOT_USER" -type f 2>/dev/null)" ]; then echo "[OK] /home/$NON_ROOT_USER empty"; else echo "[FAIL] /home/$NON_ROOT_USER is not empty"; exit 1; fi && \
+    echo "=== Validating UID + GID match ===" && \
+    USER_ID=$(id -u "$NON_ROOT_USER") && \
+    USER_GID=$(id -g "$NON_ROOT_USER") && \
+    if [ "$USER_ID" = "$UID" -a "$USER_GID" = "$GID" ]; then echo "[OK] User UID, GID matches"; else echo "[FAIL] UID, GID mismatch: expected $UID/$GID, got $USER_ID/$USER_GID"; exit 1; fi && \
+    echo "[OK] All validations passed"
+
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci && \
+RUN npm ci --verbose && \
     npm cache clean --force && \
     chmod -R 555 node_modules
-COPY --chown=nodejsuser:nodejsuser . .
-USER nodejsuser
+USER ${UID}:${GID}

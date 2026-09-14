@@ -242,28 +242,11 @@ alias rgp=' rg -p'
 alias rgi="rg -g '!tests' -g '!src/include'"
 #alias rgv='rg --vimgrep'
 
-#==sed: SED_PATTERN FILE
-# BSD sed
-# * sed -i .bak 'pattern' FILE
-# * sed -i '' 'pattern' FILE
-# GNU sed has no .bak/'' before matching pattern
-# in-place replace verbatim: sed -i 's|literal_pattern|replacement_string|g'
-# in-place replace regex: sed -i -e 's/literal_pattern/replacement_string/g'
-# tr can only handle single byte replacements (following does not work): tr '\n' '\\n' <file >tmpfile && mv tmpfile file
-# sed does not include line endings unless told so, which is not POSIX conform
-# sed -i -z 's|\n|\\\n|g' file.txt
-# sed -i -z 's|\\\n|\n|g' file.txt
-# find windows line endings
-# find . -name "*.php" | xargs file | grep "CRLF"
-# rg -l '\r' -g '*.md'
-# grep -l -r -U $'\015' --include="*.md" .
-# replace windows line endings: find . -name "*.php" -type f -exec dos2unix {} \;
-# see section ==fd-find for piping to sed
-# negation selection (delete every line without LIVE): sed '/LIVE/!d' file.txt
-
-#==sd:
-#sd '(?!.*LIVE)' 'DELETE_THIS_LINE' file.txt
-# in-place select replace: grep 'LIVE' file.txt > file_repl.txt && rm file.txt && mv file_repl.txt file.txt
+#==diff
+# show files with differences as
+# [diff] path1 path2
+# [only] path1
+# diff -qr cow-client/ ../keycloak-angular-tutorial/keycloak-angular-demo/ | sed 's/^Files \(.*\) and \(.*\) differ$/[diff] \1 \2/' | sed 's/^Only in \(.*\): \(.*\)$/[only] \1\/\2/' | sed 's|//|/|g'
 
 #==find
 # GNU find -H|L|P [-D debugopts] [-Olevel] [staring-point..] [expression]
@@ -353,6 +336,51 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # rg -l -F 'parse' | xargs -n1 sed -i 's;parse;parse_utf;g'
 # gnu -print0: --format
 
+#==ripgrep
+# usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
+# {n}(exactly),{n,m}(at least n, no more than m),
+# rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
+# figure out why globbing does not work
+# rg -g '*.rs' to ignore file ending
+# rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
+# rg --vimgrep lines+columns -u[u[u]] unrestricted
+# rg -F 'fixed_string'
+# rg '\bword\b' word boundaries
+# full path results:
+# rg -p
+# only filenames, only directory entries (must be option, not match)
+# rg -l
+# only show to be searched filepaths:
+# rg --files
+# only search for file type: -t, --type TY from --type-list
+# Workaroud on mingw for backtick paths '\' on mingw under Windows:
+# option 1 use: --path-separator '\x2F'
+# option 2 pipe through: cygpath --file -
+# (fd-find does not have the problem and offers -x to directly execute on files)
+
+#==sed: SED_PATTERN FILE
+# BSD sed
+# * sed -i .bak 'pattern' FILE
+# * sed -i '' 'pattern' FILE
+# GNU sed has no .bak/'' before matching pattern
+# in-place replace verbatim: sed -i 's|literal_pattern|replacement_string|g'
+# in-place replace regex: sed -i -e 's/literal_pattern/replacement_string/g'
+# tr can only handle single byte replacements (following does not work): tr '\n' '\\n' <file >tmpfile && mv tmpfile file
+# sed does not include line endings unless told so, which is not POSIX conform
+# sed -i -z 's|\n|\\\n|g' file.txt
+# sed -i -z 's|\\\n|\n|g' file.txt
+# find windows line endings
+# find . -name "*.php" | xargs file | grep "CRLF"
+# rg -l '\r' -g '*.md'
+# grep -l -r -U $'\015' --include="*.md" .
+# replace windows line endings: find . -name "*.php" -type f -exec dos2unix {} \;
+# see section ==fd-find for piping to sed
+# negation selection (delete every line without LIVE): sed '/LIVE/!d' file.txt
+
+#==sd:
+#sd '(?!.*LIVE)' 'DELETE_THIS_LINE' file.txt
+# in-place select replace: grep 'LIVE' file.txt > file_repl.txt && rm file.txt && mv file_repl.txt file.txt
+
 #==xargs
 # 1 handle spaces, newlines, special chars correctly: -0
 # find . -name "*.log" -print0 | xargs -0 rm -f
@@ -385,28 +413,6 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 
 # busybox grep (very slow)
 # grep -r regex .
-
-#==ripgrep
-# usese PCRE: ?(0 or 1 or more)|*(0 or more)|+(1 or more) all greedy. posessive added +, lazy added ?
-# {n}(exactly),{n,m}(at least n, no more than m),
-# rg -g '!pattern' or \!pattern or '!{m1,m2,}' to ignore patterns -n for line numbers -B before -A after -c count[-matches] -x entirey line match(^...$)
-# figure out why globbing does not work
-# rg -g '*.rs' to ignore file ending
-# rg --max-depth -U multiline match -I no filename -r replace text -z search compressed files --stat -t type (--type-list)
-# rg --vimgrep lines+columns -u[u[u]] unrestricted
-# rg -F 'fixed_string'
-# rg '\bword\b' word boundaries
-# full path results:
-# rg -p
-# only filenames, only directory entries (must be option, not match)
-# rg -l
-# only show to be searched filepaths:
-# rg --files
-# only search for file type: -t, --type TY from --type-list
-# Workaroud on mingw for backtick paths '\' on mingw under Windows:
-# option 1 use: --path-separator '\x2F'
-# option 2 pipe through: cygpath --file -
-# (fd-find does not have the problem and offers -x to directly execute on files)
 
 #==grep
 # patterns: extended regex -E, fixed string -F, basic regex -G, perl regex -P

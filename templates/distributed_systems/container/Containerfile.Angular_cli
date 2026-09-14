@@ -5,6 +5,9 @@
 # Setup Angular
 #   podman run --rm -v .:/app:z alpine-angular-cli:26 ng --version
 #   podman run --rm -v .:/app:z alpine-angular-cli:26 ng new --skip-install true --skip-git true tmp123
+#   mkdir -p client
+#   podman run --rm -v ./client:/app:z alpine-angular_cli:26 ng new client --directory . --skip-install --skip-git
+
 FROM docker.io/library/node:26-alpine
 # Unfortunately we cant use npm install @angular/cli@22
 # with non-root user due to (on Windows podman desktop with WSL)

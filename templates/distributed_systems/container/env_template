@@ -1,0 +1,7 @@
+ANGULAR_SERVER_DNS="http://localhost:8082"
+DOTNET_SERVER_DNS="http://localhost:8081"
+KEYCLOAK_SERVER_DNS="http://localhost:8080"
+KEYCLOAK_REALM="client"
+KEYCLOAK_CLIENT_ID="angular-app"
+KEYLCOAK_ADMIN_USERNAME="admin"
+KEYLCOAK_ADMIN_PASSWORD="admin"

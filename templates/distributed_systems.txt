@@ -1,3 +1,4 @@
+====overview
 ====rent_models
 ====tradeoffs
 ====databases
@@ -14,6 +15,19 @@
 ====opentofu
 ====security
 ====optimizing
+
+====overview
+./templates/distributed_systems/container/Containerfile.Angular npm ci for Angular
+./templates/distributed_systems/container/Containerfile.Angular_cli ng new projet
+./templates/distributed_systems/container/Containerfile.Angular_legacyproduction legacy prod ci
+./templates/distributed_systems/container/Containerfile.BestPractice basic best practice
+./templates/distributed_systems/container/Containerfile.Biome meh and bruh biome
+./templates/distributed_systems/container/Containerfile.npm_hasnouser base image ?? without user
+./templates/distributed_systems/container/Containerfile.npm_hasuser base image npm with user
+./templates/distributed_systems/container/co.frontend.yml followup multi-purpose compose file
+./templates/distributed_systems/container/co.fullstack.yml followup multi-purpose compose file
+./templates/distributed_systems/container/co.yml multi compose file, little-composable multi-workflows
+./templates/distributed_systems/container/compose_simple.yml simple compose file keycloak
 
 https://github.com/donlon/cloudflare-error-page
 https://notes.nicolevanderhoeven.com/How+Loki+stores+data
@@ -271,6 +285,8 @@ https://www.scaleway.com/en/docs/tutorials/manage-instances-with-terraform-and-f
 https://www.scaleway.com/en/docs/tutorials/use-cockpit-with-terraform/
 https://www.scaleway.com/en/docs/cockpit/concepts/#cockpit
 https://controlmonkey.io/resource/opentofu-errors-guide/
+
+https://oneuptime.com/blog/post/2026-02-23-how-to-run-opentofu-in-docker/view
 
 ====security
 * much harder than simple system due to a bigger system
