@@ -255,6 +255,7 @@ Global options (use these before the subcommand, if any):
   -help         Show this help output, or the help for a specified subcommand.
   -version      An alias for the "version" subcommand.
 
+https://opentofu.org/docs/cli/config/environment-variables/
 https://developer.hashicorp.com/terraform/cli/config/environment-variables
 TF_LOG
 TF_LOG_PATH
@@ -270,4 +271,14 @@ TF_REGISTRY_CLIENT_TIMEOUT
 TF_STATE_PERSIST_INTERVAL
 TF_CLI_CONFIG_FILE
 TF_PLUGIN_CACHE_DIR
+TF_IGNORE
+TF_PROVIDER_DOWNLOAD_RETRY
+TF_STATE_PERSIST_INTERVAL
+TF_ENCRYPTION
+TOFU_CPU_PROFILE
 Note, that HCP Terraform CLI Integration may also affect environment variables
+
+https://developer.hashicorp.com/terraform/language/values/variables
+https://developer.hashicorp.com/terraform/cli/config/config-file
+https://opentofu.org/docs/cli/config/environment-variables/
+https://oneuptime.com/blog/post/2026-02-23-how-to-run-opentofu-in-docker/view
