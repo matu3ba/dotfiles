@@ -1,0 +1,16 @@
+Experience on searching for solution in Nix community, but most likely applies
+to any broad non-good organized community or organization (without expert
+knowledge).
+
+Reminder for future me:
+* 1 First look at design rationale documents.
+* 2 Dont try to search for use cases because most COMMUNITY_NAME folks are not able to
+* communicate them and dont think about use case groups unless something
+  authoritative exists.
+* 3 Comparison, specifically around edge cases, with llms is horrible.
+* 4 Edge case search only with authoritative formal spec or relevant blog posts/rfcs and reference code as check.
+* 5 Default knowledge of llms set sucks.
+* 6 Getting all debug knobs is faster by looking through individual cli invocation code flows
+  (based on design + blog posts/rfcs + reference code) iff cli invocation exists (else have to search the beginning).
+* 7 There are way too many hidden blog posts instead of authoritative spec-like docs and often they are written without
+  use-cases and workflows in mind (showing currently something is bad instead of the overall semantic idea).

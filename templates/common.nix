@@ -2,6 +2,11 @@
 # * nodejs, python, rust
 # https://nlnet.nl/project/Dream2nix/
 
+# 1 page nix
+# https://github.com/tazjin/nix-1p
+# 2 https://zero-to-nix.com/
+# TODO link best guide covergin most stuff likely by the dude with alternate nixpkgs impl
+
 # https://fzakaria.com/2026/08/09/nixpkgs-multiverse-every-version-that-ever-existed
 # default linker path could be better https://github.com/NixOS/nixpkgs/issues/490000
 # - no dynamic linker workarounds
