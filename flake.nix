@@ -123,38 +123,11 @@
     let
       sharedModule = { pkgs, ... }: {
         # packages maven javaPackages.compiler.openjdk17
-        # podman-compose not yet sufficiently compatible
         environment.systemPackages = with pkgs; [
           neovim
           git
-          docker-compose
           jq
         ];
-        # podman needs /etc/subuid, /etc/subgid
-        environment.extraInit = ''
-          if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
-            export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
-          fi
-        ''; # docker-compose for $USER
-
-        virtualisation = {
-          containers.enable = true;
-          containers.storage.settings = {
-            storage = {
-              driver = "overlay";
-              runroot = "/run/containers/storage";
-              graphroot = "/var/lib/containers/storage";
-              rootless_storage_path = "/tmp/containers-$USER";
-              options.overlay.mountopt = "nodev,metacopy=on";
-            };
-          };
-          oci-containers.backend = "podman";
-          podman = {
-            enable = true;
-            dockerCompat = true;
-            defaultNetwork.settings.dns_enabled = true;
-          };
-        }; # podman via docker-compose for $USER
 
         documentation.enable = true;
 
@@ -238,17 +211,20 @@
         ];
         buildInputs = [ zig-flake.packages.${system}.nightly ]; # (cross-)compilation
       };
-      packages.${system}.zig-build-test-all = pkgs.runCommandLocal "zig-build-test-all" {
-        src = ./.;
-        nativeBuildInputs = [ zig-flake.packages.${system}.nightly ];
-      } ''
-        export ZIG_LOCAL_CACHE_DIR="$TMPDIR/.zig-cache/"
-        export ZIG_GLOBAL_CACHE_DIR="$TMPDIR/.cache/zig"
-        mkdir -p "$ZIG_LOCAL_CACHE_DIR" "$ZIG_GLOBAL_CACHE_DIR"
-        cd "$src"
-        zig build test --summary all
-        touch "$out"
-      '';
+      packages.${system}.zig-build-test-all =
+        pkgs.runCommandLocal "zig-build-test-all"
+          {
+            src = ./.;
+            nativeBuildInputs = [ zig-flake.packages.${system}.nightly ];
+          }
+          ''
+            export ZIG_LOCAL_CACHE_DIR="$TMPDIR/.zig-cache/"
+            export ZIG_GLOBAL_CACHE_DIR="$TMPDIR/.cache/zig"
+            mkdir -p "$ZIG_LOCAL_CACHE_DIR" "$ZIG_GLOBAL_CACHE_DIR"
+            cd "$src"
+            zig build test --summary all
+            touch "$out"
+          '';
 
       nixosConfigurations = {
         wsl = nixpkgs.lib.nixosSystem {
@@ -261,6 +237,7 @@
                 ...
               }:
               {
+                # security.shadow.enable = true; # should be default and enables rootless subuid/subgid
                 nixpkgs.hostPlatform = "x86_64-linux";
                 system.stateVersion = "25.11";
 
@@ -290,6 +267,7 @@
                   # ]; # ssh public key
                 };
 
+                #==/etc/wsl.conf
                 wsl = {
                   enable = true;
                   defaultUser = "jan-philipp.hafer"; # getEnv + username makes flake evaluation impure
@@ -333,7 +311,7 @@
                     user.default = "jan-philipp.hafer";
                   };
                 };
-
+                #==quickfix wsl-nixos
                 # override /run/systemd/generator/wsl-mnt-guard.service to use nixos /bin/true /bin/mount
                 # to workaround WSL 2.9.9.0 behavior that fixes https://github.com/nix-community/NixOS-WSL/issues/1074
                 systemd.services."wsl-mnt-guard" = {
@@ -350,6 +328,55 @@
                     ];
                   };
                 };
+
+                #==virtualisation: workaround unreliable systemd in WSL for rootless podman
+                # https://github.com/podman-container-tools/podman/blob/main/docs/tutorials/rootless_tutorial.md
+
+                # podman needs /etc/subuid, /etc/subgid
+                virtualisation = {
+                  podman = {
+                    enable = true;
+                    dockerCompat = true; # Adds 'docker' alias for 'podman'
+                    defaultNetwork.settings.dns_enabled = true;
+                    # dockerSocket.enable = true is unreliable in WSL2
+                  };
+                  containers = {
+                    enable = true;
+                    storage.settings = {
+                      storage = {
+                        driver = "overlay";
+                      };
+                      # nixos only supports cgroup v2 with systemd as default manager
+                      # cgroupManager = "cgroupfs";
+                    };
+                  };
+                };
+
+                # Install required packages
+                environment.systemPackages = with pkgs; [
+                  podman-compose # Use podman-compose, not docker-compose
+                  passt # Explicit installation for WSL2
+                ];
+
+                # Set DOCKER_HOST on login so podman compose finds the socket.
+                # This is necessary because systemd.user.sockets is unreliable in WSL2
+                # and socket creation is managed by systemd.user.sockets.
+                environment.extraInit = ''
+                  export PODMAN_COMPOSE_WARNING_LOGS=false
+                  if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
+                    export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+                  fi
+                '';
+
+                # Dont use any of these in WSL2:
+                # - virtualisation.oci-containers (default systemd integration)
+                # - systemd.user.sockets.podman (uses systemd service)
+                # - services.podman.* (Home Manager, uses systemd podman service)
+                # - virtualisation.containers.storage.settings.cgroupManager = "systemd"
+
+                # Instead, manage containers with:
+                # - podman compose (manual docker-compose.yml files)
+                # - Nix scripts that call podman directly
               }
             )
             home-manager.nixosModules.home-manager
