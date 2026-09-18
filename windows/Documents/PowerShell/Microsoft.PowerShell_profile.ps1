@@ -264,7 +264,7 @@ function GitShowRemote { & git remote show roigin $args }
 function GitStashPop { & git stash pop $args }
 function GitStashPush { & git stash push $args }
 function GitStatus { & git status $args }
-
+function start-sshagent { if ($(Get-Service ssh-agent).Status -ne "Running") { & Start-Service ssh-agent; Write-Host "started ssh-agent" } }
 #====common_fns
 function ListDense { & Get-ChildItem $args -Force | Format-Wide Name -AutoSize }
 function NvimCmd { & nvim $args }
