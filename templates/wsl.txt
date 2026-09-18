@@ -192,6 +192,8 @@ https://github.com/podman-container-tools/podman/issues/28341
 * https://github.com/bearoffwork/nixos-wsl
 * https://github.com/rosenbjerg/wsl2-podman
 
+
+
 ==nix_workarounds
 sudo nix-store --verify --check-contents --repair --check-contents
 nixos-rebuild switch --sudo --flake .#wsl

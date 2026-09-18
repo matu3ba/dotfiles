@@ -2,3 +2,56 @@ https://www.muppetlabs.com/~breadbox/txt/mopb.html
 https://www.muppetlabs.com/~breadbox/txt/mopb-app.html
 
 https://duetorun.com/blog/20231019/c-vars-elf-relocation/
+
+readelf -WS librepro.so
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .symtab           SYMTAB          0000000000000000 370000 00e3b8 18      3 2414  8
+  [ 2] .shstrtab         STRTAB          0000000000000000 25c000 0001da 01      0   0  1
+  [ 3] .strtab           STRTAB          0000000000000000 393000 007804 01      0   0  1
+  [ 4] .rodata           PROGBITS        0000000000346000 002000 00b000 00   A  0   0 32
+  [ 5] .text             PROGBITS        000000000002e000 30a000 024000 00  AX  0   0 16
+  [ 6] .data             PROGBITS        000000000014c000 25e000 002000 00  WA  0   0 64
+  [ 7] .data.rel.ro      PROGBITS        00000000001b1000 2c3000 001000 00  WA  0   0  8
+  [ 8] .got              PROGBITS        0000000000159a20 26ba20 000038 08  WA  0   0  8
+  [ 9] .got.plt          PROGBITS        000000000014e490 260490 000020 08  WA  0   0  8
+  [10] .plt              PROGBITS        0000000000017000 2f3000 000020 00  AX  0   0 16
+  [11] .plt.sec          PROGBITS        0000000000000000 2dc000 017000 00  AX  0   0 16
+  [12] .dynstr           STRTAB          0000000000351000 00d000 00011e 01   A  0   0  1
+  [13] .dynsym           DYNSYM          0000000000352000 00e000 000168 18   A 12   1  8
+  [14] .rela.dyn         RELA            00000000003b0000 06c000 0000c0 18   A 13   0  8
+  [15] .rela.plt         RELA            0000000000375000 031000 000018 18  AI 13   9  8
+  [16] .dynamic          DYNAMIC         00000000001b2000 2c4000 0001d0 10  WA 12   0  8
+  [17] .gnu.version      VERSYM          00000000003a1000 05d000 00001e 00   A 13   0  2
+  [18] .gnu.version_d    VERDEF          0000000000398000 054000 000070 00   A 12   4  4
+  [19] .gnu.version_r    VERNEED         0000000000344040 000040 000030 00   A 12   1  4
+  [20] .hash             HASH            00000000003a3d70 05fd70 000064 00   A 13   0  4
+  [21] .eh_frame_hdr     PROGBITS        000000000039a000 056000 000008 00   A  0   0  4
+  [22] .eh_frame         PROGBITS        000000000039b000 057000 0047a0 00   A  0   0  8
+  [23] .tdata            NULL            0000000000345000 001000 000000 00 WAT  0   0  1
+  [24] .debug_abbrev     PROGBITS        0000000000000000 39c000 000926 00      0   0  1
+  [25] .debug_addr       PROGBITS        0000000000000000 25b000 001000 00      0   0  8
+  [26] .debug_info       PROGBITS        0000000000000000 219000 042000 00      0   0  1
+  [27] .debug_line       PROGBITS        0000000000000000 34b000 025000 00      0   0  1
+  [28] .debug_line_str   PROGBITS        0000000000000000 39c926 001858 00  MS  0   0  1
+  [29] .debug_rnglists   PROGBITS        0000000000000000 218000 001000 00      0   0  1
+  [30] .debug_str        PROGBITS        0000000000000000 330e76 012cdd 00  MS  0   0  1
+  [31] .debug_str_offsets PROGBITS        0000000000000000 39b000 001000 00      0   0  4
+  [32] .init             PROGBITS        0000000000052000 32e000 00001c 00  AX  0   0  4
+  [33] .fini             PROGBITS        000000000005201c 32e01c 00000c 00  AX  0   0  4
+  [34] .note.GNU-stack   NULL            0000000000000000 218000 000000 00      0   0  1
+  [35] .debug_aranges    NULL            0000000000000000 218000 000000 00      0   0  1
+  [36] .tm_clone_table   NULL            000000000014c000 25e000 000000 00  WA  0   0  8
+  [37] .fini_array       FINI_ARRAY      000000000014e1e0 2601e0 000008 00  WA  0   0  8
+  [38] .init_array       INIT_ARRAY      000000000014e1f0 2601f0 000008 00  WA  0   0  8
+  [39] .comment          PROGBITS        0000000000000000 3306d3 0000a5 01  MS  0   0  1
+  [40] .debug_loc        PROGBITS        0000000000000000 19b000 07d000 00      0   0  1
+  [41] .debug_ranges     PROGBITS        0000000000000000 186000 015000 00      0   0  1
+  [42] .debug_pubnames   PROGBITS        0000000000000000 343b53 005d7a 00      0   0  1
+  [43] .debug_pubtypes   PROGBITS        0000000000000000 3498cd 001435 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  R (retain), D (mbind), l (large), p (processor specific)

@@ -10,6 +10,7 @@ https://blog.brakmic.com/keycloak-with-postgresql-on-kubernetes/
 
 ==binary_paths
 ==export_database
+==best_practice
 
 minimal setup: https://www.keycloak.org/server/containers
 see ./templates/distributed_systems/keycloak/
@@ -60,3 +61,15 @@ actual process for backups to workaround docker entrypoint SHENANIGAN
 docker run --name keycloak-run -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
 2 can use backup, but have to adjust group name (or user id), since docker has no sane defaults
 docker run --user 1000:$(id -g) --name keycloak-export -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 export --dir /kc_backups
+
+==best_pratice
+Currently there is no strict and secure login policy for the javascript login form
+https://github.com/keycloak/keycloak/issues/16277
+and neither is there a good default.
+* Content Security Policy (CSP)
+  - against cross-site scripting (XSS), clickjacking, cross-site leaks, code injection
+  - for HTTPS
+  - for allowing origin execution
+  - see also https://content-security-policy.com/
+    and https://security.stackexchange.com/questions/249237/when-is-content-security-policy-csp-not-appropriate
+    and https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP

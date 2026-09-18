@@ -3,6 +3,12 @@
 # https://nlnet.nl/project/Dream2nix/
 
 # https://fzakaria.com/2026/08/09/nixpkgs-multiverse-every-version-that-ever-existed
+# default linker path could be better https://github.com/NixOS/nixpkgs/issues/490000
+# - no dynamic linker workarounds
+# environment.stub-ld.enable = false;
+# environment.ldso = pkgs.stdenv.cc.bintools.dynamicLinker;
+# * GPU drivers may break
+# * cross-compilation should use buildFHSEnv https://nixos.org/manual/nixpkgs/stable/#sec-fhs-environments
 
 #==container_building
 # The post in https://sgt.hootr.club/blog/docker-protips/ with FROM scratch looks

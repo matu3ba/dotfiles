@@ -23,6 +23,12 @@
 // * type-script focused (unfortunately startup-based on cloud integration): https://github.com/nrwl/nx
 // * zig build system
 // * bun (not anymore zig based)
+// * turborepo
+// * Nix (steep learning curve)
+// * bazel (very steep learning curve)
+// * tilt (k8 local dev)
+// * dagger (docker engine + api on top)
+//   - content-addressed cache, DAG, etc
 
 // Angular best practice
 // Use

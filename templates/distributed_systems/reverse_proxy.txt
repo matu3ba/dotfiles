@@ -4,21 +4,28 @@ nginx
 * >80% of use cases and performance range
 * biggest ecosystem
 * framework
+* simple C, but still has often memory problems
 
 Pingora library
 * https://github.com/cloudflare/pingora
 * very mature
 * no framework, only library
+* Rust
 
 Pingap
 * https://github.com/vicanso/pingap
 * https://vicanso.github.io/pingap-en/
 * ~5 years
+* Rust
 
 River
 * incomplete
 * stalled development
 
+Caddy
+* very elegant design
+* random stalls due to go (runtime) inefficiencies
+* Go
 
 1 Reverse Proxy vs. Load Balancer vs. API Gateway
 * can be used as ingress/egress controller

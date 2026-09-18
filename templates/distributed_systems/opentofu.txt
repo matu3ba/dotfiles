@@ -17,6 +17,8 @@ Terraform Best Practices
       dynamodb_table = "terraform-locks"
     }
   }
+s3 replacement, ie local https://garagehq.deuxfleurs.fr/
+
 2. Module Structure
   Organize your code into reusable modules for consistency and maintainability.
   .

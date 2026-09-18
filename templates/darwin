@@ -2,3 +2,21 @@ Man pages https://github.com/apple/darwin-xnu/tree/main/bsd/man
 
 Profiling on Apple
 https://blog.bugsiki.dev/posts/zig-profilers/
+
+number and syscalls
+* https://github.com/apple/darwin-xnu/blob/main/bsd/kern/syscalls.master
+  - https://stackoverflow.com/questions/48845697/macos-64-bit-system-call-table
+  NUMBER  AUDIT_EVENT  PLATFORMS  { C_SIGNATURE }  { COMMENTS }
+
+  Field       | Example                        | Meaning
+  -----       | -------                        | -------
+  NUMBER      | 0, 1, 12, 206                  | Raw syscall number (0–~600). In assembly/direct calls, add 0x2000000 for BSD class: 0x2000000 + NUMBER
+  AUDIT_EVENT | AUE_EXIT, AUE_CHDIR, AUE_NULL  | Security audit event type. AUE_NULL = no audit logging; others log that syscall for security/compliance tracking
+  PLATFORMS   | ALL                            | Which architectures/OS versions support it. ALL = x86_64, ARM64, etc. May be 64 for 64-bit only, specific OS versions, etc.
+  C_SIGNATURE | int exit(int rval)             | C function prototype showing name, return type, and parameters. user_addr_t = userland pointer; NO_SYSCALL_STUB = not exported via libc wrapper
+  COMMENTS    | indirect syscall, old ATsocket | Implementation notes: indirect = multiplex calls through one number; old = deprecated/obsolete
+
+  NO_SYSCALL_STUB
+  must invoke it directly via syscall assembly/number, not via libc. Most modern
+  calls have wrappers in libsystem_kernel.dylib
+* https://github.com/dyjakan/osx-syscalls-list

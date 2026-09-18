@@ -358,6 +358,7 @@ threadlocal var v1: VarT = if (!builtin.is_test) 0 else void;
 // zig build --build-file test/behavior/x86_64/build.zig --cache-dir .zig-cache --summary all
 // Testing with wasm+wasmtime:
 // WASMTIME_BACKTRACE_DETAILS=1 ./deb/bin/zig test ./lib/std/std.zig -target wasm32-wasi -I ./test --zig-lib-dir lib/  --test-cmd wasmtime --test-cmd --dir=. --test-cmd-bin
+// zig cache-cat .zig-cache/h/*
 
 // SHENANIGAN Bootstrapping and checking methods is very time consuming
 // -DCMAKE_C_LINKER_DEPFILE_SUPPORTED=false

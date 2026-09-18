@@ -1,3 +1,4 @@
+==examples
 ==overview
 ==dependencies
 ==development
@@ -43,8 +44,27 @@ compliance for Kubernetes compatibility (oci).
 - containers: (podman or docker) xor apptainer xor OCI container
   * all of these are for application virtualization
   * OS virtualization are different and incompatible (qemu, lxc, OpenVZ, kvm, xen, etc)
+  * docker
+    - buildkit
+    - default runc as OCI reference runtime (crun in C faster, selection in buildkit)
+    - orchestrator with simple network virtualization support
+  * podman
+    - buildah https://github.com/podman-container-tools/buildah
+    - default runc as OCI reference runtime (selection in buildah)
+    - orchestrator with simple network virtualization support
 - docker-compose/podman-compose
   * alternative (ie for apptainer): process-compose
+- nexcage as OCI runtime (restricted to proxmox backends)
+
+OCI runtimes
+* runc (The standard)
+* youki (Written in Rust)
+* gVisor (Sandbox)
+* Kata Containers (VM-based)
+* runwasi (WebAssembly)
+* Kuasar (Multi-sandbox)
+* krun (micro VM similar to kata with other trade-offs)
+* crun (written in C)
 
 ==development
 
@@ -71,7 +91,9 @@ docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=skip=JSONArgsRecomme
 bootc container lint
 ```
      - cli simplification https://willhbr.net/2026/03/13/language-servers-in-containers/
-3. lsp: https://github.com/docker/docker-language-server
+3. lsp: https://github.com/microsoft/vscode-containers
+   * needs dockerfile setup for basic security against npm
+   * unmaintained https://github.com/docker/docker-language-server
    * https://hub.docker.com/r/docker/lsp
 3. build analyzer: `docker build --check .`, podman has nothing
    * can also use buildkit/moby, buildah

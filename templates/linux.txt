@@ -1,3 +1,4 @@
+==overview
 ====paths
 ====dinit
 ====systemd
@@ -15,6 +16,9 @@
 ====kernel_dev
 ====bad_parts
 ====courses
+
+==overview
+./templates/linux/syscalls.txt
 
 https://venam.net/blog/unix/2021/02/07/audio-stack.html
 

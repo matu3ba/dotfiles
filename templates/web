@@ -1,5 +1,6 @@
 ==iam
 ==browser_storage
+==CSP
 
 youtube alternative: https://rumble.com/
 
@@ -230,3 +231,8 @@ web security fix via object capability model
 * Browser-native capability semantics for Storage access via capabilities, not origin-keying.
 * Revocation protocol for Standard way to invalidate capabilities (CapTP, GNAP, ZCAP-LD).
 * Cryptographic binding for Capabilities tied to agent identity (like Fuchsia does).
+
+==CSP
+See also https://content-security-policy.com/
+and https://security.stackexchange.com/questions/249237/when-is-content-security-policy-csp-not-appropriate
+and https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP

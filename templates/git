@@ -1,3 +1,49 @@
+reference
+==man_page git
+..
+
+usage
+==config
+====gitattributes
+====eol
+==diff
+==log
+==merge
+==branches
+==reset
+==restore
+==revert
+==commit_parsing
+==sparse_checkout
+==worktree
+==windows_update_git
+==versioning
+==windows_long_paths
+==agit
+==best_practice_sqash_rebase_commit
+==misc
+
+https://wouterj.nl/2024/08/git-notes
+idea store discussion with git
+
+==man_page git
+====Reset, restore and revert
+* git-revert to make commit reverting changes made by other commits
+* git-restore to restore files in working tree from index or other commit (without updating branch)
+  - can also restore files in index from other commit
+* git-reset to update branch, moving tip in order to add or remove commits from branch
+  - changes commit history
+
+====LOW-LEVEL COMMANDS (PLUMBING)
+====GUIDES
+====REPOSITORY, COMMAND AND FILE INTERFACES
+====FILE FORMATS, PROTOCOLS AND OTHER DEVELOPER INTERFACES
+====CONFIGURATION MECHANISM
+..
+====ENVIRONMENT VARIABLES
+
+==config
+====gitattributes
 Typical .gitattributes setting:
 *.zig text eol=lf
 *.h text eol=lf
@@ -6,6 +52,7 @@ Typical .gitattributes setting:
 *.txt text eol=lf
 data/binary_data/** binary
 lib/include/** linguist-vendored
+does attribute merge=binary exist?
 
 .gitattributes must have only line feed '\n' line endings for 'git add --renormalize .'
 if unsure, check if .gitattributes has '\r': cat .gitattributes | od -c | tail
@@ -45,6 +92,7 @@ git commit -m "Introduce end-of-line normalization"
 Validate with
 git ls-files --eol
 
+==diff
 ====diff_config
 1. Installling a tool to read binary files and output text files
   * pandoc, pdftotext, pdftostdout
@@ -62,7 +110,7 @@ echo "*.pdf diff=pdf" >> ~/.config/git/attributes
 Command-line feature, explain binary diff (if needed)
 *.doc   diff=astextplain
 
-basic
+====diff_basic
 --staged/cached
 path limiting
 -- <path> limit comparison to specific file or dir
@@ -87,21 +135,12 @@ format
 --numstat show stats in matchine-friendly format
 --summary show creation/deletion summary
 
-====merge
-merge with merge commit: --no-ff
-* This ensures that commits attached directly to master branch (i.e.
-  --first-parent) generally pass all tests and therefore makes things like git
-  bisect easier. It also makes cherry-picking into bug fixes branches easier.
-
-====diff
 Diff marker behavior
 marker types: zdiff3, diff3
 git checkout -m --conflict=diff3 file
 git checkout -m --conflict=zdiff3 file
 
-#*.sln       merge=binary
-
-====diff
+==log
 Show root commits:
 git log --max-parents=0
 Get number of commits:
@@ -130,7 +169,17 @@ git log --format=format:"%H%n%B----"
 Decomposes merges against all parents; tracks file renames:
 git log -p -m --follow HEAD <path>
 
-======Base merge strategies with file tracking (--follow)
+For merge commits, we're only interested in what merge brought in:
+git show --first-parent
+and likewise
+git log -p --first-parent
+However, '-m' uses the default format, which tracks the full merge-tree,
+which may not be wanted.
+See also https://stackoverflow.com/questions/40986518/how-to-git-show-the-diffs-for-a-merge-commit.
+Get Nth last commit
+git show COMMIT~N
+
+====Base log strategies with file tracking (--follow)
 Shows uncompressed multi-column combined diffs; tracks file renames:
 git log -p -c --follow HEAD PATH
 Shows conflict/evil-merge diffs only; tracks file renames:
@@ -146,7 +195,7 @@ git log -p -m --full-history HEAD -- PATH
 show everything including renames in all branches:
 git log -p -m --all --full-history HEAD -- PATH
 
-======Octupus merge strategies with file tracking (--follow)
+====Octupus merge strategies with file tracking (--follow)
 If reasonable, rule out merges to have 3 or more parents:
 * git rev-list --min-parents=3 --all
 * git-lint
@@ -154,14 +203,14 @@ If reasonable, rule out merges to have 3 or more parents:
 if [ $(git rev-list --parents -n 1 $commit | wc -w) -gt 3 ]; then
     echo "ERROR: Octopus merges are forbidden!" && exit 1
 fi
-======Octupus Linux Kernel Best Practice
+====Octupus Linux Kernel Best Practice
 * no Cthulhu merge with 66-way octupus merge
 * 10-15 parents at maximum
 * test: git merge-tree HEAD branch1 branch2 branch3 branch4
   - must be exit status 0
 * use: git merge HEAD branch1 branch2 branch3 branch4
 
-======Octupus Log
+====Octupus Log
 Expands octopus merge into N separate, full patches (one per parent); track renames:
 git log -p -m --follow HEAD PATH
 Combine all N parents into a massive multi-column gutter diff; track renames:
@@ -170,19 +219,32 @@ Completely ignores the N-1 side branches; treat the octopus merge as a single
 patch against the main branch:
 git log -p --first-parent --follow HEAD PATH
 
-====branches
-======create new branch
+==branches
+====create new branch
 git switch -c new_branch old_branch
 SHENANIGAN Accidental set wrong tracking branch: git switch -c new_branch origin/old_branch
 
-======list of remote unmerged and merged branches for cleanup
+==reset
+
+==restore
+SHENANIGAN silent dropping of commit via >git restore --staged .
+Always make convenience commit to not lose data.
+
+==revert
+
+==merge
+merge with merge commit: --no-ff
+* This ensures that commits attached directly to master branch (i.e.
+  --first-parent) generally pass all tests and therefore makes things like git
+  bisect easier. It also makes cherry-picking into bug fixes branches easier.
+TODO move aliases here
+
+====list of remote unmerged and merged branches for cleanup
 git for-each-ref --merged=master --sort=authorname --format='%(authorname), %(committerdate:short), %(refname:short)' refs/remotes/downstream
 git for-each-ref --no-merged=master --sort=authorname --format='%(authorname) | %(committerdate:short) | %(refname:short) | TODO' refs/remotes/downstream
 git push downstream --delete BRANCH
 
-======ignore
---ignore-cr-at-eol
-
+==commit_parsing
 Get parent commit
 git cat-file -p COMMIT
 git show -p COMMIT
@@ -190,16 +252,6 @@ Get Nth parent
 git rev-parse $commit^N
 Get all parents
 git rev-parse $commit^@
-For merge commits, we're only interested in what merge brought in:
-git show --first-parent
-and likewise
-git log -p --first-parent
-However, '-m' uses the default format, which tracks the full merge-tree,
-which may not be wanted.
-See also https://stackoverflow.com/questions/40986518/how-to-git-show-the-diffs-for-a-merge-commit.
-
-Get Nth last commit
-git show COMMIT~N
 
 Clean up useless commits by squashing them all:
 virtualenv venv
@@ -224,7 +276,7 @@ Note: squash merge or rebase merge removes root commits
 * squash: commits are converted into single commit, problem on bisecting
   - git merge --squash BRANCH
 
-====sparse checkout
+==sparse_checkout
 https://stackoverflow.com/questions/74072901/how-to-make-git-ignore-files-during-clone/74077699#74077699
 https://blog.gitbutler.com/git-tips-and-tricks/
 Do not bring all the blobs:
@@ -239,13 +291,11 @@ Show credential helper via
 git config credential.helper
 manager-core
 
-https://wouterj.nl/2024/08/git-notes
-idea store discussion with git
-
 SHENANIGAN
 gitignore file is also matching case insensitive on Windows and there is no
 default to check this stuff.
 
+==worktree
 Git worktree structure as view on code:
 * main - looking at the code history
 * work - looking at current thing
@@ -261,9 +311,40 @@ git worktree add ./existing-branch-name existing-branch-name
 Git worktree adding dir feat_branch with feat_branch based on master
 git worktree add ./feat_branch ./feat_branch master
 
+==windows_update_git
 git for windows update
 git update-git-for-windows
 
+==versioning
+git tag 0.0.1
+git push --tags
+
+$git describe --tag --always --dirty="+"
+on dirty (non-tagged commit after 0.0.1): 0.0.1-4-gdeadbeef
+on clean (tagged commit 0.0.1): 0.0.1
+
+==windows_long_paths
+admin pws> New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+pws> git config --system core.longpaths true
+
+beautiful commit messages: https://github.com/rocketraman/gitworkflow
+* trade-off being more complicated
+
+==agit
+agit workflow: review workflow without website slowdown
+* requires git hoster support
+
+==best_practice_sqash_rebase_commit
+Best practice on squash/rebase/commit
+* prefer merge commit as summary to use easily `git revert -mN`
+* more commits make bisect better as long as every commit builds
+  o +2000/-500 change not good, +500/-500 worst complexity to aim for
+  o unless easily reproducible via tooling / low risk commit
+* provide infrastructure (merge bots etc) and expect to keep every commit buildable
+* squash wip commits
+* try gui (only) for large interactive rebase, macos has Tower
+
+==misc
 https://paperless.blog/git-bisect-run-techniques
 
 https://github.com/tummychow/git-absorb
@@ -276,31 +357,3 @@ official guides
 https://github.com/git/git/blob/08bdfd453584e489d5a551aecbdcb77584e1b958/Documentation/howto/coordinate-embargoed-releases.adoc
 git help
 https://github.com/git/git/blob/08bdfd453584e489d5a551aecbdcb77584e1b958/Documentation/git-add.adoc
-
-Best practice on squash/rebase/commit
-* prefer merge commit as summary to use easily `git revert -mN`
-* more commits make bisect better as long as every commit builds
-  o +2000/-500 change not good, +500/-500 worst complexity to aim for
-  o unless easily reproducible via tooling / low risk commit
-* provide infrastructure (merge bots etc) and expect to keep every commit buildable
-* squash wip commits
-* try gui (only) for large interactive rebase, macos has Tower
-
-====versioning
-git tag 0.0.1
-git push --tags
-
-$git describe --tag --always --dirty="+"
-on dirty (non-tagged commit after 0.0.1): 0.0.1-4-gdeadbeef
-on clean (tagged commit 0.0.1): 0.0.1
-
-====windows_long_paths
-admin pws> New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
-pws> git config --system core.longpaths true
-
-beautiful commit messages: https://github.com/rocketraman/gitworkflow
-* trade-off being more complicated
-
-====agit
-agit workflow: review workflow without website slowdown
-* requires git hoster support
