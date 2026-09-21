@@ -203,12 +203,27 @@ if test "${TEST1}" != "${TEST1}"; then echo "non-equal"; fi
 # ${VAR:?STRING} Display an error if empty or unset.
 # ${VAR?STRING}  Display an error if unset.
 # $- Shell options
-# $$ 	Current shell PID
+# $$ Current shell PID
 
+#==environment
 env -i PATH="$PATH" ls
 env -i HOME="$HOME" LC_CTYPE="${LC_ALL:-${LC_CTYPE:-$LANG}}" PATH="$PATH" USER="$USER" ls
 ssh localhost ls
 env -i bash --noprofile --norc -c "command"
+
+#1 export $(cat .env | xargs)
+#  ./script.sh
+#2 $(cat .env | xargs) ./script.sh
+#3 autoexport
+#  set -a
+#  source .env
+#  set +a
+#  ./script.sh
+
+# export VAR=value
+# export VAR1=value1 VAR2=value2
+# export -p
+# custom export flags depending on shell, ie -n, -r, -f
 
 countdown() {
   start="$(($(date '+%s') + $1))"

@@ -178,6 +178,8 @@ wsl -s NixOS
     (process isolation and permission control based on type 1 hypervisor)
   - enables boot sequence as pure, stateless fn (from the kernel perspective)
     * snapshotting, rollback etc possible
+* no selinux on default, needs setup
+* SHENANIGAN silent ignoring of selinux labels
 
 ==podman_workaround
 ignoring systemd

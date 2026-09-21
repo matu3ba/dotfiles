@@ -1,3 +1,4 @@
+==common
 ==links
 ==podman_desktop
 ==common_images
@@ -6,6 +7,12 @@
 ==quadlet
 ==kubernetes
 ==autostart
+==docs
+
+====rootless_podman
+adjust to be used mount permission: podman unshare chown -R 1000:1000 ./client
+test mount permissions            : podman run --rm -v ./client:/app:z -v /app/node_modules alpine-npm:26 ls -l /app
+[should not have root or nobody entries for being writable]
 
 ==links
 https://oneuptime.com/blog/post/2026-03-18-use-podman-desktop-kind-clusters/view
@@ -157,3 +164,118 @@ maybe necessary depending on OS
 
 user session for user spawned at boot and kept around after logouts from GUI etc
 >sudo loginctl enable-linger
+
+==docs
+interesting docs pieces
+  original very long-form: man podman-run
+   --volume, -v=[[SOURCE-VOLUME|HOST-DIR:]CONTAINER-DIR[:OPTIONS]]
+       The OPTIONS is a comma-separated list and can be one or more of:
+       • rw|ro
+       • z|Z
+       • [O]
+       • [U]
+       • [no]copy
+       • [no]dev
+       • [no]exec
+       • [no]suid
+       • [r]bind
+       • [r]shared|[r]slave|[r]private[r]unbindable [1] ⟨#Footnote1⟩
+       • idmap[=options]
+
+       Volumes with idmapped mounts take into account container's user
+       namespace mappings, but idmapped volume retains UID/GID mapping. Volumes
+       without idmapping, mount point chowned to match container's process user
+       and group mapped to host user namespace if user namespace remapping
+       enabled.
+       :U can be replaced (for debugging) with podman unshare chown -R UID,GID PATH
+       to prevent recursively changing owner and group of source volume.
+       >Use with caution since it modifies host filesystem.
+
+       Labeling Volume Mounts like SELinux help to prevent resource usage without
+       labels. To change label in container, use :z or :Z on volume mount with
+       :z for sharing volume content and :Z for using private unshared label.
+       All containers within pod share same SELinux label, so containers within
+       pod can read/write volumes created with :Z on any of the containers.
+       If the volume was relabeled with :z option, podman does not relabel a
+       second time.
+       Files moved to volume means labels can be manually changed with
+       >chcon -Rt container_file_t PATH.
+       Do not relabel system files and directories, because it might cause other
+       confined services to fail. Consider using --security-opt label=disable,
+       for example to volume mount $HOME into a container.
+
+       Overlay Volume Mounts are used via :O to mount dir from host as temporary
+       storage using overlay fs. Container processes can modify content within
+       mountpoint which is stored in seperate dir.
+       In overlay terms, source dir is "lower", container storage dir is "upper".
+       Modifications to mount point are destroyed when container finished execution.
+
+       Non-volatile upperdir and workdir for overlay mount are also possible,
+       for example via :O,upperdir=/some/upper,workdir=/some/work.
+       Subsequent container executions sees original source content without
+       changes from previous container executions.
+       This can be used for sharing package cache from host into container to
+       allow speeding up builds.
+
+       Content mounted into the container is labeled with the private label. On
+       SELinux systems, labels in the source dir must be readable by the
+       container label.
+       If unable to change the labels on a source volume, SELinux container
+       separation must be disabled for the container to work. Do not modify the
+       source dir mounted into the container with an overlay mount, because it
+       can cause unexpected failures. Only modify dir after container execution
+       finished.
+
+       Bind-mounted volumes default to private with options to specify volume
+       mount propagation property: 1 shared, 2 slave, 3 private, 4 unbindable.
+       1 [r]shared means bidirectional change propagation,
+         * only for shared source mount point
+       2 [r]slave means one-way mount propagation from host to container (but not
+       from container to host)
+         * only for shared or slave source mount point
+       3 [r]private (default)
+       4 [r]unbindable means not possible to bind
+       with [r] meaning recursive with default submounts of sour dir not mounted
+       to container.
+
+       copy means copy content from from dest dir onto newly created internal
+       volume and only on initial volume creation (and not usage).
+       copy is ignored on bind mounts/has no effect.
+
+       nosuid means SUID executable on volume can not be used by apps to change
+       their privilege (default).
+       noexec means no executable on volume can be executed within container.
+       nodev means no device on volume can be used by processes within container,
+       which is the default for volumes.
+
+       If HOST-DIR is mount point, then dev, suid, and exec options are ignored
+       by the kernel.
+
+       Use df HOST-DIR to figure out source mount, then use
+       >findmnt -o TARGET,PROPAGATION source-mount-dir
+       to figure out propagation properties of source mount.
+       If findmnt(1) utility not available, then look at the mount entry for
+       the source mount point in /proc/self/mountinfo.
+       Look at the "optional fields" and see if any propagation properties are
+       specified. shared:N means mount is shared, master:N means mount is slave,
+       and if nothing, mount is private.
+
+       To change propagation properties of a mount point, use mount(8) command.
+       For example, if one wants to bind mount source directory /foo, one can
+       do mount --bind /foo /foo and  mount --make-private --make-shared /foo.
+       This converts /foo into shared mount point.
+       Alternatively, one can directly change propagation properties of source
+       mount. Say / is source mount for /foo, then use mount --make-shared / to
+       convert / into a shared mount.
+
+       If user only has access rights via a group, accessing volume from inside
+       a rootless container fails.
+
+       Idmapped mount, used via idmap, apply to the target user namespace in
+       the container. idmap supports custom mapping different than user namespace
+       used by container. Example idmap=uids=0-1-10#10-11-10;gids=0-100-10.
+       Triples consists of 1 start of backing file system IDs mapped to 2 value on
+       host and 3 being length of this mapping and are seperated by #.
+
+       Use the --group-add keep-groups option to pass the user's supplementary
+       group access into the container.

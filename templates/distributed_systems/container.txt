@@ -13,6 +13,8 @@
 ==composing
 ==dev_containers
 ==debug
+====permission_problems
+======wsl2_rootless_podman_compose_unusable
 ==security
 ==oci
 
@@ -194,6 +196,8 @@ figuring out defaults of containers tedious
 >podman run --rm node:26-alpine id
 
 ====security
+SHENANIGAN silent ignore of selinux labels meaning :z and :Z if no selinux setup.
+
 What OCI Left Unsolved
 * No signature enforcement — OCI spec defines where to store attestations, not
   how to validate them.
@@ -326,6 +330,91 @@ Angular vscode devcontainer
 ==debug
 container debugging tool based on FUSE https://github.com/Mic92/cntr
 * nix builds use container technology
+
+list dir/file permissions not user uid, when having permission denied errors
+>find ./backend -not -uid $(id -u) -type d -ls
+>find ./backend -not -uid $(id -u) -type f -ls
+list dir/file permissions user uid, when having permission denied errors
+>find ./backend -uid $(id -u) -type d -ls
+>find ./backend -uid $(id -u) -type f -ls
+
+find non-root user
+>podman run --rm mcr.microsoft.com/dotnet/sdk:10.0-alpine grep '/bin/sh' /etc/passwd | grep -v '^root:'
+list files without user USER
+>podman run --rm -v ./backend:/app:z mcr.microsoft.com/dotnet/sdk:10.0-alpine find /app -not -user USER -type f -exec ls -l {} \;
+
+====permission_problems
+1 Permissions Denied (host root files)     | rm -fr obj/ bin/
+2 Rootless volume fail (nobody masking)    | Use --userns=keep-id (container id=host id except for root)
+                                             xor --userns=nomap (container root=host root)
+                                             xor --userns=auto (max isolation)
+                                             xor --userns=keep-id:uid=UID,gid=GID (--uidmap/--gidmap replacement)
+3 Cross-container label conflicts by ':z'  | :Z (private, non-shared) xor :z (relabel according to /etc/subuid)
+4 Unwanted SELinux UID interaction         | :Z + chcon (adjust private files, if needed) xor named volumes
+5 Unmapped namespace problems              | podman unshare chown xor --userns=keep-id
+6 apparmor problems                        | cat /sys/module/apparmor/parameters/enabled
+
+OCI runtime (runc/crun) should never map host root (uid=0) to container uid 0
+in rootless mode. The spec defines UID maps that preserve isolation
+* Container UID 0 → host UID (your user's UID, e.g. 1000)
+* Container UID 1+ → host UID range from /etc/subuid (e.g. 100000–165535)
+
+======wsl2_rootless_podman_compose_unusable
+
+SHENANIGAN from hell on WSL2 rootless podman after bizarre linger setup --keep-id breaks
+making user workflows horrible.
+without overlay-fs explicitly configured
+$ podman run --rm --userns=keep-id alpine:latest ls /
+Error: crun: open `/home/user/.local/share/containers/storage/overlay/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff/merged`:
+Permission denied: OCI permission denied
+and with overlay-fs:
+$ podman run --rm --userns=keep-id alpine:latest ls /
+Error: runc: runc create failed: unable to start container process: error during container init: error preparing rootfs: remount-private
+dst=/home/user/.local/share/containers/storage/overlay/756acb19e283c8da2dc99a8b6c04606be6a46a7e07d392fddd4ad0f982c3f12a/merged,
+flags=MS_PRIVATE: permission denied: OCI permission denied
+
+No flag exists to disable the MS_PRIVATE remount in runc or podman. The issue
+is in runc's rootfs initialization code, which unconditionally attempts the
+remount.References:Runc source:  github shows "MS_PRIVATE" is hardcoded in
+https://github.com/opencontainers/runc/blob/main/libcontainer/specconv/spec_linux.go
+
+$ df /run/user/1000
+Filesystem     1K-blocks  Used Available Use% Mounted on
+tmpfs             813364    44    813320   1% /run/user/1000
+$ which fuse-overlayfs
+/usr/bin/fuse-overlayfs
+$ mkdir -p ~/.config/containers
+$ cat > ~/.config/containers/containers.conf <<'EOF'
+[storage]
+driver = "overlay"
+[storage.options.overlay]
+mount_program = "/usr/bin/fuse-overlayfs"
+EOF
+podman system reset --force
+podman run --rm --userns=keep-id alpine:latest ls /
+
+[storage]
+driver = "overlay"
+[storage.options]
+skip_mount_home = ""
+[storage.options.overlay]
+mountopt = "nodev,noatime"
+
+podman run --rm --userns=keep-id alpine:latest ls /
+
+[storage]
+driver = "vfs"
+
+rm -rf ~/.local/share/containers/storage
+podman run --rm --userns=keep-id alpine:latest ls /
+
+But realistically, you're blocked at the kernel level. WSL 2 6.18.40 doesn't
+properly support:
+* Idmapped mounts in userns
+* MS_PRIVATE remount in userns on overlay/vfs
+
+Conclusion: On Windows for docker/podman compose use cases: WSL2 rootfull docker/podman xor podman desktop xor hyper-v VM setup.
+Rootless podman compose on WSL2 is broken. Rootless podman run however works with linger setup.
 
 ====clean_automatic
 ======podman
