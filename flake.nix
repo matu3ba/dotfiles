@@ -330,9 +330,18 @@
                 };
 
                 #==virtualisation: workaround unreliable systemd in WSL for rootless podman
+                # "WSL2 + rootless + systemd is genuinely broken for compose workflows"
                 # https://github.com/podman-container-tools/podman/blob/main/docs/tutorials/rootless_tutorial.md
+                # https://oneuptime.com/blog/post/2026-03-18-fix-cgroup-v1-v2-issues-podman/view
+                # https://github.com/EtceteraLabs/nix-config/blob/master/loginctl-linger.nix
 
-                # podman needs /etc/subuid, /etc/subgid
+                # podman ps -a --filter status=exited
+                # podman system df
+                # podman container prune
+                # podman image prune -a
+
+                # https://discourse.nixos.org/t/rootless-podman-setup-with-home-manager/57905
+                # podman needs /etc/subuid, /etc/subgid, but default pkg shadow should already create them
                 virtualisation = {
                   podman = {
                     enable = true;
@@ -366,6 +375,16 @@
                   if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
                     export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
                   fi
+                '';
+
+                # # Clean orphaned state
+                # ${pkgs.podman}/bin/podman rm -a 2>/dev/null || true
+                # ${pkgs.podman}/bin/podman pod rm -a 2>/dev/null || true
+
+                # loginctl user-status $USER
+                system.activationScripts.podman-setup = ''
+                  mkdir -p /var/lib/systemd/linger
+                  touch /var/lib/systemd/linger/jan-philipp.hafer
                 '';
 
                 # Dont use any of these in WSL2:
