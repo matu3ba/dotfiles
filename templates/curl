@@ -1,6 +1,18 @@
-// nice overviews
-// https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
-// https://reqbin.com/req/c-d2nzjn3z/curl-post-body
+==overview
+==args
+==examples
+==headers
+
+==overview
+https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
+https://reqbin.com/req/c-d2nzjn3z/curl-post-body
+
+==args
+-o output FILE
+-L location (for redirects)
+
+==examples
+curl -L -o minimal.yml "https://github.com/traefik/traefik/raw/refs/heads/v1.5/integration/resources/compose/minimal.yml"
 
 // fetching single files from github
 curl https://raw.githubusercontent.com/orlp/pdqsort/master/pdqsort.h > pdqsort.h
@@ -23,6 +35,7 @@ POST: curl http://IP:PORT/set-state?key1=val1;key2=val2
 curl -G -d "param1=value1" -d "param2=value2" http://httpbin.org/get
 curl 'http://httpbin.org/get?param1=value1&param2=value2'
 
+==headers
 -Headers             	-I 	--head       	Retrieves HTTP headers only.
 Include Headers      	-i 	--include    	Includes the HTTP response headers in the output.
 User Agent           	-A 	--user-agent 	Specifies the User-Agent string to send to the server.

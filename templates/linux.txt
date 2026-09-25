@@ -317,6 +317,11 @@ UID=$(id -u)
 sudo mount -t cifs -o 'user=USER,domain=DOMAIN,uid=$UID,gid=domain users@domain.local' //fileserver/dirpath /mnt/mntdir
 getent passwd username@domain
 
+Tmpfs mounting
+sudo mkdir -p /mnt/tmpfs
+sudo mount -t tmpfs -o size=512M tmpfs /mnt/tmpfs
+df -h /mnt/tmpfs
+
 Kernel view of sdcard/block device:
 sudo hdparm -r0 /dev/sdX
 /dev/sdX:

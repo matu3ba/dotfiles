@@ -175,6 +175,7 @@
         packages = with pkgs; [
           curl
           jq
+          yq
           fish
           (texlive.combined.scheme-basic.withPackages (
             ps: with ps; [

@@ -9,10 +9,10 @@ name: projectname
 
 # Same holds for network.
 networks:
-  net: # local network access only (bridge, ports bind to 127.0.0.1)
+  keycloak-net: # local network access only (bridge, ports bind to 127.0.0.1)
     # compose has no way to block egress to host from containers alone,
     # that would need firewall rules
-    name: net
+    name: keycloak-net
     # see ./templates/distributed_systems/compose.txt
     driver: bridge
     # external means externally from compose project tracked

@@ -1,3 +1,12 @@
+==overview
+==system_nginx_wikipedia_proxy
+==container_nginx_wikipedia_proxy
+==important_variables
+
+==overview
+https://nginx.org/en/docs/varindex.html
+https://nginx.org/en/docs/http/ngx_http_core_module.html
+
 https://www.f5.com/company/blog/nginx/avoiding-top-10-nginx-configuration-mistakes
 Mistake 1: Not Enough File Descriptors per Worker
 Mistake 2: The error_log off Directive
@@ -9,3 +18,140 @@ Mistake 7: Excessive Health Checks
 Mistake 8: Unsecured Access to Metrics
 Mistake 9: Using ip_hash When All Traffic Comes from the Same /24 CIDR Block
 Mistake 10: Not Taking Advantage of Upstream Groups
+
+==system_nginx_wikipedia_proxy
+Simple local setup with proxy to https://de.wikipedia.org.
+>{
+  sudo apt update
+  sudo apt install nginx -y
+  sudo systemctl enable nginx
+  sudo systemctl start nginx
+  sudo nvim -u NONE /etc/nginx/sites-available/wikipedia-proxy
+>}
+server {
+  listen 80;
+  server_name localhost; # Oder Ihre Domain / IP-Adresse
+
+  location / {
+      proxy_pass https://de.wikipedia.org;
+      proxy_set_header Host de.wikipedia.org;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+
+      # Verhindert, dass Wikipedia den Client direkt per Redirect auf HTTPS zwingt
+      proxy_redirect off;
+      proxy_set_header Accept-Encoding "";
+  }
+}
+>{
+  sudo mv /etc/nginx/sites-enabled/default ~/nginx_default
+  sudo ln -s /etc/nginx/sites-available/wikipedia-proxy /etc/nginx/sites-enabled/
+  sudo nginx -t
+  sudo systemctl restart nginx
+  sudo systemctl disable nginx
+  sudo systemctl stop nginx
+>}
+
+==container_nginx_wikipedia_proxy
+# SHENANIGAN Very non-trivial replacement rules.
+# proxy_redirect https://de.wikipedia.org /; # replace reply headers "Location: https://wikipedia.org" with "/" for relative forwarding
+# vs
+# proxy_redirect https://de.wikipedia.org http://$http_host/; # replace absolute wikpedia redirects on address+port of browser
+# Debug via
+# x.
+#   add_header X-Debug-Host-Variable     "host: $host" always;
+#   add_header X-Debug-HttpHost-Variable "http_host: $http_host" always;
+#   add_header X-Debug-Scheme-Variable   "scheme: $scheme" always;
+#   add_header X-Debug-ServerPort       "port: $server_port" always;
+# 1. set logs: error_log /var/log/nginx/error.log debug;
+# 2. use debug version: compose file > command: ["nginx-debug", "-g", "daemon off;"]
+
+>cat nginx.conf
+# https://docs.nginx.com/nginx-ingress-controller/configuration/proxy-buffers-configuration/
+events {}
+http {
+    proxy_buffer_size          16k; # size of buffer for first part of reply, primary HTTP header (default 4/8k)
+    proxy_buffers              8 32k; # amount of buffers, size for body of server reply
+    proxy_busy_buffers_size    64k; # limitation on overall buffer in state "busy" during which reply is send piecewise to client
+    # it must hold proxy_buffer_size <= proxy_busy_buffers_size and proxy_busy_buffer_size <= (count proxy_buffers - 1) * (proxy_buffer_size)
+    # it must hold max(proxy_buffer_size [header], size(proxy_buffers [single body])) <= proxy_busy_buffers_size
+    server {
+        listen 80;
+        location / {
+            proxy_pass https://de.wikipedia.org; # target
+            proxy_redirect https://de.wikipedia.org http://$http_host/; # replace absolute wikpedia redirects on address+port of browser
+            proxy_set_header Host de.wikipedia.org; # overwrite HTTP header to prevent wikipedia blocking requests with HTTP host header "localhost"
+            proxy_set_header X-Real-IP $remote_addr; # provide real ip of browser for logs and rate limits
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # extends list of ips with client ip, if request did go through multiple proxies
+            proxy_set_header X-Forwarded-Proto https; # fakes request was made via https to prevent "301 redirect"
+            proxy_set_header X-Forwarded-Port 443; # fakes request was made via standard https port 443
+            proxy_set_header Accept-Encoding ""; # deletes "Accept-Encoding" header in browser to force uncompressed clear text html to nginx.
+            # This allows replacement of text via 'sub_filter'.
+        }
+    }
+}
+>docker run --rm --name wiki-proxy -p 8080:80 -v ./nginx.conf:/etc/nginx/nginx.conf:ro docker.io/library/nginx
+>echo "persistent nginx compose across restarts"
+>cat co.yml
+networks:
+  net:
+    name: net
+    driver: bridge
+    external: false
+services:
+  wikipedia-proxy:
+    image: docker.io/library/nginx:latest
+    container_name: wiki-compose-proxy
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: always  # persistent restartable
+>docker compose -p "persistent_nginx" -f co.yml up -d
+
+==important_variables
+====http_requests_vars
+$request
+$request_method
+$request_uri
+$uri
+$document_uri
+$args / $query_string
+$arg_NAME
+$is_args
+
+====client_and_network_vars
+$remote_addr
+$remote_port
+$binary_remote_addr
+$scheme
+$https
+
+====server_host_vars
+$host
+$server_name
+$server_addr
+$server_port
+
+====http_dynamic_headers
+$http_NAME
+$http_user_agent
+$http_accept_language
+$http_referer
+$sent_http_NAME
+$sent_http_content_type
+$cookie_NAME
+
+====proxy_upstream_vars
+$upstream_addr
+$upstream_status
+$upstream_response_time
+$upstream_connect_time
+
+====time_status_vars
+$status
+$body_bytes_sent
+$request_time
+$time_local
+$nginx_version

@@ -1,3 +1,8 @@
+==overview
+==yq_json_wrapper
+==yq_standalone_tool
+
+==overview
 JSON, TOML, YAML, XML, CSV
 https://github.com/tomwright/dasel
 
@@ -12,6 +17,28 @@ good data format
 - YAML, signed-yaml/YAML-crypt, YAML Path, YAML Patch
 Including additions bloated and complex to implement.
 
-yq eval -P config.toml | podman compose -f - up -d
-
 Is there a better format?
+Nix? Guix?
+
+==yq_json_wrapper
+yq -h
+usage: yq [options] <jq filter> [input file...]
+          [--version]
+          [jq_filter] [files ...]
+yq: Command-line YAML processor - jq wrapper for YAML documents
+yq transcodes YAML documents to JSON and passes them to jq.
+See https://github.com/kislyuk/yq for more information.
+====usage
+yq . minimal.yml > minimal.json
+--yaml-output/--yml-output/-y
+yq minimal.yml > minimal.json
+
+==yq_standalone_tool
+(mostly unused)
+yq - Command-line YAML/XML/TOML processor
+yq eval -P config.toml | podman compose -f - up -d
+yq eval -o json minimal.yml > minimal.json
+
+print files in dir: find dir -t f
+tar -cf /tmp/doc.tar /usr/share/doc
+list dirs+files in tar: tar -tf file.tar
