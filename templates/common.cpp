@@ -3242,6 +3242,11 @@ void use_flat_set() {
   std::print("flat_set lookup duration: {} ms\n", duration.count());
 }
 
+// Upstream clang libc++ has no <spanstream>, <syncstream>,
+// <stdfloat> and misses <ranges>, std::locale improvements.
+// Basically spanstream, syncstream and std::locale are garbage, so dont use that stuff.
+// Unfortunately C++23 has no allocator-free, non-throwing replacements.
+
 // UNSOLVED
 // https://yongweiwu.wordpress.com/2022/06/19/compile-time-strings/
 // TODO test this
@@ -3329,6 +3334,22 @@ void use_flat_set() {
 // * extensions conditionally supported??
 // asm fortran
 // => 31 + 33 + 33 + 6 + (15+3+3) + 3 = 127
+
+// way too sloppy code.
+// #include <inplace_vector>
+// template<typename T> inline constexpr int process_data_impl(T &&data) noexcept {
+//   (void)data;
+//   std::inplace_vector<char, 128> memory_buffer;
+//   auto [out_ptr, needed_size] = std::format_to_n(memory_buffer.data(), memory_buffer.capacity(),
+//                                                  "Tag Dispatching: {} | Mode: {}", 42, "Production");
+//   if (needed_size > memory_buffer.capacity()) {
+//     return 1;
+//   }
+//   memory_buffer.resize(needed_size);
+//   std::string_view result(memory_buffer.data(), memory_buffer.size());
+//   std::println("[Tag Dispatch] Fast execution on: {}", result);
+//   return 0;
+// }
 
 // C++26 enum_to_string and string_to_enum
 template<typename E>

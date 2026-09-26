@@ -1,4 +1,5 @@
 https://www.npopov.com/2026/01/11/LLVM-The-bad-parts.html
+https://skanthak.homepage.t-online.de/llvm.html
 
 "Don’t Look UB: Exposing Sanitizer-Eliding Compiler Optimizations"
 * use mutational fuzzing pipeline to generate programs susceptible to UB

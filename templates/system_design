@@ -1,5 +1,6 @@
 ====software_systems
 ====software_architectures
+======manager
 ====browser
 
 ====software_systems
@@ -96,12 +97,11 @@ because we have a priori decided what we want not to work, optimize and merge to
 Still necessary due to brain capacity, but crucial to keep in mind that these are bad
 (worse design, worse efficiency).
 
-====browser
-https://kciter.so/posts/the-expensive-main-thread/en/
-
-A manager msut subcract a crucial and difficult design task. 2 contractors: small
-new org propositing intuitively appealing approach for less money than budgeted
-and established but conventional outfit asking more "realistic" fee.
+======manager
+A manager must subcract a crucial and difficult design task.
+2 contractors: small new org propositing intuitively appealing approach for
+less money than budgeted and established but conventional outfit asking more
+"realistic" fee.
 Knowing bright young orga fails to produce adequate results means mismanagement whereas
 established product failure means "problem is indeed a difficult one".
 => Unless wanting to be trailblazor for new things, take safe choice.
@@ -111,3 +111,6 @@ simply adds productivity. Development of such philosophy promises to unearth bas
 questions about value of resources and techniques of communication which will need to
 be answered before out system-building technology can proceed with confidence.
 => Must be as __lean__ and __flexible__ as possible.
+
+====browser
+https://kciter.so/posts/the-expensive-main-thread/en/

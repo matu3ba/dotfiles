@@ -21,3 +21,5 @@ nix-shell -p npins --run "npins init --bare; npins add --name nixpkgs channel ni
 
 https://gist.github.com/stammw/d55958fc7ac6185e3446ccf637e53683#file-yocto-nix-L54
 https://github.com/mayl/buildroot_flake/blob/master/flake.nix
+
+https://jade.fyi/blog/flakes-arent-real/

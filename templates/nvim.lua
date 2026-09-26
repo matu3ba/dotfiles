@@ -4,6 +4,9 @@
 -- luacheck: no max line length
 local M = {}
 
+-- https://github.com/rezhaTanuharja/minimalistNVIM.git
+-- https://bluz71.github.io/
+
 -- local checkSetup1 = function() return true end
 --
 -- M.check = function()

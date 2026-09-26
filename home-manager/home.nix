@@ -20,7 +20,6 @@
 # home-manager switch
 # (nix-channel --update)
 
-# TODO setup with https://jade.fyi/blog/flakes-arent-real/
 # example/lix_projectdev/instructions
 
 # Rollback

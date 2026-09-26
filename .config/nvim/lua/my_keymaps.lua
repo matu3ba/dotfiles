@@ -90,7 +90,8 @@ local opts = {} -- default opts
 
 map('', '<Space>', '<Nop>', { desc = 'fix annoying space movements' })
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
-map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
+-- workaround Assertion failed: (((typed.keys).size) - typed.map_start) <= SIZE_MAX - (keys).size (/$HOME/dev/zi/neovim/src/nvim/input_cmdatom.c: atom_composite_lhs: 562)
+-- disable for now map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
 

@@ -434,11 +434,11 @@ test "perf array assignment" {
     // a pile of code
 }
 
-// SHENANIGAN
-// Parameter Reference Optimization
+// Parameter Reference Optimization was a problem
 // examples from @SpexGuy's talk
 // https://www.youtube.com/watch?v=dEIsJPpCZYg
-// * should be fixed now
+// * Parameter Referene Optimization is default disabled with opt-in planned
+// based on pure fn annotations.
 
 const BigStruct = struct {
     vals: [4]u128,

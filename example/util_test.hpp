@@ -3,15 +3,10 @@
 static_assert(HAS_CPP23, "use HAS_CPP23 macro");
 #endif
 
-// TODO FIXME
-// * tag dispatch https://www.fluentcpp.com/2018/04/27/tag-dispatching/
-// * enum dispatch for vtable stuff in case of pimpl/dynamic stubbing
-
 #define ALLOW_BAD_PRACTICE 1
 
 #include <chrono>
 #include <functional>
-#include <iostream> // stderr
 #include <string>
 #include <vector>
 
@@ -45,6 +40,7 @@ template<typename Ty>
 concept can_create_wstring_from = requires(Ty t1) { static_cast<std::wstring>(t1); };
 
 #if defined(ALLOW_BAD_PRACTICE)
+#include <iostream> // stderr
 // template <typename T>
 // concept Stream = std::is_convertible_v<T, std::ostream &>;
 
