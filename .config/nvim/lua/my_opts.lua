@@ -64,6 +64,10 @@ local function load_options()
       },
     }
   elseif utils.isWSL() then
+    local host_win_username = (vim.fn.system('cmd.exe /c echo %USERNAME% 2>/dev/null'):gsub('\n', ''):gsub('\r', ''))
+    local win32yank_path = '/mnt/c/Users/' .. host_win_username .. '/.local/bin'
+    vim.env.PATH = vim.env.PATH .. ':' .. win32yank_path
+    -- add to rtp
     ---@diagnostic disable-next-line: unnecessary-if
     if vim.fn.executable 'win32yank.exe' then
       -- use faster clipboard, if available

@@ -40,7 +40,10 @@ local has_lazy = vim.uv.fs_stat(lazypath)
 if not has_lazy then
   print 'Please install lazy, instructions in init.lua'
 else
-  if vim.version().minor >= 12 then vim.cmd 'packadd nvim.undotree' end
+  if vim.version().minor >= 12 then
+    vim.cmd 'packadd nvim.undotree'
+    require('vim._core.ui2').enable { enable = true }
+  end
   vim.opt.runtimepath:prepend(lazypath)
   -- workaround https://github.com/natecraddock/telescope-zf-native.nvim/issues/21
   require('lazy').setup('my_plugins', { rocks = { enabled = false } })

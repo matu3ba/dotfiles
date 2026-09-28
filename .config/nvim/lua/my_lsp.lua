@@ -404,6 +404,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- })
 
 --==CompleterSetup
+-- unfortunately bang commands like :!echo "asdasd" hang at :!e....
 blink.setup {
   appearance = {
     use_nvim_cmp_as_default = true,

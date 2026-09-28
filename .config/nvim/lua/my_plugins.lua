@@ -72,7 +72,7 @@ return {
       'saghen/blink.cmp',
       lazy = false,
       dependencies = 'rafamadriz/friendly-snippets',
-      version = 'v0.*',
+      version = '1.*', -- Pin to stable
       build = 'cargo build --release',
       -- opts_extend. defines list-like tables that will be
       -- merged by lazy.nvim instead of overwritten

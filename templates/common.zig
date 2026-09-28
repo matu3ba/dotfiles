@@ -866,22 +866,32 @@ test "switch details" {
 }
 
 const Foo = struct {
-    nope: i32,
-    pub var blah = "xxx";
-    const hi = 1;
-    fn blafn() void {}
+    nope1: i32,
+    nope2: @TypeOf(struct {}),
+    const nope3 = 1;
+    fn nope4() void {}
+    const nope5 = struct {};
+
+    pub var yup1 = "y";
+    pub var yup2 = struct {};
+    pub const yup3 = "x";
+    pub fn yup4() void {}
+    pub const yup5 = struct {};
 };
 
 test "@hasDecl" {
-    try std.testing.expect(@hasDecl(Foo, "blah"));
-    // Test is in same file scope as Foo, so has decl hi.
-    // Testing in other file scope would return false.
-    try std.testing.expect(@hasDecl(Foo, "hi"));
-    try std.testing.expect(@hasDecl(Foo, "blafn"));
+    // @hasDecl is for pub decls and fields
+    try std.testing.expect(!@hasDecl(Foo, "nope1"));
+    try std.testing.expect(!@hasDecl(Foo, "nope2"));
+    try std.testing.expect(!@hasDecl(Foo, "nope3"));
+    try std.testing.expect(!@hasDecl(Foo, "nope4"));
+    try std.testing.expect(!@hasDecl(Foo, "nope5"));
 
-    // @hasDecl is for declarations; not fields.
-    try std.testing.expect(!@hasDecl(Foo, "nope"));
-    try std.testing.expect(!@hasDecl(Foo, "nope1234"));
+    try std.testing.expect(@hasDecl(Foo, "yup1"));
+    try std.testing.expect(@hasDecl(Foo, "yup2"));
+    try std.testing.expect(@hasDecl(Foo, "yup3"));
+    try std.testing.expect(@hasDecl(Foo, "yup4"));
+    try std.testing.expect(@hasDecl(Foo, "yup5"));
 }
 
 // SHENANIGAN one can create trivially dependency loops without type dependency
