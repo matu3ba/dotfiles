@@ -81,6 +81,30 @@ Get-Website
 Get-WebBinding
 (Get-WebBinding).bindingInformation
 
+# list autostart
+# https://learn.microsoft.com/en-us/windows/win32/setupapi/run-and-runonce-registry-keys
+# https://learn.microsoft.com/en-us/iis/manage/provisioning-and-managing-iis/features-of-the-windows-process-activation-service-was
+Get-ChildItem "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup" > startup_dir
+Get-Service | Where-Object {$_.StartType -eq "Automatic"} | Select-Object Name, DisplayName, StartType > service_autostart
+Get-ScheduledTask | Where-Object {$_.Triggers.Enabled -eq $true} | Select-Object TaskName, TaskPath, State > scheduled_tasks
+# * ref https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page
+#tool: https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns
+
+# stop default website
+C:\Windows\System32\inetsrv\appcmd.exe stop site /site.name:"Default Web Site"
+C:\Windows\System32\inetsrv\appcmd.exe set site "Default Web Site" /autoStart:false
+C:\Windows\System32\inetsrv\appcmd.exe list apppool "DefaultAppPool" /text:*
+C:\Windows\System32\inetsrv\appcmd.exe /? apppool
+PS C:\WINDOWS\system32> C:\Windows\System32\inetsrv\appcmd.exe delete apppool "DefaultAppPool"
+Das APPPOOL-Objekt "DefaultAppPool" wurde gelöscht.
+PS C:\WINDOWS\system32> C:\Windows\System32\inetsrv\appcmd.exe delete apppool ".NET v4.5 Classic"
+Das APPPOOL-Objekt ".NET v4.5 Classic" wurde gelöscht.
+PS C:\WINDOWS\system32> C:\Windows\System32\inetsrv\appcmd.exe delete apppool ".NET v4.5"
+Das APPPOOL-Objekt ".NET v4.5" wurde gelöscht.
+
+# Always Logout on Windows server via Start > User Tray > Logout
+# Secure monitoring agent https://nsclient.org/
+
 # force stop stuck IIS Express session (in admin shell)
 net stop winnat
 net start winnat

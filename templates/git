@@ -166,9 +166,6 @@ git log --format=format:"%B----"
 Show commit seperated commits without indentation (graphical copy paste):
 git log --format=format:"%H%n%B----"
 
-Decomposes merges against all parents; tracks file renames:
-git log -p -m --follow HEAD <path>
-
 For merge commits, we're only interested in what merge brought in:
 git show --first-parent
 and likewise
@@ -178,6 +175,9 @@ which may not be wanted.
 See also https://stackoverflow.com/questions/40986518/how-to-git-show-the-diffs-for-a-merge-commit.
 Get Nth last commit
 git show COMMIT~N
+
+======ignore
+--ignore-cr-at-eol
 
 ====Base log strategies with file tracking (--follow)
 Shows uncompressed multi-column combined diffs; tracks file renames:

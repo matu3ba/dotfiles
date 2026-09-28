@@ -2,7 +2,8 @@
 $NEOVIM_RELEASES_URL = "https://api.github.com/repos/neovim/neovim/releases"
 $NEOVIM_TMP_DIR = "$HOME\tmp"
 $NEOVIM_URL_ZIP = "https://github.com/neovim/neovim/releases/download/nightly/nvim-win64.zip"
-$VERSION = "0.12.0"
+$VERSION = "0.13.0"
+$IsDebug = $False
 function CheckLastExitCode {
   param ( [string] $pwd)
   if (!$?) {
@@ -59,12 +60,12 @@ function MoveUnpackedNeovim {
   MoveNvimItem $unzip_target $target_path 'bin\lua51.dll' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\nvim.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\nvim.pdb' $pwd
-  # MoveNvimItem $unzip_target $target_path 'bin\tee.exe' $pwd
+  MoveNvimItem $unzip_target $target_path 'bin\tee.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\win32yank.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'bin\xxd.exe' $pwd
   MoveNvimItem $unzip_target $target_path 'lib\nvim' $pwd
   MoveNvimItem $unzip_target $target_path 'share\applications' $pwd
-  MoveNvimItem $unzip_target $target_path 'share\locale' $pwd
+  # MoveNvimItem $unzip_target $target_path 'share\locale' $pwd
   MoveNvimItem $unzip_target $target_path 'share\man' $pwd
   MoveNvimItem $unzip_target $target_path 'share\nvim' $pwd
 }
@@ -92,35 +93,39 @@ $COMMIT = $neovim_release_json[0]."target_commitish"
 $zip_target = "nvim-windows-x86_64-$VERSION-$COMMIT.zip"
 $unzip_target = "nvim-windows-x86_64-$VERSION-$COMMIT"
 
-if (Test-Path "$NEOVIM_TMP_DIR\$zip_target") {
-  Write-Output  "Neovim already up to date"
-  Set-Location -Path "$PWD"
-  exit 0
-} else {
-  Write-Output  "Neovim not up to date, fetching zip into $NEOVIM_TMP_DIR\$zip_target"
-  Invoke-WebRequest -Uri "$NEOVIM_URL_ZIP" -OutFile "$NEOVIM_TMP_DIR\$zip_target"
-  CheckLastExitCode($PWD)
+if (-not $IsDebug) {
+  if (Test-Path "$NEOVIM_TMP_DIR\$zip_target") {
+    Write-Output  "Neovim already up to date"
+    Set-Location -Path "$PWD"
+    exit 0
+  } else {
+    Write-Output  "Neovim not up to date, fetching zip into $NEOVIM_TMP_DIR\$zip_target"
+    Invoke-WebRequest -Uri "$NEOVIM_URL_ZIP" -OutFile "$NEOVIM_TMP_DIR\$zip_target"
+    CheckLastExitCode($PWD)
+  }
 }
 
 Write-Output "Deleting old Neovim instance.."
+if (!(Test-Path "$HOME\.local\bin\")) { New-Item -Path "$HOME\.local\bin\" -ItemType Directory }
 # IfExistDelFile "$HOME\.local\bin\cat.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\dbghelp.dll" $PWD
 IfExistDelFile "$HOME\.local\bin\lua51.dll" $PWD
 IfExistDelFile "$HOME\.local\bin\nvim.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\nvim.pdb" $PWD
-# IfExistDelFile "$HOME\.local\bin\tee.exe" $PWD
+IfExistDelFile "$HOME\.local\bin\tee.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\win32yank.exe" $PWD
 IfExistDelFile "$HOME\.local\bin\xxd.exe" $PWD
+if (!(Test-Path "$HOME\.local\lib\")) { New-Item -Path "$HOME\.local\lib\" -ItemType Directory }
 IfExistDelDir "$HOME\.local\lib\nvim" $PWD
+if (!(Test-Path "$HOME\.local\share\")) { New-Item -Path "$HOME\.local\share\" -ItemType Directory }
 IfExistDelDir "$HOME\.local\share\applications" $PWD
-IfExistDelDir "$HOME\.local\share\locale" $PWD
+# IfExistDelDir "$HOME\.local\share\locale" $PWD
 IfExistDelDir "$HOME\.local\share\man" $PWD
 IfExistDelDir "$HOME\.local\share\nvim" $PWD
 
 #testing
 #$zip_target = "nvim-windows-x86_64-0.12.0-e27f7125d66f6026adacbbad00bbf6e66a6ba883.zip"
 #$unzip_target = "nvim-windows-x86_64-0.12.0-e27f7125d66f6026adacbbad00bbf6e66a6ba883"
-
 Write-Output "Unpacking $NEOVIM_TMP_DIR\$zip_target .."
 New-Item -Path "$NEOVIM_TMP_DIR\$unzip_target" -ItemType Directory
 CheckLastExitCode($PWD)
