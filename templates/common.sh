@@ -13,6 +13,9 @@ CWD=$(pwd)
 trap cd "${CWD}" EXIT HUP INT QUIT TERM
 # if SIGSEGV is included, then at least bash complains with 'trap: SIGSEGV: bad trap'
 
+# cleanup the trap after trap execution, typically in shell functions
+# trap 'rm -fr "${TMP6}"; trap - INT TERM EXIT' INT TERM EXIT
+
 # unless commands return non-zero status, use
 set -e
 # temporary set

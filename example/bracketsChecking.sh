@@ -29,12 +29,12 @@ find include/ src/ -type f \( -iname \*.h -o -iname \*.cc -o -iname \*.tpp \) > 
 warnings=0;
 errors=0;
 while read -r line; do
-	open=$(grep -F -o '{' $line | 'wc -l');
-	close=$(grep -F -o '}' $line | 'wc -l');
+	open=$(grep -F -o '{' "$line" | 'wc -l');
+	close=$(grep -F -o '}' "$line" | 'wc -l');
 #call parser only for removing comments then count { and } respectively
 #(remove -w for all warnings, nostdinc for no includes)
-	openp=$((cpp -w -nostdinc -fpreprocessed -o- $line) | grep '{' | wc -l );
- closep=$((cpp -w -nostdinc -fpreprocessed -o- $line) | grep '}' | wc -l );
+	openp=$( (cpp -w -nostdinc -fpreprocessed -o- "$line") | grep -c '{' );
+ closep=$( (cpp -w -nostdinc -fpreprocessed -o- "$line") | grep -c '}' );
 	diff=$((open-close));
     diffp=$((openp-closep));
 #DEBUG

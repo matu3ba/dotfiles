@@ -33,7 +33,7 @@ then
     mkdir /sys/fs/cgroup/benchmark
 fi
 echo 'root' > /sys/fs/cgroup/benchmark/cpuset.cpus.partition
-for f in /sys/fs/cgroup/*/cpuset.cpus; do echo '2-15' > $f; done
+for f in /sys/fs/cgroup/*/cpuset.cpus; do echo '2-15' > "$f"; done
 echo '0-1' > /sys/fs/cgroup/benchmark/cpuset.cpus
 
 # Set scaling_governer to performance on benchmark cores

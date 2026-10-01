@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ## bash aliases ##
 alias ..="cd .."
 alias ...="cd ../.."
@@ -30,12 +31,11 @@ makeWorkTree() {
   fi
   echo "$worktreesdir"
   mkdir "$worktreesdir"
-  cd "$worktreesdir"
+  cd "$worktreesdir" || return
   git clone --bare "$1" .bare
   # make sure git knows where the gitdir is
   echo "gitdir: ./.bare" > .git
-  git worktree add master
-  cd ..
+  ( git worktree add master )
 }
 
 # reset to branch $1 and apply last $2 commits

@@ -133,18 +133,18 @@ if status is-interactive
   abbr --add -g sus ' systemctl suspend'
   abbr --add -g rp ' realpath'
 
-  abbr --add -g           via ' {$HOME}/.local/appimages/nvim.appimage'
-  # abbr --add -g          jvia ' firejail {$HOME}/.local/appimages/nvim.appimage'
-  abbr --add -g          cvia ' {$HOME}/.local/appimages/nvim.appimage -u NONE'
-  abbr --add -g          dvia ' {$HOME}/.local/appimages/nvim.appimage -u DEFAULT'
-  abbr --add -g       histupa ' {$HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
-  abbr --add -g      aliasesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
-  abbr --add -g       bashrca ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
-  abbr --add -g       fishrca ' {$HOME}/.local/appimages/nvim.appimage "$HOME/.config/fish/config.fish"'
-  abbr --add -g          dfsa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
-  abbr --add -g  aliases_gita ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
-  abbr --add -g  aliases_nixa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
-  abbr --add -g    templatesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
+  # abbr --add -g           via ' {$HOME}/.local/appimages/nvim.appimage'
+  # # abbr --add -g          jvia ' firejail {$HOME}/.local/appimages/nvim.appimage'
+  # abbr --add -g          cvia ' {$HOME}/.local/appimages/nvim.appimage -u NONE'
+  # abbr --add -g          dvia ' {$HOME}/.local/appimages/nvim.appimage -u DEFAULT'
+  # abbr --add -g       histupa ' {$HOME}/.local/appimages/nvim.appimage "/var/log/"' # pacman.log or apt/
+  # abbr --add -g      aliasesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases"'
+  # abbr --add -g       bashrca ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.bashrc"'
+  # abbr --add -g       fishrca ' {$HOME}/.local/appimages/nvim.appimage "$HOME/.config/fish/config.fish"'
+  # abbr --add -g          dfsa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
+  # abbr --add -g  aliases_gita ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_git"'
+  # abbr --add -g  aliases_nixa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/.config/shells/aliases_nix"'
+  # abbr --add -g    templatesa ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/templates"'
 
   #abbr --add -g            vi ' {$HOME}/.local/nvim/bin/nvim'
   abbr --add -g             v ' nvim'
@@ -155,7 +155,7 @@ if status is-interactive
   abbr --add -g        histup ' nvim "/var/log/"' # pacman.log or apt/
   abbr --add -g       aliases ' nvim "$HOME/dotfiles/.config/shells/aliases"'
   abbr --add -g        fishrc ' nvim "$HOME/dotfiles/.config/fish/config.fish"'
-  abbr --add -g           dfs ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
+  # abbr --add -g           dfs ' {$HOME}/.local/appimages/nvim.appimage "$HOME/dotfiles/"'
   abbr --add -g   aliases_git ' nvim "$HOME/dotfiles/.config/shells/aliases_git"'
   abbr --add -g   aliases_nix ' nvim "$HOME/dotfiles/.config/shells/aliases_nix"'
   abbr --add -g     templates ' nvim "$HOME/dotfiles/templates"'
@@ -163,13 +163,12 @@ if status is-interactive
   # neovim installation needs manual fixups to remove additional installed parsers, because c and c++ parsers are very broken:
   # rm ~/.local/nvim/lib/nvim/parser/c.so
   # rm ~/.local/nvim/lib/nvim/parser/cpp.so
-  abbr --add -g          nb ' {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+  # abbr --add -g          nb ' {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   # abbr --add -g        nbnj ' firejail --noprofile {$HOME}/dev/git/cpp/mold/build/mold -run make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   # abbr --add -g      nbnjnm ' firejail --noprofile make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
-  abbr --add -g        nbnm ' make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
+  # abbr --add -g        nbnm ' make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim install'
   # abbr --add -g         nbz ' CC="zcc.sh" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/nvim DEPS_CMAKE_FLAGS="-DCMAKE_CC_COMPILER=zig\ cc" install'
-
-  abbr --add -g      nbasan ' CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
+  # abbr --add -g      nbasan ' CMAKE_EXTRA_FLAGS="-DCMAKE_C_COMPILER=clang -DCLANG_ASAN_UBSAN=1" make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$HOME/.local/asan_nvim install'
 
   # abbr --add -g  zbcmdeb ' mkdir -p build/ && cd build/ && cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/host/" -GNinja && time ninja install  && cd ..'
   # abbr --add -g  zbdeb ' {$HOME}/dev/git/zi/zig/master/buildrel/stage3/bin/zig build -p deb -Doptimize=Debug --search-prefix "$HOME/dev/git/bootstrap/zig-bootstrap/musl/out/x86_64-linux-musl-native" --zig-lib-dir lib -Dstatic-llvm'
@@ -204,7 +203,7 @@ if status is-interactive
   abbr --add -g   arocc ' {$HOME}/dev/git/zi/arocc/zig-out/bin/arocc'
   abbr --add -g  zigdebc ' {$HOME}/dev/git/zi/zig/debug/build/stage3/bin/zig'
   abbr --add -g  zigdeb ' {$HOME}/dev/git/zi/zig/debug/stage3/bin/zig'
-  abbr --add -g  zigstd ' {$HOME}/.local/appimages/nvim.appimage {$HOME}/dev/git/zi/zig/master/lib/std'
+  # abbr --add -g  zigstd ' {$HOME}/.local/appimages/nvim.appimage {$HOME}/dev/git/zi/zig/master/lib/std'
   abbr --add -g   zup1 ' ./build/stage3/bin/zig build update-zig1'
   abbr --add -g   zdoc ' cd {$HOME}/dev/git/zi/zig/master/buildrel/stage3/lib/zig/docs/'
 
@@ -255,7 +254,7 @@ if status is-interactive
   function foxeth -d "sandboxing firefox + whitelist download dir"
     if test -e "$HOME/eth_device"
       cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox --new-instance -P default && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --deterministic-shutdown --net=$adapter_name --whitelist=$TMP firefox --new-instance -P default && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/eth_device"
     end
@@ -263,7 +262,7 @@ if status is-interactive
   function sfoxeth -d "sandboxing firefox + private download dir"
     if test -e "$HOME/eth_device"
       cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox --new-instance && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --deterministic-shutdown --net=$adapter_name --private=$TMP firefox --new-instance && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/eth_device"
     end
@@ -271,7 +270,7 @@ if status is-interactive
   function tbirdeth -d "sandboxing thunderbird + private download dir"
     if test -e "$HOME/eth_device"
       cat "$HOME/eth_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --deterministic-shutdown --net=$adapter_name --whitelist=$TMP thunderbird --new-instance && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/eth_device"
     end
@@ -281,7 +280,7 @@ if status is-interactive
   function foxwlan -d "sandboxing firefox + whitelist download dir"
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP firefox --new-instance -P default && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/fox" && mktmpdir "$TMP" && firejail --deterministic-shutdown --net=$adapter_name --whitelist=$TMP firefox --new-instance -P default && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
@@ -289,7 +288,7 @@ if status is-interactive
   function sfoxwlan -d "sandboxing firefox + private download dir"
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --net=$adapter_name --private=$TMP firefox --new-instance && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/sfox" && mktmpdir "$TMP" && firejail --deterministic-shutdown --net=$adapter_name --private=$TMP firefox --new-instance && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
@@ -297,7 +296,7 @@ if status is-interactive
   function tbirdwlan -d "sandboxing thunderbird + private download dir"
     if test -e "$HOME/wlan_device"
       cat "$HOME/wlan_device" | read -l adapter_name && echo $adapter_name
-      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --net=$adapter_name --whitelist=$TMP thunderbird && rmtmpdir "$TMP"
+      set TMP "$HOME/tmpf/tbird" && mktmpdir "$TMP" && firejail --deterministic-shutdown --net=$adapter_name --whitelist=$TMP thunderbird --new-instance && rmtmpdir "$TMP"
     else
       echo "no adapter_name in $HOME/wlan_device"
     end
