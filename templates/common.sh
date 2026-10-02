@@ -214,14 +214,14 @@ env -i HOME="$HOME" LC_CTYPE="${LC_ALL:-${LC_CTYPE:-$LANG}}" PATH="$PATH" USER="
 ssh localhost ls
 env -i bash --noprofile --norc -c "command"
 
-#1 export $(cat .env | xargs)
+# https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#set
+# breaks on spaces etc
+# * export $(cat .env | xargs)
 #  ./script.sh
-#2 $(cat .env | xargs) ./script.sh
-#3 autoexport
-#  set -a
-#  source .env
-#  set +a
-#  ./script.sh
+# * $(cat .env | xargs) ./script.sh
+#===best_posix_export
+# * autoexport
+#  set -a; source .env; set +a; ./script.sh
 
 # export VAR=value
 # export VAR1=value1 VAR2=value2

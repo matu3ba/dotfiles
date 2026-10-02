@@ -1,0 +1,31 @@
+# artifact only container
+
+# https://www.stacklesson.com/mean-stack/docker/production-docker-angular-nginx-resource-limits-rolling-updates/
+
+# minimal-k8s-static-files-webserver
+
+```dockerfile
+# dockerfile
+FROM scratch
+COPY ./client/dist/client/browser/ /
+```
+
+```yaml
+# compose file
+services:
+  nginx:
+    image: docker.io/library/nginx:1.31.6-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - type: image
+        source: client-ui:dev
+        target: /usr/share/nginx/html
+  ui:
+    image: client-ui:dev
+    build:
+      context: .
+      dockerfile: ./Containerfile.Angular_website
+    scale: 0
+```

@@ -14,3 +14,14 @@ Rust regex crate              | None (use code)     | (?!...), (?<=...) limited 
 RE# (.NET/F#)【iev.ee blog】  | Not specified       | ~(pattern) complement operator + (?<=R1)R2(?=R3)         | Context-aware lookarounds; boolean algebra (&, ~, |)
 JavaScript (V8, SpiderMonkey) | None                | (?!...), (?<=...)                                        | Backtracking engine (ReDoS risk)
 Java                          | None (use code)     | (?!...), (?<=...)                                        | Backtracking; lookarounds supported
+
+extract server name from email
+(?<=@)[^.]+(?=\.)
+first.name@google.com
+https://regex101.com/
+
+# This cleans the variable contents regardless of your active shell
+printf '%s\n' "$YOUR_VARIABLE" | sed "s/'/'\\\\''/g; 1s/^/'/; \$s/\$/'/"
+sed 's/'/'\\\\''/g; 1s/^/'/; \$s/\$/'/'
+delimiter /
+regex101.com

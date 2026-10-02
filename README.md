@@ -63,3 +63,7 @@ However they can break programs.
 Example: `ls "${filename}"` with filename being `-k` leading to `ls -k`.
 See also https://github.com/sharkdp/fd/issues/760 and
 https://dwheeler.com/essays/fixing-unix-linux-filenames.html#dashes
+
+### Handling untrusted data in shell
+
+TODO experiment wrapup of posix shell, bash, fish
