@@ -2,7 +2,9 @@ fast powerful init system for embedded: https://troglobit.com/projects/finit/
 immutable network centered linux os https://kernelkit.org/about/
 
 ====trade-offs
+https://nesbitt.io/2025/12/24/package-managers-keep-using-git-as-a-database.html
 https://nesbitt.io/2025/12/05/package-manager-tradeoffs.html
+https://lobste.rs/s/gffbjq/package_manager_design_tradeoffs
 TODO the amount of trade-offs is crazy and this only scratches the surface
 
 ====apkv3

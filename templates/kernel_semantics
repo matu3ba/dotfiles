@@ -52,6 +52,11 @@ idea citations for everything
 mini kernel
 https://github.com/nuta/operating-system-in-1000-lines
 
+microkernel goals: minimization and module system services
+* sel4 microkernel architecture, but frequently used to build seperation kernel
+seperation kernel goals: rigid static isolation and data control flow partitions
+* aws nitro seperation kernel architecture
+
 TODO better wrapup why Zig not ready for kernel stuff yet
 getting requirements in numbers very tricky
 

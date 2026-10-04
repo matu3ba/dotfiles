@@ -570,6 +570,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * Inference of Robust Reachability Constraints by Sellami et al.
   * paper works via satisfiability checking; looks fairly minimal
   * taint analysis does this on input data, might be possible to do coverage based fuzzing; however not minimal
+    - https://lobste.rs/s/illay7/attempting_cross_translation_unit_taint
 - 25. static analysis to prove bug-free programs
   * https://github.com/codex-semantics-library/codex not usable yet
   * https://github.com/binsec/binsec unclear trade-offs of symbolic execution
@@ -717,7 +718,23 @@ One possible strategy:
 - alternative: "D3692R1: How to Avoid OOTA Without Really Trying"
   "P3064R2: How to Avoid OOTA Without Really Trying"
   * idea: semantic time dependency on store-load order
-  * TODO good summary
+  * talking with slop-machine, we have 3 possible solutions to corner the problem
+    1. hw buffer sizes (NP-complete like register allocation)
+    2. computing bus timing (IP so very likely hard to get, fluctuating when in sleep mode, etc)
+    3. lamport timestamps/version vector/matrix clock/vector clock in IR for local
+      clocks/partial order of time intervals
+      * micro-arch timing surprises
+      * aliasing known
+      * known sequence points shared between execution units
+      * exact cache depends on past behavior of full system
+      * data-dependent latencies?
+      * Problem: Analysis of time information becomes prohibitive expensive for
+        bigger graph of sequence points and boils down to WCET estimation.
+      * Solution: Allow very programmers to do annotations over time-aliasing
+        analog to pointer- and memory-aliasing.
+        Probably it is more productive to list all ways of computing system
+        aliasing as possible sync points to do reusable and composable formal
+        modeling.
 - MIXER: DPOR for MSA
   * stateless model checking can not handle mixed size accesses in general
   * factorial state explosion

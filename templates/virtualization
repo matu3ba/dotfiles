@@ -66,6 +66,9 @@ tldr;
   * multi-use cases with smallish overhead
 
 ====kvm
+Kvm https://elixir.bootlin.com/linux/v5.9.1/source/virt/kvm/kvm_main.c#L739
+https://elixir.bootlin.com/linux/v5.9.1/source/arch/x86/kvm/x86.c#L9904
+
 https://www.enginyring.com/en/blog/kvm-explained-a-deep-dive-into-kernel-based-virtual-machine-technology
 https://binarydebt.wordpress.com/2018/10/14/intel-virtualisation-how-vt-x-kvm-and-qemu-work-together/
 https://www.thomas-krenn.com/en/wiki/Overview_of_the_Intel_VT_Virtualization_Features
@@ -166,3 +169,6 @@ TODO
 * MR-IOV allows I/O PCI Express to share resources among different VMs on different physical machines
 * may be facilitated by Address translation services
 TODO examples
+
+====linux
+https://popovicu.com/posts/how-to-use-linux-vsock-for-fast-vm-communication/

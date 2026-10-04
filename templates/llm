@@ -5,6 +5,7 @@
 ====visualization
 ====frameworks
 ====knowledge_distribution
+====practice
 
 ====tools
 https://github.com/rtk-ai/rtk
@@ -13,6 +14,7 @@ https://github.com/Swival
 * no bullshit any model agent
 
 https://github.com/brakmic/SKPlayground
+https://www.gilesthomas.com/2025/12/llm-from-scratch-28-training-a-base-model-from-scratch
 
 ====trade-offs
 excellent overview guide on methods for LLM design with practical trade-offs?
@@ -199,3 +201,26 @@ As I understand it, there should be information loss depending on quantization.
 But I don't quite understand how reasonable simplifications can be used or if
 those could not be tracked as "semantic shadow state" for later information
 distribution (to derived models etc). Does this make sense to you?
+
+====practice
+Vobe coding big code bases https://news.ycombinator.com/item?id=46354970
+[Research]
+  ask agent to explain current functionality to load right files/context.
+[Plan + specification]
+  ask agent to brainstorm best practices way to implement feature/refactor.
+  Brainstorm seems to be a keyword that triggers a better questioning loop for the agent.
+  Ask it to write a detailed implementation plan to an md file.
+[clear]
+  clear context of agent is better than compacting conversation.
+[execute plan]
+  ask to review the plan again, sometimes it asks additional questions which repeats the planning phase again.
+  This loads only plan into context, then have it implement plan.
+[review & test]
+  clear context again and ask to review plan to make sure everything was implemented.
+  This is where I add any unit or integration tests if needed.
+  Also run test suites, type checks, lint, etc.
+* 20-30 minutes running to end up with usable results
+* game of context management / fancy copy paste + solid testing feedback loop
+  instead of trying one-shot issues.
+* review for QA bottleneck
+* not appropriate for global optimizations/core design work

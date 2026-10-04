@@ -80,6 +80,7 @@ alternatives:
 7 consensus
 * tla+ https://lamport.azurewebsites.net/video/videos.html
 * https://tigerbeetle.com/blog/2025-11-22-mathematics-of-consensus/
+  - https://emptysqua.re/blog/leaseguard-raft-leader-leases-done-right/
 * https://matklad.github.io/2020/11/01/notes-on-paxos.html
 8 replication
 

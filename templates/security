@@ -19,6 +19,8 @@
 ====crypto
 ====protocols
 ====authentication
+====setup
+====permission_systems
 
 ====methods
 to ensure security based on "How to Secure Existing C and C++ Software without Memory Safety" by Erlingsson
@@ -39,6 +41,8 @@ to ensure security based on "How to Secure Existing C and C++ Software without M
   => randomly-generated secrets
   => randomizing memory layout
   => does not discuss why (not) true capabilities (in numbers)
+
+- Using and checking CET https://x86.lol/generic/2024/09/23/user-shadow-stacks.html
 
 https://www.youtube.com/@stacksmashing
 
@@ -501,3 +505,21 @@ bottom-up approach:
 
 https://phrack.org/issues/68/9#article
 * parasitic compute
+
+====setup
+freebsd
+https://blog.hofstede.it/migrating-burningboardnet-mastodon-instance-to-a-multi-jail-freebsd-setup/
+https://blogsystem5.substack.com/p/from-azure-functions-to-freebsd
+
+====practice
+https://blog.jakesaunders.dev/my-server-started-mining-monero-this-morning/
+* basic dockerfile stuff: write your own containers
+https://www.docker.com/blog/docker-hardened-images-for-every-developer/
+
+====permissions_systems
+https://eliocapella.com/blog/permission-systems-for-enterprise/
+trade-offs
+* naive via recursion at read time, high latency
+* RBAC via resources creation/sharing events, data drifts (out of sync permissions)
+* ABAC via single-entity policy execution, terrible performance when compiling lists
+* reBAC via graph relationships traversals/streams, massive infra

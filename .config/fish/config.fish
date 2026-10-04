@@ -192,6 +192,13 @@ if status is-interactive
   abbr --add -g  zrel ' set -lx ZIG_LIB_DIR lib; ../master/rel/bin/zig build -p rel -Doptimize=ReleaseSafe --search-prefix "../../zig-bootstrap/master/out/x86_64-linux-musl-native" -Dstatic-llvm -Dno-langref'
   # Without zig-bootrap stage4 fails due to c++ abi failures and making sure it works boils down to same logic
 
+  # Fetch Zig Release.
+  # set ZIGVERSION "0.17.0"
+  # curl -SsO "https://ziglang.org/download/$ZIGVERSION/zig-x86_64-linux-$ZIGVERSION.tar.xz.minisig"
+  # curl -SsO "https://ziglang.org/download/$ZIGVERSION/zig-x86_64-linux-$ZIGVERSION.tar.xz"
+  # minizign -V -P 'RWSGOq2NVecA2UPNdBUZykf1CCb147pkmdtYxgb3Ti+JO/wCYvhbAb/U' -m "zig-x86_64-linux-$ZIGVERSION.tar.xz"
+  # tar -xf "https://ziglang.org/download/$ZIGVERSION/zig-x86_64-linux-$ZIGVERSION.tar.xz"
+
   # Using out of tree llvm builds from ~/.local/llvmdeb and ~/.local/llvmrel
   abbr --add -g  zbsdebllvmdeb ' cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmdeb" -GNinja && time cmake --build build -j $(nproc)'
   abbr --add -g  zbsdebllvmrel ' cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="~/.local/llvmrel" -GNinja && time cmake --build build -j $(nproc)'

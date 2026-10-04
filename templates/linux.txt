@@ -16,6 +16,7 @@
 ====kernel_dev
 ====bad_parts
 ====courses
+====kernel_mails
 
 ==overview
 ./templates/linux/syscalls.txt
@@ -478,6 +479,7 @@ NFS shares have weird behavior, which may send error on close
 tty/pty layer in the kernel is abandoned since 2009 yet everyone uses and relies on it
 
 ====ebpf
+https://ebpf.party/
 using scheduler api with bpf https://github.com/sched-ext/scx/wiki
 bpftrace most simple solution to get into BPF and for system-runtime-debugging
 makes OOM visible (SIGKILL non-catchable, non-ignorable, can not handle in user-space), for example using
@@ -605,3 +607,6 @@ https://people.kernel.org/monsieuricon/
 
 ====courses
 https://linuxhandbook.com/courses/
+
+====kernel_mails
+https://github.com/jvns/git-list-viewer

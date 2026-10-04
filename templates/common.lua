@@ -8,8 +8,6 @@
 --====tooling
 --====basics
 
---====busted
-
 --====luarocks
 -- luarocks config lua_version 5.1
 --writes to $HOME/.luarocks

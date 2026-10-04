@@ -11,12 +11,14 @@ knowledge collection
 knowledge management
 wiki
 iteration
+zulip
 
 ======planning
 Gantt chart/Gantt-Diagramm
 GanttProject most popular (desktop only, simple)
 OpenProject (web-based, feature rich, steep learning curve, sharable live editing)
 Taiga (kanban-focused)
+https://wekan.fi/ (open source kanban)
 LibreOffice Calc with gantt chart template capability
 
 ====guide

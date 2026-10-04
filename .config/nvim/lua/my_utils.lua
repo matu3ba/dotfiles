@@ -2,6 +2,11 @@
 -- luacheck: globals vim
 -- luacheck: no max line length
 -- see minimal_config and templates/nvim.lua
+
+-- headless testing: see ./nvim_test_runner.lua
+-- manual: nvim --clean -u init.lua test_datei.txt
+
+---@meta
 local M = {}
 
 M.isRemoteSession = function()
@@ -159,6 +164,80 @@ M.bufKeyMap = function(bufnr, mode, lhs, rhs, opts)
   opts.noremap = true
   opts.silent = true
   vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+end
+
+---@class Shifting
+---@alias ShiftDirection "left" | "right"
+---@alias ShiftType "saturation" | "wraparound"
+local shifting_cached_byte_len = shifting_cached_byte_len or 0
+
+-- Shifting selecting text 1 width left/right wth saturation/wraparound
+-- Usage (for dot-repeat):
+-- vim.keymap.set("x", KEYBIND, function()
+--   vim.o.operatorfunc = function()
+--      M.textSelectionShift(ShiftDirection, ShiftType)
+--   end
+--   return "g@"
+-- end, { expr = true, desc = "ShiftType shift ShiftDirection" })
+-- See also :help g@
+---@param dir ShiftDirection
+---@param type_shift ShiftType
+function M.textSelectionShift(dir, type_shift)
+  local start_pos = vim.api.nvim_buf_get_mark(0, '[')
+  local end_pos = vim.api.nvim_buf_get_mark(0, ']')
+
+  local row = start_pos[1] - 1
+  local start_col = start_pos[2] + 1
+  local end_col = end_pos[2] + 1
+
+  if start_pos[1] == 0 then
+    -- fallback for headless test runner
+    local v_pos = vim.fn.getpos 'v'
+    local cur_pos = vim.fn.getpos '.'
+    row = cur_pos[2] - 1
+    start_col = math.min(v_pos[3], cur_pos[3])
+    end_col = math.max(v_pos[3], cur_pos[3]) + 1
+  else
+    end_col = end_col + 1
+  end
+
+  local line_text = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1] or ''
+
+  if start_col > #line_text then return end
+
+  -- shifting_cached_byte_len used during dot-repeat normal mode execution.
+  if vim.fn.mode() == 'n' and shifting_cached_byte_len > 0 then end_col = start_col + shifting_cached_byte_len end
+  end_col = math.min(end_col, #line_text + 1)
+
+  -- Extract target substring based on byte indices.
+  local target_text = string.sub(line_text, start_col, end_col - 1)
+  local char_len = vim.fn.strchars(target_text)
+  if char_len <= 1 then return end
+
+  -- Cache byte length for next dot-repeat step.
+  shifting_cached_byte_len = #target_text
+
+  -- Shifting with Vim's multibyte-safe string manipulation.
+  local shifted = ''
+  if dir == 'right' then
+    if type_shift == 'saturation' then
+      shifted = ' ' .. vim.fn.strcharpart(target_text, 0, char_len - 1)
+    else
+      shifted = vim.fn.strcharpart(target_text, char_len - 1, 1) .. vim.fn.strcharpart(target_text, 0, char_len - 1)
+    end
+  else
+    if type_shift == 'saturation' then
+      shifted = vim.fn.strcharpart(target_text, 1, char_len - 1) .. ' '
+    else
+      shifted = vim.fn.strcharpart(target_text, 1, char_len - 1) .. vim.fn.strcharpart(target_text, 0, 1)
+    end
+  end
+
+  -- Use 0-indexed rows and columns; end_col is exclusive.
+  vim.api.nvim_buf_set_text(0, row, start_col - 1, row, end_col - 1, { shifted })
+
+  -- Reset cursor to the exact start of the mutation block for dot-repeat mapping.
+  vim.api.nvim_win_set_cursor(0, { row + 1, start_col - 1 })
 end
 
 M.appDateLog = function(content)

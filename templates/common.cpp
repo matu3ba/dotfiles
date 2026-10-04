@@ -16,7 +16,6 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //====perf
 //====tooling
 //====changes
-//====tooling
 //====libraries
 //====best_practice_compilers
 //====best_practice_compilation_times
@@ -43,6 +42,7 @@ static_assert(__cplusplus >= 201402L, "require c++14 for sanity");
 //====tooling
 // hot restart as feature - https://github.com/proximafusion/vmecpp
 // comparing lib std and compilers by c++ versions - https://build-bench.com/
+// type safe printf - https://github.com/tfc/pprintpp
 
 //====best_practice_compilers
 // idea use -fsanitize=type https://llvm.org/devmtg/2017-10/slides/Finkel-The%20Type%20Sanitizer.pdf

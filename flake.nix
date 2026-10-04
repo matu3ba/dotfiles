@@ -174,15 +174,16 @@
         name = "dotfiles ci";
         packages = with pkgs; [
           curl
-          jq
-          yq
           fish
+          jq
+          neovim
           (texlive.combined.scheme-basic.withPackages (
             ps: with ps; [
               parskip
               enumitem
             ]
           ))
+          yq
           # shell-tools
           shellcheck
           # c/c++-tools

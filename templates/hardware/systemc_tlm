@@ -54,6 +54,12 @@ sc_signals is omitted => delta cycles are eliminated
   requests to sequential main thread
 * more advanced techniques: adaption during simulation, analytical evaluation
 
+https://www.embecosm.com/appnotes/ean1/html/index.html
+https://cdn.opencores.org/pdf/ean1_sysc_tlm2_simple_or1k.pdf
+https://github.com/machineware-gmbh/vcml/blob/main/doc/properties.md
+https://www.qemu.org/docs/master/devel/testing/index.html
+https://developer.arm.com/documentation/ddi0246/a/programmer-s-model/summary-of-registers
+
 TODO what is a TLM-2.0 transaction? how can it be send from the main thread?
 TODO how is it ensured that 2 async threads dont write to the same memory region?
      or one thread reads, the other writes?

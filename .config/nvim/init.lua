@@ -409,10 +409,9 @@ require 'my_keymaps'
 -- Run current line
 -- :.!python3
 
--- Run Makefile for unit test
---
 -- Run unit test
---
+-- normal: nvim --headless --clean -l test_runner.lua
+-- debug: DEBUG=1 nvim --headless --clean -D -l tests/test_runner.lua
 
 -- Pretty print
 -- json: %!jq

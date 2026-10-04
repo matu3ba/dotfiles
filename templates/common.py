@@ -17,6 +17,7 @@
 # https://peps.python.org/pep-0008/#blank-lines
 # and not even the PEP is following the guide
 # https://docs.python.org/3/library/pdb.html debugger
+# sampling profiler https://docs.python.org/3.15/library/profiling.sampling.html
 
 #====libs
 # mpmath

@@ -89,6 +89,8 @@ __QEMU Internals__: Overall architecture and threading model https://blog.vmspli
     vcpus across single qemu thread. Only KVM can take advantage of per-vcpu
     threads.
 
+https://github.com/airbus-seclab/qemu_blog
+
 TODO missing:
 * what exactly virtualized Linux executes on setup/teardown, since it does not
 have hw control and how things are accelerated

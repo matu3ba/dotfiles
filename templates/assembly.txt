@@ -3,6 +3,8 @@
 
 https://blog.brakmic.com/intro-to-x86-assembly-with-fasm/
 https://xania.org/AoCO2025
+https://xania.org/202512/24-cunning-clang
+https://developer.arm.com/documentation/ddi0246/a/programmer-s-model/summary-of-registers
 
 Aarch64 debugging story https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/
 
@@ -55,3 +57,5 @@ use cases
 * assembler testing
 * assembly testing?
 * TODO check more use cases
+
+https://github.com/romforth/romforth

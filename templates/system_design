@@ -1,6 +1,7 @@
 ====software_systems
 ====software_architectures
 ======manager
+======refactor
 ====browser
 
 ====software_systems
@@ -111,6 +112,9 @@ simply adds productivity. Development of such philosophy promises to unearth bas
 questions about value of resources and techniques of communication which will need to
 be answered before out system-building technology can proceed with confidence.
 => Must be as __lean__ and __flexible__ as possible.
+
+======refactor
+at scale brontosource.dev
 
 ====browser
 https://kciter.so/posts/the-expensive-main-thread/en/

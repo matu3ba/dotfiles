@@ -30,6 +30,7 @@
 ====trace
 ====kernel
 ====packages
+====reproducibility
 
 ====msvc_location
 Get installation location of msvc c, c++ compiler and linker with batch file:
@@ -674,3 +675,6 @@ pico-process as foundation for WSL1
 ====packages
 Windows Package Manager
 winget install Microsoft.WinDbg
+p
+====reproducibility
+https://boxstarter.org/

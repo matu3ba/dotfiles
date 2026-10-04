@@ -55,7 +55,7 @@ pub fn build(b: *std.Build) !void {
     // TODO provide generated config file as input instead.
     // if (!no_opt_deps) lintC(b, run_step);
     // if (!no_opt_deps) lintCpp(b, run_step);
-    // lua-language-server, emmylua_check need VIMRUNTE, which zig build can not
+    // lua-language-server, emmylua_check need VIMRUNTIME, which zig build can not
     // set and isolates from host system. Thus omit lua linting for now.
     // if (!no_opt_deps) lintLua(b, run_step);
     if (!no_opt_deps) lintSh(b, run_step);
@@ -69,6 +69,7 @@ pub fn build(b: *std.Build) !void {
         if (!no_opt_deps) buildTex(b, run_step);
         buildZig(b, native_target, optimize, run_step);
 
+        if (!no_opt_deps) testLua(b, run_step);
         testZig(b, native_target, optimize, run_step);
     }
 
@@ -374,6 +375,16 @@ fn lintLua(b: *std.Build, run_step: *std.Build.Step) void {
     // ;
     // run_emmylua_check.expectStdOutEqual(expected_msg);
     // run_step.dependOn(&run_emmylua_check.step);
+}
+
+fn testLua(
+    b: *std.Build,
+    run_step: *std.Build.Step,
+) void {
+    const nvim_run = b.addSystemCommand(&.{ "nvim", "--headless", "--clean", "-l" });
+    nvim_run.addFileArg(b.path("nvim_test_runner.lua"));
+    nvim_run.expectExitCode(0);
+    run_step.dependOn(&nvim_run.step);
 }
 
 // fn checkNix() void {} // nofmt nolint nobuild noproj

@@ -105,6 +105,10 @@
 // poor-quality default hash function
 // pointer-heavy default containers
 
+// Rust lifetime options https://nadrieril.github.io/blog/2025/12/21/the-algebra-of-loans-in-rust.html
+// How to ensure Rust does not allocate? https://news.ycombinator.com/item?id=46357814
+// * Rust gives you no guarantees that a function won't allocate or panic though.
+
 //====design_flaws
 //unfair Rust https://this.quiz.is.fckn.gay/
 // SHENANIGAN

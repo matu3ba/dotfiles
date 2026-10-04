@@ -90,10 +90,39 @@ local opts = {} -- default opts
 
 map('', '<Space>', '<Nop>', { desc = 'fix annoying space movements' })
 map('n', '<leader>ex', [[<cmd>lua require("oil").open()<CR>]], opts) -- open dir of current buffer instead of cwd
--- workaround Assertion failed: (((typed.keys).size) - typed.map_start) <= SIZE_MAX - (keys).size (/$HOME/dev/zi/neovim/src/nvim/input_cmdatom.c: atom_composite_lhs: 562)
--- disable for now map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
+map('n', '<C-s><C-s>', [[<cmd>w<CR>]], opts) -- fast saving of local file
 -- map('n', '>l', [[<cmd>cnext<CR>]], opts) -- next quickfix list item
 -- map('n', '>h', [[<cmd>cprev<CR>]], opts) -- previous quickfix list item
+
+if vim.version().minor >= 13 then
+  -- vim.o.operatorfunc takes a closure to be executed when doing repeatable g@ commands
+  -- each expression mapping returns g@, which tells neovim to exit visual selection,
+  -- set the marks [ and ] accordingly and execute vim.o.operatorfunc
+  -- internally g@ leads to visual selection is interpreted as motion for the operator
+  --
+  -- When triggering an operator via g@ in Visual Mode, Neovim treats the visual selection as the {motion} and sets [ and ] on its boundaries.
+  -- However, pressing . in Normal Mode changes this behavior:
+  -- 1. Neovim re-executes g@ relative to the new cursor position.
+  -- 2. It uses the new cursor position as the starting point and dynamically calculates the [ and ] marks based on the original selection's length.
+
+  vim.keymap.set('x', '<', function()
+    vim.o.operatorfunc = function() ut.textSelectionShift('left', 'saturation') end
+    return 'g@'
+  end, { expr = true, desc = 'saturation shift left' })
+  vim.keymap.set('x', '>', function()
+    vim.o.operatorfunc = function() ut.textSelectionShift('right', 'saturation') end
+    return 'g@'
+  end, { expr = true, desc = 'saturation shift right' })
+
+  vim.keymap.set('x', '<leader><', function()
+    vim.o.operatorfunc = function() ut.textSelectionShift('left', 'wraparound') end
+    return 'g@'
+  end, { expr = true, desc = 'wraparound shift left' })
+  vim.keymap.set('x', '<leader>>', function()
+    vim.o.operatorfunc = function() ut.textSelectionShift('right', 'wraparound') end
+    return 'g@'
+  end, { expr = true, desc = 'wraparound shift right' })
+end
 
 -- :h marks
 -- m{a-zA-Z}/'{a-z}  set/jump to mark at cursor position

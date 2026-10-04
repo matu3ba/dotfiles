@@ -71,6 +71,9 @@ const process = std.process;
 // https://github.com/srmadrid/zml
 // https://zsf.zulipchat.com/
 
+// Patterns
+// https://nesbitt.io/2025/12/24/package-managers-keep-using-git-as-a-database.html
+
 // Tools windows
 // raddebugger - https://github.com/EpicGames/raddebugger
 // windbg - http://windbg.info/doc/1-common-cmds.html
@@ -482,14 +485,10 @@ fn totalAll(structs: []const BigStruct) u128 {
 //     list.add(list.items[0]); // implicit: list.add(&list.items[0]);
 // }
 
-// SHENANIGAN
-// Parameter Reference Optimization
-// idea example
-
-// SHENANIGAN
-// RLS (Result location semantics) is implicit, but copies are eliminated
-// This leads to surprising and potentially unwanted behavior.
-// idea example
+// Parameter Reference Optimization and RLS (Result location semantics) is implicit
+// are mostly solved besides of unclear SIMD semantics.
+// They will be opt-in for pure functions on annotation for more aggressive
+// optimization, because they can leads to surprising and potentially unwanted behavior.
 
 // SHENANIGAN
 // Test runner allows no signaling to qemu -g 4242 (debugger mode)

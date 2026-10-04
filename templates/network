@@ -8,6 +8,7 @@ NearLink/Sparlink/Sparklink as potential bluetooth successor
 * BGP
 * OSPF
 * EIGRP (wont be implemented for a while)
+* https://www.apalrd.net/posts/2023/network_ipv6/
 
 ====tools
 websocket tcp bridge https://github.com/novnc/websockify

@@ -1,0 +1,57 @@
+==design
+==examples
+==links
+
+
+==design
+* no overview on clocks, sync, scheduling and hardware emulation in context
+of userspace, systemspace and accelerated simulation (kvm)
+* QEMU_CLOCK_VIRTUAL for guest events
+====storage_model
+* MemoryRegion
+  - containers for grouping (potentially overlapping) subregions
+  - RAM regions for direct in host storage allocated byte arrays to be directly used by guest
+  - MMIO regions accessing logic areas. read and write access creates callback in host to simulate periphery
+  - aliases for mirroring existing region into other space in address space
+* AddressSpace as "viewpoint" of hw component with memory region as root
+  - example: viewpoint of CPU or DMA controller on storage
+* FlatView as on-demand compiled flat, non-overlapping view of memory regions
+* RAMBlock to manage allocations in host memory (ie view mmap), which MemoryRegion points to
+====MTTCG_consistency_model
+* each virtual CPU (vCPU) runs on default on own host thread
+* Big Qemu Lock (BQL) aka IO thread mutex for access on emulated hw devices (MMIO)
+  or interrupt changes to prevent race conditions
+  - in contrast to parallel execution by vCPUs in RAM
+* C11 memory model with translation of atomics in host barriers
+
+deep dives
+https://github.com/airbus-seclab/qemu_blog
+https://airbus-seclab.github.io/qemu_blog/machine.html
+https://airbus-seclab.github.io/qemu_blog/regions.html
+https://airbus-seclab.github.io/qemu_blog/tcg_p3.html
+https://blog.vmsplice.net/2016/01/qemu-internals-how-guest-physical-ram.html
+https://www.qemu.org/docs/master/devel/multi-thread-tcg.html
+https://www.qemu.org/docs/master/devel/atomics.html
+
+==examples
+Linux initram as just a program https://serversfor.dev/linux-inside-out/the-linux-kernel-is-just-a-program/
+
+==links
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/Documentation/memory-barriers.txt
+https://wiki.qemu.org/Features/record-replay
+https://qemu.readthedocs.io/en/master/system/replay.html
+https://www.qemu.org/docs/master/devel/tcg-icount.html
+https://stackoverflow.com/questions/58766571/how-to-count-the-number-of-guest-instructions-qemu-executed-from-the-beginning-t#63477976
+
+https://www.ias-research.com/explore/iot-frameworks/developing-embedded-software-with-qemu-a-comprehensive-guide
+qbox https://deepwiki.com/quic/qbox/1.2-getting-started
+qemu+systemc https://inria.hal.science/hal-01383732/document
+machineware blog for debugging methods
+https://www.synopsys.com/verification/virtual-prototyping/platform-architect-models.html
+https://www.synopsys.com/verification/virtual-prototyping/platform-architect-multi-die.html
+https://www.synopsys.com/verification/virtual-prototyping/platform-architect.html
+https://www.synopsys.com/verification/virtual-prototyping/tpt.html
+https://www.synopsys.com/verification/virtual-prototyping.html
+https://www.lauterbach.com/supported-platforms/toolchain/emulators-and-virtual-targets
+Towards High-Performance Virtual Platforms: A Parallelization Strategy for SystemC TLM-2.0 CPU Models.
+https://systemc.org/

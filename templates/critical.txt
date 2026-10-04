@@ -1,3 +1,8 @@
+==specifications
+==tooling
+==system_recovery
+
+==specifications
 critical is usual refered to as
 * safety-critical
 * security-critical
@@ -40,7 +45,7 @@ provide.
 2. business critical
 * not necessary during incidents [situation that might be, or could lead to, a disruption, loss, emergency or crisis]
 
-tooling
+==tooling
 https://arewesafetycriticalyet.org/tooling/tools-list/
 Tool Categories
 * Package Managers
@@ -52,3 +57,12 @@ Tool Categories
 * Debugging
 * Profiling
 * Requirements Traceability
+
+==computing_system_recovery
+* network admins should keep machine with only git target and ssh live
+  - possible with team of <= 20 engineers
+  - higher guarantee via keeping redundant machines live
+  - sytem recovery via bootstrap from git + ssh
+  - reasonably low attack vector, low maintenance and high availability for recovery
+* more complex applications like gitlab big target due to key rotation (endpoints and secrets)
+  - security model and code quality also not sufficient
