@@ -157,6 +157,8 @@ Host github.com
   PreferredAuthentications publickey
   IdentityFile ~/.ssh/PRIVATEKEYNAME
   IdentitiesOnly yes
+  HostKeyAlgorithms ssh-ed25519
+  PubkeyAuthentication unbound
 
 github ssh config might need
 
