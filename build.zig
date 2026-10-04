@@ -97,7 +97,8 @@ const cross_target_queries = [_]std.Target.Query{
 fn fmtC(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleCFiles[0..]) |cfile| {
         const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-        run_clang_format_check.addArg(cfile);
+        run_clang_format_check.addFileArg(b.path(cfile));
+        run_clang_format_check.expectExitCode(0);
         run_step.dependOn(&run_clang_format_check.step);
     }
 }
@@ -108,9 +109,10 @@ fn lintC(b: *std.Build, run_step: *std.Build.Step) void {
         // somehow "--warnings-as-errors='*'" is incorrectly escaped as "--warnings-as-errors='*'"
         // run_clang_tidy_check also works with "-config={Checks: '*'}"
         const run_clang_tidy_check = b.addSystemCommand(&.{ "clang-tidy", "--quiet", "--checks=*", "--warnings-as-errors=*" });
-        run_clang_tidy_check.addArg(cfile);
+        run_clang_tidy_check.addFileArg(b.path(cfile));
         run_clang_tidy_check.addArg("--");
         run_clang_tidy_check.addArgs(&c99_flags);
+        run_clang_tidy_check.expectExitCode(0);
         run_step.dependOn(&run_clang_tidy_check.step);
     }
 }
@@ -214,9 +216,10 @@ fn buildC(
 // fn checkCmake() void {} // nofmt nolint nobuild noproj
 
 fn fmtCpp(b: *std.Build, run_step: *std.Build.Step) void {
-    for (SingleCppFiles[0..]) |cfile| {
+    for (SingleCppFiles[0..]) |cppfile| {
         const run_clang_format_check = b.addSystemCommand(&.{ "clang-format", "--dry-run", "--Werror" });
-        run_clang_format_check.addArg(cfile);
+        run_clang_format_check.addFileArg(b.path(cppfile));
+        run_clang_format_check.expectExitCode(0);
         run_step.dependOn(&run_clang_format_check.step);
     }
 }
@@ -337,7 +340,8 @@ fn buildCpp(
 fn fmtLua(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleLuaFiles[0..]) |luafile| {
         const run_stylua_check = b.addSystemCommand(&.{ "stylua", "--check" });
-        run_stylua_check.addArg(luafile);
+        run_stylua_check.addFileArg(b.path(luafile));
+        run_stylua_check.expectExitCode(0);
         run_step.dependOn(&run_stylua_check.step);
     }
 }
@@ -408,7 +412,8 @@ fn fmtSh(b: *std.Build, run_step: *std.Build.Step) void {
 fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleShFiles[0..]) |shfile| {
         const run_shellcheck = b.addSystemCommand(&.{"shellcheck"});
-        run_shellcheck.addArg(shfile);
+        run_shellcheck.addFileArg(b.path(shfile));
+        run_shellcheck.expectExitCode(0);
         run_step.dependOn(&run_shellcheck.step);
     }
 }
@@ -419,22 +424,10 @@ fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
 // mkdir -p build/ && lualatex --file-line-error --synctex=1 --output-directory=build src/smartcv_example.tex
 fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleTexFiles[0..]) |texfile| {
-        std.Io.Dir.cwd().createDirPath(b.graph.io, "build") catch |err| {
-            if (err != error.PathAlreadyExists) @panic("could not create dir build/");
-        };
-        while (true) {
-            _ = std.Io.Dir.cwd().openDir(b.graph.io, "build", .{}) catch |err| {
-                if (err != error.FileNotFound) {
-                    @panic("could not wait for file to be created");
-                } else {
-                    continue;
-                }
-            };
-            break;
-        }
-
-        const run_lualatex = b.addSystemCommand(&.{ "lualatex", "--interaction=batchmode", "--file-line-error", "--synctex=1", "--output-directory=build" });
-        run_lualatex.addArg(texfile);
+        const run_lualatex = b.addSystemCommand(&.{ "lualatex", "--interaction=batchmode", "--file-line-error", "--synctex=1" });
+        run_lualatex.addFileArg(b.path(texfile));
+        _ = run_lualatex.addPrefixedOutputDirectoryArg("--output-directory=", "generated_cache_dir");
+        run_lualatex.expectExitCode(0);
         _ = run_lualatex.captureStdOut(.{});
         run_step.dependOn(&run_lualatex.step);
     }
@@ -443,7 +436,8 @@ fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
 fn fmtZig(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleZigFiles[0..]) |zigfile| {
         const run_zigfmt = b.addSystemCommand(&.{ "zig", "fmt", "--check" });
-        run_zigfmt.addArg(zigfile);
+        run_zigfmt.addFileArg(b.path(zigfile));
+        run_zigfmt.expectExitCode(0);
         run_step.dependOn(&run_zigfmt.step);
     }
 }
@@ -451,7 +445,8 @@ fn fmtZig(b: *std.Build, run_step: *std.Build.Step) void {
 fn lintZig(b: *std.Build, run_step: *std.Build.Step) void {
     for (SingleZigFiles[0..]) |zigfile| {
         const run_zigastcheck = b.addSystemCommand(&.{ "zig", "ast-check" });
-        run_zigastcheck.addArg(zigfile);
+        run_zigastcheck.addFileArg(b.path(zigfile));
+        run_zigastcheck.expectExitCode(0);
         run_step.dependOn(&run_zigastcheck.step);
     }
 }
