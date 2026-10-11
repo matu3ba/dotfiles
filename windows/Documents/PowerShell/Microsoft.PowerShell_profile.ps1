@@ -20,6 +20,14 @@ $env:DOTNET_TELEMETRY_OPTOUT = $true
 $EDITOR = "nvim"
 $env:Editor = "nvim"
 
+# sane wsl execution
+# >wsl echo (ENV HOME)
+# /home/user
+function ENV {
+    param([Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)][string]$Name)
+    "`$$Name"
+}
+
 # Internal errors (Powershell Exceptions etc)
 #   $ErrorActionPreference = 'Stop'
 # External errors (executables like git etc)

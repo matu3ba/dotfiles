@@ -4,6 +4,7 @@
 # Other files
 # :PWConf windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 # :Templates templates\powershell
+#====core_tools
 #====tools
 #====variables
 #====common_paths
@@ -13,6 +14,18 @@
 #====encoding
 #====string_ops
 #====hashtable
+
+#====core_tools
+# Most tools just work slightly differently with too many quirks to get identical behavior
+# This start with the array syntax in powershell being used.
+
+function printenv() {
+  # export to file: gci env: | Export-Csv -NoTypeInformation -Path envvars.csv
+  gci env:* | sort-object name
+}
+function printPATH() {
+  $env:PATH -split ';'
+}
 
 #====tools
 # https://dscottraynsford.wordpress.com/2017/11/18/auto-formatting-powershell-in-visual-studio-code/
@@ -42,6 +55,19 @@
 # worse, C# code calls use C# syntax ie
 # Add-Type -AssemblyName System.IO.Compression.FileSystem ;
 # [System.IO.Compression.ZipFile]::ExtractToDirectory("$NEOVIM_TMP_DIR\$zip_target", "$NEOVIM_TMP_DIR\")
+
+function HowToEscape_HOME_for_WSL() {
+  # cmd mode (breaks): wsl --% bash -c "echo $HOME"
+  wsl bash -c 'echo $HOME'
+  wsl bash -c "echo `$HOME"
+  wsl bash -c {echo $HOME}.ToString()
+  wsl echo $''HOME
+  wsl echo `$HOME
+  # see ./windows/Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+  # function ENV
+  # wsl echo (ENV HOME)
+  # evals to: wsl echo `$HOME
+}
 
 # HowToUseCli_Args -array:@("t1","t2") -switch
 function HowToUseCli_Args() {
