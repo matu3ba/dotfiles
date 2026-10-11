@@ -62,7 +62,43 @@ docker run --name keycloak-run -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc
 2 can use backup, but have to adjust group name (or user id), since docker has no sane defaults
 docker run --user 1000:$(id -g) --name keycloak-export -v kc_data:/opt/keycloak/data -v ./kc_backups:/kc_backups -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.6.0 export --dir /kc_backups
 
-==best_pratice
+==best_practice
+browser based login
+resource "keycloak_openid_client" "client" {
+  realm_id  = data.keycloak_realm.realm_name.id
+  client_id = "client"
+  access_type                  = "PUBLIC" # Device flow requires a public client
+  standard_flow_enabled        = true     # browser-based redirect workflow?
+  direct_access_grants_enabled = false    # allow access token via api with name, passwords?
+  service_accounts_enabled     = false    # no priveleged, untracked API access
+  # support non-browser/restricted devices
+  oauth2_device_authorization_grant_enabled = false
+  # Optional device settings (keep sensible defaults or adjust)
+  oauth2_device_code_lifespan    = 600 # seconds for device code validity
+  oauth2_device_polling_interval = 1   # seconds between token polling attempts
+  valid_redirect_uris = ["${var.valid_redirect_uris}/*"]
+  # CORS-config / Web Origins
+  web_origins = ["+"] # CORS URIs are allowed redirect URIs without '*'
+}
+
+api based login
+resource "keycloak_openid_client" "client" {
+  realm_id  = data.keycloak_realm.realm_name.id
+  client_id = "client"
+  access_type                  = "PUBLIC" # Device flow requires a public client
+  standard_flow_enabled        = false    # browser-based redirect workflow?
+  direct_access_grants_enabled = false    # allow access token via api with name, passwords?
+  service_accounts_enabled     = false    # no priveleged, untracked API access
+  #authentication_flow_binding_overrides {
+  #  browser_id = keycloak_authentication_flow.browser_flow_custom.id
+  #}
+  # support non-browser/restricted devices
+  oauth2_device_authorization_grant_enabled = true
+  # Optional device settings (keep sensible defaults or adjust)
+  oauth2_device_code_lifespan    = 600 # seconds for device code validity
+  oauth2_device_polling_interval = 1   # seconds between token polling attempts
+}
+
 Currently there is no strict and secure login policy for the javascript login form
 https://github.com/keycloak/keycloak/issues/16277
 and neither is there a good default.
@@ -73,3 +109,101 @@ and neither is there a good default.
   - see also https://content-security-policy.com/
     and https://security.stackexchange.com/questions/249237/when-is-content-security-policy-csp-not-appropriate
     and https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP
+
+Verify config and testing
+```sh
+# fetch possible openid installation configurations
+curl http://localhost:8080/realms/REALM/.well-known/openid-configuration | jq
+
+# start application logic
+# TODO
+
+# access realm in browser
+set -a; source .env; set +a
+KEYCLOAK_URL="http://localhost:8080"
+REALM="realm_name"
+CLIENT_ID="client"
+REDIRECT_URI="http://localhost:3000/"
+
+# show URL in browser, this is sloppy
+echo "${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/auth?client_id=${CLIENT_ID}&response_type=code&scope=openid&redirect_uri=$(echo -n $REDIRECT_URI | jq -s -R -r @uri)"
+# copy URL into browser and do login
+# extract appendeed BROWSER_CODE from URL, which has form ?code=XYZ...
+export CODE="BROWSER_CODE"
+curl -X POST "http://localhost:8080/realms/dein_realm_name/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=authorization_code" \
+  -d "client_id=client" \
+  -d "code=${CODE}" \
+  -d "redirect_uri=http://localhost:3000/callback"
+
+keycloak_login: {access_token,id_token,refresh_token,expires_in,refresh_expires_in}
+* look for access_token und id_token which are for
+  OAuth 2.0 (Authorization) und OpenID Connect (Authentication)
+* shared between access_token and id_token: sub (Subject), sid (Session ID), auth_time (unique timepoint of user login),
+* id_token: profile data
+* access_token: permissions etc
+* refresh_token: refresh the login after access_token invalidates after expires_in
+* refresh_expires_in: user session expiry
+* SSO Session Idle, SSO Session Max
+
+https://registry.terraform.io/providers/keycloak/keycloak/latest/docs/resources/realm
+access_token_lifespan = 300 # 5 * 60 (default 5 minutes)
+sso_session_idle_timeout = 900  # 15 * 60 (15 minutes)
+sso_session_max_lifespan = 36000 # 10 * 60 * 60 (10 hours)
+# sso_session_idle_timeout_remember_me = 2592000 # 30 Tage
+# sso_session_max_lifespan_remember_me = 2592000 # 30 Tage
+https://github.com/keycloak/keycloak/issues/16277
+remember_me = false # deactivate "remember me checkmark"
+
+security_defenses {
+  brute_force_detection {
+    permanent_lockout                = false  # Keycloak Default true
+    max_login_failures               = 30     # Keycloak Default
+    wait_increment_seconds           = 60     # Keycloak Default
+    max_failure_wait_seconds         = 900    # Keycloak Default (15 Minuten)
+    failure_reset_time_seconds       = 43200  # Keycloak Default (12 Stunden)
+    quick_login_check_milli_seconds  = 1000   # Keycloak Default
+    minimum_quick_login_wait_seconds = 60     # Keycloak Default
+  }
+}
+
+These values look not great and look sloppy, check them at some point.
+https://github.com/keycloak/keycloak/blob/main/docs/documentation/server_admin/topics/threat/brute-force.adoc
+https://www.keycloak.org/docs/latest/server_admin/index.html
+• Max Login Failures: 30 (Extrem hoch/sloppy!)
+• Wait Increment: 60 Sekunden (1 Minute)
+• Max Window (Failure Reset Time): 43200 Sekunden (12 Stunden)
+• Max Failure Wait: 900 Sekunden (15 Minuten)
+• Quick Login Check: 1000 Millisekunden
+• Minimum Quick Login Wait: 60 Sekunden
+
+get endpoints
+curl http://localhost:8080/realms/css-mitarbeitende-test2/.well-known/openid-configuration | jq
+"mtls_endpoint_aliases": {
+  "token_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/token",
+  "revocation_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/revoke",
+  "introspection_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/token/introspect",
+  "device_authorization_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/auth/device",
+  "registration_endpoint": "http://localhost:8080/realms/REALM/clients-registrations/openid-connect",
+  "userinfo_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/userinfo",
+  "pushed_authorization_request_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/ext/par/request",
+  "backchannel_authentication_endpoint": "http://localhost:8080/realms/REALM/protocol/openid-connect/ext/ciba/auth"
+},
+
+# testing without oauth2_device_authorization_grant_enabled and standard_flow_enabled
+# * 1 playwright
+# * 2 client with fast rotating secrets (and oauth2_device_authorization_grant_enabled/other method for API access)
+
+# login as admin on master realm and check properties of other realms client-id
+ADMIN_TOKEN=$(curl -s -X POST "http://localhost:8080/realms/master/protocol/openid-connect/token" \
+  -d "grant_type=password" \
+  -d "client_id=admin-cli" \
+  -d "username=admin" \
+  -d "password=admin" | jq -r '.access_token')
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" \
+  "http://localhost:8080/admin/realms/realm/clients?clientId=your-client-id" | jq '.'
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" \
+  "http://localhost:8080/admin/realms/realm/clients?clientId=your-client-id" \
+  | jq '.[0] | {id, clientId, directAccessGrantsEnabled, serviceAccountsEnabled}'
+```

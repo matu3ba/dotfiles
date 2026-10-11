@@ -1,0 +1,100 @@
+#==tools
+#==docs
+#==trigger_types
+#==trigger_handling_config
+#==typical_properties
+#==good_defaults
+
+#==tools
+# https://github.com/firecow/gitlab-ci-local
+
+#==docs
+# https://docs.gitlab.com/ci/variables/predefined_variables/
+
+#==trigger_types
+# • push: Triggered by a standard Git push event to a branch or a tag.
+# • web: Triggered manually by clicking the "New pipeline" button in the GitLab user interface.
+# • schedule: Triggered automatically via a configured pipeline schedule.
+# • api: Triggered programmatically via the pipelines API endpoint.
+# • trigger: Triggered by using a project-specific pipeline trigger token.
+# • pipeline: Triggered by an upstream multi-project pipeline using the trigger keyword.
+# • parent_pipeline: Triggered by a parent pipeline to launch a child pipeline within the same project.
+# • merge_request_event: Triggered when a merge request is created or updated.
+# • webide: Triggered by changes committed through the GitLab Web IDE interface.
+# • chat: Triggered via a GitLab ChatOps execution command.
+# • external: Triggered by external CI services integrated with GitLab.
+# • external_pull_request_event: Triggered when an external pull request (such as from GitHub) is created or updated
+
+#==trigger_handling_config in gitlab-ci.yml
+#====trigger_creation
+# trigger-child:
+#   trigger:
+#     include: path/to/child-pipeline.yml
+#     # Results in $CI_PIPELINE_SOURCE == "parent_pipeline"
+# trigger-multi-project:
+#   trigger:
+#     project: my-group/another-repository
+#     # Results in $CI_PIPELINE_SOURCE == "pi
+#====trigger_handling
+# push                | rules: - if: $CI_PIPELINE_SOURCE == "push"
+# merge_request_event | rules: - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+# schedule            | rules: - if: $CI_PIPELINE_SOURCE == "schedule"
+# web (Manual UI)     | rules: - if: $CI_PIPELINE_SOURCE == "web"
+# api                 | rules: - if: $CI_PIPELINE_SOURCE == "api"
+
+#==typical_properties
+# 1. Branch Pipelines
+# $CI_COMMIT_BRANCH
+# $CI_COMMIT_TAG
+# $CI_OPEN_MERGE_REQUESTS
+# 2. Merge Request Pipelines
+# $CI_MERGE_REQUEST_ID & $CI_MERGE_REQUEST_IID
+# $CI_MERGE_REQUEST_EVENT_TYPE
+# $CI_COMMIT_BRANCH
+# $CI_COMMIT_BEFORE_SHA
+# 3. Tag Pipelines
+# $CI_COMMIT_TAG
+# $CI_COMMIT_TAG_MESSAGE
+# $CI_RELEASE_DESCRIPTION
+# $CI_COMMIT_BRANCH
+# 4. External Pull Request Pipelines (ie from Github)
+# $CI_EXTERNAL_PULL_REQUEST_IID
+# $CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME
+# $CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME
+
+#==good_defaults
+default:
+  # jobs are non-interruptible by default to prevent release footguns
+  # interruptible jobs jobs must set this to true.
+  interruptible: false
+  timeout: 20m
+
+stages:
+  - build
+  - test
+  - describe
+  - publish
+  - release
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "tag"
+    # - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS == null
+    - when: never
+
+.rule_constraints:
+  no_tagged_commit:
+    - if: $CI_COMMIT_TAG
+      when: never
+
+hello-world:
+  rules:
+  - !reference [.rule_constraints, no_tagged_commit]
+  - when: on_success
+  interruptible: true
+  stage: build
+  image: alpine:latest
+  script:
+    - echo "Hello, world!"

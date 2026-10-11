@@ -1,0 +1,104 @@
+# docs: https://gitlab.com/components/opentofu/#usage
+# versions: https://gitlab.com/explore/catalog/components/opentofu
+
+# stages
+# * validate: fmttemplate+fmt, validatetemplate+validate for syntax, semantic structure checks and validations
+# * test: testtemplate+test for unit tests
+# * build: plantemplate+plan for storing execution plan
+# * deploy: applytemplate+apply for setting up target configuration of infrastructure
+# * cleanup: follow-up cleanups
+
+default:
+  tags:
+    - podman
+
+variables:
+  GITLAB_TOFU_INIT_FLAGS: "-lockfile=readonly"
+
+include:
+  - component: $CI_SERVER_FQDN/components/opentofu/job-templates@4.9.0
+    inputs:
+      opentofu_version: 1.12.6
+      plan_name: "${GITLAB_TOFU_STATE_NAME}"
+      root_dir: realm-tofu # relative to root dir location of terraform files
+
+stages: [validate, test, build, deploy, cleanup]
+
+.fmttemplate: &fmt
+  extends: [.opentofu:fmt]
+  environment:
+    name: $GITLAB_TOFU_STATE_NAME
+    action: prepare
+
+.validatetemplate: &validate
+  extends: [.opentofu:validate]
+  environment:
+    name: $GITLAB_TOFU_STATE_NAME
+    action: prepare
+
+.testtemplate: &test
+  extends: [.opentofu:test]
+  environment:
+    name: $GITLAB_TOFU_STATE_NAME
+    action: prepare
+
+.plantemplate: &plan
+  extends:
+    - .opentofu:plan
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_OPEN_MERGE_REQUESTS # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    - if: $CI_COMMIT_BRANCH # If there's no open merge request, add it to a *branch* pipeline instead.
+  environment:
+    name: $GITLAB_TOFU_STATE_NAME
+    action: prepare
+  variables:
+    TF_VAR_cluster_name: $GITLAB_TOFU_STATE_NAME
+
+.applytemplate: &apply
+  extends:
+    - .opentofu:apply
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  environment:
+    name: $GITLAB_TOFU_STATE_NAME
+    action: start
+  variables:
+    GITLAB_TOFU_APPLY_NO_PLAN: true
+    TF_VAR_cluster_name: $GITLAB_TOFU_STATE_NAME^
+
+##########################################################
+
+fmt:
+  <<: *fmt
+  variables:
+    GITLAB_TOFU_STATE_NAME: no-env
+
+validate:
+  <<: *validate
+  variables:
+    GITLAB_TOFU_STATE_NAME: no-env
+
+test:
+  <<: *test
+  variables:
+    GITLAB_TOFU_STATE_NAME: no-env
+
+plan:dev:
+  <<: *plan
+  needs:
+   - test
+  variables:
+    GITLAB_TOFU_STATE_NAME: dev
+    GITLAB_TOFU_VAR_FILE: "envs/${GITLAB_TOFU_STATE_NAME}.tfvars"
+
+apply:dev:
+  <<: *apply
+  needs:
+   - job: plan:dev
+     artifacts: true
+  variables:
+    GITLAB_TOFU_STATE_NAME: dev
+    GITLAB_TOFU_VAR_FILE: "envs/${GITLAB_TOFU_STATE_NAME}.tfvars"

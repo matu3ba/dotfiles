@@ -284,3 +284,12 @@ https://developer.hashicorp.com/terraform/language/values/variables
 https://developer.hashicorp.com/terraform/cli/config/config-file
 https://opentofu.org/docs/cli/config/environment-variables/
 https://oneuptime.com/blog/post/2026-02-23-how-to-run-opentofu-in-docker/view
+
+string interpolation
+  "${username}" -> "user"
+$ escaping
+  "$${username}" -> ${username}
+
+CI/non-interactive usage:
+  TF_IN_AUTOMATION=true
+  TF_INPUT=false

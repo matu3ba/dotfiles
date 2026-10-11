@@ -423,7 +423,7 @@ podman system prune -a -f
 podman volume prune -f
 
 ======docker
-docker stop -a
+docker stop $(docker ps -q)
 docker system prune -a -f
 docker volume prune -a -f
 

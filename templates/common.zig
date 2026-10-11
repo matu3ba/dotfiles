@@ -44,6 +44,7 @@ const process = std.process;
 //   - can probably just emit PLT entries if/when PLT32 reloaction or on canonical PLT entry PC32 relocation)
 // fetch and (cross-)compile msvc tools - https://github.com/marler8997/msvcup
 // chat application - https://codeberg.org/awebo-chat/awebo
+// Low-overhead native hooking and instrumentation - https://github.com/hookforge
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz

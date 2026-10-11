@@ -313,23 +313,6 @@
                     user.default = "jan-philipp.hafer";
                   };
                 };
-                #==quickfix wsl-nixos
-                # override /run/systemd/generator/wsl-mnt-guard.service to use nixos /bin/true /bin/mount
-                # to workaround WSL 2.9.9.0 behavior that fixes https://github.com/nix-community/NixOS-WSL/issues/1074
-                systemd.services."wsl-mnt-guard" = {
-                  overrideStrategy = "asDropin";
-                  unitConfig.ConditionPathIsMountPoint = "/mnt/wsl";
-                  serviceConfig = {
-                    ExecStart = [
-                      ""
-                      "${pkgs.coreutils}/bin/true"
-                    ];
-                    ExecStop = [
-                      ""
-                      "-${pkgs.util-linux}/bin/mount --make-rslave /mnt/wsl"
-                    ];
-                  };
-                };
 
                 #==virtualisation: workaround unreliable systemd in WSL for rootless podman
                 # "WSL2 + rootless + systemd is genuinely broken for compose workflows"
