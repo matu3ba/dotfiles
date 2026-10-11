@@ -4,6 +4,8 @@
 // https://gist.github.com/louis-langholtz/c6f6759366fa384b9f01d7f06545fc0c
 // https://gist.github.com/louis-langholtz/f780eacc762e53fccd52a0db33e3db01
 // https://learn.microsoft.com/en-us/cpp/standard-library/allocators?view=msvc-170
+#include <cstdlib>
+#include <new>
 #include <print>
 #include <vector>
 

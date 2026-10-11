@@ -2286,7 +2286,9 @@ private:
 
 // SHENANIGAN workaround char8_t from given char8_t string literals (u8"", u8R"")
 #if defined(HAS_CPP20)
-inline char const *operator""_SC(char8_t const *str, std::size_t) { return reinterpret_cast<char const *>(str); }
+inline char const *operator""_SC(char8_t const *str [[clang::lifetimebound]], std::size_t) {
+  return reinterpret_cast<char const *>(str);
+}
 // Unfortunately string literals are not constexpr in C++20:
 // constexpr char const* operator""_SC_constexpr(const char8_t* str, std::size_t) {
 //    return reinterpret_cast< const char* >(str);
@@ -2386,7 +2388,7 @@ struct S_test_bound_ostream {
   int32_t mem;
   // You can not do it as a member function, because the implicit this parameter is the left hand side of the <<-operator.
   // SHENANIGAN clangd does not complain about this function:
-  std::ostream &operator<<(std::ostream &ostr) {
+  std::ostream &operator<<(std::ostream &ostr [[clang::lifetimebound]]) {
     ostr << std::to_string(mem);
     return ostr;
   }
@@ -2394,7 +2396,7 @@ struct S_test_bound_ostream {
 struct S_test_free_ostream {
   int32_t mem;
 };
-static std::ostream &operator<<(std::ostream &ostr, S_test_free_ostream const &SFree_ostream) {
+static std::ostream &operator<<(std::ostream &ostr [[clang::lifetimebound]], S_test_free_ostream const &SFree_ostream) {
   ostr << std::to_string(SFree_ostream.mem);
   return ostr;
 }
@@ -2887,13 +2889,14 @@ void use_comptime() {
 #error "C++20 should have __has_include"
 #endif // !defined(__has_include)
 
-#include <numbers>
-void use_format();
-void use_format() {
-  std::string fmted = std::format("{}", std::numbers::pi_v<double>);
-  std::cout << fmted;
-  // SHENANIGAN std::print not part of C++20
-}
+// Looks like some header guard is broken in Clang or Zig, which checks for C++23 instead of C++20.
+// #include <numbers>
+// void use_format();
+// void use_format() {
+//   std::string fmted = std::format("{}", std::numbers::pi_v<double>);
+//   std::cout << fmted;
+//   // SHENANIGAN std::print not part of C++20
+// }
 
 void use_contains();
 void use_contains() {
