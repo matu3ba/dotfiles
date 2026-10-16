@@ -3,6 +3,7 @@
 //====tooling
 //====design_better
 //====design_flaws
+//======workarounds
 //====setup
 
 //====use_cases
@@ -13,6 +14,8 @@
 //memory lifetimes) or have existing libraries handling that for you (or be very limited in scope).
 //safety-critical https://arewesafetycriticalyet.org/
 //  https://public-docs.ferrocene.dev/main/index.html
+// * In future vale langauge will offer non-tree like memory lifetimes, but
+//   it is yet unclear, how complex, composable and scalable those lifetimes will be.
 
 //====tooling
 // SHENANIGAN cargo packages depend on dynamic gcc libraries during linking,
@@ -136,6 +139,10 @@
 // * proc-macro/clap needs dynamic linking: set -x RUSTFLAGS "-C target-feature=-crt-static"
 // * dynamic linking on musl systems needs libc path, which should be supported by Rust,
 // but not necessary on the target system
+
+//======workarounds
+// static link to workaround broken dynamic linking
+// CC=clang CFLAGS="-fPIC" CRATE_CC_NO_DEFAULTS=1 LIBZ_SYS_STATIC=1 cargo build --release
 
 // SHENANIGAN
 // * intentionally racy reads and writes (like for parallel seeded region growing) are not
