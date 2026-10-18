@@ -136,6 +136,10 @@ require 'my_cmds'
 require 'my_keymaps'
 --require 'my_nvimcmp'
 
+-- :lua package.loaded['my_statusline'] = nil; require('my_statusline')
+-- :source ~/.config/nvim/lua/my_statusline.lua
+-- :lua require('plenary.reload').reload_module('my_statusline')
+
 -- GOOD_TO_KNOW
 -- * debugger scheduling control with gdb
 -- * write some functions for custom debugging print

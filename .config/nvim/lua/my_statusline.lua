@@ -13,29 +13,12 @@ local visual_setting_choices = {
   [1] = 'min', -- minimal: shortened path and no cwd
   [2] = 'cwd', -- normal cwd
   [3] = 'pa', -- normal path
-  [4] = 'pa_cwd', -- both normal
+  [4] = 'cwd_pa', -- both normal
 }
 _ = visual_setting_choices
--- default [3] = 'pa', -- normal path
-local visual_setting = 3
+local visual_setting = 4
 
 -- idea config: toggle show size of last copy + selection in cmdline
-
----Set visual setting. Caller responsible to validate input
----@param setting string Corresponds to entry of visual_setting_choices.
-statusline.setVisualSetting = function(setting)
-  if setting == 'min' then
-    visual_setting = 1
-  elseif setting == 'cwd' then
-    visual_setting = 2
-  elseif setting == 'pa' then
-    visual_setting = 3
-  elseif setting == 'pa_cwd' then
-    visual_setting = 4
-  else
-    visual_setting = 1
-  end
-end
 
 -- print_lsp_progress from https://github.com/kristijanhusak/neovim-config/blob/3448291f22ecfca1f6dab2f0061cbeca863664dd/nvim/lua/partials/statusline.lua
 -- local aucmds_statusline = vim.api.nvim_create_augroup('aucmds_statusline', { clear = true })
@@ -189,38 +172,73 @@ local function get_context()
   end
 end
 
+---Set visual setting. Caller responsible to validate input
+---@param setting string Corresponds to entry of visual_setting_choices.
+statusline.setVisualSetting = function(setting)
+  -- debug
+  -- local cwd_width = vim.fn.strdisplaywidth(get_cwd())
+  -- local path_width = vim.fn.strdisplaywidth(get_path(get_cwd()))
+  -- local screen_width = vim.o.columns
+  -- local winwidth = vim.api.nvim_win_get_width(0)
+  -- vim.print(cwd_width + path_width + reserved_rhs, screen_width)
+
+  if setting == 'min' then
+    visual_setting = 1
+  elseif setting == 'cwd' then
+    visual_setting = 2
+  elseif setting == 'pa' then
+    visual_setting = 3
+  elseif setting == 'cwd_pa' then
+    visual_setting = 4
+  else
+    visual_setting = 1
+  end
+end
+
 -- other options
 -- idea vim.diagnostic.is_enabled() with vim.diagnostic.count()
 -- local mode = vim.api.nvim_get_mode().mode
 -- selection range
 -- config according to visual_setting_choices
-function statusline.setup()
+statusline.setup = function()
+  -- local winwidth = vim.api.nvim_win_get_width(0)
   local _visual_setting = visual_setting
-  local reserved_rhs = 80
-  local winwidth = vim.api.nvim_win_get_width(0)
-
+  local reserved_rhs = 70
+  local screen_width = vim.o.columns
   local cwd = get_cwd()
   local cwd_width = vim.fn.strdisplaywidth(cwd)
-
   local path = get_path(cwd)
   local path_width = vim.fn.strdisplaywidth(path)
-
   -- visual_setting_choices
   -- cwd shown => 2,4 not shown => 1,3
   -- full path shown => 3,4, not shown => 1,2
-  -- case 4 means both if possible
-  if _visual_setting == 1 then
+  -- case 4 means both if possible given reserved_rhs
+  if _visual_setting == 1 then -- min
     cwd = ''
     path = vim.fn.pathshorten(path)
-  elseif _visual_setting == 2 then
+  elseif _visual_setting == 2 then -- cwd
     path = ''
-    -- if cwd_width + path_width + reserved_rhs > winwidth then path = '' end
-  elseif _visual_setting == 3 then
+  elseif _visual_setting == 3 then -- pa
     cwd = ''
-    -- if cwd_width + path_width + reserved_rhs > winwidth then cwd = '' end
-  elseif _visual_setting == 4 then
-    if cwd_width + path_width + reserved_rhs > winwidth then cwd = '' end
-    if path_width + reserved_rhs > winwidth then path = vim.fn.pathshorten(path) end
+  elseif _visual_setting == 4 then -- cwd_pa
+    -- priority: path, then cwd => if needed: 1 remove cwd, 2 minimize path, 3 remove path
+    if screen_width > reserved_rhs then
+      available_screen_width = screen_width - reserved_rhs
+      if cwd_width + path_width > available_screen_width then
+        cwd = ''
+        cwd_width = vim.fn.strdisplaywidth(cwd)
+        if cwd_width + path_width > available_screen_width then
+          path = vim.fn.pathshorten(path)
+          path_width = vim.fn.strdisplaywidth(path)
+          if cwd_width + path_width > available_screen_width then
+            path = ''
+          end
+        end
+      end
+    else
+      cwd = ''
+      path = ''
+    end
   else
     cwd = ''
     path = vim.fn.pathshorten(path)
@@ -235,7 +253,7 @@ function statusline.setup()
   local status_conf = _visual_setting -- visual_setting_choices
 
   local cwd_draw = ''
-  if cwd ~= '' then cwd_draw = cwd .. ' ' end
+  if cwd ~= '' then cwd_draw = cwd .. ':' end
   local statusline_sections = {
     cwd_draw,
     path,
