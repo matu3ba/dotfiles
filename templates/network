@@ -213,7 +213,7 @@ Quit immediately after receiving EOF: nc -N IP_Address Port
 Ports < 1024 are privileged by default. Anything above can be freely used.
 
 fast reconfiguration of dns (due to lags)
-TODO
+idea
 
 https://man.archlinux.org/man/wireshark-filter.4.en
 frame.time >= "Oct 15, 2012 16:00:00"
@@ -238,7 +238,7 @@ https://github.com/samyk/pwnat
 
 https://www.haskellforall.com/2024/08/firewall-rules-not-as-secure-as-you.html
 common firewall workarounds
-TODO
+idea
 
 Low Level access to Linux network routines: man netdevice
 

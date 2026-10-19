@@ -12,7 +12,7 @@
 // 1. error: designated initializers are a C++20 extension [-Werror,-Wc++20-designator]
 // 2. error: use of old-style cast [-Werror,-Wold-style-cast]
 // 3. clang++: error: treating 'c' input as 'c++' when in C++ mode, this behavior is deprecated [-Werror,-Wdeprecated]
-// TODO
+// idea
 // * security: clang-tidy diagnostics error: Out of bound access to memory after the end of the string literal [clang-analyzer-security.ArrayBound,-warnings-as-errors]
 // * make OOB diagnostics optional based on safety mode
 // * review according to https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#
@@ -109,7 +109,7 @@ struct sCharSlice sCharSlice_subslice(struct sCharSlice s_char_sl, size_t start,
   }
   if (start > s_char_sl.len || end > s_char_sl.len) {
     fprintf(stderr, "OOB: start, end, s_char_sl.len: %zu, %zu, %zu\n", start, end, s_char_sl.len);
-    // TODO msg?
+    // idea msg?
   }
 
   res_slice.ptr = s_char_sl.ptr + start;

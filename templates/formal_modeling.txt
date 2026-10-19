@@ -512,7 +512,7 @@ https://buttondown.email/hillelwayne/archive/nondeterminism-in-formal-specificat
   * "Interactive Symbolic Testing of TFTP with TLA+ and Apalache"
     https://protocols-made-fun.com/tlaplus/2025/12/15/tftp-symbolic-testing.html with
     TLA+, symbolic testing, SMT, AI/LLM based on error-fuzzed testing framework; not yet paper, reproducer, scaling
-  * alternative should be based on CSP todo long form
+  * CSP: simpler and less powerful than TLA+ (denotational logic)
 - 19. Reversible computation
   * Standard concept in computing: linear/affine types, algebraic effect with handlers, cleanups etc
   * For Real Hardware
@@ -695,7 +695,14 @@ One possible strategy:
 - "Program logics à la carte" by Vistrup et al. to compose program logics and
   make use of language-agnostics program logic to build language-specific program
   logic (mixed demonic/angelic choice)
-  * TODO understand effect systems and their limitations
+  * understand effect systems and their limitations
+    - hard/"arbitrary math": I/O, concurrency, and allocations forming
+    - Basic State & Pointers: Core heap operations (allocation, reading, writing).
+    - Structured Control Flow: Standard sequential blocks, loops, and standard lexical scoping.
+    - Static & Dynamic Dispatch: Function calls and dynamic method resolution.
+    - Product & Sum Types: Standard data structures, records, and variants.
+    - Product Types with Extensible Records: Handling structural subtyping modularly.
+
 - ReLinChe as tool for verifying relaxed linearizability via bounded model checking
   * found ordering violation of https://libcds.sourceforge.net/
   * model checking, partial lock for specification
@@ -768,7 +775,7 @@ System implementation details towards correctness:
 Candidates for an optimal language (independent of domain) working on at least 3 points:
 - Compcert C is working on frontend verification and semantics of linker speak (3+4+7 solved, 3+5 unclear)
   * requires manual modeling with costly (manual) existential variables solving
-  TODO what are existential variables used for?
+  idea what are existential variables used for?
 - Rust satisfies 3, 4 for safe Rust and is kinda working on 6 (no completion
   model), but it is not simple, so it can not be optimal (no realistic chance
   to prove correctness or to reduce bug count to 0)
@@ -784,8 +791,8 @@ the alternative is to use sel4/micro kernel approach of capabilities, but even
 those assume you can not access all memory and/or code is trusted.
 https://en.wikipedia.org/wiki/Object-capability_model
 * sel4 has proofs on worst cast execution time, confidentialy and non-interference
-TODO check extent of confidentially proof interaction with measured architectural side-channels on hardware
-TODO check model
+idea check extent of confidentially proof interaction with measured architectural side-channels on hardware
+idea check model
 
  making C and C++ pointers more sim-
 ilar to true capabilities—that is unforgeable and unguessable
@@ -851,14 +858,14 @@ tldr; posix process model fix suggestions via component model layered on top of 
       - wit-component to create component.wasm
 8 Virtualization tooling
   * Virtual Platform Layering
-  TODO https://youtu.be/phodPLY8zNE?t=1282
+  idea https://youtu.be/phodPLY8zNE?t=1282
   WASM Keynote: The Path to Components - Luke Wagner,
   Distinguished Engineer, Fastly
 
 "Components, WebAssembly’s Docker’s Moment - Bailey Hayes, Cosmonic" https://www.youtube.com/watch?v=wttN69wciSM
 * sounds like capabilities without being explicit on them
 * Erlang model as suggestion
-TODO summarize capabilities semantically
+idea summarize capabilities semantically
 
 "Threading the needle with concurrency and parallelism in the Component Model" by Luke Wagner
 

@@ -1,6 +1,5 @@
 https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html
 https://blog.quarkslab.com/clang-hardening-cheat-sheet-ten-years-later.html
-TODO
 
 "Exploiting Undefined Behavior in C/C++ Programs for Optimization: A Study on the Performance Impact"
 * perf impact of optimized programs <10 % with higher impact on ARM and lower on non-ARM
@@ -86,7 +85,7 @@ Extra options
 * extras Thread sanitizer -fsanitize=thread
 use -O1 or higher -g for file names and line numbers
 * extras outside of -fsanitize=type
-TODO no data and docs yet
+no data and docs yet
 
 6. maintain debug infos in separate files
 objcopy --only-keep-debug executable_file executable_file.debug

@@ -25,7 +25,7 @@ List of fundamental and (in practice) unfixable design flaws
   * https://vt100.net/emu/dec_ansi_parser
   * https://arcan-fe.com/2022/04/02/the-day-of-a-new-command-line-interface-shell/
   * "A tempest in a tty pot" https://lwn.net/Articles/343828/
-- Unix io management: TODO
+- Unix io management: idea
 - file system [not representative of hardware, unsecure for overall tty+shell usage]
 - ipc: no way to "flush" stdout/stderr to parent process
   * relevant, to identify/trace where child got stuck or terminates unexpectedly (intermediate results)
@@ -57,7 +57,7 @@ microkernel goals: minimization and module system services
 seperation kernel goals: rigid static isolation and data control flow partitions
 * aws nitro seperation kernel architecture
 
-TODO better wrapup why Zig not ready for kernel stuff yet
+idea better wrapup why Zig not ready for kernel stuff yet
 getting requirements in numbers very tricky
 
 I may be very wrong, because I did no kernel stuff with zig, but afaiu Zig has

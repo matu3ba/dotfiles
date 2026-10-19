@@ -1,6 +1,6 @@
 CPU functionality and assembly below caches
 
-TODO describe methods in
+idea describe methods in
 https://stackoverflow.com/questions/22165299/what-are-stalled-cycles-frontend-and-stalled-cycles-backend-in-perf-stat-resul/29059380#29059380
 
 #### CPU functionality
@@ -50,23 +50,23 @@ https://lock.cmpxchg8b.com/zenbleed.html
 * 5. no microcode
 * 6. Function libraries instead of static/dynamic libs usable for both
 * 7. calculate the required stack size (non recursive)
-  + TODO
+  + idea
 * 8. simpler memory management + reduces fragmentation as side effect
-  + TODO
+  + idea
 * 9. (optimal) register allocation across program modules and function libraries
-  + TODO
+  + idea
 * 10. strong security features
-  + TODO
+  + idea
 * 11. standards to establish compatibility between different programming languages and different platforms???
-  + TODO
+  + idea
 * 12. vector register of variable len
-  + TODO
+  + idea
 * 13. atomics and cache synchronization???
-TODO include feedback from https://github.com/ForwardCom/manual/issues/29
--> TODO CHERI support possible or planned?
--> TODO sync model/semantics?
+idea include feedback from https://github.com/ForwardCom/manual/issues/29
+-> idea CHERI support possible or planned?
+-> idea sync model/semantics?
 
-TODO to what degree can (time) reversible computing and constant time execution (for crypto) be realized?
+idea to what degree can (time) reversible computing and constant time execution (for crypto) be realized?
 
 RISC5 looks ideal for embedded systems, where instructions are typically smaller
 (addresses, constants, etc).
@@ -127,7 +127,7 @@ effects?
 
 #### Segmentation
 CPU feature for sub-page access granularity
-TODO go through and test guide https://nixhacker.com/segmentation-in-intel-64-bit/
+idea go through and test guide https://nixhacker.com/segmentation-in-intel-64-bit/
 * amd64 typically use a vestigial feature that used to be used for segmentation for tls
 but it's not segmentation anymore
 * basically just an extra register whose assigned role is 'always hold the tls base'

@@ -79,19 +79,19 @@ Future, ie IEE754-2028
 
 Subnormal numbers
 Smallest Normal Number Largest Normal Number taken from $E_{min}$, $E^{max}$.
-TODO explanation with python code
+idea explanation with python code
 https://stackoverflow.com/questions/8341395/what-is-a-subnormal-floating-point-number
 
-TODO Steal python code to show error propagation
+idea Steal python code to show error propagation
 https://people.orie.cornell.edu/snp32/orie_6125/ieee754/ieee754.html
 
-TODO
+idea
 https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 
-TODO
+idea
 https://orlp.net/blog/taming-float-sums
 
-TODO summarize hardware behavior
+idea summarize hardware behavior
 https://grouper.ieee.org/groups/msc/ANSI_IEEE-Std-754-2019/background/minNum_maxNum_Removal_Demotion_v3.pdf
 
 ====posits

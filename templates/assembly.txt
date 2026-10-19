@@ -55,7 +55,13 @@ use cases
 * programming from scratch
 * hardware bringup
 * assembler testing
-* assembly testing?
-* TODO check more use cases
+* assembly testing
+* hardware register reverse-engineering
+* remote system patching over low-bandwidth telemetry
+* bootstrapping custom soft-core CPUs on FPGAs
+* interactive custom hardware diagnostics and test rigs
+* architecture-independent peripheral firmware (FCode Expansion ROMs)
+* stage-0 live-bootstrap toolchains for deterministic compiler verification
+* dynamic inline code generation for stack-based virtual targets (WebAssembly)
 
 https://github.com/romforth/romforth

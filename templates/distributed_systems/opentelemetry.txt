@@ -9,7 +9,7 @@ SHENANIGAN
       <conversionPattern value="%date %property{Stage}-%property{traceId} [%thread] %-5level %logger [%ndc] - %message%newline" />
     </layout>
   </appender>
-  - TODO look at how this looks like
+  - idea look at how this looks like
 
 * tempo
   - traces

@@ -188,8 +188,8 @@ ssh -F none -o PubkeyAuthentication=no example.com
 
 SHENANIGAN
 ssh-copy-id can not be called with modified ssh config
-TODO make own helper script
-TODO separated ssh configs
+idea make own helper script
+idea separated ssh configs
 
 SHENANIGAN SECURITY
 ssh has known unmitigated timing channels. See templates/security.

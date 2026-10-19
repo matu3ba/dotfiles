@@ -16,10 +16,10 @@ Loki log
 * log line [unindexed]
 
 Tempo trace
-TODO data format
+idea data format
 
 Prometheus metrics (+ alarms)
-TODO data format
+idea data format
 
 why log correlation https://opentelemetry.io/docs/languages/dotnet/logs/correlation/
 1. Unified view: You can see logs and traces together in a unified view in your observability tool.
@@ -52,4 +52,4 @@ https://grafana.com/docs/tempo/latest/traceql/construct-traceql-queries/#constru
 { trace:id = "ffffffffffffffffffffffffffffffff" }
 { resource.deployment.environment = "live" && resource.service.name = "SERVICE_NAME" && trace:id = "ffffffffffffffffffffffffffffffff" }
 
-TODO promql PromQL
+idea promql PromQL

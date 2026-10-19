@@ -5,7 +5,7 @@
 ====stack_unwinding_formats
 
 ====model
-TODO list of formal models
+idea list of formal models
 
 ====float
 https://github.com/Traxar/various-number-types
@@ -13,7 +13,7 @@ would be cool to have some insight into what would be feasible for
 semi-automatic debugging without full analysis
 
 ====hardware
-debugging hardware probes TODO
+debugging hardware probes idea
 debugging cpu https://zipcpu.com/zipcpu/2022/12/03/no-boot.html
 debugging hardware https://zipcpu.com/blog/2024/11/06/not-axi.html
 debugging the hard hardware stuff (FFT, crypto, ECC, compression) https://zipcpu.com/blog/2023/02/13/eccdbg.html
@@ -34,7 +34,7 @@ RTT
 * dedicated JTAG/SWD pins without using up other pins: SWDIO, SWCLK, GND, JTAG/SWD debugger, usb
 * uses printf which increases code size
 * no peripherals from MCU, marginal CPU overhead due to using circular buffer in RAM
-TODO other protocol trade-offs
+idea other protocol trade-offs
 
 
 oscilloscope + roboter for probing test points: Robotic Scope Probe
@@ -53,12 +53,12 @@ https://www.einfochips.com/blog/debugging-of-mixed-signal-soc-in-an-effective-an
 options:
 * hardware sniffer / debug module
 * SPICE with RNM blocks as mixed signal simulator
-  - Ngspice (open source, todo look into features), ngspice
+  - Ngspice (open source, idea look into features), ngspice
   - LTspice (good perf and features)
   - QSPICE (best perf and features)
-  - todo look into debugging options
+  - idea look into debugging options
 
-TODO summarize techniques in "Scalable Debugging for Data Centers: Ensuring Reliability from Design to Operations"
+idea summarize techniques in "Scalable Debugging for Data Centers: Ensuring Reliability from Design to Operations"
 
 ====processes
 Linux: /proc
@@ -73,7 +73,7 @@ Linux: ss
 idea https://shape.host/resources/advanced-kernel-debugging-techniques-on-linux
 https://github.com/0voice/kernel_memory_management/blob/main/%E2%9C%8D%20%E6%96%87%E7%AB%A0/5%20useful%20tools%20to%20detect%20memory%20leaks%20with%20examples.md
 
-TODO summarize methods mentioned in
+idea summarize methods mentioned in
 https://www.brendangregg.com/blog/2024-03-17/the-return-of-the-frame-pointers.html
 
 best practice long-running system design
@@ -164,7 +164,7 @@ https://www.danielecarbone.com/hot-code-reloading/
 
 ====VS2022
 https://www.youtube.com/watch?v=n5Pqn_wofmY
-TODO
+idea
 
 http://www.drchip.org/astronaut/drchipdbg/index.html
 Charles Champbell also author of DrawIt vim plugin
@@ -178,6 +178,6 @@ https://maskray.me/blog/2025-09-28-remarks-on-sframe
   but only 1-2% size savings at cost of (without benchmarks) worse frame pointer unwinding perf
 * future: getting irrelevant due to hardware-assisted unwinding like x86 Shadow Stack
   and AArch63 Guarded Control Stack
-  TODO how do these work and what perf/size difference do they make?
+  idea how do these work and what perf/size difference do they make?
 
-TODO retrieve interesting debugging tooling https://blog.nelhage.com/post/computers-can-be-understood/
+idea retrieve interesting debugging tooling https://blog.nelhage.com/post/computers-can-be-understood/

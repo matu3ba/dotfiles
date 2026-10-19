@@ -19,7 +19,9 @@ local M = {}
 --   -- ..
 -- end
 
---TODO https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
+--https://zignar.net/2023/06/10/debugging-lua-in-neovim/#nlualua
+--#!/usr/bin/env -S nvim -l
+--assert(loadstring("print(10)"))()
 
 -- SHENANIGAN :q! or ZQ on window drops data.
 -- SHENANIGAN no harpoon-like speed to run things for example with overseer

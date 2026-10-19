@@ -20,7 +20,7 @@ Apache log4net part of Apache Logging Services project
     3 NEUTRAL: log4net behaves as if the filter was not present. It is
     evaluated by the next filter in the filter chain.
 
-GelfHttpAppender (using Graylog Extended Log Format) using TODO:best_solution?
+GelfHttpAppender (using Graylog Extended Log Format) using idea:best_solution?
 RollingLogFileAppender (using rolling log files)
 
 <?xml version="1.0" encoding="utf-8" ?>

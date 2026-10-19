@@ -110,7 +110,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # TODO: fix keyboard for arcan
+  # idea: fix keyboard for arcan
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;

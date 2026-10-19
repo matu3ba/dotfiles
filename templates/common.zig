@@ -101,8 +101,8 @@ const process = std.process;
 // - Andrew Kelley: A Practical Guide to Applying Data Oriented Design (DoD)
 // - Data-Oriented Design Revisited: Type Safety in the Zig Compiler
 // - Programming without pointers
-// - TODO once done: dod based type reification examples
-// - TODO once done: build system explanation (comptime type safe dod)
+// - idea once done: dod based type reification examples
+// - idea once done: build system explanation (comptime type safe dod)
 
 //====cpu_bound_workloads
 // * parallel processing, multi-threading, SIMD
@@ -514,7 +514,7 @@ const windows_utf16_string_literal = struct {
     const L = std.unicode.utf8ToUtf16LeStringLiteral;
 };
 
-// TODO do not use files from absolute path
+// do not use files from absolute path
 // test "append slice" {
 //     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
 //     defer arena.deinit();

@@ -24,7 +24,6 @@ https://github.com/infracost/infracost
 https://opentofu.org/docs/language/modules/
 
 https://www.env0.com/blog/a-guide-to-the-terraform-state-file
-TODO
 
 https://opentofu.org/docs/cli/commands/plan/
 

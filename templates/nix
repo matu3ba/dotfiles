@@ -215,9 +215,7 @@ alternative:
 https://github.com/Cloudef/nix-autoenv
 
 Sharing dependencies between default.nix and shell.nix
-TODO
-
-TODO remove the useless crap
+TODO ./example/nix
 
 effortless dev environment changes
 https://cbailey.co.uk/posts/my_usage_of_nix_and_lorri__direnv
@@ -349,7 +347,7 @@ Potential solution
     will have to go through too many FS layers
 * easyos?
   * https://easyos.org/tech/how-easy-works.html
-  * TODO difference on internals, looks very similar
+  * idea difference on internals, looks very similar
 => zb as usability contender https://www.zombiezen.com/blog/2024/09/zb-early-stage-build-system/
   * lua for config
   * more powerful build features, eg supports content-addressed derivations
@@ -414,7 +412,7 @@ barebone installation nixos https://github.com/nix-community/nixos-anywhere
 ====testing
 https://numtide.com/blog/nix-vm-test-reproducible-integration-tests/
 * There are likely better alternatives to nix-vm-test.
-* TODO ask about caching behavior manipulation for task steps etc
+* idea ask about caching behavior manipulation for task steps etc
 nixos compose https://github.com/garnix-io/nixos-compose
 
 ====history
@@ -433,7 +431,7 @@ nixos consists conceptually of
 * background daemons
 * packages receipes
 
-TODO: https://ekala-project.github.io/nix-book/ch10-00-nix-workflows.html
+idea: https://ekala-project.github.io/nix-book/ch10-00-nix-workflows.html
 * missing the nix run/shell/develop and nix-shell horrors on env vars, PATH leaking into shell etc
 * https://ekala-project.github.io/nix-book/ch10-07-devenv.html wants to use snix to reuse standard container stuff
 

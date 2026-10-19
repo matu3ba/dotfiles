@@ -25,7 +25,7 @@ with tooling+product certification process.
 Explain internal bus design trade-offs of cpus, gpus, tpus, sdn routers and bus design trade-offs of llms.
 Explain hyperscalar/cloud bus design trade-offs based on the Oxide design documentation.
 Can you give examples in numbers to show intuition into the design space?
-TODO what is hard in FGPA design?
+idea what is hard in FGPA design?
 
 ====cpu
 https://www.ccbp.in/blog/articles/bus-structure-in-computer-architecture
@@ -169,10 +169,10 @@ https://teramesh.tech/Resources/#FAQ
 * Simulink/MATLAB
 
 * VLSI fgpa flow
-  + TODO
+  + idea
 
 https://www.infoq.com/presentations/computing-interaction-technology/
-TODO summarize future hardware
+idea summarize future hardware
 
 ====computing
 classical CPUs are hardware based instruction interpreters
@@ -374,7 +374,7 @@ architecture: Control logic (Simulink), Connected Hardware (TLM2.0 at RTL )
          isolate device; reset on anomalies
   - components
     + modules
-      * TODO
+      * idea
     + processes
       * threads called once during simulation, can be halted
       * methods called multiple times during simulation, can not be halted
@@ -440,7 +440,7 @@ architecture: Control logic (Simulink), Connected Hardware (TLM2.0 at RTL )
     + 4. base protocol (BEGIN_REQ, END_REQ, BEGIN_RESP, END_RESP)
   - Utilities, Convenience sockets, Quantum keeper (LT), Payload event queues?
   - "Towards a Unified Solution for SystemC Tracing and Analysis, SystemC Evolution Fika September 2023"
-    TODO
+    idea
 * tlm 2.0 example COSIDE
   THE DESIGN ENVIRONMENT FOR HETEROGENEOUS SYSTEMS
   SystemC / SystemC AMS based Simulation and Modeling Technologies

@@ -326,7 +326,6 @@ packages.${system}.zig-build-test-all = pkgs.runCommandLocal "zig-build-test-all
 '';
 #>nix build #.zig-build-test-all
 ```
-    * TODO
 
 15. Looking into OCI security, SBOM and how Nix tries to deal with it,
 shows quickly that Nix always worked around the problem via it own controlled

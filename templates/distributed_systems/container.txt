@@ -104,7 +104,7 @@ bootc container lint
 6. Image transport & inspection: https://github.com/podman-container-tools/skopeo
 7. SBOM, Scan, Sign: Syft, Grype, cosign
 
-TODO check
+idea check
 Order of usage: buildkit/moby > trivy > cosign > kubectl
 
 ====compose.yml

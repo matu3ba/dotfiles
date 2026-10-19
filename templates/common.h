@@ -1,21 +1,21 @@
 #if !defined(__cplusplus) // disable clang complains
 #pragma once
 #include <stdint.h> // abi: uint32_t, uint8_t
-#include <stdlib.h> // assert: exit
 #include <stdio.h>  // assert: fprintf
+#include <stdlib.h> // assert: exit
 
 #if defined(SANECATMACRO)
 // Maro expansion once for validity yields in slightly more ugly code and unused
 // value warning, so omit it. See link for discussion.
-#define STRINGIFY(A) ((A),STRINGIFY_INTERN(A))
-#define PPCAT(A) ((A),(B),PPCAT_INTERN(A,B))
+#define STRINGIFY(A) ((A), STRINGIFY_INTERN(A))
+#define PPCAT(A) ((A), (B), PPCAT_INTERN(A, B))
 #else // !defined(SANECATMACRO)
 // and do instead
 #define STRINGIFY_INTERN(A) (#A)
 #define STRINGIFY(A) STRINGIFY_INTERN(A)
-#define PPCAT_INTERN(A,B) A ## B
-#define PPCAT(A,...) PPCAT_INTERN(A,__VA_ARGS__)
-#define COMBINE(WORD,...) STRINGIFY(PPCAT(WORD,__VA_ARGS__))
+#define PPCAT_INTERN(A, B) A##B
+#define PPCAT(A, ...) PPCAT_INTERN(A, __VA_ARGS__)
+#define COMBINE(WORD, ...) STRINGIFY(PPCAT(WORD, __VA_ARGS__))
 #define test0 testme
 #define test1 1
 #define RESULT COMBINE(test0, test1)
@@ -23,23 +23,21 @@
 #define test2 testme2
 #endif // defined(SANECATMACRO)
 
-void printbanana(const char* str) {
-    printf("t2: %s\n", str);
-}
+void printbanana(char const *str) { printf("t2: %s\n", str); }
 int usage_ppcat() {
-    const char* testme1 = "banana";
-    const char* testme2 = "bestbanana";
-    printf("t1: %s\n", COMBINE(test0, test1)); // t1: testme1
-    printbanana(PPCAT(test0, test1)); // t1: testme1
-    printbanana(PPCAT(test2)); // t2: bestbanana
-    return 0;
+  char const *testme1 = "banana";
+  char const *testme2 = "bestbanana";
+  printf("t1: %s\n", COMBINE(test0, test1)); // t1: testme1
+  printbanana(PPCAT(test0, test1));          // t1: testme1
+  printbanana(PPCAT(test2));                 // t2: bestbanana
+  return 0;
 }
 // see also https://stackoverflow.com/questions/1644868/define-macro-for-debug-printing-in-c/1644898#1644898
 
 #if defined(TRUE)
 #error "TRUE already defined"
 #else // !defined(TRUE)
-#define TRUE (1==1)
+#define TRUE (1 == 1)
 #endif // defined(TRUE)
 
 #if defined(FALSE)
@@ -55,36 +53,34 @@ typedef enum { false = FALSE, true } bool;
 
 // potential necessity: custom printf and exit for the platform
 // unfortunately we dont have __COLUMN__ as macro
-#define assert(a) if( !( a ) )                            \
-{                                                         \
-    fprintf( stderr, "%s:%d assertion failure of (%s)\n", \
-                             __FILE__, __LINE__, #a );    \
-    exit( 1 );                                            \
-}                                                         \
-_Static_assert(true, "")
+#define assert(a)                                                                 \
+  if (!(a)) {                                                                     \
+    fprintf(stderr, "%s:%d assertion failure of (%s)\n", __FILE__, __LINE__, #a); \
+    exit(1);                                                                      \
+  }                                                                               \
+  _Static_assert(true, "")
 
 #if defined(static_assert)
 #error "static_assert already defined"
-#else // !defined(static_assert)
+#else                                // !defined(static_assert)
 #define static_assert _Static_assert // since C11
-#endif // defined(static_assert)
+#endif                               // defined(static_assert)
 
 #if defined(IS_SIGNED)
 #error "IS_SIGNED already defined"
 #else // !defined(IS_SIGNED)
-#define IS_SIGNED(Type) (((Type)-1) < 0)
+#define IS_SIGNED(Type) (((Type) - 1) < 0)
 #endif // defined(IS_SIGNED)
 
-
-_Static_assert(IS_SIGNED(char),   "err: char is unsigned");
+_Static_assert(IS_SIGNED(char), "err: char is unsigned");
 _Static_assert(sizeof(char) == 1, "err: char not 1 byte");
 _Static_assert(sizeof(unsigned char) == 1, "err: char not 1 byte");
 _Static_assert(sizeof(signed char) == 1, "err: char not 1 byte");
-_Static_assert(sizeof(uint8_t) == 1,  "err: uint8_t not 1 byte");
+_Static_assert(sizeof(uint8_t) == 1, "err: uint8_t not 1 byte");
 _Static_assert(sizeof(uint16_t) == 2, "err: uint16_t not 2 byte");
 _Static_assert(sizeof(uint32_t) == 4, "err: uint32_t not 4 byte");
 _Static_assert(sizeof(uint64_t) == 8, "err: uint64_t not 8 byte");
-_Static_assert(sizeof(int8_t) == 1,  "err: int8_t not 1 byte");
+_Static_assert(sizeof(int8_t) == 1, "err: int8_t not 1 byte");
 _Static_assert(sizeof(int16_t) == 2, "err: int16_t not 2 byte");
 _Static_assert(sizeof(int32_t) == 4, "err: int32_t not 4 byte");
 _Static_assert(sizeof(int64_t) == 8, "err: int64_t not 8 byte");
@@ -93,8 +89,8 @@ _Static_assert(sizeof(int64_t) == 8, "err: int64_t not 8 byte");
 
 // C11's Generic selection: Return constant 1, if type and 0 otherwise
 // Keep things clean via stringification
-#define STATIC_ASSERT_H(x)  _Static_assert(x, #x)
-#define STATIC_ASSERT(x)    STATIC_ASSERT_H(x)
+#define STATIC_ASSERT_H(x) _Static_assert(x, #x)
+#define STATIC_ASSERT(x) STATIC_ASSERT_H(x)
 #define OBJ_IS_OF_TYPE(Type, Obj) _Generic(Obj, Type: 1, default: 0)
 // Note: C++11 has other utilities and is incompatible with _Static_assert
 // #include <type_traits>
@@ -106,25 +102,23 @@ _Static_assert(sizeof(int64_t) == 8, "err: int64_t not 8 byte");
 //     STATIC_ASSERT(OBJ_IS_OF_TYPE(timespecval1.tv_nsec, int64_t));
 // }
 // Hygienic macros
-#define TEST_FUNC(a,b)                                         \
-do {                                                           \
-    STATIC_ASSERT(OBJ_IS_OF_TYPE(a, int64_t));                 \
-    STATIC_ASSERT(OBJ_IS_OF_TYPE(b, int64_t));                 \
-} while(0)
+#define TEST_FUNC(a, b)                        \
+  do {                                         \
+    STATIC_ASSERT(OBJ_IS_OF_TYPE(a, int64_t)); \
+    STATIC_ASSERT(OBJ_IS_OF_TYPE(b, int64_t)); \
+  } while (0)
 
-#define add(...) _Generic ( &(int[]){__VA_ARGS__}, \
-                            int(*)[2]: add2,       \
-                            int(*)[3]: add3) (__VA_ARGS__)
-int add2 (int a, int b);
-int add3 (int a, int b, int c);
-int add_typesafe_generic_selection_c11 (void) {
+#define add(...) _Generic(&(int[]){__VA_ARGS__}, int (*)[2]: add2, int (*)[3]: add3)(__VA_ARGS__)
+int add2(int a, int b);
+int add3(int a, int b, int c);
+int add_typesafe_generic_selection_c11(void) {
   printf("%d\n", add(1, 2));
   printf("%d\n", add(1, 2, 3));
   //printf("%d\n", add(1, 2, 3, 4)); Compiler error for this.
   return 0;
 }
-int add2 (int a, int b) { return a + b; }
-int add3 (int a, int b, int c) { return a + b + c; }
+int add2(int a, int b) { return a + b; }
+int add3(int a, int b, int c) { return a + b + c; }
 
 #endif // !defined(__cplusplus)
 
@@ -135,7 +129,7 @@ int add3 (int a, int b, int c) { return a + b + c; }
 // figure out default symbols of host
 // echo | gcc -dM -E -
 
-// TODO
+// idea
 // tldr; https://airbus-seclab.github.io/c-compiler-security/
 // in-depth https://github.com/airbus-seclab/c-compiler-security
 

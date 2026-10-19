@@ -331,10 +331,15 @@ public:
 //     std::swap trades speed for memory savings, but does not solve destructive moves
 //     problem
 
-// TODO check out c++ libraries offering destructive moves how to implement it
+// check out c++ libraries offering destructive moves how to implement it
+// * folly::IsRelocatable
+// * TTypeTraits<T>::IsUniquelyInstantiable
+// * Q_DECLARE_TYPEINFO, Q_MOVABLE_TYPE
+// * std::is_trivially_relocatable
+
 // https://0xghost.dev/blog/std-move-deep-dive/
 // https://0xghost.dev/blog/template-parameter-deduction/
-// TODO use code for this https://lobste.rs/s/n9tev4/who_owns_memory_part_2_who_calls_free#c_863kc6
+// idea use code for this https://lobste.rs/s/n9tev4/who_owns_memory_part_2_who_calls_free#c_863kc6
 class DestrMoves {
   char expensive_resource;
 
@@ -422,7 +427,7 @@ public:
 //   * correct optimization flags like -O3 -march=native
 // 6 branch removal
 //   * replace simple branches with conditional moves (cmov) where supported
-//     TODO check how to do this in practice https://kristerw.github.io/2022/05/24/branchless/
+//     idea check how to do this in practice https://kristerw.github.io/2022/05/24/branchless/
 //   * branchless algo tricks (masks, bit shifts, etc) to remove predictable conditionals
 //   * use for logic LUTs, where applicable
 // 7 measurement and analysis
@@ -448,7 +453,7 @@ public:
 //   * have you measured branch miss rates before and after optimizations
 
 // https://johnfarrier.com/branch-prediction-the-definitive-guide-for-high-performance-c/
-// TODO branch predictions
+// idea branch predictions
 
 // https://johnnysswlab.com/vectorization-dependencies-and-outer-loop-vectorization-if-you-cant-beat-them-join-them/
 // https://johnnysswlab.com/decreasing-the-number-of-memory-accesses-1-2/

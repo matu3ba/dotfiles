@@ -1,10 +1,8 @@
 misc
 https://zer0-hex.github.io/PayloadsAllTheThings/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet/#powershell
-TODO
 
 ====firewall
 https://learn.microsoft.com/de-de/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell
-TODO
 https://docs.vmware.com/de/vRealize-Orchestrator/8.11/com.vmware.vrealize.orchestrator-use-plugins.doc/GUID-2F7DA33F-E427-4B22-8946-03793C05A097.html
 
 https://docs.vmware.com/de/vRealize-Orchestrator/8.11/com.vmware.vrealize.orchestrator-use-plugins.doc/GUID-D4ACA4EF-D018-448A-866A-DECDDA5CC3C1.html
@@ -33,7 +31,7 @@ https://docs.vmware.com/en/VMware-Aria-Automation/8.16/Using-Automation-Orchestr
 0. enable certificate authentication
 Set-Item -Path WSMan:\localhost\Service\Auth\Certificate -Value $true
 Cannot find drive. A drive with the name 'WSMan' does not exist.
-> TODO explain error
+> idea explain error
 1. create certificate
 * openssl
 * New-SelfSignedCertificate

@@ -33,7 +33,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     # volumes:
-    #   TODO condition for persistent database via local mount
+    #   idea condition for persistent database via local mount
     command:
       - start-dev # dev-only
     healthcheck:

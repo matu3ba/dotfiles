@@ -91,7 +91,7 @@ __QEMU Internals__: Overall architecture and threading model https://blog.vmspli
 
 https://github.com/airbus-seclab/qemu_blog
 
-TODO missing:
+idea missing:
 * what exactly virtualized Linux executes on setup/teardown, since it does not
 have hw control and how things are accelerated
 * kvm architecture with micro-kernel ideas/impl status/usage and debugging
@@ -106,7 +106,7 @@ __QEMU Internals__: Architecture of KVM own summary based on
 * 5 https://www.redhat.com/en/blog/virtio-devices-and-drivers-overview-headjack-and-phone
 * 6 Future
 
-TODO contextualize https://stackoverflow.com/questions/10307323/whats-the-differences-between-xen-qemu-and-kvm
+idea contextualize https://stackoverflow.com/questions/10307323/whats-the-differences-between-xen-qemu-and-kvm
 * question: security isolation?
 * what stuff exactly is run?
 * what is an hypervisor?
@@ -157,7 +157,7 @@ Any info or pointers would be appreciated, but I do understand your time being p
 Sincerely,
 Jan
 
-TODO rephrase questions
+idea rephrase questions
 https://vmsplice.net/~stefan/stefanha-kvm-forum-2024.pdf
 https://kvm-forum.qemu.org/2023/Multiqueue_in_the_block_layer_wLom4Bt.pdf
 https://blog.vmsplice.net/search/label/kvm
@@ -186,7 +186,7 @@ eliminating need to copy file contents into guest RAM.
 
 https://en.wikipedia.org/wiki/Virtualization
 https://en.wikipedia.org/wiki/Hypervisor aka Virtual Machine Monitor (VMM)
-TODO how are the following modeled and simulated?
+idea how are the following modeled and simulated?
 * 1. system/hardware clocks (different IO speeds)
 * 2. threads, execution contexts, hardware device contexts
 * 3. synchronization, memory and pointer lookups

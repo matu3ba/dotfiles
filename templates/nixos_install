@@ -220,8 +220,6 @@ requirements:
 * liveCD/USB of NixOS to fixup broken things
 * Backup of all data
 
-TODO
-
 ====home_manager
 * NixOS is not tailored to manage anything in your home directory
 * only for user-specific things
@@ -296,7 +294,7 @@ nixpkgs.hello.override { version = "2.10"; }
 ^
 5. override: modify function args
 
-TODO: is finalAttrs optional or mandatory?
+idea: is finalAttrs optional or mandatory?
 v
 nixpkgs.hello.overrideAttrs (oldAttrs: {
   meta.description = "New description";

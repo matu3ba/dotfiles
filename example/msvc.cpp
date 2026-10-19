@@ -23,7 +23,7 @@
 // & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.exe" .\Solution.sln
 
 // ====generate compile_commands.json
-// TODO how to extract cl.exe args from msbuild
+// how to extract cl.exe args from msbuild: https://github.com/microsoft/msbuild-extractor-sample
 // parse build.log for cl.exe and retrieve flags
 // adjust compile_commands.json with content
 // {
@@ -40,6 +40,11 @@
 // }
 // via
 // \"-D_USING_V110_SDK71_\" \"-DSOMEMACRO\" \"-DX64\" \"-D_DEBUG\" ..
+// git clone https://github.com/microsoft/msbuild-extractor-sample
+// cd msbuild-extractor-sample
+// dotnet build -c Release
+// ./bin/Release/net10.0/msbuild-extractor-sample.exe --solution "path_to_project.sln" -c Debug -a x64 -o compile_commands.json
+// ./bin/Release/net10.0/msbuild-extractor-sample.exe --project "path_to_project.vcxproj" -o compile_commands.json
 
 // https://learn.microsoft.com/de-de/previous-versions/visualstudio/visual-studio-2015/msbuild/msbuild-special-characters?view=vs-2015&redirectedfrom=MSDN
 
@@ -135,7 +140,7 @@
 // https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.vcprojectengine.vcclcompilertool.additionaloptions?view=visualstudiosdk-2022
 // https://en.wikipedia.org/wiki/Unicode_in_Microsoft_Windows#UTF-8
 // https://stackoverflow.com/questions/41335199/how-to-config-visual-studio-to-use-utf-8-as-the-default-encoding-for-all-project
-// TODO summary from https://stackoverflow.com/questions/1857668/c-visual-studio-character-encoding-issues
+// idea summary from https://stackoverflow.com/questions/1857668/c-visual-studio-character-encoding-issues
 // Unicode overview https://www.codeproject.com/Articles/38242/Reading-UTF-8-with-C-streams
 
 // lang compat https://learn.microsoft.com/de-de/cpp/overview/visual-cpp-language-conformance?view=msvc-170
@@ -158,7 +163,7 @@ static_assert(std::is_unsigned_v<char32_t>, "invalid char32_t sign");
 
 // file Stdafx.h
 
-// TODO C++26 use WideCharToMultiByte(CP_UTF8 ..), MultiBytetoWideChar
+// idea C++26 use WideCharToMultiByte(CP_UTF8 ..), MultiBytetoWideChar
 // and remove following macro to ignore deprecation
 // #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 

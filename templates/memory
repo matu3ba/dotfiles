@@ -42,8 +42,8 @@ https://stackoverflow.com/a/33065382
 Very good quick overview:
 http://ithare.com/infographics-operation-costs-in-cpu-clock-cycles/
 special:
-RDMA   TODO                                      TODO
-HBM    TODO                                      TODO
+RDMA   idea                                      idea
+HBM    idea                                      idea
 * only full ASIL compliant solution?
 see also templates/timing
 
@@ -325,7 +325,7 @@ the view between processors on the memory is coherence, meaning well-defined/
 in a consistent state.
 Protocols vary per architecture, processor model and cache level.
 
-TODO explain MESI, MOESI, MESIF in x86_64 and/or from hardware perspective
+idea explain MESI, MOESI, MESIF in x86_64 and/or from hardware perspective
 based on "Efficient Virtual Cache Coherency for Multi-core Systems and Accelerators".
 
 ARM is not cache coherent for flexibility, which means that each system can
@@ -399,7 +399,7 @@ mov (%rsp), %rax
 add %8, %rsp
 
 Stack frame layout
-TODO https://eli.thegreenplace.net/2011/09/06/stack-frame-layout-on-x86-64
+idea https://eli.thegreenplace.net/2011/09/06/stack-frame-layout-on-x86-64
 
 https://stackoverflow.com/questions/261419/what-registers-to-save-in-the-arm-c-calling-convention
 ====32-bit ARM [AAPCS]

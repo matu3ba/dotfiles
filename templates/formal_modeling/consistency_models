@@ -1,5 +1,5 @@
 Cache coherency
-  TODO
+  idea
 
 Background CAP theorem: system can not have more than 2 at the same time
 of consistency, availability, partition tolerance; only applies to bus or data base,
@@ -10,7 +10,7 @@ system data kept at different places do match and results of reading, writing,
 updating memory will be predictable.
 
 Properties of the system
-TODO
+idea
 
 Basic overview
   - Linearizability: CS + real-time constraint
@@ -134,13 +134,13 @@ Relaxed memory consistency models
   Relaxing read and read to write program orders: Alpha, RMO, and PowerPC
 
 Relation to cache coherency
-  TODO
+  idea
 
 Network/data transmission failures
-  TODO
+  idea
 
 Relation to progress models
-  TODO
+  idea
 
 RISC-V MEMORY MODEL SPECIFICATION
 * https://github.com/daniellustig/riscv-memory-model

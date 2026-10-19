@@ -1,7 +1,7 @@
 //! Infinity loop to examplify gdb and VS Debugger usage and entry point
 //! into adv/ for advanced point 4. and expert exp/ point 5.
 // Tested with
-// TODO tests
+// idea write slop tests
 #include <inttypes.h> // PRIu64, uint64_t (stdint.h not needed)
 #include <stdbool.h>  // bool
 #if defined(_WIN32)

@@ -422,8 +422,7 @@ namespace AppFramework.AppName {
 // * Redirection is possible via CreateProcess and cmd.exe (at cost of extra process).
 
 // .NET >= 11 has better process API
-// TODO review
-
+// idea review
 
 //==performance
 // 8ns call overhead to ffi C code

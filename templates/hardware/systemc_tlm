@@ -1,5 +1,5 @@
 ====setup
-TODO instructions
+idea instructions
 
 keywords
 * non-thread-safe Instruction-Set Simulator (ISS)
@@ -60,7 +60,6 @@ https://github.com/machineware-gmbh/vcml/blob/main/doc/properties.md
 https://www.qemu.org/docs/master/devel/testing/index.html
 https://developer.arm.com/documentation/ddi0246/a/programmer-s-model/summary-of-registers
 
-TODO what is a TLM-2.0 transaction? how can it be send from the main thread?
-TODO how is it ensured that 2 async threads dont write to the same memory region?
+what is a TLM-2.0 transaction? how can it be send from the main thread?
+how is it ensured that 2 async threads dont write to the same memory region?
      or one thread reads, the other writes?
-TODO

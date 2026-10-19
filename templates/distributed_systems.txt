@@ -250,7 +250,7 @@ Implementation checklist
 [ ] Test alert routing and escalation
 
 ====incus_usage
-TODO
+idea
 
 "Redbench: Workload Synthesis From Cloud Traces"
 * https://github.com/DataManagementLab/Redbench
@@ -293,7 +293,7 @@ https://oneuptime.com/blog/post/2026-02-23-how-to-run-opentofu-in-docker/view
 * much harder than simple system due to a bigger system
 
 ======key_rotation
-TODO check what is best practice with FIPS etc stuff
+idea check what is best practice with FIPS etc stuff
 https://github.com/Cosmian/kms ??
 1 bootstrapping: yubikey or other source (standard solution?)
 2 injecten secrets into workflows: API specific (standard solution?)

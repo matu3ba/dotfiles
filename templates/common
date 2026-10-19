@@ -116,7 +116,7 @@ Explanation:
 4 ---|         |--------
 
 https://fgiesen.wordpress.com/2021/08/30/entropy-coding-in-oodle-data-huffman-coding/
-TODO processor performance characteristics 20240528
+idea processor performance characteristics 20240528
 
 Performance
 System Call Hook for ARM64 for trusted code https://github.com/retrage/svc-hook

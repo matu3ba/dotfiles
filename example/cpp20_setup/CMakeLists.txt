@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(test)
 
-# TODO distinguish profile clang|gcc|msvc dev|release
+# idea distinguish profile clang|gcc|msvc dev|release
 
 add_executable(dev_gcc.exe)
 target_sources(dev_gcc.exe PRIVATE use_gcc.cpp)

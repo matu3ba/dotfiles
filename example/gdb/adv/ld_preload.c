@@ -1,10 +1,10 @@
 /// 4.1 LD_PRELOAD
-///Tested with
-///TODO
+/// There are better mocking libraries written in Zig than this incomplete stuff.
+
+/// At some point tested with some stuff.
 /// Purpose is to do static and hacky replacements of shared objects
 /// functionality.
 /// Stolen from https://www.themetabytes.com/2017/11/25/ld_preload-hacks/
-/// TODO
 /// - convert to Zig for portability across Unixes
 
 // Base Usage: gcc ./adv/ld_preload.c -o ./build/rand && ./build/rand

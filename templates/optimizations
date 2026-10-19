@@ -47,7 +47,7 @@ inherent complexity cost
 * problem: frequent context switches on linux 1-20 microsecs
 * solution 1: event-driven architecture (async-await, ui_uring, select)
 * solution 2: user-space schedulers (goroutines, grenlets)
-* solution 3: TODO improve phrasing, use better RAM tradeoffs
+* solution 3: idea improve phrasing, use better RAM tradeoffs
 3. Memory bound
 * solution 1: Data Oriented Design methods
 * solution 2: less caching/use less memory

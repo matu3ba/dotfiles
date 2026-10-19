@@ -205,7 +205,7 @@ set power mode:
   sudo cpupower frequency-set -g performance
 change affinity of process:
   taskset -c 0 ./zig-out/bin/exe
-alternative: TODO
+alternative: idea
 sudo perf stat -r 10 -d alacritty -e false
 Less noise with:
 https://github.com/andrewrk/poop/issues/39

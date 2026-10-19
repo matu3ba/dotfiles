@@ -3,7 +3,7 @@
   - system installer
   - if package dependency not avaiable, use sudo pacman -Suy
 
-TODO
+idea
 * before kernel_shell
 * kernel_shell
 * efi_shell
@@ -23,7 +23,7 @@ TODO
     o for more diagnostics remove (temporarily) option quiet
     o press Ctrl-X to boot with these parameters
 * boot_chroot via rescue system (using external system, ie on usb)
-  - TODO: does this require login to work?
+  - idea: does this require login to work?
   - sudo lsblk -f
   - unlock encryption:
     o "cryptsetup list" via entries crypto_LUKS: lsblk --fs

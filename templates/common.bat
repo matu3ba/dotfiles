@@ -18,11 +18,11 @@ REM additional delayed expansion possible via 'SetLocal EnableDelayedExpansion'
 REM and usage via ^!variable^!
 
 REM http://steve-jansen.github.io/guides/windows-batch-scripting/part-1-getting-started.html
-REM TODO write content as minimal examples plus comments in working batch script
+REM idea write content as minimal examples plus comments in working batch script
 REM https://www.robvanderwoude.com/battech_fileproperties.php
-REM TODO write content as minimal examples plus comments in working batch script
+REM idea write content as minimal examples plus comments in working batch script
 REM https://ss64.com/nt/if.html
-REM TODO write content as minimal examples plus comments in working batch script
+REM idea write content as minimal examples plus comments in working batch script
 
 REM cd without args shows pwd
 REM dir shows ls
@@ -72,7 +72,7 @@ if %ERRORLEVEL% neq 0 goto EXIT
 :EXIT
   exit /b %ERRORLEVEL%
 
-REM TODO fixup this part
+REM idea fixup this part
 REM loop example with path comparison
 REM /d indicates that %%i is a directory loop variable
 for /d %%i in (%bat_path%*) do (
@@ -89,7 +89,7 @@ for /d %%i in (%bat_path%*) do (
     if !L!==_ (
       echo Skip Folder !Folder!
     ) else (
-      REM TODO function call
+      REM idea function call
       if DoUpdate GTR 0 (
         copy %AbsSrcPath%\*.exe %%i
         copy %AbsSrcPath%\*.dll %%i
@@ -116,7 +116,7 @@ check if file exists
 if exist "C:\myprogram\sync\data.handler" echo Now Exiting && Exit
 if not exist "C:\myprogram\html\data.sql" Exit
 
-REM TODO https://www.tutorialspoint.com/batch_script/batch_script_functions.htm
+REM idea https://www.tutorialspoint.com/batch_script/batch_script_functions.htm
 
 :Display
 SET /A index=2

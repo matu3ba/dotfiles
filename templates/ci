@@ -187,19 +187,19 @@ dir('subDir') {
 }
 
 Linux setup
-TODO from bare to CI:
+idea from bare to CI:
 * base system
 * ssh via wireguard + toggle to ssh without wireguard
 * control server
 * empty user setup
 
-TODO web part of CI:
+idea web part of CI:
 * container? isolation? seccomp?
   - OCIv2 Images, github.com/opencontainers/image-spec
 * ip/ports, nftables, dns
 * advanced isolation (seccomp etc)
 
-TODO evaluate hydra design
+idea evaluate hydra design
 
 experimental idea:
 - pure vs impure compilation

@@ -108,7 +108,7 @@ I guess I'd have to test input/output behavior of LLM/ML models vs from scratch
 based on what people say works. Then make code design and hardware trade-offs
 decisions via some graph tooling. My biggest problem is to estimate essential
 complexity and model size, but I guess hearsay might do.
-TODO summarize properly
+idea summarize properly
 
 ====llms
 * fast selection of models via https://github.com/jedisct1/inferswitch

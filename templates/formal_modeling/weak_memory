@@ -1,6 +1,6 @@
-TODO summary, this reads semi-aweful
+idea summary, this reads semi-aweful
 
-TODO list out the edge cases where the atomics model of C fails to generate decent code
+idea list out the edge cases where the atomics model of C fails to generate decent code
 
 The (concurrrency/synchronization) memory model is a model of the underlying
 hardware synchronization primitives how the optimizing compiler is allowed to
@@ -46,7 +46,7 @@ is still missing in C11  as shown here
 https://www.cl.cam.ac.uk/~pes20/cerberus/clarifying-provenance-v4.html#q3.-can-one-make-a-usable-pointer-via-casts-to-intptr_t-and-back
 even if assuming intToptr/ptrToInt always loses all provenance.
 
-+TODO fixup
++idea fixup
 +The (concurrrency/synchronization) memory model is a model of the underlying
 +hardware synchronization primitives how the optimizing compiler is allowed to
 +interpret source code semantics on the hardware platform (config/family).

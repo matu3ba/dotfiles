@@ -2605,10 +2605,10 @@ template<typename> struct is_pair : std::false_type {};
 template<typename T, typename U> struct is_pair<std::pair<T, U>> : std::true_type {};
 
 #if defined(HAS_CPP17)
-// TODO move std::variant here for cleaner overview
-// - TODO static dispatch via struct
-// - TODO move dynamic dispatch via std::variant here
-// - TODO dynamic dispatch via double vtable or something like that
+// idea move std::variant here for cleaner overview
+// - idea static dispatch via struct
+// - idea move dynamic dispatch via std::variant here
+// - idea dynamic dispatch via double vtable or something like that
 //     https://iamsorush.com/posts/cpp-tag-dispatch/
 //     https://gieseanw.wordpress.com/2018/12/29/stop-reimplementing-the-virtual-table-and-start-using-double-dispatch/
 static_assert(std::is_unsigned_v<size_t>);
@@ -2744,7 +2744,7 @@ void use_for_each() {
 
 #endif // defined(HAS_CPP17)
 
-// TODO sort in
+// idea sort in
 // std::uniform_int_distribution<int32_t> Index(0, InclusiveEnd);
 // fprintf(stdout, "RandomModulo: %d\n", RandomModulo);
 
@@ -2786,7 +2786,7 @@ void use_is_stl_container() {
 }
 #endif // defined(HAS_CPP14)
 
-// TODO reorganize and add here HAS_CPP17
+// ideidea and add here HAS_CPP17
 
 // SHENANIGAN decltype declval over multiple templates requires to query the
 // public type of a child via using, because C++ is unable to infer the type
@@ -2930,12 +2930,12 @@ void use_template_template() {
 
 void use_thread();
 void use_thread() {
-  // TODO
+  // idea
 }
 
 void use_jthread();
 void use_jthread() {
-  // TODO std::jthread
+  // idea std::jthread
 }
 
 #endif // defined(HAS_CPP20)
@@ -3093,7 +3093,7 @@ void use_to_string_view() {
   std::print("{}", sv1);
 }
 
-// TODO comptime creation of std::string does not work
+// idea comptime creation of std::string does not work
 // constexpr std::string s1 = make_string("Hello World ", 3);
 // std::print("{}", s1);
 // fprintf(stdout, "%zu: %s\n", s1.size(), s1.c_str());
@@ -3144,11 +3144,11 @@ void use_optional() {
 // SHENANIGAN function chaining makes code unreadable
 void use_function_chaining();
 void use_function_chaining() {
-  // TODO https://www.cppstories.com/2023/monadic-optional-ops-cpp23/
+  // idea https://www.cppstories.com/2023/monadic-optional-ops-cpp23/
 }
 
 // https://johnfarrier.com/the-definitive-guide-to-std-expected-in-c/
-// TODO
+// idea
 // #include <expected> // std::expected
 constexpr std::expected<int32_t, std::errc> check_not_max(int32_t number) {
   if (number == std::numeric_limits<int32_t>::max())
@@ -3252,7 +3252,7 @@ void use_flat_set() {
 
 // UNSOLVED
 // https://yongweiwu.wordpress.com/2022/06/19/compile-time-strings/
-// TODO test this
+// idea test this
 // https://stackoverflow.com/questions/15858141/conveniently-declaring-compile-time-strings-in-c
 // https://yongweiwu.wordpress.com/2024/10/11/cxx-compile-time-programming/
 // https://adroit-things.com/programming/c-cpp/constructing-compile-time-string-objects/
@@ -3377,8 +3377,8 @@ enum Color { red, green, blue };
 static_assert(enum_to_string(Color::red) == "red");
 static_assert(enum_to_string(Color(42)) == "<unnamed>");
 
-// TODO reflexpr https://en.cppreference.com/w/cpp/keyword/reflexpr
-// TODO struct of array https://brevzin.github.io/c++/2025/05/02/soa/
+// idea reflexpr https://en.cppreference.com/w/cpp/keyword/reflexpr
+// idea struct of array https://brevzin.github.io/c++/2025/05/02/soa/
 
 // SHENANIGAN iostream bad, successor https://github.com/ned14/llfio
 // * use std::print for formatting
@@ -3389,7 +3389,7 @@ static_assert(enum_to_string(Color(42)) == "<unnamed>");
 // * boils down to resolving circular dependency on type resolving and arcane implementation details
 
 void use_reflection() {
-  // TODO reflection blog post c++ channel
+  // idea reflection blog post c++ channel
   // hackernews roasting
 }
 

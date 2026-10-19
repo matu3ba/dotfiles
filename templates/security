@@ -179,9 +179,10 @@ Microkernel/no OS: Single security boundary
 sel4 : specific individual capabilities
 
 https://github.com/dckc/awesome-ocap
-TODO explain capabilities and how regular OS lack and their trade-offs
+idea explain capabilities and how regular OS lack and their trade-offs
+
 https://www.ntecs.de/blog/2023-04-16-fighting-supply-chain-attacks-using-object-capabilities/
-TODO explain object capabilities in languages
+idea explain object capabilities in languages
 
 ====apparmor
 https://apparmor.pujol.io/
@@ -498,7 +499,7 @@ https://kanidm.com/comparisons/, https://github.com/kanidm/kanidm
 Common Criteria Certification for Integrated Circuits and Smart cards
 requires Evaluation Assurance Level 6/7 (highest).
 
-TODO move to verification
+idea move to verification
 bottom-up approach:
 * impl -traceability-> sec+funct_mechanisms -compliance-> sec policy
 * impl -verification-> specification

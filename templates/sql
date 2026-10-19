@@ -110,7 +110,7 @@ tldr;
    - if you have to use NULL, plan for 2. breaking changes
 2. breaking database migrations (code+data migration paths
    of clustered apps+dbs)
-   - TODO
+   - idea
 
 ====solutions
 * "REL: A Programming language for relational data"

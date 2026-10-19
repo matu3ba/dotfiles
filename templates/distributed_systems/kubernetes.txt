@@ -107,7 +107,7 @@ https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 default kubernetes has no
 * 1 ingress/gateway [kong, envoy]
 * 2 secret management+rolling
-* 3 external DNS [TODO]
+* 3 external DNS [trafic]
 * 4 gitlab agent
 * 5 grafana/cockpit(mimi+tempo+loki)+alloy for metrics; Graylog(legacy applications)
 * 6 kube state matrix (scaleway has cluster monitoring für pods und deployments)

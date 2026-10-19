@@ -1,7 +1,6 @@
 https://infosecwriteups.com/container-escape-techniques-breaking-out-of-the-digital-jail-ad06962c5292
 * if possible: run containers as user
 https://dev.to/kanywst/kubernetes-deep-dive-oci-runtime-vs-cri-4o2n
-* TODO complete summary on structure + runtime edge cases
 https://www.paloaltonetworks.com/cyberpedia/kubernetes-security ?
 https://medium.com/@kankojoseph/from-containers-to-host-privilege-escalation-techniques-in-docker-487fe2124b8e container analysis?
 https://unit42.paloaltonetworks.com/container-escape-techniques/ ?
@@ -12,6 +11,12 @@ Docker Compose
 Docker Swarm
 ?
 
+TODO: slop a zig build + orchestrator system for containers, then rewrite properly.
+* io as effect is cool
+* allocation as effect is cool
+* security as effect is cool
+* virtualization as effect is cool
+* more?
 
 ==basic_structure
 

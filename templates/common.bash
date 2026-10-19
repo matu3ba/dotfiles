@@ -5,15 +5,11 @@
 
 #==== standard header
 # set -x
-set -eou
+set -euo pipefail
+
 [[ "$(whoami)" = "root" ]] && return
 trap 'cd ${CWD}' EXIT HUP INT QUIT SIGSEGV TERM
 CWD=$(pwd)
-
-# TODO
-# * is_in_array
-# * validate_args
-# * print help
 
 # loop array by index
 SIZES=(
@@ -88,26 +84,34 @@ value_is_in_array() {
     200 800
   )
   for i in "${array[@]}"; do
-    if test "$i" == "$1"; then
-      echo "value found for string" && exit 0
+    if test "$i" = "$1"; then
+      echo "value found for string" && return 0
     fi
     if test "$i" -eq "$1"; then
-      echo "value found for non-string" && exit 0
+      echo "value found for non-string" && return 0
     fi
   done
+  return 1
 }
 
 validate_args() {
-  echo ""
-  # for var in "$@"; do
-  #     echo "$var"
-  # done
-  # for ((i=0;i<${#SIZES[*]};++i)); do
-  #   echo "${SIZES[i]}"
-  # done
-  # print elements of array according to IFS
-  # echo "${ids[*]}"
+  # Implementierung der kommentierten Logik: Iteration über Index
+  for ((i=0; i<${#SIZES[*]}; ++i)); do
+    echo "${SIZES[i]}"
+  done
 }
+
+validate_args "$@"
+
+SUCH_WERT="$1"
+ERLAUBTE_WERTE=("apfel" "birne" "banane")
+
+if value_is_in_array "$SUCH_WERT" "${ERLAUBTE_WERTE[@]}"; then
+    echo "Gefunden"
+else
+    echo "Nicht gefunden" >&2
+    exit 1
+fi
 
 if test -z "$1"; then
   echo 'output file name not set, exiting..'

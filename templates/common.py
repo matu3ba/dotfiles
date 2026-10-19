@@ -757,7 +757,7 @@ def sendHtml(self, ip: str, port: int, msg: str) -> int:
     return 1
   return 0
 
-# TODO proper example
+# idea proper example
 #    def __enter__(self) -> "Connection":
 #        """Open on entering with-block."""
 #        self.open()
@@ -782,7 +782,7 @@ def sendHtml(self, ip: str, port: int, msg: str) -> int:
 # 2. dictionary backed class access self.__dict['d']
 # 3. non-data-descriptors
 
-# TODO getaddr
+# idea getaddr
 
 class example_special_methods(self):
   def __init__(self):

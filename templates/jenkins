@@ -95,5 +95,5 @@ SHENANIGAN Jenkins does not accept empty {}-blocks
   }
 }
 
-TODO sparse checkout
+idea sparse checkout
 https://stackoverflow.com/questions/43293334/sparsecheckout-in-jenkinsfile-pipeline

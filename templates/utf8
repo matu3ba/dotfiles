@@ -25,7 +25,7 @@ file unix_filepath
 
 show file encodings detected by editor
 * vim/nvim: :set fileencoding
-* TODO typical editors
+* idea typical editors
 
 typical encodings
 
@@ -38,4 +38,4 @@ iconv -f iso-8859-1 -t utf-8 /tmp/textFile  > /tmp/outtextFile
 idea explain C++ side + prepare for C++26
 https://dbj.org/c-convert-any-sequence-to-any-standard-string/
 
-TODO utf8 table
+idea utf8 table

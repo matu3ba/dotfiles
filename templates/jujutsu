@@ -41,7 +41,7 @@ List of SHENANIGAN
 1 CLI commands may or may not need -r to refer to revisions.
 2 CLI has no standard way to debug shell escaping behavior
 3 CLI has no standard way to debug parsing problems
-* TODO check jj debug and --debug with high debug level for options
+* idea check jj debug and --debug with high debug level for options
 
 ==add remove basic
 git init --git-repo .
@@ -51,7 +51,7 @@ jj git init
 rm -rf .jj
 
 ==add remove worktree
-TODO jj workspace commands
+idea jj workspace commands
 
 ==new working copy
 jj new bookmark_rev__id
@@ -93,7 +93,7 @@ jj bookmark create my-feature-branch -r '@'
 ==git commit messages
 1 merge commit
 jj describe '@' --template 'Merge branch into main\n\nCommits:\n'$(jj log -r "main..c404c907" -T ' "- " ++ description.first_line() ++ "\n"' --no-graph)
-TODO
+idea
 2 no merge commit: jj merge main feature-branch
 * direct copy of branch into current branch: jj new @ feature-branch
 
@@ -249,7 +249,7 @@ jj edit uniq_id_from_jj_log
 jj squash
 jj resolve
 
-TODO
+idea
 https://shaddy.dev/notes/jj-worktrees/
 https://lwn.net/Articles/958814/
 https://github.com/jj-vcs/jj/discussions/3560 kernel patch series with jj

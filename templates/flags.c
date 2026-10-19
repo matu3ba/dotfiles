@@ -10,7 +10,7 @@
 // clang -Werror -Weverything -Wno-unsafe-buffer-usage -Wno-declaration-after-statement -Wno-missing-variable-declarations -std=c99 .\templates\common.c
 // -Wno-missing-variable-declarations
 
-// TODO make this more structured https://nullprogram.com/blog/2023/04/29/
+// idea make this more structured https://nullprogram.com/blog/2023/04/29/
 // https://interrupt.memfault.com/blog/arm-cortexm-with-llvm-clang
 // clang-format off
 clang usage:
@@ -79,6 +79,5 @@ $grep -o "\[\-W.*\].*" compilation_results.txt | sort -u
 // bindnow (resolve alldynamic symbols at program load to enable relro above)
 // -z bindnow
 
-// TODO explain and show how to check what is used for
 // * -Wall
 // * -Wextra

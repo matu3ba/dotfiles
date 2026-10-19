@@ -1,6 +1,7 @@
 ///  4.3 dll injection unix
-/// Tested with
-/// TODO
+/// There are better mocking libraries written in Zig than this incomplete stuff.
+
+/// At some point tested with some stuff.
 /// https://stackoverflow.com/questions/24355344/inject-shared-library-into-a-process
 /// Outside of the dynamic loader/linker with LD_PRELOAD, one needs to use
 /// ptrace (for security):
@@ -15,11 +16,13 @@
 /// - dont forget to have a syscall ending after dlopen to PTRACE_SYSCALL for it
 /// - restore program with PTRACE_POKETEXT, PTRACE_SETREGS
 
+/// - there are better mocking libraries written in Zig than this incomplete loader stuff
+
 // One can also do it manually, which becomes error-prone and slow:
 // https://www.codeproject.com/Articles/33340/Code-Injection-into-Running-Linux-Application
 
 // https://stackoverflow.com/a/24356162/9306292
-// TODO: missing library usage/payload insertion, ie process_vm_writev memory to execute
+// idea: missing library usage/payload insertion, ie process_vm_writev memory to execute
 #if !defined(_GNU_SOURCE)
 #error "requires dynamic linking for loading adjusting via LD_PRELOAD"
 #endif // !defined(_GNU_SOURCE)

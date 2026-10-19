@@ -37,7 +37,7 @@ Simpler alternative to use REST on postgresql https://github.com/PostgREST/postg
   - reduce table size
   - simplify and omit if possible joins
   - (postgresql) to get runtime of query prefix it with EXPLAIN
-  - TODO many more things
+  - idea many more things
 * https://dikmenonur.medium.com/sql-performance-tuning-a-comprehensive-guide-0e8a0b0b8aa9
 
 clickhouse: logs, traces, metrics, monitoring, etc (all observability)
@@ -88,7 +88,7 @@ general rule: must measure
 * BASE/non-ACID (dont care that data is trustable) like get latest value asap
   - key/value stores
   - time series dbs
-  - TODO what more?
+  - idea what more?
   - only useful in distributed cases to sidestep costly locking
   - Early Mongo was shiny JSON-shaped memcached (key-value store)
   - time spent in app: postgres: first needs deserialize db response, then deserialize jsonb seperately

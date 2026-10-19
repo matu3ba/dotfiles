@@ -1,6 +1,6 @@
 " :h vimfiles, vimrc
 "
-" TODO
+" idea
 " * options
 " * directory
 " * backupdir
@@ -11,7 +11,7 @@
 " set undodir=$XDG_CACHE_HOME/vim/undo,~/,/tmp
 " ' set viminfo+=$XDG_CACHE_HOME/vim/viminfo
 " set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME"
-" TODO better cursor for git bash
+" idea better cursor for git bash
 let mapleader = ' '
 let backup = false
 set lazyredraw

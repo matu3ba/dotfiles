@@ -27,10 +27,19 @@
 // "exceptions" https://gist.github.com/mlugg/eea73b7795d2282ca5d6d825e67c5f07
 // * beware that setjmp and longjmp dont clean up anything and do straight jumps
 
-// TODO write examples pkg-config flags for compilation based on
 // https://ariadne.space/2025/02/08/c-sboms-and-how-pkgconf.html
 // gcc -o main main.c `pkg-config --cflags --libs glib-2.0`
 // see C SBOMs
+// bomtool ./build/meson-private/mein-projekt.pc > sbom.spdx.txt
+//project('bomtool-example', 'c')
+// glib = dependency('glib-2.0')
+// exe = executable('bomtool-example', 'main.c', dependencies: [glib])
+// pkg = import('pkgconfig')
+// pkg.generate(
+//   name: 'bomtool-example',
+//   version: '0.0.1',
+//   requires: [glib]
+// )
 
 //====tldr;
 // string handling with C standard functions is error prone, absence of hashing
@@ -50,19 +59,19 @@
 //    without empty initializer padding and various union members can be left uninitialized
 //    workaround: -fzero-init-padding-bits=all
 
-// TODO list
 // GNU function attributes and storage class information
 // function attributes
 // C99
-// * TODO ..
-// C23
-// * [[deprecated]]
-// * [[fallthrough]]
-// * [[maybe_unused]]
-// * [[nodiscard]]
-// * [[noreturn]]
-// * [[reproducible]]
-// * [[unsequenced]]
+// * llvm-tblgen -I include/ -I tools/clang/include/ --dump-json tools/clang/include/clang/Basic/Attr.td > clang_attributes.json
+
+//   C99                                 | C23
+// * __attribute__((deprecated))         | [[deprecated]]
+// * __attribute__((fallthrough))        | [[fallthrough]]
+// * __attribute__((unused))             | [[maybe_unused]]
+// * __attribute__((warn_unused_result)) | [[nodiscard]]
+// * __attribute__((noreturn))           | [[noreturn]]
+// * __attribute__((pure))               | [[reproducible]]
+// * __attribute__((const))              | [[unsequenced]]
 #if (__STDC_VERSION__ >= 199901L)
 #define HAS_C99 1
 #endif // (__STDC_VERSION__ >= 199901L)
@@ -1504,7 +1513,7 @@ void veh_example(void) {
 // without the wrong information:
 // * VEHs are process global installed, but thread local executed
 // AddVectoredExceptionHandler
-// TODO FIXME set exception to reset peripherals
+// set exception to reset peripherals
 // Q: What happens, if for example realtime thread timeSetEvent gets timeKillEvent passed via exception from
 // AddVectoredExceptionHandler ?
 //https://stackoverflow.com/questions/28544768/vectored-exception-handling-process-wide
@@ -1660,7 +1669,17 @@ void use_win_utf8_to_utf16(void) {
 //====extensions
 // https://maskray.me/blog/2024-05-12-exploring-gnu-extensions-in-linux-kernel
 // funny kernel macros and flags to workaround standard issues due to type based aliasing analysis
-// TODO scoped locks and allocations
+// #include <linux/slab.h>
+// #include <linux/cleanup.h>
+// void scoped_lock(void)
+// {
+//     // automatic memory freeing, if fn ends
+//     struct mein_struct *ptr __free(kfree) = kmalloc(sizeof(*ptr), GFP_KERNEL);
+//     if (!ptr)
+//         return; // no memory leak!
+//     if (fehler_bedingung)
+//         return; // ptr also automatically freed!
+// }
 
 //====signaling_unix
 // signal deprecated/undefined, because they have sigprocmask and signal is implementation defined by C standard

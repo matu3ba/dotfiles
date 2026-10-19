@@ -9,7 +9,7 @@
 
 ====inspiration
 https://github.com/libdebug/libdebug
-hypervisor based debugging TODO
+hypervisor based debugging idea
 each system component has own debugging methods, ideally to be stored and used from own or other functional device
 * 0 broken partition table or disk offset, encryption table
 * 1 efi stuff (if applicable)
@@ -167,7 +167,7 @@ https://github.com/rr-debugger/rr/blob/ca36c98ab63f54f777cac4f962c5c9e059022d41/
     + 3 Identify unsafe control actions.
     + 4 Develop loss scenarios.
   - CAST
-    + TODO
+    + idea
 * semi-crazy opinion(s)
   - windbg has no sane library api, which makes it by construction unsuitable
     for automation and inspection.

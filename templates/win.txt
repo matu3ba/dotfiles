@@ -411,7 +411,7 @@ https://www.mdsec.co.uk/2020/12/bypassing-user-mode-hooks-and-direct-invocation-
 https://devblogs.microsoft.com/oldnewthing/20230926-00/?p=108824
 https://www.ired.team/offensive-security/code-injection-process-injection/finding-kernel32-base-and-function-addresses-in-shellcode
 https://chadaustin.me/2009/03/disabling-functions/
-TODO disable kernel functions in Windows process
+idea disable kernel functions in Windows process
 https://www.geoffchappell.com/studies/windows/win32/kernel32/api/index.htm
 https://blog.improsec.com/tech-blog/win32k-system-call-filtering-deep-dive
 
@@ -494,7 +494,7 @@ nslookup IP
 nbtstat -a IP
 arp -a
 net view
-TODO commands to empty dns cache
+idea commands to empty dns cache
 
 ====SMB_file_sharing
 3 standard steps if the features is activated:

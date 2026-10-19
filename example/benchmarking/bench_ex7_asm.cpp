@@ -1,6 +1,6 @@
 // zig c++ -std=c++23 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/benchmarking/bench_ex7_asm.cpp -c -o ./build/bench_ex7_asm.o
 // zig c++ -std=c++26 -Werror -Weverything -Wno-c++98-compat-pedantic -Wno-c++20-compat -Wno-disabled-macro-expansion -Wno-unsafe-buffer-usage -Wno-switch-default ./example/benchmarking/bench_ex7_asm.cpp -c -o ./build/bench_ex7_asm.o
-// TODO show assembly
+// idea commands to show assembly properly like in godbolt
 //==GCC inline asm syntax
 // asm <optionally volatile> (
 //   "template string %0, %1 .."

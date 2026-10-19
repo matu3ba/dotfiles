@@ -16,7 +16,7 @@
 # COPY --chown=nodejsuser:nodejsuser . .
 # USER ${UID}:${GID}
 
-# TODO setup properly
+# idea setup properly
 
 FROM docker.io/library/node:26-alpine
 WORKDIR /app

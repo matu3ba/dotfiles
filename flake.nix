@@ -163,7 +163,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
 
       # sharedHomeModule = { pkgs, ... }: {
-      #   # TODO shared home module used as
+      #   # idea shared home module used as
       # };
     in
     {
@@ -523,7 +523,7 @@
 
                 # services.printing.enable = true; # CUPS
 
-                # TODO nixos-generate-config, https://github.com/NixOS/nixos-hardware, sudo nix-shell -p dmidecode --run "dmidecode -t 11"
+                # idea nixos-generate-config, https://github.com/NixOS/nixos-hardware, sudo nix-shell -p dmidecode --run "dmidecode -t 11"
                 hardware.alsa.enable = true;
                 hardware.graphics.enable = true;
 

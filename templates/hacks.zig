@@ -57,7 +57,7 @@ fn range(len: usize) []const void {
 // now you need a range if you want an index
 //for (chars, 0..) |elem, idx| { ... }
 
-// switch on union field, TODO
+// switch on union field, idea
 // const Self = struct {
 //     fn get(self: Self, comptime field: @Type(.EnumLiteral)) ?std.meta.fieldInfo(Self, field).field_type {
 //         if (self != field) return null;

@@ -35,8 +35,8 @@ next/prev tab              Ctrl-f6/Ctrl-Shift-f6
 only compile current file  Ctrl-f7
 search
   keyword                  Ctrl-,
-  TODO                     Ctrl-t
-  TODO                     Ctrl-f12
+  idea                     Ctrl-t
+  idea                     Ctrl-f12
   symbol results           Shift-f12
 quick action               Ctrl-.
 close document window      Ctrl-f4
@@ -87,7 +87,7 @@ debugging+continue         f5
   breakpoint window        Ctrl-Alt-b
 git
   diff(unreliable)         Alt-f8
-  stage                    TODO
+  stage                    idea
 
 toggle menu                Shift-f10
 toggle dropdown menu       Alt-prefix
@@ -167,5 +167,5 @@ vsvim
 
 custom shortcuts: Tools > Options > Environment > Keyboard -> inserttext -> Assign
 SetAsStartUp   “Set as Startup Project”   Ctrl-s Ctrl-t
-TODO: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim
+idea: this breaks Ctrl-s for save, because VS has no "backoff" algorithm like vim
 

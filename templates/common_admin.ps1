@@ -115,11 +115,11 @@ netsh http add urlacl url=http://*:$PORT/ user=Everyone
 netstat -ab
 
 # https://www.c-sharpcorner.com/blogs/how-to-publish-and-deploy-net-core-website-on-iis
-# TODO
+# idea
 # https://www.leansentry.com/guide/reset-restart-recycle-iis
-# TODO
+# idea
 # https://learn.microsoft.com/de-de/iis/manage/provisioning-and-managing-iis/appcmdexe
-# TODO
+# idea
 
 import-module -Name IISAdministration -RequiredVersion 1.1.0.0
 $mod = Get-Module -Name IISAdministration

@@ -13,7 +13,7 @@ https://mathieu.fenniak.net/testtrim-2025-01-nested-syscall-tracing/
 https://codeberg.org/testtrim/testtrim/
 * automated tests for execution based upon previous code-coverage data and git changes
   - on-average 90% of tests can be safely skipped with this strategy
-  - TODO what kind of tests?
+  - idea what kind of tests?
 
 ====unit
 ====component
@@ -42,7 +42,7 @@ simple ones https://github.com/robotframework/robotframework
 * includes library to use for example selenium
 
 https://lwn.net/Articles/995276/#Comments
-todo summarize
+idea summarize
 https://mutants.rs/
 https://www.fuzzingbook.org
 https://www.debuggingbook.org
@@ -175,10 +175,10 @@ Ideas for the ideal cli test system for non-timing and timing based testing:
 - idea: use declarative language like dtrace for integration and e2e testing
 
 - Query system options for test behavior: You are basically writing a RAM database
-  best TODO intro
+  best idea intro
 - Make it stupidly simple.
 
-TODO explain property based testing, metamorphic testing
+idea explain property based testing, metamorphic testing
 https://github.com/cryptocode/marble
 https://www.cockroachlabs.com/blog/metamorphic-testing-the-database/
 https://proofsandintuitions.net/2026/05/18/property-based-testing-specifications/
@@ -248,7 +248,7 @@ twincat testing - https://tcunit.org/#/
 https://alltwincat.com/2020/06/15/the-five-best-and-worst-things-with-twincat/
 
 https://antithesis.com/docs/best_practices/sizing.html
-TODO best practice
+idea best practice
 
 https://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html
 fuzzing ideas + process semantics

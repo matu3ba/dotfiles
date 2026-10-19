@@ -237,7 +237,7 @@ merge with merge commit: --no-ff
 * This ensures that commits attached directly to master branch (i.e.
   --first-parent) generally pass all tests and therefore makes things like git
   bisect easier. It also makes cherry-picking into bug fixes branches easier.
-TODO move aliases here
+idea move aliases here
 
 ====list of remote unmerged and merged branches for cleanup
 git for-each-ref --merged=master --sort=authorname --format='%(authorname), %(committerdate:short), %(refname:short)' refs/remotes/downstream

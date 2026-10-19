@@ -3,8 +3,8 @@
 
 ====time to market efficiency
 https://titoma.com/blog/speed-up-time-to-market-electronics/
-* TODO process efficiency rules
-* TODO how to design in such a way that you avoid harmful radio-emissions
+* idea process efficiency rules
+* idea how to design in such a way that you avoid harmful radio-emissions
 * cost: PIC better for low quantity, or STM for high quantity
 * STM offers better development tools in terms of IDE support, HAL, and libraries
 * assume: development and manufacturing in the West costs a lot more, sells slowly

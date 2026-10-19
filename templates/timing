@@ -65,4 +65,4 @@ Prevention: do not allow program access to source of nondeterminism. Referential
 transparent programs meet bar, but you can go much lower. If a program's
 behaviour is completely determined by its inputs, there's no way it can detect
 a timing descrepency.
-TODO think and rephrase
+idea think and rephrase

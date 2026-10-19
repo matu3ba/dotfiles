@@ -19,7 +19,7 @@ Showing disassembly
 ```sh
 nasm -f win64 -o hello_world_win64.obj hello_world_win64.asm
 link hello_world_win64.obj /subsystem:console /entry:main /out:hello_world_win64.exe
-TODO look how to set subsystem, entry, out on lld-link
+idea look how to set subsystem, entry, out on lld-link
 ./hello_world_win64.exe
 ```
 * hello_world assembly on linux
@@ -35,7 +35,7 @@ $ ./assem
 * hello_world assembly on macos
 ```sh
 nasm -f macho64 -o hello_world_macho64.obj hello_world_mac64.asm
-TODO must specify arch etc
+idea must specify arch etc
 ld64.lld -o hello_world_macho64.exe hello_world_macho64.obj
 ./hello_world_macho64.exe
 ```

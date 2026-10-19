@@ -28,12 +28,6 @@ SERVICE_ACCOUNT_CLIENT_ID=service-account
 # Base url for keycloak instance only used by the bootstrap script.
 # For terraform it is set via tfvars prefilled for local development.
 BOOTSTRAP_KEYCLOAK_URL=http://localhost:8080
-
-# Shit fix for local backend override https://github.com/opentofu/opentofu/issues/3643
-TF_DATA_DIR=./.terraform/shitfix
-
-# TODO document
-DUMP_FILE
 ```
 
 ==binary_paths
@@ -114,9 +108,6 @@ Verify config and testing
 ```sh
 # fetch possible openid installation configurations
 curl http://localhost:8080/realms/REALM/.well-known/openid-configuration | jq
-
-# start application logic
-# TODO
 
 # access realm in browser
 set -a; source .env; set +a

@@ -25,11 +25,11 @@ virtualization vendors mostly use x86
 
 ====qemu
 custom object model https://github.com/qemu/qemu/tree/master/include/qapi/qmp
-TODO definition
+definition
 
-TODO components of qemu
+components of qemu
 
-TODO attack surface of qemu
+attack surface of qemu
 
 https://www.openeuler.org/en/blog/yorifang/2020-10-24-arm-virtualization-overview.html
 https://github.com/riscv/riscv-aia/releases
@@ -101,16 +101,16 @@ use amd64(Intel VT-x/AMD-V) to run hypervisor in ring -1 with guest at ring 0
     to accomodate VMs.
       o basically means Second Level Address Translation (SLAT) / nested paging
       in RAM like regular page table
-      TODO in-memory view, mappings, assembly
+      idea in-memory view, mappings, assembly
       o Mode Based Execution Control (MBEC) speeds up guest usermode unsigned code execution
       by sharing the same page table between unsigned usermode code and signed kernelmode code
       instead of doing costly VM entry and exit when execution context switches between unsigned user mode
       and signed kernel mode
-      TODO explain setup instructions, should be multiple ones
+      idea explain setup instructions, should be multiple ones
     + Advanced Programmable Interrupt Controller (APIC) on real machine
     responsible to manage interrupts being virtualised (as virtual interrupts)
     adjustable by control fields in VMCS.
-      o TODO explain setup instructions, should be multiple ones
+      o idea explain setup instructions, should be multiple ones
     + Virtualizing IO not covered by VT-x, it is user-space emulated or VT-d accelerated
   - AMD-V (Virtualization of CPU and memory)
     + own instructions arch/x86/kvm/svm.c and vmx.c
@@ -120,9 +120,9 @@ use amd64(Intel VT-x/AMD-V) to run hypervisor in ring -1 with guest at ring 0
     This prevents DMA attacks at some performance cost.
     + allows direct access to hardware from virtual machine (DMA) to PCI device
     + include control DMA and interrupt remapping
-    TODO setup instructions
+    idea setup instructions
   - AMD-Vi (Virtualization of Memory Management Unit/Direct Memory Access)
-    TODO setup instructions
+    idea setup instructions
   - Intel VT-c (Virtualization of Network Access), AMD does not make NICs
     + NIC enhancement with VMDq, IOAT)
     + features of Intel Ethernet Controller, so basically NIC features
@@ -144,10 +144,10 @@ best practice
 * hard RAM reservation
 * full hardware emulation (guest OS unaware of being virtualized, but that sounds bizarre)
 * security and isolation via security extensions
-  - TODO what extensions are best practice?
+  - idea what extensions are best practice?
   - libvirt can generate automatically unique security profile; attacker compromise
   of guest OS can not affect hypervisor or other VMs
-* side channel mitigation TODO very unclear
+* side channel mitigation idea very unclear
 * KVM for kernel-level isolation, containers for process-level isolation
 * ideally reduce attack surface (not qemu), eliminate side channels as far as possible
   - afaiu there is no best practice side channel elimination for Linux
@@ -159,7 +159,7 @@ Reconfigurable Computing Hypervisors: State-of-the-Art and Ways Ahead
 https://sel4.systems/Summit/2024/slides/running-certified.pdf
 * better technical breakdown of what hypervisor needs
 https://www.youtube.com/watch?v=Zw1eeNHZm6Q ??
-TODO
+idea
 
 ====Single/Multi-root input/output virtualization (SR-IOV/MR-IOV)
 * used when high bandwidth/throughput and low latency is necessary (instead of SDN)
@@ -168,7 +168,7 @@ TODO
 * SR-IOV uses physical and virtual functions to control or configure PCIe devices
 * MR-IOV allows I/O PCI Express to share resources among different VMs on different physical machines
 * may be facilitated by Address translation services
-TODO examples
+idea examples
 
 ====linux
 https://popovicu.com/posts/how-to-use-linux-vsock-for-fast-vm-communication/
