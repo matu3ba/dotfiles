@@ -193,6 +193,7 @@ EnableNetworkConfiguration=true
 
 iwctl
 device list
+station wl.. scan
 station wl.. get-networks
 
 * enable and configure iwd
@@ -204,6 +205,11 @@ station wl.. get-networks
   device list
   station STATION get-networks
   station STATION connect NETWORK
+
+security of iwctl bad, since SSID may exist multiple times with iwctl unifying them.
+example with repeater setup (secondary device with same SSID and different BSSID)
+> doas iw dev wlp5s0 scan
+
 ==cable
 dinitctl enable dhcpcd
 or
@@ -307,6 +313,13 @@ kde inotify problems
 - pdffonts deutsche_bahn_ticket.pdf
 5. Python issues with yt-dlp and error message "extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)"
 - pip install -U yt-dlp
+6. No workflow for dev software/upstream packages using systemd/dbus need workarounds
+- example ghostty default using dbus
+  ../zig-x86_64-linux-0.17.0/zig build -p "$HOME/.local" -Doptimize=ReleaseFast
+  sed -i '' 's;DBusActivatable=true;DBusActivatable=false;' "$HOME/.local/share/applications/com.mitchellh.ghostty.desktop"
+  sed -i '' "s;TryExec=ghostty;TryExec=${HOME}/.local/bin/ghostty;" "$HOME/.local/share/applications/com.mitchellh.ghostty.desktop"
+  sed -i '' "s;Exec=ghostty --gtk-single-instance=true;Exec=${HOME}/.local/bin/ghostty --gtk-single-instance=true;" "${HOME}/.local/share/applications/com.mitchellh.ghostty.desktop"
+  update-desktop-database "${HOME}/.local/share/applications"
 
 idea bootloader signing and other tamper prevention mechanisms
 see https://wiki.archlinux.org/title/Security#Secure_Boot

@@ -1,5 +1,6 @@
+# Dockerfile BestPractice
 # see https://docs.docker.com/reference/dockerfile/ for commands
-# podman build -t node-dev:26 -f Containerfile.dev|prod .
+# podman build -t node-dev:26 -f cbuild.dev|prod .
 # podman run --rm -p 8082:8082 -v .:/app:z -v /app/node_modules node-dev:26 npx ng serve
 
 # LABEL to label metadata

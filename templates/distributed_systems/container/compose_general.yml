@@ -1,3 +1,4 @@
+# Compose file general info.
 # SHENANIGAN Docker/Podman Compose's path resolution is cwd-dependent, making
 # it unsuitable for multi-repo setups without workarounds (forces monorepos).
 
@@ -53,7 +54,7 @@
 # Workarounds
 # * always default to an invalid value and do check in dockerfile
 # * always assume all arguments can be empty string and check in dockerfile
-# * do nothing an live with dockerfile+composefile being bad
+# * do nothing an live with dockerfile+compose file being bad
 
 # SHENANIGAN There is no build system for composing basic steps, so one has to
 # use tedious and annoying cli arguments.

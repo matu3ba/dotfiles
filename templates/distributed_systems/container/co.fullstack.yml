@@ -1,3 +1,4 @@
+# Compose file for fullstack.
 # Full stack automatic as default workflows for compose file.
 
 services:
@@ -5,7 +6,7 @@ services:
     container_name: angular
     build:
       context: ./client/
-      dockerfile: ../Containerfile.Angular
+      dockerfile: ../cbuild.Angular
       args:
         UID: ${UID:-1000}
         GID: ${GID:-1000}

@@ -1,4 +1,4 @@
-# artifact only container
+# Dockerfile to build image container (binary only container)
 
 # https://www.stacklesson.com/mean-stack/docker/production-docker-angular-nginx-resource-limits-rolling-updates/
 
@@ -26,6 +26,6 @@ services:
     image: client-ui:dev
     build:
       context: .
-      dockerfile: ./Containerfile.Angular_website
+      dockerfile: ./cbuild.Angular_website
     scale: 0
 ```

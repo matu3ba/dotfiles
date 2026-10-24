@@ -17,16 +17,17 @@
 ====optimizing
 
 ====overview
-./templates/distributed_systems/container/Containerfile.Angular npm ci for Angular
-./templates/distributed_systems/container/Containerfile.Angular_cli ng new projet
-./templates/distributed_systems/container/Containerfile.Angular_legacyproduction legacy prod ci
-./templates/distributed_systems/container/Containerfile.BestPractice basic best practice
-./templates/distributed_systems/container/Containerfile.Biome meh and bruh biome
-./templates/distributed_systems/container/Containerfile.npm_hasnouser base image ?? without user
-./templates/distributed_systems/container/Containerfile.npm_hasuser base image npm with user
+./templates/distributed_systems/container/cbuild.Angular npm ci for Angular
+./templates/distributed_systems/container/cbuild.Angular_cli ng new projet
+./templates/distributed_systems/container/cbuild.Angular_legacyproduction legacy prod ci
+./templates/distributed_systems/container/cbuild.BestPractice basic best practice
+./templates/distributed_systems/container/cbuild.Biome meh and bruh biome
+./templates/distributed_systems/container/cbuild.npm_hasnouser base image ?? without user
+./templates/distributed_systems/container/cbuild.npm_hasuser base image npm with user
 ./templates/distributed_systems/container/co.frontend.yml followup multi-purpose compose file
 ./templates/distributed_systems/container/co.fullstack.yml followup multi-purpose compose file
 ./templates/distributed_systems/container/co.yml multi compose file, little-composable multi-workflows
+./templates/distributed_systems/container/compose_general.yml general compose file info
 ./templates/distributed_systems/container/compose_simple.yml simple compose file keycloak
 
 https://github.com/donlon/cloudflare-error-page

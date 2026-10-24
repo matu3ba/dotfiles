@@ -5,6 +5,7 @@
 ====implementation_tradoffs
 ====tools
 ====certifications
+====examples
 
 ====kubernetes
 * good at handling relative stateless applications
@@ -76,16 +77,20 @@ https://www.qovery.com/blog/northflank-alternatives
   - https://sigridjin.medium.com/building-a-kubernetes-cluster-in-an-air-gapped-environment-with-kubespray-offline-b43249319d73
   - https://sigridjin.medium.com/a-hands-on-guide-to-rke2-and-cluster-api-for-on-premise-kubernetes-4b1c2c96be2d
   - https://sanj.dev/post/2025-12-11-ultimate-local-kubernetes-showdown-2025
+    https://sanj.dev/post/k3d-vs-kind-local-kubernetes/
     * k0s security, purist, multi-platform, hate deps more than complexity
       - "pure+simple", very fast
     * k3d if devop eng, cicd pipeline, "time is money"
       - "I need it now" (compromise between pure+simple + correct)
+      - ~6x faster than kind, ~80% less memory usage etc
     * kind k8 contributor, platform teams, correctness > convenience
       - "technically perfect"/correct
+      - sometimes only choice, for example in WSL
     * MicroK8s enterprise, windows dev, ubuntu enthusiast, someone to call
       - "enterprise needs everything"
     * Minikube k8 students, feature exploration, "complete experience"
       - "I'm learning and want all the features"
+    * some more numbers
 * Expert/Best Practice: Talos Linux
   - very similar to how Embedded/Edge Devices should be managed
 
@@ -131,9 +136,7 @@ Best Practices
 3. Monitor Rollouts: Progress tracking and automate rollbacks.
 4. Test Thoroughly: Staging validation before production.
 
-
 ====implementation_tradoffs
-
 implementations
 https://github.com/saschagrunert/kubernix
 trade-offs
@@ -148,3 +151,9 @@ scalway-cli
 Cloud Native Platform Engineering Engineer (CNPE)
 * https://github.com/elmerbulthuis/cnpe
 * https://github.com/mrmcmuffinz/kubernetes-to-the-moon
+
+====examples
+https://github.com/onedr0p/cluster-template
+https://github.com/aws-samples/eks-blueprints-add-ons
+https://github.com/onedr0p/cluster-template
+https://github.com/argoproj/argocd-example-apps

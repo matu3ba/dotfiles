@@ -102,6 +102,8 @@ function ENV {
 # missing comparison to ghostty
 # https://github.com/wez/wezterm/releases
 # winget install wez.wezterm
+# * ghostty will not support windows
+# * so far nobody stepped out to support windows with promoting cool features
 
 # Windows fork of ghostty https://github.com/mattn/ghostty
 # https://github.com/mattn/ghostty/tree/win32-apprt

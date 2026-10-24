@@ -1,4 +1,4 @@
-# podman build -t biome-dev:2.5.6 -f Containerfile.Biome .
+# podman build -t biome-dev:2.5.6 -f cbuild.Biome .
 # podman run -v .:/app:z biome-dev:2.5.6 biome --help
 
 FROM docker.io/library/node:22-alpine

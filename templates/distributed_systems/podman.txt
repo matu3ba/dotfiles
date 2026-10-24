@@ -8,6 +8,7 @@
 ==kubernetes
 ==autostart
 ==docs
+==hardening
 
 ====rootless_podman
 adjust to be used mount permission: podman unshare chown -R 1000:1000 ./client
@@ -76,7 +77,7 @@ Show details of container
 ==usage
   artifact    Manage OCI artifacts
   attach      Attach to a running container
-  build       Build an image using instructions from Containerfiles
+  build       Build an image using instructions from Containerfiles (means Dockerfile)
   commit      Create new image based on the changed container
   compose     Run compose workloads via an external provider such as docker-compose or podman-compose
   container   Manage containers
@@ -279,3 +280,15 @@ interesting docs pieces
 
        Use the --group-add keep-groups option to pass the user's supplementary
        group access into the container.
+
+==hardening
+from https://sanj.dev/post/rootless-container-security-2026/
+
+bad: podman run --security-opt seccomp=unconfined myapp
+enable selinux/apparmor:       podman info | grep selinuxEnabled
+verify dropped capabilities    podman run --cap-drop=ALL myapp
+read-only filesystem           podman run --read-only myapp
+no new privileges              podman run --security-opt no-new-privileges=true myapp
+preserve map uid,gid           podman run --userns=keep-id:uid=1000,gid=1000 myapp
+set resource limits            podman run --memory=512m --cpus=1.0 myapp
+udica(custom selinux policies) podman inspect myapp > myapp.json && udica -t myapp myapp.json

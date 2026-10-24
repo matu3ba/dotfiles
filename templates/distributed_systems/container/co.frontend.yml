@@ -1,4 +1,5 @@
-# Frontned interactive as default workflows for compose file.
+# Compose file for frontend.
+# Frontend interactive as default workflows for compose file.
 # >podman compose --env-file .env_kc -f co.yml -f co.frontend.yml run -u root angular npm install
 # >podman compose --env-file .env_kc -f co.yml -f co.frontend.yml up angular
 # >podman compose --env-file .env_kc -f co.yml -f co.frontend.yml up

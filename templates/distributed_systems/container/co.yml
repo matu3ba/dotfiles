@@ -1,4 +1,4 @@
-#! Base compose file.
+#! Compose file for base
 #podman compose --env-file .env_kc -f co.yml -f co.frontend.yml run -u root angular npm install
 #podman compose --env-file .env_kc -f co.yml -f co.frontend.yml up angular
 

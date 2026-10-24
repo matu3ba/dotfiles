@@ -24,8 +24,8 @@ templates/distributed_systems/docker/
 ## Best Practice
 
 https://oneuptime.com/blog/post/2026-03-18-write-efficient-containerfile-podman/view
-* Filesystem-changing instructions in a Containerfile, such as COPY, ADD, and
-  RUN, create layers in the resulting image
+* Filesystem-changing instructions in a Dockerfile (called Containerfile by podman),
+  such as COPY, ADD, and RUN, create layers in the resulting image
 * Order instructions for cache efficiency
 * Minimize number of layers by combining commands into single RUN instruction
 
@@ -34,7 +34,7 @@ Multi-stage builds allow you to use multiple FROM statements in your
 Dockerfile. This is useful for creating smaller production images by separating
 build-time dependencies from runtime dependencies.
 
-```Containerfile
+```dockerfile
 FROM docker.io/library/node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./

@@ -1,9 +1,10 @@
 ==examples
+==design
 ==overview
 ==dependencies
 ==development
 ====general
-====Containerfile
+====dockerfile
 ====compose.yml
 ====kubernetes
 ====composability
@@ -19,15 +20,28 @@
 ==oci
 
 ==examples
-./templates/distributed_systems/container/Containerfile.Angular - ng version-pinned, node_modules read-only
-./templates/distributed_systems/container/Containerfile.Angular_cli - ng cli
-./templates/distributed_systems/container/Containerfile.Angular_legacyproduction - dont use
-./templates/distributed_systems/container/Containerfile.BestPractice - general Container best practice
-./templates/distributed_systems/container/Containerfile.Biome - biome setup
-./templates/distributed_systems/container/Containerfile.npm_hasnouser - npm from base image with only root shell user
-./templates/distributed_systems/container/Containerfile.npm_hasuser - npm from base image with non-root shell user
+./templates/distributed_systems/container/cbuild.Angular - ng version-pinned, node_modules read-only
+./templates/distributed_systems/container/cbuild.Angular_cli - ng cli
+./templates/distributed_systems/container/cbuild.Angular_legacyproduction - dont use
+./templates/distributed_systems/container/cbuild.Angular_website - image container (binaries only container)
+* relies on decoupling between binaries and platform to update both seperate
+./templates/distributed_systems/container/cbuild.BestPractice - general Container best practice
+./templates/distributed_systems/container/cbuild.Biome - biome setup
+./templates/distributed_systems/container/cbuild.npm_hasnouser - npm from base image with only root shell user
+./templates/distributed_systems/container/cbuild.npm_hasuser - npm from base image with non-root shell user
 * docker has nothing to change uid/gid of mount binds in contrast to OCI/podman problematic for files with 755 permission
-./templates/distributed_systems/container/compose.yml - collection of bad parts
+./templates/distributed_systems/container/cbuild.tofu - npm from base image with non-root shell user
+./templates/distributed_systems/container/compose_general.yml - collection of bad parts
+./templates/distributed_systems/container/compose_simple.yml - collection of bad parts
+./templates/distributed_systems/container/co.yml - collection of bad parts
+./templates/distributed_systems/container/co_frontend.yml - collection of bad parts
+./templates/distributed_systems/container/co_fullstack.yml - collection of bad parts
+
+==design
+https://sanj.dev/post/rootless-container-security-2026/
+* pasta: security, ipv6, web apps with 1-8 concurrent connections, podman version>=5
+* slirp4netns: high-concurrenty(16+ parallal connections), precise latency under load, podman version <5
+* rootfull network: max perf, single tenant, low latency
 
 ==overview
 This example code covers development and usage with heavy comments to
@@ -76,9 +90,12 @@ OCI runtimes
 2. All-in-one linter (Terraform, K8s, Compose, ..): https://github.com/Checkmarx/kics/
    * https://hub.docker.com/r/checkmarx/kics
 
-====Containerfile
+====dockerfile
+I'm using cbuild.app_name since a dockerfile can be used build oci or docker
+container images. Also Dockerfile is too long of a name.
+or docker
 1. docker or podman
-2. Containerfile linter
+2. dockerfile linter
    * hadolint
    * docker
 ```
@@ -148,7 +165,7 @@ Policy Enforcement:
 * Kubewarden — Rust-based policy engine
 
 ====composability
-Have to use dedicated checks in Containerfile or get silent broken errors,
+Have to use dedicated checks in dockerfile or get silent broken errors,
 because there is on semantic convention on default user:
 FROM docker.io/library/node:26-alpine
 ARG UID
@@ -182,8 +199,8 @@ WORKDIR /app
 RUN chown ${UID}:${GID} /app
 USER ${UID}:${GID}
 
-testing: >podman build --build-arg UID=100000 --build-arg GID=100000 -t alpine-npm:26 -f Containerfile.npm_proper .
->podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t alpine-npm:26 -f Containerfile.npm_proper .
+testing: >podman build --build-arg UID=100000 --build-arg GID=100000 -t alpine-npm:26 -f cbuild.npm_proper .
+>podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t alpine-npm:26 -f cbuild.npm_proper .
 
 ====sandboxing
 https://oneuptime.com/blog/post/2026-02-02-podman-security-configuration/view
@@ -227,14 +244,14 @@ relabeling neither helps:
   "userns-remap": "user:user"
 }
 >sudo systemctl restart docker
->cat Containerfile.npm
+>cat cbuild.npm
 FROM docker.io/library/node:26-alpine
 WORKDIR /app
 RUN addgroup -g 1001 -S nodejsuser && adduser -S nodejsuser -u 1001
 COPY --chown=nodejsuser:nodejsuser . .
 RUN mkdir -p /app/node_modules && chown -R nodejsuser:nodejsuser /app/
 USER nodejsuser
->docker build -t alpine-npm:26 -f Containerfile.npm .
+>docker build -t alpine-npm:26 -f cbuild.npm .
 >docker run --rm -v ./client:/app -v /app/node_modules alpine-npm:26 ls -ld /app
 >docker run --rm -v ./client:/app -v /app/node_modules alpine-npm:26 sh -c "npm install --verbose && rm -rf node_modules"
 vs podman:

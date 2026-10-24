@@ -78,7 +78,7 @@ https://docs.docker.com/reference/compose-file/
 ==tools
 https://oneuptime.com/blog/post/2026-03-18-lint-validate-containerfiles-podman/view
 Installing Hadolint
-hadolint Containerfile
+hadolint Dockerfile
 
 https://github.com/adrienverge/yamllint
 

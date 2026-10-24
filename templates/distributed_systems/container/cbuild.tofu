@@ -1,6 +1,6 @@
-# Containerfile for Opentofu.
+# Dockerfile for Opentofu.
 # Building
-# >podman build -t alpine-tofu:1.9 -f Containerfile.tofu .
+# >podman build -t alpine-tofu:1.9 -f cbuild.tofu .
 # Dev instructions
 # >podman run --rm alpine-tofu:1.9 tofu --version
 # >podman run --rm -v "./tfenv/local:/workspace" --env-file .env_kc alpine-tofu:1.9 tofu init

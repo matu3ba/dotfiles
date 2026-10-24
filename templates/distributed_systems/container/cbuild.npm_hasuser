@@ -1,8 +1,8 @@
-# Container for management of npm packages
+# Dockerfile for management of npm packages
 # 1 npm image preparation
 # if a non-root user exists, check that uid and gid match
-# >podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t alpine-npm:26 -f Containerfile.npm .
-# test invalid uid/gid: >podman build --build-arg UID=100000 --build-arg GID=100000 -t alpine-npm:26 -f Containerfile.npm .
+# >podman build --build-arg UID=$(id -u) --build-arg GID=(id -g) -t alpine-npm:26 -f cbuild.npm .
+# test invalid uid/gid: >podman build --build-arg UID=100000 --build-arg GID=100000 -t alpine-npm:26 -f cbuild.npm .
 # 2 npm package installing
 # >podman run --rm -v ./client:/app:z -v /app/node_modules alpine-npm:26 sh -c "npm install --verbose"
 # 3 npm package updating
