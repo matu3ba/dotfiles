@@ -29,6 +29,8 @@ if status is-interactive
   # set PATH (string match -v /usr/local/bin $PATH)
   # universal variables
 
+  # syntax check: fish -n ~/.config/fish/config.fish
+
   set -U fish_greeting # no welcome spam
   # no annoying ../../ typing
   alias ...="cd ../.."
@@ -118,6 +120,9 @@ if status is-interactive
 
   # type -q implies: command -q, builtin -q, functions -q
 
+  if command -q docker; and not command -q podman
+    alias podman 'docker'
+  end
   if command -q zoxide ##==quickjumper
     zoxide init fish | source
   end
