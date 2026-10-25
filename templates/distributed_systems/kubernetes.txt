@@ -1,15 +1,35 @@
-====kubernetes
-====kubernetes_debug
-====kubernetes_monitoring_logging
-====kubernetes_deployments
-====implementation_tradoffs
-====tools
-====certifications
-====examples
-====kind_deployment
-====network
+==core_ideas
+==kubernetes
+==kubernetes_debug
+==kubernetes_monitoring_logging
+==kubernetes_deployments
+==implementation_tradoffs
+==tools
+==certifications
+==examples
+==kind_deployment
+==network
 
-====kubernetes
+==core_ideas
+Core ideas of orchestrator Kubernetes
+**Purpose** of operating orchestrators is to ensure software availability.
+Orchstration is automated configuration, coordination, deployment, management
+of computer systems and software.
+
+Bear in mind that Kubernetes is a general orchestrator;
+IUPEC/container is just one way to operate applications in contrast to
+for example WebAssembly and MicroVMs.
+
+Core ideas of Kubernetes
+1. semantic web of deployment and operation of distributed systems
+2. control via level-triggered state towards goal state
+3. weak transaction guarantees for flexible workload choices
+4. weak platform guarantees for flexible platform choices
+5. weak default security guarantees to simplify usage
+6. accepts bad virtualization and testing experience (no authoritative guide, CI etc)
+7. assumes full control of Linux Kernel
+
+==kubernetes
 * good at handling relative stateless applications
 * bad at handling (very) stateful applications
   - every state recovery [backtrack, checkpoint restore] needs database pass
@@ -56,7 +76,7 @@ https://www.qovery.com/blog/northflank-alternatives
 * everything in Kubernetes wants yaml or a yaml generator (helm or alternatives)
   - kustomize is alternative, but too stupid
 
-====kubernetes_debug
+==kubernetes_debug
 * no direct hardware access (sitting atop of hypervisor talking to management API,
   not controlling hardware) makes debugging low level problems tricky
 * complexity makes debugging tricky
@@ -96,7 +116,7 @@ https://www.qovery.com/blog/northflank-alternatives
 * Expert/Best Practice: Talos Linux
   - very similar to how Embedded/Edge Devices should be managed
 
-====kubernetes_monitoring_logging
+==kubernetes_monitoring_logging
 For Kubernetes cost monitoring and autoscaling, deploy tools like Carpenter,
 VerticalPod AutoScaler, and the Descheduler. These are useful CNCF and Kubernetes tools.
 * vertical pod autoscaler: resource requests for CPU and memory
@@ -108,7 +128,7 @@ https://kubernetes.io/docs/tasks/debug/
 https://middleware.io/blog/kubernetes-troubleshooting-techniques/
 https://kubernetes.io/docs/tasks/debug/debug-cluster/
 
-====kubernetes_deployments
+==kubernetes_deployments
 https://www.groundcover.com/blog/kubernetes-deployment-strategies
 1. Recreate deployment
 * delete all the existing pods before creating new pods
@@ -165,29 +185,29 @@ Best Practices
 3. Monitor Rollouts: Progress tracking and automate rollbacks.
 4. Test Thoroughly: Staging validation before production.
 
-====implementation_tradoffs
+==implementation_tradoffs
 implementations
 https://github.com/saschagrunert/kubernix
 trade-offs
 
-====tools
+==tools
 argocd
 cilium-cli
 kubectl
 scalway-cli
 
-====certifications
+==certifications
 Cloud Native Platform Engineering Engineer (CNPE)
 * https://github.com/elmerbulthuis/cnpe
 * https://github.com/mrmcmuffinz/kubernetes-to-the-moon
 
-====examples
+==examples
 https://github.com/onedr0p/cluster-template
 https://github.com/aws-samples/eks-blueprints-add-ons
 https://github.com/onedr0p/cluster-template
 https://github.com/argoproj/argocd-example-apps
 
-====kind_deployment
+==kind_deployment
 kind: AppProject
 kind: Application: ArgoCD Custom Resource Definition (CRD) for logical application from git repo and source (like helm chart, kustomize file) to k8 cluster
 kind: ApplicationSet: ArgoCD CRD for a generator of various combinations for an Application
@@ -231,7 +251,7 @@ kind: ServiceMonitor
 kind: ValidatingPolicy
 kind: ValidatingWebhookConfiguration
 
-====kind_deployment_app_only see above for descriptions
+==kind_deployment_app_only see above for descriptions
 kind: Application
 kind: ApplicationSet
 kind: Certificate
@@ -248,7 +268,7 @@ kind: RoleBinding
 kind: Service
 kind: ServiceAccount
 
-====network
+==network
 clusterdomain default: cluster.local
 Pod-IP-addresses
 

@@ -1,4 +1,5 @@
 ==examples
+==core_ideas
 ==design
 ==overview
 ==dependencies
@@ -36,6 +37,28 @@
 ./templates/distributed_systems/container/co.yml - collection of bad parts
 ./templates/distributed_systems/container/co_frontend.yml - collection of bad parts
 ./templates/distributed_systems/container/co_fullstack.yml - collection of bad parts
+
+==core_ideas
+Core ideas of Isolated Userland Process Environment Container (IUPEC)/container like docker, OCI, etc
+**Purpose** Workaround missing or too tedious things in software lifecycle
+- multi-party system reproduction and coordination methods (simpler to reproduce application behavior)
+- reproducible Linux userland provisioning and configuration (typically missing)
+- build system unifications via packaging format (ship binaries + dependencies instead)
+- per application and dependencies isolation and pinning (workaround systems not having any)
+Means
+1. Standardized process environment components
+   - process has one entry-point
+   - process has one one URI
+   - process uses kernel-level isolation and APIs or compatible replacements
+2. Images
+   - metadata on how data is to be interpreted
+   - compressed data
+3. Runtime
+   - handles things like network, file mounts, data transfer, security features, etc
+   - uses Linux namespaces, cgroupfs v2, pivot_root, overlayfs, capset/get,
+     something for network (veth, tap device) and more (security features, etc)
+   - may use only the Kernel as runtime platform or security abstractions on
+     top with examples VMs (katana) or application kernels (gvisor)
 
 ==design
 https://sanj.dev/post/rootless-container-security-2026/
