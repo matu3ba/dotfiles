@@ -1,0 +1,33 @@
+suite: test minimal container deployment
+templates:
+  - deployment.yaml
+set:
+  image:
+    repository: nginx
+# read key->value pairs from other file
+# values:
+#   - ./tests/values/prod-defaults.yaml
+tests:
+  - it: should correctly configure a single functional container
+    set:
+      image.repository: nginx
+      image.tag: 1.25.1
+    asserts:
+      - isKind:
+          of: Deployment
+
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-my-app
+
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: application
+
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: nginx:1.25.1
+
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8080

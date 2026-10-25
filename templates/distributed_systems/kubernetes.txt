@@ -6,6 +6,8 @@
 ====tools
 ====certifications
 ====examples
+====kind_deployment
+====network
 
 ====kubernetes
 * good at handling relative stateless applications
@@ -107,6 +109,33 @@ https://middleware.io/blog/kubernetes-troubleshooting-techniques/
 https://kubernetes.io/docs/tasks/debug/debug-cluster/
 
 ====kubernetes_deployments
+https://www.groundcover.com/blog/kubernetes-deployment-strategies
+1. Recreate deployment
+* delete all the existing pods before creating new pods
+* need all application instances to run the same application version at all times
+* advantage: same application versions at all times
+2. Rolling deployment
+* default deployment strategy
+* manages pod updates by applying them incrementally to each pod instance
+* advantage: other instances remain available to handle requests (zero downtime)
+* readiness probe helps ensure updated pods are ready before older ones are removed
+* disadvantag: slow switchover and rollback
+3. Blue/green deployment
+* two distinct Kubernetes deployments – a blue deployment and a green one – and switch traffic
+  between them so the new version takes over only after the old version has been verified
+  it works properly before directing traffic to it
+* advantage:
+  - allows you to test one version of your deployment and confirm that
+  - sudden switchover and rollback
+* disadvantag: high infra cost
+4. Canary deployment
+* gradual traffic switching between distinct deployments
+* advantage
+5. A/B testing deployment
+6. Shadow deployment
+7. Best-effort controlled rollout
+8. Ramped slow rollout
+
 https://www.ionos.at/digitalguide/server/konfiguration/kubernetes-deployment/
 https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 default kubernetes has no
@@ -157,3 +186,142 @@ https://github.com/onedr0p/cluster-template
 https://github.com/aws-samples/eks-blueprints-add-ons
 https://github.com/onedr0p/cluster-template
 https://github.com/argoproj/argocd-example-apps
+
+====kind_deployment
+kind: AppProject
+kind: Application: ArgoCD Custom Resource Definition (CRD) for logical application from git repo and source (like helm chart, kustomize file) to k8 cluster
+kind: ApplicationSet: ArgoCD CRD for a generator of various combinations for an Application
+kind: Certificate
+kind: ClusterRole
+kind: ClusterRoleBinding
+kind: ClusterSecretStore
+kind: ConfigMap
+kind: CronJob
+kind: CustomResourceDefinition
+kind: Deployment:
+kind: EnvoyProxy
+kind: ExternalSecret
+kind: Gateway: namespace-wide instance holding ip addresses and listens on specific ports to traffic
+* kubectl get gateways -A
+kind: GatewayClass: cluster-wide define which software should do the job (envoy, traefik, nginx gateway fabric)
+* kubectl get gatewayclasses
+kind: Grafana
+kind: GrafanaDashboard
+kind: GrafanaDatasource
+kind: GrafanaFolder
+kind: HTTPRoute: rulebook for http requests, example http req for host grafana.local > grafana-service:3000
+kind: Issuer
+kind: Job
+kind: Kustomization
+kind: MutatingWebhookConfiguration
+kind: Namespace
+kind: PodDisruptionBudget
+kind: PodMonitor
+kind: Probe
+kind: PrometheusRule
+kind: PushSecret
+kind: Role
+kind: RoleBinding
+kind: Secret
+kind: SecretStore
+kind: SecurityPolicy
+kind: Service: internal load balancer and fixed ip address/dns name for group of pods using tcp/udp
+kind: ServiceAccount
+kind: ServiceMonitor
+kind: ValidatingPolicy
+kind: ValidatingWebhookConfiguration
+
+====kind_deployment_app_only see above for descriptions
+kind: Application
+kind: ApplicationSet
+kind: Certificate
+kind: Gateway
+kind: Grafana
+kind: GrafanaDashboard
+kind: GrafanaDatasource
+kind: GrafanaFolder
+kind: HTTPRoute
+kind: Issuer
+kind: Kustomization
+kind: Role
+kind: RoleBinding
+kind: Service
+kind: ServiceAccount
+
+====network
+clusterdomain default: cluster.local
+Pod-IP-addresses
+
+service1<--DNS service1.namespace1.svc.cluster.local
+   |  |
+   v  +------------v
+ +--------------+  +--------------+
+ | pod1         |  | pod2         |
+ | (localhost)  |  | (localhost)  |   can compare pod1
+ | container1   |  | container1   |   and pod2 internals to
+ | container2   |  | container2   |   compose file.
+ | ..           |  | ..           |
+ +--------------+  +--------------+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: namespace1
+spec:
+  # default replicas:1, type:RollingUpdate
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: app1 # Findet die Pods unten
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - name: web-container
+        image: docker.io/library/nginx:alpine
+        ports:
+        - name: http-web # "Named Port" in Pod
+          containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service1
+  namespace: namespace1
+spec:
+  type: ClusterIP
+  selector:
+    app: app1 # refers to pod labels above
+  ports:
+  - name: service-http
+    port: 8080           # Port to make service intern reachable
+    targetPort: http-web # maps on Named Port of Pods
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: app-route1
+  namespace: namespace1
+spec:
+  parentRefs:
+  - name: shared-gateway # uses existing Gateway
+    namespace: infra-namespace
+  hostnames:
+  - "app1.beispiel.de"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: app-service1
+      port: 8080 # Nutzt den Port des Services
+---
+And quite some more details relevant but too long to write in this file.
+Also, make app start and configs always explicit, if reasonable.

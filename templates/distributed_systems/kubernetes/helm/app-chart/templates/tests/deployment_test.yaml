@@ -1,0 +1,23 @@
+suite: Test der Deployment-Logik
+templates:
+  - deployment.yaml # Welches Template soll isoliert gerendert werden?
+tests:
+  - it: sollte standardmäßig mit 2 Replikaten starten
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+
+  - it: sollte die Replikat-Anzahl aus den Values übernehmen
+    set: # Überschreibt die Werte aus der normalen values.yaml on-the-fly
+      replicaCount: 5
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 5
+
+  - it: darf niemals als Root-User laufen (Sicherheits-Check)
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: minimal-container-chart
+description: Ein minimales Helm-Chart für einen einzelnen funktionalen Container
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

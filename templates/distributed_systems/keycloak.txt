@@ -135,6 +135,12 @@ keycloak_login: {access_token,id_token,refresh_token,expires_in,refresh_expires_
 * id_token: profile data
 * access_token: permissions etc
 * refresh_token: refresh the login after access_token invalidates after expires_in
+  - gets new token
+  - if browser: local storage => when closing 30-60/90 days
+  - openid: allow certain information to be read by service
+  - desktop application can also write refresh token and load it from there
+  - problem: may not have own windows account or own vpn access
+    * might need to be adjusted
 * refresh_expires_in: user session expiry
 * SSO Session Idle, SSO Session Max
 

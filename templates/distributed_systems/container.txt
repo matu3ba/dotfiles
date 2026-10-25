@@ -229,6 +229,14 @@ What OCI Left Unsolved
 >cosign verify-attestation --type cyclonedx $IMAGE
 >trivy sbom:sbom.json
 
+Updating on CVEs
+* Apko: declarative container generation (Build OCI images from APK packages directly without Dockerfile)
+  - https://github.com/chainguard-dev/apko
+* melange: apk creation tool
+  - https://github.com/chainguard-dev/melange
+* nix: declarative container generation
+  - updating time on CVEs?
+
 ======docker_security_bad
 Docker does not support uid= or gid= mount options like some other tools do.
 The mount preserves the host's original UID/GID ownership.

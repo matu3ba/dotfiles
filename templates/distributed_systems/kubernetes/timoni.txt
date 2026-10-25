@@ -1,0 +1,48 @@
+=example
+=advantages
+
+=example
+// templates/deployment.cue
+package templates
+
+import (
+  apps "k8s.io/api/apps/v1"
+  core "k8s.io/api/core/v1"
+)
+
+// structure and defaults
+#Config: {
+  image:  string & "nginx:1.25.1" // string with default nginx
+  cpu:    string & "500m"         // string with default 500m
+  memory: string & "256Mi"        // string with default 256Mi
+}
+
+// final Kubernetes Manifest without bracket logic
+deployment: apps.#Deployment & {
+  apiVersion: "apps/v1"
+  kind:       "Deployment"
+  metadata: name: "my-app"
+  spec: template: spec: {
+    containers: [{
+      name:  "application"
+      image: #Config.image
+      resources: limits: {
+        cpu:    #Config.cpu
+        memory: #Config.memory
+      }
+    }]
+  }
+}
+
+timoni build ./my-module -o yaml | yamlfmt -mode stdin > deployment.kyaml
+
+=advantages
+1. no text manipulation, datastructures
+2. type safety
+3. indent does not matter
+4. perfect ide tooling
+
+=disadvantages
+* 1 million other things, but more abstractions
+  like pulumi etc
+* so why more abstractions?

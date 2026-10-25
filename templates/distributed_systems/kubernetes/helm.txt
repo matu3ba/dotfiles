@@ -1,0 +1,122 @@
+=how_it_works
+=syntax
+=example
+==min-chart/
+==app-chart/
+=debug
+=formatting
+=best_practice
+=tpl_horror
+
+=how_it_works
+1. read templates
+2. read values.yaml of Chart
+3. global test overrides values based on cli flags (helm unittest -v my-test-values.yaml .)
+4. test suite > values block overrides in ${file}_test.yaml
+5. test suite > set block (it sections) overrides in in ${file}_test.yaml
+
+usage {{ .json_accessor }}
+or see =tpl_horror
+
+=syntax: https://github.com/helm-unittest/helm-unittest/blob/main/DOCUMENT.md
+
+=example
+only - dashes as seperators are allowed
+
+cd templates/distributed_systems/kubernetes/helm
+helm create app-chart && cd app-chart
+cat templates/tests/test-connection.yaml
+
+helm lint .
+helm template test-release .
+helm template test-release . | kubeconform -strict -summary
+
+kind create cluster --name helm-dev
+helm install dev-release .
+kubectl get pods
+helm upgrade dev-release .
+helm test dev-release
+helm uninstall dev-release
+kind delete cluster --name helm-dev
+
+=unit_test
+curl -SsL https://github.com/helm-unittest/helm-unittest/raw/refs/heads/main/public-key.asc | gpg --import
+newer helm (v4): helm plugin install oci://ghcr.io/helm-unittest/helm-unittest/unittest:latest
+older helm (v3): helm plugin install https://github.com/helm-unittest/helm-unittest
+
+==min-chart/
+>cd ./templates/distributed_systems/kubernetes/helm/min-chart
+>tree .
+  templates/
+    deployment.yaml
+  tests/
+    deployment_test.yaml
+>cat ./templates/distributed_systems/kubernetes/helm/min-chart/tests/deployment_test.yaml
+>cat ./templates/distributed_systems/kubernetes/helm/min-chart/templates/deployment.yaml
+>helm lint . && helm unittest --strict --skip-schema-validation=false --failfast .
+>helm unittest --strict --failfast .
+without noise: helm unittest --strict --failfast . > /dev/null
+
+==app-chart/
+>cd ./templates/distributed_systems/kubernetes/helm/app-chart/
+>tree .
+  Chart.yaml
+  values.yaml
+  templates/
+    deployment.yaml
+  tests/
+    deployment_test.yaml
+
+>cat ./templates/distributed_systems/kubernetes/helm/app-chart/templates/tests/deployment_test.yaml
+>helm unittest .
+
+also supports snapshot testing, ie testing for no changes via
+helm unittest -u .
+to write __snapshot__/ and compare via
+- it: should behave like predefined document
+  asserts:
+    - matchSnapshot: {}
+
+=debug
+helm -n nginx get manifest nginx
+
+=formatting
+# consider https://github.com/digitalstudium/helmfmt
+# or https://github.com/tobias-gaenzler/helmfmt
+# * otherwise there is no formatter
+
+=best_practice
+docs gen https://github.com/norwoodj/helm-docs
+https://alexandre-vazquez.com/helm-chart-testing-best-practices/
+
+dont use tpl and other yaml garbage, use kyaml + go code for testing
+* https://www.kubernetes.dev/resources/keps/5295/
+* https://kubernetes.io/blog/2025/11/25/configuration-good-practices/
+* https://kubernetes.io/blog/2026/08/11/how-to-pretty-print-kubernetes-yaml-as-kyaml/
+* https://www.codebaker.it/en/blog/kyaml-kubernetes-1-37
+* https://github.com/kubernetes-sigs/kustomize/blob/master/kyaml/kio/example_test.go
+
+=tpl_horror
+* Named Templates, but actually more horrible than C macros
+* needed for helm ecosystem to do dynamic config stuff with loops etc
+* needing indenting for unit testing to work, lol
+* {{- and -}} are whitespace trimmer, for leftwards/righwards trimming of whitespace and line breaks
+* {{ tpl .Values.something . }} forwards strings from values.yaml afterwards through template engine
+* nindent for newline indent
+* kubernetes conform name example
+* basic syntax very incomplete: https://masterminds.github.io/sprig/
+{{- $gw := include "envoy-single-gateway.gatewayName" . -}}
+{{- $suffix := default "http-to-https" .Values.redirect.name -}}
+{{- printf "%s-%s" $gw $suffix | trunc 63 | trimSuffix "-" -}}
+* general structure
+{{- define "envoy-single-gateway.labels" -}}
+{{- include "common.labels" . -}}
+{{- end /* include "common.labels" */ -}}
+{{- /* required "error message" value */ -}}
+{{- required "values.gatewayClass.name is required..." .Values.gatewayClass.name -}}
+{{- if .Values.gatewayClass.enabled -}}
+
+{{- else /* if .Values.gatewayClass.enabled */ -}}
+
+{{- end /* if .Values.gatewayClass.enabled */ -}}
+{{- end /* define "envoy-single-gateway.labels" */ -}}

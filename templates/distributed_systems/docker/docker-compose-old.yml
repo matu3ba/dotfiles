@@ -93,7 +93,7 @@ service_name:
   hostname: foo
   # Tag or partial image ID. Can be local or remote - Compose will
   # attempt to pull if it doesn't exist locally.
-  image: centos/centos7
+  image: docker.io/library/centos/centos7
   # Link to containers in another service. Either specify both the service
   # name and the link alias (SERVICE:ALIAS), or just the service name
   # (which will also be used for the alias).
