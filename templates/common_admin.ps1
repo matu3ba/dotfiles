@@ -1,19 +1,23 @@
 #! Common PowerShell administration operations
 
-#====process_list
-#====iis
-#====iis_debug
-#====iis_usage
-#====hyper-v
-#====vm_usage
+#==process_list
+#==iis
+#==iis_debug
+#==iis_usage
+#==hyper-v
+#==vm_usage
+#==wsl
+#==drivers
+#==snapshots_and_restore
+#==sql
 
-#====process_list
+#==process_list
 get-process
 taskkill
 tasklist
 wmic process list
 
-#====iis
+#==iis
 # RawUrl: Raw URL received by IIS, before any manipulation, for example sending
 # it around IIS or your file system with URL rewriting.
 # Trace in otlp httpcontext tracer collects URL after IIS processing.
@@ -166,7 +170,7 @@ Get-IISConfigSection
 # /userhome:user-home-directory  (default is %userprofile%\documents\iisexpress).
 # /trace:trace-level  'none', 'n', 'info', 'i', 'warning', 'w', 'error', and 'e' (default none)
 
-#====iis_debug
+#==iis_debug
 # & "C:\Program Files\IIS Express\iisexpress.exe" /path:cwAPI\ServiceImplementation\cwLoginREST /port:60010 /trace:error
 # error (solution from https://gunnarpeipman.com/)
 # Failed to register URL "http://localhost:60010/" for site "Development Web Site" application "/". Error description: Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird. (0x80070020)
@@ -198,7 +202,7 @@ netsh interface ipv4 show excludedportrange protocol=tcp
 & "C:\Program Files\IIS Express\iisexpresstray.exe"
 # example not available, i have no idea why this command exists besides for starting systray
 
-#====iis_usage
+#==iis_usage
 # 1. autoregistering
 & "C:\Program Files\IIS Express\iisexpress.exe" /path:cwAPI\ServiceImplementation\cwLoginREST /port:40000 /trace:error
 
@@ -261,7 +265,7 @@ netsh http add urlacl url=http://*:$PORT/ user=Everyone
 # https://andrewlock.net/setting-environment-variables-in-iis-and-avoiding-app-pool-restarts/
 # TLDR;
 
-#====hyper-v
+#==hyper-v
 ##setup as admin
 # Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 ##fixup permissions
@@ -272,7 +276,7 @@ netsh http add urlacl url=http://*:$PORT/ user=Everyone
 # log out and in to validate explicit+implicit groups membership: whoami /groups
 # for explicit network groups: net user /domain username
 
-#====vm_usage
+#==vm_usage
 # https://www.faq-o-matic.net/2017/01/30/hyper-v-die-konfigurationsdatei-einer-vm-finden/
 # https://learn.microsoft.com/en-us/powershell/module/hyper-v/import-vm
 # https://learn.microsoft.com/en-us/powershell/module/hyper-v/remove-vm
@@ -316,13 +320,13 @@ netsh interface portproxy show v4tov4
 New-NetFirewallRule -DisplayName "WSL2 Port Bridge" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 80,443,10000,3000,5000
 #But: WSL changes ip on every boot, automation
 
+#==wsl
+
 # for automatic task execution to be put into BridgeWslPorts.ps1
 function brige_WslPorts {
   # for logs: Start-Transcript -Path "C:\Logs\Bridge-WslPorts.log" -Append
   $ports = @(80, 443, 10000, 3000, 5000);
-
   $wslAddress = bash.exe -c "ifconfig eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'"
-
   if ($wslAddress -match '^(\d{1,3}\.){3}\d{1,3}$') {
     Write-Host "WSL IP address: $wslAddress" -ForegroundColor Green
     Write-Host "Ports: $ports" -ForegroundColor Green
@@ -333,15 +337,12 @@ function brige_WslPorts {
   }
 
   $listenAddress = '0.0.0.0';
-
   foreach ($port in $ports) {
     Invoke-Expression "netsh interface portproxy delete v4tov4 listenport=$port listenaddress=$listenAddress";
     Invoke-Expression "netsh interface portproxy add v4tov4 listenport=$port listenaddress=$listenAddress connectport=$port connectaddress=$wslAddress";
   }
-
   $fireWallDisplayName = 'WSL Port Forwarding';
   $portsStr = $ports -join ",";
-
   Invoke-Expression "Remove-NetFireWallRule -DisplayName $fireWallDisplayName";
   Invoke-Expression "New-NetFireWallRule -DisplayName $fireWallDisplayName -Direction Outbound -LocalPort $portsStr -Action Allow -Protocol TCP";
   Invoke-Expression "New-NetFireWallRule -DisplayName $fireWallDisplayName -Direction Inbound -LocalPort $portsStr -Action Allow -Protocol TCP";
@@ -350,13 +351,86 @@ function brige_WslPorts {
 #list distros: wslconfig /l
 
 function setupWindowsTask {
-  $a = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-File `"[PATH_TO_SCRIPT]\BridgeWslPorts.ps1`" -WindowStyle Hidden -ExecutionPolicy Bypass"
+  # requires admin powershell
+  $a = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-File `"[PATH_TO_SCRIPT]\brige_WslPorts.ps1`" -WindowStyle Hidden -ExecutionPolicy Bypass"
   $t = New-ScheduledTaskTrigger -AtLogon
   $s = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
   $p = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
   Register-ScheduledTask -TaskName "WSL2PortsBridge" -Action $a -Trigger $t -Settings $s -Principal $p
 }
 
-# sql administration
-# https://dbatools.io/
-# * https://github.com/dataplat/dbatools
+function wsl_tools {
+  wsl docker stats --no-stream
+  wslc stats
+
+  winget install --id cargo
+  cargo install wsltop
+  wsltop
+  # wslkit is scripts over scripts and very sloppy
+  # https://wslkit.github.io/wslkit/top/
+}
+
+#==drivers
+
+function ads_driver_installation {
+  # requires admin powershell
+  Write-Host "[1/3] Create system recovery point.." -ForegroundColor Cyan
+  Checkpoint-Computer -Description "BeforeBrotherDrivers" -RestorePointType MODIFY_SETTINGS
+  Write-Host "[2/3] Export existing drivers to C:\DriverBackups .." -ForegroundColor Cyan
+  if (!(Test-Path "C:\TreiberBackup")) { New-Item -ItemType Directory -Path "C:\DriverBackups" | Out-Null }
+  pnputil /export-driver * "C:\DriverBackups" | Out-Null
+  Write-Host "[3/3] Unpack brims17a.msi and install driver .." -ForegroundColor Cyan
+  msiPath = "env:$USERPROFILE\Documents\installer\brother_bloat\setup\Install\Msi\brims17a.msi"
+  targetDir = "env:$USERPROFILE\Desktop\BrotherDriverExtract"
+  if (!(Test-Path "C:\Program Files\7-Zip\7z.exe")) {
+    & "C:\Program Files\7-Zip\7z.exe" x "~\Documents\installer\brother_bloat\setup\Install\Msi\brims17a.msi" "~\Desktop\BrotherTreiberExtract"
+  }
+  if (Test-Path "$msiPath") {
+      Start-Process msiexec.exe -ArgumentList "/a "$msiPath" /qb TARGETDIR="$targetDir"" -Wait
+      pnputil /add-driver "$targetDir*.inf" /subdirs /install | Out-Null
+      Write-Host "[OK] Treiber erfolgreich geladen. Sie können NAPS2 jetzt konfigurieren!" -ForegroundColor Green
+  } else {
+      Write-Host "[ERROR] Die Datei brims17a.msi wurde nicht gefunden unter: $msiPath" -ForegroundColor Red
+  }
+
+  Get-PnpDevice -PresentOnly  | nvim
+  Get-PnpDevice -PresentOnly | Where-Object { $_.FriendlyName -like "*Brother*" -or $_.FriendlyName -like "*ADS*" } | Select-Object Status, Class, FriendlyName, InstanceId | Format-Table -AutoSize
+}
+
+#==snapshots_and_restore
+
+# system rollback(pc restarts automatically)
+# * Get-ComputerRestorePoint
+# * Restore-Computer -SequenceNumber NUMBER
+
+# restore driver backups
+# pnputil /add-driver "C:\TreiberBackup\*.inf" /subdirs /install
+
+# remove driver
+# * pnputil /enum-drivers | Select-String "Brother" -Context 3
+# * pnputil /delete-driver oemXX.inf /uninstall /force
+
+#==sql
+
+> Get-Service -Name "*SQL*"
+Status   Name               DisplayName
+------   ----               -----------
+Running  MSSQL$SQLEXPRESS   SQL Server (SQLEXPRESS)
+Stopped  SQLAgent$SQLEXP... SQL Server-Agent (SQLEXPRESS)
+Stopped  SQLBrowser         SQL Server-Browser
+Running  SQLTELEMETRY$SQ... SQL Server CEIP service (SQLEXPRESS)
+Running  SQLWriter          SQL Server VSS Writer
+
+sc.exe config MSSQLSERVER start= demand
+Set-Service -Name "MSSQLSERVER" -StartupType Manual
+Set-Service -Name "MSSQL`$SQLEXPRESS" -StartupType Manual
+Set-Service -Name "SQLTELEMETRY`$SQLEXPRESS" -StartupType Disabled
+Stop-Service -Name "MSSQL$SQLEXPRESS" -Force
+Stop-Service -Name "SQLTELEMETRY`$SQLEXPRESS"
+Set-Service -Name "SQLWriter" -StartupType Disabled
+Stop-Service -Name "SQLWriter"
+
+sql administration
+https://dbatools.io/
+* https://github.com/dataplat/dbatools
+sc config MSSQLSERVER start= demand
