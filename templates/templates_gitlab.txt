@@ -1,0 +1,5 @@
+SHENANIGAN detailed view has no option to read registry, only to edit
+* Container Repository Protection Rule: Grants the ability to create, delete, read und update container repository protection rules.
+* Container Registry Protection Tag Rule: Grants the ability to create, delete, read und update container registry protection tag rules.
+wow.
+have to use legacy tokens instead for reading/writing container registry

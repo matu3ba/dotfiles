@@ -423,13 +423,22 @@ fn lintSh(b: *std.Build, run_step: *std.Build.Step) void {
 // alternative: -interaction=nonstopmode
 // mkdir -p build/ && lualatex --file-line-error --synctex=1 --output-directory=build src/smartcv_example.tex
 fn buildTex(b: *std.Build, run_step: *std.Build.Step) void {
+    const write_files = b.addWriteFiles();
+    const output_dir = write_files.getDirectory();
+    const cls_basename = std.fs.path.basename("src/smartcv.cls");
+    _ = write_files.addCopyFile(b.path("src/smartcv.cls"), cls_basename);
     for (SingleTexFiles[0..]) |texfile| {
         const run_lualatex = b.addSystemCommand(&.{ "lualatex", "--interaction=batchmode", "--file-line-error", "--synctex=1" });
-        run_lualatex.addFileArg(b.path(texfile));
-        _ = run_lualatex.addPrefixedOutputDirectoryArg("--output-directory=", "generated_cache_dir");
+        run_lualatex.setCwd(output_dir);
+        run_lualatex.addArg("--output-directory=.");
+        const file_basename = std.fs.path.basename(texfile);
+        _ = write_files.addCopyFile(b.path(texfile), file_basename);
+        run_lualatex.addArg(file_basename);
+
         run_lualatex.expectExitCode(0);
         _ = run_lualatex.captureStdOut(.{});
         run_step.dependOn(&run_lualatex.step);
+        run_lualatex.step.dependOn(&write_files.step); // first create files
     }
 }
 

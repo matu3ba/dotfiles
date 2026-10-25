@@ -230,9 +230,7 @@ statusline.setup = function()
         if cwd_width + path_width > available_screen_width then
           path = vim.fn.pathshorten(path)
           path_width = vim.fn.strdisplaywidth(path)
-          if cwd_width + path_width > available_screen_width then
-            path = ''
-          end
+          if cwd_width + path_width > available_screen_width then path = '' end
         end
       end
     else
