@@ -194,8 +194,16 @@
           dotnet-sdk_10
           # typescript-tools
           biome
-          # container-tools (docker, compose, k8, images)
+          # container-tools (docker, compose, k8s, images)
           docker-language-server
+          kube-linter # hardening rules
+          kube-score # static analyzer for "best practice"
+          kubeconform # faster and simpler kubectl-validate
+          kubectl-validate # knows CRDs and uses k8s parser
+          kubernetes-helm # generics
+          kustomize # generics
+          # simkube?
+          # timoti?
           # kics (lint k8s, etc)
           trivy
           # terraform
@@ -325,52 +333,53 @@
                 # podman container prune
                 # podman image prune -a
 
-                # https://discourse.nixos.org/t/rootless-podman-setup-with-home-manager/57905
-                # podman needs /etc/subuid, /etc/subgid, but default pkg shadow should already create them
-                virtualisation = {
-                  podman = {
-                    enable = true;
-                    dockerCompat = true; # Adds 'docker' alias for 'podman'
-                    defaultNetwork.settings.dns_enabled = true;
-                    # dockerSocket.enable = true is unreliable in WSL2
-                  };
-                  containers = {
-                    enable = true;
-                    storage.settings = {
-                      storage = {
-                        driver = "overlay";
-                      };
-                      # nixos only supports cgroup v2 with systemd as default manager
-                      # cgroupManager = "cgroupfs";
-                    };
-                  };
-                };
-
-                # Install required packages
-                environment.systemPackages = with pkgs; [
-                  podman-compose # Use podman-compose, not docker-compose
-                  passt # Explicit installation for WSL2
-                ];
-
-                # Set DOCKER_HOST on login so podman compose finds the socket.
-                # This is necessary because systemd.user.sockets is unreliable in WSL2
-                # and socket creation is managed by systemd.user.sockets.
-                environment.extraInit = ''
-                  export PODMAN_COMPOSE_WARNING_LOGS=false
-                  if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
-                    export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
-                  fi
-                '';
-
-                # # Clean orphaned state
-                # ${pkgs.podman}/bin/podman rm -a 2>/dev/null || true
-                # ${pkgs.podman}/bin/podman pod rm -a 2>/dev/null || true
-
-                # loginctl user-status $USER
-                system.activationScripts.podman-setup = ''
-                  mkdir -p /var/lib/systemd/linger
-                  touch /var/lib/systemd/linger/jan-philipp.hafer
-                '';
+                # podman rootless is utterly broken in WSL2 and WSL3
+                # # https://discourse.nixos.org/t/rootless-podman-setup-with-home-manager/57905
+                # # podman needs /etc/subuid, /etc/subgid, but default pkg shadow should already create them
+                # virtualisation = {
+                #   podman = {
+                #     enable = true;
+                #     dockerCompat = true; # Adds 'docker' alias for 'podman'
+                #     defaultNetwork.settings.dns_enabled = true;
+                #     # dockerSocket.enable = true is unreliable in WSL2
+                #   };
+                #   containers = {
+                #     enable = true;
+                #     storage.settings = {
+                #       storage = {
+                #         driver = "overlay";
+                #       };
+                #       # nixos only supports cgroup v2 with systemd as default manager
+                #       # cgroupManager = "cgroupfs";
+                #     };
+                #   };
+                # };
+                #
+                # # Install required packages
+                # environment.systemPackages = with pkgs; [
+                #   podman-compose # Use podman-compose, not docker-compose
+                #   passt # Explicit installation for WSL2
+                # ];
+                #
+                # # Set DOCKER_HOST on login so podman compose finds the socket.
+                # # This is necessary because systemd.user.sockets is unreliable in WSL2
+                # # and socket creation is managed by systemd.user.sockets.
+                # environment.extraInit = ''
+                #   export PODMAN_COMPOSE_WARNING_LOGS=false
+                #   if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
+                #     export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+                #   fi
+                # '';
+                #
+                # # # Clean orphaned state
+                # # ${pkgs.podman}/bin/podman rm -a 2>/dev/null || true
+                # # ${pkgs.podman}/bin/podman pod rm -a 2>/dev/null || true
+                #
+                # # loginctl user-status $USER
+                # system.activationScripts.podman-setup = ''
+                #   mkdir -p /var/lib/systemd/linger
+                #   touch /var/lib/systemd/linger/jan-philipp.hafer
+                # '';
 
                 # Dont use any of these in WSL2:
                 # - virtualisation.oci-containers (default systemd integration)
