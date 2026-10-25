@@ -12,6 +12,7 @@ knowledge management
 wiki
 iteration
 zulip
+ticket system
 
 ======planning
 Gantt chart/Gantt-Diagramm
@@ -44,6 +45,8 @@ ideal: knowledge (graph) + hedgedoc + dynamic overview hierachy + optimized sear
 draw.io
 excalidraw.com
 hedgedoc
+Redmine
+* https://www.redmine.org/projects/redmine/wiki/RedmineTextFormattingTextile
 
 ====idealized
 * open source, but at least low cost

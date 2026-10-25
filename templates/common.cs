@@ -1,5 +1,8 @@
-//==performance
-//==semantics
+//=performance
+//=semantics
+//=patterns
+//=dotnet_hardening_flags
+//=image container mount
 
 // C/C++ to C# interop summary from https://mark-borg.github.io/blog/2017/interop/
 // Interoperability mechanisms
@@ -50,7 +53,7 @@
 
 // https://learn.microsoft.com/de-de/dotnet/framework/interop/how-to-implement-callback-functions
 
-//==nuget
+//=nuget
 // symbol packages (.snupkg) https://learn.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg
 // debugging nuget libs https://www.damirscorner.com/blog/posts/20250411-DebuggingLibrariesFromNuGet.html
 // .nuspec: package spec something along
@@ -77,7 +80,7 @@
 // finding out conflict reasons: dotnet nuget why
 // updating package (can overwrite old version): dotnet nuget push <package_file> --source <source_name>
 
-//==dotnet
+//=dotnet
 // finding outdated assembly bindings (except for ASP.NET [framework]): dotnet outdated
 // testing .net and .net standard projects: dotnet test
 
@@ -424,7 +427,7 @@ namespace AppFramework.AppName {
 // .NET >= 11 has better process API
 // idea review
 
-//==performance
+//=performance
 // 8ns call overhead to ffi C code
 
 // https://github.com/neogeek/csharp_editorconfig
@@ -434,7 +437,7 @@ namespace AppFramework.AppName {
 // Still a problem: Very long build times for big code bases and unfinished (incremental) build system.
 
 
-//==semantics
+//=semantics
 // framework loading with arbitrary module/plugin/extensions order
 // * static context
 // * System.Configuration.ConfigurationManager.AppSettings initialization
@@ -442,3 +445,60 @@ namespace AppFramework.AppName {
 // framework exec with specified order
 // * depends on used framework model
 // * example: config in System.Configuration.ConfigurationManager.AppSettings["resource"]
+
+//=patterns
+// SHENANNIGAN C# Core does not support .env variables, meaning .env file with either of
+// key1="value"
+// key2='value'
+// and only supports very terminal-unsafe
+// key3=value
+// * default behavior of reading environment variables bad
+// * has no simple primitives to correctly escape strings from environment variables
+
+//=dotnet_hardening_flags
+// cat server/Project.csproj
+// <Project Sdk="Microsoft.NET.Sdk.Web">
+//
+//   <!-- can overwrite on relevant command via -p:property:value -->
+//   <PropertyGroup>
+//     <TargetFramework>net10.0</TargetFramework>
+//
+//     <!-- dependencies -->
+//     <ImplicitUsings>enable</ImplicitUsings>
+//     <!-- style -->
+//     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+//
+//     <!-- strict -->
+//     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+//     <IllinkTreatWarningsAsErrors>true</IllinkTreatWarningsAsErrors>
+//     <Nullable>enable</Nullable>
+//     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+//
+//     <!-- Swagger does not support Aot compilation and the Microsoft replacement for OpenAPI has to be evaluated first-->
+//     <!-- <PublishAot>true</PublishAot> -->
+//
+//     <!-- publish -->
+//     <PublishIISAssets>false</PublishIISAssets>
+//     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+//   </PropertyGroup>
+//
+//   <!-- JWT Handling -->
+//   <ItemGroup>
+//     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
+//     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.23.0" />
+//   </ItemGroup>
+//
+//   <ItemGroup Condition="'$(Configuration)' == 'Release'">
+//     <Content Remove="appsettings.Development.json" />
+//   </ItemGroup>
+// </Project>
+// podman run --rm -v ./backend:/app:z mcr.microsoft.com/dotnet/sdk:10.0-alpine sh -c "cd /app && dotnet format . --verify-no-changes && dotnet restore . -p:TreatWarningsAsErrors=true && tree . && dotnet publish -c Release -o ./dist -p:UseAppHost=false && tree ."
+// ./dist still has some Microsoft crypto stuff, probably for backwards compat
+
+//=image container mount
+// >cat cbuild.dotnet_binaries
+// FROM scratch
+// COPY ./backend/dist/ /
+// >CONTAINER_TAG=$(git describe --tags --exact-match 2>/dev/null || git rev-parse HEAD)
+// >podman build -t backend:$CONTAINER_TAG -f cbuild.dotnet_binaries .
+// >docker run --rm --name backend -p "127.0.0.1:4201:8080" --mount "type=image,source=backend:$CONTAINER_TAG,target=/app" -w /app mcr.microsoft.com/dotnet/aspnet:10.0-alpine dotnet /app/ApiConfKc.dll

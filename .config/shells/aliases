@@ -408,6 +408,7 @@ alias rgi="rg -g '!tests' -g '!src/include'"
 # option 1 use: --path-separator '\x2F'
 # option 2 pipe through: cygpath --file -
 # (fd-find does not have the problem and offers -x to directly execute on files)
+# print only matching text without duplicate newline: rg -oIN 'kind.*' | tr '\n\n' '\n'
 
 #==sed: SED_PATTERN FILE
 # BSD sed
