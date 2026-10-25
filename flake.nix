@@ -322,6 +322,26 @@
                   };
                 };
 
+                #==virtualisation: for now rootfull docker with systemd in WSL to prevent problems
+                environment.systemPackages = with pkgs; [
+                  docker-compose
+                  k3d
+                  kubectl
+                ];
+                virtualisation = {
+                  docker = {
+                    enable = true;
+                    daemon.settings = {
+                      mtu = 1400; # prevent packet loss in k3d kube bridge in WSL
+                    };
+                  };
+                };
+                boot.kernel.sysctl = {
+                  "fs.inotify.max_user_watches" = 524288; # 512 * 1024 https://anatoly.dev/posts/2025/10/k9s-too-many-open-files/
+                  "fs.inotify.max_user_instances" = 512; # same reason
+                  # "vm.max_map_count" = 262144; # for Elasticsearch/databases in k3d
+                };
+
                 #==virtualisation: workaround unreliable systemd in WSL for rootless podman
                 # "WSL2 + rootless + systemd is genuinely broken for compose workflows"
                 # https://github.com/podman-container-tools/podman/blob/main/docs/tutorials/rootless_tutorial.md
@@ -541,6 +561,7 @@
                   extraGroups = [
                     "wheel"
                     "input"
+                    "docker"
                   ]; # allow 'sudo' for user
                 };
 

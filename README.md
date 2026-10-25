@@ -20,7 +20,7 @@ Commands with explanation
     - nix language (implementation) bad designed: error msgs bad, slow
     - no authoritative docs on (use case based) code creation design, debugging, core patterns
       * blog posts tend to contain bad patterns and no functional minimal code
-      * see flake_nix_bad_but_works.md
+      * see `flake_nix_bad_but_works.md`
     - 2GB container install size, on trimming/potential breakage ~200-300 MB less
     - unusable with containers and default WSL configurations due to bad file corruptions
     - random systemd errors and /nix/store corruptions, but no crashes
