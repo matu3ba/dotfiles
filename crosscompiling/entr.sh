@@ -12,3 +12,5 @@ while true; do
   # -r reload persistent child (wait for child process to finish)
   echo ./my_watch_dir | entr -dnr 'ls ./my_watch_dir'
 done
+
+find . -name "*.lua" | entr lua mein_skript.lua

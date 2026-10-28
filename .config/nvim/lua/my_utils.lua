@@ -6,7 +6,6 @@
 -- headless testing: see ./nvim_test_runner.lua
 -- manual: nvim --clean -u init.lua test_datei.txt
 
----@meta
 local M = {}
 
 M.isRemoteSession = function()
@@ -169,20 +168,23 @@ end
 ---@class Shifting
 ---@alias ShiftDirection "left" | "right"
 ---@alias ShiftType "saturation" | "wraparound"
-local shifting_cached_byte_len = shifting_cached_byte_len or 0
+
+M.shifting_cached_byte_len = M.shifting_cached_byte_len or 0
 
 -- Shifting selecting text 1 width left/right wth saturation/wraparound
--- Usage (for dot-repeat):
--- vim.keymap.set("x", KEYBIND, function()
---   vim.o.operatorfunc = function()
---      M.textSelectionShift(ShiftDirection, ShiftType)
---   end
---   return "g@"
--- end, { expr = true, desc = "ShiftType shift ShiftDirection" })
--- See also :help g@
 ---@param dir ShiftDirection
 ---@param type_shift ShiftType
-function M.textSelectionShift(dir, type_shift)
+---
+---@example
+--- Usage (for dot-repeat)
+--- vim.keymap.set("x", KEYBIND, function()
+---   vim.o.operatorfunc = function()
+---      M.textSelectionShift(ShiftDirection, ShiftType)
+---   end
+---   return "g@"
+--- end, { expr = true, desc = "ShiftType shift ShiftDirection" })
+--- See also :help g@
+M.textSelectionShift = function(dir, type_shift)
   local start_pos = vim.api.nvim_buf_get_mark(0, '[')
   local end_pos = vim.api.nvim_buf_get_mark(0, ']')
 
@@ -206,7 +208,8 @@ function M.textSelectionShift(dir, type_shift)
   if start_col > #line_text then return end
 
   -- shifting_cached_byte_len used during dot-repeat normal mode execution.
-  if vim.fn.mode() == 'n' and shifting_cached_byte_len > 0 then end_col = start_col + shifting_cached_byte_len end
+  ---@diagnostic disable-next-line: unnecessary-if
+  if vim.fn.mode() == 'n' and M.shifting_cached_byte_len > 0 then end_col = start_col + M.shifting_cached_byte_len end
   end_col = math.min(end_col, #line_text + 1)
 
   -- Extract target substring based on byte indices.
@@ -215,7 +218,7 @@ function M.textSelectionShift(dir, type_shift)
   if char_len <= 1 then return end
 
   -- Cache byte length for next dot-repeat step.
-  shifting_cached_byte_len = #target_text
+  M.shifting_cached_byte_len = #target_text
 
   -- Shifting with Vim's multibyte-safe string manipulation.
   local shifted = ''

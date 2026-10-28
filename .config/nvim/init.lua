@@ -96,6 +96,7 @@ else
   -- idea keybindings for sending to terminal to gdb
 
   require 'my_utils'
+  require 'my_buf'
 
   require 'my_telesc' -- more flexible
   if vim.fn.has 'win32' ~= 1 then
