@@ -8,6 +8,7 @@
 # $env:Path += ";$HOME\bin"
 # cd $HOME\my\noctty\
 # zig build -Demit-exe=true -Doptimize=ReleaseSafe -p $HOME\.local\
+# $s = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:APPDATA\Microsoft\Windows\Start Menu\Programs\noctty.lnk"); $s.TargetPath = "$HOME\.local\bin\noctty.exe"; $s.IconLocation = "$HOME\.local\bin\noctty.ico"; $s.WorkingDirectory = "$HOME"; $s.Save()
 
 # cd $HOME\my\noctty\
 # pwsh
