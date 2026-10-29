@@ -613,6 +613,9 @@ map('n', '<leader>dp', '<cmd>diffput<CR>', { desc = 'diffput' })
 --* git merge -Xours
 --* git merge -Xtheirs
 
+-- Vim:E1513: Cannot switch buffer. 'winfixbuf' is enabled
+-- :set nowinfixbuf
+
 --== gitsigns in file git operations (:Gitsigns debug_messages)
 --gitsigns: [c, ]c, <l>hs/hu,hS/hR,hp(review),hb(lame),hd(iff),hD(fndiff),htb(toggle line blame),htd(toggle deleted) :Gitsigns toggle
 -- :Gitsigns show @~1
