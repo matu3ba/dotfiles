@@ -30,6 +30,57 @@ https://www.check-spelling.dev/
 build system respecting unused files and detect parallel-unsafe build description (db can become huge): tup
 shell: fish, crush-shell
 terminal: contour, ghostty
+* WSL
+  - git clone https://github.com/ghostty-org/ghostty
+  - sudo apt install -y libgtk-4-dev libadwaita-1-dev
+  - sudo zig build -p /usr -Doptimize=ReleaseFast
+* windows
+  - https://noctty.com/
+    * Universal palette Ctrl+Shift+P
+      - @ for tabs, ~ for profiles, % for themes, > for actions
+    * Session restoration window-save-state-scrollback
+    * Fast settings editing
+      - Ctrl+, Open settings
+      - Ctrl+Shift+, Reload config
+  - https://github.com/amanthanvi/noctty
+  place zig v15.2 in $HOME\bin
+  vs dev shell
+  > cmake -B build -G Ninja && cmake --build build
+  > set PATH=%PATH%;%USERPROFILE%\bin
+  > zig.exe build -Demit-exe=true
+  > zig build -Demit-exe=true -Doptimize=ReleaseSafe -p $HOME\.local\
+  echo $HOME\AppData\Local\noctty\config.ghostty
+  command = powershell.exe
+  command = cmd.exe
+  keybind = ctrl+shift+1=new_tab_with_command:powershell.exe
+  keybind = ctrl+shift+2=new_tab_with_command:wsl.exe
+  keybind = ctrl+shift+2=new_tab_with_command:wsl.exe
+  keybind = ctrl+shift+3=new_tab_with_command:cmd.exe
+  ctrl+shift+f to search in terminal
+  ctrl+shift+home to get to starting point on current session
+  ctrl+shift+a / ctrl+shift+space for key selection modus
+  Ctrl+Shift+,    to reload config
+  if ($env:GHOSTTY_RESOURCES_DIR) { . "$env:GHOSTTY_RESOURCES_DIR/shell-integration/powershell/ghostty.ps1" }
+  ctrl+shift+up / down to jump between commands
+  if set -q GHOSTTY_RESOURCES_DIR
+    source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
+  end
+  if [ -n "$GHOSTTY_RESOURCES_DIR" ]; then
+    source "$GHOSTTY_RESOURCES_DIR/shell-integration/bash/ghostty.bash"
+  fi
+  might need source /mnt/c/Users/DeinWindowsUser/AppData/Local/noctty/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish
+  # broken
+  # keybind = ctrl+u=text:\x15
+  Ctrl+Shift+p    to select action
+  SHENANIGAN
+  * 1 no workspace/layout configurations for multi-process development
+  * 2 no Scripting API for Ghostty
+  * 3 no new_tab_with_command keybind action
+    https://github.com/ghostty-org/ghostty/pull/12984
+  workarounds
+  * .\noctty.exe -e wsl.exe -d NixOS
+  * .\noctty.exe -e wsl.exe -d Ubuntu
+  * .\noctty.exe -e cmd.exe
 editors: neovim[more plugins], vim[stable+no surprises], helix[lazy setup, few plugins], kakoune
 tracy -- frame tracer and visualizer
 Continuous profiling via typescript frontend parca https://github.com/parca-dev/parca

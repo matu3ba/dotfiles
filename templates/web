@@ -98,6 +98,23 @@ requires
 * Backend-for-Frontend (BFF) pattern
 * There appears to be no excellent guide on best practice design with security and trade-offs.
 
+==DNS
+* trust base for HTTP
+* how to find and track moving parts on web
+* methods for applications to control and switch usage of DNS domains and
+  entries essential
+
+==CORS
+Authority: Who do i trust? Where i do get my trust information from?
+Origin
+* server: which website can use my content?
+* enforced by browser based on HTTP headers
+  1 user inserts and pastest url -> browser fetches website from url
+  2 website from url may have javascript/webassembly having access to isolated information stored under url-local storage
+  3 javascript/webassembly requests access to url -> browser adds origin url string, allowed redirect_uri string etc -> server
+  4 server responds from url -> return ((modified) origin url strings, redirect_uri strings) -> browser evaluates result
+  5 browser blocks or forwards response based on server response (origin url string, redirect_uri string, etc) -> javascript/webassembly response from url
+
 [HTML-Attribut]
 autocomplete="username|current-password" | pw manager fields to fill
 rel="noopener|noreferrer"                | relation between linked resource and current document

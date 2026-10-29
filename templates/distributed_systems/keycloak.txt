@@ -204,3 +204,20 @@ curl -s -H "Authorization: Bearer $ADMIN_TOKEN" \
   "http://localhost:8080/admin/realms/realm/clients?clientId=your-client-id" \
   | jq '.[0] | {id, clientId, directAccessGrantsEnabled, serviceAccountsEnabled}'
 ```
+keycloak production config does not allow localhost
+* RFC 8252 (OAuth 2.0 for Native Apps) recommends to not use localhost end recommends http://127.0.0.1 for native clients
+* keycloak only allows wildcars at endpoints and rightmost position
+
+For development one wants to use http. Cloud-IAM uses Keycloak in production mode.
+Keycloak in Production mode only allows http on loopback addresses.
+In production mode
+* Redirect uris are allowed to be of form http://127.0.0.1:* meaning wildcard
+  ended strings for ports and endpoints.
+* CORS Origin header must be of form http://127.0.0.1 using implicitly port 80
+  or http://127.0.0.1:PORT when not using port 80 and can not use wildcards.
+To simplify configuration, use
+* redirect uri as http://127.0.0.1:8080/*
+* CORS origin header as http://127.0.0.1:8080
+and keep it explicit.
+If post logout redirect uri is omitted, the same as redirect uri (for login) is used.
+More context on behavior https://phasetwo.io/blog/keycloak-cors-errors/

@@ -117,6 +117,9 @@ dont use tpl and other yaml garbage, use kyaml + go code for testing
 {{- if .Values.gatewayClass.enabled -}}
 
 {{- else /* if .Values.gatewayClass.enabled */ -}}
-
+  {{- /* block as conditional include guard to add text */ -}}
+  {{- with .Values.oidc.redirectURL }}
+  redirectURL: {{ . | quote }}
+  {{- end }}
 {{- end /* if .Values.gatewayClass.enabled */ -}}
 {{- end /* define "envoy-single-gateway.labels" */ -}}
