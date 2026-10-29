@@ -1,8 +1,28 @@
 # New Powershell 7 possibly needs installation on Windows 10.
 # $profile | Select-Object -Property *
 # $PSVersionTable.PSVersion
+# Get-Help TOOLPATH -Detailed
 
-$env:Path += ";$($env:USERPROFILE)\bin"
+# . ~\dotfiles\templates\common.ps1
+# Import-LatestDevShell
+# $env:Path += ";$HOME\bin"
+# cd $HOME\my\noctty\
+# zig build -Demit-exe=true -Doptimize=ReleaseSafe -p $HOME\.local\
+
+# cd $HOME\my\noctty\
+# pwsh
+# . ~\dotfiles\templates\common.ps1
+# run_latest_devshell @('$env:Path += ";$HOME\bin"', 'zig build -Demit-exe=true -Doptimize=ReleaseSafe -p $HOME\.local\')
+# .\noctty.exe
+
+# $HOME\AppData\Local\noctty\config.ghostty
+# .\noctty.exe
+# .\noctty.exe -e wsl.exe -d NixOS
+# .\noctty.exe -e wsl.exe -d Ubuntu-26.04
+# Ctrl+Shift+p    to select action
+# * already creates new tab so okish fast
+
+# $env:Path += ";$($env:USERPROFILE)\bin"
 $env:Path += ";$HOME\.local\bin"
 # $env:Path += ";$HOME\llvm\bin"
 $env:Path += ";C:\Program Files\LLVM\bin"
@@ -142,10 +162,15 @@ function ENV {
 # within shell: Get-PSReadLineKeyHandler
 # https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/ise/keyboard-shortcuts-for-the-windows-powershell-ise?view=powershell-7.4
 # https://keycombiner.com/collections/powershell/
-# AcceptSuggestion
-Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardWord
+
+Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardWord # AcceptSuggestion
 Set-PSReadlineKeyHandler -Chord "Ctrl+d" -Function DeleteCharOrExit
 Set-PSReadlineKeyHandler -Chord "Ctrl+u" -Function RevertLine
+
+# if ($env:TERM_PROGRAM -eq "ghostty") {
+# } else {
+# # if ($env:WT_SESSION)
+# }
 
 #====aliases
 New-Alias -Name .. -Value CdUp -Force -Option AllScope

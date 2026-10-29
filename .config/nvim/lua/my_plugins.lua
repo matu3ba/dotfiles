@@ -348,15 +348,15 @@ return {
   -- :Telescope builtin.keymaps
   { 'folke/which-key.nvim', config = function() require('which-key').setup() end },
 
-  -- markdown live preview via :Glow[!] [path]
-  { 'ellisonleao/glow.nvim', config = function() require('glow').setup() end },
-
-  -- idea figure out which markdown viewer to use
-  -- markdown OXY2DEV/markview.nvim
-  -- markdown MeangeringProgrammer/render-markdown.nvim
-  -- jupyter and markdown live preview, idea
-  -- https://github.com/kiyoon/jupynium.nvim
-  -- https://github.com/tamton-aquib/neorg-jupyter
+  -- markdown live preview via :RenderMarkdown enable/disable
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {
+      completions = { lsp = { enabled = true } },
+    },
+  },
 
   -- open files from a neovim terminal buffer in your current neovim instance instead of a nested one.
   -- reuse some lua socket code?

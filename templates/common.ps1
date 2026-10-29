@@ -1150,6 +1150,63 @@ function start_latest_vs() {
   Write-Host "started visual studio from $devenvPath"
 }
 
+# SHENANIGAN starting Visual Studio DevShell in new process is horrible developer experience
+# * this starts vs devshell in new process in "C:\Windows\System32"
+# * without starting the script in "C:\Windows\System32" one gets weird errors
+
+function Start-LatestDevShell {
+  # .SYNOPSIS Start latest msvs vsdevshell in new terminal
+  param(
+    [Parameter(HelpMessage = "Arguments passed to devshell")]
+    [string[]]$Arguments = @()
+  )
+  $vsPath = Get-ChildItem -Directory "C:\Program Files\Microsoft Visual Studio\**\**"
+  | Where-Object { $_ -match '\d{2,4}' }
+  | Where-Object { Test-Path (Join-Path $_.FullName "Common7\Tools\Launch-VsDevShell.ps1") }
+  | Sort-Object -Descending
+  | Select-Object -First 1
+  if ($null -eq $vsPath) { Write-Error "VS installation not found"; return }
+  $devShellScript = Join-Path $vsPath.FullName "Common7\Tools\Launch-VsDevShell.ps1"
+  $currentDir = $PWD.ProviderPath
+  $targetCmd = ". '$devShellScript' -VsInstallationPath '$vsPath' -SkipAutomaticLocation; Set-Location '$currentDir'"
+  if ($Arguments.Count -gt 0) { $targetCmd += "; " + ($Arguments -join "; ") }
+  $b64 = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($targetCmd))
+  Write-Host $targetCmd -ForegroundColor Cyan
+  Start-Process -FilePath "pwsh.exe" -ArgumentList @("-NoProfile", "-NoExit", "-EncodedCommand", $b64) -WorkingDirectory "C:\Windows\System32" -WindowStyle Normal
+}
+
+function Invoke-LatestDevShell {
+  # .SYNOPSIS Invoke blocking latest msvs vsdevshell in current shell
+  [CmdletBinding()]
+  param(
+      [Parameter(Mandatory, HelpMessage = "Commands as string or array")]
+      [ValidateNotNullOrEmpty()]
+      $Arguments
+  )
+  $vs = Get-ChildItem -Directory "C:\Program Files\Microsoft Visual Studio\**\**"
+  | Where-Object { $_ -match '\d{2,4}' }
+  | Where-Object { Test-Path "$_\Common7\Tools\Launch-VsDevShell.ps1" }
+  | Sort-Object -Descending
+  | Select-Object -First 1
+  if (!$vs) { throw "VS not found" }
+  $cmd = ". '$vs\Common7\Tools\Launch-VsDevShell.ps1' -VsInstallationPath '$vs' -SkipAutomaticLocation; cd '$PWD'"
+  if ($Arguments) { $cmd += "; " + ($Arguments -join "; ") }
+  $b64 = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($cmd))
+  Write-Host $cmd -ForegroundColor Cyan
+  Start-Process pwsh.exe -ArgumentList "-NoProfile", "-EncodedCommand", $b64 -NoNewWindow -Wait
+}
+
+function Import-LatestDevShell {
+  # .SYNOPSIS Import latest msvs vsdevshell in current shell
+  $vs = Get-ChildItem -Directory "C:\Program Files\Microsoft Visual Studio\**\**"
+  | Where-Object { $_ -match '\d{2,4}' }
+  | Where-Object { Test-Path "$_\Common7\Tools\Launch-VsDevShell.ps1" }
+  | Sort-Object -Descending
+  | Select-Object -First 1
+  if (!$vs) { throw "VS not found" }
+  . "$vs\Common7\Tools\Launch-VsDevShell.ps1" -VsInstallationPath $vs -SkipAutomaticLocation
+}
+
 function reassigning_type_var_errors() {
   # Powershell may have some uncleanable persistent state of a session, which
   # does not allow overwriting $params. Typically this happens, when the

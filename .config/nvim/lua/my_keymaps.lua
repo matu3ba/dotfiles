@@ -679,14 +679,14 @@ end
 --====my_buf
 local has_buf, buf = pcall(require, 'my_buf')
 if has_buf then
-  local keys = { 'u', 'i', 'o', 'j', 'k', 'l' }
-  for _, k in ipairs(keys) do
-    vim.keymap.set('n', '<leader>' .. k, function() buf.jump_to_slot(k, 'file') end)
-    vim.keymap.set('n', '<leader>m' .. k, function() buf.save_to_slot(k, 'file') end)
-    -- vim.keymap.set('n', '<leader>mc' .. k, function() buf.save_to_slot(k, 'term') end)
-    -- vim.keymap.set('n', '<leader>c' .. k, function() buf.jump_to_slot(k, 'term') end)
-  end
-  vim.keymap.set('n', '<leader>sl', buf.list_slots)
+  -- local keys = { 'u', 'i', 'o', 'j', 'k', 'l' }
+  -- for _, k in ipairs(keys) do
+  --   vim.keymap.set('n', '<leader>' .. k, function() buf.jump_to_slot(k, 'file') end)
+  --   vim.keymap.set('n', '<leader>m' .. k, function() buf.save_to_slot(k, 'file') end)
+  --   -- vim.keymap.set('n', '<leader>mc' .. k, function() buf.save_to_slot(k, 'term') end)
+  --   -- vim.keymap.set('n', '<leader>c' .. k, function() buf.jump_to_slot(k, 'term') end)
+  -- end
+  -- vim.keymap.set('n', '<leader>sl', buf.list_slots)
 end
 
 --====harpoon

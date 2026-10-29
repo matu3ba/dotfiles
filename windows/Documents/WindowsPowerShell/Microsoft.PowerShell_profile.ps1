@@ -39,6 +39,10 @@ $env:DOTNET_TELEMETRY_OPTOUT = $true
 # https://blog.marco.ninja/posts/2020/12/02/super-charged-cmdlet-aliases/
 # pipe: powershell -command "& c:\scripts\scheduled_task.ps1 *> %LOG%"
 
+Set-PSReadLineKeyHandler -Chord "Ctrl+f" -Function ForwardWord # AcceptSuggestion
+Set-PSReadlineKeyHandler -Chord "Ctrl+d" -Function DeleteCharOrExit
+Set-PSReadlineKeyHandler -Chord "Ctrl+u" -Function RevertLine
+
 New-Alias -Name .. -Value CdUp -Force -Option AllScope
 New-Alias -Name ... -Value CdUp2 -Force -Option AllScope
 New-Alias -Name .... -Value CdUp3 -Force -Option AllScope
@@ -91,5 +95,7 @@ function GitStashPush { & git stash push $args }
 function GitStatus { & git status $args }
 function ListDense { & Get-ChildItem $args -Force | Format-Wide Name -AutoSize }
 function NvimCmd { & nvim $args }
+
+Write-Host "attention: powershell 5 usage. consider pwsh.exe" -ForegroundColor Red
 
 Invoke-Expression (& { (zoxide init powershell | Out-String) })
