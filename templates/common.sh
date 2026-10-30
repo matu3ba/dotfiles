@@ -216,6 +216,7 @@ env -i bash --noprofile --norc -c "command"
 
 # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#set
 # breaks on spaces etc
+# Make environment variables available to child processes and child scripts.
 # * export $(cat .env | xargs)
 #  ./script.sh
 # * $(cat .env | xargs) ./script.sh
