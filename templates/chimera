@@ -1,25 +1,25 @@
-====general
-====media_preparation
-====partitioning
-====filesystems
-====installation
-====postinstallation
-====packages
-====network
-====plasma
-====custom
-====shortcomings
-====packaging
+=general
+=media_preparation
+=partitioning
+=filesystems
+=installation
+=postinstallation
+=packages
+=network
+=plasma
+=custom
+=shortcomings
+=packaging
 
-====general
+=general
 * add keyboard language german in kde
 * doas apk add firefox neovim
 * https://chimera-linux.org/docs/installation
 
-====media_preparation
+=media_preparation
 idea
 
-====partitioning
+=partitioning
 * simple setup (no LVM, 2 partitions)
   - idea
 * simple cryptsetup (LVM+dm-crypt 2 partitions)
@@ -27,10 +27,10 @@ idea
   - rest luks encrypted ext4 for root file system and data
   - idea
 
-====filesystems
+=filesystems
 * idea
 
-====installation
+=installation
 * login into luks system
   - rule out errors by wrong hash from graphical login external encrypted device connected by manual mounting
   lsblk --fs
@@ -112,7 +112,7 @@ idea
     o GETTY_TERM=vt100
     o GETTY_BAUD=115200
 
-====postinstallation
+=postinstallation
 * create user
   - useradd myuser
   - passwd myuser
@@ -144,7 +144,7 @@ idea
   - nvim /etc/default/keyboard
       KMAP=de-latin1-nodeadkeys
 
-====packages
+=packages
 * basic usage
   - apk update
   - apk upgrade
@@ -184,8 +184,13 @@ idea
   - disable caching via creating file /etc/apk/config based on /usr/lib/apk/config
   - change cache location by symlinking /etc/apk/cache to desired location
 
-====network
+=network
 ==wifi
+===iwd (non-default)
+apk add iwd iwd-dinit
+
+dinitctl disable networkmanaager
+dinitctl stop networkmanaager
 dinitctl enable iwd
 /etc/iwd/main.conf
 [General]
@@ -210,6 +215,17 @@ security of iwctl bad, since SSID may exist multiple times with iwctl unifying t
 example with repeater setup (secondary device with same SSID and different BSSID)
 > doas iw dev wlp5s0 scan
 
+===networkmanaager (default)
+apk add iwd nmcli
+
+dinitctl disable dhcpcd
+dinitctl disable iwd
+dinitctl enable networkmanaager
+dinitctl start networkmanaager
+nmcli device wifi list
+nmcli device wifi connect SSID --ask
+ping -c 3 chimera-linux.org
+
 ==cable
 dinitctl enable dhcpcd
 or
@@ -220,7 +236,7 @@ static routers=192.168.1.1
 static domain_name_servers=DNS1 DNS2
 * check via ip a
 
-====plasma
+=plasma
 balooctl6 disable
 startplasma-wayland
 kde inotify problems
@@ -231,7 +247,7 @@ kde inotify problems
   * last line unindented StartServer=true
     - looks like it does not work
 
-====custom
+=custom
 * tlp: apk add tlp
 * firejail: apk add libseccomp linux-headers libbpf-tools iptables
   - adjust config dirs: nvim ~/.config/user-dirs.dirs
@@ -294,7 +310,7 @@ kde inotify problems
 * arp-scan
   - local network scans via ARP
 
-====shortcomings
+=shortcomings
 1. appimages are not usable, a troubleshooting guide from appimages does not exist
 - likely issue with something from exclude list not shipped https://github.com/AppImageCommunity/pkg2appimage/blob/master/excludelist
   see also https://ludditus.com/2024/10/31/appimage/
@@ -324,5 +340,5 @@ kde inotify problems
 idea bootloader signing and other tamper prevention mechanisms
 see https://wiki.archlinux.org/title/Security#Secure_Boot
 
-====packaging
+=packaging
 idea libVLC

@@ -1,0 +1,63 @@
+=active_drivers
+lshw or lsmod
+
+=blacklist
+# may load, if other driver loads driver
+echo "blacklist driver_name" | sudo tee /etc/modprobe.d/disable-firmware.conf
+=hard_disable
+# does not load, even if other driver tries to load driver
+echo "install driver_name /bin/true" | sudo tee -a /etc/modprobe.d/disable-firmware.conf
+=update_initramfs
+sudo update-initramfs -u
+sudo dracut --force
+=recover_from_disabling_needed_drivers
+1 interrupt bootloader: Holding Shift or Esc
+2 editor boot params: highlight default kernel, press e to edit
+  look at line with linux
+3 edit or bypass blacklist during boot phase (if needed)
+  turn off/on broken driver: append/remove modprobe.blacklist=driver_name
+  boot broken: add init=/bin/bash xor system.unit=rescue.target to boot into
+  minimal root shell without loading standard services.
+  press Ctrl+X to boot.
+4 fix config: shell active, so remount fs as writable
+  * vi/nano should be available
+  cryptsetup open /dev/sdXy cryptroot
+  mount /dev/mapper/cryptroot /mnt
+  # on second boot partition: mount /dev/sdXz /mnt/boot
+  for dir in dev proc sys run; do mount --bind /$dir /mnt/$dir; done
+  ---vs
+  without encryption its just mount -o remount,rw /
+  ---
+  chroot /mnt /bin/sh
+  cat /dev/null > /etc/modprobe.d/disable-firmware.conf
+  /etc/modprobe.d/disable-firmware.conf
+
+=driver_security_methods
+custom kernel compilation
+* make localmodconfig
+  - adjusts for current running hardware (ensure everything is plugged in)
+* https://docs.kernel.org/admin-guide/quickly-build-trimmed-linux.html
+* modprobed-db
+* ok default
+  cd /usr/src/linux
+  cp /boot/config-$(uname -r) .config
+  yes "" | make localmodconfig
+  - okish
+microcode
+* https://chimera-linux.org/docs/configuration/microcode
+  - okish
+strict kernel lockdown (still brittle to use with wip to default enable it)
+* too brittle for older hardware and not mass used
+linuxboot/BMC/coreboot
+* coreboot supports amd64
+* https://doc.coreboot.org/mainboard/index.html hw support
+* https://doc.coreboot.org/security/vboot/list_vboot.html hw behavior
+  - needs practice, hw equipment or buddy with knowledge to recover from soft brick
+    and not end up with hard brick
+
+=active_firmware
+loaded firmware from current boot session: dmesg | grep -i "firmware: direct-loading"
+=inactive_firmware
+modules shipped in kernel dir: find /lib/modules/$(uname -r)/ -type f -name "*.ko*"
+show active modules: lsmod
+

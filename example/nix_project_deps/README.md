@@ -75,4 +75,15 @@ nix shell "path:$PWD#inputs.nixpkgs.legacyPackages.x86_64-linux.zon2nix" -c zon2
 error: FileNotFound
 nix shell --inputs-from "path:$PWD" "flake:nixpkgs#zon2nix" -c zon2nix --nix=build.zig.zon.nix build.zig.zon
 error: FileNotFound
+
+# Debug options worse on attaching + better on caching compared to container build tools
+nix-shell --run-env -A .#legacyPackages.x86_64-linux.zon2nix
+nix build .#legacyPackages.x86_64-linux.zon2nix --debugger
+1 Add 'breakpointHook' to derivation 'nativeBuildInputs'
+2 nix build
+3 build failed, spawning a terminal..
+To attach ..
+4 nix-store --serve
+nix shell --inputs-from "path:$PWD" "flake:nixpkgs#zon2nix" -c pwd
+nix shell --inputs-from "path:$PWD" "flake:nixpkgs#zon2nix" -c ls -la
 ```
