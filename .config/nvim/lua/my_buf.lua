@@ -44,75 +44,22 @@ local function _project_filepath(root_dir)
   return state_dir .. '/puresl_' .. vim.fn.sha256(root_dir):sub(1, 16) .. '.json'
 end
 
----@param state file state: open file handle (fd)
----@param curr_offset integer current byte offset in file Datei (control_value)
-M._records_next = function(state, curr_offset)
-  local sep_byte = string.byte ':'
-  local newline_byte = string.byte '\n'
-  state:seek('set', curr_offset)
-  local chunk = state:read(1024)
-  if not chunk or chunk == '' then return nil end -- EOF
+-- <500 project entries, <30 entries per project => sorting not necessary
+-- layer 0: state: read-iterators, writer
+-- * hash:payload
+-- layer 1: project, file fns for listing, creation, deletion etc
+-- layer 2: high level concepts for what happens when i create project, add/delete file/shell to project
+-- layer 3: keybindings
 
-  local sep_idx = nil
-  local newline_idx = nil
-
-  -- search for ':' and '\n'
-  for i = 1, #chunk do
-    local b = string.byte(chunk, i)
-    if b == sep_byte and not sep_idx then
-      sep_idx = i
-    elseif b == newline_byte then
-      newline_idx = i
-      break
-    end
-  end
-
-  if not newline_idx then newline_idx = #chunk + 1 end
-
-  local line_len = newline_idx
-  local next_offset = curr_offset + line_len
-
-  if not sep_idx or sep_idx > newline_idx then
-    return next_offset -- skip invalid line
-  end
-
-  -- offset relativ to file start
-  local offset_sha = curr_offset
-  local len_sha = sep_idx - 1
-  local offset_path = curr_offset + sep_idx -- directly after ':'
-
-  -- path len = line_len - len(sha) - len(\n)
-  local len_path = newline_idx - sep_idx - 1
-  return next_offset, offset_sha, len_sha, offset_path, len_path
-end
-
--- Iterates file records with layout
---   shar1(len=16):payload1
---   shar2(len=16):payload2
----@param fd? file opened file descriptor
----@param start_offset integer start byte offset to start iterating, 0 for file start
----@return fun(state: file, ctrl: integer): (next_offset: integer?, offset_sha: integer?, len_sha: integer?, offset_path: integer?, len_path: integer?) iterator_fn iterator fn
----@return file fd same file handle
----@return integer? init_offset Der initiale Byte-Offset für den Schleifenstart
----
----@example
---- local proj_filepath = _projects_filepath()
---- local fd_proj = io.open(proj_filepath, 'rb') -- binary for byte offsets
---- assert(fd_proj, string.format("could not open '%s'", fd_proj))
---- local iterator_fn, fd, init_offset = M.records(fd_proj, 0)
---- -- iterations via (function, state, control) are handled by lua
---- for _next_offset, offset_sha, len_sha, offset_path, len_path in iterator_fn, fd, init_offset do
----   fd:seek('set', offset_sha)
----   local raw_sha = fd:read(len_sha)
----   fd:seek('set', offset_path)
----   local raw_path = fd:read(len_path)
----   print(string.format('SHA: %s | Path: %s (Bytes: %d-%d)', raw_sha, raw_path, offset_path, offset_path + len_path))
---- end
---- fd:close()
-M.records = function(fd, start_offset)
-  assert(fd, string.format '❌ FAIL: no open fd')
-  return M._records_next, fd, start_offset
-end
+-- M.list_projects
+-- M.list_items
+-- M.add_project
+-- M.rem_project
+-- M.add_item
+-- M.rem_item
+-- M.open_item
+-- M.check_consistency
+-- M.ensure_consistency
 
 --TODO
 --list projects

@@ -20,11 +20,11 @@ local lua_dir = vim.fs.joinpath(want_dir, '.config', 'nvim', 'lua')
 local path_pattern = vim.fs.joinpath(lua_dir, '?.lua')
 package.path = path_pattern .. ';'
 
-package.loaded['my_buf'] = nil
+package.loaded['buf0_state'] = nil
 package.loaded['my_utils'] = nil
 
 --=imports
-local bu = require 'my_buf'
+local bu = require 'buf0_state'
 local ut = require 'my_utils'
 -- print('moduls:', vim.inspect(bu)) -- debug
 
@@ -89,7 +89,7 @@ local function run_bu_test1()
   local expect_paths = { [[C:\code]], '/home/testme/', '/' }
   local expect_sha_bytes = { { 0, 15 }, { 25, 40 }, { 56, 71 } }
   local expect_path_bytes = { { 17, 23 }, { 42, 54 }, { 73, 73 } }
-  local next, fd, init_offset = bu.records(tmp_fd, 0)
+  local next, fd, init_offset = bu.naive_records(tmp_fd, 0)
   local line_i = 0
   for _pos, offset_sha, len_sha, offset_path, len_path in next, fd, init_offset do
     line_i = line_i + 1
@@ -153,7 +153,7 @@ local function run_bu_test2()
   tmp_fd:write(table.concat(lines, '\n'))
   tmp_fd:flush()
 
-  local next, fd, init_offset = bu.records(tmp_fd, 0)
+  local next, fd, init_offset = bu.naive_records(tmp_fd, 0)
   local line_i = 0
 
   for _pos, o_sha, l_sha, o_json, l_json in next, fd, init_offset do
@@ -172,22 +172,55 @@ local function run_bu_test2()
     assert_eq(c.json_s, o_json, 'json start offset mismatch')
     assert_eq(c.json_e, o_json + l_json - 1, 'json end offset mismatch')
 
-    -- compare json structure
     assert_deep_eq(c.data, vim.json.decode(raw_json), string.format "json data structure mismatch: ''")
 
     debug_print(string.format("SHA: '%s' | JSON: '%s' (Bytes: [%d-%d] [%d-%d])", c.sha, raw_json, o_sha, o_sha + l_sha - 1, o_json, o_json + l_json - 1))
   end
 
-  assert_eq(#cases, line_i, 'Nicht alle Testfälle wurden iteriert')
+  assert_eq(#cases, line_i, 'Alle test cases completed')
   tmp_fd:close()
   os.remove(tmp_path)
   debug_print 'run_bu_test2 done'
+end
+
+local function run_bu_test3()
+  debug_print 'run_bu_test3..'
+
+  local buffer = [[
+0123456789abcde0:C:\code
+1123456789abcde1:/home/testme/
+2123456789abcde2:/]]
+  local expect_shas = { '0123456789abcde0', '1123456789abcde1', '2123456789abcde2' }
+  local expect_paths = { [[C:\code]], '/home/testme/', '/' }
+  local expect_sha_bytes = { { 0, 15 }, { 25, 40 }, { 56, 71 } }
+  local expect_path_bytes = { { 17, 23 }, { 42, 54 }, { 73, 73 } }
+  local next, fd, init_offset = bu.records(buffer, 0)
+  local line_i = 0
+  for _pos, offset_sha, len_sha, offset_path, len_path in next, fd, init_offset do
+    line_i = line_i + 1
+    local raw_sha = string.sub(buffer, offset_sha + 1, offset_sha + len_sha)
+    local raw_path = string.sub(buffer, offset_path + 1, offset_path + len_path)
+
+    assert_eq(expect_shas[line_i], raw_sha, 'unexected sha')
+    assert_eq(expect_paths[line_i], raw_path, 'unexected path')
+    ---@cast expect_sha_bytes any
+    ---@cast expect_path_bytes any
+    assert_eq(expect_sha_bytes[line_i][1], offset_sha, 'unexected file offset of sha start')
+    assert_eq(expect_sha_bytes[line_i][2], offset_sha + len_sha - 1, 'unexected file offset of sha end')
+    assert_eq(expect_path_bytes[line_i][1], offset_path, 'unexected file offset of path start')
+    assert_eq(expect_path_bytes[line_i][2], offset_path + len_path - 1, 'unexected file offset of path end')
+
+    debug_print(string.format("SHA: '%s' | Path: '%s' (Bytes: [%d-%d] [%d-%d])", raw_sha, raw_path, offset_sha, offset_sha + len_sha - 1, offset_path, offset_path + len_path - 1))
+  end
+
+  debug_print 'run_bu_test3 done'
 end
 
 local function run_bu_tests()
   debug_print 'run_bu_tests..'
   run_bu_test1()
   run_bu_test2()
+  run_bu_test3()
   debug_print 'run_bu_tests done'
 end
 

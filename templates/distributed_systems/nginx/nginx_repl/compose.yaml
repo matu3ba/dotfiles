@@ -1,0 +1,23 @@
+services:
+  nginx-k8s:
+    container_name: nginx-k8s
+    # TODO use slim rootless nginx container
+    image: "TODO nginx-slim"
+    ports:
+      - "127.0.0.1:80:80"
+    depends_on:
+      - back-k8s
+    # volumes:
+    #   - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    # TODO dynamic bare image mount (after website build) of SPA website
+    develop:
+      watch:
+        - path: ./nginx.conf
+          action: sync
+          target: /etc/nginx/conf.d/default.conf
+  back-k8s:
+    container_name: back-k8s
+    image: "TODO microsoft dotnet container"
+    # TODO dynamic bare image mount (after binaries build) of dotnet binaries
+    ports:
+      - "127.0.0.1:8080:8080"
