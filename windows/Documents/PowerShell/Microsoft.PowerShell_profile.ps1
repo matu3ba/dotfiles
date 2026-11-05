@@ -7,7 +7,9 @@
 # Import-LatestDevShell
 # $env:Path += ";$HOME\bin"
 # cd $HOME\my\noctty\
-# zig build -Demit-exe=true -Doptimize=ReleaseSafe -p $HOME\.local\
+# ~/bin/zig-0.15.2/zig build -Demit-exe=true -Doptimize=ReleaseSafe -p $HOME\.local\
+# workaround virus scanner on windows
+# $sw = [System.Diagnostics.Stopwatch]::StartNew(); while ($sw.Elapsed.TotalHours -lt 1) { ~/bin/zig-0.15.2/zig build -Demit-exe=true -Doptimize=ReleaseSafe -p "$HOME\.local\"; if ($LASTEXITCODE -eq 0) { break }; Start-Sleep -Seconds 300 }
 # $s = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:APPDATA\Microsoft\Windows\Start Menu\Programs\noctty.lnk"); $s.TargetPath = "$HOME\.local\bin\noctty.exe"; $s.IconLocation = "$HOME\.local\bin\noctty.ico"; $s.WorkingDirectory = "$HOME"; $s.Save()
 
 # cd $HOME\my\noctty\

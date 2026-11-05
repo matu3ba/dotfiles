@@ -110,7 +110,8 @@ if utils.is_windows == false then
 else
   local df_write = '! ' .. home .. '\\dotfiles\\fileOverwrite.ps1'
   add_cmd('DotfWrite', df_write, {})
-  add_cmd('RmShada', '! rm ' .. vim.fn.stdpath 'data' .. '\\shada\\main.shada.tmp.X', {})
+  -- should be unnecessary with https://github.com/neovim/neovim/issues/8587
+  -- add_cmd('RmShada', '! rm ' .. vim.fn.stdpath 'data' .. '\\shada\\main.shada.tmp.X', {})
 end
 
 -- Visit mappings, commands and autocommands:
