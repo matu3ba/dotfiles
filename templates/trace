@@ -36,6 +36,7 @@ https://github.com/iovisor/bpftrace
 https://github.com/plasma-umass/coz
 * measures optimization potential: predicts what the impact of optimizing code
   will have on overall throughput or latency
+* see pside
 
 "Dthreads: efficient deterministic multithreading"
 https://github.com/emeryberger/dthreads

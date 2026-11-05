@@ -96,7 +96,8 @@ alias gm='git merge --ff-only'
 
 alias gp='git push'
 alias gpdry='git push --dry-run'
-alias gpf='git push --force'
+# dangerous, so be explicit
+abbr --add -g gpf 'git push --force-if-includes --force-with-lease'
 
 alias gstu='git stash push'
 alias gsto='git stash pop'

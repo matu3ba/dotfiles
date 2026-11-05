@@ -17,8 +17,10 @@ maybe useful, idk
 
 ====terminal
 https://how-terminals-work.vercel.app/
+https://control-codes.page/
 nice graphics
-
+* ghostty
+* noctty
 
 There is a complete wiki dedicated to the weird quirks of bash:
 https://wiki.bash-hackers.org/syntax/expansion/brace

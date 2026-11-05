@@ -45,6 +45,7 @@ const process = std.process;
 // fetch and (cross-)compile msvc tools - https://github.com/marler8997/msvcup
 // chat application - https://codeberg.org/awebo-chat/awebo
 // Low-overhead native hooking and instrumentation - https://github.com/hookforge
+// causal profiler inspired by coz - https://github.com/GiuseppeCesarano/pside
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz
