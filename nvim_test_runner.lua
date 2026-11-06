@@ -113,7 +113,7 @@ local function run_bu_test1()
     debug_print(string.format("SHA: '%s' | Path: '%s' (Bytes: [%d-%d] [%d-%d])", raw_sha, raw_path, offset_sha, offset_sha + len_sha - 1, offset_path, offset_path + len_path - 1))
   end
   tmp_fd:close()
-  os.remove(tmp_path)
+  pcall(vim.uv.fs_unlink, tmp_path)
 
   debug_print 'run_bu_test1 done'
 end
@@ -183,7 +183,7 @@ local function run_bu_test2()
 
   assert_eq(#cases, line_i, 'Alle test cases completed')
   tmp_fd:close()
-  os.remove(tmp_path)
+  pcall(vim.uv.fs_unlink, tmp_path)
   debug_print 'run_bu_test2 done'
 end
 
@@ -231,25 +231,36 @@ end
 local function run_bu_test5()
   debug_print 'run_bu_test5..'
   local expected_projects = "";
-  pcall(os.remove, bu1.projects_filepath())
+  pcall(vim.uv.fs_unlink, bu1.projects_filepath())
   assert_eq(1, bu2.list_projects(), 'list_projects() at start no projects directory')
-  local fd = vim.uv.fs_open(bu1.projects_filepath(), 'a', 438) -- 438 = oktal 0666 (Standardrechte)
+  local fd = vim.uv.fs_open(bu1.projects_filepath(), 'a', 438) -- 438 = octal 0666 (standard permissions)
   if fd then vim.uv.fs_close(fd) end
   debug_print(string.format("created '%s'", bu1.projects_filepath()))
   --
-  local expected_projects = [[2824684de3d1a193:/etc
+  local expected_projects = [[
+2824684de3d1a193:/etc
 ]];
   assert_eq(0, bu2.add_project('/etc'), "add_project('/etc') return 0")
 
   assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after adding /etc')
-  assert_eq(1, bu2.add_project('/etc'), "add_project('/etc') return 0")
+  assert_eq(1, bu2.add_project('/etc'), "add_project('/etc') again return 1")
   assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after adding /etc')
 
   expected_projects = "";
   assert_eq(0, bu2.rem_project('/etc'), "rem_project('/etc') return 0")
   assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after removing /etc')
+  assert_eq(1, bu2.rem_project('/etc'), "rem_project('/etc') again return 1")
 
-  vim.uv.fs_unlink(bu2.list_projects())
+  assert_eq(0, bu2.add_project('/etc'), "add_project('/etc') return 0")
+  assert_eq(0, bu2.add_project('/home'), "add_project('/home') return 0")
+  assert_eq(1, bu2.add_project('/etc'), "add_project('/etc') return 0")
+  expected_projects = [[
+2824684de3d1a193:/etc
+2cc974af6afc822c:/home
+]];
+  assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after adding /etc /home /etc')
+
+  vim.uv.fs_unlink(bu1.projects_filepath())
   debug_print 'run_bu_test5 done'
 end
 
