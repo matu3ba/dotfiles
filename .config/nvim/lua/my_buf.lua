@@ -23,27 +23,6 @@ local _index_to_key_map = {
   [6] = 'l',
 }
 
-local function run_command(cmd_with_args)
-  local obj = vim.system(cmd_with_args, { text = true }):wait()
-  assert(obj.stdout, 'FAIL: expected output, not nil')
-  return obj.code == 0 and vim.trim(obj.stdout) or ''
-end
-
-local function _get_project_root()
-  local jj_root = run_command { 'jj', 'root' }
-  if jj_root ~= '' then return jj_root end
-  local git_root = run_command { 'git', 'rev-parse', '--show-toplevel' }
-  if git_root ~= '' then return git_root end
-  return vim.uv.cwd()
-end
-
-local function _projects_filepath() return vim.fn.stdpath 'state' .. '/bufsl_meta.json' end
-
-local function _project_filepath(root_dir)
-  local state_dir = vim.fn.stdpath 'state'
-  return state_dir .. '/puresl_' .. vim.fn.sha256(root_dir):sub(1, 16) .. '.json'
-end
-
 -- <500 project entries, <30 entries per project => sorting not necessary
 -- layer 0: state: read-iterators, writer
 -- * hash:payload

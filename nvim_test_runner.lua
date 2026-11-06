@@ -21,10 +21,14 @@ local path_pattern = vim.fs.joinpath(lua_dir, '?.lua')
 package.path = path_pattern .. ';'
 
 package.loaded['buf0_state'] = nil
+package.loaded['buf1_ops'] = nil
+package.loaded['buf2_logic'] = nil
 package.loaded['my_utils'] = nil
 
 --=imports
-local bu = require 'buf0_state'
+local bu0 = require 'buf0_state'
+local bu1 = require 'buf1_ops'
+local bu2 = require 'buf2_logic'
 local ut = require 'my_utils'
 -- print('moduls:', vim.inspect(bu)) -- debug
 
@@ -89,7 +93,7 @@ local function run_bu_test1()
   local expect_paths = { [[C:\code]], '/home/testme/', '/' }
   local expect_sha_bytes = { { 0, 15 }, { 25, 40 }, { 56, 71 } }
   local expect_path_bytes = { { 17, 23 }, { 42, 54 }, { 73, 73 } }
-  local next, fd, init_offset = bu.naive_records(tmp_fd, 0)
+  local next, fd, init_offset = bu0.naive_records(tmp_fd, 0)
   local line_i = 0
   for _pos, offset_sha, len_sha, offset_path, len_path in next, fd, init_offset do
     line_i = line_i + 1
@@ -153,7 +157,7 @@ local function run_bu_test2()
   tmp_fd:write(table.concat(lines, '\n'))
   tmp_fd:flush()
 
-  local next, fd, init_offset = bu.naive_records(tmp_fd, 0)
+  local next, fd, init_offset = bu0.naive_records(tmp_fd, 0)
   local line_i = 0
 
   for _pos, o_sha, l_sha, o_json, l_json in next, fd, init_offset do
@@ -194,9 +198,9 @@ local function run_bu_test3()
   local expect_paths = { [[C:\code]], '/home/testme/', '/' }
   local expect_sha_bytes = { { 0, 15 }, { 25, 40 }, { 56, 71 } }
   local expect_path_bytes = { { 17, 23 }, { 42, 54 }, { 73, 73 } }
-  local next, fd, init_offset = bu.records(buffer, 0)
+  local next, buf, init_offset = bu0.records(buffer, 0)
   local line_i = 0
-  for _pos, offset_sha, len_sha, offset_path, len_path in next, fd, init_offset do
+  for _pos, offset_sha, len_sha, offset_path, len_path in next, buf, init_offset do
     line_i = line_i + 1
     local raw_sha = string.sub(buffer, offset_sha + 1, offset_sha + len_sha)
     local raw_path = string.sub(buffer, offset_path + 1, offset_path + len_path)
@@ -216,11 +220,52 @@ local function run_bu_test3()
   debug_print 'run_bu_test3 done'
 end
 
+local function run_bu_test4()
+  debug_print 'run_bu_test4..' -- coverage for buf1_ops
+  assert_eq(vim.uv.cwd(), bu1.get_project_root(), 'get_project_root()')
+  assert_eq(vim.fn.stdpath 'state' .. '/bufsl_meta.json', bu1.projects_filepath(), 'project_filepath()')
+  assert_eq(vim.fn.stdpath 'state' .. '/puresl_27fbb3026c337e8b.json', bu1.project_filepath("/"), 'project_filepath("/")')
+  debug_print 'run_bu_test4 done'
+end
+
+local function run_bu_test5()
+  debug_print 'run_bu_test5..'
+  local expected_projects = "";
+  pcall(os.remove, bu1.projects_filepath())
+  assert_eq(1, bu2.list_projects(), 'list_projects() at start no projects directory')
+  local fd = vim.uv.fs_open(bu1.projects_filepath(), 'a', 438) -- 438 = oktal 0666 (Standardrechte)
+  if fd then vim.uv.fs_close(fd) end
+  debug_print(string.format("created '%s'", bu1.projects_filepath()))
+  --
+  local expected_projects = [[2824684de3d1a193:/etc
+]];
+  assert_eq(0, bu2.add_project('/etc'), "add_project('/etc') return 0")
+
+  assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after adding /etc')
+  assert_eq(1, bu2.add_project('/etc'), "add_project('/etc') return 0")
+  assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after adding /etc')
+
+  expected_projects = "";
+  assert_eq(0, bu2.rem_project('/etc'), "rem_project('/etc') return 0")
+  assert_eq(expected_projects, bu2.list_projects(), 'list_projects() after removing /etc')
+
+  vim.uv.fs_unlink(bu2.list_projects())
+  debug_print 'run_bu_test5 done'
+end
+
+-- local function run_bu_testXX()
+--   debug_print 'run_bu_testXX..'
+--   debug_print 'run_bu_testXX done'
+-- end
+
 local function run_bu_tests()
   debug_print 'run_bu_tests..'
   run_bu_test1()
   run_bu_test2()
   run_bu_test3()
+  run_bu_test4()
+  run_bu_test5()
+  -- run_bu_testX()
   debug_print 'run_bu_tests done'
 end
 

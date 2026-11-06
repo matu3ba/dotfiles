@@ -1,4 +1,4 @@
----layer0: fs operations
+---layer 0: fs operations
 local M = {}
 
 ---@param state file state: open file handle (fd)
@@ -33,7 +33,7 @@ M._naive_records_next = function(state, curr_offset)
     return next_offset -- skip invalid line
   end
 
-  -- offset relativ to file start
+  -- offset relative to file start
   local offset_sha = curr_offset
   local len_sha = sep_idx - 1
   local offset_path = curr_offset + sep_idx -- directly after ':'
@@ -77,10 +77,11 @@ M._records_next = function(state, curr_offset)
   local start_pos = curr_offset + 1
   local newline_idx = string.find(state, '\n', start_pos, true)
   local end_pos = newline_idx or (#state + 1)
-  local line_len = end_pos - start_pos
+  local next_offset = end_pos
+  -- local line_len = end_pos - start_pos
   local sep_idx = string.find(state, ':', start_pos, true)
   if not sep_idx or sep_idx > end_pos then
-    return next_offset -- skip invalid line
+    return nil -- past end of buffer => stop iteration
   end
   local offset_sha = curr_offset
   local len_sha = (sep_idx - 1) - start_pos + 1
@@ -94,29 +95,28 @@ end
 --   shar2(len=16):payload2
 ---@param buffer string Comlete file content as string buffer
 ---@param start_offset integer Start 0-byte offset to start iterating in buffer
----@return fun(state: file, ctrl: integer): (next_offset: integer?, offset_sha: integer?, len_sha: integer?, offset_path: integer?, len_path: integer?) records iterator fn
----@return buffer fd same string buffer
----@return integer? init_offset Initial byte-offset for loop start
+---@return fun(state: buffer, curr_offset: integer): (next_offset: integer?, offset_sha: integer?, len_sha: integer?, offset_path: integer?, len_path: integer?) records iterator fn
+---@return buffer buffer same string buffer
+---@return integer? start_offset Initial byte-offset for loop start
 ---
 ---@example
 --- local buf = [[
 --- 0123456789abcde0:C:\code
 --- 1123456789abcde1:/home/testme/
 --- 2123456789abcde2:/]]
---- local next, fd, init_offset = M.records(buf, 0)
+--- local next, buf, start_offset = M.records(buf, 0)
 --- -- iterations via (function, state, control) are handled by lua
---- for _next_offset, offset_sha, len_sha, offset_path, len_path in records, fd, init_offset do
+--- for _next_offset, offset_sha, len_sha, offset_path, len_path in next, fd, start_offset do
 ---   local raw_sha = string.sub(buf, offset_sha + 1, offset_sha + len_sha)
 ---   local raw_path = string.sub(buf, offset_path + 1, offset_path + len_path)
 ---   print(string.format('SHA: %s | Path: %s (Bytes: %d-%d)', raw_sha, raw_path, offset_path, offset_path + len_path))
 --- end
---- fd:close()
 M.records = function(buffer, start_offset)
   assert(type(buffer) == "string", "❌ FAIL: buffer must be a string")
   return M._records_next, buffer, start_offset
 end
 
-M._write_next = function(fd, offset, hash, payload)
+M._write_next = function(fd, offset, sha, payload)
   assert(#sha == 16, '')
   local record = sha .. ':' .. payload .. '\n'
   fd:write(record)
@@ -127,7 +127,7 @@ end
 --   sha(len=16):payload
 ---@param fd file opened file descriptor in binary mode
 ---@param start_offset integer start byte offset to start iterating, 0 for file start
----@return fun(fd: file, offset: integer, hash: string, payload: string): integer write writer function
+---@return fun(fd: file, offset: integer, sha: string, payload: string): integer write writer function
 ---@return file fd same file handle
 ---@return integer start_offset same start_offset now applied by fd:seek 'set'
 ---

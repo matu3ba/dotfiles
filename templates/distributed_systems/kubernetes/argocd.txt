@@ -1,0 +1,21 @@
+=install
+=uninstall
+
+=install
+idea
+
+=uninstall
+Based on https://argo-cd.readthedocs.io/en/latest/user-guide/app_deletion/
+and https://oneuptime.com/blog/post/2026-02-26-uninstall-argocd-from-kubernetes/view
+
+Option 1: Keep pods managed by ArgoCD running
+>kubectl delete applications.argoproj.io,appprojects.argoproj.io --all -n argocd --cascade=orphan
+Option 2: Kill pods manage by ArgoCD.
+>{
+kubectl delete applications.argoproj.io,appprojects.argoproj.io --all -n argocd --cascade=foreground
+kubectl delete crd,clusterrole,clusterrolebinding -l app.kubernetes.io/part-of=argocd
+kubectl delete namespace argocd
+# force delete
+kubectl get namespace argocd -o json | jq '.spec.finalizers = []' | kubectl replace --raw "/api/v1/namespaces/argocd/finalize" -f -
+}<
+

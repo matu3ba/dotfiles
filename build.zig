@@ -478,6 +478,15 @@ fn buildZig(
         });
         run_step.dependOn(&exe_zigfile.step);
     }
+    for (ProjectZigPaths[0..]) |proj_path| {
+        const run_sub_build = b.addSystemCommand(&.{
+            b.graph.zig_exe,
+            "build",
+            "test",
+        });
+        run_sub_build.setCwd(b.path(proj_path));
+        run_step.dependOn(&run_sub_build.step);
+    }
 }
 
 fn testZig(
@@ -718,4 +727,8 @@ const SingleZigFiles = [_][]const u8{
     "scr/sh.zig",
     "templates/common.zig",
     "templates/hacks.zig",
+};
+
+const ProjectZigPaths = [_][]const u8{
+    "example/nix_project_deps",
 };

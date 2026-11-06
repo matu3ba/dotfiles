@@ -46,6 +46,7 @@ const process = std.process;
 // chat application - https://codeberg.org/awebo-chat/awebo
 // Low-overhead native hooking and instrumentation - https://github.com/hookforge
 // causal profiler inspired by coz - https://github.com/GiuseppeCesarano/pside
+// Issue tracking stored in git, as a Zig library and a drop-in git-issue command. https://github.com/EuroZig/git-native-issuez
 
 // Zig specific
 // dependency as dot file - https://codeberg.org/Der_Teufel/depz

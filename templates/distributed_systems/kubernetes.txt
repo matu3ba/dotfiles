@@ -345,3 +345,8 @@ spec:
 ---
 And quite some more details relevant but too long to write in this file.
 Also, make app start and configs always explicit, if reasonable.
+
+SHENANIGAN bad error formatting without highlighting in shell etc
+kubectl create secret generic sec_regcred
+error: failed to create secret Secret "sec_regcred" is invalid: metadata.name: Invalid value: "sec_regcred": a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characte
+rs, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
